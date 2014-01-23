@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 2007-2012 The Europeana Foundation Licenced under the EUPL, 
+	Version 1.1 (the "Licence") and subsequent versions as approved by the European 
+	Commission; You may not use this work except in compliance with the Licence. 
+	You may obtain a copy of the Licence at: http://joinup.ec.europa.eu/software/page/eupl 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the Licence is distributed on an "AS IS" basis, without warranties 
+	or conditions of any kind, either express or implied. See the Licence for 
+	the specific language governing permissions and limitations under the Licence. -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	">
+
+	<util:properties id="europeanaProperties" 
+		location="test-config/europeana-test.properties" />
+
+	<!-- INTERNAL DEFINITIONS -->
+	<!-- <import resource="internal/annotation-definitions-beans.xml" /> -->
+
+	<!--Log4j Configuration -->
+	<bean id="log4jInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>classpath:testlog4j.properties</value>
+			</list>
+		</property>
+	</bean>
+
+<!-- 
+	<bean id="morphiaSlf4j" class="java.lang.Class" factory-method="forName">
+		<constructor-arg
+			value="com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory" />
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod"
+			value="com.google.code.morphia.logging.MorphiaLoggerFactory.registerLogger" />
+		<property name="arguments">
+			<list>
+				<ref local="morphiaSlf4j" />
+			</list>
+		</property>
+	</bean>
+ -->
+
+</beans>
