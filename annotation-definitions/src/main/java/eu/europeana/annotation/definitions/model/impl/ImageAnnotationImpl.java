@@ -16,7 +16,7 @@ public class ImageAnnotationImpl extends SemanticTagImpl implements ImageAnnotat
 	
 	private String imageUrl;
 	private String text;
-	private List<Point> pointList;
+	private List<Point> shape;
 	
 	@Override
 	public String getImageUrl() {
@@ -42,17 +42,18 @@ public class ImageAnnotationImpl extends SemanticTagImpl implements ImageAnnotat
 
 	@Override
 	public List<Point> getShape() {
-		return pointList;
+		return shape;
 	}
 
 	@Override
-	public void setShape(List<Point> pointList) {
-		this.pointList = pointList;
+	public void setShape(List<Point> shape) {
+		this.shape = shape;
 		
 	}
 
-	public void setPointList(List<Point> pointList) {
-		this.pointList = pointList;
-		
-	}
+//	public void setPointList(List<Point> pointList) {
+//		this.shape = pointList;
+//		
+//	}
+	
 }

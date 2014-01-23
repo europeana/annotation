@@ -50,8 +50,15 @@ public class BaseApiConnection {
 		if (gson == null) {
 			// Load results object from JSON
 			GsonBuilder builder = new GsonBuilder();
+			AnnotationDeserializer annoDeserializer = new AnnotationDeserializer();
+			
 			builder.registerTypeHierarchyAdapter(Annotation.class,
-					new AnnotationDeserializer());
+					annoDeserializer);
+			
+//			builder.registerTypeAdapter( Point.class,
+//					annoDeserializer);
+			
+			//builder.registerTypeAdapterFactory();
 			// builder.registerTypeAdapterFactory(factory)
 			// AnnotationDeserializer annoDeserializer = new
 			// AnnotationDeserializer();

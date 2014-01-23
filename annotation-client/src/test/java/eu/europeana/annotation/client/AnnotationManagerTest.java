@@ -19,13 +19,15 @@ import eu.europeana.annotation.definitions.model.shape.impl.PointImpl;
 
 public class AnnotationManagerTest {
 
+	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/clientTestObject";
+
 	@Test
 	public void createAnnotation(){
 		
 		AnnotationManagerApi annotationManager = new AnnotationManagerApi();
 		SemanticTag tag = new SemanticTagImpl();
 		tag.setCreator("unit test");
-		tag.setEuropeanaId("testCollection/clientTestObject");
+		tag.setEuropeanaId(TEST_COLLECTION_CLIENT_TEST_OBJECT);
 		tag.setLabel("clientTestTag");
 		
 		Annotation annotation = annotationManager.createAnnotation(tag);
@@ -41,7 +43,7 @@ public class AnnotationManagerTest {
 		AnnotationManagerApi annotationManager = new AnnotationManagerApi();
 		ImageAnnotation userAnnotation = new ImageAnnotationImpl();
 		userAnnotation.setCreator("unit test");
-		userAnnotation.setEuropeanaId("testCollection/clientTestObject");
+		userAnnotation.setEuropeanaId(TEST_COLLECTION_CLIENT_TEST_OBJECT);
 		userAnnotation.setImageUrl("http://localhost:8081/testimages/testimage.jpg");
 		userAnnotation.setText("text: unit test - image annotation");
 //		Point p1 = ;
@@ -73,6 +75,8 @@ public class AnnotationManagerTest {
 		assertTrue(annotation instanceof ImageAnnotation);
 		assertEquals(entities.size(), annotation.getNamedEntityLabelList().size());
 		assertEquals(entityUrls.size(), annotation.getNamedEntityIdList().size());
+		assertEquals(4, annotation.getShape().size());
+		
 				
 	} 
 }

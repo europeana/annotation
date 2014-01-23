@@ -19,6 +19,7 @@ public class AnnotationDeserializer extends StdDeserializer<Annotation> {
 	
 	AnnotationDeserializer() {
 		super(Annotation.class);
+		
 	}
 
 	@Override
@@ -41,6 +42,9 @@ public class AnnotationDeserializer extends StdDeserializer<Annotation> {
 		
 		if (realClass == null)
 			return null;
+		
 		return mapper.readValue(root, realClass);
 	}
+	
+	
 }

@@ -17,15 +17,19 @@ public class PointImpl  implements Point{
 		this.posY = posY;
 	}
 	
+	@Override
 	public Integer getPosX() {
 		return posX;
 	}
+	@Override
 	public void setPosX(Integer posX) {
 		this.posX = posX;
 	}
+	@Override
 	public Integer getPosY() {
 		return posY;
 	}
+	@Override
 	public void setPosY(Integer posY) {
 		this.posY = posY;
 	}

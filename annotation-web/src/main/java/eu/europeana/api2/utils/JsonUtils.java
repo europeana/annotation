@@ -10,8 +10,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.DeserializerFactory;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -21,6 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.jsonldjava.utils.JSONUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.shape.Point;
+import eu.europeana.annotation.definitions.model.shape.impl.PointImpl;
 import eu.europeana.corelib.logging.Logger;
 
 public class JsonUtils {
@@ -77,7 +77,18 @@ public class JsonUtils {
 			          new Version(1, 0, 0, null));  
 			    
 			module.addDeserializer(Annotation.class, new AnnotationDeserializer());  
-			objectMapper.registerModule(module);  
+			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
+			
+			objectMapper.registerModule(module); 
+			
+//			SimpleModule shapeModule =  
+//				      new SimpleModule("ShapeDeserializerModule",  
+//				          new Version(1, 0, 0, null));  
+//				
+//			
+//			addDeserializer(Annotation.class, new AnnotationDeserializer());  
+//			objectMapper.registerModule(module); 
+			
 			
 			parser.setCodec(objectMapper);
 			annotation = objectMapper.readValue(parser, Annotation.class);

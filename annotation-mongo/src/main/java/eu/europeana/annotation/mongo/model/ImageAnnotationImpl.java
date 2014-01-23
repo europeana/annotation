@@ -18,7 +18,7 @@ public class ImageAnnotationImpl extends SemanticTagImpl implements ImageAnnotat
 	private String imageUrl;
 	private String text;
 	@Embedded("poligonshape")
-	private List<Point> pointList;
+	private List<Point> shape;
 	
 	public ImageAnnotationImpl() {
 		super();
@@ -62,22 +62,14 @@ public class ImageAnnotationImpl extends SemanticTagImpl implements ImageAnnotat
 		this.text = text;
 	}
 
-	public List<Point> getPointList() {
-		return pointList;
-	}
-
-	public void setPointList(List<Point> pointList) {
-		this.pointList = pointList;
-	}
-	
 	@Override
 	public List<Point> getShape() {
-		return getPointList();
+		return shape;
 	}
 
 	@Override
-	public void setShape(List<Point> pointList) {
-		setPointList(pointList);
+	public void setShape(List<Point> shape) {
+		this.shape = shape;
 		
 	}
 	
