@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.ImageAnnotation;
-import eu.europeana.annotation.definitions.model.SemanticTag;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
@@ -33,7 +30,7 @@ public class AnnotationRest {
 
 	@Autowired
 	private AnnotationService annotationService;
-	
+
 	AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
 
 	AbstractAnnotationFactory factory;
@@ -64,12 +61,13 @@ public class AnnotationRest {
 		List<? extends Annotation> annotations = getAnnotationService()
 				.getAnnotationList(collection, object);
 		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
-				apiKey, "/annotations/europeanaId/list");
+				apiKey, "/annotations/collection/object");
 		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
 
 		AbstractAnnotation webAnnotation;
 		for (Annotation annotation : annotations) {
-			webAnnotation = getControllerHelper().copyIntoWebAnnotation(annotation, apiKey);
+			webAnnotation = getControllerHelper().copyIntoWebAnnotation(
+					annotation, apiKey);
 			response.items.add(webAnnotation);
 		}
 		response.itemsCount = response.items.size();
@@ -78,13 +76,35 @@ public class AnnotationRest {
 		return JsonUtils.toJson(response, null);
 	}
 
-	
-
-	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getAnnotation(@PathVariable String collection,
-			@PathVariable String object, @PathVariable Integer annotationNr) {
-		return null;
+			@PathVariable String object, @PathVariable Integer annotationNr,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile) {
+
+		Annotation annotation = getAnnotationService().getAnnotationById(
+				collection, object, annotationNr);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/annotations/collection/object/annotationNr");
+
+		if (annotation != null) {
+
+			response.success = true;
+			response.requestNumber = 0L;
+
+			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+					annotation, apiKey));
+		}else{
+			response.success = false;
+			response.action = "get: /annotations/"+collection+"/"
+					+object+"/"+annotationNr;
+			
+			response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+		}
+		
+		return JsonUtils.toJson(response, null);
 	}
 
 	@RequestMapping(value = "/annotations/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,41 +113,46 @@ public class AnnotationRest {
 			@PathVariable String object,
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam (value = "annotation", required = true) String jsonAnno) {
-		
+			@RequestParam(value = "annotation", required = true) String jsonAnno) {
+
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
-		Annotation persistantAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation, apiKey);
-		
-		Annotation storedAnnotation = getAnnotationService().createAnnotation(persistantAnnotation);
-		
-		AnnotationOperationResponse response = new AnnotationOperationResponse();
-		response.action = "create:/annotations/collection/object/";
+		Annotation persistantAnnotation = getControllerHelper()
+				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
+
+		Annotation storedAnnotation = getAnnotationService().createAnnotation(
+				persistantAnnotation);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "create:/annotations/collection/object/");
 		response.success = true;
-		response.apikey = apiKey;
 		response.requestNumber = 0L;
-		
-		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(storedAnnotation, apiKey));
-		
+
+		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+				storedAnnotation, apiKey));
+
 		return JsonUtils.toJson(response, null);
 	}
 
-//	@RequestMapping(value = "/v2/user/saveditem.json", params = "action=CREATE", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-//	public ModelAndView create(
-//			@RequestParam(value = "europeanaid", required = false) String europeanaId,
-//			@RequestParam(value = "callback", required = false) String callback,
-//			Principal principal) {
-//		User user = userService.findByEmail(principal.getName());
-//		UserModification response = new UserModification(getApiId(principal),
-//				"/v2/user/saveditem.json?action=CREATE");
-//		try {
-//			userService.createSavedItem(user.getId(), europeanaId);
-//			response.success = true;
-//		} catch (DatabaseException e) {
-//			response.success = false;
-//			response.error = e.getMessage();
-//		}
-//		return JsonUtils.toJson(response, callback);
-//	}
+	// @RequestMapping(value = "/v2/user/saveditem.json", params =
+	// "action=CREATE", produces = MediaType.APPLICATION_JSON_VALUE, method =
+	// RequestMethod.GET)
+	// public ModelAndView create(
+	// @RequestParam(value = "europeanaid", required = false) String
+	// europeanaId,
+	// @RequestParam(value = "callback", required = false) String callback,
+	// Principal principal) {
+	// User user = userService.findByEmail(principal.getName());
+	// UserModification response = new UserModification(getApiId(principal),
+	// "/v2/user/saveditem.json?action=CREATE");
+	// try {
+	// userService.createSavedItem(user.getId(), europeanaId);
+	// response.success = true;
+	// } catch (DatabaseException e) {
+	// response.success = false;
+	// response.error = e.getMessage();
+	// }
+	// return JsonUtils.toJson(response, callback);
+	// }
 
 	public void setConfiguration(AnnotationConfiguration configuration) {
 		this.configuration = configuration;

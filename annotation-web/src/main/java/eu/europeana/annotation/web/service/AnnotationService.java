@@ -16,7 +16,7 @@ public interface AnnotationService {
 	
 	public void deleteAnnotation(Annotation newAnnotation);
 	
-	public void getAnnotationById(String collectionId, String objectHash, int annotationNr);
+	public Annotation getAnnotationById(String collectionId, String objectHash, int annotationNr);
 	
 	
 }

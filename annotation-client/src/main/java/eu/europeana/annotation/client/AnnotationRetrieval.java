@@ -6,8 +6,10 @@ import eu.europeana.annotation.definitions.model.Annotation;
 
 public interface AnnotationRetrieval {
 
-	public abstract List<Annotation> getAnnotations(String collectionId, String objectHash);
+	public List<Annotation> getAnnotations(String collectionId, String objectHash);
 	
+	public Annotation getAnnotation(String europeanaId, Integer annotationNr);
 	
-	
+	public Annotation getAnnotation(String collectionId, String objectHash,
+			Integer annotationNr);
 }

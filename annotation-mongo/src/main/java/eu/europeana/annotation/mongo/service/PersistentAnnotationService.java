@@ -18,4 +18,6 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
 
 	public List<? extends Annotation> getAnnotationList(String europeanaId);
+
+	public PersistentAnnotation getAnnotation(String europeanaId, Integer annotationNr);
 }

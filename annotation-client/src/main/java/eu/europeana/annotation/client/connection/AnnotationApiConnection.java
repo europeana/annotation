@@ -2,14 +2,9 @@ package eu.europeana.annotation.client.connection;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import eu.europeana.annotation.client.config.ClientConfiguration;
-import eu.europeana.annotation.client.http.HttpConnection;
-import eu.europeana.annotation.client.model.json.AnnotationDeserializer;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -56,6 +51,25 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		return (AnnotationOperationResponse) getAnnotationGson().fromJson(json,
 				AnnotationOperationResponse.class);
+	}
+
+	public AnnotationOperationResponse getAnnotation(String europeanaId, Integer annotationNr) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		if(!europeanaId.startsWith("/"))
+			url += "/" ;
+		
+		url += europeanaId;
+		url += "/" + annotationNr;
+		
+		url += "?wsKey=" + getApiKey() + "&profile=annotation";
+
+		// Execute Europeana API request
+		String json = getJSONResult(url);
+		
+		return (AnnotationOperationResponse) getAnnotationGson().fromJson(json,
+				AnnotationOperationResponse.class);
+
 	}
 
 	

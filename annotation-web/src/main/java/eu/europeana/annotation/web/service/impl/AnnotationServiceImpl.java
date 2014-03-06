@@ -48,6 +48,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
 		return getMongoPersistance().getAnnotationList("/"+collection + "/" +object);
 	}
+	
+	@Override
+	public Annotation getAnnotationById(String collection, String object,
+			int annotationNr) {
+		return getMongoPersistance().getAnnotation("/"+collection + "/" +object, annotationNr);
+		
+	}
 
 	@Override
 	public Annotation createAnnotation(Annotation newAnnotation) {
@@ -67,11 +74,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
 	}
 
-	@Override
-	public void getAnnotationById(String collectionId, String objectHash,
-			int annotationNr) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }

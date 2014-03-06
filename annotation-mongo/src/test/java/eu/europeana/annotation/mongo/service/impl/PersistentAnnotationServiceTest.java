@@ -143,6 +143,7 @@ public class PersistentAnnotationServiceTest {
 		annotation.setEuropeanaId(TEST_EUROPEANA_ID);
 		annotation.setImageUrl("http://localhost/europeanaImageId.jpg");
 		annotation.setText("this is a test image annotation");
+		annotation.setCreator("testCreator");
 		return annotation;
 	}
 
@@ -172,6 +173,25 @@ public class PersistentAnnotationServiceTest {
 	}
 	
 	
+	@Test
+	public void getAnnotation() {
+		
+		//need a stored annotation in order to have an annotationNr
+		Annotation anno = createSimpleAnnotationInstance();
+		Annotation storedAnnotation = annotationService.store(anno);
+		assertNotNull(storedAnnotation.getAnnotationId().getAnnotationNr());
+		
+		//retrieve annotation
+		Annotation retrievedAnnotation = annotationService.getAnnotation(storedAnnotation.getEuropeanaId(), storedAnnotation.getAnnotationNr());
+
+		assertNotNull(retrievedAnnotation);
+		assertEquals(retrievedAnnotation.getAnnotationId().getEuropeanaId(),
+				storedAnnotation.getAnnotationId().getEuropeanaId());
+		assertEquals(retrievedAnnotation.getAnnotationId().getAnnotationNr(),
+				storedAnnotation.getAnnotationId().getAnnotationNr());
+		
+		
+	}
 	
 
 }

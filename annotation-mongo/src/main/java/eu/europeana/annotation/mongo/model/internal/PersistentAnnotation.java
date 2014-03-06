@@ -21,6 +21,7 @@ public interface PersistentAnnotation extends eu.europeana.annotation.definition
 	public void setAnnotationId(AnnotationId annotationId);
 
 	public final static String FIELD_EUROPEANA_ID = "europeanaId";
+	public final static String FIELD_ANNOTATION_NR = "annotationNr";
 	
 	/**
 	 * 

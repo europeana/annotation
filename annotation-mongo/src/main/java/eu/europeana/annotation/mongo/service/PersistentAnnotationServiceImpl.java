@@ -64,4 +64,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();		
 	}
+
+	@Override
+	public PersistentAnnotation getAnnotation(String europeanaId, Integer annotationNr) {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+		
+		return getAnnotationDao().findOne(query);
+	}
 }
