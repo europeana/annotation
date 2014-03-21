@@ -19,17 +19,25 @@ import eu.europeana.annotation.definitions.model.shape.impl.PointImpl;
 
 public class AnnotationManagerTest {
 
-	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/clientTestObject";
+	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/testObject";
 
 	@Test
-	public void createAnnotation(){
+	public void createSemanticTag(){
 		
 		AnnotationManagerApi annotationManager = new AnnotationManagerApi();
 		SemanticTag tag = new SemanticTagImpl();
-		tag.setCreator("unit test");
+		tag.setCreator("sergiu");
 		tag.setEuropeanaId(TEST_COLLECTION_CLIENT_TEST_OBJECT);
-		tag.setLabel("clientTestTag");
+		tag.setLabel("Co-Creation Workshop");
 		
+		List<String> entityUrls = new ArrayList<String>();
+		entityUrls.add("http://en.wikipedia.org/wiki/Co-creation");
+		tag.setNamedEntityIdList(entityUrls);
+		
+		List<String> entities = new ArrayList<String>();
+		entities.add("Co-Creation");
+		tag.setNamedEntityLabelList(entities);
+				
 		Annotation annotation = annotationManager.createAnnotation(tag);
 		assertNotNull(annotation);
 		assertNotNull(annotation.getAnnotationNr());
@@ -42,10 +50,10 @@ public class AnnotationManagerTest {
 		
 		AnnotationManagerApi annotationManager = new AnnotationManagerApi();
 		ImageAnnotation userAnnotation = new ImageAnnotationImpl();
-		userAnnotation.setCreator("unit test");
+		userAnnotation.setCreator("sergiu");
 		userAnnotation.setEuropeanaId(TEST_COLLECTION_CLIENT_TEST_OBJECT);
-		userAnnotation.setImageUrl("http://localhost:8081/testimages/testimage.jpg");
-		userAnnotation.setText("text: unit test - image annotation");
+		userAnnotation.setImageUrl("http://pro.europeana.eu/image/image_gallery?uuid=71c5cfa3-3b85-41e8-8eaa-b2ff7513aa13&groupId=1538974&t=1383063277580");
+		userAnnotation.setText("Brendan Knowlton and Steven Stegers at Europeana Creative Co-Creation Workshop ");
 //		Point p1 = ;
 //		Point p = new PointImpl(0, 0);
 //		Point p1 = new PointImpl(0, 0);
@@ -60,13 +68,15 @@ public class AnnotationManagerTest {
 		userAnnotation.setShape(shape);
 		
 		List<String> entities = new ArrayList<String>();
-		entities.add("Image annotation");
-		entities.add("Open Annotation");
+		entities.add("Breandán Knowlton");
+		entities.add("Breandán Knowlton");
+		entities.add("Steven Stegers");
 		userAnnotation.setNamedEntityLabelList(entities);
 		
 		List<String> entityUrls = new ArrayList<String>();
-		entityUrls.add("http://wiki.org/Image_annotation");
-		entityUrls.add("http://wiki.org/Open_Annotation");
+		entityUrls.add("https://twitter.com/bfk");
+		entityUrls.add("https://basecamp.com/1768384/people/323635-breandan-knowlton");
+		entityUrls.add("https://basecamp.com/1768384/people/323654-steven-stegers");
 		userAnnotation.setNamedEntityIdList(entityUrls);
 		
 		ImageAnnotation annotation = (ImageAnnotation)annotationManager.createAnnotation(userAnnotation);
