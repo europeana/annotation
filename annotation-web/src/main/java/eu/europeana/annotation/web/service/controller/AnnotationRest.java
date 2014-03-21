@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFacto
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
+import eu.europeana.annotation.web.model.FunctionalRuntimeException;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api2.utils.JsonUtils;
@@ -116,6 +117,15 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
+		String europeanaId = "/"+ collection + "/" + object;
+		if(!europeanaId.equals(webAnnotation.getEuropeanaId()))
+			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_EUROPEANAID_NO_MATCH);
+		else if(webAnnotation.getEuropeanaId() == null)
+			webAnnotation.setEuropeanaId(europeanaId);
+		
+		if(webAnnotation.getAnnotationNr() != null)
+			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_ANNOTATIONNR_NOT_NULL);
+		
 		Annotation persistantAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
 

@@ -66,15 +66,87 @@
 						</tr>
 						
 						<tr>
-							<td class="clsCellBorder cls0_0">POST</td>
-							<td class="clsCellBorder">JSON</td>
-							<td class="clsCellBorder"><a
-								href="10106/F1901AC8D852048A3B936030EFDABC28A1B8AE57/annotation/1.json&wskey=xy&profile=annotations">
-									[annotation-web]/annotations/{collection}/{object_hash}?wskey=&amp;profile=
-							</a></td>
-							<td class="clsCellBorder">create an annotation and return the object as stored in the database</td>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/{collection}/{object_hash}<br>
+									ImageAnnotation as JSON:
+								<form action="annotations/testCollection/testObject/" method="post">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="10" cols="20" name="annotation" >
+{
+    "creator": "current web user",
+    "type": "IMAGE_ANNOTATION",
+    "namedEntityIdList": [
+        "https://twitter.com/OpenAnnotation"
+    ],
+    "namedEntityLabelList": [
+        "Open Annotation"
+    ],
+    "imageUrl": "http://www.openannotation.org/spec/core/images/intro_model.png",
+    "text": "W3C Open Annotation Data Model",
+    "shape": [
+        {
+            "posX": 0,
+            "posY": 0
+        },
+        {
+            "posX": 0,
+            "posY": 5
+        },
+        {
+            "posX": 5,
+            "posY": 5
+        },
+        {
+            "posX": 5,
+            "posY": 0
+        }
+    ]
+
+}
+								</textarea>
+								<input type="submit" name="create" value="create">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create a semantic tag and return the object as stored in the database
+							</td>
 						</tr>
-						
+
+<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/{collection}/{object_hash}<br>
+									SemanticTag as JSON:
+								<form action="annotations/testCollection/testObject/" method="post">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="10" cols="20" name="annotation" >
+{
+
+    "europeanaId": "/testCollection/testObject",
+    "creator": "current web user",
+    "type": "SEMANTIC_TAG",
+    "label": "Co-Creation Workshop",
+    "namedEntityIdList": [
+        "http://en.wikipedia.org/wiki/Co-creation"
+    ],
+    "namedEntityLabelList": [
+        "Co-Creation"
+    ]
+
+}
+								</textarea>
+								<input type="submit" name="create" value="create">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create a semantic tag and return the object as stored in the database
+							</td>
+						</tr>
 						
 						<tr>
 							<td>&nbsp;</td>
