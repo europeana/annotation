@@ -1,10 +1,11 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
-import eu.europeana.annotation.definitions.model.impl.ImageAnnotationImpl;
-import eu.europeana.annotation.definitions.model.impl.SemanticTagImpl;
+import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
+import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 
 public class AnnotationObjectFactory extends AbstractAnnotationFactory{
 
@@ -30,11 +31,14 @@ public class AnnotationObjectFactory extends AbstractAnnotationFactory{
 		Class<? extends Annotation> ret = null;
 
 		switch (annotationType) {
-		case IMAGE_ANNOTATION:
-			ret = ImageAnnotationImpl.class;
+		case OBJECT_TAG:
+			ret = BaseObjectTag.class;
 			break;
-		case SEMANTIC_TAG:
-			ret = SemanticTagImpl.class;
+		case IMAGE_TAG:
+			ret = BaseImageTag.class;
+			break;
+		case IMAGE_ANNOTATION:
+			ret = BaseImageAnnotation.class;
 			break;
 		default:
 			throw new RuntimeException(

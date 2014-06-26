@@ -2,9 +2,9 @@ package eu.europeana.annotation.definitions.model;
 
 import java.util.List;
 
-import eu.europeana.annotation.definitions.model.shape.Point;
+import eu.europeana.annotation.definitions.model.selector.shape.Point;
 
-public interface ImageAnnotation extends SemanticTag{
+public interface ImageAnnotation extends Annotation{
 
 	public abstract String getImageUrl();
 

@@ -1,6 +1,6 @@
-package eu.europeana.annotation.definitions.model.shape.impl;
+package eu.europeana.annotation.definitions.model.selector.shape.impl;
 
-import eu.europeana.annotation.definitions.model.shape.Point;
+import eu.europeana.annotation.definitions.model.selector.shape.Point;
 
 public class PointImpl  implements Point{
 

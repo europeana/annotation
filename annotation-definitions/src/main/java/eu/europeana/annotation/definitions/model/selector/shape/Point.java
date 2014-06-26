@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model.shape;
+package eu.europeana.annotation.definitions.model.selector.shape;
 
 public interface Point {
 

@@ -13,6 +13,10 @@ public class AnnotationValidationException extends RuntimeException{
 	private static final long serialVersionUID = -6895963160368650224L;
 	public static final String ERROR_NULL_EUROPEANA_ID = "europeanaId must not be null";
 	public static final String ERROR_NOT_NULL_OBJECT_ID = "Object ID must be null";
+	public static final String ERROR_NULL_BODY = "Annotation Body must not be null";
+	public static final String ERROR_NULL_TAG_ID = "TAG_ID must not be null in TAG Bodys";
+	public static final String ERROR_NULL_TARGET = "Annotation Target must not be null";
+	public static final String ERROR_NULL_ANNOTATED_BY = "Annotated By must not be null";
 
 	public AnnotationValidationException(String message){
 		super(message);

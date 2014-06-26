@@ -4,11 +4,17 @@ import java.io.Serializable;
 
 public interface AnnotationId extends Serializable {
 
-	public abstract String getEuropeanaId();
+	/**
+	 * unanbiguous identifier of the resource (e.g. europeanaId)
+	 * @return
+	 */
+	public String getResourceId();
+	
+	public void setResourceId(String resourceId);
 
-	public abstract void setAnnotationNr(Integer nr);
+	public void setAnnotationNr(Integer nr);
 
-	public abstract Integer getAnnotationNr();
+	public Integer getAnnotationNr();
 
 	
 }
