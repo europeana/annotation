@@ -16,6 +16,9 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 public class AnnotationTestDataBuilder {
 
+	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
+	public final static String TEST_DRACULA_ID = "/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8";
+
 	protected void checkAnnotation(Annotation persistantObject, Annotation storedAnnotation) {
 	
 		// persistantObject.setAnnotatedBy(new PersistantAgent);
@@ -41,7 +44,7 @@ public class AnnotationTestDataBuilder {
 		target.setMediaType("image");
 		target.setContentType("text-html");
 		target.setHttpUri("http://europeana.eu/portal/record/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8.html");
-		target.setEuropeanaId("/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8");
+		target.setEuropeanaId(TEST_DRACULA_ID);
 		persistentObject.setHasTarget(target);
 	
 		// set AnnotatedBy

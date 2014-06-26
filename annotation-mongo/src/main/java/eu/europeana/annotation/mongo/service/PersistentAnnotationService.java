@@ -4,7 +4,10 @@ import java.util.List;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
+import eu.europeana.annotation.definitions.model.ObjectTag;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
 
@@ -16,7 +19,27 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
 
+	public abstract ObjectTag store(ObjectTag object) throws AnnotationValidationException;
+
 	public List<? extends Annotation> getAnnotationList(String europeanaId);
 
-	public PersistentAnnotation getAnnotation(String europeanaId, Integer annotationNr);
+	public PersistentAnnotation find(String europeanaId, Integer annotationNr);
+	
+	public PersistentAnnotation find(AnnotationId annoId);
+	
+	/**
+	 * 
+	 * @param resourceId
+	 * @param annotationNr
+	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
+	 */
+	public void remove(String resourceId, Integer annotationNr);
+	
+	/**
+	 * 
+	 * @param annoId
+	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
+	 */
+	public void remove(AnnotationId annoId);
 }
+

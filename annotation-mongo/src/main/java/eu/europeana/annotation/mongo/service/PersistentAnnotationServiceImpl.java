@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.bson.types.ObjectId;
+
+import com.google.code.morphia.Key;
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 
@@ -11,11 +14,13 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
+import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -120,10 +125,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return this.store((PersistentAnnotation)object);
 	}
 	
-//	@Override
-//	public SemanticTag store(SemanticTag object) {
-//		return (SemanticTag) this.store((PersistentAnnotation)object);
-//	}
+	@Override
+	public ObjectTag store(ObjectTag object) {
+		return (ObjectTag) this.store((PersistentAnnotation)object);
+	}
 	
 	@Override
 	public ImageAnnotation store(ImageAnnotation object) {
@@ -142,11 +147,69 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	@Override
-	public PersistentAnnotation getAnnotation(String europeanaId, Integer annotationNr) {
+	public PersistentAnnotation find(String europeanaId, Integer annotationNr) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
 		
 		return getAnnotationDao().findOne(query);
 	}
+	
+	@Override
+	public PersistentAnnotation find(AnnotationId annoId) {
+		return find(annoId.getResourceId(), annoId.getAnnotationNr());
+	}
+
+	@Override
+	public PersistentAnnotation findByID(String id) {
+			return  getDao(). findOne("_id", new ObjectId(id));
+	}
+	
+	@Override
+	public void remove(String id) {
+		//TODO use delete by query		
+		PersistentAnnotation annotation = findByID(id);
+		getDao().delete(annotation);
+		
+	}
+
+	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove(java.lang.String, java.lang.Integer)
+	 */
+	public void remove(String resourceId, Integer annotationNr) {
+//		String objectId = findObjectId(resourceId, annotationNr); 
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
+		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+	
+		getDao().deleteByQuery(query);
+	}
+
+
+
+//	private String findObjectId(String resourceId, Integer annotationNr) {
+//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
+//		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+//		@SuppressWarnings("rawtypes")
+//		List ids = getDao().findIds();
+//		if(ids.size() != 1)
+//			throw new AnnotationMongoRuntimeException("Expected one object but found:" + ids.size());
+//	
+//		ObjectId id = (ObjectId)ids.get(0);
+//		return id.toString();		
+//	}
+
+
+
+	@Override
+	public void remove(AnnotationId annoId) {
+		remove(annoId.getResourceId(), annoId.getAnnotationNr());		
+	}
+
+
+
+	
 }

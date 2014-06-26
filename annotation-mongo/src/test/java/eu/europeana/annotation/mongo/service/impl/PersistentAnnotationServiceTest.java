@@ -3,9 +3,11 @@ package eu.europeana.annotation.mongo.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -24,7 +26,9 @@ import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.corelib.db.dao.NosqlDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,12 +36,13 @@ import eu.europeana.corelib.db.dao.NosqlDao;
 		"/annotation-mongo-test.xml" })
 public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
-	final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
-
+	
 	// @Resource(name="corelib_solr_mongoProvider")
 	// private MongoProvider mongoProvider;
 
 	@Resource PersistentAnnotationService annotationService;
+
+	@Resource PersistentTagService tagService;
 
 	@Resource(name = "annotation_db_annotationDao")
 	NosqlDao<PersistentAnnotation, AnnotationId> annotationDao;
@@ -133,7 +138,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		bodyEn.setLanguage("en");
 		secondObject.setHasBody(bodyEn);
 		
-		// store first annotation
+		// store second annotation
 		Annotation secondAnnotation = annotationService.store(secondObject);
 
 		assertFalse(firstAnnotation.getAnnotationId().equals(secondAnnotation.getAnnotationId()));
@@ -149,9 +154,71 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 	}
 
-	
-	
+	@Test
+	public void testGetObjectList(){
+		//*** STORE OBJECTS ****
+		ObjectTag firstObject = buildObjectTag();
 
+		SemanticTagBody body = buildSemanticTagBody();
+		firstObject.setHasBody(body);
+
+		// store first annotation
+		annotationService.store(firstObject);
+
+		ObjectTag secondObject = buildObjectTag();
+
+		// set body
+		SemanticTagBody bodyEn = buildSemanticTagBody();
+		// TODO: change to predefined values
+		bodyEn.setValue("Vlad The Impaler");
+		bodyEn.setLanguage("en");
+		secondObject.setHasBody(bodyEn);
+		
+		// store second annotation
+		annotationService.store(secondObject);
+		
+		//** RETRIEVE OBJECTS **
+		List<? extends Annotation> results = annotationService.getAnnotationList(TEST_DRACULA_ID);
+		
+		//** CHECK OBJECTS **
+		assertNotNull(results);
+		assertEquals(2, results.size());
+		
+		for (Annotation annotation : results) {
+			assertEquals(TEST_DRACULA_ID, annotation.getAnnotationId().getResourceId());
+			assertEquals(TEST_DRACULA_ID, annotation.getHasTarget().getEuropeanaId());
+		}
+	}
+	
+	
+	@Test
+	public void testDeleteObjectTag(){
+				//*** STORE OBJECTS ****
+				ObjectTag firstObject = buildObjectTag();
+
+				SemanticTagBody body = buildSemanticTagBody();
+				firstObject.setHasBody(body);
+
+				// store first annotation
+				ObjectTag storedObject = annotationService.store(firstObject);
+				String tagId = ((TagBody)storedObject.getHasBody()).getTagId();
+				
+				//delete object
+				annotationService.remove(storedObject.getAnnotationId());
+				
+				//check deletion
+				Annotation anno = annotationService.find(storedObject.getAnnotationId());
+				assertNull(anno);
+				
+				//check tag existence
+				PersistentTag tag = tagService.findByID(tagId);
+				assertNotNull(tag);
+				
+		
+				
+	}
+	
+	
 	// @Test(expected=AnnotationValidationException.class)
 	// public void testStoreValidationError(){
 	// ImageAnnotation annotation = createSimpleAnnotationInstance();
