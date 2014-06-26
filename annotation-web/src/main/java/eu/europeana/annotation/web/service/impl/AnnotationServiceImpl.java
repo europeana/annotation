@@ -52,7 +52,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Override
 	public Annotation getAnnotationById(String collection, String object,
 			int annotationNr) {
-		return getMongoPersistance().getAnnotation("/"+collection + "/" +object, annotationNr);
+		return getMongoPersistance().find("/"+collection + "/" +object, annotationNr);
 		
 	}
 
