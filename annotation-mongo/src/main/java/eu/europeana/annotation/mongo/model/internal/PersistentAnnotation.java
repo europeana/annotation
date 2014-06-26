@@ -2,6 +2,7 @@ package eu.europeana.annotation.mongo.model.internal;
 
 import org.bson.types.ObjectId;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
 
@@ -12,7 +13,7 @@ import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
  * @author Sergiu Gordea 
  *
  */
-public interface PersistentAnnotation extends eu.europeana.annotation.definitions.model.Annotation, NoSqlEntity {
+public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 
 	/**
 	 * The method used internally to set the generated Annotation Ids
@@ -23,22 +24,23 @@ public interface PersistentAnnotation extends eu.europeana.annotation.definition
 	public final static String FIELD_EUROPEANA_ID = "europeanaId";
 	public final static String FIELD_ANNOTATION_NR = "annotationNr";
 	
+	
 	/**
 	 * 
 	 * @return the generated mongo id
 	 */
 	public ObjectId getId();
 
-	public abstract Long getCreationTimestamp();
-
-	public abstract void setCreationTimestamp(Long creationTimestamp);
-
-	public abstract Long getLastUpdateTimestamp();
-
-	public abstract void setLastUpdateTimestamp(Long lastUpdateTimestamp);
-	
-	public abstract String[] getVisibility();
-
-	public abstract void setVisibility(String[] visibility);
+//	public abstract Long getCreationTimestamp();
+//
+//	public abstract void setCreationTimestamp(Long creationTimestamp);
+//
+//	public abstract Long getLastUpdateTimestamp();
+//
+//	public abstract void setLastUpdateTimestamp(Long lastUpdateTimestamp);
+//	
+//	public abstract String[] getVisibility();
+//
+//	public abstract void setVisibility(String[] visibility);
 
 }

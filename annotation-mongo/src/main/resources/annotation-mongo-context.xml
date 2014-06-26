@@ -43,5 +43,9 @@
 	
 	<bean name="annotation_db_annotationService" class="eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl"
 		p:dao-ref="annotation_db_annotationDao"/>
+		
+	<bean name="annotation_db_tagService" class="eu.europeana.annotation.mongo.service.PersistentTagServiceImpl"
+		p:dao-ref="annotation_db_tagDao"/>
+		
 
 </beans>

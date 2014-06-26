@@ -1,10 +1,8 @@
 package eu.europeana.annotation.mongo.factory;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
-import eu.europeana.annotation.mongo.model.ImageAnnotationImpl;
-import eu.europeana.annotation.mongo.model.SemanticTagImpl;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 
 public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 
@@ -31,10 +29,10 @@ public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 
 		switch (annotationType) {
 		case IMAGE_ANNOTATION:
-			ret =  ImageAnnotationImpl.class;
+			//ret =  ImageAnnotationImpl.class;
 			break;
-		case SEMANTIC_TAG:
-			ret = SemanticTagImpl.class;
+		case OBJECT_TAG:
+			//ret = SemanticTagImpl.class;
 			break;
 		default:
 			throw new RuntimeException(

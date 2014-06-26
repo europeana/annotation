@@ -2,7 +2,7 @@ package eu.europeana.annotation.mongo.model.shape;
 
 import com.google.code.morphia.annotations.Embedded;
 
-import eu.europeana.annotation.definitions.model.shape.impl.PointImpl;
+import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 
 @Embedded
 public class MongoPointImpl extends PointImpl {
