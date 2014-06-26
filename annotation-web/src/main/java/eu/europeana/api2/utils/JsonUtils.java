@@ -19,8 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.jsonldjava.utils.JSONUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.shape.Point;
-import eu.europeana.annotation.definitions.model.shape.impl.PointImpl;
+import eu.europeana.annotation.definitions.model.selector.shape.Point;
+import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.corelib.logging.Logger;
 
 public class JsonUtils {

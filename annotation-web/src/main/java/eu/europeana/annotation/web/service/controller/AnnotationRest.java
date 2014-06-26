@@ -118,14 +118,14 @@ public class AnnotationRest {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
 		String europeanaId = "/"+ collection + "/" + object;
-		if(!europeanaId.equals(webAnnotation.getEuropeanaId()))
-			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_EUROPEANAID_NO_MATCH);
-		else if(webAnnotation.getEuropeanaId() == null)
-			webAnnotation.setEuropeanaId(europeanaId);
-		
-		if(webAnnotation.getAnnotationNr() != null)
-			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_ANNOTATIONNR_NOT_NULL);
-		
+//		if(!europeanaId.equals(webAnnotation.getResourceId()))
+//			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_EUROPEANAID_NO_MATCH);
+//		else if(webAnnotation.getResourceId() == null)
+//			webAnnotation.setEuropeanaId(europeanaId);
+//		
+//		if(webAnnotation.getAnnotationNr() != null)
+//			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_ANNOTATIONNR_NOT_NULL);
+//		
 		Annotation persistantAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
 
