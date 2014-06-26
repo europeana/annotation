@@ -8,7 +8,6 @@ import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
-import eu.europeana.annotation.definitions.model.SemanticTag;
 
 public class AnnotationManagerApi extends BaseAnnotationApi implements AnnotationManager{
 
@@ -47,16 +46,16 @@ public class AnnotationManagerApi extends BaseAnnotationApi implements Annotatio
 		return (ImageAnnotation)res.getAnnotation();
 	}
 	
-	@Override
-	public SemanticTag createSemanticTag(SemanticTag annotation){
-		
-		AnnotationOperationResponse res;
-		try {
-			res = apiConnection.createAnnotation(annotation);
-		} catch (IOException e) {
-			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
-		}
-
-		return (SemanticTag)res.getAnnotation();
-	}
+//	@Override
+//	public SemanticTag createSemanticTag(SemanticTag annotation){
+//		
+//		AnnotationOperationResponse res;
+//		try {
+//			res = apiConnection.createAnnotation(annotation);
+//		} catch (IOException e) {
+//			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
+//		}
+//
+//		return (SemanticTag)res.getAnnotation();
+//	}
 }

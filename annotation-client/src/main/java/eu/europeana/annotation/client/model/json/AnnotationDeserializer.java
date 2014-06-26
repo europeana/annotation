@@ -14,8 +14,8 @@ import com.google.gson.JsonParseException;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
-import eu.europeana.annotation.definitions.model.shape.Point;
-import eu.europeana.annotation.definitions.model.shape.impl.PointImpl;
+import eu.europeana.annotation.definitions.model.selector.shape.Point;
+import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 
 public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 

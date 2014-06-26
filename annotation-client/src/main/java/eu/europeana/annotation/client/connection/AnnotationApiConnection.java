@@ -42,7 +42,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 	public AnnotationOperationResponse createAnnotation(Annotation annotation) throws IOException {
 		String url = getAnnotationServiceUri();
-		url += annotation.getEuropeanaId();
+		url += annotation.getAnnotationId().getResourceId();
 		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 
 		// Execute Europeana API request

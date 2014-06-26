@@ -49,7 +49,7 @@ public class AnnotationRetrievalTest {
 		}
 		
 		Annotation anno = results.get(0);
-		Annotation annotation = retrievalApi.getAnnotation(anno.getEuropeanaId(), anno.getAnnotationNr());
+		Annotation annotation = retrievalApi.getAnnotation(anno.getAnnotationId().getResourceId(), anno.getAnnotationId().getAnnotationNr());
 		
 		assertNotNull(annotation);
 		assertEquals(anno.getType(), annotation.getType());
