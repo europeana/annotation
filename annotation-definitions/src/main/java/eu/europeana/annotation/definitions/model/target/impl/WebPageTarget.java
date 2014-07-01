@@ -6,6 +6,6 @@ public class WebPageTarget extends BaseTarget {
 
 	public WebPageTarget(){
 		super();
-		setTargetType(TargetTypes.WEB_PAGE);
+		setTargetTypeEnum(TargetTypes.WEB_PAGE);
 	}
 }

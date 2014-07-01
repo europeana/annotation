@@ -6,6 +6,6 @@ public class ImageTarget extends BaseTarget {
 
 	public ImageTarget(){
 		super();
-		setTargetType(TargetTypes.IMAGE);
+		setTargetTypeEnum(TargetTypes.IMAGE);
 	}
 }

@@ -14,16 +14,21 @@ public abstract class AbstractAnnotation implements Annotation{
 
 	protected AnnotationId annotationId = null;
 	private String type;
-	private Long annotatedAtTs;
+	//private Long annotatedAtTs;
+	private Date annotatedAt;
 	private Agent annotatedBy;
 	private Body hasBody;
 	private Target hasTarget;
 	private String motivatedBy;
-	private Long serializedAtTs;
-	//TODO: check type to Agent
-	private String serializedBy;
+	//private Long serializedAtTs;
+	private Date serializedAt;
+	
+	private Agent serializedBy;
 	private Style styledBy;
 	
+	public AbstractAnnotation(){
+		super();
+	}
 	
 	@Override
 	public AnnotationId getAnnotationId() {
@@ -43,7 +48,7 @@ public abstract class AbstractAnnotation implements Annotation{
 
 	@Override
 	public Date getAnnotatedAt() {
-		return new Date(getAnnotatedAtTs());
+		return annotatedAt;
 	}
 
 	@Override
@@ -83,7 +88,10 @@ public abstract class AbstractAnnotation implements Annotation{
 
 	@Override
 	public MotivationTypes getMotivationType() {
-		return MotivationTypes.valueOf(getMotivatedBy());
+		if(getMotivatedBy() == null)
+			return null;
+		
+		return MotivationTypes.valueOf(getMotivatedBy());		
 	}
 	
 	@Override
@@ -93,7 +101,7 @@ public abstract class AbstractAnnotation implements Annotation{
 
 	@Override
 	public Date getSerializedAt() {
-		return new Date(getSerializedAtTs());
+		return serializedAt;
 	}
 
 	
@@ -108,33 +116,37 @@ public abstract class AbstractAnnotation implements Annotation{
 	}
 
 	@Override
-	public String getSerializedBy() {
+	public Agent getSerializedBy() {
 		return serializedBy;
 	}
 
 	@Override
-	public void setSerializedBy(String serializedBy) {
+	public void setSerializedBy(Agent serializedBy) {
 		this.serializedBy = serializedBy;
 	}
 
-	@Override
-	public Long getAnnotatedAtTs() {
-		return annotatedAtTs;
-	}
+//	@Override
+//	public Long getAnnotatedAtTs() {
+//		return annotatedAt.getTime();
+//	}
+//
+//	@Override
+//	public void setAnnotatedAtTs(Long annotatedAtTs) {
+//		this.annotatedAt = new Date(annotatedAtTs);
+//	}
 
 	@Override
-	public void setAnnotatedAtTs(Long annotatedAtTs) {
-		this.annotatedAtTs = annotatedAtTs;
+	public void setAnnotatedAt(Date annotatedAt) {
+		this.annotatedAt = annotatedAt;
 	}
-
+	
 	@Override
-	public Long getSerializedAtTs() {
-		return serializedAtTs;
+	public void setSerializedAt(Date serializedAt) {
+		this.serializedAt = serializedAt;
 	}
-
-	@Override
-	public void setSerializedAtTs(Long serializedAtTs) {
-		this.serializedAtTs = serializedAtTs;
+	
+	public void setAnnotationId(AnnotationId annotationId) {
+		this.annotationId = annotationId;
 	}
 	
 }

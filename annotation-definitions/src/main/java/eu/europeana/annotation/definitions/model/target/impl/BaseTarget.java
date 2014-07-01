@@ -21,7 +21,7 @@ public class BaseTarget extends BaseInternetResource implements Target {
 	}
 	
 	@Override
-	public void setTargetType(TargetTypes targetType) {
+	public void setTargetTypeEnum(TargetTypes targetType) {
 		this.targetType = targetType.name();
 	}
 	
@@ -34,7 +34,7 @@ public class BaseTarget extends BaseInternetResource implements Target {
 
 	public BaseTarget(TargetTypes targetType){
 		super();
-		setTargetType(targetType);
+		setTargetTypeEnum(targetType);
 	}
 	@Override
 	public String getEuropeanaId() {

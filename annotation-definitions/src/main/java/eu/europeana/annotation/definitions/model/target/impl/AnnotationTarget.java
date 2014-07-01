@@ -6,6 +6,6 @@ public class AnnotationTarget extends BaseTarget {
 
 	public AnnotationTarget(){
 		super();
-		setTargetType(TargetTypes.ANNOTATION);
+		setTargetTypeEnum(TargetTypes.ANNOTATION);
 	}
 }

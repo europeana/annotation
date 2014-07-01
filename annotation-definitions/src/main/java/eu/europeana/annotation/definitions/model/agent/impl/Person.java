@@ -6,6 +6,6 @@ public class Person extends BaseAgent {
 
 	public Person(){
 		super();
-		setAgentType(AgentTypes.PERSON);
+		setAgentTypeEnum(AgentTypes.PERSON);
 	}
 }

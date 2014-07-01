@@ -6,6 +6,6 @@ public class SoftwareAgent extends BaseAgent{
 
 	public SoftwareAgent(){
 		super();
-		setAgentType(AgentTypes.SOFTWARE_AGENT);
+		setAgentTypeEnum(AgentTypes.SOFTWARE_AGENT);
 	}
 }

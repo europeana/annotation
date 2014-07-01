@@ -48,13 +48,13 @@ public abstract class BaseAgent implements Agent {
 		return agentType;
 	}
 	@Override
-	public void setAgentType(AgentTypes agentType) {
+	public void setAgentTypeEnum(AgentTypes agentType) {
 		this.agentType = agentType;
 	}
 	
 	@Override
 	public void setAgentType(String agentTypeStr){
-		setAgentType(AgentTypes.valueOf(agentTypeStr));
+		setAgentTypeEnum(AgentTypes.valueOf(agentTypeStr));
 	}
 	
 	protected BaseAgent(){}

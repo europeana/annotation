@@ -6,6 +6,6 @@ public class Organization extends BaseAgent {
 
 	public Organization(){
 		super();
-		setAgentType(AgentTypes.ORGANIZATION);
+		setAgentTypeEnum(AgentTypes.ORGANIZATION);
 	}
 }

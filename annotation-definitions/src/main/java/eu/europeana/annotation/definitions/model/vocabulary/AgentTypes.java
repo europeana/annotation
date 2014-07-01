@@ -1,6 +1,8 @@
 package eu.europeana.annotation.definitions.model.vocabulary;
 
-public enum AgentTypes {
+
+public enum AgentTypes{
 
 	PERSON, SOFTWARE_AGENT, ORGANIZATION
+	
 }

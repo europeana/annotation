@@ -10,27 +10,27 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public interface Annotation {
 
+	public void setAnnotationId(AnnotationId annotationId);
+	
 	public AnnotationId getAnnotationId();
 
 	public abstract String getType();
 
-	public abstract void setSerializedAtTs(Long serializedAtTs);
+//	public abstract void setSerializedAtTs(Long serializedAtTs);
+//
+//	public abstract Long getSerializedAtTs();
+//
+//	public abstract void setAnnotatedAtTs(Long annotatedAtTs);
+//
+//	public abstract Long getAnnotatedAtTs();
 
-	public abstract Long getSerializedAtTs();
+	public abstract void setSerializedBy(Agent serializedBy);
 
-	public abstract void setAnnotatedAtTs(Long annotatedAtTs);
-
-	public abstract Long getAnnotatedAtTs();
-
-	public abstract void setSerializedBy(String serializedBy);
-
-	public abstract String getSerializedBy();
+	public abstract Agent getSerializedBy();
 
 	public abstract void setStyledBy(Style styledBy);
 
 	public abstract Style getStyledBy();
-
-	public abstract Date getSerializedAt();
 
 	public abstract void setMotivatedBy(String motivatedBy);
 
@@ -51,7 +51,13 @@ public interface Annotation {
 	public abstract Agent getAnnotatedBy();
 
 	public abstract Date getAnnotatedAt();
+	
+	public abstract Date getSerializedAt();
 
+	void setSerializedAt(Date serializedAt);
+
+	void setAnnotatedAt(Date annotatedAt);
+	
 	public abstract void setType(String type);
 
 	//public abstract void setType(String type);

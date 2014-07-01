@@ -6,4 +6,6 @@ public interface Body extends InternetResource{
 
 	public abstract String getBodyType();
 
+	public abstract void setBodyType(String bodyTypeStr);
+
 }

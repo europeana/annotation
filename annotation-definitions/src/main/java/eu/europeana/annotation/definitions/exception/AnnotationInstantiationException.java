@@ -11,15 +11,14 @@ public class AnnotationInstantiationException extends RuntimeException{
 	 * 
 	 */
 	private static final long serialVersionUID = -6895963160368650224L;
-	public static final String DEFAULT_MESSAGE = "Cannot instantiate annotation type: ";
+	public static final String DEFAULT_MESSAGE = "Cannot instantiate annotation attribute: ";
 	
-	public AnnotationInstantiationException(String annotationType){
-		super(DEFAULT_MESSAGE + annotationType);
+	public AnnotationInstantiationException(String attributeName){
+		super(DEFAULT_MESSAGE + attributeName);
 	}
 	
-	public AnnotationInstantiationException(String annotationType , Throwable th){
-		super(DEFAULT_MESSAGE + annotationType, th);
+	public AnnotationInstantiationException(String attributeName , Throwable th){
+		super(DEFAULT_MESSAGE + attributeName, th);
 	}
-	
 	
 }

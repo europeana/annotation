@@ -6,6 +6,6 @@ public class SemanticLinkBody extends BaseBody {
 
 	public SemanticLinkBody(){
 		super();
-		setBodyType(BodyTypes.SEMANTIC_LINK);
+		setBodyTypeEnum(BodyTypes.SEMANTIC_LINK);
 	}
 }

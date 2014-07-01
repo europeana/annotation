@@ -9,7 +9,7 @@ public interface Target extends InternetResource{
 
 	public abstract String getEuropeanaId();
 
-	public abstract void setTargetType(TargetTypes targetType);
+	public abstract void setTargetTypeEnum(TargetTypes targetType);
 
 	public abstract void setTargetType(String targetType);
 

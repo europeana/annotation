@@ -4,7 +4,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 
-public abstract class AbstractAnnotationFactory {
+public abstract class AbstractTargetFactory {
 
 	public Annotation createAnnotationInstance(String annotationType) {
 		return createAnnotationInstance(AnnotationTypes.valueOf(annotationType));

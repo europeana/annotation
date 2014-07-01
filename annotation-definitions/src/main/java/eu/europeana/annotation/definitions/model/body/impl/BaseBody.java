@@ -11,10 +11,11 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	public String getBodyType() {
 		return bodyType;
 	}
-	protected void setBodyType(BodyTypes bodyType) {
+	protected void setBodyTypeEnum(BodyTypes bodyType) {
 		this.bodyType = bodyType.name();
 	}
-	protected void setBodyType(String bodyTypeStr) {
+	@Override
+	public void setBodyType(String bodyTypeStr) {
 		this.bodyType = bodyTypeStr;
 	}
 	protected BaseBody(){} 
