@@ -1,12 +1,12 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.Key;
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 
@@ -20,7 +20,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -38,9 +37,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 */
 	@Override
 	public PersistentAnnotation store(PersistentAnnotation object) {
-		if(object.getAnnotatedAtTs() == null){
-			object.setAnnotatedAtTs(System.currentTimeMillis());
-			object.setSerializedAtTs(object.getAnnotatedAtTs());
+		if(object.getAnnotatedAt() == null){
+			object.setAnnotatedAt(new Date());
+			object.setSerializedAt(object.getAnnotatedAt());
 			
 		}
 		

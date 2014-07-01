@@ -3,7 +3,6 @@ package eu.europeana.annotation.mongo.model.internal;
 import org.bson.types.ObjectId;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
 
 /**
@@ -14,12 +13,6 @@ import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
  *
  */
 public interface PersistentAnnotation extends Annotation, NoSqlEntity {
-
-	/**
-	 * The method used internally to set the generated Annotation Ids
-	 * @param annotationId
-	 */
-	public void setAnnotationId(AnnotationId annotationId);
 
 	public final static String FIELD_EUROPEANA_ID = "annotationId.resourceId";
 	public final static String FIELD_ANNOTATION_NR = "annotationId.annotationNr";

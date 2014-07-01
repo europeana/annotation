@@ -27,10 +27,10 @@ public class AnnotationTestDataBuilder {
 	
 		assertNotNull(storedAnnotation.getAnnotationId().getAnnotationNr());
 		assertNotNull(((PersistentAnnotation) storedAnnotation)
-				.getAnnotatedAtTs());
+				.getAnnotatedAt());
 		assertEquals(
-				((PersistentAnnotation) storedAnnotation).getAnnotatedAtTs(),
-				((PersistentAnnotation) storedAnnotation).getSerializedAtTs());
+				((PersistentAnnotation) storedAnnotation).getAnnotatedAt(),
+				((PersistentAnnotation) storedAnnotation).getSerializedAt());
 	
 		assertNotNull(storedAnnotation.getHasBody());
 		assertNotNull(storedAnnotation.getHasTarget());

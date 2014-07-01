@@ -3,6 +3,7 @@ package eu.europeana.annotation.mongo.factory;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 
 public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 
@@ -32,7 +33,7 @@ public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 			//ret =  ImageAnnotationImpl.class;
 			break;
 		case OBJECT_TAG:
-			//ret = SemanticTagImpl.class;
+			ret = PersistentObjectTagImpl.class;
 			break;
 		default:
 			throw new RuntimeException(

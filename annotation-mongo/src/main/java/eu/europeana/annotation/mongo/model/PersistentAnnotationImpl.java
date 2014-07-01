@@ -30,7 +30,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private MongoAnnotationId annotationId;
 	
 	private String type;
-	private Long annotatedAtTs;
+	private Date annotatedAt;
 	
 	@Embedded
 	private Agent annotatedBy;
@@ -40,9 +40,9 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Target hasTarget;
 	
 	private String motivatedBy;
-	private Long serializedAtTs;
-	//TODO: check type to Agent
-	private String serializedBy;
+	private Date serializedAt;
+	@Embedded
+	private Agent serializedBy;
 	private Style styledBy;
 
 	@Override
@@ -74,14 +74,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public Long getAnnotatedAtTs() {
-		return annotatedAtTs;
-	}
-
-	public void setAnnotatedAtTs(Long annotatedAtTs) {
-		this.annotatedAtTs = annotatedAtTs;
 	}
 
 	public Agent getAnnotatedBy() {
@@ -121,19 +113,13 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.motivatedBy = motivatedBy;
 	}
 
-	public Long getSerializedAtTs() {
-		return serializedAtTs;
-	}
+	
 
-	public void setSerializedAtTs(Long serializedAtTs) {
-		this.serializedAtTs = serializedAtTs;
-	}
-
-	public String getSerializedBy() {
+	public Agent getSerializedBy() {
 		return serializedBy;
 	}
 
-	public void setSerializedBy(String serializedBy) {
+	public void setSerializedBy(Agent serializedBy) {
 		this.serializedBy = serializedBy;
 	}
 
@@ -147,13 +133,32 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 
 	@Override
 	public Date getSerializedAt() {
-		return new Date(getSerializedAtTs());
+		return serializedAt;
+	}
+
+	@Override
+	public void setSerializedAt(Date serializedAt) {
+		this.serializedAt = serializedAt;
+		
+	}
+	
+	public void setSerializedAtTs(Long serializedAtTs) {
+		this.serializedAt = new Date(serializedAtTs);
 	}
 
 	@Override
 	public Date getAnnotatedAt() {
-		return new Date(getAnnotatedAtTs());
+		return annotatedAt;
 	}
 	
+	@Override
+	public void setAnnotatedAt(Date annotatedAt) {
+		this.annotatedAt = annotatedAt;
+		
+	}
 	
+	public void setAnnotatedAtTs(Long annotatedAtTs) {
+		this.annotatedAt = new Date(annotatedAtTs);
+	}
+
 }
