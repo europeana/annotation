@@ -18,9 +18,19 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.jsonldjava.utils.JSONUtils;
 
+import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.resource.style.Style;
+import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
+import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.api2.utils.serialization.AgentDeserializer;
+import eu.europeana.api2.utils.serialization.AnnotationDeserializer;
+import eu.europeana.api2.utils.serialization.BodyDeserializer;
+import eu.europeana.api2.utils.serialization.TargetDeserializer;
 import eu.europeana.corelib.logging.Logger;
 
 public class JsonUtils {
@@ -77,28 +87,23 @@ public class JsonUtils {
 			          new Version(1, 0, 0, null));  
 			    
 			module.addDeserializer(Annotation.class, new AnnotationDeserializer());  
+			module.addDeserializer(Target.class, new TargetDeserializer());  
+			module.addDeserializer(Body.class, new BodyDeserializer());  
+			module.addDeserializer(Agent.class, new AgentDeserializer());  
+			//module.addDeserializer(Style.class, new StyleDeserializer());  
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
+			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
 			
 			objectMapper.registerModule(module); 
-			
-//			SimpleModule shapeModule =  
-//				      new SimpleModule("ShapeDeserializerModule",  
-//				          new Version(1, 0, 0, null));  
-//				
-//			
-//			addDeserializer(Annotation.class, new AnnotationDeserializer());  
-//			objectMapper.registerModule(module); 
-			
+	
 			
 			parser.setCodec(objectMapper);
 			annotation = objectMapper.readValue(parser, Annotation.class);
 			
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AnnotationInstantiationException("Json formating exception!", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AnnotationInstantiationException("Json reading exception!", e);
 		}
 		
 		return annotation;

@@ -23,11 +23,14 @@
 			<div id="content">
 				<!-- Box for the Service Description -->
 					<div class="">
-						<h3>Annotation</h3>
+						<!--  <h3>Annotation</h3>
+						
 						<div class="left">
-							<img src="img/indexing.png" height="64" />
+							
 						</div>
-						<p>Annotation component is a service that implements the management and indexing of UserTags and ImageAnnotations</p>
+						-->
+						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
+						Annotation component is a service that implements the management and indexing of UserTags and ImageAnnotations
 					</div>
 
 					<div id="table" style="width: 100%;">	
@@ -64,7 +67,7 @@
 							</a></td>
 							<td class="clsCellBorder">get the annotation identified by the given annotation NR</td>
 						</tr>
-						
+<!-- 						
 						<tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
@@ -114,32 +117,63 @@
 								create a semantic tag and return the object as stored in the database
 							</td>
 						</tr>
+						
+						 -->
 
 <tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
 									[annotation-web]/annotations/{collection}/{object_hash}<br>
-									SemanticTag as JSON:
+									ObjectTag as JSON:
 								<form action="annotations/testCollection/testObject/" method="post">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
-								<textarea rows="10" cols="20" name="annotation" >
+								<textarea rows="20" cols="25" name="annotation" >
 {
-
-    "europeanaId": "/testCollection/testObject",
-    "creator": "current web user",
-    "type": "SEMANTIC_TAG",
-    "label": "Co-Creation Workshop",
-    "namedEntityIdList": [
-        "http://en.wikipedia.org/wiki/Co-creation"
-    ],
-    "namedEntityLabelList": [
-        "Co-Creation"
-    ]
-
+"annotatedAt": 1403852113248,
+"type": "OBJECT_TAG",
+"annotatedBy": {
+    "agentType": "PERSON",
+    "name": "annonymous web user",
+    "homepage": null,
+    "mbox": null,
+    "openId": null 
+},
+"hasBody": {
+    "contentType": "Link",
+    "mediaType": null,
+	"httpUri": "https://www.freebase.com/m/035br4",
+    "language": "ro",
+    "value": "Vlad Tepes",
+    "bodyType": "SEMANTIC_TAG"
+},
+"hasTarget": {
+    "contentType": "text-html",
+    "mediaType": "image",
+    "language": "en",
+    "value": "Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)",
+    "httpUri": "http://europeana.eu/portal/record/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8.html",
+    "targetType": "WEB_PAGE",
+    "europeanaId": "/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8"
+},
+"serializedAt": "",
+"serializedBy": {
+    "agentType": "PERSON",
+    "name": "annonymous web user",
+    "homepage": null,
+    "mbox": null,
+    "openId": null 
+},
+"styledBy":{
+ 	"contentType": "style",
+    "mediaType": "text/css",
+	"httpUri": "http://annotorious.github.io/latest/themes/dark/annotorious-dark.css",
+	"value": null,
+    "annotationClass": ".annotorious-popup"
 }
-								</textarea>
+}</textarea>
+								<br>
 								<input type="submit" name="create" value="create">
 								</form>
 							</td>

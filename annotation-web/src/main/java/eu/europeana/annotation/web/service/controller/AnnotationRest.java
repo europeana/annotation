@@ -16,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.web.exception.FunctionalRuntimeException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
@@ -48,6 +47,18 @@ public class AnnotationRest {
 		this.annotationService = annotationService;
 	}
 
+	private String toResourceId(String collection, String object) {
+		return "/"+ collection +"/" + object;
+	}
+	
+	public void setConfiguration(AnnotationConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+	public AnnotationControllerHelper getControllerHelper() {
+		return controllerHelper;
+	}
+	
 	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = "text/*")
 	@ResponseBody
 	public String getComponentName() {
@@ -59,8 +70,11 @@ public class AnnotationRest {
 			@PathVariable String object,
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile) {
+		
+		String resourceId = toResourceId(collection, object);
 		List<? extends Annotation> annotations = getAnnotationService()
-				.getAnnotationList(collection, object);
+				.getAnnotationList(resourceId);
+		
 		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
 				apiKey, "/annotations/collection/object");
 		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
@@ -84,8 +98,10 @@ public class AnnotationRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile) {
 
+		String resourceId = toResourceId(collection, object);
+		
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				collection, object, annotationNr);
+				resourceId, annotationNr);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/collection/object/annotationNr");
@@ -117,8 +133,8 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
-		String europeanaId = "/"+ collection + "/" + object;
-//		if(!europeanaId.equals(webAnnotation.getResourceId()))
+		String resourceId = toResourceId(collection, object);
+//		if(!europeanaId.equals(webAnnotation.getHas getResourceId()))
 //			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_EUROPEANAID_NO_MATCH);
 //		else if(webAnnotation.getResourceId() == null)
 //			webAnnotation.setEuropeanaId(europeanaId);
@@ -143,33 +159,7 @@ public class AnnotationRest {
 		return JsonUtils.toJson(response, null);
 	}
 
-	// @RequestMapping(value = "/v2/user/saveditem.json", params =
-	// "action=CREATE", produces = MediaType.APPLICATION_JSON_VALUE, method =
-	// RequestMethod.GET)
-	// public ModelAndView create(
-	// @RequestParam(value = "europeanaid", required = false) String
-	// europeanaId,
-	// @RequestParam(value = "callback", required = false) String callback,
-	// Principal principal) {
-	// User user = userService.findByEmail(principal.getName());
-	// UserModification response = new UserModification(getApiId(principal),
-	// "/v2/user/saveditem.json?action=CREATE");
-	// try {
-	// userService.createSavedItem(user.getId(), europeanaId);
-	// response.success = true;
-	// } catch (DatabaseException e) {
-	// response.success = false;
-	// response.error = e.getMessage();
-	// }
-	// return JsonUtils.toJson(response, callback);
-	// }
-
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
-	}
-
-	public AnnotationControllerHelper getControllerHelper() {
-		return controllerHelper;
-	}
+	
+	
 
 }

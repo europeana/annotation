@@ -44,15 +44,15 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public List<? extends Annotation> getAnnotationList(String collection, String object) {
+	public List<? extends Annotation> getAnnotationList(String resourceId) {
 		
-		return getMongoPersistance().getAnnotationList("/"+collection + "/" +object);
+		return getMongoPersistance().getAnnotationList(resourceId);
 	}
 	
 	@Override
-	public Annotation getAnnotationById(String collection, String object,
+	public Annotation getAnnotationById(String resourceId,
 			int annotationNr) {
-		return getMongoPersistance().find("/"+collection + "/" +object, annotationNr);
+		return getMongoPersistance().find(resourceId, annotationNr);
 		
 	}
 
@@ -63,15 +63,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation updateAnnotation(Annotation newAnnotation) {
+	public Annotation updateAnnotation(Annotation aAnnotation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void deleteAnnotation(Annotation newAnnotation) {
+	public void deleteAnnotation(String resourceId,
+			int annotationNr) {
 		// TODO Auto-generated method stub
-		
+		getMongoPersistance().remove(resourceId, annotationNr);
 	}
 
 	
