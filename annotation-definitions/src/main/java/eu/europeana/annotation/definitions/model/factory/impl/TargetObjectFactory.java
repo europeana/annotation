@@ -1,15 +1,12 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
-import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
-import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.AnnotationTarget;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.target.impl.TextTarget;
 import eu.europeana.annotation.definitions.model.target.impl.WebPageTarget;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
 public class TargetObjectFactory extends AbstractModelObjectFactory<Target, TargetTypes>{

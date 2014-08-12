@@ -22,6 +22,9 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.resource.selector.Selector;
+import eu.europeana.annotation.definitions.model.resource.state.State;
+import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
@@ -30,6 +33,7 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.api2.utils.serialization.AgentDeserializer;
 import eu.europeana.api2.utils.serialization.AnnotationDeserializer;
 import eu.europeana.api2.utils.serialization.BodyDeserializer;
+import eu.europeana.api2.utils.serialization.SelectorDeserializer;
 import eu.europeana.api2.utils.serialization.TargetDeserializer;
 import eu.europeana.corelib.logging.Logger;
 
@@ -89,10 +93,15 @@ public class JsonUtils {
 			module.addDeserializer(Annotation.class, new AnnotationDeserializer());  
 			module.addDeserializer(Target.class, new TargetDeserializer());  
 			module.addDeserializer(Body.class, new BodyDeserializer());  
-			module.addDeserializer(Agent.class, new AgentDeserializer());  
+			module.addDeserializer(Agent.class, new AgentDeserializer());
+			module.addDeserializer(Selector.class, new SelectorDeserializer());
+			//module.addDeserializer(State.class, new StateDeserializer());
+			module.addDeserializer(Agent.class, new AgentDeserializer());
+			
 			//module.addDeserializer(Style.class, new StyleDeserializer());  
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
 			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
+			module.addAbstractTypeMapping(State.class, BaseState.class);
 			
 			objectMapper.registerModule(module); 
 	

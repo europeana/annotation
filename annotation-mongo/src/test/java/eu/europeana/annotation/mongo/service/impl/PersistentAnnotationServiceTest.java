@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
@@ -218,6 +219,25 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				
 	}
 	
+	 @Test
+	public void testStoreSimpleImageAnnotation() {
+		
+		 ImageAnnotation annotation = createSimpleAnnotationInstance();
+		 
+		 ImageAnnotation storedAnnotation = (ImageAnnotation) 
+				 annotationService.store(annotation);
+		 
+		 checkAnnotation(annotation, storedAnnotation);
+		 
+		 assertNotNull(storedAnnotation.getImageUrl());
+		 assertNotNull(storedAnnotation.getHasTarget());
+		 assertNotNull(storedAnnotation.getHasTarget().getHasSelector());
+		 assertNotNull(storedAnnotation.getHasTarget().getHasState());
+		 
+		 
+	}
+
+	
 	
 	// @Test(expected=AnnotationValidationException.class)
 	// public void testStoreValidationError(){
@@ -249,14 +269,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	//
 	// }
 	//
-	// @Test
-	// public void testStoreSimpleImageAnnotation() {
-	//
-	// ImageAnnotation annotation = createSimpleAnnotationInstance();
-	// ImageAnnotation storedAnnotation = (ImageAnnotation)
-	// storeAnCheck(annotation);
-	// assertNotNull(storedAnnotation.getText());
-	// }
+	
 	//
 	// @Test
 	// public void testStoreShapedImageAnnotation() {

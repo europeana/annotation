@@ -1,10 +1,10 @@
 package eu.europeana.annotation.definitions.model.target.impl;
 
-import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
+import eu.europeana.annotation.definitions.model.resource.impl.OaSpecificResource;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
-public class BaseTarget extends BaseInternetResource implements Target {
+public class BaseTarget extends OaSpecificResource implements Target {
  
 	private String targetType;
 	private String europeanaId;

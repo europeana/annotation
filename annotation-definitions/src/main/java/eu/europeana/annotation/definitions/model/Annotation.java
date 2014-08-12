@@ -16,14 +16,6 @@ public interface Annotation {
 
 	public abstract String getType();
 
-//	public abstract void setSerializedAtTs(Long serializedAtTs);
-//
-//	public abstract Long getSerializedAtTs();
-//
-//	public abstract void setAnnotatedAtTs(Long annotatedAtTs);
-//
-//	public abstract Long getAnnotatedAtTs();
-
 	public abstract void setSerializedBy(Agent serializedBy);
 
 	public abstract Agent getSerializedBy();

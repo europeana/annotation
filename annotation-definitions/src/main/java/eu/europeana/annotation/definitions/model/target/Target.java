@@ -1,9 +1,9 @@
 package eu.europeana.annotation.definitions.model.target;
 
-import eu.europeana.annotation.definitions.model.resource.InternetResource;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
-public interface Target extends InternetResource{
+public interface Target extends SpecificResource{
 
 	public abstract void setEuropeanaId(String europeanaId);
 

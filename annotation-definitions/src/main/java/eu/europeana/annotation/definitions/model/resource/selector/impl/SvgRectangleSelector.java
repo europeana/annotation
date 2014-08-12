@@ -1,9 +1,10 @@
 package eu.europeana.annotation.definitions.model.resource.selector.impl;
 
-import eu.europeana.annotation.definitions.model.resource.selector.RectangleSelector;
+import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
+import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 
-public class SvgRectangleSelector extends BaseSvgSelector implements RectangleSelector{
+public class SvgRectangleSelector extends BaseSvgSelector implements Rectangle, Selector{
 
 	@Override
 	public Integer getX() {
@@ -15,6 +16,7 @@ public class SvgRectangleSelector extends BaseSvgSelector implements RectangleSe
 		if(getOrigin() == null)
 			setOrigin(new PointImpl(0, 0));
 		getOrigin().setPosX(x);
+		setRx(x);
 	}
 
 	@Override
@@ -27,6 +29,7 @@ public class SvgRectangleSelector extends BaseSvgSelector implements RectangleSe
 		if(getOrigin() == null)
 			setOrigin(new PointImpl(0, 0));
 		getOrigin().setPosY(y);
+		setRy(y);
 	}
 
 	@Override
@@ -54,8 +57,8 @@ public class SvgRectangleSelector extends BaseSvgSelector implements RectangleSe
 		return getDimensionMap().get(DIMENSION_RX);
 	}
 
-	@Override
-	public void setRx(Integer rx) {
+	
+	protected void setRx(Integer rx) {
 		getDimensionMap().put(DIMENSION_RX, rx);
 	}
 
@@ -64,8 +67,7 @@ public class SvgRectangleSelector extends BaseSvgSelector implements RectangleSe
 		return getDimensionMap().get(DIMENSION_RY);
 	}
 
-	@Override
-	public void setRy(Integer ry) {
+	protected void setRy(Integer ry) {
 		getDimensionMap().put(DIMENSION_RY, ry);
 	}
 	

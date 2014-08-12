@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europeana.annotation.definitions.model.resource.selector.Selector;
+import eu.europeana.annotation.definitions.model.resource.selector.SvgSelector;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 
-public abstract class BaseSvgSelector implements Selector{
+public abstract class BaseSvgSelector extends BaseSelector implements SvgSelector{
 
 	private String selectorType;
 	private Point origin;
@@ -33,7 +33,7 @@ public abstract class BaseSvgSelector implements Selector{
 	}
 	
 	@Override
-	public void setSelectorType(SelectorTypes selectorType) {
+	public void setSelectorTypeEnum(SelectorTypes selectorType) {
 		this.selectorType = selectorType.name();
 	}
 
@@ -88,8 +88,8 @@ public abstract class BaseSvgSelector implements Selector{
 	}
 	
 	protected BaseSvgSelector(){
+		super();
 		origin = new PointImpl(0, 0);
-		dimensionMap = new HashMap<String, Integer>(8);
 		if(hasPoints())
 			points = new ArrayList<Point>();
 	}

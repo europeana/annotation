@@ -153,9 +153,9 @@
     "mediaType": "image",
     "language": "en",
     "value": "Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)",
-    "httpUri": "http://europeana.eu/portal/record/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8.html",
+    "httpUri": "http://europeana.eu/portal/record//15502/GG_8285.html",
     "targetType": "WEB_PAGE",
-    "europeanaId": "/15502/D75AA597009ABDCBF6E8117800CB53EADCAEF5E8"
+    "europeanaId": "/15502/GG_8285"
 },
 "serializedAt": "",
 "serializedBy": {
@@ -178,10 +178,127 @@
 								</form>
 							</td>
 							<td class="clsCellBorder" valign="top">
-								create a semantic tag and return the object as stored in the database
+								create a semantic tag (BodyType) and return the object as stored in the database
 							</td>
 						</tr>
-						
+<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/{collection}/{object_hash}<br>
+									ObjectTag as JSON:
+								<form action="annotations/testCollection/testObject/" method="post">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="20" cols="25" name="annotation" >
+{
+"annotatedAt": 1403852113248,
+"type": "OBJECT_TAG",
+"annotatedBy": {
+    "agentType": "PERSON",
+    "name": "annonymous web user",
+    "homepage": null,
+    "mbox": null,
+    "openId": null 
+},
+"hasBody": {
+    "contentType": "text",
+    "mediaType": null,
+	"httpUri": null,
+    "language": "ro",
+    "value": "Vlad Tepes",
+    "bodyType": "TAG"
+},
+"hasTarget": {
+    "contentType": "text-html",
+    "mediaType": "image",
+    "language": "de",
+    "value": "Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)",
+    "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
+    "targetType": "WEB_PAGE",
+    "europeanaId": "/15502/GG_8285"
+},
+"serializedAt": "",
+"serializedBy": {
+    "agentType": "PERSON",
+    "name": "annonymous web user",
+    "homepage": null,
+    "mbox": null,
+    "openId": null 
+},
+"styledBy":{
+ 	"contentType": "style",
+    "mediaType": "text/css",
+	"httpUri": "http://annotorious.github.io/latest/themes/dark/annotorious-dark.css",
+	"value": null,
+    "annotationClass": ".annotorious-popup"
+}
+}</textarea>
+								<br>
+								<input type="submit" name="create" value="create">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create a simple tag (BodyType) and return the object as stored in the database
+							</td>
+						</tr>						
+
+<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/{collection}/{object_hash}<br>
+									ObjectTag as JSON:
+								<form action="annotations/testCollection/testObject/" method="post">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="20" cols="25" name="annotation" >
+{
+"type" : "IMAGE_ANNOTATION", 
+"annotatedAt" : null,
+"annotatedBy" : { 
+"agentType" : "PERSON", 
+"name" : "Another web user", 
+"homepage" : "http://www.pro.europeana.eu/web/europeana-creative" }, 
+
+"hasBody" : {
+"bodyType" : "TEXT", 
+"contentType" : "dcTypes:Text", 
+"value" : "cool guy" }, 
+
+"hasTarget" : {
+"targetType" : "IMAGE", 
+"europeanaId" : "/15502/GG_8285", 
+"contentType" : "image/jpeg", 
+"mediaType" : "image", 
+"httpUri" : "http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE",
+
+"hasSelector" : {
+"selectorType": "SVG_RECTANGLE_SELECTOR",  
+"dimensionMap" : { "height" : 100, "width" : 200, "rx" : 5, "ry" : 5 } }, 
+
+"hasState" : {
+"timestamp" : 0, 
+"versionUri" : "http://bilddatenbank.khm.at/images/350/GG_8285.jpg", 
+"format" : "image/jpeg", 
+"authenticationRequired" : false }
+ }, 
+
+"motivatedBy" : "COMMENTING" 
+
+}
+</textarea>
+								<br>
+								<input type="submit" name="create" value="create">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create an (simple) image annotation (BodyType) and return the object as stored in the database
+							</td>
+						</tr>						
+
+
+
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>

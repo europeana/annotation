@@ -1,14 +1,14 @@
 package eu.europeana.annotation.definitions.model.resource.selector;
 
-public interface RectangleSelector extends Selector {
+public interface Rectangle{
 
 	public static final String DIMENSION_WIDTH = "width";
 	public static final String DIMENSION_HEIGHT = "height";
 	public static final String DIMENSION_RX = "rx";
 	public static final String DIMENSION_RY = "ry";
-	public abstract void setRy(Integer ry);
+	//public abstract void setRy(Integer ry);
 	public abstract Integer getRy();
-	public abstract void setRx(Integer rx);
+	//public abstract void setRx(Integer rx);
 	public abstract Integer getRx();
 	public abstract void setHeight(Integer height);
 	public abstract Integer getHeight();

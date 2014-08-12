@@ -12,21 +12,27 @@ public class OaSpecificResource extends BaseInternetResource implements Specific
 	private State hasState;
 	private String styleClass;
 	
+	@Override
 	public Selector getHasSelector() {
 		return hasSelector;
 	}
+	@Override
 	public void setHasSelector(Selector hasSelector) {
 		this.hasSelector = hasSelector;
 	}
+	@Override
 	public State getHasState() {
 		return hasState;
 	}
+	@Override
 	public void setHasState(State hasState) {
 		this.hasState = hasState;
 	}
+	@Override
 	public String getStyleClass() {
 		return styleClass;
 	}
+	@Override
 	public void setStyleClass(String styleClass) {
 		this.styleClass = styleClass;
 	}

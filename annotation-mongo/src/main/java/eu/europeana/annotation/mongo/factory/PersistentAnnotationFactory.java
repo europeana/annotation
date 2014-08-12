@@ -3,6 +3,7 @@ package eu.europeana.annotation.mongo.factory;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 
 public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
@@ -30,7 +31,7 @@ public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 
 		switch (annotationType) {
 		case IMAGE_ANNOTATION:
-			//ret =  ImageAnnotationImpl.class;
+			ret =  PersistentImageAnnotationImpl.class;
 			break;
 		case OBJECT_TAG:
 			ret = PersistentObjectTagImpl.class;

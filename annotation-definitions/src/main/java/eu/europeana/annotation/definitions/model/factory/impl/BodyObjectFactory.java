@@ -1,15 +1,12 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
-import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
-import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticLinkBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
-import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 public class BodyObjectFactory extends
