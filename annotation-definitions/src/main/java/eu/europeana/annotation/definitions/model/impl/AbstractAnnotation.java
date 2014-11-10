@@ -10,7 +10,7 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public abstract class AbstractAnnotation implements Annotation{
+public abstract class AbstractAnnotation implements Annotation {
 
 	protected AnnotationId annotationId = null;
 	private String type;
@@ -25,6 +25,7 @@ public abstract class AbstractAnnotation implements Annotation{
 	
 	private Agent serializedBy;
 	private Style styledBy;
+	
 	
 	public AbstractAnnotation(){
 		super();
@@ -53,6 +54,7 @@ public abstract class AbstractAnnotation implements Annotation{
 
 	@Override
 	public Agent getAnnotatedBy() {
+		System.out.println("getAnnotatedBy() " + annotatedBy);
 		return annotatedBy;
 	}
 
