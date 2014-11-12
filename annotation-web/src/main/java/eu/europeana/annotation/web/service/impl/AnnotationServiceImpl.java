@@ -11,8 +11,6 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.corelib.logging.Log;
-import eu.europeana.corelib.logging.Logger;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -26,8 +24,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	SolrAnnotationService solrService;
 	
 	
-	@Log
-	private Logger log;
+//	@Log
+//	private Logger log;
 	
 	@Override
 	public String getComponentName() {
