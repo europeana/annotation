@@ -20,6 +20,8 @@ public class SolrTagServiceImpl implements SolrTagService {
 
 	SolrServer solrServer;
 
+	private static final Logger log = Logger.getLogger(SolrTagServiceImpl.class);
+	
 	public void setSolrServer(SolrServer solrServer) {
 		this.solrServer = solrServer;
 	}
@@ -27,10 +29,9 @@ public class SolrTagServiceImpl implements SolrTagService {
 	@Override
 	public void store(SolrTag solrTag)  throws TagServiceException {
 	    try {
-	    	Logger.getLogger(getClass().getName()).info("store: " + solrTag.toString());
-	    	System.out.println("store: " + solrTag.toString());
+	    	log.info("store: " + solrTag.toString());
 	        UpdateResponse rsp = solrServer.addBean(solrTag);
-	        System.out.println("store response: " + rsp.toString());
+	        log.info("store response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
 			throw new TagServiceException("Unexpected IO exception occured when storing tags for: " + solrTag.getId(), ex);
@@ -80,9 +81,9 @@ public class SolrTagServiceImpl implements SolrTagService {
 	     * Construct a SolrQuery 
 	     */
 	    SolrQuery query = new SolrQuery();
-	    System.out.println("label: " + queryObject.getLabel());
-	    System.out.println("creator: " + queryObject.getCreator());
-	    System.out.println("language: " + queryObject.getLanguage());
+	    log.info("label: " + queryObject.getLabel());
+	    log.info("creator: " + queryObject.getCreator());
+	    log.info("language: " + queryObject.getLanguage());
 //	    query.set(SolrAnnotationConst.LABEL,queryObject.getLabel());
 //	    query.setQuery("\"" + SolrAnnotationConst.LABEL + ":" + queryObject.getLabel() + "\"");
 //	    query.setQuery(SolrAnnotationConst.LABEL + ":" + queryObject.getLabel());
@@ -111,7 +112,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    if (queryObject.getCreator() != null) {
 	    	queryStr = queryStr + " AND " + SolrAnnotationConst.CREATOR + ":" + queryObject.getCreator();
 	    }
-	    System.out.println("queryStr: " + queryStr);
+	    log.info("queryStr: " + queryStr);
 	    query.setQuery(queryStr);
 	    
 	    query.setFields(
@@ -120,7 +121,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    		SolrAnnotationConst.CREATOR
 	    		);
 	    
-	    System.out.println("search obj: " + queryObject);
+	    log.info("search obj: " + queryObject);
 	    
 	    /**
 	     * Query the server 
@@ -128,7 +129,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    try {
 	    	QueryResponse rsp = solrServer.query( query );
 	    	res = rsp.getBeans(SolrTagImpl.class);
-	    	System.out.println("search obj res size: " + res.size());
+	    	log.info("search obj res size: " + res.size());
 		} catch (SolrServerException e) {
 			throw new TagServiceException("Unexpected exception occured when searching tags for solrTag: " + 
 					queryObject.toString(), e);
@@ -173,8 +174,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 
 	@Override
 	public void update(SolrTag solrTag) throws TagServiceException {
-    	Logger.getLogger(getClass().getName()).info("update log: " + solrTag.toString());	    	
-    	System.out.println("update: " + solrTag.toString());
+    	log.info("update: " + solrTag.toString());	    	
     	delete(solrTag);
     	store(solrTag);
 	}
@@ -182,10 +182,9 @@ public class SolrTagServiceImpl implements SolrTagService {
 	@Override
 	public void delete(SolrTag solrTag) throws TagServiceException {
 	    try {
-	    	Logger.getLogger(getClass().getName()).info("delete log: " + solrTag.toString());
-	    	System.out.println("delete: " + solrTag.toString());
+	    	log.info("delete: " + solrTag.toString());
 	        UpdateResponse rsp = solrServer.deleteById(solrTag.getId());
-	        System.out.println("delete response: " + rsp.toString());
+	        log.info("delete response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
 			throw new TagServiceException("Unexpected solr server exception occured when deleting tags for: " + solrTag.getId(), ex);
@@ -201,9 +200,9 @@ public class SolrTagServiceImpl implements SolrTagService {
 	 */
 	public void deleteByQuery(String query) throws TagServiceException{
 	    try {
-	    	System.out.println("deleteByQuery: " + query);
+	    	log.info("deleteByQuery: " + query);
 	        UpdateResponse rsp = solrServer.deleteByQuery(query);
-	        System.out.println("delete response: " + rsp.toString());
+	        log.info("delete response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
 			throw new TagServiceException("Unexpected solr server exception occured when deleting tags for query: " + query, ex);
@@ -218,7 +217,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	 * @throws TagServiceException
 	 */
 	public void cleanUpAll() throws TagServiceException {
-    	System.out.println("clean up all solr tags");
+    	log.info("clean up all solr tags");
     	deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
 	}
 

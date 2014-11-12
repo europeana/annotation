@@ -1,27 +1,30 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
+import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
+
+import eu.europeana.corelib.logging.Logger;
+
 
 public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 
 	SolrServer solrServer;
 
+	private static final Logger log = Logger.getLogger(SolrAnnotationServiceImpl.class);
+	
 	public void setSolrServer(SolrServer solrServer) {
 		this.solrServer = solrServer;
 	}
@@ -29,10 +32,9 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	@Override
 	public void store(SolrAnnotation solrAnnotation)  throws AnnotationServiceException {
 	    try {
-	    	Logger.getLogger(getClass().getName()).info("store: " + solrAnnotation.toString());
-	    	System.out.println("store: " + solrAnnotation.toString());
+	    	log.info("store: " + solrAnnotation.toString());
 	        UpdateResponse rsp = solrServer.addBean(solrAnnotation);
-	        System.out.println("store response: " + rsp.toString());
+	        log.info("store response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
 			throw new AnnotationServiceException("Unexpected IO exception occured when storing annotations for: " + 
@@ -48,7 +50,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 			
 		List<? extends SolrAnnotation> res = null;
 		
-		System.out.println("search by term: " + term);
+		log.info("search by term: " + term);
 		
 	    /**
 	     * Construct a SolrQuery 
@@ -96,7 +98,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 			
 		List<? extends SolrAnnotation> res = null;
 		
-		System.out.println("search by id: " + id);
+		log.info("search by id: " + id);
 		
 	    /**
 	     * Construct a SolrQuery 
@@ -111,7 +113,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    if (id != null) {
 	    	queryStr = SolrAnnotationConst.ANNOTATION_ID_STR + ":" + id;
 	    }
-	    System.out.println("queryStr: " + queryStr);
+	    log.info("queryStr: " + queryStr);
 	    query.setQuery(queryStr);
 	    
 	    query.setFields(
@@ -152,8 +154,8 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     * Construct a SolrQuery 
 	     */
 	    SolrQuery query = new SolrQuery();
-	    System.out.println("label: " + queryObject.getLabel());
-	    System.out.println("language: " + queryObject.getLanguage());
+	    log.info("label: " + queryObject.getLabel());
+	    log.info("language: " + queryObject.getLanguage());
 //	    query.addFilterQuery("cat:electronics","store:amazon.com");
 //	    query.setQuery(queryObject.getLabel());
 	    String queryStr = "";
@@ -175,7 +177,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 //	    if (queryObject.getAnnotationIdString() != null) {
 //	    	queryStr = queryStr + " AND " + SolrAnnotationConst.ANNOTATION_ID_STR + ":" + queryObject.getAnnotationIdString();
 //	    }
-	    System.out.println("queryStr: " + queryStr);
+	    log.info("queryStr: " + queryStr);
 	    query.setQuery(queryStr);
 	    
 //	    query.setQuery(SolrAnnotationConst.LABEL + ":" + queryObject.getLabel() + " AND " +
@@ -199,7 +201,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 //	    query.setFields(SolrAnnotationConst.LABEL);
 //	    query.setStart(0);    
 //	    query.set("defType", "edismax");
-	    System.out.println("search obj: " + queryObject);
+	    log.info("search obj: " + queryObject);
 	    
 	    /**
 	     * Query the server 
@@ -207,7 +209,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    try {
 	    	QueryResponse rsp = solrServer.query( query );
 	    	res = rsp.getBeans(SolrAnnotationImpl.class);
-	    	System.out.println("search obj res size: " + res.size());
+	    	log.info("search obj res size: " + res.size());
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for solrAnnotation: " + 
 					queryObject.toString(), e);
@@ -244,8 +246,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 
 	@Override
 	public void update(SolrAnnotation solrAnnotation) throws AnnotationServiceException {
-    	Logger.getLogger(getClass().getName()).info("update log: " + solrAnnotation.toString());	    	
-    	System.out.println("update: " + solrAnnotation.toString());
+    	log.info("update log: " + solrAnnotation.toString());	    	
     	delete(solrAnnotation);
     	store(solrAnnotation);
 	}
@@ -253,15 +254,14 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	@Override
 	public void delete(SolrAnnotation solrAnnotation) throws AnnotationServiceException {
 	    try {
-	    	Logger.getLogger(getClass().getName()).info("delete log: " + solrAnnotation.toString());
-	    	System.out.println("delete: " + solrAnnotation.toString());
+	    	log.info("delete: " + solrAnnotation.toString());
 //	        UpdateResponse rsp = solrServer.deleteByQuery(SolrAnnotationConst.ANNOTATION_ID_STR + ":" + solrAnnotation.getAnnotationIdString());
 //	        UpdateResponse rsp = solrServer.deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
 	        UpdateResponse rsp = solrServer.deleteById(solrAnnotation.getAnnotationIdString());
 //	        UpdateResponse rsp = solrServer.deleteByQuery(solrAnnotation.getAnnotationIdString());
 //	        UpdateResponse rsp = solrServer.deleteByQuery(solrAnnotation.getResourceId());
 //	        UpdateResponse rsp = solrServer.deleteByQuery(SolrAnnotationConst.ANNOTATION_ID_STR + ":" + solrAnnotation.getAnnotationIdString());
-	        System.out.println("delete response: " + rsp.toString());
+	        log.info("delete response: " + rsp.toString());
 //	        solrServer.commit(true, true);
 	        solrServer.commit();
 //	        UpdateRequest req = new UpdateRequest();
@@ -284,9 +284,9 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	 */
 	public void deleteByQuery(String query) throws AnnotationServiceException{
 	    try {
-	    	System.out.println("deleteByQuery: " + query);
+	    	log.info("deleteByQuery: " + query);
 	        UpdateResponse rsp = solrServer.deleteByQuery(query);
-	        System.out.println("delete response: " + rsp.toString());
+	        log.info("delete response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
 			throw new AnnotationServiceException("Unexpected solr server exception occured when deleting annotations for query: " + query, ex);
@@ -301,7 +301,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	 * @throws AnnotationServiceException
 	 */
 	public void cleanUpAll() throws AnnotationServiceException {
-    	System.out.println("clean up all solr annotations");
+    	log.info("clean up all solr annotations");
     	deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
 	}
 

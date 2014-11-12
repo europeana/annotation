@@ -162,22 +162,11 @@ public class SolrAnnotationServiceTest {
 		 * Create solr Annotation with new label
 		 */
 		storeTestObject();
-//		SolrAnnotationImpl solrAnnotation = new SolrAnnotationImpl();
-//		solrAnnotation.setAnnotationIdString(
-//				"/" + Integer.toString(generateUniqueId()) + "/" + Integer.toString(generateUniqueId()));
-//		solrAnnotation.setLanguage(TEST_LANGUAGE);
-//		solrAnnotation.setLabel(TEST_VALUE_2);
-
-		/**
-		 * save the SolrAnnotation object in SOLR
-		 */
-//		solrAnnotationService.store(solrAnnotation);
 		
 		/**
 		 * query from SOLR
 		 */
 		List<? extends SolrAnnotation> solrAnnotations = solrAnnotationService.searchByLabel(TEST_VALUE);			   
-//		List<? extends SolrAnnotation> solrAnnotations = solrAnnotationService.searchByLabel(TEST_VALUE_2);			   
 		assertTrue(solrAnnotations.size() > 0);				
 
 		/**
@@ -185,32 +174,26 @@ public class SolrAnnotationServiceTest {
 		 */
 		SolrAnnotation resSolrAnnotation = solrAnnotations.get(0);
 		assertTrue(resSolrAnnotation.getLabel().equals(TEST_VALUE));
-//		assertTrue(resSolrAnnotation.getLabel().equals(TEST_VALUE_2));
 	}
 	
 	@Test
 	public void testSearchSolrAnnotationByQueryObject() throws MalformedURLException, IOException, AnnotationServiceException {
 		
 		SolrAnnotationImpl querySolrAnnotation = storeTestObject();
-		System.out.println("searchbyobject after store: " + querySolrAnnotation);
-		//		SolrAnnotationImpl querySolrAnnotation = new SolrAnnotationImpl();
-//		querySolrAnnotation.setAnnotationIdString(
-//				"/" + Integer.toString(generateUniqueId()) + "/" + Integer.toString(generateUniqueId()));
-//		querySolrAnnotation.setLanguage(TEST_LANGUAGE);
-//		querySolrAnnotation.setLabel(TEST_VALUE);
+		Logger.getLogger(getClass().getName()).info("searchbyobject after store: " + querySolrAnnotation);
 		
 		/**
 		 * query from SOLR
 		 */
 		List<? extends SolrAnnotation> solrAnnotations = solrAnnotationService.search(querySolrAnnotation);			   
 		assertTrue(solrAnnotations.size() > 0);				
-		System.out.println("found annotations size: " + solrAnnotations.size());
+		Logger.getLogger(getClass().getName()).info("found annotations size: " + solrAnnotations.size());
 
 		/**
 		 * Check the results 
 		 */
 		SolrAnnotation resSolrAnnotation = solrAnnotations.get(0);
-		System.out.println("searchbyobject res solrAnnotation object: " + resSolrAnnotation);
+		Logger.getLogger(getClass().getName()).info("searchbyobject res solrAnnotation object: " + resSolrAnnotation);
 		assertTrue(resSolrAnnotation.getLanguage().equals(querySolrAnnotation.getLanguage()));
 		assertTrue(resSolrAnnotation.getLabel().equals(querySolrAnnotation.getLabel()));
 	}
@@ -218,18 +201,15 @@ public class SolrAnnotationServiceTest {
 	@Test
 	public void testUpdateSolrAnnotation() throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		SolrAnnotationImpl querySolrAnnotation = storeTestObject();
-
 		/**
 		 * query from SOLR
 		 */
 		List<? extends SolrAnnotation> solrAnnotations = solrAnnotationService.search(TEST_VALUE);    
 		assertTrue(solrAnnotations.size() > 0);
-//		printList(solrAnnotations, "list before update for test value: " + TEST_VALUE);
 		printList(solrAnnotationService.getAll(), "list before update for test value: " + TEST_VALUE);
 				
 		SolrAnnotation solrAnnotation = solrAnnotations.get(0);
-		System.out.println("SolrAnnotation object to update: " + solrAnnotation);
+		Logger.getLogger(getClass().getName()).info("SolrAnnotation object to update: " + solrAnnotation);
 		solrAnnotation.setLanguage(TEST_LANGUAGE_2);
 				
 		/**
@@ -239,28 +219,23 @@ public class SolrAnnotationServiceTest {
 		
 		solrAnnotations = solrAnnotationService.search(TEST_VALUE);
 		printList(solrAnnotationService.getAll(), "list after update for test value: " + TEST_VALUE);
-//		printList(solrAnnotations, "list after update for test value: " + TEST_VALUE);
 
 		/**
 		 * query from SOLR
 		 */
-//		List<? extends SolrAnnotation> beans = solrAnnotationService.searchById(solrAnnotation.getResourceId());
-//		List<? extends SolrAnnotation> beans = solrAnnotationService.searchById(solrAnnotation.getAnnotationIdString());
 		List<? extends SolrAnnotation> beans = solrAnnotationService.searchById(QueryParser.escape(
 				solrAnnotation.getAnnotationIdString()));
-//		List<? extends SolrAnnotation> beans = solrAnnotationService.search(TEST_VALUE);
 	    
 		printList(solrAnnotationService.getAll(), "list after update after search by annotationIdString ...");
-//		printList(beans, "list after update after search by annotationIdString ...");
 
 		assertTrue(beans.size() > 0);
-		System.out.println("solrAnnotations size: " + beans.size());
+		Logger.getLogger(getClass().getName()).info("solrAnnotations size: " + beans.size());
 
 		/**
 		 * Check the results 
 		 */
 		SolrAnnotation updatedSolrAnnotation = beans.get(0);
-		System.out.println("updatedSolrAnnotation: " + updatedSolrAnnotation);
+		Logger.getLogger(getClass().getName()).info("updatedSolrAnnotation: " + updatedSolrAnnotation);
 		assertTrue(updatedSolrAnnotation.getLanguage().equals(TEST_LANGUAGE_2));
 	}
 	
@@ -292,7 +267,7 @@ public class SolrAnnotationServiceTest {
 	    
 		assertTrue(solrAnnotations.size() > 0);
 		
-		System.out.println("test delete annotations size: " + solrAnnotations.size());
+		Logger.getLogger(getClass().getName()).info("test delete annotations size: " + solrAnnotations.size());
 		printList(solrAnnotations, "list to delete...");
 		
 		/**
@@ -312,14 +287,14 @@ public class SolrAnnotationServiceTest {
 	
 	public void printList(List<? extends SolrAnnotation> beans, String msg) {
 		
-		System.out.println(msg);
+		Logger.getLogger(getClass().getName()).info(msg);
 		
 		/**
 		 * Get the results 
 		 */
         if (beans.size() > 0) {
 			for (SolrAnnotation bean : beans) {
-				System.out.println(bean);
+				Logger.getLogger(getClass().getName()).info(bean.toString());
 			}
 		}
 	}

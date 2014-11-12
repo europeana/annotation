@@ -182,7 +182,7 @@ public class SolrTagServiceTest {
 		 * Create solr tag with new label
 		 */
 		SolrTagImpl solrTag = storeTestObjectByLabel(TEST_VALUE_2);
-		System.out.println("search by label test: " +  solrTag);
+		Logger.getLogger(getClass().getName()).info("search by label test: " +  solrTag);
 
 		/**
 		 * save the SolrTag object in SOLR
@@ -217,7 +217,7 @@ public class SolrTagServiceTest {
 		 * Check the results 
 		 */
 		SolrTag resSolrTag = solrTags.get(0);
-		System.out.println("searchbyobject res solrtag object: " + resSolrTag);
+		Logger.getLogger(getClass().getName()).info("searchbyobject res solrtag object: " + resSolrTag);
 		assertTrue(resSolrTag.getCreator().equals(querySolrTag.getCreator()));
 		assertTrue(resSolrTag.getLanguage().equals(querySolrTag.getLanguage()));
 		assertTrue(resSolrTag.getLabel().equals(querySolrTag.getLabel()));
@@ -249,7 +249,7 @@ public class SolrTagServiceTest {
 		List<? extends SolrTag> beans = solrTagService.search(TEST_VALUE);
 	    
 		assertTrue(beans.size() > 0);
-		System.out.println("solrTags size: " + beans.size());
+		Logger.getLogger(getClass().getName()).info("solrTags size: " + beans.size());
 
 		/**
 		 * Check the results 
