@@ -59,6 +59,8 @@ public abstract class BaseSvgSelector extends BaseSelector implements SvgSelecto
 
 	@Override
 	public Map<String, Integer> getDimensionMap() {
+		if (dimensionMap == null)
+			dimensionMap = new HashMap<String, Integer>();
 		return dimensionMap;
 	}
 
