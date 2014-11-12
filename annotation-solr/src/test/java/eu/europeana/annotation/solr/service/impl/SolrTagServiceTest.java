@@ -17,6 +17,7 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -27,13 +28,19 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 
+
+
+
+import org.junit.Before;
 //import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 //import eu.europeana.corelib.logging.Logger;
@@ -60,9 +67,11 @@ import eu.europeana.annotation.solr.service.SolrTagService;
 @ContextConfiguration({ "/annotation-solr-context.xml", "/annotation-solr-test.xml" })
 public class SolrTagServiceTest {
 
-	private static final String TEST_CREATOR  = "Musterman";
-	private static final String TEST_LANGUAGE = "EN";
-	private static final String TEST_VALUE    = "OK";
+	private static final String TEST_CREATOR    = "Musterman";
+	private static final String TEST_LANGUAGE   = "EN";
+	private static final String TEST_LANGUAGE_2 = "DE";
+	private static final String TEST_VALUE      = "OK";
+	private static final String TEST_VALUE_2    = "SUPER";
 
     public static int generateUniqueId() {      
         UUID idOne = UUID.randomUUID();
@@ -76,17 +85,72 @@ public class SolrTagServiceTest {
 	@Resource 
 	SolrTagService solrTagService;
     
+	
+	@Before
+	public void cleanAllSolr() throws TagServiceException {
+		/**
+		 * clean up all SOLR Tags
+		 */
+		((SolrTagServiceImpl) solrTagService).cleanUpAll();
+	}
+	
 	@Test
-	public void testSolrBean() throws MalformedURLException, IOException, TagServiceException{
+	public void testCleanUpAllSolrTags() throws MalformedURLException, IOException, TagServiceException {
 		
+		/**
+		 * clean up all SOLR Tags
+		 */
+		((SolrTagServiceImpl) solrTagService).cleanUpAll();
+	    
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.search(TEST_VALUE);
+		assertTrue(solrTags.size() == 0);				
+	}
+	
+	private SolrTagImpl storeTestObject() throws TagServiceException{
+		return storeTestObject(1);
+	}
+	
+	private SolrTagImpl storeTestObjectByLabel(String label) throws TagServiceException{
+		return storeTestObject(1, label);
+	}
+	
+	private SolrTagImpl storeTestObject(int anoNr) throws TagServiceException {
 		SolrTagImpl solrTag = new SolrTagImpl();
-		solrTag.setId(Integer.toString(generateUniqueId()));
+		solrTag.setId(Integer.toString(anoNr));
 		solrTag.setCreator(TEST_CREATOR);
 		solrTag.setLanguage(TEST_LANGUAGE);
 		solrTag.setLabel(TEST_VALUE);
 
+		/**
+		 * save the SolrTag object in SOLR
+		 */
+		solrTagService.store(solrTag);
+		return solrTag;
+	}
 	
+	private SolrTagImpl storeTestObject(int anoNr, String label) throws TagServiceException {
+		SolrTagImpl solrTag = new SolrTagImpl();
+		solrTag.setId(Integer.toString(generateUniqueId()));
+		solrTag.setCreator(TEST_CREATOR);
+		solrTag.setLanguage(TEST_LANGUAGE);
+		solrTag.setLabel(label);
+
+		/**
+		 * save the SolrTag object in SOLR
+		 */
+		solrTagService.store(solrTag);
+		return solrTag;
+	}
+	
+	
+	@Test
+	public void testStoreSolrTag() throws MalformedURLException, IOException, TagServiceException {
 		
+		SolrTagImpl solrTag = storeTestObject();
+
 		/**
 		 * save the SolrTag object in SOLR
 		 */
@@ -111,4 +175,126 @@ public class SolrTagServiceTest {
 		}
 	}
 	
+	@Test
+	public void testSearchSolrTagByLabel() throws MalformedURLException, IOException, TagServiceException {
+		
+		/**
+		 * Create solr tag with new label
+		 */
+		SolrTagImpl solrTag = storeTestObjectByLabel(TEST_VALUE_2);
+		System.out.println("search by label test: " +  solrTag);
+
+		/**
+		 * save the SolrTag object in SOLR
+		 */
+//		solrTagService.store(solrTag);
+		
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.searchByLabel(TEST_VALUE_2);			   
+		assertTrue(solrTags.size() > 0);				
+
+		/**
+		 * Check the results 
+		 */
+		SolrTag resSolrTag = solrTags.get(0);
+		assertTrue(resSolrTag.getLabel().equals(TEST_VALUE_2));
+	}
+	
+	@Test
+	public void testSearchSolrTagByQueryObject() throws MalformedURLException, IOException, TagServiceException {
+		
+		SolrTagImpl querySolrTag = storeTestObject();
+		
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.search(querySolrTag);			   
+		assertTrue(solrTags.size() > 0);				
+
+		/**
+		 * Check the results 
+		 */
+		SolrTag resSolrTag = solrTags.get(0);
+		System.out.println("searchbyobject res solrtag object: " + resSolrTag);
+		assertTrue(resSolrTag.getCreator().equals(querySolrTag.getCreator()));
+		assertTrue(resSolrTag.getLanguage().equals(querySolrTag.getLanguage()));
+		assertTrue(resSolrTag.getLabel().equals(querySolrTag.getLabel()));
+	}
+	
+	@Test
+	public void testUpdateSolrTag() throws MalformedURLException, IOException, TagServiceException {
+		
+		storeTestObject();
+		
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.search(TEST_VALUE);
+	    
+		assertTrue(solrTags.size() > 0);
+				
+		SolrTag solrTag = solrTags.get(0);
+		solrTag.setLanguage(TEST_LANGUAGE_2);
+		
+		/**
+		 * delete the SolrTag object from SOLR
+		 */
+		solrTagService.update(solrTag);
+		
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> beans = solrTagService.search(TEST_VALUE);
+	    
+		assertTrue(beans.size() > 0);
+		System.out.println("solrTags size: " + beans.size());
+
+		/**
+		 * Check the results 
+		 */
+		SolrTag updatedSolrTag = beans.get(0);
+		assertTrue(updatedSolrTag.getLanguage().equals(TEST_LANGUAGE_2));
+	}
+	
+	@Test
+	public void testSearchAllSolrTags() throws MalformedURLException, IOException, TagServiceException {
+		
+		storeTestObject(generateUniqueId());
+		storeTestObject(generateUniqueId());
+		
+		/**
+		 * search for all SOLR Tags
+		 */
+		List<? extends SolrTag> solrTags = ((SolrTagServiceImpl) solrTagService).searchAll();
+	    
+		assertTrue(solrTags.size() > 0);				
+	}
+
+	@Test
+	public void testDeleteSolrTag() throws MalformedURLException, IOException, TagServiceException {
+		
+		storeTestObject(generateUniqueId());
+
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.search(TEST_VALUE);
+	    
+		assertTrue(solrTags.size() > 0);
+				
+		/**
+		 * delete the SolrTag object from SOLR
+		 */
+		solrTagService.delete(solrTags.get(0));
+		
+		/**
+		 * query from SOLR
+		 */
+		solrTags = solrTagService.search(TEST_VALUE);
+	    
+		assertFalse(solrTags.size() > 0);		
+	}
+		
 }

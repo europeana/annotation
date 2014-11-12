@@ -30,6 +30,7 @@
 			
 			<fieldType name="string" class="solr.StrField"
 			sortMissingLast="true" omitNorms="true" />
+			
 -->			
 		<fieldType name="string" class="solr.StrField"
 			sortMissingLast="true" omitNorms="true" />
@@ -69,33 +70,38 @@
 	</types>
 	
 	<fields>
-		<!-- @Field("annotationId")  -->
-		<field name="annotationId" type="text" indexed="true"
-			required="true" multiValued="false" stored="true" />
+		<!-- @Field("annotationId_string")  -->
+		<field name="annotationId_string" type="string"  indexed="true"
+			required="true" multiValued="false" stored="true"/>
 		<!-- @Field("resourceId")  -->
-		<field name="resourceId" type="text" indexed="true"
+		<field name="resourceId" type="string" indexed="true"
 			required="true" multiValued="false" stored="true" />
 		<!--  @Field("label") -->	
 		<field name="hasBody" type="text" indexed="true"
-			stored="true" multiValued="false" />
+			stored="false" multiValued="false" />
 		<!--  @Field("tag_type") - change to keyword -->	
-		<field name="annotation_type" type="text" indexed="true"
+		<field name="annotation_type" type="string" indexed="true"
 			stored="true" multiValued="false" />
 		<!--  @Field("http_uri") - change to keyword -->	
-		<field name="http_uri" type="text" indexed="true"
+		<field name="http_uri" type="string" indexed="true"
 			stored="true" multiValued="false" />
 		<!--  @Field("language") - change to keyword -->	
-		<field name="language" type="text" indexed="true"
+		<field name="language" type="string" indexed="true"
 			stored="true" multiValued="false"/>
 		<!--  @Field("annotatedBy") -->	
-		<field name="annotatedBy" type="text" indexed="true"
+		<field name="annotatedBy_string" type="text" indexed="true"
 			stored="true" multiValued="false" />
 		<!--  @Field("annotatedAt") -->	
 		<field name="annotatedAt" type="date" indexed="true" stored="true" multiValued="false" />
+		<!--  @Field("label") -->	
+		<field name="label" type="text" indexed="true"
+			stored="true" multiValued="false" />
 
 		<!--  @Field("value") -->	
-		<field name="value" type="text" indexed="true"
+		<!-- 
+		<field name="text" type="text" indexed="true"
 			stored="true" multiValued="false" />
+		-->
 		
 		<field name="timestamp" type="date" indexed="true" stored="true"
 			default="NOW" multiValued="false" />
@@ -117,12 +123,17 @@
 		<!-- SEVERE: Unable to use updateLog: _version_ field must exist in schema -->
 		<field name="_version_" type="long" indexed="true" stored="true"
 			multiValued="false" />
+			 
+			
+		<!--field name="_version_" type="long" indexed="true" stored="true"/>		
+		-->	
 		<!-- / - -->
 		
 		
 	</fields>
-	<uniqueKey>annotationId</uniqueKey>
-	<defaultSearchField>hasBody</defaultSearchField>
+	<uniqueKey>annotationId_string</uniqueKey>
+	<defaultSearchField>label</defaultSearchField>
+	<!-- defaultSearchField>hasBody</defaultSearchField-->
 	<solrQueryParser defaultOperator="AND" />
 	
 	

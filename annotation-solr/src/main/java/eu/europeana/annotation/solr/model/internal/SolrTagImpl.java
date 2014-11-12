@@ -76,6 +76,12 @@ public class SolrTagImpl extends BaseTagResource implements SolrTag {
 	public void setCreator(String creator) {
 		super.setCreator(creator);
 	}
+	
+//	@Override
+//	public String getCreator() {
+//		return super.getCreator();
+//	}
+	
 	//
 	//
 	// @Field("creationTimestamp")

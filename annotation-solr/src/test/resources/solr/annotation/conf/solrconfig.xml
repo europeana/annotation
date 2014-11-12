@@ -351,6 +351,9 @@
          <arr name="env"> <str>MYVAR=val1</str> </arr>
        </listener>
       -->
+      <updateLog>
+		 <str name="dir">${solr.data.dir:}</str>
+	  </updateLog>
   </updateHandler>
   
   <!-- IndexReaderFactory

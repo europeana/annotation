@@ -12,7 +12,21 @@ public interface SolrTagService {
 	 * This method stores a SolrTag object in SOLR.
 	 * @param solrTag
 	 */
-	public void store(SolrTag solrTag);
+	public void store(SolrTag solrTag) throws TagServiceException ;
+	
+	
+	/**
+	 * This method updates a SolrTag object in SOLR.
+	 * @param solrTag
+	 */
+	public void update(SolrTag solrTag) throws TagServiceException ;
+	
+	
+	/**
+	 * This method removes a SolrTag object from SOLR.
+	 * @param solrTag
+	 */
+	public void delete(SolrTag solrTag) throws TagServiceException;
 	
 	
 	/**
@@ -22,6 +36,8 @@ public interface SolrTagService {
 	 * @throws TagServiceException 
 	 */
 	public List<? extends SolrTag> search(String searchTerm) throws TagServiceException;
+	
+	
 	/**
 	 * This method retrieves available tags by searching all terms provided with the given object into the corresponding solr fields .
 	 * @param fieldName The SOLR field name
@@ -29,6 +45,8 @@ public interface SolrTagService {
 	 * @throws TagServiceException 
 	 */
 	public List<? extends SolrTag> search(SolrTag queryObject) throws TagServiceException;
+	
+	
 	/**
 	 * This method retrieves available by searching the given term in label field.
 	 * @param fieldName The SOLR field name

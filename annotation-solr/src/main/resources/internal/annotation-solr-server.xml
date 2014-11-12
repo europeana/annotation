@@ -49,6 +49,19 @@
 		 -->
 	</bean>
 
+	<bean id="annotation_solr_annotationEmbedded" class="org.apache.solr.client.solrj.embedded.EmbeddedSolrServer" lazy-init="true">
+		<constructor-arg>
+			<bean class="org.apache.solr.core.CoreContainer">
+				<constructor-arg value="#{europeanaProperties['solr.embedded.url']}"/>
+				<constructor-arg value="#{europeanaProperties['solr.embedded.config']}"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="annotation"/>
+		<!-- 
+		<constructor-arg value="search"/>
+		 -->
+	</bean>
+
 	<!-- bean id="corelib_solr_mongoServer" class="eu.europeana.corelib.solr.server.impl.EdmMongoServerImpl">
 		<constructor-arg ref="corelib_solr_mongo"/>
 		<constructor-arg value="#{europeanaProperties['mongodb.dbname']}"/>
