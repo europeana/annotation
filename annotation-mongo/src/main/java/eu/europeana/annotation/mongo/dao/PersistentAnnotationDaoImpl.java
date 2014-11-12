@@ -15,7 +15,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {
 
 	public PersistentAnnotationDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(clazz, datastore);
+		super(datastore, clazz);
 	}
 
 	public AnnotationId generateNextAnnotationId(String europeanaId) {

@@ -11,7 +11,7 @@ public class PersistentTagDaoImpl <E extends PersistentTag, T extends Serializab
 extends NosqlDaoImpl<E, T> implements PersistentTagDao<PersistentTag, String>{
 
 	public PersistentTagDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(clazz, datastore);
+		super(datastore, clazz);
 	}
 
 }
