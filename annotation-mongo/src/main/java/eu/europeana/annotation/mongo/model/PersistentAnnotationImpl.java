@@ -45,6 +45,9 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Agent serializedBy;
 	private Style styledBy;
 
+	private Long lastIndexedTimestamp;
+
+	
 	@Override
 	public void copyFrom(Object volatileObject) {
 		// TODO Auto-generated method stub
@@ -161,4 +164,18 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.annotatedAt = new Date(annotatedAtTs);
 	}
 
+    @Override
+	public void setLastIndexedTimestamp(Long lastIndexedTimestamp) {
+		this.lastIndexedTimestamp = lastIndexedTimestamp;
+	}
+	
+	public Long getLastIndexedTimestamp() {
+		return lastIndexedTimestamp;
+	}
+	
+	public String toString() {
+		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", annotatedAt:" + getAnnotatedAt() + 
+				", Id:" + getId() + ", last update: " + getLastIndexedTimestamp() + "]";
+	}
+			
 }

@@ -19,6 +19,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String http_uri;
 	private String language;
 
+
 	/* (non-Javadoc)
 	 * @see eu.europeana.annotation.solr.model.internal.SolrAnnotation#setAnnotationIdString(java.lang.String)
 	 */

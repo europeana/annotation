@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 
@@ -22,15 +23,27 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
+import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
+import eu.europeana.annotation.definitions.model.body.impl.TextBody;
+import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
+import eu.europeana.annotation.definitions.model.resource.selector.Selector;
+import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
+import eu.europeana.annotation.definitions.model.resource.state.State;
+import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
+import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.corelib.db.dao.NosqlDao;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",
@@ -237,6 +250,75 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		 
 	}
 
+	private Target buildTarget() {
+		Target target = new ImageTarget();
+		target.setMediaType("image");
+		target.setContentType("image/jpeg");
+		target.setHttpUri("http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE");
+		target.setEuropeanaId(TEST_DRACULA_ID);
+		
+		Rectangle selector = new SvgRectangleSelector();
+		selector.setX(5);
+		selector.setY(5);
+		selector.setHeight(100);
+		selector.setWidth(200);
+		
+		target.setHasSelector((Selector)selector);
+		
+		State state = new BaseState();
+		state.setFormat("image/jpeg");
+		state.setVersionUri("http://bilddatenbank.khm.at/images/350/GG_8285.jpg");
+		state.setAuthenticationRequired(false);
+		target.setHasState(state);
+		
+		return target;
+	}
+
+	protected PersistentAnnotation createPersistentAnnotationInstance() {
+		
+		PersistentAnnotation persistentObject = new PersistentAnnotationImpl();
+		
+		// set target
+		Target target = buildTarget();
+		persistentObject.setHasTarget(target);
+			
+		//set Body
+		String comment = "Same hair style as in Dracula Untold: https://www.youtube.com/watch?v=_2aWqecTTuE";
+		TextBody body = buildTextBody(comment, "en");
+		persistentObject.setHasBody(body);
+				
+		// set AnnotatedBy
+		Agent creator = new SoftwareAgent();
+		creator.setName("unit test");
+		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
+		persistentObject.setAnnotatedBy(creator);
+		
+		//set serializeb by
+		persistentObject.setSerializedBy(creator);
+		
+		//motivation
+		persistentObject.setMotivatedBy(MotivationTypes.COMMENTING.name());
+		
+		//persistentObject.setType(type)
+		return persistentObject;
+	}
+	 
+	@Test
+	public void testCreateAndUpdatePersistanceAnnotation() {
+		
+		Annotation initialPersistentAnnotation = createPersistentAnnotationInstance();
+		Annotation storedAnnotation = annotationService.store(initialPersistentAnnotation);
+		Logger.getLogger(getClass().getName()).info(
+				"testCreatePersistentAnnotation initialPersistentAnnotation: " + initialPersistentAnnotation.toString());
+		Annotation updatedAnnotation = annotationService.updateIndexingTime(storedAnnotation.getAnnotationId());
+		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) updatedAnnotation;
+	    
+		Logger.getLogger(getClass().getName()).info(
+				"testCreatePersistentAnnotation persistent annotation after update: " + persistentAnnotation.toString());
+
+		assertNotNull(persistentAnnotation.getLastIndexedTimestamp());
+		annotationService.remove(persistentAnnotation.getAnnotationId());
+	}
 	
 	
 	// @Test(expected=AnnotationValidationException.class)

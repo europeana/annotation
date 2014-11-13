@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -48,14 +49,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		this.mongoPersistance = mongoPersistance;
 	}
 
-//	protected HttpSolrServer getSolrServer() {
-//		return solrServer;
-//	}
-//
-//	public void setSolrServer(HttpSolrServer solrServer) {
-//		this.solrServer = solrServer;
-//	}
-
 	@Override
 	public List<? extends Annotation> getAnnotationList(String resourceId) {
 		
@@ -71,34 +64,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public Annotation createAnnotation(Annotation newAnnotation) {
-		 // store in mongo database
+		
+		// store in mongo database
 		Annotation res =  getMongoPersistance().store(newAnnotation);
+
 		// add solr indexing here
-//        try {
-//    		SolrTagImpl solrBeanImpl = new SolrTagImpl();
-//    		solrBeanImpl.setCreator(newAnnotation.getMotivatedBy());
-//    		solrBeanImpl.setLanguage(newAnnotation.getType());
-//    		solrBeanImpl.setLabel(newAnnotation.getType());
-//
-//        	SolrInputDocument solrDocument = new SolrInputDocument();
-//    		solrDocument = new SolrBeanFieldInput().createSolrBeanFields(solrBeanImpl,
-//    	    		solrDocument = new SolrBeanFieldInput().createSolrBeanFields(newAnnotation.,
-//    				solrDocument);
-//        	SolrBeanCreator.create(solrDocument, newAnnotation);
-//            getSolrServer().add(solrDocument);
-//        } catch (SolrServerException ex) {
-//            Logger.getLogger(SolrDocumentHandler.class.getName());//.log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(SolrDocumentHandler.class.getName());//.log(Level.SEVERE, null, ex);
-//        }
-       try{
-    	   SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
-    	   getSolrService().store(indexedAnnotation);
-       }catch(Exception e){
-    	   
-    	   //TODO: implement appropriate exception handling ... the annotation was stored correctly into the Mongo, but it was not indexed yet.
-    	   throw new RuntimeException(e);
-       }
+        try {
+       	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
+    	    getSolrService().store(indexedAnnotation);
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).warn(
+        		   "The annotation was stored correctly into the Mongo, but it was not indexed yet. " + e);
+//    	    throw new RuntimeException(e);
+        }
+		
+        // save the time of the last SOLR indexing
+        try {
+    	    getMongoPersistance().updateIndexingTime(res.getAnnotationId());
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).warn(
+         		   "The time of the last SOLR indexing could not be saved. " + e);
+        }
 		
        return res;
 	}
@@ -128,8 +114,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
-		Annotation res = annotation;
-        try {
+		
+		Annotation res = getMongoPersistance().update(annotation);
+
+		try {
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
     	    getSolrService().update(indexedAnnotation);
         } catch (Exception e) {

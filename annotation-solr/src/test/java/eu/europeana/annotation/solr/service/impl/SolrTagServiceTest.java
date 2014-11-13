@@ -28,9 +28,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 
-
-
-
 import org.junit.Before;
 //import org.easymock.EasyMock;
 import org.junit.Test;
@@ -38,25 +35,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
-//import eu.europeana.corelib.logging.Logger;
-//import com.google.code.morphia.Datastore;
-//import com.google.code.morphia.Key;
-//import com.google.code.morphia.query.Query;
-//
-//import eu.europeana.corelib.definitions.jibx.AgentType;
-//import eu.europeana.corelib.definitions.jibx.AltLabel;
-//import eu.europeana.corelib.definitions.jibx.Begin;
-//import eu.europeana.corelib.definitions.jibx.End;
-//import eu.europeana.corelib.definitions.jibx.LiteralType.Lang;
-//import eu.europeana.corelib.definitions.jibx.Note;
-//import eu.europeana.corelib.definitions.jibx.PrefLabel;
-//import eu.europeana.corelib.definitions.solr.beans.BriefBean;
-//import eu.europeana.corelib.solr.bean.impl.BriefBeanImpl;
 import eu.europeana.annotation.solr.service.SolrTagService;
 
 /**

@@ -82,7 +82,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 
-
 	private PersistentTag findOrCreateTag(PersistentAnnotation object,
 			TagBody body) {
 		
@@ -208,7 +207,37 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		remove(annoId.getResourceId(), annoId.getAnnotationNr());		
 	}
 
+	@Override
+	public Annotation update(Annotation object) {
+		
+		Annotation res = null;
+		
+		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) object;
+		
+		if (persistentAnnotation != null && persistentAnnotation.getAnnotationId() != null) {
+			remove(persistentAnnotation.getAnnotationId().getResourceId(), persistentAnnotation.getAnnotationId().getAnnotationNr());	
+			persistentAnnotation.setId(null);
+			res = store(persistentAnnotation);
+		} else {
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATION_ID);
+		}
+		
+		return res;
+	}
 
-
+	@Override
+	public Annotation updateIndexingTime(AnnotationId annoId) {
+		
+		Annotation res = null;
+		
+		PersistentAnnotation annotation = find(annoId);
+		
+		if (annotation != null && annotation.getLastIndexedTimestamp() == null) {
+			annotation.setLastIndexedTimestamp(System.currentTimeMillis());
+			res = update(annotation);
+		}
+		
+		return res;
+	}
 	
 }

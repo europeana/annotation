@@ -23,6 +23,12 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	 * @return the generated mongo id
 	 */
 	public ObjectId getId();
+	
+	/**
+	 * This method is necessary for the update
+	 * @param id
+	 */
+	public void setId(ObjectId id);
 
 //	public abstract Long getCreationTimestamp();
 //
@@ -36,4 +42,8 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 //
 //	public abstract void setVisibility(String[] visibility);
 
+	public abstract void setLastIndexedTimestamp(Long lastIndexedTimestamp);
+
+	public abstract Long getLastIndexedTimestamp();
+	
 }

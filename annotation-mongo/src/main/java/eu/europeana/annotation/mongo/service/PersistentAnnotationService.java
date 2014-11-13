@@ -41,5 +41,18 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
 	 */
 	public void remove(AnnotationId annoId);
+	
+	/**
+	 * This method performs update for the passed annotation object
+	 * @param object
+	 */
+	public Annotation update(Annotation object) throws AnnotationValidationException;
+
+	/**
+	 * This method notices the time of the last SOLR indexing for particular annotation
+	 * @param annoId
+	 */
+	public Annotation updateIndexingTime(AnnotationId annoId);
+
 }
 
