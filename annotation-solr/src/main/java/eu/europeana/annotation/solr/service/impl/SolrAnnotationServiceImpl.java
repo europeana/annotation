@@ -234,11 +234,38 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     * Query the server 
 	     */
 	    try {
+	    	log.info("searchByLabel search query: " + query.toString());
 	    	QueryResponse rsp =  solrServer.query( query );
 	    	res = rsp.getBeans(SolrAnnotationImpl.class);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for label: " + 
 					searchTerm, e);
+        }
+	    
+	    return res;
+	}
+
+	@Override
+	public List<? extends SolrAnnotation> searchByMapKey(String searchKey, String searchValue)  throws AnnotationServiceException {
+		
+		List<? extends SolrAnnotation> res = null;
+		
+	    /**
+	     * Construct a SolrQuery 
+	     */
+	    SolrQuery query = new SolrQuery();
+	    query.setQuery(searchKey + ":" + searchValue);
+	    
+	    /**
+	     * Query the server 
+	     */
+	    try {
+	    	log.info("searchByMapKey search query: " + query.toString());
+	    	QueryResponse rsp = solrServer.query( query );
+	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+		} catch (SolrServerException e) {
+			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for map key: " + 
+					searchKey + " and value: " + searchValue, e);
         }
 	    
 	    return res;

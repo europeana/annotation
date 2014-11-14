@@ -201,6 +201,11 @@ public class SolrAnnotationServiceTest {
 	@Test
 	public void testUpdateSolrAnnotation() throws MalformedURLException, IOException, AnnotationServiceException {
 		
+		storeTestObject();
+
+		printList(solrAnnotationService.getAll()
+				, "list at the beginning of the testUpdateSolrAnnotation for test value: " + TEST_VALUE);
+
 		/**
 		 * query from SOLR
 		 */
@@ -285,7 +290,39 @@ public class SolrAnnotationServiceTest {
 		assertFalse(solrAnnotations.size() > 0);		
 	}
 	
+	@Test
+	public void testSearchSolrAnnotationByMultilingualMapLabel() throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create solr Annotation with new label
+		 */
+		SolrAnnotationImpl solrAnnotation = storeTestObject();
+
+		/**
+		 * add multilingual labels
+		 */
+		solrAnnotation.addLabelInMapping("EN", "leaf");
+		solrAnnotation.addLabelInMapping("DE", "blatt");
+		
+		Logger.getLogger(getClass().getName()).info("Solr annotation before update. The multilingual map: " + 
+				solrAnnotation.getMultiLingual().toString());
+
+		solrAnnotationService.update(solrAnnotation);
+		
+		/**
+		 * query from SOLR by map key
+		 */
+		List<? extends SolrAnnotation> solrAnnotationsByMapKey = solrAnnotationService.searchByMapKey("EN_multilingual", "leaf");			   
+		assertTrue(solrAnnotationsByMapKey.size() > 0);				
+		printListWithMap(solrAnnotationsByMapKey, "list with map after query...", true);
+	}
+	
 	public void printList(List<? extends SolrAnnotation> beans, String msg) {
+		
+		printListWithMap(beans, msg, false);
+	}
+		
+	public void printListWithMap(List<? extends SolrAnnotation> beans, String msg, boolean withMap) {
 		
 		Logger.getLogger(getClass().getName()).info(msg);
 		
@@ -295,6 +332,12 @@ public class SolrAnnotationServiceTest {
         if (beans.size() > 0) {
 			for (SolrAnnotation bean : beans) {
 				Logger.getLogger(getClass().getName()).info(bean.toString());
+				if (withMap 
+						&& ((SolrAnnotationImpl) bean).getMultiLingual() != null
+						&& ((SolrAnnotationImpl) bean).getMultiLingual().size() > 0) {
+					Logger.getLogger(getClass().getName()).info("multilingual map: " + 
+							((SolrAnnotationImpl) bean).getMultiLingual().toString());
+				}
 			}
 		}
 	}

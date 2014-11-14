@@ -63,12 +63,21 @@ public interface SolrAnnotationService {
 	
 	
 	/**
-	 * This method retrieves available by searching the given term in label field.
+	 * This method retrieves available Annotations by searching the given term in label field.
 	 * @param fieldName The SOLR field name
 	 * @return
 	 * @throws AnnotationServiceException 
 	 */
 	public List<? extends SolrAnnotation> searchByLabel(String searchTerm) throws AnnotationServiceException;
 	
+
+	/**
+	 * This method retrieves available Annotations by searching for given map key and value.
+	 * @param searchKey
+	 * @param searchValue
+	 * @return
+	 * @throws AnnotationServiceException
+	 */
+	public List<? extends SolrAnnotation> searchByMapKey(String searchKey, String searchValue)  throws AnnotationServiceException;
 		
 }

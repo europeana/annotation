@@ -1,6 +1,8 @@
 package eu.europeana.annotation.solr.model.internal;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -19,6 +21,29 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String http_uri;
 	private String language;
 
+	@Field("*_multilingual")
+	protected Map<String, String> multiLingual;
+
+	public Map<String, String> getMultiLingual() {
+		return multiLingual;
+	}
+
+	public void setMultiLingual(Map<String, String> multiLingual) {
+		this.multiLingual = multiLingual;
+	}
+	
+	/**
+	 * This method adds a new language/label association to the 
+	 * multilingual map.
+	 * @param language
+	 * @param label
+	 */
+	public void addLabelInMapping(String language, String label) {
+	    if(this.multiLingual == null) {
+	        this.multiLingual = new HashMap<String, String>();
+	    }
+	    this.multiLingual.put(language + "_multilingual", label);
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.europeana.annotation.solr.model.internal.SolrAnnotation#setAnnotationIdString(java.lang.String)
@@ -43,7 +68,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Override
 	public String getAnnotationIdString() {
 		return annotationId_string;
-//		return getAnnotationId().toString();
 	}
 	
 	@Override
