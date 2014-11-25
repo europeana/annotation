@@ -19,5 +19,20 @@ public interface AnnotationService {
 	
 	public Annotation getAnnotationById(String europeanaId, int annotationNr);
 	
-	
+	/**
+	 * This method converts RDF string to JSONLD format
+	 * @param format
+	 * @param rdf
+	 * @return JSONLD string
+	 */
+	public String convertRdfToJsonld(String format, String rdf);
+
+	/**
+	 * Convert an Annotation bean to a RDF String
+	 * 
+	 * @param bean
+	 *            The Annotation to convert
+	 * @return The resulting string in RDF-XML
+	 */
+	public String toRDF(Annotation bean);
 }
