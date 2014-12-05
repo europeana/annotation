@@ -39,7 +39,10 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api2.utils.JsonUtils;
+import eu.europeana.corelib.db.exception.DatabaseException;
+import eu.europeana.corelib.db.exception.LimitReachedException;
 import eu.europeana.corelib.db.service.ApiKeyService;
+import eu.europeana.corelib.definitions.db.entity.relational.ApiKey;
 import eu.europeana.corelib.definitions.jibx.RDF;
 
 public class AnnotationServiceImpl implements AnnotationService {
@@ -53,8 +56,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Autowired
 	SolrAnnotationService solrService;
 	
-	@Resource
-	private ApiKeyService apiService;
+//	@Resource
+//	private ApiKeyService apiService;
 	
 	
 	@Override

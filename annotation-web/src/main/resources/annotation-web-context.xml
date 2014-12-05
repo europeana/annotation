@@ -36,7 +36,8 @@
     <!-- USING OTHER MODULES -->
 	<beans:import resource="annotation-definitions-context.xml"/>
 	<beans:import resource="annotation-mongo-context.xml"/>
-    
+	<beans:import resource="annotation-solr-context.xml"/>
+	
     
     <!--  configuration bean -->
 	<beans:bean id="configuration" class="eu.europeana.annotation.web.service.impl.AnnotationConfigurationImpl"/>

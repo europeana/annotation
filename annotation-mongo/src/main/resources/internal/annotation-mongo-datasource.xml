@@ -37,8 +37,8 @@
  	-->
 	
 	<bean id="annotation_db_mongo" class="com.mongodb.Mongo">
-		<constructor-arg value="#{europeanaProperties['mongodb.annotation.host']}"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.annotation.port']}"/>
+		<constructor-arg value="#{europeanaProperties['mongodb.annotation.host']}" type="java.lang.String"/>
+		<constructor-arg value="#{europeanaProperties['mongodb.annotation.port']}" type="int"/>
 	</bean>
 
 	<bean id="annotation_db_morphia" class="com.google.code.morphia.Morphia"/>
