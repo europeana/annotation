@@ -25,7 +25,15 @@ public interface AnnotationService {
 	 * @param rdf
 	 * @return JSONLD string
 	 */
-	public String convertRdfToJsonld(String format, String rdf);
+//	public String convertRdfToJsonld(String format, String rdf);
+
+	/**
+	 * This method converts serialized Annotation string to JSONLD format
+	 * @param format
+	 * @param rdf
+	 * @return JSONLD string
+	 */
+//	public String convertAnnotationToJsonld(String format, String rdf);
 
 	/**
 	 * Convert an Annotation bean to a RDF String
@@ -34,5 +42,5 @@ public interface AnnotationService {
 	 *            The Annotation to convert
 	 * @return The resulting string in RDF-XML
 	 */
-	public String toRDF(Annotation bean);
+//	public String toRDF(Annotation bean);
 }

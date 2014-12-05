@@ -23,11 +23,14 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
+import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -88,6 +91,37 @@ public class AnnotationLd extends JsonLd {
         put(jsonLdResource);
     }
 
+    /**
+     * This method takes passed serialised AnnotationLd GSON string and
+     * passes it to the parser. 
+     * @param serializedAnnotationLd
+     * @return Annotation object
+     */
+    public static Annotation deserialise(String serialisedAnnotationLd) {
+    	Annotation res = null;
+        Gson gson = new Gson();
+        AnnotationLd annotationLdDeserialisedObject = gson.fromJson(serialisedAnnotationLd, AnnotationLd.class);
+        String annotationLdDeserialisedString = annotationLdDeserialisedObject.toString();
+        AnnotationLd.toConsole("deserialise: ", annotationLdDeserialisedString);
+        try {
+			JsonLd deserialisedJsonLd = JsonLdParser.parse(annotationLdDeserialisedString);
+			res = AnnotationLd.getAnnotationFromJsonLd(deserialisedJsonLd);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        return res;
+    }
+    
+    /**
+     * This method converts deserialised JsonLd to Annotation object.
+     * @param deserialisedJsonLd
+     * @return Annotation object
+     */
+    public static Annotation getAnnotationFromJsonLd(JsonLd deserialisedJsonLd) {
+    	Annotation res = null;
+    	return res;
+    }
+    
     public static Date convertStrToDate(String str) {
     	Date res = null; 
     	DateFormat formatter = new SimpleDateFormat(SolrAnnotationConst.DATE_FORMAT);

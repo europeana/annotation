@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
@@ -159,7 +160,27 @@ public class AnnotationRest {
 		return JsonUtils.toJson(response, null);
 	}
 
-	
-	
+//	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAnnotationFromAnnotationLd(@PathVariable String collection,
+			@PathVariable String object,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "annotation", required = true) String serializedAnnotationLd) {
 
+        AnnotationLd.toConsole("getAnnotationFromAnnotationLd: ", serializedAnnotationLd);
+        Annotation deserialisedAnnotation = AnnotationLd.deserialise(serializedAnnotationLd);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "deserialise:/annotations/collection/object/");
+		response.success = true;
+		response.requestNumber = 0L;
+
+		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+				deserialisedAnnotation, apiKey));
+
+		return JsonUtils.toJson(response, null);
+	}	
+	
 }
