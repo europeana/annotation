@@ -2,7 +2,7 @@ package eu.europeana.annotation.definitions.model.resource.impl;
 
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 
-public abstract class BaseInternetResource implements InternetResource{
+public class BaseInternetResource implements InternetResource{
 
 	private String contentType;
 	private String mediaType;

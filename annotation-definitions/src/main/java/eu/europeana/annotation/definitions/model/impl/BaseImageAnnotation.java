@@ -11,7 +11,7 @@ public class BaseImageAnnotation extends AbstractAnnotation implements ImageAnno
 	@Override
 	public String getImageUrl() {
 		
-		return getHasTarget().getHttpUri();
+		return getTarget().getHttpUri();
 	}
 
 	

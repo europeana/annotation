@@ -25,8 +25,8 @@ public class AnnotationControllerHelper {
 		to.setAnnotationId(annotation.getAnnotationId());
 		to.setAnnotatedAt(annotation.getAnnotatedAt());
 		to.setAnnotatedBy(annotation.getAnnotatedBy());
-		to.setHasBody(annotation.getHasBody());
-		to.setHasTarget(annotation.getHasTarget());
+		to.setBody(annotation.getBody());
+		to.setTarget(annotation.getTarget());
 		to.setMotivatedBy(annotation.getMotivatedBy());
 		to.setSerializedAt(annotation.getSerializedAt());
 		to.setSerializedBy(annotation.getSerializedBy());

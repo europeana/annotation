@@ -17,8 +17,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	//private Long annotatedAtTs;
 	private Date annotatedAt;
 	private Agent annotatedBy;
-	private Body hasBody;
-	private Target hasTarget;
+	private Body body;
+	private Target target;
 	private String motivatedBy;
 	//private Long serializedAtTs;
 	private Date serializedAt;
@@ -64,23 +64,23 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 
 	@Override
-	public Body getHasBody() {
-		return hasBody;
+	public Body getBody() {
+		return body;
 	}
 
 	@Override
-	public void setHasBody(Body hasBody) {
-		this.hasBody = hasBody;
+	public void setBody(Body body) {
+		this.body = body;
 	}
 
 	@Override
-	public Target getHasTarget() {
-		return hasTarget;
+	public Target getTarget() {
+		return target;
 	}
 
 	@Override
-	public void setHasTarget(Target hasTarget) {
-		this.hasTarget = hasTarget;
+	public void setTarget(Target target) {
+		this.target = target;
 	}
 
 	@Override

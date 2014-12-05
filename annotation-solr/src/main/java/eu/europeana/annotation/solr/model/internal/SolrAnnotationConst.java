@@ -1,6 +1,8 @@
 package eu.europeana.annotation.solr.model.internal;
 
-public class SolrAnnotationConst {
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+
+public interface SolrAnnotationConst extends WebAnnotationFields{
 
 	/**
 	 * Helping constants for SolrTag and SolrAnnotation objects
@@ -15,4 +17,5 @@ public class SolrAnnotationConst {
 	 * Solr query
 	 */
 	public static final String ALL_SOLR_ENTRIES = "*:*";
+	
 }

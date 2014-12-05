@@ -9,13 +9,16 @@ public interface SpecificResource extends InternetResource{
 
 	public abstract String getStyleClass();
 
-	public abstract void setHasState(State hasState);
+	public abstract void setState(State state);
 
-	public abstract State getHasState();
+	public abstract State getState();
 
-	public abstract void setHasSelector(Selector hasSelector);
+	public abstract void setSelector(Selector selector);
 
-	public abstract Selector getHasSelector();
+	public abstract Selector getSelector();
 
-	
+	public abstract void setSource(InternetResource source);
+
+	public abstract InternetResource getSource();
+		
 }

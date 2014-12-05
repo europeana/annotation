@@ -35,9 +35,9 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Embedded
 	private Agent annotatedBy;
 	@Embedded
-	private Body hasBody;
+	private Body body;
 	@Embedded
-	private Target hasTarget;
+	private Target target;
 	
 	private String motivatedBy;
 	private Date serializedAt;
@@ -87,20 +87,20 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.annotatedBy = annotatedBy;
 	}
 
-	public Body getHasBody() {
-		return hasBody;
+	public Body getBody() {
+		return body;
 	}
 
-	public void setHasBody(Body hasBody) {
-		this.hasBody = hasBody;
+	public void setBody(Body body) {
+		this.body = body;
 	}
 
-	public Target getHasTarget() {
-		return hasTarget;
+	public Target getTarget() {
+		return target;
 	}
 
-	public void setHasTarget(Target hasTarget) {
-		this.hasTarget = hasTarget;
+	public void setTarget(Target target) {
+		this.target = target;
 	}
 
 	public String getMotivatedBy() {

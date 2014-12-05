@@ -87,7 +87,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		ObjectTag persistentObject = buildObjectTag();
 
 		PlainTagBody body = buildPlainTagBody();
-		persistentObject.setHasBody(body);
+		persistentObject.setBody(body);
 
 		// persistentObject.setLabel("testTag");
 		Annotation storedTag = annotationService.store(persistentObject); 
@@ -103,7 +103,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 		// set body
 		PlainTagBody body = buildPlainTagBody();
-		persistentObject.setHasBody(body);
+		persistentObject.setBody(body);
 		
 		persistentObject.setMotivatedBy(MotivationTypes.TAGGING.name());
 		
@@ -121,15 +121,15 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		
 		//set body
 		SemanticTagBody body = buildSemanticTagBody();
-		persistentObject.setHasBody(body);
+		persistentObject.setBody(body);
 		
 		//persistentObject.setLabel("testTag");
 		Annotation storedTag = annotationService.store(persistentObject); 
 		checkAnnotation(persistentObject, storedTag);
 
 		assertTrue(storedTag instanceof ObjectTag);
-		assertTrue(storedTag.getHasBody() instanceof SemanticTagBody);
-		assertNotNull(((TagBody)storedTag.getHasBody()).getTagId());
+		assertTrue(storedTag.getBody() instanceof SemanticTagBody);
+		assertNotNull(((TagBody)storedTag.getBody()).getTagId());
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		ObjectTag firstObject = buildObjectTag();
 
 		SemanticTagBody body = buildSemanticTagBody();
-		firstObject.setHasBody(body);
+		firstObject.setBody(body);
 
 		// store first annotation
 		Annotation firstAnnotation = annotationService.store(firstObject);
@@ -150,7 +150,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		// TODO: change to predefined values
 		bodyEn.setValue("Vlad The Impaler");
 		bodyEn.setLanguage("en");
-		secondObject.setHasBody(bodyEn);
+		secondObject.setBody(bodyEn);
 		
 		// store second annotation
 		Annotation secondAnnotation = annotationService.store(secondObject);
@@ -158,11 +158,11 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		assertFalse(firstAnnotation.getAnnotationId().equals(secondAnnotation.getAnnotationId()));
 		assertFalse(firstAnnotation.getAnnotationId().toString().equals(secondAnnotation.getAnnotationId().toString()));
 		
-		assertFalse(firstAnnotation.getHasBody().equals(secondAnnotation.getHasBody()));
+		assertFalse(firstAnnotation.getBody().equals(secondAnnotation.getBody()));
 		
 		//both annotations must use the same semantic tag
-		String firstTagId = ((TagBody) firstAnnotation.getHasBody()).getTagId();
-		String secondTagId = ((TagBody) secondAnnotation.getHasBody()).getTagId();
+		String firstTagId = ((TagBody) firstAnnotation.getBody()).getTagId();
+		String secondTagId = ((TagBody) secondAnnotation.getBody()).getTagId();
 		
 		assertEquals(firstTagId, secondTagId);
 
@@ -174,7 +174,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		ObjectTag firstObject = buildObjectTag();
 
 		SemanticTagBody body = buildSemanticTagBody();
-		firstObject.setHasBody(body);
+		firstObject.setBody(body);
 
 		// store first annotation
 		annotationService.store(firstObject);
@@ -186,7 +186,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		// TODO: change to predefined values
 		bodyEn.setValue("Vlad The Impaler");
 		bodyEn.setLanguage("en");
-		secondObject.setHasBody(bodyEn);
+		secondObject.setBody(bodyEn);
 		
 		// store second annotation
 		annotationService.store(secondObject);
@@ -200,7 +200,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		
 		for (Annotation annotation : results) {
 			assertEquals(TEST_DRACULA_ID, annotation.getAnnotationId().getResourceId());
-			assertEquals(TEST_DRACULA_ID, annotation.getHasTarget().getEuropeanaId());
+			assertEquals(TEST_DRACULA_ID, annotation.getTarget().getEuropeanaId());
 		}
 	}
 	
@@ -211,11 +211,11 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				ObjectTag firstObject = buildObjectTag();
 
 				SemanticTagBody body = buildSemanticTagBody();
-				firstObject.setHasBody(body);
+				firstObject.setBody(body);
 
 				// store first annotation
 				ObjectTag storedObject = annotationService.store(firstObject);
-				String tagId = ((TagBody)storedObject.getHasBody()).getTagId();
+				String tagId = ((TagBody)storedObject.getBody()).getTagId();
 				
 				//delete object
 				annotationService.remove(storedObject.getAnnotationId());
@@ -243,9 +243,9 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		 checkAnnotation(annotation, storedAnnotation);
 		 
 		 assertNotNull(storedAnnotation.getImageUrl());
-		 assertNotNull(storedAnnotation.getHasTarget());
-		 assertNotNull(storedAnnotation.getHasTarget().getHasSelector());
-		 assertNotNull(storedAnnotation.getHasTarget().getHasState());
+		 assertNotNull(storedAnnotation.getTarget());
+		 assertNotNull(storedAnnotation.getTarget().getSelector());
+		 assertNotNull(storedAnnotation.getTarget().getState());
 		 
 		 
 	}
@@ -263,13 +263,13 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		selector.setHeight(100);
 		selector.setWidth(200);
 		
-		target.setHasSelector((Selector)selector);
+		target.setSelector((Selector)selector);
 		
 		State state = new BaseState();
 		state.setFormat("image/jpeg");
 		state.setVersionUri("http://bilddatenbank.khm.at/images/350/GG_8285.jpg");
 		state.setAuthenticationRequired(false);
-		target.setHasState(state);
+		target.setState(state);
 		
 		return target;
 	}
@@ -280,12 +280,12 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		
 		// set target
 		Target target = buildTarget();
-		persistentObject.setHasTarget(target);
+		persistentObject.setTarget(target);
 			
 		//set Body
 		String comment = "Same hair style as in Dracula Untold: https://www.youtube.com/watch?v=_2aWqecTTuE";
 		TextBody body = buildTextBody(comment, "en");
-		persistentObject.setHasBody(body);
+		persistentObject.setBody(body);
 				
 		// set AnnotatedBy
 		Agent creator = new SoftwareAgent();

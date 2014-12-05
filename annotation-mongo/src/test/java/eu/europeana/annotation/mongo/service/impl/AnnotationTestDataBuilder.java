@@ -43,15 +43,15 @@ public class AnnotationTestDataBuilder {
 				((PersistentAnnotation) storedAnnotation).getAnnotatedAt(),
 				((PersistentAnnotation) storedAnnotation).getSerializedAt());
 	
-		assertNotNull(storedAnnotation.getHasBody());
-		assertNotNull(storedAnnotation.getHasTarget());
+		assertNotNull(storedAnnotation.getBody());
+		assertNotNull(storedAnnotation.getTarget());
 		assertNotNull(storedAnnotation.getAnnotatedBy());
 	}
 
 	protected ObjectTag buildObjectTag() {
 		ObjectTag persistentObject = new PersistentObjectTagImpl();
 		Target target = buildWebpageTarget();
-		persistentObject.setHasTarget(target);
+		persistentObject.setTarget(target);
 	
 		// set AnnotatedBy
 		Agent creator = new SoftwareAgent();
@@ -95,12 +95,12 @@ public class AnnotationTestDataBuilder {
 		
 		// set target
 		Target target = buildImageTarget();
-		persistentObject.setHasTarget(target);
+		persistentObject.setTarget(target);
 			
 		//set Body
 		String comment = "Same hair style as in Dracula Untold: https://www.youtube.com/watch?v=_2aWqecTTuE";
 		TextBody body = buildTextBody(comment, "en");
-		persistentObject.setHasBody(body);
+		persistentObject.setBody(body);
 				
 		// set AnnotatedBy
 		Agent creator = new SoftwareAgent();
@@ -140,13 +140,13 @@ public class AnnotationTestDataBuilder {
 		selector.setHeight(100);
 		selector.setWidth(200);
 		
-		target.setHasSelector((Selector)selector);
+		target.setSelector((Selector)selector);
 		
 		State state = new BaseState();
 		state.setFormat("image/jpeg");
 		state.setVersionUri("http://bilddatenbank.khm.at/images/350/GG_8285.jpg");
 		state.setAuthenticationRequired(false);
-		target.setHasState(state);
+		target.setState(state);
 		
 		return target;
 	}

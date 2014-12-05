@@ -48,9 +48,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 				
 		//check target
-		if(object.getHasTarget() == null)
+		if(object.getTarget() == null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_TARGET);
-		else if(object.getHasTarget().getEuropeanaId() == null)
+		else if(object.getTarget().getEuropeanaId() == null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_EUROPEANA_ID);
 		
 		//check AnnotatedBy (creator)
@@ -59,19 +59,19 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		//check body
 		//note: Bookmarks or Highlights may not have a body .. but they are not supported yet
-		if(object.getHasBody() == null)
+		if(object.getBody() == null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_EUROPEANA_ID);
 			
 		//check if TAG
 		if(hasTagBody(object)){
 			
-			TagBody body = (TagBody)object.getHasBody();
+			TagBody body = (TagBody)object.getBody();
 			PersistentTag tag = findOrCreateTag(object, body);
 			//set tagId
 			body.setTagId(tag.getId().toString()); 
 		}
 		
-		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(object.getHasTarget().getEuropeanaId());
+		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(object.getTarget().getEuropeanaId());
 		
 		MongoAnnotationId embeddedId = new MongoAnnotationId();
 		embeddedId.copyFrom(annoId);
@@ -115,7 +115,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		return BodyTypes.isTagBody(object.getHasBody().getBodyType());
+		return BodyTypes.isTagBody(object.getBody().getBodyType());
 	}
 
 	@Override

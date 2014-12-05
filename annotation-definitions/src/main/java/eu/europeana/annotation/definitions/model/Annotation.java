@@ -30,13 +30,13 @@ public interface Annotation {
 
 	public abstract MotivationTypes getMotivationType();
 
-	public abstract void setHasTarget(Target hasTarget);
+	public abstract void setTarget(Target target);
 
-	public abstract Target getHasTarget();
+	public abstract Target getTarget();
 
-	public abstract void setHasBody(Body hasBody);
+	public abstract void setBody(Body body);
 
-	public abstract Body getHasBody();
+	public abstract Body getBody();
 
 	public abstract void setAnnotatedBy(Agent annotatedBy);
 

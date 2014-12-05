@@ -124,13 +124,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
   		SolrAnnotationImpl solrAnnotationImpl = new SolrAnnotationImpl();
   		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
-  		solrAnnotationImpl.setHasBody(annotation.getHasBody());
+  		solrAnnotationImpl.setBody(annotation.getBody());
   		solrAnnotationImpl.setAnnotatedAt(annotation.getAnnotatedAt());
   		solrAnnotationImpl.setAnnotatedByString(annotation.getAnnotatedBy().getName());
-  		solrAnnotationImpl.setHasTarget(annotation.getHasTarget());
+  		solrAnnotationImpl.setTarget(annotation.getTarget());
   		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
-  		solrAnnotationImpl.setLabel(annotation.getHasBody().getValue());
-  		solrAnnotationImpl.setLanguage(annotation.getHasBody().getLanguage());
+  		solrAnnotationImpl.setLabel(annotation.getBody().getValue());
+  		solrAnnotationImpl.setLanguage(annotation.getBody().getLanguage());
   		solrAnnotationImpl.setMotivatedBy(annotation.getMotivatedBy());
   		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
   		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
