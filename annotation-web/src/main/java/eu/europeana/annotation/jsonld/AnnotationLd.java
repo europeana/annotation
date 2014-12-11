@@ -20,6 +20,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -57,6 +59,13 @@ public class AnnotationLd extends JsonLd {
     	setAnnotation(annotation);
     }
     
+    /**
+     * @param jsonLd
+     */
+    public AnnotationLd(JsonLd jsonLd) {
+    	setJsonLd(jsonLd);
+    }
+    
 	/**
      * Adds the given annotation to this JsonLd object using the resource's subject as key. If the key is NULL
      * and there does not exist a resource with an empty String as key the resource will be added using
@@ -91,6 +100,51 @@ public class AnnotationLd extends JsonLd {
         put(jsonLdResource);
     }
 
+	/**
+     * Adds the values from the passed JsonLd object. 
+     * 
+     * @param jsonLd
+     */
+    public void setJsonLd(JsonLd jsonLd) {
+             
+    	setUseTypeCoercion(false);
+        setUseCuries(true);
+        addNamespacePrefix("http://www.w3.org/ns/oa-context-20130208.json", "oa");
+        
+        if (jsonLd != null) {
+    		if (jsonLd.getNamespacePrefixMap() != null) {
+    	    	setNamespacePrefixMap(jsonLd.getNamespacePrefixMap());
+    		}
+    		if (jsonLd.getUsedNamespaces() != null) {
+    			setUsedNamespaces(jsonLd.getUsedNamespaces());
+    		}
+    		if (jsonLd.getResourceSubjects() != null) {
+    			Iterator<String> itr = jsonLd.getResourceSubjects().iterator();
+    			while (itr.hasNext()) {
+    				String resourceName = itr.next();
+    				if (resourceName != null) {
+    					JsonLdResource resource = jsonLd.getResource(resourceName);
+    					Iterator<?> it = resource.getPropertyMap().entrySet().iterator();
+    					while (it.hasNext()) {
+    					    Map.Entry pairs = (Map.Entry)it.next();
+    					    String key = pairs.getKey().toString();
+    					    String value = pairs.getValue().toString();
+    					    int ii = 0;
+    					}
+    					put(jsonLd.getResource(resourceName));
+    				}
+    			}
+    		}
+   			setUseJointGraphs(jsonLd.isUseJointGraphs());
+   			setUseTypeCoercion(jsonLd.isUseTypeCoercion());
+   			setUseCuries(jsonLd.isUseCuries());
+   			setApplyNamespaces(jsonLd.isApplyNamespaces());
+    	}
+//    	logger.info("### AnnotationLd ###");
+//    	logger.info(toString());
+    	
+    }
+    
     /**
      * This method takes passed serialised AnnotationLd GSON string and
      * passes it to the parser. 

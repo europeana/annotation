@@ -183,4 +183,74 @@ public class AnnotationRest {
 		return JsonUtils.toJson(response, null);
 	}	
 	
+//	@RequestMapping(value = "/annotations/search/{collection}/{object}/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView searchAnnotation(@PathVariable String collection,
+			@PathVariable String object, //@PathVariable String query,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "query", required = true) String query) {
+
+		String resourceId = toResourceId(collection, object);
+		
+		List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
+				resourceId, query);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/annotations/search/collection/object/");
+
+		if (annotationList != null) {
+
+			response.success = true;
+			response.requestNumber = 0L;
+
+			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+					annotationList.get(0), apiKey));
+		}else{
+			response.success = false;
+			response.action = "get: /annotations/"+collection+"/"
+					+object+"/"+ query;
+			
+			response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+		}
+		
+		return JsonUtils.toJson(response, null);
+	}
+
+	@RequestMapping(value = "/annotations/searchByField/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView searchAnnotationByField(@PathVariable String collection,
+			@PathVariable String object, //@PathVariable String query,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "query", required = true) String query,
+			@RequestParam(value = "field", required = true) String field) {
+
+		String resourceId = toResourceId(collection, object);
+		
+		List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
+				resourceId, query);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/annotations/searchByField/collection/object/");
+
+		if (annotationList != null) {
+
+			response.success = true;
+			response.requestNumber = 0L;
+
+			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+					annotationList.get(0), apiKey));
+		}else{
+			response.success = false;
+			response.action = "get: /annotations/"+collection+"/"
+					+object+"/"+ query;
+			
+			response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+		}
+		
+		return JsonUtils.toJson(response, null);
+	}
+
 }

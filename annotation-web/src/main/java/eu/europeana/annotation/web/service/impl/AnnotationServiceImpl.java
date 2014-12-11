@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -56,6 +57,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 			int annotationNr) {
 		return getMongoPersistance().find(resourceId, annotationNr);
 		
+	}
+
+	@Override
+	public List<? extends Annotation> getAnnotationByQuery(String resourceId,
+			String query) {
+		try {
+			return getSolrService().search(query);
+		} catch (AnnotationServiceException e) {
+			Logger.getLogger(getClass().getName()).warn(e);
+			return null;
+		}		
 	}
 
 	@Override

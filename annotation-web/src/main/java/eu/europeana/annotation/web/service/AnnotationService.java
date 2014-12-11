@@ -20,6 +20,14 @@ public interface AnnotationService {
 	public Annotation getAnnotationById(String europeanaId, int annotationNr);
 	
 	/**
+	 * Search for annotations by the given text query.
+	 * @param europeanaId
+	 * @param query
+	 * @return
+	 */
+	public List<? extends Annotation> getAnnotationByQuery(String europeanaId, String query);
+	
+	/**
 	 * This method converts RDF string to JSONLD format
 	 * @param format
 	 * @param rdf

@@ -321,6 +321,52 @@
 						</tr>						
 
 
+<tr>
+							<td class="clsCellBorder cls0_0" valign="top">GET</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/search/{collection}/{object_hash}<br>
+									Search for annotation:
+								<form action="annotations/search/testCollection/testObject/" method="get">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="1" cols="10" name="query" >
+								</textarea>
+								<br>
+								<input type="submit" name="search" value="search">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Search for the annotation identified by the given query string
+							</td>
+						</tr>						
+
+<tr>
+							<td class="clsCellBorder cls0_0" valign="top">GET</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/searchByField/{collection}/{object_hash}<br>
+									Search for annotation by field:
+								<form action="annotations/searchByField/testCollection/testObject/" method="get">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="1" cols="10" name="query" >
+								</textarea>
+								<br>
+								<select name="field">
+								<option name=all value=all> All </option>
+								<option name=label value=label> label </option>
+								<option name=language value=language> language </option>
+								</select>
+								<br>
+								<input type="submit" name="search" value="search">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Search for the annotation identified by the given query string and Solr field
+							</td>
+						</tr>						
+
 
 
 						<tr>
