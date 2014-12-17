@@ -40,4 +40,14 @@ public abstract class BaseSelector implements Selector{
 	protected BaseSelector(){
 		dimensionMap = new HashMap<String, Integer>(5);
 	}
+
+	@Override
+	public String toString() {
+		String res = "\t### Selector ###\n";
+		
+		if (getSelectorType() != null) 
+			res = res + "\t\t" + "selectorType:" + getSelectorType().toString() + "\n";
+		return res;
+	}	
+	
 }

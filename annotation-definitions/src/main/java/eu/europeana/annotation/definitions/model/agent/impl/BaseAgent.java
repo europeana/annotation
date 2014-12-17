@@ -58,4 +58,51 @@ public abstract class BaseAgent implements Agent {
 	}
 	
 	protected BaseAgent(){}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (!(other instanceof Agent)) {
+	        return false;
+	    }
+
+	    Agent that = (Agent) other;
+
+	    boolean res = true;
+	    
+	    /**
+	     * equality check for all relevant fields.
+	     */
+	    if ((this.getAgentType() != null) && (that.getAgentType() != null) &&
+	    		(!this.getAgentType().equals(that.getAgentType()))) {
+	    	System.out.println("Agent objects have different 'agentType' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getHomepage() != null) && (that.getHomepage() != null) &&
+	    		(!this.getHomepage().equals(that.getHomepage()))) {
+	    	System.out.println("Agent objects have different 'hompage' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getName() != null) && (that.getName() != null) &&
+	    		(!this.getName().equals(that.getName()))) {
+	    	System.out.println("Agent objects have different 'name' fields.");
+	    	res = false;
+	    }
+	    
+	    return res;
+	}
+			
+	@Override
+	public String toString() {
+		String res = "\t### Agent ###\n";
+		
+		if (getAgentType() != null) 
+			res = res + "\t\t" + "agentType:" + getAgentType().toString() + "\n";
+		if (getName() != null) 
+			res = res + "\t\t" + "name:" + getName() + "\n";
+		if (getHomepage() != null) 
+			res = res + "\t\t" + "homepage:" + getHomepage() + "\n";
+		return res;
+	}	
 }

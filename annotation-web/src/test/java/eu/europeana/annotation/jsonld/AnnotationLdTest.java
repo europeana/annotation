@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
 import eu.europeana.annotation.definitions.model.body.TagBody;
@@ -65,7 +66,7 @@ public class AnnotationLdTest {
 		body.setValue(text);
 		body.setLanguage(language);
 		body.setContentType("text/plain");
-		body.setMediaType("oa:SemanticTag");
+		body.setMediaType("[oa:SemanticTag]");
 		body.setHttpUri("https://www.freebase.com/m/035br4");
 		
 		return body;
@@ -75,7 +76,7 @@ public class AnnotationLdTest {
 		
 		Target target = new ImageTarget();
 
-		target.setTargetType("oa:SpecificResource");
+		target.setTargetType("[oa:SpecificResource]");
 		
 		target.setContentType("image/jpeg");
 		target.setHttpUri("http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE");
@@ -244,6 +245,22 @@ public class AnnotationLdTest {
     }
     
     @Test
+    public void testAnnotationLdToJsonLd() {
+    	
+        BaseObjectTag baseObjectTag = createBaseObjectTagInstance();        
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        
+        String annotationLdStr = annotationLd.toString();
+        AnnotationLd.toConsole("### annotationLd original ###", annotationLdStr);
+
+        JsonLd jsonLd = (JsonLd) annotationLd;
+        String jsonLdStr = jsonLd.toString();
+        AnnotationLd.toConsole("### jsonLd ###", jsonLdStr);
+
+        assertEquals(jsonLdStr, annotationLdStr);  
+    }
+    
+    @Test
     public void testJsonLdToAnnotationLd() {
     	        
         String jsonLdStr = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@type\":\"oa:Annotation\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@type\":\"http://xmlns.com/foaf/0.1/person\",\"name\":\"annonymous web user\"},\"body\":[{\"@type\":\"[oa:Tag, cnt:ContentAsText, dctypes:Text]\",\"chars\":\"Vlad Tepes\",\"dc:language\":\"ro\",\"format\":\"text/plain\"},{\"@type\":\"[oa:SemanticTag]\",\"foaf:page\":\"https://www.freebase.com/m/035br4\"}],\"motivatedBy\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@type\":\"SOFTWARE_AGENT\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"oa:CssStyle\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:SpecificResource]\",\"selector\":{\"@type\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//15502/GG_8285.html\",\"@type\":\"text/html\",\"format\":\"dctypes:Text\"}},\"type\":\"oa:Annotation\"}";
@@ -294,6 +311,7 @@ public class AnnotationLdTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+        
         parsedAnnotationLd.setUseTypeCoercion(false);
         parsedAnnotationLd.setUseCuries(true);
         
@@ -309,4 +327,97 @@ public class AnnotationLdTest {
         assertEquals(actualIndent, parsedAnnotationLd.toString(4));
     }            
     
+    /**
+     * This test converts AnnotationLd object to an Annotation object.
+     */
+    @Test
+    public void testAnnotationLdToAnnotation() {
+    	
+    	/**
+    	 * create initial Annotation object.
+    	 */
+        BaseObjectTag originalAnnotation = createBaseObjectTagInstance(); 
+        
+        /**
+         * convert Annotation object to AnnotationLd object.
+         */
+        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation);
+        String initialAnnotationIndent = annotationLd.toString(4);
+        AnnotationLd.toConsole("### initialAnnotation ###", initialAnnotationIndent);
+
+        /**
+         * read Annotation object from AnnotationLd object.
+         */
+        Annotation annotationFromAnnotationLd = annotationLd.getAnnotation();
+
+        AnnotationLd convertedAnnotationLd = new AnnotationLd(annotationFromAnnotationLd);
+        String convertedAnnotationIndent = convertedAnnotationLd.toString(4);
+        AnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
+
+        assertEquals(originalAnnotation.getMotivatedBy(), annotationFromAnnotationLd.getMotivatedBy());
+        assertEquals(originalAnnotation.getAnnotationId(), annotationFromAnnotationLd.getAnnotationId());
+        assertEquals(originalAnnotation, annotationFromAnnotationLd);
+    }
+            
+    /**
+     * This test demonstrates the chain of conversions from Annotation object
+     * to Annotation object using following steps:
+     * 1. Annotation object -> AnnotationLd object
+     * 2. AnnotationLd object -> JsonLd string
+     * 3. JsonLd string -> JsonLdParser -> JsonLd object
+     * 4. JsonLd object -> AnnotationLd object
+     * 5. AnnotationLd object -> Annotation object.
+     */
+    @Test
+    public void testAnnotationToAnnotation() {
+    	
+    	/**
+    	 * create initial Annotation object.
+    	 */
+        BaseObjectTag originalAnnotation = createBaseObjectTagInstance(); 
+        
+        /**
+         * convert Annotation object to AnnotationLd object.
+         * 1. Annotation object -> AnnotationLd object
+         */
+        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation);
+        
+        /**
+         * get JsonLd string
+         * 2. AnnotationLd object -> JsonLd string
+         */
+        String initialAnnotationStr = annotationLd.toString();
+        String initialAnnotationIndent = annotationLd.toString(4);
+        AnnotationLd.toConsole("### initialAnnotation ###", initialAnnotationIndent);
+
+        /**
+         * parse JsonLd string using JsonLdParser.
+         * 3. JsonLd string -> JsonLdParser -> JsonLd object
+         */
+        AnnotationLd parsedAnnotationLd = null;
+        JsonLd parsedJsonLd = null;
+        try {
+        	parsedJsonLd = JsonLdParser.parseExt(initialAnnotationStr);
+        	
+        	/**
+        	 * convert JsonLd to AnnotationLd.
+        	 * 4. JsonLd object -> AnnotationLd object
+        	 */
+        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+        /**
+         * 5. AnnotationLd object -> Annotation object.
+         */
+        Annotation annotationFromAnnotationLd = parsedAnnotationLd.getAnnotation();
+        System.out.println("originalAnnotation: " + originalAnnotation.toString());
+        System.out.println("annotationFromAnnotationLd: " + annotationFromAnnotationLd.toString());
+        
+        assertEquals(originalAnnotation.getMotivatedBy(), annotationFromAnnotationLd.getMotivatedBy());
+        assertEquals(originalAnnotation.getAnnotationId(), annotationFromAnnotationLd.getAnnotationId());
+        assertEquals(originalAnnotation, annotationFromAnnotationLd);
+    }
+            
 }

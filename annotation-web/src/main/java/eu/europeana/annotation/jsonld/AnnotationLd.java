@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,9 +36,22 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
+import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.TagBody;
+import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
+import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
+import eu.europeana.annotation.definitions.model.resource.InternetResource;
+import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
+import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
+import eu.europeana.annotation.definitions.model.resource.selector.Selector;
+import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
+import eu.europeana.annotation.definitions.model.resource.style.impl.BaseStyle;
+import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 
 /**
  * The AnnotationLd class provides an API to create a JSON-LD object structure for Annotation
@@ -81,18 +95,22 @@ public class AnnotationLd extends JsonLd {
 
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
-        jsonLdResource.addType(SolrAnnotationConst.ANNOTATION_LD_TYPE);
+        if (!StringUtils.isNotBlank(annotation.getType())) {
+        	jsonLdResource.addType(annotation.getType());
+        } else {
+        	jsonLdResource.addType(WebAnnotationFields.ANNOTATION_LD_TYPE);
+        }
         
         if (!StringUtils.isBlank(annotation.getType())) 
-        	jsonLdResource.putProperty(SolrAnnotationConst.TYPE, annotation.getType());   
+        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
        	jsonLdResource.putProperty(addSerializedByProperty(annotation));        
         if (annotation.getAnnotatedAt() != null) 
-        	jsonLdResource.putProperty(SolrAnnotationConst.ANNOTATED_AT, convertDateToStr(annotation.getAnnotatedAt()));
+        	jsonLdResource.putProperty(WebAnnotationFields.ANNOTATED_AT, convertDateToStr(annotation.getAnnotatedAt()));
         jsonLdResource.putProperty(addAnnotatedByProperty(annotation));                
         if (annotation.getSerializedAt() != null) 
-        	jsonLdResource.putProperty(SolrAnnotationConst.SERIALIZED_AT, convertDateToStr(annotation.getSerializedAt()));
+        	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_AT, convertDateToStr(annotation.getSerializedAt()));
         if (!StringUtils.isBlank(annotation.getMotivatedBy())) 
-        	jsonLdResource.putProperty(SolrAnnotationConst.MOTIVATED_BY, annotation.getMotivatedBy());
+        	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATED_BY, annotation.getMotivatedBy());
         jsonLdResource.putProperty(addStyledByProperty(annotation));                
         jsonLdResource.putProperty(addBodyProperty(annotation));
         jsonLdResource.putProperty(addTargetProperty(annotation));
@@ -100,12 +118,248 @@ public class AnnotationLd extends JsonLd {
         put(jsonLdResource);
     }
 
+    /**
+     * This method converts AnnotationLd to Annotation object.
+     * @return Annotation object
+     */
+    @SuppressWarnings("rawtypes")
+	public Annotation getAnnotation() {
+		
+    	BaseObjectTag annotation = new BaseObjectTag();
+		
+    	JsonLdResource resource = getResource("");
+    	Iterator<?> it = resource.getPropertyMap().entrySet().iterator();
+		while (it.hasNext()) {
+		    Map.Entry pairs = (Map.Entry)it.next();
+		    String key = pairs.getKey().toString();
+		    Object mapValue = pairs.getValue();
+		    switch (key) {
+		    case WebAnnotationFields.TYPE:
+		    	String typeValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(typeValue)) 
+					annotation.setType(typeValue);
+		    	break;
+		    case WebAnnotationFields.ANNOTATED_AT:
+		    	String annotatedAtValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(annotatedAtValue)) 
+					annotation.setAnnotatedAt(AnnotationLd.convertStrToDate(annotatedAtValue));
+		    	break;
+		    case WebAnnotationFields.SERIALIZED_AT:
+		    	String serializedAtValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(serializedAtValue)) 
+					annotation.setSerializedAt(AnnotationLd.convertStrToDate(serializedAtValue));
+		    	break;
+		    case WebAnnotationFields.MOTIVATED_BY:
+		    	String motivatedByValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(motivatedByValue)) 
+					annotation.setMotivatedBy(motivatedByValue);
+		    	break;
+		    case WebAnnotationFields.BODY:
+		    	Body body = getBody(mapValue);
+			    annotation.setBody(body);
+		    	break;
+		    case WebAnnotationFields.TARGET:	    	
+				Target target = getTarget(mapValue);						
+			    annotation.setTarget(target);
+		    	break;
+		    case WebAnnotationFields.SERIALIZED_BY:
+				Agent serializedBy = getSerializedBy(mapValue);
+				annotation.setSerializedBy(serializedBy);
+		    	break;
+		    case WebAnnotationFields.ANNOTATED_BY:
+				Agent annotatedBy = getAnnotatedBy(mapValue);
+				annotation.setAnnotatedBy(annotatedBy);
+		    	break;
+		    case WebAnnotationFields.STYLED_BY:
+		    	Style style = getStyledBy(mapValue);
+				annotation.setStyledBy(style);
+		    	break;
+		    default:
+		    	break;
+		    }		    
+		}		
+		return annotation;
+    }
+
+	private String getLiteralPropertyValue(Object mapValue) {
+		String propValue = null;
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);					
+			if (!StringUtils.isBlank(propertyValue.getLiteralValue())) {
+				propValue = propertyValue.getLiteralValue();
+			}	
+		}
+		return propValue;
+	}
+
+	/**
+	 * This method retrieves Agent object for serializedBy field from AnnotationLd object.
+	 * @param mapValue
+	 * @return Agent object
+	 */
+	private Agent getSerializedBy(Object mapValue) {
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		Agent agent = new SoftwareAgent();
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
+			if (!StringUtils.isBlank(propertyValue.getType())) {
+				agent.setAgentType(propertyValue.getType());
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.NAME))) {
+				agent.setName(propertyValue.getValues().get(WebAnnotationFields.NAME));
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE))) {
+				agent.setHomepage(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE));
+			}
+		}
+		return agent;
+	}
+
+	/**
+	 * This method retrieves Agent object for annotatedBy field from AnnotationLd object.
+	 * @param mapValue
+	 * @return Agent object
+	 */
+	private Agent getAnnotatedBy(Object mapValue) {
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		Agent agent = new SoftwareAgent();
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.NAME))) {
+				agent.setName(propertyValue.getValues().get(WebAnnotationFields.NAME));
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE))) {
+				agent.setHomepage(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE));
+			}
+		}
+		return agent;
+	}
+
+	/**
+	 * This method retrieves Style object for styledBy field from AnnotationLd object.
+	 * @param mapValue
+	 * @return Style object
+	 */
+	private Style getStyledBy(Object mapValue) {
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		Style style = new BaseStyle();
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
+			if (!StringUtils.isBlank(propertyValue.getType())) {
+				style.setMediaType(propertyValue.getType());
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS))) {
+				style.setContentType(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS));
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.SOURCE))) {
+				style.setValue(propertyValue.getValues().get(WebAnnotationFields.SOURCE));
+			}
+		}
+		return style;
+	}
+
+	/**
+	 * This method retrieves Target object from AnnotationLd object.
+	 * @param mapValue
+	 * @return Target object
+	 */
+	private Target getTarget(Object mapValue) {
+		Target target = new ImageTarget();
+
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
+			String typeStr = getTypeStringFromValueTypes(propertyValue);
+			if (!StringUtils.isBlank(typeStr)) {
+				target.setTargetType(typeStr);
+			}
+//			if (!StringUtils.isBlank(propertyValue.getType())) {
+//				target.setTargetType(propertyValue.getType());
+//			}
+			
+			JsonLdProperty sourceProperty = propertyValue.getProperty(WebAnnotationFields.SOURCE);
+			JsonLdPropertyValue propertyValue2 = (JsonLdPropertyValue) sourceProperty.getValues().get(0);
+			InternetResource source = new BaseInternetResource();
+			if (!StringUtils.isBlank(propertyValue2.getType())) 
+				source.setContentType(propertyValue2.getType());
+			if (!StringUtils.isBlank(propertyValue2.getValues().get(WebAnnotationFields.SID))) 
+				source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.SID));
+			if (!StringUtils.isBlank(propertyValue2.getValues().get(WebAnnotationFields.FORMAT))) 
+				source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
+			target.setSource(source);		        
+			
+			Rectangle selector = new SvgRectangleSelector();
+	//		JsonLdProperty selectorProperty = propertyValue.getProperty(WebAnnotationFields.SELECTOR);
+	//		JsonLdPropertyValue propertyValue3 = (JsonLdPropertyValue) selectorProperty.getValues().get(0);
+			target.setSelector((Selector)selector);
+		}
+		return target;
+	}
+
+	/**
+	 * This method retrieves Body object from AnnotationLd object.
+	 * @param mapValue
+	 * @return Body object
+	 */
+	private Body getBody(Object mapValue) {
+		TagBody body = new SemanticTagBody();				
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
+			String typeStr = getTypeStringFromValueTypes(propertyValue);
+			if (!StringUtils.isBlank(typeStr)) {
+				body.setBodyType(typeStr);
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.CHARS))) {
+				body.setValue(propertyValue.getValues().get(WebAnnotationFields.CHARS));
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.DC_LANGUAGE))) {
+				body.setLanguage(propertyValue.getValues().get(WebAnnotationFields.DC_LANGUAGE));
+			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.FORMAT))) {
+				body.setContentType(propertyValue.getValues().get(WebAnnotationFields.FORMAT));
+			}
+			
+			JsonLdPropertyValue propertyValue2 = (JsonLdPropertyValue) property.getValues().get(1);
+			String typeStr2 = getTypeStringFromValueTypes(propertyValue2);
+			if (!StringUtils.isBlank(typeStr2)) {
+				body.setMediaType(typeStr2);
+			}
+			if (!StringUtils.isBlank(propertyValue2.getValues().get(WebAnnotationFields.FOAF_PAGE))) {
+				body.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.FOAF_PAGE));
+			}
+		}
+		return body;
+	}
+
+	/**
+	 * This method extracts type as a string from JsonPropertyValue types list.
+	 * By multiple values they are separated by comma.
+	 * @param propertyValue
+	 * @return type string
+	 */
+	private String getTypeStringFromValueTypes(JsonLdPropertyValue propertyValue) {
+		String res = null;
+		List<String> typeList = propertyValue.getTypes();
+		if (typeList != null && typeList.size() > 0) {
+			String typeStr = typeList.toString().replace(" ", "");
+			res = typeStr.replace("[[", "[").replace("]]", "]"); // remove list braces
+		}
+		return res;
+	}
+    
 	/**
      * Adds the values from the passed JsonLd object. 
      * 
      * @param jsonLd
      */
-    public void setJsonLd(JsonLd jsonLd) {
+	public void setJsonLd(JsonLd jsonLd) {
              
     	setUseTypeCoercion(false);
         setUseCuries(true);
@@ -123,14 +377,6 @@ public class AnnotationLd extends JsonLd {
     			while (itr.hasNext()) {
     				String resourceName = itr.next();
     				if (resourceName != null) {
-    					JsonLdResource resource = jsonLd.getResource(resourceName);
-    					Iterator<?> it = resource.getPropertyMap().entrySet().iterator();
-    					while (it.hasNext()) {
-    					    Map.Entry pairs = (Map.Entry)it.next();
-    					    String key = pairs.getKey().toString();
-    					    String value = pairs.getValue().toString();
-    					    int ii = 0;
-    					}
     					put(jsonLd.getResource(resourceName));
     				}
     			}
@@ -139,10 +385,7 @@ public class AnnotationLd extends JsonLd {
    			setUseTypeCoercion(jsonLd.isUseTypeCoercion());
    			setUseCuries(jsonLd.isUseCuries());
    			setApplyNamespaces(jsonLd.isApplyNamespaces());
-    	}
-//    	logger.info("### AnnotationLd ###");
-//    	logger.info(toString());
-    	
+    	}    	
     }
     
     /**
@@ -158,7 +401,7 @@ public class AnnotationLd extends JsonLd {
         String annotationLdDeserialisedString = annotationLdDeserialisedObject.toString();
         AnnotationLd.toConsole("deserialise: ", annotationLdDeserialisedString);
         try {
-			JsonLd deserialisedJsonLd = JsonLdParser.parse(annotationLdDeserialisedString);
+			JsonLd deserialisedJsonLd = JsonLdParser.parseExt(annotationLdDeserialisedString);
 			res = AnnotationLd.getAnnotationFromJsonLd(deserialisedJsonLd);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,12 +416,14 @@ public class AnnotationLd extends JsonLd {
      */
     public static Annotation getAnnotationFromJsonLd(JsonLd deserialisedJsonLd) {
     	Annotation res = null;
+    	AnnotationLd annotationLd = new AnnotationLd(deserialisedJsonLd);
+    	res = annotationLd.getAnnotation();
     	return res;
     }
     
     public static Date convertStrToDate(String str) {
     	Date res = null; 
-    	DateFormat formatter = new SimpleDateFormat(SolrAnnotationConst.DATE_FORMAT);
+    	DateFormat formatter = new SimpleDateFormat(WebAnnotationFields.DATE_FORMAT);
     	try {
 			res = formatter.parse(str);
 		} catch (ParseException e) {
@@ -189,34 +434,35 @@ public class AnnotationLd extends JsonLd {
     
     public static String convertDateToStr(Date date) {
     	String res = "";    	
-    	DateFormat df = new SimpleDateFormat(SolrAnnotationConst.DATE_FORMAT);
+    	DateFormat df = new SimpleDateFormat(WebAnnotationFields.DATE_FORMAT);
     	res = df.format(date);    	
     	return res;
     }
     
 	private JsonLdProperty addTargetProperty(Annotation annotation) {
-		JsonLdProperty targetProperty = new JsonLdProperty(SolrAnnotationConst.TARGET);
+		JsonLdProperty targetProperty = new JsonLdProperty(WebAnnotationFields.TARGET);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         
         if (annotation != null && annotation.getTarget() != null) {
         	if (!StringUtils.isBlank(annotation.getTarget().getTargetType())) 
-        		propertyValue.addType(annotation.getTarget().getTargetType());
+//        		propertyValue.addType(annotation.getTarget().getTargetType());
+    			propertyValue.addType(annotation.getTarget().getTargetType().replace("[", "").replace("]", ""));
 	
-	        JsonLdProperty sourceProperty = new JsonLdProperty(SolrAnnotationConst.SOURCE);
+	        JsonLdProperty sourceProperty = new JsonLdProperty(WebAnnotationFields.SOURCE);
 	        JsonLdPropertyValue propertyValue2 = new JsonLdPropertyValue();
 	        
         	if (annotation.getTarget().getSource() != null) { 
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getContentType())) 
             		propertyValue2.setType(annotation.getTarget().getSource().getContentType());
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getHttpUri())) 
-            		propertyValue2.getValues().put(SolrAnnotationConst.SID, annotation.getTarget().getSource().getHttpUri());
+            		propertyValue2.getValues().put(WebAnnotationFields.SID, annotation.getTarget().getSource().getHttpUri());
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getMediaType())) 
-            		propertyValue2.getValues().put(SolrAnnotationConst.FORMAT, annotation.getTarget().getSource().getMediaType());
+            		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
 		        sourceProperty.addValue(propertyValue2);        
 		        propertyValue.putProperty(sourceProperty);
         	}
 	        
-	        JsonLdProperty selectorProperty = new JsonLdProperty(SolrAnnotationConst.SELECTOR);
+	        JsonLdProperty selectorProperty = new JsonLdProperty(WebAnnotationFields.SELECTOR);
 	        JsonLdPropertyValue propertyValue3 = new JsonLdPropertyValue();
 	        propertyValue3.setType(""); // if property is empty - set empty type
 	        
@@ -229,7 +475,7 @@ public class AnnotationLd extends JsonLd {
 	}
 
 	private JsonLdProperty addBodyProperty(Annotation annotation) {
-		JsonLdProperty bodyProperty = new JsonLdProperty(SolrAnnotationConst.BODY);
+		JsonLdProperty bodyProperty = new JsonLdProperty(WebAnnotationFields.BODY);
 		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         
         if (annotation != null && annotation.getBody() != null) {
@@ -243,58 +489,59 @@ public class AnnotationLd extends JsonLd {
         	}
 	
             if (!StringUtils.isBlank(annotation.getBody().getValue()))         	
-            	propertyValue.getValues().put(SolrAnnotationConst.CHARS, annotation.getBody().getValue());
+            	propertyValue.getValues().put(WebAnnotationFields.CHARS, annotation.getBody().getValue());
             if (!StringUtils.isBlank(annotation.getBody().getLanguage()))         	
-            	propertyValue.getValues().put(SolrAnnotationConst.DC_LANGUAGE, annotation.getBody().getLanguage());
+            	propertyValue.getValues().put(WebAnnotationFields.DC_LANGUAGE, annotation.getBody().getLanguage());
             if (!StringUtils.isBlank(annotation.getBody().getContentType()))         	
-            	propertyValue.getValues().put(SolrAnnotationConst.FORMAT, annotation.getBody().getContentType());
+            	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());
 	        bodyProperty.addValue(propertyValue);        
 	
 	        JsonLdPropertyValue JsonLdPropertyValue2 = new JsonLdPropertyValue();
 	        
             if (!StringUtils.isBlank(annotation.getBody().getMediaType()))         	
-            	JsonLdPropertyValue2.addType(annotation.getBody().getMediaType());
-	        JsonLdPropertyValue2.getValues().put(SolrAnnotationConst.FOAF_PAGE, annotation.getBody().getHttpUri());
+//            	JsonLdPropertyValue2.addType(annotation.getBody().getMediaType());
+        		JsonLdPropertyValue2.addType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+	        JsonLdPropertyValue2.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
 	        bodyProperty.addValue(JsonLdPropertyValue2);
         }
 		return bodyProperty;
 	}
 
 	private JsonLdProperty addSerializedByProperty(Annotation annotation) {
-		JsonLdProperty serializedByProperty = new JsonLdProperty(SolrAnnotationConst.SERIALIZED_BY);
+		JsonLdProperty serializedByProperty = new JsonLdProperty(WebAnnotationFields.SERIALIZED_BY);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getSerializedBy();        
         if (agent != null && !StringUtils.isBlank(agent.getAgentType().name())) 
         	propertyValue.setType(agent.getAgentType().name());
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
-        	propertyValue.getValues().put(SolrAnnotationConst.NAME, agent.getName());
+        	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 
-        	propertyValue.getValues().put(SolrAnnotationConst.FOAF_HOMEPAGE, agent.getHomepage());
+        	propertyValue.getValues().put(WebAnnotationFields.FOAF_HOMEPAGE, agent.getHomepage());
         serializedByProperty.addValue(propertyValue);
 		return serializedByProperty;
 	}
 
 	private JsonLdProperty addAnnotatedByProperty(Annotation annotation) {
-		JsonLdProperty annotatedByProperty = new JsonLdProperty(SolrAnnotationConst.ANNOTATED_BY);
+		JsonLdProperty annotatedByProperty = new JsonLdProperty(WebAnnotationFields.ANNOTATED_BY);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getAnnotatedBy();      
         propertyValue.setType("http://xmlns.com/foaf/0.1/person");
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
-        	propertyValue.getValues().put(SolrAnnotationConst.NAME, agent.getName());
+        	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         annotatedByProperty.addValue(propertyValue);
 		return annotatedByProperty;
 	}
 
 	private JsonLdProperty addStyledByProperty(Annotation annotation) {
-		JsonLdProperty styledByProperty = new JsonLdProperty(SolrAnnotationConst.STYLED_BY);
+		JsonLdProperty styledByProperty = new JsonLdProperty(WebAnnotationFields.STYLED_BY);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Style style = annotation.getStyledBy();        
         if (style != null && !StringUtils.isBlank(style.getMediaType())) 
         	propertyValue.setType(style.getMediaType());
         if (style != null && !StringUtils.isBlank(style.getContentType())) 
-        	propertyValue.getValues().put(SolrAnnotationConst.STYLE_CLASS, style.getContentType());
+        	propertyValue.getValues().put(WebAnnotationFields.STYLE_CLASS, style.getContentType());
         if (style != null && !StringUtils.isBlank(style.getValue())) 
-        	propertyValue.getValues().put(SolrAnnotationConst.SOURCE, style.getValue());
+        	propertyValue.getValues().put(WebAnnotationFields.SOURCE, style.getValue());
         styledByProperty.addValue(propertyValue);
 		return styledByProperty;
 	}

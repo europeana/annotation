@@ -3,6 +3,8 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.stanbol.commons.jsonld.JsonLd;
+import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,8 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -170,6 +175,19 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String serializedAnnotationLd) {
 
         AnnotationLd.toConsole("getAnnotationFromAnnotationLd: ", serializedAnnotationLd);
+        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Annotation", AnnotationTypes.OBJECT_TAG.name());
+        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Tagging", MotivationTypes.TAGGING.name());
+        
+//        AnnotationLd annotationLd = new AnnotationLd(serializedAnnotationLd);
+//        AnnotationLd parsedAnnotationLd = null;
+//        JsonLd parsedJsonLd = null;
+//        try {
+//        	parsedJsonLd = JsonLdParser.parseExt(serializedAnnotationLd);
+//        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+        
         Annotation deserialisedAnnotation = AnnotationLd.deserialise(serializedAnnotationLd);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(

@@ -5,7 +5,7 @@ public interface WebAnnotationFields {
 	/**
 	 * Helping constants for Annotation mapping to the JSON-LD format 
 	 */
-	public static final String ANNOTATION_LD_TYPE   = "oa:Annotation";
+	public static final String ANNOTATION_LD_TYPE   = "OBJECT_TYPE"; //"oa:Annotation";
 	public static final String ANNOTATED_BY         = "annotatedBy";
 	public static final String ANNOTATED_AT         = "annotatedAt";
 	public static final String NAME                 = "name";
