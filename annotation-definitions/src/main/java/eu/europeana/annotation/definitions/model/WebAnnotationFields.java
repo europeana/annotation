@@ -17,6 +17,7 @@ public interface WebAnnotationFields {
 	public static final String SOURCE               = "source";
 	public static final String SELECTOR             = "selector";
 	public static final String STYLE_CLASS          = "styleClass";
+	public static final String AT_TYPE              = "@type";
 	public static final String BODY                 = "body";
 	public static final String CHARS                = "chars";
 	public static final String DC_LANGUAGE          = "dc:language";

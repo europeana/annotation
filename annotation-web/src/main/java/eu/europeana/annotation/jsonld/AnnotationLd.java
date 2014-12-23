@@ -20,6 +20,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -249,8 +250,11 @@ public class AnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			if (!StringUtils.isBlank(propertyValue.getType())) {
-				style.setMediaType(propertyValue.getType());
+//			if (!StringUtils.isBlank(propertyValue.getType())) {
+//				style.setMediaType(propertyValue.getType());
+//			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
+				style.setMediaType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 			}
 			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS))) {
 				style.setContentType(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS));
@@ -328,8 +332,11 @@ public class AnnotationLd extends JsonLd {
 			
 			JsonLdPropertyValue propertyValue2 = (JsonLdPropertyValue) property.getValues().get(1);
 			String typeStr2 = getTypeStringFromValueTypes(propertyValue2);
-			if (!StringUtils.isBlank(typeStr2)) {
-				body.setMediaType(typeStr2);
+//			if (!StringUtils.isBlank(typeStr2)) {
+//				body.setMediaType(typeStr2);
+//			}
+			if (!StringUtils.isBlank(propertyValue2.getValues().get(WebAnnotationFields.AT_TYPE))) {
+				body.setBodyType(propertyValue2.getValues().get(WebAnnotationFields.AT_TYPE));
 			}
 			if (!StringUtils.isBlank(propertyValue2.getValues().get(WebAnnotationFields.FOAF_PAGE))) {
 				body.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.FOAF_PAGE));
@@ -450,15 +457,24 @@ public class AnnotationLd extends JsonLd {
 	
 	        JsonLdProperty sourceProperty = new JsonLdProperty(WebAnnotationFields.SOURCE);
 	        JsonLdPropertyValue propertyValue2 = new JsonLdPropertyValue();
+//	        JsonLdPropertyValue propertyValue21 = new JsonLdPropertyValue();
+//	        Map<String, String> valueMap = new HashMap<String, String>();
 	        
         	if (annotation.getTarget().getSource() != null) { 
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getContentType())) 
             		propertyValue2.setType(annotation.getTarget().getSource().getContentType());
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getHttpUri())) 
             		propertyValue2.getValues().put(WebAnnotationFields.SID, annotation.getTarget().getSource().getHttpUri());
+//            		valueMap.put(WebAnnotationFields.SID, annotation.getTarget().getSource().getHttpUri());
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getMediaType())) 
+//            		valueMap.put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
+//            		propertyValue21.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
             		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
-		        sourceProperty.addValue(propertyValue2);        
+//        		propertyValue2.getValues().putAll(valueMap);
+//            	propertyValue2.setValues(valueMap); 
+//            	propertyValue2.setValue(valueMap); 
+            	sourceProperty.addValue(propertyValue2);        
+//            	sourceProperty.addValue(propertyValue21);        
 		        propertyValue.putProperty(sourceProperty);
         	}
 	        
@@ -496,13 +512,17 @@ public class AnnotationLd extends JsonLd {
             	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());
 	        bodyProperty.addValue(propertyValue);        
 	
-	        JsonLdPropertyValue JsonLdPropertyValue2 = new JsonLdPropertyValue();
+	        JsonLdPropertyValue jsonLdPropertyValue2 = new JsonLdPropertyValue();
 	        
             if (!StringUtils.isBlank(annotation.getBody().getMediaType()))         	
-//            	JsonLdPropertyValue2.addType(annotation.getBody().getMediaType());
-        		JsonLdPropertyValue2.addType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
-	        JsonLdPropertyValue2.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
-	        bodyProperty.addValue(JsonLdPropertyValue2);
+//            	jsonLdPropertyValue2.addType(annotation.getBody().getMediaType());
+//        		jsonLdPropertyValue2.addType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+//            	jsonLdPropertyValue2.setType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+            	jsonLdPropertyValue2.setType(annotation.getBody().getMediaType());
+//	        jsonLdPropertyValue2.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+//	        jsonLdPropertyValue2.getValues().put(WebAnnotationFields.AT_TYPE, "mediaTypeTest");
+	        jsonLdPropertyValue2.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
+	        bodyProperty.addValue(jsonLdPropertyValue2);
         }
 		return bodyProperty;
 	}
