@@ -1,20 +1,24 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
+import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 
-public class AnnotationObjectFactory extends AbstractAnnotationFactory{
+public class AnnotationObjectFactory 
+//    implements AnnotationPart
+	//extends AbstractAnnotationFactory
+	extends AbstractModelObjectFactory<Annotation, AnnotationTypes>{
 
-	private static AbstractAnnotationFactory singleton;
+	private static AnnotationObjectFactory singleton;
 
-	//force singleton usage
-	private AnnotationObjectFactory(){};
-	
-	public static AbstractAnnotationFactory getInstance() {
+	// force singleton usage
+	private AnnotationObjectFactory() {
+	};
+
+	public static AnnotationObjectFactory getInstance() {
 
 		if (singleton == null) {
 			synchronized (AnnotationObjectFactory.class) {
@@ -25,11 +29,15 @@ public class AnnotationObjectFactory extends AbstractAnnotationFactory{
 		return singleton;
 
 	}
+	
 
-	public Class<? extends Annotation> getAnnotationClass(
-			AnnotationTypes annotationType) {
+	@Override
+	public Class<? extends Annotation> getClassForType(
+			Enum<AnnotationTypes> modelType) {
+		
 		Class<? extends Annotation> ret = null;
-
+		AnnotationTypes annotationType = AnnotationTypes.valueOf(modelType.name());
+		
 		switch (annotationType) {
 		case OBJECT_TAG:
 			ret = BaseObjectTag.class;
@@ -46,5 +54,11 @@ public class AnnotationObjectFactory extends AbstractAnnotationFactory{
 		}
 
 		return ret;
+	}
+
+
+	@Override
+	public Class<AnnotationTypes> getEnumClass() {
+		return AnnotationTypes.class;
 	}
 }

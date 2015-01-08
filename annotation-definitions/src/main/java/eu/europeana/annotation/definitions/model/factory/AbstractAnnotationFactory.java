@@ -4,6 +4,8 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 
+@Deprecated 
+//TODO: remove as no longer used
 public abstract class AbstractAnnotationFactory {
 
 	public Annotation createAnnotationInstance(String annotationType) {
