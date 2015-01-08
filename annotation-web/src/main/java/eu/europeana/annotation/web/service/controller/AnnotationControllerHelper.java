@@ -12,9 +12,9 @@ public class AnnotationControllerHelper {
 	protected AbstractAnnotation copyIntoWebAnnotation(Annotation annotation,
 			String apiKey) {
 
-		AbstractAnnotation to = (AbstractAnnotation) (AnnotationObjectFactory
-				.getInstance().createAnnotationInstance(annotation.getType()));
-
+//		AbstractAnnotation to = (AbstractAnnotation) (AnnotationObjectFactory
+//				.getInstance().createAnnotationInstance(annotation.getType()));
+		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance().createModelObjectInstance(annotation.getType());
 		copyAnnotationAttributes(annotation, to);
 
 		return to;

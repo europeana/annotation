@@ -30,8 +30,7 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 		JsonObject jsonObj = json.getAsJsonObject();
 		for (Map.Entry<String, JsonElement> attribute : jsonObj.entrySet()) {
 			if ("type".equals(attribute.getKey())) {
-				concreteClass = AnnotationObjectFactory.getInstance()
-						.getAnnotationClass(attribute.getValue().getAsString());
+				concreteClass = AnnotationObjectFactory.getInstance().getClassForType((attribute.getValue().getAsString()));
 				break;
 			}
 		}

@@ -76,6 +76,8 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	public String toString() {
 		String res = "\t### Body ###\n";
 		
+		if (getBodyType() != null) 
+			res = res + "\t\t" + "bodyType:" + getBodyType().toString() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
 		if (getMediaType() != null) 

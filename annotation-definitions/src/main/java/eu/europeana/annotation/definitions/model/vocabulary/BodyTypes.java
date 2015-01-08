@@ -14,4 +14,16 @@ public enum BodyTypes {
 	public static boolean isSemanticTagBody(String type){
 		return SEMANTIC_TAG.name().equals(type);
 	}
+	
+	public static boolean contains(String test) {
+
+	    for (BodyTypes c : BodyTypes.values()) {
+	        if (c.name().equals(test)) {
+	            return true;
+	        }
+	    }
+
+	    return false;
+	}	
+	
 }

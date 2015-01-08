@@ -68,4 +68,17 @@ public class BaseInternetResource implements InternetResource{
 		destination.setMediaType(this.getMediaType());
 		destination.setValue(this.getValue());
 	}
+	
+	@Override
+	public String toString() {
+		String res = "\t### Source ###\n";
+		
+		if (getContentType() != null) 
+			res = res + "\t\t" + "\t\t" + "contentType:" + getContentType().toString() + "\n";
+		if (getHttpUri() != null) 
+			res = res + "\t\t" + "\t\t" + "httpUri:" + getHttpUri().toString() + "\n";
+		if (getMediaType() != null) 
+			res = res + "\t\t" + "\t\t" + "mediaType:" + getMediaType().toString() + "\n";
+		return res;
+	}		
 }

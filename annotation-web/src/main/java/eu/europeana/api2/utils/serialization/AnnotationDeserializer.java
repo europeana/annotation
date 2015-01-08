@@ -35,7 +35,8 @@ public class AnnotationDeserializer extends StdDeserializer<Annotation> {
 			Entry<String, JsonNode> element = elementsIterator.next();
 			if ("type".equals(element.getKey())) {
 				realClass = AnnotationObjectFactory.getInstance()
-						.getAnnotationClass(element.getValue().getTextValue());
+						.getClassForType(element.getValue().getTextValue());
+//				.getAnnotationClass(element.getValue().getTextValue());
 				break;
 			}
 		}

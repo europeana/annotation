@@ -147,6 +147,8 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	public String toString() {
 		String res = "\t### Target ###\n";
 		
+		if (getTargetType() != null) 
+			res = res + "\t\t" + "targetType:" + getTargetType().toString() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
 		if (getMediaType() != null) 
@@ -159,8 +161,8 @@ public class BaseTarget extends OaSpecificResource implements Target {
 			res = res + "\t\t" + "value:" + getValue().toString() + "\n";
 		if (getSelector() != null) 
 			res = res + "\t\t" + "Selector:" + getSelector().toString() + "\n";
-//		if (getSource() != null) 
-//			res = res + "\t\t" + "Source:" + getSource().toString() + "\n";
+		if (getSource() != null) 
+			res = res + "\t\t" + "Source:" + getSource().toString() + "\n";
 		return res;
 	}	
 }
