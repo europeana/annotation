@@ -1,5 +1,9 @@
 package eu.europeana.annotation.definitions.model.factory;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -14,8 +18,27 @@ public class ModelObjectFactory {
 //	  return Character.toUpperCase(line.charAt(0)) + line.substring(1);
 //	}
 	
+	/**
+	 * This method extracts euType from the input string with multiple types.
+	 * The syntax of the euType is as follows: "euType:<Annotation Part>#<Object Type>"
+	 * e.g. BODY#SEMANTIC_TAG
+	 * @param typesString
+	 * @return
+	 */
+	public static String extractEuType(String typesString) {
+		String res = "";
+		Pattern pattern = Pattern.compile(WebAnnotationFields.EU_TYPE + ":(.*?)]");
+		Matcher matcher = pattern.matcher(typesString);
+		if (matcher.find())
+		{
+		    res = matcher.group(1);
+		}		
+		return res;
+	}
+	
 	public Object createModelObjectInstance(String euType) {
-		String[] types = euType.split("#", 2);
+//		String[] types = euType.split("#", 2);
+		String[] types = euType.split(WebAnnotationFields.SPLITTER, 2);
 		
 		AnnotationPartTypes partType = AnnotationPartTypes.valueOf(types[0]);
 		Object annotationPartInstance = null;
