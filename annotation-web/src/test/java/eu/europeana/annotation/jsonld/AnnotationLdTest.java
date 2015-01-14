@@ -33,6 +33,9 @@ import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationPartTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
+import eu.europeana.annotation.jsonld.AnnotationTestObjectBuilder;
+
+
 /**
  *
  */
