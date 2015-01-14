@@ -20,6 +20,15 @@ public class AnnotationControllerHelper {
 		return to;
 	}
 
+	public AbstractAnnotation copyIntoWebAnnotation(Annotation annotation) {
+
+		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance()
+				.createModelObjectInstance(annotation.getType());
+		copyAnnotationAttributes(annotation, to);
+
+		return to;
+	}
+
 	private void copyAnnotationAttributes(Annotation annotation,
 			Annotation to) {
 		to.setAnnotationId(annotation.getAnnotationId());
@@ -33,8 +42,19 @@ public class AnnotationControllerHelper {
 		to.setStyledBy(annotation.getStyledBy());
 	}
 
+	@SuppressWarnings("deprecation")
 	protected PersistentAnnotation copyIntoPersistantAnnotation(
 			Annotation annotation, String apiKey) {
+
+		PersistentAnnotationImpl to = (PersistentAnnotationImpl) (PersistentAnnotationFactory
+				.getInstance().createAnnotationInstance(annotation.getType()));
+
+		copyAnnotationAttributes(annotation, to);
+		return to;
+	}
+
+	@SuppressWarnings("deprecation")
+	public PersistentAnnotation copyIntoPersistantAnnotation(Annotation annotation) {
 
 		PersistentAnnotationImpl to = (PersistentAnnotationImpl) (PersistentAnnotationFactory
 				.getInstance().createAnnotationInstance(annotation.getType()));

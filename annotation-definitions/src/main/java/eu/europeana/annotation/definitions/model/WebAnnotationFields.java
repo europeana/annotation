@@ -35,4 +35,6 @@ public interface WebAnnotationFields {
 	public static final String TYPE                 = "type";
 	public static final String ANNOTATION_ID        = "annotationId";
 	public static final String DATE_FORMAT          = "yyyy-MM-dd'T'HH:mm:ss";
+	public static final String OA_ANNOTATION        = "oa:Annotation";
+	public static final String OA_TAGGING           = "oa:Tagging";
 }
