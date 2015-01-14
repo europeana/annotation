@@ -47,7 +47,7 @@ import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml" })
+@ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml", "/annotation-solr-test.xml" })
 public class WebAnnotationServiceTest {
 
 	@Resource 
