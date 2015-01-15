@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -114,6 +115,9 @@ public class AnnotationServiceImpl implements AnnotationService {
   		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
   		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
   		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
+  		if (StringUtils.isNotBlank(annotation.getAnnotationId().toString())) {
+  			solrAnnotationImpl.setAnnotationIdString(annotation.getAnnotationId().toString());
+  		}
 
         res = solrAnnotationImpl;
 
