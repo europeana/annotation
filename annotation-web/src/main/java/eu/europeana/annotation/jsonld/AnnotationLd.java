@@ -21,7 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,6 +102,8 @@ public class AnnotationLd extends JsonLd {
         	jsonLdResource.addType(WebAnnotationFields.ANNOTATION_LD_TYPE);
         }
         
+        if (annotation.getAnnotationId() != null && !StringUtils.isBlank(annotation.getAnnotationId().toString())) 
+        	jsonLdResource.putProperty(WebAnnotationFields.SID, annotation.getAnnotationId().toString());   
         if (!StringUtils.isBlank(annotation.getType())) 
         	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
        	jsonLdResource.putProperty(addSerializedByProperty(annotation));        
@@ -338,6 +339,11 @@ public class AnnotationLd extends JsonLd {
 		    String key = pairs.getKey().toString();
 		    Object mapValue = pairs.getValue();
 		    switch (key) {
+		    case WebAnnotationFields.SID:
+		    	String annotationIdValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(annotationIdValue)) 
+					annotation.calculateAnnotationIdByString(annotationIdValue);
+		    	break;
 		    case WebAnnotationFields.TYPE:
 		    	String typeValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(typeValue)) 
@@ -600,15 +606,15 @@ public class AnnotationLd extends JsonLd {
 	 * @param propertyValue
 	 * @return type string
 	 */
-	private String getTypeStringFromValueTypes(JsonLdPropertyValue propertyValue) {
-		String res = null;
-		List<String> typeList = propertyValue.getTypes();
-		if (typeList != null && typeList.size() > 0) {
-			String typeStr = typeList.toString().replace(" ", "");
-			res = typeStr.replace("[[", "[").replace("]]", "]"); // remove list braces
-		}
-		return res;
-	}
+//	private String getTypeStringFromValueTypes(JsonLdPropertyValue propertyValue) {
+//		String res = null;
+//		List<String> typeList = propertyValue.getTypes();
+//		if (typeList != null && typeList.size() > 0) {
+//			String typeStr = typeList.toString().replace(" ", "");
+//			res = typeStr.replace("[[", "[").replace("]]", "]"); // remove list braces
+//		}
+//		return res;
+//	}
     
 	/**
      * Adds the values from the passed JsonLd object. 

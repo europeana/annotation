@@ -110,6 +110,23 @@ public abstract class AbstractAnnotation implements Annotation {
 	    return res;
 	}
 	
+	/**
+	 * This method converts annotationId_string to AnnotaionId object.
+	 * @param annotationId The annotationId_string
+	 * @return AnnotationId object
+	 */
+	public AnnotationId calculateAnnotationIdByString(String annotationId){
+		int pos = annotationId.lastIndexOf("/");
+//		System.out.println("annotationIdString() annotationId: " + annotationId + ", pos: " + pos);
+		AnnotationId annoId = new BaseAnnotationId();
+//		System.out.println("annotationIdString() annotationId.substring(0, pos): " + annotationId.substring(0, pos));
+		annoId.setResourceId(annotationId.substring(0, pos));
+//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
+		String annoNr = annotationId.substring(pos + 1);
+		annoId.setAnnotationNr(Integer.parseInt(annoNr));
+		return annoId;
+	}
+
 	@Override
 	public AnnotationId getAnnotationId() {
 		return annotationId;

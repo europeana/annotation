@@ -10,7 +10,6 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.agent.impl.Person;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation {
 
@@ -52,14 +51,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field("annotationId_string")
 	public void setAnnotationIdString(String annotationId){
 		int pos = annotationId.lastIndexOf("/");
-//		System.out.println("annotationIdString() annotationId: " + annotationId + ", pos: " + pos);
-		AnnotationId annoId = new BaseAnnotationId();
-//		System.out.println("annotationIdString() annotationId.substring(0, pos): " + annotationId.substring(0, pos));
-		annoId.setResourceId(annotationId.substring(0, pos));
-//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
-		String annoNr = annotationId.substring(pos + 1);
-		annoId.setAnnotationNr(Integer.parseInt(annoNr));
-		
+		AnnotationId annoId = calculateAnnotationIdByString(annotationId);
 		setAnnotationId(annoId);
 		this.annotationId_string = annotationId;
 		this.resourceId = annotationId.substring(1, pos);
