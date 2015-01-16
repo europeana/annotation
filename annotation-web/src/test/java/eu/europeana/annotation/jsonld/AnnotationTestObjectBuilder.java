@@ -94,11 +94,6 @@ public class AnnotationTestObjectBuilder {
 		return target;
 	}
 
-//	public static BaseObjectTag createTestAnnotation() {
-//		AnnotationLdTest testClass = new AnnotationLdTest();
-//        return testClass.createBaseObjectTagInstance();        		
-//	}
-	
 	public static BaseObjectTag createBaseObjectTagInstance() {
 		
 		ModelObjectFactory objectFactory = new ModelObjectFactory();

@@ -555,6 +555,47 @@ public class AnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
+				ModelObjectFactory objectFactory = new ModelObjectFactory();
+				String euType = ModelObjectFactory.extractEuType(
+						propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+				body = (Body) objectFactory.createModelObjectInstance(euType);
+				
+				body.setBodyType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+
+				if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.CHARS))) {
+					body.setValue(propertyValue.getValues().get(WebAnnotationFields.CHARS));
+				}
+				if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.DC_LANGUAGE))) {
+					body.setLanguage(propertyValue.getValues().get(WebAnnotationFields.DC_LANGUAGE));
+				}
+				if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.FORMAT))) {
+					body.setContentType(propertyValue.getValues().get(WebAnnotationFields.FORMAT));
+				}
+				
+//				if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
+//					body.setBodyType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+//				}
+				if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.FOAF_PAGE))) {
+					body.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.FOAF_PAGE));
+				}
+			}
+		}
+		return body;
+	}
+
+	/**
+	 * V1 with two list elements
+	 * This method retrieves Body object from AnnotationLd object.
+	 * @param mapValue
+	 * @return Body object
+	 */
+	/*private Body getBody(Object mapValue) {
+		Body body = null;
+		JsonLdProperty property = (JsonLdProperty) mapValue;
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
 //			String typeStr = getTypeStringFromValueTypes(propertyValue);
 //			if (!StringUtils.isBlank(typeStr)) {
 //				body.setBodyType(typeStr);
@@ -577,13 +618,13 @@ public class AnnotationLd extends JsonLd {
 					body.setContentType(propertyValue.getValues().get(WebAnnotationFields.FORMAT));
 				}
 				
-				/*TagBody secondBodyPart = (TagBody) getBodyByJson();
+				*TagBody secondBodyPart = (TagBody) getBodyByJson();
 				if (!StringUtils.isBlank(secondBodyPart.getMediaType())) {
 					body.setMediaType(secondBodyPart.getMediaType());
 				}
 				if (!StringUtils.isBlank(secondBodyPart.getHttpUri())) {
 					body.setHttpUri(secondBodyPart.getHttpUri());
-				}*/
+				}*
 				JsonLdPropertyValue propertyValue2 = (JsonLdPropertyValue) property.getValues().get(1);
 				///String typeStr2 = getTypeStringFromValueTypes(propertyValue2);
 	//			if (!StringUtils.isBlank(typeStr2)) {
@@ -599,6 +640,7 @@ public class AnnotationLd extends JsonLd {
 		}
 		return body;
 	}
+	*/
 
 	/**
 	 * This method extracts type as a string from JsonPropertyValue types list.
@@ -753,44 +795,78 @@ public class AnnotationLd extends JsonLd {
         }
 		return targetProperty;
 	}
+    
+	/**
+	 * V1 for multiple entries in the body list
+	 * @param annotation
+	 * @return
+	 */
+//	private JsonLdProperty addBodyProperty(Annotation annotation) {
+//		JsonLdProperty bodyProperty = new JsonLdProperty(WebAnnotationFields.BODY);
+//		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
+//        
+//        if (annotation != null && annotation.getBody() != null) {
+////            if (!StringUtils.isBlank(annotation.getBody().getBodyType())) {        	
+////				String bodyTypes = annotation.getBody().getBodyType();
+////				String commaSeparatedTypes = bodyTypes.substring(1, bodyTypes.length() - 1);
+////		        String[] tokens = commaSeparatedTypes.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+////		        for(String t : tokens) {
+////					propertyValue.addType(t);
+////		        }
+////        	}
+//	
+//            if (!StringUtils.isBlank(annotation.getBody().getBodyType()))         	
+//            	propertyValue.getValues().put(WebAnnotationFields.BODY_TYPE, annotation.getBody().getBodyType());
+//            if (!StringUtils.isBlank(annotation.getBody().getValue()))         	
+//            	propertyValue.getValues().put(WebAnnotationFields.CHARS, annotation.getBody().getValue());
+//            if (!StringUtils.isBlank(annotation.getBody().getLanguage()))         	
+//            	propertyValue.getValues().put(WebAnnotationFields.DC_LANGUAGE, annotation.getBody().getLanguage());
+//            if (!StringUtils.isBlank(annotation.getBody().getContentType()))         	
+//            	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());
+//	        bodyProperty.addValue(propertyValue);        
+//	
+//	        JsonLdPropertyValue jsonLdPropertyValue2 = new JsonLdPropertyValue();
+//	        
+//            if (!StringUtils.isBlank(annotation.getBody().getMediaType()))         	
+////            	jsonLdPropertyValue2.addType(annotation.getBody().getMediaType());
+////        		jsonLdPropertyValue2.addType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+////            	jsonLdPropertyValue2.setType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+//            	///jsonLdPropertyValue2.setType(annotation.getBody().getMediaType());
+//	        	jsonLdPropertyValue2.getValues().put(WebAnnotationFields.MEDIA_TYPE, annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+//            	//jsonLdPropertyValue2.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+////	        jsonLdPropertyValue2.getValues().put(WebAnnotationFields.AT_TYPE, "mediaTypeTest");
+//            if (!StringUtils.isBlank(annotation.getBody().getHttpUri()))         	
+//            	jsonLdPropertyValue2.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
+//	        bodyProperty.addValue(jsonLdPropertyValue2);
+//        }
+//		return bodyProperty;
+//	}
 
 	private JsonLdProperty addBodyProperty(Annotation annotation) {
 		JsonLdProperty bodyProperty = new JsonLdProperty(WebAnnotationFields.BODY);
 		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         
-        if (annotation != null && annotation.getBody() != null) {
-//            if (!StringUtils.isBlank(annotation.getBody().getBodyType())) {        	
-//				String bodyTypes = annotation.getBody().getBodyType();
-//				String commaSeparatedTypes = bodyTypes.substring(1, bodyTypes.length() - 1);
-//		        String[] tokens = commaSeparatedTypes.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-//		        for(String t : tokens) {
-//					propertyValue.addType(t);
-//		        }
-//        	}
-	
+        if (annotation != null && annotation.getBody() != null) {	
             if (!StringUtils.isBlank(annotation.getBody().getBodyType()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.BODY_TYPE, annotation.getBody().getBodyType());
+            	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getBodyType());
             if (!StringUtils.isBlank(annotation.getBody().getValue()))         	
             	propertyValue.getValues().put(WebAnnotationFields.CHARS, annotation.getBody().getValue());
             if (!StringUtils.isBlank(annotation.getBody().getLanguage()))         	
             	propertyValue.getValues().put(WebAnnotationFields.DC_LANGUAGE, annotation.getBody().getLanguage());
             if (!StringUtils.isBlank(annotation.getBody().getContentType()))         	
             	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());
-	        bodyProperty.addValue(propertyValue);        
 	
-	        JsonLdPropertyValue jsonLdPropertyValue2 = new JsonLdPropertyValue();
-	        
-            if (!StringUtils.isBlank(annotation.getBody().getMediaType()))         	
+            //if (!StringUtils.isBlank(annotation.getBody().getMediaType()))         	
 //            	jsonLdPropertyValue2.addType(annotation.getBody().getMediaType());
 //        		jsonLdPropertyValue2.addType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
 //            	jsonLdPropertyValue2.setType(annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
             	///jsonLdPropertyValue2.setType(annotation.getBody().getMediaType());
-	        	jsonLdPropertyValue2.getValues().put(WebAnnotationFields.MEDIA_TYPE, annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
+	       // 	propertyValue.getValues().put(WebAnnotationFields.MEDIA_TYPE, annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
             	//jsonLdPropertyValue2.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getMediaType().replace("[", "").replace("]", ""));
 //	        jsonLdPropertyValue2.getValues().put(WebAnnotationFields.AT_TYPE, "mediaTypeTest");
             if (!StringUtils.isBlank(annotation.getBody().getHttpUri()))         	
-            	jsonLdPropertyValue2.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
-	        bodyProperty.addValue(jsonLdPropertyValue2);
+            	propertyValue.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
+	        bodyProperty.addValue(propertyValue);        
         }
 		return bodyProperty;
 	}
