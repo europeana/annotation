@@ -9,6 +9,5 @@ public interface Style extends InternetResource{
 	public abstract void setAnnotationClass(String annotationClass);
 
 	public abstract String getAnnotationClass();
-
 	
 }

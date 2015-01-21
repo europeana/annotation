@@ -27,13 +27,14 @@ import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
-import eu.europeana.annotation.definitions.model.resource.style.impl.BaseStyle;
+import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationPartTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
 /**
@@ -114,30 +115,76 @@ public class AnnotationTestObjectBuilder {
 		baseObjectTag.setBody(body);
 				
 		// set annotatedBy
-		Agent creator = new SoftwareAgent();
-		creator.setName("annonymous web user");
-//		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
-		baseObjectTag.setAnnotatedBy(creator);
+		Agent annotatedByAgent = buildAnnotatedByAgent();
+		baseObjectTag.setAnnotatedBy(annotatedByAgent);
 		
 		// set serializedBy
-		creator = new SoftwareAgent();
-		creator.setAgentType(AgentTypes.SOFTWARE_AGENT.name());
-//		creator.setAgentType("prov:SoftwareAgent");
-		creator.setName("Annotorious");
-		creator.setHomepage("http://annotorious.github.io/");
-		baseObjectTag.setSerializedBy(creator);
+		Agent agent = buildSerializedByAgent();
+		baseObjectTag.setSerializedBy(agent);
 				
 		// motivation
 		baseObjectTag.setMotivatedBy("oa:tagging");
 		
 		// set styledBy
-		Style style = new BaseStyle();
-		style.setMediaType("oa:CssStyle");
-		style.setContentType("annotorious-popup");
-		style.setValue("http://annotorious.github.io/latest/themes/dark/annotorious-dark.css");
+		Style style = buildStyledBy();
 		baseObjectTag.setStyledBy(style);
 		
 		return baseObjectTag;
+	}
+
+	private static Style buildStyledBy() {
+		//		Style style = new BaseStyle();
+		ModelObjectFactory objectFactory = new ModelObjectFactory();
+		Style style = (CssStyle) objectFactory.createModelObjectInstance(
+//				Style style = (BaseStyle) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER + StyleTypes.CSS.name());
+//		style.setMediaType("oa:CssStyle");
+//		style.addType("oa:CssStyle");
+		style.setHttpUri("[oa:CssStyle,euType:" 
+				+ AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER
+				+ StyleTypes.CSS.name() 
+				+ "]");
+		style.setContentType("annotorious-popup");
+		style.setValue("http://annotorious.github.io/latest/themes/dark/annotorious-dark.css");
+		return style;
+	}
+
+	private static Agent buildAnnotatedByAgent() {
+		//		Agent annotatedByAgent = new SoftwareAgent();
+		ModelObjectFactory objectFactory = new ModelObjectFactory();
+		Agent agent = (SoftwareAgent) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
+		agent.addType("foaf:Person");
+		agent.addType(WebAnnotationFields.EU_TYPE + ":"
+				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
+				+ AgentTypes.SOFTWARE_AGENT.name());
+		agent.setName("annonymous web user");
+		agent.setOpenId("open_id_1");
+		//		agent.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
+		return agent;
+	}
+
+	private static SoftwareAgent buildSerializedByAgent() {
+		//		Agent creator = new SoftwareAgent();
+		ModelObjectFactory objectFactory = new ModelObjectFactory();
+		SoftwareAgent agent = (SoftwareAgent) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
+				
+		//		creator.setAgentType(AgentTypes.SOFTWARE_AGENT.name());
+		//		creator.setAgentType("prov:SoftwareAgent");
+//		agent.setAgentType("[prov:SoftwareAgent,euType:"
+//				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
+//				+ AgentTypes.SOFTWARE_AGENT.name() 
+//				+ "]"
+//				);
+		agent.addType("prov:SoftwareAgent");
+		agent.addType(WebAnnotationFields.EU_TYPE + ":"
+				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
+				+ AgentTypes.SOFTWARE_AGENT.name());
+		agent.setName("Annotorious");
+		agent.setHomepage("http://annotorious.github.io/");
+		agent.setOpenId("open_id_2");
+		return agent;
 	}
 	 
 	public static BaseObjectTag createEmptyBaseObjectTagInstance() {
@@ -158,23 +205,30 @@ public class AnnotationTestObjectBuilder {
 		baseObjectTag.setBody(body);
 				
 		// set annotatedBy
-		Agent creator = new SoftwareAgent();
-		creator.setName(null);
-		baseObjectTag.setAnnotatedBy(creator);
+		SoftwareAgent annotatedByAgent = (SoftwareAgent) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
+//		Agent annotatedByAgent  = new SoftwareAgent();
+		annotatedByAgent .setName(null);
+		baseObjectTag.setAnnotatedBy(annotatedByAgent);
 		
 		// set serializedBy
-		creator = new SoftwareAgent();
-		creator.setAgentType(AgentTypes.SOFTWARE_AGENT.name());
-		creator.setName(null);
-		creator.setHomepage(null);
-		baseObjectTag.setSerializedBy(creator);
+		SoftwareAgent serializedByAgent = (SoftwareAgent) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
+//		serializedByAgent = new SoftwareAgent();
+//		serializedByAgent.setAgentType(AgentTypes.SOFTWARE_AGENT.name());
+		serializedByAgent.setName(null);
+		serializedByAgent.setHomepage(null);
+		baseObjectTag.setSerializedBy(serializedByAgent);
 				
 		// motivation
 		baseObjectTag.setMotivatedBy(null);
 		
 		// set styledBy
-		Style style = new BaseStyle();
-		style.setMediaType(null);
+//		Style style = new BaseStyle();
+		Style style = (CssStyle) objectFactory.createModelObjectInstance(
+//				Style style = (BaseStyle) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER + StyleTypes.CSS.name());
+//		style.setMediaType(null);
 		style.setContentType(null);
 		style.setValue(null);
 		baseObjectTag.setStyledBy(style);

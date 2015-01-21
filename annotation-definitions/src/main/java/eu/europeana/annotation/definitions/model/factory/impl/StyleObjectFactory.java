@@ -2,13 +2,11 @@ package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
-import eu.europeana.annotation.definitions.model.resource.selector.Selector;
-import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseSvgSelector;
-import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseTextPositionSelector;
-import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
-import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
+import eu.europeana.annotation.definitions.model.resource.style.Style;
+import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
+import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 
-public class StyleObjectFactory extends AbstractModelObjectFactory<Selector, SelectorTypes>{
+public class StyleObjectFactory extends AbstractModelObjectFactory<Style, StyleTypes>{
 
 	private static StyleObjectFactory singleton;
 
@@ -28,18 +26,12 @@ public class StyleObjectFactory extends AbstractModelObjectFactory<Selector, Sel
 	}
 
 	@Override
-	public Class<? extends Selector> getClassForType(Enum<SelectorTypes> modelType) {
-				Class<? extends Selector> returnType = null;
-				SelectorTypes selectorType = SelectorTypes.valueOf(modelType.name());
-				switch (selectorType){
-				case TEXT_POSITION_SELECTOR:
-					returnType = BaseTextPositionSelector.class;
-					break;
-				case SVG_RECTANGLE_SELECTOR:
-					returnType = SvgRectangleSelector.class;
-					break;
-				case SVG_SELECTOR:
-					returnType = BaseSvgSelector.class;
+	public Class<? extends Style> getClassForType(Enum<StyleTypes> modelType) {
+				Class<? extends Style> returnType = null;
+				StyleTypes styleType = StyleTypes.valueOf(modelType.name());
+				switch (styleType){
+				case CSS:
+					returnType = CssStyle.class;
 					break;
 					
 				default:
@@ -51,8 +43,8 @@ public class StyleObjectFactory extends AbstractModelObjectFactory<Selector, Sel
 	}
 
 	@Override
-	public Class<SelectorTypes> getEnumClass() {
-		return SelectorTypes.class;
+	public Class<StyleTypes> getEnumClass() {
+		return StyleTypes.class;
 	}
 
 	

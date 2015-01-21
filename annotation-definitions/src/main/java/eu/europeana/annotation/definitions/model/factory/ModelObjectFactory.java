@@ -8,6 +8,7 @@ import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.SelectorObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.StyleObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationPartTypes;
 
@@ -65,9 +66,9 @@ public class ModelObjectFactory {
 //		case SHAPE:
 //			annotationPartInstance = ShapeObjectFactory.getInstance().createModelObjectInstance(types[1]);
 //			break;
-//		case STYLE:
-//			annotationPartInstance = StyleObjectFactory.getInstance().createModelObjectInstance(types[1]);
-//			break;
+		case STYLE:
+			annotationPartInstance = StyleObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			break;
 //		case TAG:
 //			annotationPartInstance = TagObjectFactory.getInstance().createModelObjectInstance(types[1]);
 //			break;

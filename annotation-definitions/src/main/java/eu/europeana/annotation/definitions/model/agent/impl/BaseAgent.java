@@ -1,16 +1,37 @@
 package eu.europeana.annotation.definitions.model.agent.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 
 public abstract class BaseAgent implements Agent {
 
-	private AgentTypes agentType;
+//	private AgentTypes agentType;
+//	private String agentType;
+	private List<String> agentTypes = new ArrayList<String>(2);
 	private String name;
 	private String mbox;
 	private String openId;
 	private String homepage;
-		
+	
+	public void addType(String newType) {
+		if (!agentTypes.contains(newType)) {
+			agentTypes.add(newType);
+		}
+	}
+	
+	public List<String> getAgentTypes() {
+		return agentTypes;
+	}
+	
+	public void setAgentTypes(List<String> agentTypes) {
+		this.agentTypes = agentTypes;
+	}
+
 	@Override
 	public String getName() {
 		return name;
@@ -44,17 +65,44 @@ public abstract class BaseAgent implements Agent {
 		this.homepage = homepage;
 	}
 	@Override
-	public AgentTypes getAgentType() {
-		return agentType;
-	}
-	@Override
-	public void setAgentTypeEnum(AgentTypes agentType) {
-		this.agentType = agentType;
+//	public AgentTypes getAgentType() {
+//		return agentType;
+//	}
+	public String getAgentType() {
+		String listStr = "";
+		if (agentTypes.size() > 0) {
+			listStr = "[";
+			for (String s : agentTypes)
+			{
+				if (listStr.equals("[")) {
+				    listStr += s;
+				} else {
+					listStr += "," + s;
+				}
+			}
+			listStr += "]";
+		}
+		return listStr;
 	}
 	
 	@Override
-	public void setAgentType(String agentTypeStr){
-		setAgentTypeEnum(AgentTypes.valueOf(agentTypeStr));
+	public void setAgentTypeEnum(AgentTypes agentType) {
+		agentTypes.add(agentType.name());
+//		this.agentType = agentType;
+	}
+	
+	@Override
+	public void setAgentType(String agentTypeStr) {
+		agentTypes.clear();
+	    if (!StringUtils.isBlank(agentTypeStr)) { 
+	    	agentTypeStr = agentTypeStr.replace("[", "").replace("]", "");
+	        String[] tokens = agentTypeStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+	        for(String t : tokens) {
+	        	agentTypes.add(t);
+	        }
+		}
+		
+//		setAgentTypeEnum(AgentTypes.valueOf(agentTypeStr));
 	}
 	
 	protected BaseAgent(){}

@@ -49,10 +49,12 @@ import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
-import eu.europeana.annotation.definitions.model.resource.style.impl.BaseStyle;
+import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationPartTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 
 /**
  * The AnnotationLd class provides an API to create a JSON-LD object structure for Annotation
@@ -410,12 +412,34 @@ public class AnnotationLd extends JsonLd {
 	 */
 	private Agent getSerializedBy(Object mapValue) {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
-		Agent agent = new SoftwareAgent();
+//		Agent agent = new SoftwareAgent();
+		SoftwareAgent agent = getAgentByProperty(property);
+		return agent;
+	}
+
+	private SoftwareAgent getAgentByProperty(JsonLdProperty property) {
+		ModelObjectFactory objectFactory = new ModelObjectFactory();
+		SoftwareAgent agent = (SoftwareAgent) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			if (!StringUtils.isBlank(propertyValue.getType())) {
-				agent.setAgentType(propertyValue.getType());
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.SID))) {
+				agent.setOpenId(propertyValue.getValues().get(WebAnnotationFields.SID));
+			}
+//			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
+//				ModelObjectFactory objectFactory = new ModelObjectFactory();
+//				String euType = ModelObjectFactory.extractEuType(
+//						propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+//				body = (Body) objectFactory.createModelObjectInstance(euType);
+//				
+//				body.setBodyType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+
+//			if (!StringUtils.isBlank(propertyValue.getType())) {
+//				agent.setAgentType(propertyValue.getType());
+//			}
+			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
+				agent.setAgentType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 			}
 			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.NAME))) {
 				agent.setName(propertyValue.getValues().get(WebAnnotationFields.NAME));
@@ -434,17 +458,7 @@ public class AnnotationLd extends JsonLd {
 	 */
 	private Agent getAnnotatedBy(Object mapValue) {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
-		Agent agent = new SoftwareAgent();
-		if (property.getValues() != null && property.getValues().size() > 0) {
-			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
-			
-			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.NAME))) {
-				agent.setName(propertyValue.getValues().get(WebAnnotationFields.NAME));
-			}
-			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE))) {
-				agent.setHomepage(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE));
-			}
-		}
+		SoftwareAgent agent = getAgentByProperty(property);
 		return agent;
 	}
 
@@ -455,15 +469,23 @@ public class AnnotationLd extends JsonLd {
 	 */
 	private Style getStyledBy(Object mapValue) {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
-		Style style = new BaseStyle();
+//		Style style = new BaseStyle();
+		ModelObjectFactory objectFactory = new ModelObjectFactory();
+		Style style = (CssStyle) objectFactory.createModelObjectInstance(
+//				Style style = (BaseStyle) objectFactory.createModelObjectInstance(
+				AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER + StyleTypes.CSS.name());
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
 //			if (!StringUtils.isBlank(propertyValue.getType())) {
 //				style.setMediaType(propertyValue.getType());
 //			}
-			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
-				style.setMediaType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+
+//			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
+//				style.setMediaType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+//			}
+			if (!StringUtils.isBlank(propertyValue.getType())) {
+				style.setHttpUri(propertyValue.getType());
 			}
 			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS))) {
 				style.setContentType(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS));
@@ -875,23 +897,35 @@ public class AnnotationLd extends JsonLd {
 		JsonLdProperty serializedByProperty = new JsonLdProperty(WebAnnotationFields.SERIALIZED_BY);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getSerializedBy();        
-        if (agent != null && !StringUtils.isBlank(agent.getAgentType().name())) 
-        	propertyValue.setType(agent.getAgentType().name());
+        addAgentByProperty(propertyValue, agent);
+        serializedByProperty.addValue(propertyValue);
+		return serializedByProperty;
+	}
+
+	private void addAgentByProperty(JsonLdPropertyValue propertyValue,
+			Agent agent) {
+		if (agent != null && !StringUtils.isBlank(agent.getOpenId())) 
+        	propertyValue.getValues().put(WebAnnotationFields.SID, agent.getOpenId());
+//        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
+//        	propertyValue.setType(agent.getAgentType());
+        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
+        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getAgentType());
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 
         	propertyValue.getValues().put(WebAnnotationFields.FOAF_HOMEPAGE, agent.getHomepage());
-        serializedByProperty.addValue(propertyValue);
-		return serializedByProperty;
 	}
 
 	private JsonLdProperty addAnnotatedByProperty(Annotation annotation) {
 		JsonLdProperty annotatedByProperty = new JsonLdProperty(WebAnnotationFields.ANNOTATED_BY);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getAnnotatedBy();      
-        propertyValue.setType("http://xmlns.com/foaf/0.1/person");
-        if (agent != null && !StringUtils.isBlank(agent.getName())) 
-        	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
+//        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
+//        	propertyValue.setType(agent.getAgentType());
+////        propertyValue.setType("http://xmlns.com/foaf/0.1/person");
+//        if (agent != null && !StringUtils.isBlank(agent.getName())) 
+//        	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
+        addAgentByProperty(propertyValue, agent);
         annotatedByProperty.addValue(propertyValue);
 		return annotatedByProperty;
 	}
@@ -900,8 +934,10 @@ public class AnnotationLd extends JsonLd {
 		JsonLdProperty styledByProperty = new JsonLdProperty(WebAnnotationFields.STYLED_BY);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Style style = annotation.getStyledBy();        
-        if (style != null && !StringUtils.isBlank(style.getMediaType())) 
-        	propertyValue.setType(style.getMediaType());
+        if (style != null && !StringUtils.isBlank(style.getHttpUri())) 
+        	propertyValue.setType(style.getHttpUri());
+//        if (style != null && !StringUtils.isBlank(style.getMediaType())) 
+//        	propertyValue.setType(style.getMediaType());
         if (style != null && !StringUtils.isBlank(style.getContentType())) 
         	propertyValue.getValues().put(WebAnnotationFields.STYLE_CLASS, style.getContentType());
         if (style != null && !StringUtils.isBlank(style.getValue())) 

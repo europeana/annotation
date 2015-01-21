@@ -37,7 +37,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	        log.info("store response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
-			throw new AnnotationServiceException("Unexpected IO exception occured when storing annotations for: " + 
+			throw new AnnotationServiceException("Unexpected Solr server exception occured when storing annotations for: " + 
 					solrAnnotation.getAnnotationIdString(), ex);
 	    } catch (IOException ex) {
 			throw new AnnotationServiceException("Unexpected IO exception occured when storing annotations for: " + 
@@ -50,18 +50,20 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 			
 		List<? extends SolrAnnotation> res = null;
 		
-		log.info("search by term: " + term);
+		log.info("search Annotation by term: " + term);
 		
 	    /**
 	     * Construct a SolrQuery 
 	     */
-	    SolrQuery query = new  SolrQuery(term);
+	    SolrQuery query = new SolrQuery(term);
+		log.info("query: " + query.toString());	    
 	    
 	    /**
 	     * Query the server 
 	     */
 	    try {
 	    	QueryResponse rsp =  solrServer.query( query );
+			log.info("query response: " + rsp.toString());
 	    	res = rsp.getBeans(SolrAnnotationImpl.class);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for: " + term, e);

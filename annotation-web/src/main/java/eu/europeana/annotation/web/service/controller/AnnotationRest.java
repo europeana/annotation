@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
+//import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -39,7 +40,7 @@ public class AnnotationRest {
 
 	AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
 
-	AbstractAnnotationFactory factory;
+//	AbstractAnnotationFactory factory;
 
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;
@@ -139,7 +140,7 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
-		String resourceId = toResourceId(collection, object);
+		//String resourceId = toResourceId(collection, object);
 //		if(!europeanaId.equals(webAnnotation.getHas getResourceId()))
 //			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_EUROPEANAID_NO_MATCH);
 //		else if(webAnnotation.getResourceId() == null)
@@ -165,6 +166,132 @@ public class AnnotationRest {
 		return JsonUtils.toJson(response, null);
 	}
 
+	@RequestMapping(value = "/annotations/create/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView createAnnotationObject(@PathVariable String collection,
+			@PathVariable String object,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "annotation", required = true) String jsonAnno) {
+
+//		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
+        /**
+         * parse JsonLd string using JsonLdParser.
+         * JsonLd string -> JsonLdParser -> JsonLd object
+         */
+        AnnotationLd parsedAnnotationLd = null;
+        JsonLd parsedJsonLd = null;
+        try {
+        	parsedJsonLd = JsonLdParser.parseExt(jsonAnno);
+        	
+        	/**
+        	 * convert JsonLd to AnnotationLd.
+        	 * JsonLd object -> AnnotationLd object
+        	 */
+        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+        /**
+         * AnnotationLd object -> Annotation object.
+         */
+        Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
+        webAnnotation.getTarget().setEuropeanaId("/testCollection/testObject");
+        webAnnotation.getStyledBy().setHttpUri("[oa:CssStyle,euType:STYLE#CSS]");
+        webAnnotation.getBody().setMediaType("[oa:SemanticTag]");
+
+		/**
+		 * Check types and replace if necessary 
+		 */
+		if (webAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		}
+		if (webAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+		}
+		if (webAnnotation.getMotivatedBy().equals("oa:tagging")) {
+			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+		}
+        
+		Annotation persistentAnnotation = getControllerHelper()
+				.copyIntoPersistantAnnotation(webAnnotation);
+
+		Annotation storedAnnotation = getAnnotationService().createAnnotation(
+				persistentAnnotation);
+
+		/**
+		 * Convert PersistentAnnotation in Annotation.
+		 */
+		Annotation resAnnotation = controllerHelper
+				.copyIntoWebAnnotation(storedAnnotation);
+		putOriginalTypes(resAnnotation);		
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "create:/annotations/create/collection/object/");
+		response.success = true;
+		response.requestNumber = 0L;
+
+		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+				resAnnotation, apiKey));
+//		storedAnnotation, apiKey));
+
+		return JsonUtils.toJson(response, null);
+	}
+
+	public static void putOriginalTypes(Annotation webAnnotation) {
+		if (StringUtils.isBlank(webAnnotation.getType())) {
+			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		} else {
+		    if (webAnnotation.getType().equals(AnnotationTypes.OBJECT_TAG.name())) {
+		    	webAnnotation.setType(WebAnnotationFields.OA_ANNOTATION);
+		    }
+		}
+//		if (StringUtils.isBlank(webAnnotation.getMotivatedBy())) {
+//			webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
+//		} else {
+//			if (webAnnotation.getMotivatedBy().equals(MotivationTypes.TAGGING.name())) {
+//				webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
+//			}
+//		}
+	}
+
+////	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	public ModelAndView getAnnotationFromAnnotationLd(@PathVariable String collection,
+//			@PathVariable String object,
+//			@RequestParam(value = "apiKey", required = false) String apiKey,
+//			@RequestParam(value = "profile", required = false) String profile,
+//			@RequestParam(value = "annotation", required = true) String serializedAnnotationLd) {
+//
+//        AnnotationLd.toConsole("getAnnotationFromAnnotationLd: ", serializedAnnotationLd);
+//        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Annotation", AnnotationTypes.OBJECT_TAG.name());
+//        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Tagging", MotivationTypes.TAGGING.name());
+//        
+////        AnnotationLd annotationLd = new AnnotationLd(serializedAnnotationLd);
+////        AnnotationLd parsedAnnotationLd = null;
+////        JsonLd parsedJsonLd = null;
+////        try {
+////        	parsedJsonLd = JsonLdParser.parseExt(serializedAnnotationLd);
+////        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+////		} catch (Exception e) {
+////			e.printStackTrace();
+////		}
+//        
+//        Annotation deserialisedAnnotation = AnnotationLd.deserialise(serializedAnnotationLd);
+//
+//		AnnotationOperationResponse response = new AnnotationOperationResponse(
+//				apiKey, "deserialise:/annotations/collection/object/");
+//		response.success = true;
+//		response.requestNumber = 0L;
+//
+//		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+//				deserialisedAnnotation, apiKey));
+//
+//		return JsonUtils.toJson(response, null);
+//	}	
+
 //	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -178,16 +305,6 @@ public class AnnotationRest {
         serializedAnnotationLd = serializedAnnotationLd.replace("oa:Annotation", AnnotationTypes.OBJECT_TAG.name());
         serializedAnnotationLd = serializedAnnotationLd.replace("oa:Tagging", MotivationTypes.TAGGING.name());
         
-//        AnnotationLd annotationLd = new AnnotationLd(serializedAnnotationLd);
-//        AnnotationLd parsedAnnotationLd = null;
-//        JsonLd parsedJsonLd = null;
-//        try {
-//        	parsedJsonLd = JsonLdParser.parseExt(serializedAnnotationLd);
-//        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-        
         Annotation deserialisedAnnotation = AnnotationLd.deserialise(serializedAnnotationLd);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
@@ -200,7 +317,7 @@ public class AnnotationRest {
 
 		return JsonUtils.toJson(response, null);
 	}	
-	
+		
 //	@RequestMapping(value = "/annotations/search/{collection}/{object}/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/annotations/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -212,6 +329,7 @@ public class AnnotationRest {
 
 		String resourceId = toResourceId(collection, object);
 		
+		query = "ro"; //"31";"Vlad";
 		List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
 				resourceId, query);
 

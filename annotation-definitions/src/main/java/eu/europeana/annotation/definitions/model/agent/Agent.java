@@ -6,9 +6,12 @@ public interface Agent {
 
 	public abstract void setAgentType(String agentTypeStr);
 
+	public abstract void addType(String newType);
+
 	public abstract void setAgentTypeEnum(AgentTypes agentType);
 
-	public abstract AgentTypes getAgentType();
+//	public abstract AgentTypes getAgentType();
+	public abstract String getAgentType();
 
 	public abstract void setHomepage(String homepage);
 

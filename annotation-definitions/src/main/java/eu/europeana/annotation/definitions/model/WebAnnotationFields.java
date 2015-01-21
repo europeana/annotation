@@ -26,7 +26,7 @@ public interface WebAnnotationFields {
 	public static final String BODY_TYPE            = "bodyType";
 	public static final String TARGET_TYPE          = "targetType";
 	public static final String CHARS                = "chars";
-	public static final String DC_LANGUAGE          = "dc:language";
+	public static final String DC_LANGUAGE          = "language";
 	public static final String FORMAT               = "format";
 	public static final String MEDIA_TYPE           = "mediaType";
 	public static final String FOAF_PAGE            = "foaf:page";
