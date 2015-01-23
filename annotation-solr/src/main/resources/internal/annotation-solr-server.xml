@@ -35,6 +35,18 @@
 		<property name="maxTotalConnections" value="125"/>
 	</bean>
 
+
+    <!-- 
+	<bean id="annotation_solr_annotationServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" lazy-init="true">
+		<constructor-arg value="#{europeanaProperties['solr.url']}"/>
+		<constructor-arg value="annotation"/>
+		<property name="followRedirects" value="false"/>
+		<property name="connectionTimeout" value="#{europeanaProperties['solr.timeout']}"/>
+		<property name="defaultMaxConnectionsPerHost" value="64"/>
+		<property name="maxTotalConnections" value="125"/>
+	</bean>
+	 -->
+
 	
 	<bean id="annotation_solr_solrEmbedded" class="org.apache.solr.client.solrj.embedded.EmbeddedSolrServer" lazy-init="true">
 		<constructor-arg>

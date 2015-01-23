@@ -30,7 +30,7 @@
 						</div>
 						-->
 						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
-						Annotation component is a service that implements the management and indexing of UserTags and ImageAnnotations
+						Annotation component is a service that implements the management and indexing of UserTags
 					</div>
 
 					<div id="table" style="width: 100%;">	
@@ -181,6 +181,8 @@
 								create a semantic tag (BodyType) and return the object as stored in the database
 							</td>
 						</tr>
+						
+																	
 <tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
@@ -296,7 +298,33 @@
 								create an (simple) image annotation (BodyType) and return the object as stored in the database
 							</td>
 						</tr>						
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					
+					</div>
+					<!--  end table div -->	
 
+
+					<div class="">
+						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
+						Annotation component is a service that implements the management and indexing of ImageAnnotations
+					</div>
+
+					<div id="table" style="width: 100%;">	
+					<table>
+						<thead>
+						<tr>
+							<td class="clsHeaderCell">Method</td>
+							<td class="clsHeaderCell">Response</td>
+							<td class="clsHeaderCell">Path</td>
+							<td class="clsHeaderCell">Function</td>
+						</tr>
+						</thead>
 
 <tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
@@ -316,11 +344,11 @@
     "annotatedAt": "2012-11-10T09:08:07",
     "annotatedBy": {
         "@id": "open_id_1",
-        "@type": "[SOFTWARE_AGENT,foaf:Person,euType:AGENT#SOFTWARE_AGENT]",
+        "@type": "[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]",
         "name": "annonymous web user"
     },
     "body": {
-        "@type": "[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:BODY#SEMANTIC_TAG]",
+        "@type": "[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]",
         "chars": "Vlad Tepes",
         "foaf:page": "https://www.freebase.com/m/035br4",
         "format": "text/plain",
@@ -330,17 +358,17 @@
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",
-        "@type": "[SOFTWARE_AGENT,prov:SoftwareAgent,euType:AGENT#SOFTWARE_AGENT]",
+        "@type": "[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
         "foaf:homepage": "http://annotorious.github.io/",
         "name": "Annotorious"
     },
     "styledBy": {
-        "@type": "[oa:CssStyle,euType:STYLE#CSS]",
+        "@type": "[oa:CssStyle,euType:CSS]",
         "source": "http://annotorious.github.io/latest/themes/dark/annotorious-dark.css",
         "styleClass": "annotorious-popup"
     },
     "target": {
-        "@type": "[oa:SpecificResource,euType:TARGET#IMAGE]",
+        "@type": "[oa:SpecificResource,euType:IMAGE]",
         "contentType": "image/jpeg",
         "httpUri": "http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE",
         "selector": {
@@ -351,7 +379,7 @@
             "contentType": "text/html",
             "format": "dctypes:Text"
         },
-        "targetType": "[oa:SpecificResource,euType:TARGET#IMAGE]"
+        "targetType": "[oa:SpecificResource,euType:IMAGE]"
     },
     "type": "oa:Annotation"
 }
@@ -375,7 +403,7 @@
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="20" cols="25" name="annotation" >
-{"resourceMap":{"":{"subject":"","types":["OBJECT_TYPE"],"propertyMap":{"motivatedBy":{"name":"motivatedBy","values":[{"value":"TAGGING","values":{},"types":[],"propertyMap":{}}]},"body":{"name":"body","values":[{"values":{"foaf:page":"https://www.freebase.com/m/035br4","@type":"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:BODY#SEMANTIC_TAG]","chars":"Vlad Tepes","format":"text/plain","language":"ro"},"types":[],"propertyMap":{}}]},"serializedBy":{"name":"serializedBy","values":[{"values":{"@type":"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:AGENT#SOFTWARE_AGENT]","name":"Annotorious","foaf:homepage":"http://annotorious.github.io/","@id":"open_id_2"},"types":[],"propertyMap":{}}]},"annotatedBy":{"name":"annotatedBy","values":[{"values":{"@type":"[SOFTWARE_AGENT,foaf:Person,euType:AGENT#SOFTWARE_AGENT]","name":"annonymous web user","@id":"open_id_1"},"types":[],"propertyMap":{}}]},"styledBy":{"name":"styledBy","values":[{"type":"[oa:CssStyle,euType:STYLE#CSS]","values":{"source":"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css","styleClass":"annotorious-popup"},"types":[],"propertyMap":{}}],"type":"[oa:CssStyle,euType:STYLE#CSS]"},"target":{"name":"target","values":[{"values":{"httpUri":"http://europeanastatic.eu/api/image?uri\u003dhttp%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg\u0026size\u003dFULL_DOC\u0026type\u003dIMAGE","contentType":"image/jpeg","targetType":"[oa:SpecificResource,euType:TARGET#IMAGE]"},"types":["oa:SpecificResource,euType:TARGET#IMAGE"],"propertyMap":{"selector":{"name":"selector","values":[{"type":"","values":{},"types":[],"propertyMap":{}}]},"source":{"name":"source","values":[{"values":{"format":"dctypes:Text","@id":"http://europeana.eu/portal/record//15502/GG_8285.html","contentType":"text/html"},"types":[],"propertyMap":{}}]}}}]},"type":{"name":"type","values":[{"value":"oa:Annotation","values":{},"types":[],"propertyMap":{}}]},"annotatedAt":{"name":"annotatedAt","values":[{"value":"2012-11-10T09:08:07","values":{},"types":[],"propertyMap":{}}]},"serializedAt":{"name":"serializedAt","values":[{"value":"2012-11-10T09:08:07","values":{},"types":[],"propertyMap":{}}]}},"coercionMap":{"styledBy":"[oa:CssStyle,euType:STYLE#CSS]"}}},"useJointGraphs":true,"useTypeCoercion":false,"namespacePrefixMap":{"http://www.w3.org/ns/oa-context-20130208.json":"oa"},"usedNamespaces":{"http://www.w3.org/ns/oa-context-20130208.json":"oa"},"applyNamespaces":true,"useCuries":true}
+{"resourceMap":{"":{"subject":"","types":["OBJECT_TYPE"],"propertyMap":{"motivatedBy":{"name":"motivatedBy","values":[{"value":"TAGGING","values":{},"types":[],"propertyMap":{}}]},"body":{"name":"body","values":[{"values":{"foaf:page":"https://www.freebase.com/m/035br4","@type":"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]","chars":"Vlad Tepes","format":"text/plain","language":"ro"},"types":[],"propertyMap":{}}]},"serializedBy":{"name":"serializedBy","values":[{"values":{"@type":"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]","name":"Annotorious","foaf:homepage":"http://annotorious.github.io/","@id":"open_id_2"},"types":[],"propertyMap":{}}]},"annotatedBy":{"name":"annotatedBy","values":[{"values":{"@type":"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]","name":"annonymous web user","@id":"open_id_1"},"types":[],"propertyMap":{}}]},"styledBy":{"name":"styledBy","values":[{"type":"[oa:CssStyle,euType:CSS]","values":{"source":"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css","styleClass":"annotorious-popup"},"types":[],"propertyMap":{}}],"type":"[oa:CssStyle,euType:CSS]"},"target":{"name":"target","values":[{"values":{"httpUri":"http://europeanastatic.eu/api/image?uri\u003dhttp%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg\u0026size\u003dFULL_DOC\u0026type\u003dIMAGE","contentType":"image/jpeg","targetType":"[oa:SpecificResource,euType:IMAGE]"},"types":["oa:SpecificResource,euType:IMAGE"],"propertyMap":{"selector":{"name":"selector","values":[{"type":"","values":{},"types":[],"propertyMap":{}}]},"source":{"name":"source","values":[{"values":{"format":"dctypes:Text","@id":"http://europeana.eu/portal/record//15502/GG_8285.html","contentType":"text/html"},"types":[],"propertyMap":{}}]}}}]},"type":{"name":"type","values":[{"value":"oa:Annotation","values":{},"types":[],"propertyMap":{}}]},"annotatedAt":{"name":"annotatedAt","values":[{"value":"2012-11-10T09:08:07","values":{},"types":[],"propertyMap":{}}]},"serializedAt":{"name":"serializedAt","values":[{"value":"2012-11-10T09:08:07","values":{},"types":[],"propertyMap":{}}]}},"coercionMap":{"styledBy":"[oa:CssStyle,euType:CSS]"}}},"useJointGraphs":true,"useTypeCoercion":false,"namespacePrefixMap":{"http://www.w3.org/ns/oa-context-20130208.json":"oa"},"usedNamespaces":{"http://www.w3.org/ns/oa-context-20130208.json":"oa"},"applyNamespaces":true,"useCuries":true}
 								</textarea>
 								<br>
 								<input type="submit" name="convert" value="convert">
@@ -384,7 +412,36 @@
 							<td class="clsCellBorder" valign="top">
 								convert an annotation from JSON-LD string to Annotation object
 							</td>
-						</tr>						
+						</tr>	
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					
+					</div>
+					<!--  end table div -->	
+						
+						
+						
+					<div class="">
+						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
+						Annotation component is a service that implements the search for Annotations
+					</div>
+
+					<div id="table" style="width: 100%;">	
+					<table>
+						<thead>
+						<tr>
+							<td class="clsHeaderCell">Method</td>
+							<td class="clsHeaderCell">Response</td>
+							<td class="clsHeaderCell">Path</td>
+							<td class="clsHeaderCell">Function</td>
+						</tr>
+						</thead>
+											
 
 <tr>
 							<td class="clsCellBorder cls0_0" valign="top">GET</td>

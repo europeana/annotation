@@ -52,7 +52,7 @@ public class AnnotationTestObjectBuilder {
     			AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER + BodyTypes.SEMANTIC_TAG.name());
 		
 		body.setBodyType("[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:"
-				+ AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER
+//				+ AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER
 				+ BodyTypes.SEMANTIC_TAG.name() 
 				+ "]"
 				);
@@ -74,7 +74,7 @@ public class AnnotationTestObjectBuilder {
 
 		target.setTargetType(
 				"[oa:SpecificResource,euType:" 
-				+ AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER
+//				+ AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER
 				+ TargetTypes.IMAGE.name() 
 				+ "]"
 				);
@@ -141,7 +141,7 @@ public class AnnotationTestObjectBuilder {
 //		style.setMediaType("oa:CssStyle");
 //		style.addType("oa:CssStyle");
 		style.setHttpUri("[oa:CssStyle,euType:" 
-				+ AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER
+//				+ AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER
 				+ StyleTypes.CSS.name() 
 				+ "]");
 		style.setContentType("annotorious-popup");
@@ -156,7 +156,7 @@ public class AnnotationTestObjectBuilder {
 				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
 		agent.addType("foaf:Person");
 		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
+//				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
 				+ AgentTypes.SOFTWARE_AGENT.name());
 		agent.setName("annonymous web user");
 		agent.setOpenId("open_id_1");
@@ -179,7 +179,7 @@ public class AnnotationTestObjectBuilder {
 //				);
 		agent.addType("prov:SoftwareAgent");
 		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
+//				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
 				+ AgentTypes.SOFTWARE_AGENT.name());
 		agent.setName("Annotorious");
 		agent.setHomepage("http://annotorious.github.io/");

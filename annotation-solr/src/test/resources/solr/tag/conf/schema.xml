@@ -68,7 +68,7 @@
 	<fields>
 		<!-- @Field("tag_id")  -->
 		<field name="tag_id" type="text" indexed="true"
-			required="true" multiValued="false" stored="true" />
+			required="false" multiValued="false" stored="true" />
 		<!--  @Field("label") -->	
 		<field name="label" type="text" indexed="true"
 			stored="true" multiValued="false" />

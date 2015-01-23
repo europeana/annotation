@@ -21,12 +21,15 @@
 	xmlns="http://www.springframework.org/schema/beans"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
     ">
     
-	<!-- INTERNAL -->
+   <!-- INTERNAL -->
 	<!-- import resource="corelib-definitions-context.xml" />
 	<import resource="internal/corelib-solr-datasource.xml" /-->
 	<import resource="internal/annotation-solr-server.xml" />

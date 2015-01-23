@@ -35,10 +35,10 @@
 	 -->
 	
 	<!-- INTERNAL DEFINITIONS -->
+	<import resource="internal/annotation-mongo-datasource.xml"/>
 	<import resource="internal/annotation-mongo-beans.xml"/>
 	<import resource="internal/annotation-mongo-dao.xml"/>
-	<import resource="internal/annotation-mongo-datasource.xml"/>
-
+	
 	<context:annotation-config/>
 	
 	<bean name="annotation_db_annotationService" class="eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl"

@@ -28,18 +28,25 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 	">
 	
+	<!-- 
 	<util:properties id="europeanaProperties" location="classpath:test-config/europeana-test.properties" />
+	 -->
 	
 	<!-- internal -->
 	<import resource="internal/annotation-solr-server.xml" />
 	
 	<!-- OVERRIDE FOR TESTING -->
 	<bean name="annotation_solr_tagService" class="eu.europeana.annotation.solr.service.impl.SolrTagServiceImpl"
-		p:solrServer-ref="annotation_solr_solrEmbedded"
+		p:solrServer-ref="annotation_solr_solrServer"
 	/>
 	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
-		p:solrServer-ref="annotation_solr_annotationEmbedded"
+		p:solrServer-ref="annotation_solr_solrServer"
 	/>
+	<!-- 
+	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
+		p:solrServer-ref="annotation_solr_annotationServer"
+	/>
+	 -->
 	<!-- 
 	<bean name="annotation_solr_tagService" class="eu.europeana.annotation.solr.service.impl.TestSolrTagServiceImpl"
 		p:solrServer-ref="annotation_solr_solrServer"

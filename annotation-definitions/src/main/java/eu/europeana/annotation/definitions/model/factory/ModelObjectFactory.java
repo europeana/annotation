@@ -38,7 +38,6 @@ public class ModelObjectFactory {
 	}
 	
 	public Object createModelObjectInstance(String euType) {
-//		String[] types = euType.split("#", 2);
 		String[] types = euType.split(WebAnnotationFields.SPLITTER, 2);
 		
 		AnnotationPartTypes partType = AnnotationPartTypes.valueOf(types[0]);

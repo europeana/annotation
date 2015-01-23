@@ -520,7 +520,8 @@ public class AnnotationLd extends JsonLd {
 				ModelObjectFactory objectFactory = new ModelObjectFactory();
 				String euType = ModelObjectFactory.extractEuType(
 						propertyValue.getValues().get(WebAnnotationFields.TARGET_TYPE));
-				target = (Target) objectFactory.createModelObjectInstance(euType);
+				target = (Target) objectFactory.createModelObjectInstance(
+						AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER + euType);
 				target.setTargetType(propertyValue.getValues().get(WebAnnotationFields.TARGET_TYPE));
 				if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.CONTENT_TYPE))) 
 					target.setContentType(propertyValue.getValues().get(WebAnnotationFields.CONTENT_TYPE));
@@ -581,7 +582,8 @@ public class AnnotationLd extends JsonLd {
 				ModelObjectFactory objectFactory = new ModelObjectFactory();
 				String euType = ModelObjectFactory.extractEuType(
 						propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
-				body = (Body) objectFactory.createModelObjectInstance(euType);
+				body = (Body) objectFactory.createModelObjectInstance(
+						AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER + euType);
 				
 				body.setBodyType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 

@@ -59,7 +59,7 @@
 	<!--  connection to the annotation database -->
 	<bean id="annotation_db_morphia_datastore_annotation" factory-bean="annotation_db_morphia" factory-method="createDatastore">
 		<constructor-arg ref="annotation_db_mongo"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.annotation.dbname']}"/>
+		<constructor-arg value="#{europeanaProperties['mongodb.annotation.dbname']}" type="java.lang.String"/>
 	</bean>
 	
 </beans>
