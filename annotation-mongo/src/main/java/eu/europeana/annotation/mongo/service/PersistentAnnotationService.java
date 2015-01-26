@@ -53,6 +53,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @param annoId
 	 */
 	public Annotation updateIndexingTime(AnnotationId annoId);
+//	public Annotation updateIndexingTime(PersistentAnnotation annotation);
 
 }
 

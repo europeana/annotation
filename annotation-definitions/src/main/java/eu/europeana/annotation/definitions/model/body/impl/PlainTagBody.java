@@ -20,4 +20,13 @@ public class PlainTagBody extends BaseBody implements TagBody{
 	public void setTagId(String tagId) {
 		this.tagId = tagId;
 	}
+
+	@Override
+	public String toString() {
+        String res = super.toString();		
+		if (getTagId() != null) 
+			res = res + "\t\t" + "tagId:" + getTagId() + "\n";
+		return res;
+	}	
+
 }

@@ -28,13 +28,21 @@
 	<!-- LAZY INIT: the next beans has lazy init, to prevent them from being started when not used... -->
 
 	<bean id="annotation_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" lazy-init="true">
-		<constructor-arg value="#{europeanaProperties['solr.url']}"/>
+		<constructor-arg value="#{europeanaProperties['solr.annotation.url']}"/>
 		<property name="followRedirects" value="false"/>
-		<property name="connectionTimeout" value="#{europeanaProperties['solr.timeout']}"/>
+		<property name="connectionTimeout" value="#{europeanaProperties['solr.annotation.timeout']}"/>
 		<property name="defaultMaxConnectionsPerHost" value="64"/>
 		<property name="maxTotalConnections" value="125"/>
 	</bean>
 
+
+	<bean id="tag_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" lazy-init="true">
+		<constructor-arg value="#{europeanaProperties['solr.tag.url']}"/>
+		<property name="followRedirects" value="false"/>
+		<property name="connectionTimeout" value="#{europeanaProperties['solr.tag.timeout']}"/>
+		<property name="defaultMaxConnectionsPerHost" value="64"/>
+		<property name="maxTotalConnections" value="125"/>
+	</bean>
 
     <!-- 
 	<bean id="annotation_solr_annotationServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" lazy-init="true">

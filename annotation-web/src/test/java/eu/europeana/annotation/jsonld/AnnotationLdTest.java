@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.factory.ModelObjectFactory;
+import eu.europeana.annotation.definitions.model.body.impl.BodyUtils;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
@@ -320,7 +320,7 @@ public class AnnotationLdTest {
     	String typesString = "[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:" 
 //    			+ annotationPart + WebAnnotationFields.SPLITTER 
     			+ bodyPart + "]";
-    	String expectedEuType = ModelObjectFactory.extractEuType(typesString);
+    	String expectedEuType = new BodyUtils().getEuTypeFromBodyType(typesString);
         assertEquals(actualEuType, expectedEuType);
     }    
 }

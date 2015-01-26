@@ -41,6 +41,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.impl.BodyUtils;
 import eu.europeana.annotation.definitions.model.factory.ModelObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
@@ -518,7 +519,7 @@ public class AnnotationLd extends JsonLd {
 
 			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.TARGET_TYPE))) {
 				ModelObjectFactory objectFactory = new ModelObjectFactory();
-				String euType = ModelObjectFactory.extractEuType(
+				String euType = new BodyUtils().getEuTypeFromBodyType(
 						propertyValue.getValues().get(WebAnnotationFields.TARGET_TYPE));
 				target = (Target) objectFactory.createModelObjectInstance(
 						AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER + euType);
@@ -580,7 +581,7 @@ public class AnnotationLd extends JsonLd {
 			
 			if (!StringUtils.isBlank(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE))) {
 				ModelObjectFactory objectFactory = new ModelObjectFactory();
-				String euType = ModelObjectFactory.extractEuType(
+				String euType = new BodyUtils().getEuTypeFromBodyType(
 						propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 				body = (Body) objectFactory.createModelObjectInstance(
 						AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER + euType);

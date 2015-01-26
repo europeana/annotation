@@ -26,16 +26,16 @@ public class ModelObjectFactory {
 	 * @param typesString
 	 * @return
 	 */
-	public static String extractEuType(String typesString) {
-		String res = "";
-		Pattern pattern = Pattern.compile(WebAnnotationFields.EU_TYPE + ":(.*?)]");
-		Matcher matcher = pattern.matcher(typesString);
-		if (matcher.find())
-		{
-		    res = matcher.group(1);
-		}		
-		return res;
-	}
+//	public static String extractEuType(String typesString) {
+//		String res = "";
+//		Pattern pattern = Pattern.compile(WebAnnotationFields.EU_TYPE + ":(.*?)]");
+//		Matcher matcher = pattern.matcher(typesString);
+//		if (matcher.find())
+//		{
+//		    res = matcher.group(1);
+//		}		
+//		return res;
+//	}
 	
 	public Object createModelObjectInstance(String euType) {
 		String[] types = euType.split(WebAnnotationFields.SPLITTER, 2);

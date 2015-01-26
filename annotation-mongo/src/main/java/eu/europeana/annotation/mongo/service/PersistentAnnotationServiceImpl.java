@@ -9,13 +9,16 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
+import com.google.code.morphia.query.UpdateOperations;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
+import eu.europeana.annotation.definitions.model.body.impl.BodyUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
@@ -110,12 +113,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			}
 		}
 		return tag;
-	}
-	
-	
+	}	
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		return BodyTypes.isTagBody(object.getBody().getBodyType());
+		String euType = new BodyUtils().getEuTypeFromBodyType(object.getBody().getBodyType());
+		return BodyTypes.isTagBody(euType);
 	}
 
 	@Override
@@ -226,6 +228,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	@Override
+//	public Annotation updateIndexingTime(PersistentAnnotation annotation) {
 	public Annotation updateIndexingTime(AnnotationId annoId) {
 		
 		Annotation res = null;
@@ -234,7 +237,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		if (annotation != null && annotation.getLastIndexedTimestamp() == null) {
 			annotation.setLastIndexedTimestamp(System.currentTimeMillis());
-			res = update(annotation);
+			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
+					.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, annotation.getLastIndexedTimestamp());
+			Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id").equal(annotation.getId());
+			getAnnotationDao().update(updateQuery, ops);
+			res = annotation; //update(annotation);
 		}
 		
 		return res;

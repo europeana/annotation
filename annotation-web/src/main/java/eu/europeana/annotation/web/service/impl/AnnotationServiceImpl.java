@@ -80,16 +80,20 @@ public class AnnotationServiceImpl implements AnnotationService {
 		// add solr indexing here
         try {
        	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
-    	    getSolrService().store(indexedAnnotation);
+       	    getSolrService().store(indexedAnnotation);
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).warn(
         		   "The annotation was stored correctly into the Mongo, but it was not indexed yet. " + e);
 //    	    throw new RuntimeException(e);
         }
+        
+        //TODO: check if the tag is already indexed 
+        //tagSolrServer.findOrStore(Tag)
 		
         // save the time of the last SOLR indexing
         try {
     	    getMongoPersistance().updateIndexingTime(res.getAnnotationId());
+//    	    getMongoPersistance().updateIndexingTime(res);    	    
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).warn(
          		   "The time of the last SOLR indexing could not be saved. " + e);
