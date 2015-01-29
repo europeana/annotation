@@ -1,8 +1,5 @@
 package eu.europeana.annotation.definitions.model.factory;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;

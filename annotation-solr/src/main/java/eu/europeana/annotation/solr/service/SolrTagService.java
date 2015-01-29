@@ -55,5 +55,12 @@ public interface SolrTagService {
 	 */
 	public List<? extends SolrTag> searchByLabel(String searchTerm) throws TagServiceException;
 	
+	/**
+	 * This method performs check whether given Tag is stored in Solr.
+	 * If not the method stores the Tag.
+	 * @param queryObject
+	 * @throws TagServiceException
+	 */
+	public void findOrStore(SolrTag queryObject)  throws TagServiceException;
 		
 }

@@ -73,6 +73,14 @@ public class SolrTagServiceImpl implements SolrTagService {
 	}
 
 	@Override
+	public void findOrStore(SolrTag queryObject)  throws TagServiceException {
+		List<? extends SolrTag> tagList = search(queryObject);
+		if (tagList.size() == 0) {
+			store(queryObject);
+		}
+	}
+
+	@Override
 	public List<? extends SolrTag> search(SolrTag queryObject)  throws TagServiceException {
 
 		List<? extends SolrTag> res = null;

@@ -37,7 +37,7 @@
 	<!-- SERVICES -->
 	<!-- OVERRIDE FOR TESTING -->
 	<bean name="annotation_solr_tagService" class="eu.europeana.annotation.solr.service.impl.SolrTagServiceImpl"
-		p:solrServer-ref="annotation_solr_solrServer"
+		p:solrServer-ref="tag_solr_solrServer"
 	/>
 	
 	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
