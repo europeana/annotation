@@ -1,7 +1,9 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+
 
 //import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -15,7 +17,6 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-
 import eu.europeana.corelib.logging.Logger;
 
 
@@ -64,12 +65,28 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    try {
 	    	QueryResponse rsp =  solrServer.query( query );
 			log.info("query response: " + rsp.toString());
-	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+			res = setAnnotationType(rsp);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for: " + term, e);
         }
 	    
 	    return res;
+	}
+
+	private List<? extends SolrAnnotation> setAnnotationType(QueryResponse rsp) {
+		List<? extends SolrAnnotation> res;
+		/**
+		 * Set annotation type from annotation_type.
+		 */
+		List<SolrAnnotationImpl> annotationList = rsp.getBeans(SolrAnnotationImpl.class);
+		Iterator<SolrAnnotationImpl> iter = annotationList.iterator();
+		while (iter.hasNext()) {
+			SolrAnnotationImpl annotation = iter.next();
+			annotation.setType(annotation.getAnnotationType());
+		}
+//	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+		res = annotationList;
+		return res;
 	}
 
 	@Override
@@ -87,7 +104,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     */
 	    try {
 	    	QueryResponse rsp =  solrServer.query( query );
-	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+			res = setAnnotationType(rsp);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching all annotations", e);
         }
@@ -107,7 +124,6 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     */
 	    SolrQuery query = new  SolrQuery();
 //	    query.setQuery(id);
-//	    query.setFields(SolrAnnotationConst.RESOURCE_ID);
 //	    query.setFields(SolrAnnotationConst.ANNOTATION_ID_STR);
 	    
 	    String queryStr = "";
@@ -130,7 +146,50 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     */
 	    try {
 	    	QueryResponse rsp =  solrServer.query( query );
-	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+			res = setAnnotationType(rsp);
+		} catch (SolrServerException e) {
+			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for id: " + id, e);
+        }
+	    
+	    return res;
+	}
+
+	@Override
+	public List<? extends SolrAnnotation> searchByTerm(String id) throws AnnotationServiceException {
+			
+		List<? extends SolrAnnotation> res = null;
+		
+		log.info("search by id: " + id);
+		
+	    /**
+	     * Construct a SolrQuery 
+	     */
+	    SolrQuery query = new  SolrQuery();
+	    
+	    String queryStr = "";
+	    
+	    if (id != null) {
+//	    	queryStr = "*:" + id;
+	    	queryStr = id;
+	    }
+	    log.info("queryStr: " + queryStr);
+	    query.setQuery(queryStr);
+	    
+	    query.setFields(
+	    		SolrAnnotationConst.LABEL, 
+	    		SolrAnnotationConst.ANNOTATION_TYPE, 
+	    		SolrAnnotationConst.LANGUAGE, 
+	    		SolrAnnotationConst.RESOURCE_ID, 
+	    		SolrAnnotationConst.ANNOTATED_BY, 
+	    		SolrAnnotationConst.ANNOTATION_ID_STR
+	    		);
+	    
+	    /**
+	     * Query the server 
+	     */
+	    try {
+	    	QueryResponse rsp = solrServer.query( query );
+			res = setAnnotationType(rsp);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for id: " + id, e);
         }
@@ -210,7 +269,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     */
 	    try {
 	    	QueryResponse rsp = solrServer.query( query );
-	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+			res = setAnnotationType(rsp);
 	    	log.info("search obj res size: " + res.size());
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for solrAnnotation: " + 
@@ -238,7 +297,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    try {
 	    	log.info("searchByLabel search query: " + query.toString());
 	    	QueryResponse rsp =  solrServer.query( query );
-	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+			res = setAnnotationType(rsp);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for label: " + 
 					searchTerm, e);
@@ -264,7 +323,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    try {
 	    	log.info("searchByMapKey search query: " + query.toString());
 	    	QueryResponse rsp = solrServer.query( query );
-	    	res = rsp.getBeans(SolrAnnotationImpl.class);
+			res = setAnnotationType(rsp);
 		} catch (SolrServerException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for map key: " + 
 					searchKey + " and value: " + searchValue, e);

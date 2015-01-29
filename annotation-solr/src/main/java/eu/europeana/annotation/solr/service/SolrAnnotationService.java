@@ -80,4 +80,6 @@ public interface SolrAnnotationService {
 	 */
 	public List<? extends SolrAnnotation> searchByMapKey(String searchKey, String searchValue)  throws AnnotationServiceException;
 		
+	public List<? extends SolrAnnotation> searchByTerm(String id) throws AnnotationServiceException;
+	
 }

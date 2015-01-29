@@ -14,7 +14,8 @@ public class AnnotationControllerHelper {
 
 //		AbstractAnnotation to = (AbstractAnnotation) (AnnotationObjectFactory
 //				.getInstance().createAnnotationInstance(annotation.getType()));
-		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance().createModelObjectInstance(annotation.getType());
+		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance()
+				.createModelObjectInstance(annotation.getType());
 		copyAnnotationAttributes(annotation, to);
 
 		return to;
@@ -31,6 +32,7 @@ public class AnnotationControllerHelper {
 
 	private void copyAnnotationAttributes(Annotation annotation,
 			Annotation to) {
+		to.setType(annotation.getType());
 		to.setAnnotationId(annotation.getAnnotationId());
 		to.setAnnotatedAt(annotation.getAnnotatedAt());
 		to.setAnnotatedBy(annotation.getAnnotatedBy());

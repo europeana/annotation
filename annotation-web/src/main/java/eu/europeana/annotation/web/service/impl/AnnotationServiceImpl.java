@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
-import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
-import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
@@ -75,6 +73,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 			String query) {
 		try {
 			return getSolrService().search(query);
+//			return getSolrService().searchByTerm(query);
 		} catch (AnnotationServiceException e) {
 			Logger.getLogger(getClass().getName()).warn(e);
 			return null;
@@ -122,6 +121,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 		SolrAnnotation res = null;
 		
   		SolrAnnotationImpl solrAnnotationImpl = new SolrAnnotationImpl();
+//  		solrAnnotationImpl.setType(annotation.getType()); 
+  		solrAnnotationImpl.setAnnotationType(annotation.getType()); 
   		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
   		solrAnnotationImpl.setBody(annotation.getBody());
   		solrAnnotationImpl.setAnnotatedAt(annotation.getAnnotatedAt());

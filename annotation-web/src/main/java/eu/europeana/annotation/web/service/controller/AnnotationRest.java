@@ -225,7 +225,7 @@ public class AnnotationRest {
 		 */
 		Annotation resAnnotation = controllerHelper
 				.copyIntoWebAnnotation(storedAnnotation);
-		putOriginalTypes(resAnnotation);		
+//		putOriginalTypes(resAnnotation);		
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "create:/annotations/create/collection/object/");
@@ -328,15 +328,15 @@ public class AnnotationRest {
 			@RequestParam(value = "query", required = true) String query) {
 
 		String resourceId = toResourceId(collection, object);
+		query = query.replaceAll("\t", "");
 		
-		query = "ro"; //"31";"Vlad";
 		List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
 				resourceId, query);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/search/collection/object/");
 
-		if (annotationList != null) {
+		if (annotationList != null && annotationList.size() > 0) {
 
 			response.success = true;
 			response.requestNumber = 0L;
@@ -371,14 +371,14 @@ public class AnnotationRest {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/searchByField/collection/object/");
 
-		if (annotationList != null) {
+		if (annotationList != null && annotationList.size() > 0) {
 
 			response.success = true;
 			response.requestNumber = 0L;
 
 			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
 					annotationList.get(0), apiKey));
-		}else{
+		} else {
 			response.success = false;
 			response.action = "get: /annotations/"+collection+"/"
 					+object+"/"+ query;

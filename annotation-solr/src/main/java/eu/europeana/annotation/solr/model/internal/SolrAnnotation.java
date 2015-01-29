@@ -33,8 +33,8 @@ public interface SolrAnnotation extends Annotation {
 
 	public String getHttpUri();
 	
-	public void setTagType(String tag_type);
+	public void setAnnotationType(String annotation_type);
 	
-	public String getTagType();
+	public String getAnnotationType();
 	
 }

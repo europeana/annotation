@@ -79,7 +79,7 @@
 		<!--  @Field("label") -->	
 		<field name="hasBody" type="text" indexed="true"
 			stored="false" multiValued="false" />
-		<!--  @Field("tag_type") - change to keyword -->	
+		<!--  @Field("annotation_type") - change to keyword -->	
 		<field name="annotation_type" type="string" indexed="true"
 			stored="true" multiValued="false" />
 		<!--  @Field("http_uri") - change to keyword -->	

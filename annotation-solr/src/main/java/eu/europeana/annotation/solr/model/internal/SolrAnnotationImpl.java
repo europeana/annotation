@@ -16,7 +16,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String annotationId_string;
 	private String resourceId;
 	private String label;
-	private String tag_type;
+	private String annotation_type;
 	private String http_uri;
 	private String language;
 
@@ -103,14 +103,20 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 	
 	@Override
-	@Field("tag_type")
-	public void setTagType(String tag_type) {
-		this.tag_type = tag_type;
+	@Field("annotation_type")
+//	public void setType(String type) {
+//		this.setType(type);
+//	}
+	public void setAnnotationType(String annotation_type) {
+		this.annotation_type = annotation_type;
 	}
 	
 	@Override
-	public String getTagType() {
-		return tag_type;
+//	public String getType() {
+//		return this.getType();
+//	}
+	public String getAnnotationType() {
+		return annotation_type;
 	}
 	
 	@Override
