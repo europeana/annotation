@@ -8,8 +8,12 @@ import org.apache.solr.client.solrj.beans.Field;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.agent.impl.Person;
+import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation {
 
@@ -19,6 +23,49 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String annotation_type;
 	private String http_uri;
 	private String language;
+	private String body_type;
+	private String body_value;
+	
+	public String getBodyType() {
+		String res = "";
+		if (getBody() != null && getBody().getBodyType() != null) 
+			res = getBody().getBodyType();
+		return res;
+	}
+
+	@Field("body_type")
+	public void setBodyType(String bodyType) {
+		if (super.getBody() == null) {
+			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+					BodyTypes.SEMANTIC_TAG.name());
+			body.setBodyType(bodyType);
+			super.setBody(body);
+		} else {
+			super.getBody().setBodyType(bodyType);
+		}
+		//this.bodyType = bodyType;
+	}
+
+	public String getBodyValue() {
+		String res = "";
+		if (getBody() != null && getBody().getValue() != null) 
+			res = getBody().getValue();
+		return res;
+//		return super.getBody().getValue();
+	}
+
+	@Field("body_value")
+	public void setBodyValue(String bodyValue) {
+		if (super.getBody() == null) {
+			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+					BodyTypes.SEMANTIC_TAG.name());
+			body.setValue(bodyValue);
+			super.setBody(body);
+		} else {
+			super.getBody().setValue(bodyValue);
+		}
+//		this.bodyValue = bodyValue;
+	}
 
 	@Field("*_multilingual")
 	protected Map<String, String> multiLingual;
@@ -65,9 +112,9 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Override
 	@Field("annotatedBy_string")
 	public void setAnnotatedByString(String annotatedBy) {
-		Agent creator = new Person();
+		Agent creator = AgentObjectFactory.getInstance().createModelObjectInstance(
+				AgentTypes.SOFTWARE_AGENT.name());
 		creator.setName(annotatedBy);
-		
 		super.setAnnotatedBy(creator);
 	}
 	
@@ -104,17 +151,11 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	
 	@Override
 	@Field("annotation_type")
-//	public void setType(String type) {
-//		this.setType(type);
-//	}
 	public void setAnnotationType(String annotation_type) {
 		this.annotation_type = annotation_type;
 	}
 	
 	@Override
-//	public String getType() {
-//		return this.getType();
-//	}
 	public String getAnnotationType() {
 		return annotation_type;
 	}

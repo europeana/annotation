@@ -28,8 +28,7 @@ import org.junit.Test;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.body.impl.BodyUtils;
-import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
@@ -55,7 +54,7 @@ public class AnnotationLdTest {
     @Test
     public void testCreateEmptyAnnotationLd() {
     	
-        BaseObjectTag baseObjectTag = AnnotationTestObjectBuilder.createEmptyBaseObjectTagInstance();        
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createEmptyBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String actual = annotationLd.toString();
@@ -78,7 +77,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationToAnnotationLd() {
     	
-        BaseObjectTag baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String actual = annotationLd.toString();
@@ -97,7 +96,7 @@ public class AnnotationLdTest {
     @Test
     public void testGsonSerializationForAnnotationLd() {
     	
-        BaseObjectTag baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String annotationLdOriginal = annotationLd.toString();
@@ -117,7 +116,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationLdToJsonLd() {
     	
-        BaseObjectTag baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String annotationLdStr = annotationLd.toString();
@@ -158,7 +157,7 @@ public class AnnotationLdTest {
     @Test
     public void testParseAnnotationLdStringToJsonLd() {
     	
-        BaseObjectTag baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String actual = annotationLd.toString();
@@ -206,7 +205,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        BaseObjectTag originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
         
         /**
          * convert Annotation object to AnnotationLd object.
@@ -238,7 +237,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        BaseObjectTag originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
         String originalAgentType = originalAnnotation.getSerializedBy().getAgentType();
         originalAnnotation.getSerializedBy().addType(AgentTypes.SOFTWARE_AGENT.name());
         assertEquals(originalAgentType, originalAnnotation.getSerializedBy().getAgentType());
@@ -262,7 +261,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        BaseObjectTag originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
         
         /**
          * convert Annotation object to AnnotationLd object.
@@ -300,8 +299,6 @@ public class AnnotationLdTest {
          * 5. AnnotationLd object -> Annotation object.
          */
         Annotation annotationFromAnnotationLd = parsedAnnotationLd.getAnnotation();
-//        Annotation annotationFromAnnotationLd = parsedAnnotationLd.getAnnotationExt();
-//        Annotation annotationFromAnnotationLd = parsedAnnotationLd.getAnnotationByJson();
         System.out.println("originalAnnotation: " + originalAnnotation.toString());
         System.out.println("annotationFromAnnotationLd: " + annotationFromAnnotationLd.toString());
         
@@ -313,14 +310,11 @@ public class AnnotationLdTest {
     @Test
     public void testExtractEuType() {
     	
-//    	String annotationPart = AnnotationPartTypes.BODY.name();
     	String bodyPart = BodyTypes.SEMANTIC_TAG.name();
-//    	String actualEuType = annotationPart + WebAnnotationFields.SPLITTER + bodyPart;
     	String actualEuType = bodyPart;
-    	String typesString = "[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:" 
-//    			+ annotationPart + WebAnnotationFields.SPLITTER 
+    	String typeArray = "[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:" 
     			+ bodyPart + "]";
-    	String expectedEuType = new BodyUtils().getEuTypeFromBodyType(typesString);
+    	String expectedEuType = new TypeUtils().getEuTypeFromTypeArray(typeArray);
         assertEquals(actualEuType, expectedEuType);
     }    
 }

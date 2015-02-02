@@ -90,8 +90,6 @@
 		
 		
 <!-- 		
-		<field name="text" type="text" indexed="true" stored="false"
-			multiValued="true" />
 		<field name="tag_id" type="string" indexed="true"
 			required="true" multiValued="false" stored="true" />
 		<field name="value" type="text" indexed="true" stored="true"
@@ -102,17 +100,25 @@
 			multiValued="false" />
 			 -->
 			
-		<!-- Diego Ceccarelli <diego.ceccarelli@isti.cnr.it> 17-11-2012 -->
 		<!-- SEVERE: Unable to use updateLog: _version_ field must exist in schema -->
 		<field name="_version_" type="long" indexed="true" stored="true"
 			multiValued="false" />
 		<!-- / - -->
 		
+		<!--  full text search -->
+		<field name="label" type="text" indexed="true" stored="false"
+			multiValued="true" />
+		
 		
 	</fields>
 	<uniqueKey>tag_id</uniqueKey>
-	<defaultSearchField>label</defaultSearchField>
 	<solrQueryParser defaultOperator="AND" />
+	
+	
+	<defaultSearchField>text</defaultSearchField>
+	<!-- copying to full text search field   -->
+	<copyField source="label" dest="text" />
+	<copyField source="*_multilingual" dest="text" />
 	
 	
 </schema>

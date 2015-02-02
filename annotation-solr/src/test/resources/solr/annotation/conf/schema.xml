@@ -76,9 +76,12 @@
 		<!-- @Field("resourceId")  -->
 		<field name="resourceId" type="string" indexed="true"
 			required="true" multiValued="false" stored="true" />
-		<!--  @Field("label") -->	
-		<field name="hasBody" type="text" indexed="true"
-			stored="false" multiValued="false" />
+		<!--  @Field("bodyValue") -->	
+		<field name="body_value" type="text" indexed="true"
+			stored="true" multiValued="false" />
+		<!--  @Field("bodyType") -->	
+		<field name="body_type" type="string" indexed="true"
+			stored="true" multiValued="false" />
 		<!--  @Field("annotation_type") - change to keyword -->	
 		<field name="annotation_type" type="string" indexed="true"
 			stored="true" multiValued="false" />
@@ -102,14 +105,11 @@
 		<field name="text" type="text" indexed="true"
 			stored="true" multiValued="false" />
 		-->
-		
 		<field name="timestamp" type="date" indexed="true" stored="true"
 			default="NOW" multiValued="false" />
 		
 		<dynamicField name="*_multilingual" type="text" indexed="true" stored="true" multiValued="false" /> 
 <!-- 		
-		<field name="text" type="text" indexed="true" stored="false"
-			multiValued="true" />
 		<field name="tag_id" type="string" indexed="true"
 			required="true" multiValued="false" stored="true" />
 		<field name="value" type="text" indexed="true" stored="true"
@@ -125,17 +125,23 @@
 		<field name="_version_" type="long" indexed="true" stored="true"
 			multiValued="false" />
 			 
-			
-		<!--field name="_version_" type="long" indexed="true" stored="true"/>		
-		-->	
 		<!-- / - -->
-		
+
+		<!-- Full Text Search Field -->
+		<field name="text" type="text" indexed="true" stored="false"
+			multiValued="true" />
 		
 	</fields>
 	<uniqueKey>annotationId_string</uniqueKey>
-	<defaultSearchField>label</defaultSearchField>
 	<!-- defaultSearchField>hasBody</defaultSearchField-->
 	<solrQueryParser defaultOperator="AND" />
+	
+	<!-- copying to full text search field  -->
+	<defaultSearchField>text</defaultSearchField>
+	<copyField source="body_value" dest="text" />
+	<copyField source="label" dest="text" />
+	<copyField source="*_multilingual" dest="text" />
+	
 	
 	
 </schema>

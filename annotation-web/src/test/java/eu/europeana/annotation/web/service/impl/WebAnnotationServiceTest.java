@@ -110,10 +110,10 @@ public class WebAnnotationServiceTest {
 //		AnnotationRest.putOriginalTypes(webAnnotation);
 		if (StringUtils.isBlank(webAnnotation.getType())) {
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		} else {
-		    if (webAnnotation.getType().equals(AnnotationTypes.OBJECT_TAG.name())) {
-		    	webAnnotation.setType(WebAnnotationFields.OA_ANNOTATION);
-		    }
+//		} else {
+//		    if (webAnnotation.getType().equals(AnnotationTypes.OBJECT_TAG.name())) {
+//		    	webAnnotation.setType(WebAnnotationFields.OA_ANNOTATION);
+//		    }
 		}
 		if (StringUtils.isBlank(webAnnotation.getMotivatedBy())) {
 			webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);

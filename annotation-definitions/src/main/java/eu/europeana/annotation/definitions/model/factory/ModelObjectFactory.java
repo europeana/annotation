@@ -36,6 +36,7 @@ public class ModelObjectFactory {
 	
 	public Object createModelObjectInstance(String euType) {
 		String[] types = euType.split(WebAnnotationFields.SPLITTER, 2);
+		String modelObjectType = types[1];
 		
 		AnnotationPartTypes partType = AnnotationPartTypes.valueOf(types[0]);
 		Object annotationPartInstance = null;
@@ -45,31 +46,31 @@ public class ModelObjectFactory {
 
 		switch (partType) {
 		case AGENT:
-			annotationPartInstance = AgentObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			annotationPartInstance = AgentObjectFactory.getInstance().createModelObjectInstance(modelObjectType);
 			break;
 		case ANNOTATION:
-			annotationPartInstance = AnnotationObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			annotationPartInstance = AnnotationObjectFactory.getInstance().createModelObjectInstance(modelObjectType);
 			break;
 		case BODY:
-			annotationPartInstance = BodyObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			annotationPartInstance = BodyObjectFactory.getInstance().createModelObjectInstance(modelObjectType);
 			break;
 //		case MOTIVATION:
 //			annotationPartInstance = MotivationObjectFactory.getInstance().createModelObjectInstance(types[1]);
 //			break;
 		case SELECTOR:
-			annotationPartInstance = SelectorObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			annotationPartInstance = SelectorObjectFactory.getInstance().createModelObjectInstance(modelObjectType);
 			break;
 //		case SHAPE:
 //			annotationPartInstance = ShapeObjectFactory.getInstance().createModelObjectInstance(types[1]);
 //			break;
 		case STYLE:
-			annotationPartInstance = StyleObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			annotationPartInstance = StyleObjectFactory.getInstance().createModelObjectInstance(modelObjectType);
 			break;
 //		case TAG:
 //			annotationPartInstance = TagObjectFactory.getInstance().createModelObjectInstance(types[1]);
 //			break;
 		case TARGET:
-			annotationPartInstance = TargetObjectFactory.getInstance().createModelObjectInstance(types[1]);
+			annotationPartInstance = TargetObjectFactory.getInstance().createModelObjectInstance(modelObjectType);
 			break;
 		default:
 			break;

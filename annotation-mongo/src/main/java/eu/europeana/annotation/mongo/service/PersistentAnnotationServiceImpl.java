@@ -18,7 +18,7 @@ import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
-import eu.europeana.annotation.definitions.model.body.impl.BodyUtils;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
@@ -116,7 +116,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}	
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		String euType = new BodyUtils().getEuTypeFromBodyType(object.getBody().getBodyType());
+		String euType = new TypeUtils().getEuTypeFromTypeArray(object.getBody().getBodyType());
 		return BodyTypes.isTagBody(euType);
 	}
 

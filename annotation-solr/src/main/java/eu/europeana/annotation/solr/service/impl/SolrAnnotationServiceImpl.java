@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-
 //import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -129,16 +128,18 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    String queryStr = "";
 	    
 	    if (id != null) {
-	    	queryStr = SolrAnnotationConst.ANNOTATION_ID_STR + ":" + id;
+	    	queryStr = SolrAnnotationConst.SolrAnnotationFields.ANNOTATION_ID_STR.getSolrAnnotationField() + ":" + id;
 	    }
 	    log.info("queryStr: " + queryStr);
 	    query.setQuery(queryStr);
 	    
 	    query.setFields(
-	    		SolrAnnotationConst.LABEL, 
-	    		SolrAnnotationConst.LANGUAGE, 
-	    		SolrAnnotationConst.RESOURCE_ID, 
-	    		SolrAnnotationConst.ANNOTATION_ID_STR
+	    		SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.RESOURCE_ID.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATION_ID_STR.getSolrAnnotationField(),
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATED_BY.getSolrAnnotationField(),
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATION_TYPE.getSolrAnnotationField()
 	    		);
 	    
 	    /**
@@ -176,12 +177,12 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	    query.setQuery(queryStr);
 	    
 	    query.setFields(
-	    		SolrAnnotationConst.LABEL, 
-	    		SolrAnnotationConst.ANNOTATION_TYPE, 
-	    		SolrAnnotationConst.LANGUAGE, 
-	    		SolrAnnotationConst.RESOURCE_ID, 
-	    		SolrAnnotationConst.ANNOTATED_BY, 
-	    		SolrAnnotationConst.ANNOTATION_ID_STR
+	    		SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.RESOURCE_ID.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATION_ID_STR.getSolrAnnotationField(),
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATED_BY.getSolrAnnotationField(),
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATION_TYPE.getSolrAnnotationField()
 	    		);
 	    
 	    /**
@@ -227,10 +228,12 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 //	    Object returnValue = method.invoke(null, "parameter-value1");
 	    
 	    if (queryObject.getLabel() != null) {
-	    	queryStr = queryStr + SolrAnnotationConst.LABEL + ":" + queryObject.getLabel();
+	    	queryStr = queryStr + SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField()
+	    			+ ":" + queryObject.getLabel();
 	    }
 	    if (queryObject.getLanguage() != null) {
-	    	queryStr = queryStr + " AND " + SolrAnnotationConst.LANGUAGE + ":" + queryObject.getLanguage();
+	    	queryStr = queryStr + " AND " + SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField() 
+	    			+ ":" + queryObject.getLanguage();
 	    }
 //	    if (queryObject.getResourceId() != null) {
 //	    	queryStr = queryStr + " AND " + SolrAnnotationConst.RESOURCE_ID + ":" + queryObject.getResourceId();
@@ -254,10 +257,10 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 //	    query.setParam(SolrAnnotationConst.RESOURCE_ID, queryObject.getResourceId());
 //	    query.setParam(SolrAnnotationConst.ANNOTATION_ID_STR, queryObject.getAnnotationIdString());
 	    query.setFields(
-	    		SolrAnnotationConst.LABEL, 
-	    		SolrAnnotationConst.LANGUAGE, 
-	    		SolrAnnotationConst.RESOURCE_ID, 
-	    		SolrAnnotationConst.ANNOTATION_ID_STR
+	    		SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.RESOURCE_ID.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.ANNOTATION_ID_STR.getSolrAnnotationField()
 	    		);
 //	    query.setFields(SolrAnnotationConst.LABEL);
 //	    query.setStart(0);    
@@ -289,7 +292,7 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     */
 	    SolrQuery query = new SolrQuery();
 	    query.setQuery(searchTerm);
-	    query.setFields(SolrAnnotationConst.LABEL);
+	    query.setFields(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField());
 	    
 	    /**
 	     * Query the server 

@@ -112,21 +112,24 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    String queryStr = "";
 
 	    if (queryObject.getLabel() != null) {
-	    	queryStr = queryStr + SolrAnnotationConst.LABEL + ":" + queryObject.getLabel();
+	    	queryStr = queryStr + SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField() 
+	    			+ ":" + queryObject.getLabel();
 	    }
 	    if (queryObject.getLanguage() != null) {
-	    	queryStr = queryStr + " AND " + SolrAnnotationConst.LANGUAGE + ":" + queryObject.getLanguage();
+	    	queryStr = queryStr + " AND " + SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField()
+	    			+ ":" + queryObject.getLanguage();
 	    }
 	    if (queryObject.getCreator() != null) {
-	    	queryStr = queryStr + " AND " + SolrAnnotationConst.CREATOR + ":" + queryObject.getCreator();
+	    	queryStr = queryStr + " AND " + SolrAnnotationConst.SolrAnnotationFields.CREATOR.getSolrAnnotationField()
+	    			+ ":" + queryObject.getCreator();
 	    }
 	    log.info("queryStr: " + queryStr);
 	    query.setQuery(queryStr);
 	    
 	    query.setFields(
-	    		SolrAnnotationConst.LABEL, 
-	    		SolrAnnotationConst.LANGUAGE, 
-	    		SolrAnnotationConst.CREATOR
+	    		SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField(), 
+	    		SolrAnnotationConst.SolrAnnotationFields.CREATOR.getSolrAnnotationField()
 	    		);
 	    
 	    log.info("search obj: " + queryObject);
@@ -164,7 +167,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 //	    query.addFilterQuery("label:SUPER");
 //	    query.addFilterQuery(SolrAnnotationConst.LABEL + ":" + searchTerm);
 //	    query.addFilterQuery("label:OK");
-	    query.setFields(SolrAnnotationConst.LABEL);
+	    query.setFields(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField());
 //	    query.setFields("label");
 	    
 	    /**

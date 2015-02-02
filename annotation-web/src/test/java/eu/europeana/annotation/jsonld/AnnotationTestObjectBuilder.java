@@ -15,25 +15,25 @@
 */
 package eu.europeana.annotation.jsonld;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
-import eu.europeana.annotation.definitions.model.body.TagBody;
-import eu.europeana.annotation.definitions.model.factory.ModelObjectFactory;
-import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
+import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.SelectorObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.StyleObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
-import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
-import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
-import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.target.Target;
-import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.AnnotationPartTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
@@ -45,14 +45,12 @@ public class AnnotationTestObjectBuilder {
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
 
-	public static TagBody buildSemanticTagBody(String text, String language) {
+	public static Body buildSemanticTagBody(String text, String language) {
 		
-		ModelObjectFactory objectFactory = new ModelObjectFactory();
-    	TagBody body = (TagBody) objectFactory.createModelObjectInstance(
-    			AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER + BodyTypes.SEMANTIC_TAG.name());
+		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+				BodyTypes.SEMANTIC_TAG.name());
 		
 		body.setBodyType("[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:"
-//				+ AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER
 				+ BodyTypes.SEMANTIC_TAG.name() 
 				+ "]"
 				);
@@ -68,13 +66,11 @@ public class AnnotationTestObjectBuilder {
     	
 	public static Target buildTarget() {
 		
-		ModelObjectFactory objectFactory = new ModelObjectFactory();
-    	Target target = (ImageTarget) objectFactory.createModelObjectInstance(
-    			AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER + TargetTypes.IMAGE.name());
+		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(
+				TargetTypes.IMAGE.name());
 
 		target.setTargetType(
 				"[oa:SpecificResource,euType:" 
-//				+ AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER
 				+ TargetTypes.IMAGE.name() 
 				+ "]"
 				);
@@ -83,8 +79,9 @@ public class AnnotationTestObjectBuilder {
 		target.setHttpUri("http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE");
 		target.setEuropeanaId(TEST_EUROPEANA_ID);
 		
-		Rectangle selector = new SvgRectangleSelector();
-		target.setSelector((Selector)selector);
+		Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
+				SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
+		target.setSelector(selector);
 		
 		InternetResource source = new BaseInternetResource();
 		source.setContentType("text/html");
@@ -95,53 +92,46 @@ public class AnnotationTestObjectBuilder {
 		return target;
 	}
 
-	public static BaseObjectTag createBaseObjectTagInstance() {
+	public static Annotation createBaseObjectTagInstance() {
 		
-		ModelObjectFactory objectFactory = new ModelObjectFactory();
-    	BaseObjectTag baseObjectTag = (BaseObjectTag) objectFactory.createModelObjectInstance(
-    			AnnotationPartTypes.ANNOTATION.name() + WebAnnotationFields.SPLITTER + AnnotationTypes.OBJECT_TAG.name());
+		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
+				AnnotationTypes.OBJECT_TAG.name());
 		
-		baseObjectTag.setType("oa:Annotation");
-        baseObjectTag.setAnnotatedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
-        baseObjectTag.setSerializedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
+		annotation.setType("oa:Annotation");
+        annotation.setAnnotatedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
+        annotation.setSerializedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
 
         // set target
 		Target target = buildTarget();
-		baseObjectTag.setTarget(target);
+		annotation.setTarget(target);
 			
 		//set Body
 		String comment = "Vlad Tepes";
-		TagBody body = buildSemanticTagBody(comment, "ro");
-		baseObjectTag.setBody(body);
+		Body body = buildSemanticTagBody(comment, "ro");
+		annotation.setBody(body);
 				
 		// set annotatedBy
 		Agent annotatedByAgent = buildAnnotatedByAgent();
-		baseObjectTag.setAnnotatedBy(annotatedByAgent);
+		annotation.setAnnotatedBy(annotatedByAgent);
 		
 		// set serializedBy
 		Agent agent = buildSerializedByAgent();
-		baseObjectTag.setSerializedBy(agent);
+		annotation.setSerializedBy(agent);
 				
 		// motivation
-		baseObjectTag.setMotivatedBy("oa:tagging");
+		annotation.setMotivatedBy("oa:tagging");
 		
 		// set styledBy
 		Style style = buildStyledBy();
-		baseObjectTag.setStyledBy(style);
+		annotation.setStyledBy(style);
 		
-		return baseObjectTag;
+		return annotation;
 	}
 
 	private static Style buildStyledBy() {
-		//		Style style = new BaseStyle();
-		ModelObjectFactory objectFactory = new ModelObjectFactory();
-		Style style = (CssStyle) objectFactory.createModelObjectInstance(
-//				Style style = (BaseStyle) objectFactory.createModelObjectInstance(
-				AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER + StyleTypes.CSS.name());
-//		style.setMediaType("oa:CssStyle");
-//		style.addType("oa:CssStyle");
+		Style style = StyleObjectFactory.getInstance().createModelObjectInstance(
+				StyleTypes.CSS.name());
 		style.setHttpUri("[oa:CssStyle,euType:" 
-//				+ AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER
 				+ StyleTypes.CSS.name() 
 				+ "]");
 		style.setContentType("annotorious-popup");
@@ -150,13 +140,10 @@ public class AnnotationTestObjectBuilder {
 	}
 
 	private static Agent buildAnnotatedByAgent() {
-		//		Agent annotatedByAgent = new SoftwareAgent();
-		ModelObjectFactory objectFactory = new ModelObjectFactory();
-		Agent agent = (SoftwareAgent) objectFactory.createModelObjectInstance(
-				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
+		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
+				AgentTypes.SOFTWARE_AGENT.name());
 		agent.addType("foaf:Person");
 		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-//				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
 				+ AgentTypes.SOFTWARE_AGENT.name());
 		agent.setName("annonymous web user");
 		agent.setOpenId("open_id_1");
@@ -164,22 +151,11 @@ public class AnnotationTestObjectBuilder {
 		return agent;
 	}
 
-	private static SoftwareAgent buildSerializedByAgent() {
-		//		Agent creator = new SoftwareAgent();
-		ModelObjectFactory objectFactory = new ModelObjectFactory();
-		SoftwareAgent agent = (SoftwareAgent) objectFactory.createModelObjectInstance(
-				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
-				
-		//		creator.setAgentType(AgentTypes.SOFTWARE_AGENT.name());
-		//		creator.setAgentType("prov:SoftwareAgent");
-//		agent.setAgentType("[prov:SoftwareAgent,euType:"
-//				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
-//				+ AgentTypes.SOFTWARE_AGENT.name() 
-//				+ "]"
-//				);
+	private static Agent buildSerializedByAgent() {
+		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
+				AgentTypes.SOFTWARE_AGENT.name());
 		agent.addType("prov:SoftwareAgent");
 		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-//				+ AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER
 				+ AgentTypes.SOFTWARE_AGENT.name());
 		agent.setName("Annotorious");
 		agent.setHomepage("http://annotorious.github.io/");
@@ -187,53 +163,46 @@ public class AnnotationTestObjectBuilder {
 		return agent;
 	}
 	 
-	public static BaseObjectTag createEmptyBaseObjectTagInstance() {
+	public static Annotation createEmptyBaseObjectTagInstance() {
 		
-    	ModelObjectFactory objectFactory = new ModelObjectFactory();
-    	BaseObjectTag baseObjectTag = (BaseObjectTag) objectFactory.createModelObjectInstance(
-    			AnnotationPartTypes.ANNOTATION.name() + WebAnnotationFields.SPLITTER + AnnotationTypes.OBJECT_TAG.name());    	
+		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
+				AnnotationTypes.OBJECT_TAG.name());
 		
-		baseObjectTag.setType(null);
-        baseObjectTag.setAnnotatedAt(null);
-        baseObjectTag.setSerializedAt(null);
+		annotation.setType(null);
+        annotation.setAnnotatedAt(null);
+        annotation.setSerializedAt(null);
 
         // set target
-		baseObjectTag.setTarget(null);
+		annotation.setTarget(null);
 			
 		//set Body
-		TagBody body = buildSemanticTagBody(null, null);
-		baseObjectTag.setBody(body);
+		Body body = buildSemanticTagBody(null, null);
+		annotation.setBody(body);
 				
 		// set annotatedBy
-		SoftwareAgent annotatedByAgent = (SoftwareAgent) objectFactory.createModelObjectInstance(
-				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
-//		Agent annotatedByAgent  = new SoftwareAgent();
+		Agent annotatedByAgent = AgentObjectFactory.getInstance().createModelObjectInstance(
+				AgentTypes.SOFTWARE_AGENT.name());
 		annotatedByAgent .setName(null);
-		baseObjectTag.setAnnotatedBy(annotatedByAgent);
+		annotation.setAnnotatedBy(annotatedByAgent);
 		
 		// set serializedBy
-		SoftwareAgent serializedByAgent = (SoftwareAgent) objectFactory.createModelObjectInstance(
-				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
-//		serializedByAgent = new SoftwareAgent();
-//		serializedByAgent.setAgentType(AgentTypes.SOFTWARE_AGENT.name());
+		Agent serializedByAgent = AgentObjectFactory.getInstance().createModelObjectInstance(
+				AgentTypes.SOFTWARE_AGENT.name());
 		serializedByAgent.setName(null);
 		serializedByAgent.setHomepage(null);
-		baseObjectTag.setSerializedBy(serializedByAgent);
+		annotation.setSerializedBy(serializedByAgent);
 				
 		// motivation
-		baseObjectTag.setMotivatedBy(null);
+		annotation.setMotivatedBy(null);
 		
 		// set styledBy
-//		Style style = new BaseStyle();
-		Style style = (CssStyle) objectFactory.createModelObjectInstance(
-//				Style style = (BaseStyle) objectFactory.createModelObjectInstance(
-				AnnotationPartTypes.STYLE.name() + WebAnnotationFields.SPLITTER + StyleTypes.CSS.name());
-//		style.setMediaType(null);
+		Style style = StyleObjectFactory.getInstance().createModelObjectInstance(
+				StyleTypes.CSS.name());
 		style.setContentType(null);
 		style.setValue(null);
-		baseObjectTag.setStyledBy(style);
+		annotation.setStyledBy(style);
 		
-		return baseObjectTag;
+		return annotation;
 	}
 	         
 }
