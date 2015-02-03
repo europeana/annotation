@@ -23,8 +23,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String annotation_type;
 	private String http_uri;
 	private String language;
-	private String body_type;
-	private String body_value;
+//	private String body_type;
+//	private String body_value;
 	
 	public String getBodyType() {
 		String res = "";

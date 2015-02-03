@@ -11,6 +11,7 @@ import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
@@ -75,6 +76,18 @@ public class AnnotationServiceImpl implements AnnotationService {
 			return getSolrService().search(query);
 //			return getSolrService().searchByTerm(query);
 		} catch (AnnotationServiceException e) {
+			Logger.getLogger(getClass().getName()).warn(e);
+			return null;
+		}		
+	}
+
+	@Override
+	public List<? extends SolrTag> getTagByQuery(String resourceId,
+			String query) {
+		try {
+			return getSolrTagService().search(query);
+//			return getSolrTagService().searchByTerm(query);
+		} catch (TagServiceException e) {
 			Logger.getLogger(getClass().getName()).warn(e);
 			return null;
 		}		

@@ -331,7 +331,7 @@
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
 									[annotation-web]/annotations/create/{collection}/{object_hash}<br>
-									ObjectTag as JSON:
+									Object as JSON-LD:
 								<form action="annotations/create/testCollection/testObject/" method="post">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
@@ -393,26 +393,6 @@
 							</td>
 						</tr>						
 
-<tr>
-							<td class="clsCellBorder cls0_0" valign="top">PUT</td>
-							<td class="clsCellBorder" valign="top">JSON-LD</td>
-							<td class="clsCellBorder">
-									[annotation-web]/annotations/jsonld/{collection}/{object_hash}<br>
-									ObjectTag as JSON-LD:
-								<form action="annotations/jsonld/testCollection/testObject/" method="post">
-								<input type="hidden" name="wskey" value="key">
-								<input type="hidden" name="profile" value="webtest">
-								<textarea rows="20" cols="25" name="annotation" >
-{"resourceMap":{"":{"subject":"","types":["OBJECT_TYPE"],"propertyMap":{"motivatedBy":{"name":"motivatedBy","values":[{"value":"TAGGING","values":{},"types":[],"propertyMap":{}}]},"body":{"name":"body","values":[{"values":{"foaf:page":"https://www.freebase.com/m/035br4","@type":"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]","chars":"Vlad Tepes","format":"text/plain","language":"ro"},"types":[],"propertyMap":{}}]},"serializedBy":{"name":"serializedBy","values":[{"values":{"@type":"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]","name":"Annotorious","foaf:homepage":"http://annotorious.github.io/","@id":"open_id_2"},"types":[],"propertyMap":{}}]},"annotatedBy":{"name":"annotatedBy","values":[{"values":{"@type":"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]","name":"annonymous web user","@id":"open_id_1"},"types":[],"propertyMap":{}}]},"styledBy":{"name":"styledBy","values":[{"type":"[oa:CssStyle,euType:CSS]","values":{"source":"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css","styleClass":"annotorious-popup"},"types":[],"propertyMap":{}}],"type":"[oa:CssStyle,euType:CSS]"},"target":{"name":"target","values":[{"values":{"httpUri":"http://europeanastatic.eu/api/image?uri\u003dhttp%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg\u0026size\u003dFULL_DOC\u0026type\u003dIMAGE","contentType":"image/jpeg","targetType":"[oa:SpecificResource,euType:IMAGE]"},"types":["oa:SpecificResource,euType:IMAGE"],"propertyMap":{"selector":{"name":"selector","values":[{"type":"","values":{},"types":[],"propertyMap":{}}]},"source":{"name":"source","values":[{"values":{"format":"dctypes:Text","@id":"http://europeana.eu/portal/record//15502/GG_8285.html","contentType":"text/html"},"types":[],"propertyMap":{}}]}}}]},"type":{"name":"type","values":[{"value":"oa:Annotation","values":{},"types":[],"propertyMap":{}}]},"annotatedAt":{"name":"annotatedAt","values":[{"value":"2012-11-10T09:08:07","values":{},"types":[],"propertyMap":{}}]},"serializedAt":{"name":"serializedAt","values":[{"value":"2012-11-10T09:08:07","values":{},"types":[],"propertyMap":{}}]}},"coercionMap":{"styledBy":"[oa:CssStyle,euType:CSS]"}}},"useJointGraphs":true,"useTypeCoercion":false,"namespacePrefixMap":{"http://www.w3.org/ns/oa-context-20130208.json":"oa"},"usedNamespaces":{"http://www.w3.org/ns/oa-context-20130208.json":"oa"},"applyNamespaces":true,"useCuries":true}
-								</textarea>
-								<br>
-								<input type="submit" name="convert" value="convert">
-								</form>
-							</td>
-							<td class="clsCellBorder" valign="top">
-								convert an annotation from JSON-LD string to Annotation object
-							</td>
-						</tr>	
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
@@ -443,33 +423,13 @@
 						</thead>
 											
 
-<tr>
+						<tr>
 							<td class="clsCellBorder cls0_0" valign="top">GET</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
 									[annotation-web]/annotations/search/{collection}/{object_hash}<br>
-									Search for annotation:
+									Search for annotation (all fields or by field):
 								<form action="annotations/search/testCollection/testObject/" method="get">
-								<input type="hidden" name="wskey" value="key">
-								<input type="hidden" name="profile" value="webtest">
-								<textarea rows="1" cols="10" name="query" >
-								</textarea>
-								<br>
-								<input type="submit" name="search" value="search">
-								</form>
-							</td>
-							<td class="clsCellBorder" valign="top">
-								Search for the annotation identified by the given query string
-							</td>
-						</tr>						
-
-<tr>
-							<td class="clsCellBorder cls0_0" valign="top">GET</td>
-							<td class="clsCellBorder" valign="top">JSON</td>
-							<td class="clsCellBorder">
-									[annotation-web]/annotations/searchByField/{collection}/{object_hash}<br>
-									Search for annotation by field:
-								<form action="annotations/searchByField/testCollection/testObject/" method="get">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="1" cols="10" name="query" >
@@ -478,7 +438,8 @@
 								<select name="field">
 								<option name=all value=all> All </option>
 								<option name=label value=label> label </option>
-								<option name=language value=language> language </option>
+								<option name=body_value value=body_value> body value </option>
+								<option name=multilingual value=multilingual> multilingual </option>
 								</select>
 								<br>
 								<input type="submit" name="search" value="search">
@@ -488,9 +449,59 @@
 								Search for the annotation identified by the given query string and Solr field
 							</td>
 						</tr>						
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					
+					</div>
+					<!--  end table div -->
+					
+					<div class="">
+						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
+						Tag component is a service that implements the search for Tags
+					</div>
 
+					<div id="table" style="width: 100%;">	
+					<table>
+						<thead>
+						<tr>
+							<td class="clsHeaderCell">Method</td>
+							<td class="clsHeaderCell">Response</td>
+							<td class="clsHeaderCell">Path</td>
+							<td class="clsHeaderCell">Function</td>
+						</tr>
+						</thead>
+											
 
-
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">GET</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/tags/search/{collection}/{object_hash}<br>
+									Search for tags (all fields or by field):
+								<form action="tags/search/testCollection/testObject/" method="get">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="1" cols="10" name="query" >
+								</textarea>
+								<br>
+								<select name="field">
+								<option name=all value=all> All </option>
+								<option name=label value=label> label </option>
+								<option name=multilinqual value=multilinqual> multilinqual </option>
+								</select>
+								<br>
+								<input type="submit" name="search" value="search">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Search for the tag identified by the given query string and Solr field
+							</td>
+						</tr>						
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
@@ -501,6 +512,7 @@
 					
 					</div>
 					<!--  end table div -->	
+						
 			</div>
 			<!-- end of content -->
 		</div>

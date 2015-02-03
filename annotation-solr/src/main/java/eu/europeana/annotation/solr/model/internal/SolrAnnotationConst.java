@@ -25,6 +25,7 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 		, LANGUAGE("language")
 		, BODY_VALE("body_value")
 		, BODY_TYPE("body_type")
+		, MULTILINGUAL("multilingual")
 		, ANNOTATION_TYPE("annotation_type");
 
 			
@@ -51,9 +52,44 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 	
 	}
 	
+	public enum SolrTagFields {
+		
+		LABEL("label")
+		, MULTILINGUAL("multilingual");
+
+			
+		private String solrTagField;
+			
+		SolrTagFields(String solrTagField){
+			this.solrTagField = solrTagField;
+		}
+			
+		public String getSolrTagField(){
+			return solrTagField;
+		}
+		
+		public static boolean contains(String value) {
+
+		    for (SolrTagFields c : SolrTagFields.values()) {
+		        if (c.name().equals(value) || c.getSolrTagField().equals(value)) {
+		            return true;
+		        }
+		    }
+
+		    return false;
+		}	
+	
+	}
+	
+	/**
+	 * Search fields for Web Service
+	 */
+	public static final String ALL = "all";
+
 	/**
 	 * Solr query
 	 */
 	public static final String ALL_SOLR_ENTRIES = "*:*";
+	public static final String DELIMETER = ":";
 	
 }

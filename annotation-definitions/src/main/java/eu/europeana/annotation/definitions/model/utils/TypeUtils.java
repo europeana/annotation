@@ -25,5 +25,14 @@ public class TypeUtils {
 		}
 		return res;
 	}
+	
+	/**
+	 * This method removes tabs for Web Service parameters.
+	 * @param value
+	 * @return value without tabs
+	 */
+	public String removeTabs(String value) {
+		return value.replaceAll("\t", "");
+	}
 
 }

@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.solr.model.internal.SolrTag;
 
 public interface AnnotationService {
 
@@ -28,27 +29,11 @@ public interface AnnotationService {
 	public List<? extends Annotation> getAnnotationByQuery(String europeanaId, String query);
 	
 	/**
-	 * This method converts RDF string to JSONLD format
-	 * @param format
-	 * @param rdf
-	 * @return JSONLD string
+	 * Search for tags by the given text query.
+	 * @param resourceId
+	 * @param query
+	 * @return
 	 */
-//	public String convertRdfToJsonld(String format, String rdf);
+	public List<? extends SolrTag> getTagByQuery(String resourceId, String query);
 
-	/**
-	 * This method converts serialized Annotation string to JSONLD format
-	 * @param format
-	 * @param rdf
-	 * @return JSONLD string
-	 */
-//	public String convertAnnotationToJsonld(String format, String rdf);
-
-	/**
-	 * Convert an Annotation bean to a RDF String
-	 * 
-	 * @param bean
-	 *            The Annotation to convert
-	 * @return The resulting string in RDF-XML
-	 */
-//	public String toRDF(Annotation bean);
 }
