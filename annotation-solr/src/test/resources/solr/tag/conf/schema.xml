@@ -106,7 +106,7 @@
 		<!-- / - -->
 		
 		<!--  full text search -->
-		<field name="label" type="text" indexed="true" stored="false"
+		<field name="text" type="text" indexed="true" stored="false"
 			multiValued="true" />
 		
 		
