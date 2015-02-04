@@ -80,6 +80,21 @@ public interface SolrAnnotationService {
 	 */
 	public List<? extends SolrAnnotation> searchByMapKey(String searchKey, String searchValue)  throws AnnotationServiceException;
 		
+	/**
+	 * This method retrieves available Annotations by searching for given field name and value.
+	 * @param field The field name
+	 * @param searchValue
+	 * @return
+	 * @throws AnnotationServiceException
+	 */
+	public List<? extends SolrAnnotation> searchByField(String field, String searchValue)  throws AnnotationServiceException;
+
+	/**
+	 * This method searches in all fields that are defined in schema for that purpose.
+	 * @param id
+	 * @return
+	 * @throws AnnotationServiceException
+	 */
 	public List<? extends SolrAnnotation> searchByTerm(String id) throws AnnotationServiceException;
 	
 }

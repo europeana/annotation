@@ -17,13 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 //import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
@@ -184,6 +180,7 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
 //		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
+        //AnnotationLd.toConsole("", jsonAnno);
         /**
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object
@@ -206,23 +203,23 @@ public class AnnotationRest {
          * AnnotationLd object -> Annotation object.
          */
         Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-        webAnnotation.getTarget().setEuropeanaId("/testCollection/testObject");
-        webAnnotation.getStyledBy().setHttpUri("[oa:CssStyle,euType:STYLE#CSS]");
-        webAnnotation.getBody().setMediaType("[oa:SemanticTag]");
-
-		/**
-		 * Check types and replace if necessary 
-		 */
-		if (webAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		if (webAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
-			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		}
-		if (webAnnotation.getMotivatedBy().equals("oa:tagging")) {
-			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		}
-        
+//        webAnnotation.getTarget().setEuropeanaId("/testCollection/testObject");
+//        webAnnotation.getStyledBy().setHttpUri("[oa:CssStyle,euType:STYLE#CSS]");
+//        webAnnotation.getBody().setMediaType("[oa:SemanticTag]");
+//
+//		/**
+//		 * Check types and replace if necessary 
+//		 */
+//		if (webAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+//			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+//		}
+//		if (webAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+//			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+//		}
+//		if (webAnnotation.getMotivatedBy().equals("oa:tagging")) {
+//			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+//		}
+//        
 		Annotation persistentAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation);
 
@@ -367,19 +364,32 @@ public class AnnotationRest {
 	@RequestMapping(value = "/annotations/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView searchAnnotationByField(@PathVariable String collection,
-			@PathVariable String object, //@PathVariable String query,
+			@PathVariable String object, 
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "field", required = true) String field) {
+			@RequestParam(value = "field", required = true) String field,
+			@RequestParam(value = "language", required = true) String language) {
 
 		String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
 		field = getTypeUtils().removeTabs(field);
+		language = getTypeUtils().removeTabs(language);
 		if (StringUtils.isNotEmpty(field)) {
-//			if (field.equals(SolrAnnotationConst.ALL)) {
+//			System.out.println("field: " + field + ", enum: ");
+//			if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+//				query = "*_" + SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField()
+//						+ SolrAnnotationConst.DELIMETER + query;				
+//			}
 			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				query = field + SolrAnnotationConst.DELIMETER + query;
+				String prefix = "";
+				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+					prefix = "EN_";//"*_";
+					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+						prefix = language.toUpperCase() + "_";
+					}
+				}
+				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
 			}
 		} else {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
@@ -390,7 +400,6 @@ public class AnnotationRest {
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/search/collection/object/");
-//		apiKey, "/annotations/searchByField/collection/object/");
 
 		if (annotationList != null && annotationList.size() > 0) {
 
@@ -417,11 +426,13 @@ public class AnnotationRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "field", required = true) String field) {
+			@RequestParam(value = "field", required = true) String field,
+			@RequestParam(value = "language", required = true) String language) {
 
 		String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
 		field = getTypeUtils().removeTabs(field);
+		language = getTypeUtils().removeTabs(language);
 		if (StringUtils.isNotEmpty(field)) {
 			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
 				query = field + SolrAnnotationConst.DELIMETER + query;

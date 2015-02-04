@@ -352,7 +352,8 @@
         "chars": "Vlad Tepes",
         "foaf:page": "https://www.freebase.com/m/035br4",
         "format": "text/plain",
-        "language": "ro"
+        "language": "ro",
+        "multilingual": "[ro:Vlad Tepes,en:the Impaler]"
     },
     "motivatedBy": "oa:tagging",
     "serializedAt": "2012-11-10T09:08:07",
@@ -381,7 +382,7 @@
         },
         "targetType": "[oa:SpecificResource,euType:IMAGE]"
     },
-    "type": "oa:Annotation"
+    "type": "OBJECT_TAG"
 }
 </textarea>
 								<br>
@@ -439,7 +440,13 @@
 								<option name=all value=all> All </option>
 								<option name=label value=label> label </option>
 								<option name=body_value value=body_value> body value </option>
+								<option name=tag_id value=tag_id> tag ID </option>
 								<option name=multilingual value=multilingual> multilingual </option>
+								</select>
+								<select name="language">
+								<option name=en value=en> EN </option>
+								<option name=de value=de> DE </option>
+								<option name=ro value=ro> RO </option>
 								</select>
 								<br>
 								<input type="submit" name="search" value="search">
@@ -492,7 +499,13 @@
 								<select name="field">
 								<option name=all value=all> All </option>
 								<option name=label value=label> label </option>
+								<option name=tag_id value=tag_id> tag ID </option>
 								<option name=multilinqual value=multilinqual> multilinqual </option>
+								</select>
+								<select name="language">
+								<option name=en value=en> EN </option>
+								<option name=de value=de> DE </option>
+								<option name=ro value=ro> RO </option>
 								</select>
 								<br>
 								<input type="submit" name="search" value="search">

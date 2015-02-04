@@ -21,6 +21,7 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 		, ANNOTATED_BY("annotatedBy_string")
 		, RESOURCE_ID("resourceId")
 		, LABEL("label")
+		, TAG_ID("tagId")
 		, CREATOR("creator")
 		, LANGUAGE("language")
 		, BODY_VALE("body_value")
@@ -55,6 +56,7 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 	public enum SolrTagFields {
 		
 		LABEL("label")
+		, TAG_ID("tagId")
 		, MULTILINGUAL("multilingual");
 
 			
@@ -72,6 +74,35 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 
 		    for (SolrTagFields c : SolrTagFields.values()) {
 		        if (c.name().equals(value) || c.getSolrTagField().equals(value)) {
+		            return true;
+		        }
+		    }
+
+		    return false;
+		}	
+	
+	}
+	
+	public enum SolrAnnotationLanguages {
+		
+		EN("en")
+		, DE("de")
+		, RO("ro");
+			
+		private String language;
+			
+		SolrAnnotationLanguages(String language){
+			this.language = language;
+		}
+			
+		public String getSolrAnnotationLanguage(){
+			return language;
+		}
+		
+		public static boolean contains(String value) {
+
+		    for (SolrAnnotationLanguages c : SolrAnnotationLanguages.values()) {
+		        if (c.name().equals(value) || c.getSolrAnnotationLanguage().equals(value)) {
 		            return true;
 		        }
 		    }

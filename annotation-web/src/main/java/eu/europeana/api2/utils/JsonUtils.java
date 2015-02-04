@@ -2,6 +2,7 @@ package eu.europeana.api2.utils;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +31,7 @@ import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.api2.utils.serialization.AgentDeserializer;
 import eu.europeana.api2.utils.serialization.AnnotationDeserializer;
 import eu.europeana.api2.utils.serialization.BodyDeserializer;
@@ -117,4 +119,41 @@ public class JsonUtils {
 		
 		return annotation;
 	}
+	
+	public static String mapToString(Map<String,String> mp) {
+		String res = "";
+	    Iterator<Map.Entry<String, String>> it = mp.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
+	        if (res.length() > 0) {
+	        	res = "," + res;
+	        }
+	        res = res + pairs.getKey() + SolrAnnotationConst.DELIMETER + pairs.getValue();
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    if (res.length() > 0) {
+	    	res = "[" + res + "]";
+	    }
+	    return res;
+	}	
+	
+    /**
+     * This method converts JSON string to map.
+     * @param value The input string
+     * @return resulting map
+     */
+    public static Map<String, String> stringToMap(String value) {
+    	String reg = ",";
+        Map<String,String> res = new HashMap<String, String>();
+        if (!value.isEmpty()) {
+			value = value.substring(1, value.length() - 1); // remove braces
+	        String[] arrValue = value.split(reg);
+	        for (String string : arrValue) {
+	            String[] mapPair = string.split(SolrAnnotationConst.DELIMETER);
+	            res.put(mapPair[0], mapPair[1]);
+	    	}
+        }
+        return res;
+    }
+    	
 }

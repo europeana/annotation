@@ -1,5 +1,9 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
@@ -18,8 +22,29 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	public void setBodyType(String bodyTypeStr) {
 		this.bodyType = bodyTypeStr;
 	}
+
 	protected BaseBody(){} 
 	
+	protected Map<String, String> multilingual;
+
+	@Override
+	public Map<String, String> getMultilingual() {
+		return multilingual;
+	}
+
+	@Override
+	public void setMultilingual(Map<String, String> multilingual) {
+		this.multilingual = multilingual;
+	}
+	
+	@Override
+	public void addLabelInMapping(String language, String label) {
+	    if(this.multilingual == null) {
+	        this.multilingual = new HashMap<String, String>();
+	    }
+	    this.multilingual.put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
+	}
+
 	@Override
 	public boolean equals(Object other) {
 	    if (!(other instanceof Body)) {
@@ -69,6 +94,12 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	    	res = false;
 	    }
 	    
+	    if ((this.getMultilingual() != null) && (that.getMultilingual() != null) &&
+	    		(!this.getMultilingual().toString().equals(that.getMultilingual().toString()))) {
+	    	System.out.println("Body objects have different multilingual values.");
+	    	res = false;
+	    }
+	    
 	    return res;
 	}
 		
@@ -88,6 +119,8 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 			res = res + "\t\t" + "language:" + getLanguage().toString() + "\n";
 		if (getValue() != null) 
 			res = res + "\t\t" + "value:" + getValue().toString() + "\n";
+		if (getMultilingual() != null) 
+			res = res + "\t\t" + "multilingual:" + getMultilingual().toString() + "\n";
 		return res;
 	}	
 }

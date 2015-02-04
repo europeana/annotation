@@ -336,6 +336,32 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	}
 
 	@Override
+	public List<? extends SolrAnnotation> searchByField(String field, String searchValue)  throws AnnotationServiceException {
+		
+		List<? extends SolrAnnotation> res = null;
+		
+	    /**
+	     * Construct a SolrQuery 
+	     */
+	    SolrQuery query = new SolrQuery();
+	    query.setQuery(field + SolrAnnotationConst.DELIMETER + searchValue);
+	    
+	    /**
+	     * Query the server 
+	     */
+	    try {
+	    	log.info("searchByField search query: " + query.toString());
+	    	QueryResponse rsp = solrServer.query( query );
+			res = setAnnotationType(rsp);
+		} catch (SolrServerException e) {
+			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for field: " + 
+					field + " and value: " + searchValue, e);
+        }
+	    
+	    return res;
+	}
+
+	@Override
 	public void update(SolrAnnotation solrAnnotation) throws AnnotationServiceException {
     	log.info("update log: " + solrAnnotation.toString());	    	
     	delete(solrAnnotation);

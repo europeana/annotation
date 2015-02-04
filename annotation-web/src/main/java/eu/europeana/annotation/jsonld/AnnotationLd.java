@@ -55,7 +55,9 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
+import eu.europeana.api2.utils.JsonUtils;
 
 /**
  * The AnnotationLd class provides an API to create a JSON-LD object structure for Annotation
@@ -220,7 +222,25 @@ public class AnnotationLd extends JsonLd {
 		    default:
 		    	break;
 		    }		    
-		}		
+		}	
+		
+		if (annotation.getTarget() != null && StringUtils.isEmpty(annotation.getTarget().getEuropeanaId()))
+			annotation.getTarget().setEuropeanaId(WebAnnotationFields.DEFAULT_EURIPEANA_ID);
+		if (annotation.getStyledBy() != null && StringUtils.isEmpty(annotation.getStyledBy().getHttpUri()))
+			annotation.getStyledBy().setHttpUri(WebAnnotationFields.DEFAULT_STYLE_TYPE);
+		if (annotation.getBody() != null && StringUtils.isEmpty(annotation.getBody().getMediaType()))
+			annotation.getBody().setMediaType(WebAnnotationFields.DEFAULT_MEDIA_TYPE);
+
+		/**
+		 * Check types and replace if necessary 
+		 */
+		if (annotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+			annotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		}
+		if (annotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+			annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+		}
+        
 		return annotation;
     }
 
@@ -250,9 +270,6 @@ public class AnnotationLd extends JsonLd {
 	private Agent getAgentByProperty(JsonLdProperty property) {
 		
 		Agent agent = null;  
-//				objectFactory.createModelObjectInstance(
-//				AnnotationPartTypes.AGENT.name() + WebAnnotationFields.SPLITTER + AgentTypes.SOFTWARE_AGENT.name());
-		//ModelObjectFactory objectFactory = new ModelObjectFactory();
 		
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
@@ -412,6 +429,8 @@ public class AnnotationLd extends JsonLd {
 					body.setContentType(propertyValue.getValues().get(WebAnnotationFields.FORMAT));
 				if (hasValue(propertyValue, WebAnnotationFields.FOAF_PAGE)) 
 					body.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.FOAF_PAGE));
+				if (hasValue(propertyValue, WebAnnotationFields.MULTILINGUAL)) 
+					body.setMultilingual(JsonUtils.stringToMap(propertyValue.getValues().get(WebAnnotationFields.MULTILINGUAL)));
 			}
 		}
 		return body;
@@ -568,6 +587,8 @@ public class AnnotationLd extends JsonLd {
             	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());	
             if (!StringUtils.isBlank(annotation.getBody().getHttpUri()))         	
             	propertyValue.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
+            if (annotation.getBody().getMultilingual() != null)         	
+            	propertyValue.getValues().put(WebAnnotationFields.MULTILINGUAL, JsonUtils.mapToString(annotation.getBody().getMultilingual()));
 	        bodyProperty.addValue(propertyValue);        
         }
 		return bodyProperty;

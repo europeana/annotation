@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.solr.client.solrj.beans.Field;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
@@ -23,8 +24,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String annotation_type;
 	private String http_uri;
 	private String language;
-//	private String body_type;
-//	private String body_value;
 	
 	public String getBodyType() {
 		String res = "";
@@ -67,15 +66,28 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 //		this.bodyValue = bodyValue;
 	}
 
-	@Field("*_multilingual")
-	protected Map<String, String> multiLingual;
+//	@Field("*_multilingual")
+//	protected Map<String, String> multiLingual;
 
-	public Map<String, String> getMultiLingual() {
-		return multiLingual;
+	public Map<String, String> getMultilingual() {
+		Map<String, String> res = new HashMap<String, String>();
+		if (getBody() != null && getBody().getMultilingual() != null) 
+			res = getBody().getMultilingual();
+		return res;
+//		return multiLingual;
 	}
 
-	public void setMultiLingual(Map<String, String> multiLingual) {
-		this.multiLingual = multiLingual;
+	@Field("*_multilingual")
+	public void setMultilingual(Map<String, String> multilingual) {
+		if (super.getBody() == null) {
+			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+					BodyTypes.SEMANTIC_TAG.name());
+			body.setMultilingual(multilingual);
+			super.setBody(body);
+		} else {
+			super.getBody().setMultilingual(multilingual);
+		}
+//		this.multiLingual = multiLingual;
 	}
 	
 	/**
@@ -85,10 +97,11 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	 * @param label
 	 */
 	public void addLabelInMapping(String language, String label) {
-	    if(this.multiLingual == null) {
-	        this.multiLingual = new HashMap<String, String>();
-	    }
-	    this.multiLingual.put(language + "_multilingual", label);
+		getMultilingual().put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
+//	    if(this.multiLingual == null) {
+//	        this.multiLingual = new HashMap<String, String>();
+//	    }
+//	    this.multiLingual.put(language + "_multilingual", label);
 	}
 
 	/* (non-Javadoc)

@@ -33,6 +33,7 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
@@ -97,7 +98,7 @@ public class AnnotationTestObjectBuilder {
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
 		
-		annotation.setType("oa:Annotation");
+		annotation.setType(WebAnnotationFields.OA_ANNOTATION);
         annotation.setAnnotatedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
         annotation.setSerializedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
 
@@ -119,12 +120,22 @@ public class AnnotationTestObjectBuilder {
 		annotation.setSerializedBy(agent);
 				
 		// motivation
-		annotation.setMotivatedBy("oa:tagging");
+		annotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
 		
 		// set styledBy
 		Style style = buildStyledBy();
 		annotation.setStyledBy(style);
 		
+        /**
+		 * Check types and replace if necessary 
+		 */
+		if (annotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+			annotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		}
+		if (annotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+			annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+		}
+        
 		return annotation;
 	}
 
