@@ -29,6 +29,9 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 
 	@Override
 	public Map<String, String> getMultilingual() {
+	    if(this.multilingual == null) {
+	        this.multilingual = new HashMap<String, String>();
+	    }
 		return multilingual;
 	}
 

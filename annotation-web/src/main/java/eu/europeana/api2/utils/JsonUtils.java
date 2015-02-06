@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonFactory;
@@ -137,6 +139,23 @@ public class JsonUtils {
 	    return res;
 	}	
 	
+	public static String mapToStringExt(Map<String,Integer> mp) {
+		String res = "";
+	    Iterator<Map.Entry<String, Integer>> it = mp.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>) it.next();
+	        if (res.length() > 0) {
+	        	res = "," + res;
+	        }
+	        res = res + pairs.getKey() + SolrAnnotationConst.DELIMETER + pairs.getValue();
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    if (res.length() > 0) {
+	    	res = "[" + res + "]";
+	    }
+	    return res;
+	}	
+	
     /**
      * This method converts JSON string to map.
      * @param value The input string
@@ -154,6 +173,44 @@ public class JsonUtils {
 	    	}
         }
         return res;
+    }
+    
+    /**
+     * This method converts a multilingual part of the JsonLd string for Annotation
+     * in a multilingual value that is conform for Solr.
+     * @param jsonLdAnnotationStr
+     * @return
+     */
+    public static String convertMultilingualFromJsonLdToSolrType(String jsonLdAnnotationStr) {
+    	String res = jsonLdAnnotationStr;
+    	
+    	/**
+    	 * Check whether a multilingual part exist. If exist extract this part.
+    	 */
+    	if (jsonLdAnnotationStr.contains(SolrAnnotationConst.MULTILINGUAL)) {
+    		if (!jsonLdAnnotationStr.isEmpty()) {
+    			Pattern pattern = Pattern.compile(SolrAnnotationConst.MULTILINGUAL + "\":\\s+\"(.*?)]");
+    			Matcher matcher = pattern.matcher(jsonLdAnnotationStr);
+    			if (matcher.find()) {
+    			    String multilingualMapStr = matcher.group(1).replace("[", "");
+    			    String solrMultilingualStr = multilingualMapStr;
+			        String[] tokens = multilingualMapStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+			        for(String t : tokens) {
+				        String[] pair = t.split(SolrAnnotationConst.DELIMETER);
+				        if (SolrAnnotationConst.SolrAnnotationLanguages.contains(pair[0])) {
+				        	solrMultilingualStr = solrMultilingualStr.replace(
+				        			pair[0] + SolrAnnotationConst.DELIMETER
+				        			, SolrAnnotationConst.SolrAnnotationLanguages.getLanguageItemByValue(pair[0]) 
+				        				+ SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL 
+				        				+ SolrAnnotationConst.DELIMETER);
+				        }
+			        }    			    
+    			    res = jsonLdAnnotationStr.replace(multilingualMapStr, solrMultilingualStr);
+    			}		
+    		}    		
+    	}
+    	
+    	return res;
     }
     	
 }

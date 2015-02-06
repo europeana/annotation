@@ -36,6 +36,7 @@ import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.api2.utils.JsonUtils;
 
 
 /**
@@ -47,6 +48,25 @@ public class AnnotationLdTest {
 	public static String TEST_RO_VALUE = "Vlad Tepes";
 	public static String TEST_EN_VALUE = "Vlad the Impaler";
 	
+	/**
+	 * Create a test JsonLd annotation object string.
+	 */
+    public static String annotationJsonLdObjectString = 
+		"{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"}," 
+		+ "\"@type\":\"OBJECT_TYPE\",\"annotatedAt\":\"2012-11-10T09:08:07\","
+		+ "\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]\",\"name\":\"annonymous web user\"},"
+		+ "\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\","
+		+ "\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\","
+		+ "\"format\":\"text/plain\",\"language\":\"ro\","
+		+ "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\"},"
+		+ "\"motivatedBy\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
+		+ "\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},"
+		+ "\"styledBy\":{\"@type\":\"[oa:CssStyle,euType:CSS]\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},"
+		+ "\"target\":{\"@type\":\"[oa:SpecificResource,euType:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//15502/GG_8285.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"targetType\":\"[oa:SpecificResource,euType:IMAGE]\"},"
+		+ "\"type\":\"oa:Annotation\"}";
+
+
+		
 	@Before
     public void setUp() throws Exception {
     }
@@ -329,23 +349,6 @@ public class AnnotationLdTest {
 	public void testMultilingualAnnotation() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		/**
-		 * Create a test annotation object.
-		 */
-        String annotationJsonLdObjectString = 
-    		"{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"}," 
-    		+ "\"@type\":\"OBJECT_TYPE\",\"annotatedAt\":\"2012-11-10T09:08:07\","
-    		+ "\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]\",\"name\":\"annonymous web user\"},"
-    		+ "\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\","
-    		+ "\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\","
-    		+ "\"format\":\"text/plain\",\"language\":\"ro\","
-    		+ "\"multilingual\":\"[ro:Vlad Tepes,en:Vlad the Impaler]\"},"
-    		+ "\"motivatedBy\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
-    		+ "\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},"
-    		+ "\"styledBy\":{\"@type\":\"[oa:CssStyle,euType:CSS]\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},"
-    		+ "\"target\":{\"@type\":\"[oa:SpecificResource,euType:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//15502/GG_8285.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"targetType\":\"[oa:SpecificResource,euType:IMAGE]\"},"
-    		+ "\"type\":\"oa:Annotation\"}";
-
         /**
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object -> AnnotationLd object
@@ -365,6 +368,15 @@ public class AnnotationLdTest {
 		
         String origIndent = parsedAnnotationLd.toString(4);
         AnnotationLd.toConsole("", origIndent);
+	}        
+    
+	@Test
+	public void testConvertMultilingualFromJsonLdToSolrType() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		String solrString = JsonUtils.convertMultilingualFromJsonLdToSolrType(annotationJsonLdObjectString);
+        assertTrue(solrString.replaceAll(" ", "").contains(
+        		"\"multilingual\":\"[RO_multilingual:Vlad Tepes,EN_multilingual:Vlad the Impaler]\"".replaceAll(" ", "")));
 	}        
     
 }

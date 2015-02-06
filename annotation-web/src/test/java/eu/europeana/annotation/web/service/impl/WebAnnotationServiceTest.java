@@ -271,4 +271,18 @@ public class WebAnnotationServiceTest {
 		assertEquals(testAnnotation.getBody(), webAnnotation.getBody());
 	}
 		
+//	@Test
+//	public void testSearchAnnotationByLabel() 
+//			throws MalformedURLException, IOException, AnnotationServiceException {
+//		
+//		/**
+//		 * Search for Annotation in Solr by query.
+//		 */
+//		List<? extends Annotation> annotationList = webAnnotationService.getAnnotationByQuery(
+//				WebAnnotationFields.DEFAULT_EURIPEANA_ID
+//				, AnnotationLdTest.TEST_RO_VALUE);
+//		
+//		assertTrue(annotationList != null && annotationList.size() > 0);
+//	}
+				
 }

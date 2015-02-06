@@ -118,6 +118,7 @@
 	<defaultSearchField>text</defaultSearchField>
 	<!-- copying to full text search field   -->
 	<copyField source="label" dest="text" />
+	<copyField source="tag_id" dest="text" />
 	<copyField source="*_multilingual" dest="text" />
 	
 	

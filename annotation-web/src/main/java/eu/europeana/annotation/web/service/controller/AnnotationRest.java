@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -145,15 +146,6 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
-		//String resourceId = toResourceId(collection, object);
-//		if(!europeanaId.equals(webAnnotation.getHas getResourceId()))
-//			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_EUROPEANAID_NO_MATCH);
-//		else if(webAnnotation.getResourceId() == null)
-//			webAnnotation.setEuropeanaId(europeanaId);
-//		
-//		if(webAnnotation.getAnnotationNr() != null)
-//			throw new FunctionalRuntimeException(FunctionalRuntimeException.MESSAGE_ANNOTATIONNR_NOT_NULL);
-//		
 		Annotation persistantAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
 
@@ -179,8 +171,11 @@ public class AnnotationRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
-//		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
-        //AnnotationLd.toConsole("", jsonAnno);
+		/**
+		 * Set multilingual values.
+		 */
+		jsonAnno = JsonUtils.convertMultilingualFromJsonLdToSolrType(jsonAnno);
+		
         /**
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object
@@ -203,23 +198,6 @@ public class AnnotationRest {
          * AnnotationLd object -> Annotation object.
          */
         Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-//        webAnnotation.getTarget().setEuropeanaId("/testCollection/testObject");
-//        webAnnotation.getStyledBy().setHttpUri("[oa:CssStyle,euType:STYLE#CSS]");
-//        webAnnotation.getBody().setMediaType("[oa:SemanticTag]");
-//
-//		/**
-//		 * Check types and replace if necessary 
-//		 */
-//		if (webAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-//			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-//		}
-//		if (webAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
-//			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-//		}
-//		if (webAnnotation.getMotivatedBy().equals("oa:tagging")) {
-//			webAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-//		}
-//        
 		Annotation persistentAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation);
 
@@ -231,7 +209,6 @@ public class AnnotationRest {
 		 */
 		Annotation resAnnotation = controllerHelper
 				.copyIntoWebAnnotation(storedAnnotation);
-//		putOriginalTypes(resAnnotation);		
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "create:/annotations/create/collection/object/");
@@ -240,127 +217,10 @@ public class AnnotationRest {
 
 		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
 				resAnnotation, apiKey));
-//		storedAnnotation, apiKey));
 
 		return JsonUtils.toJson(response, null);
 	}
 
-//	public static void putOriginalTypes(Annotation webAnnotation) {
-//		if (StringUtils.isBlank(webAnnotation.getType())) {
-//			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-//		} else {
-//		    if (webAnnotation.getType().equals(AnnotationTypes.OBJECT_TAG.name())) {
-//		    	webAnnotation.setType(WebAnnotationFields.OA_ANNOTATION);
-//		    }
-//		}
-////		if (StringUtils.isBlank(webAnnotation.getMotivatedBy())) {
-////			webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
-////		} else {
-////			if (webAnnotation.getMotivatedBy().equals(MotivationTypes.TAGGING.name())) {
-////				webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
-////			}
-////		}
-//	}
-
-////	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@ResponseBody
-//	public ModelAndView getAnnotationFromAnnotationLd(@PathVariable String collection,
-//			@PathVariable String object,
-//			@RequestParam(value = "apiKey", required = false) String apiKey,
-//			@RequestParam(value = "profile", required = false) String profile,
-//			@RequestParam(value = "annotation", required = true) String serializedAnnotationLd) {
-//
-//        AnnotationLd.toConsole("getAnnotationFromAnnotationLd: ", serializedAnnotationLd);
-//        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Annotation", AnnotationTypes.OBJECT_TAG.name());
-//        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Tagging", MotivationTypes.TAGGING.name());
-//        
-////        AnnotationLd annotationLd = new AnnotationLd(serializedAnnotationLd);
-////        AnnotationLd parsedAnnotationLd = null;
-////        JsonLd parsedJsonLd = null;
-////        try {
-////        	parsedJsonLd = JsonLdParser.parseExt(serializedAnnotationLd);
-////        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
-////		} catch (Exception e) {
-////			e.printStackTrace();
-////		}
-//        
-//        Annotation deserialisedAnnotation = AnnotationLd.deserialise(serializedAnnotationLd);
-//
-//		AnnotationOperationResponse response = new AnnotationOperationResponse(
-//				apiKey, "deserialise:/annotations/collection/object/");
-//		response.success = true;
-//		response.requestNumber = 0L;
-//
-//		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-//				deserialisedAnnotation, apiKey));
-//
-//		return JsonUtils.toJson(response, null);
-//	}	
-
-//	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@RequestMapping(value = "/annotations/jsonld/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@ResponseBody
-//	public ModelAndView getAnnotationFromAnnotationLd(@PathVariable String collection,
-//			@PathVariable String object,
-//			@RequestParam(value = "apiKey", required = false) String apiKey,
-//			@RequestParam(value = "profile", required = false) String profile,
-//			@RequestParam(value = "annotation", required = true) String serializedAnnotationLd) {
-//
-//        AnnotationLd.toConsole("getAnnotationFromAnnotationLd: ", serializedAnnotationLd);
-//        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Annotation", AnnotationTypes.OBJECT_TAG.name());
-//        serializedAnnotationLd = serializedAnnotationLd.replace("oa:Tagging", MotivationTypes.TAGGING.name());
-//        
-//        Annotation deserialisedAnnotation = AnnotationLd.deserialise(serializedAnnotationLd);
-//
-//		AnnotationOperationResponse response = new AnnotationOperationResponse(
-//				apiKey, "deserialise:/annotations/collection/object/");
-//		response.success = true;
-//		response.requestNumber = 0L;
-//
-//		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-//				deserialisedAnnotation, apiKey));
-//
-//		return JsonUtils.toJson(response, null);
-//	}	
-		
-//	@RequestMapping(value = "/annotations/search/{collection}/{object}/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@RequestMapping(value = "/annotations/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@ResponseBody
-//	public ModelAndView searchAnnotation(@PathVariable String collection,
-//			@PathVariable String object, //@PathVariable String query,
-//			@RequestParam(value = "apiKey", required = false) String apiKey,
-//			@RequestParam(value = "profile", required = false) String profile,
-//			@RequestParam(value = "query", required = true) String query) {
-//
-//		String resourceId = toResourceId(collection, object);
-//		query = query.replaceAll("\t", "");
-//		
-//		List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
-//				resourceId, query);
-//
-//		AnnotationOperationResponse response = new AnnotationOperationResponse(
-//				apiKey, "/annotations/search/collection/object/");
-//
-//		if (annotationList != null && annotationList.size() > 0) {
-//
-//			response.success = true;
-//			response.requestNumber = 0L;
-//
-//			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-//					annotationList.get(0), apiKey));
-//		}else{
-//			response.success = false;
-//			response.action = "get: /annotations/"+collection+"/"
-//					+object+"/"+ query;
-//			
-//			response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
-//		}
-//		
-//		return JsonUtils.toJson(response, null);
-//	}
-
-//	@RequestMapping(value = "/annotations/searchByField/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/annotations/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView searchAnnotationByField(@PathVariable String collection,
@@ -369,24 +229,21 @@ public class AnnotationRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
 			@RequestParam(value = "field", required = true) String field,
-			@RequestParam(value = "language", required = true) String language) {
+			@RequestParam(value = "language", required = true) String language,
+			@RequestParam(value = "facet", required = false) String facet) {
 
 		String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
-		field = getTypeUtils().removeTabs(field);
-		language = getTypeUtils().removeTabs(language);
+//		field = getTypeUtils().removeTabs(field);
+//		language = getTypeUtils().removeTabs(language);
+//		facet = getTypeUtils().removeTabs(facet);
 		if (StringUtils.isNotEmpty(field)) {
-//			System.out.println("field: " + field + ", enum: ");
-//			if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-//				query = "*_" + SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField()
-//						+ SolrAnnotationConst.DELIMETER + query;				
-//			}
 			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
 				String prefix = "";
 				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-					prefix = "EN_";//"*_";
+					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
 					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
-						prefix = language.toUpperCase() + "_";
+						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
 					}
 				}
 				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
@@ -395,27 +252,65 @@ public class AnnotationRest {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
 		}
 		
-		List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
-				resourceId, query);
+		boolean withFacet = false;
+		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
+			withFacet = true;
+			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
+				String prefix = "";
+				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
+					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+					}
+				}
+				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
+			}
+		}
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/search/collection/object/");
 
-		if (annotationList != null && annotationList.size() > 0) {
+		if (!withFacet) {
+			List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
+					resourceId, query);
 
-			response.success = true;
-			response.requestNumber = 0L;
+			if (annotationList != null && annotationList.size() > 0) {
 
-			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-					annotationList.get(0), apiKey));
+				response.success = true;
+				response.requestNumber = 0L;
+
+				response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+						annotationList.get(0), apiKey));
+			} else {
+				response.success = false;
+				response.action = "get: /annotations/"+collection+"/"
+						+object+"/"+ query;
+				
+				response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			}
 		} else {
-			response.success = false;
-			response.action = "get: /annotations/"+collection+"/"
-					+object+"/"+ query;
-			
-			response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			List<String> queries = new ArrayList<String>();
+			queries.add(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField() 
+					+ SolrAnnotationConst.DELIMETER
+					+ SolrAnnotationConst.STAR);
+			List<String> qfList = new ArrayList<String>();
+			qfList.add(facet);
+			String[] qf = qfList.toArray(new String[qfList.size()]);
+			Map<String,Integer> annotationMap = getAnnotationService().getAnnotationByFacetedQuery(qf, queries);
+			if (annotationMap != null && annotationMap.size() > 0) {
+
+				response.success = true;
+				response.requestNumber = 0L;
+				response.action = JsonUtils.mapToStringExt(annotationMap);
+			} else {
+				response.success = false;
+				response.action = "get: /annotations/"+collection+"/"
+						+object+"/"+ query;
+				
+				response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			}
 		}
-		
+				
 		return JsonUtils.toJson(response, null);
 	}
 
@@ -431,16 +326,24 @@ public class AnnotationRest {
 
 		String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
-		field = getTypeUtils().removeTabs(field);
-		language = getTypeUtils().removeTabs(language);
+//		field = getTypeUtils().removeTabs(field);
+//		language = getTypeUtils().removeTabs(language);
 		if (StringUtils.isNotEmpty(field)) {
-			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				query = field + SolrAnnotationConst.DELIMETER + query;
+			if (SolrAnnotationConst.SolrTagFields.contains(field)) {
+				String prefix = "";
+				if (field.equals(SolrAnnotationConst.SolrTagFields.MULTILINGUAL.getSolrTagField())) {
+//					prefix = ".*" + SolrAnnotationConst.UNDERSCORE;
+					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
+					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+					}
+				}
+				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
 			}
 		} else {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
 		}
-		
+
 		List<? extends SolrTag> tagList = getAnnotationService().getTagByQuery(
 				resourceId, query);
 

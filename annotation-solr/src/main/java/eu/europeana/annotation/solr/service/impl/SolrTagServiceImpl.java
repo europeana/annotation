@@ -232,4 +232,30 @@ public class SolrTagServiceImpl implements SolrTagService {
     	deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
 	}
 
+	@Override
+	public List<? extends SolrTag> searchByMapKey(String searchKey, String searchValue)  throws TagServiceException {
+		
+		List<? extends SolrTag> res = null;
+		
+	    /**
+	     * Construct a SolrQuery 
+	     */
+	    SolrQuery query = new SolrQuery();
+	    query.setQuery(searchKey + ":" + searchValue);
+	    
+	    /**
+	     * Query the server 
+	     */
+	    try {
+	    	log.info("searchByMapKey search query: " + query.toString());
+	    	QueryResponse rsp = solrServer.query( query );
+	    	res = rsp.getBeans(SolrTagImpl.class);
+		} catch (SolrServerException e) {
+			throw new TagServiceException("Unexpected exception occured when searching tags for map key: " + 
+					searchKey + " and value: " + searchValue, e);
+        }
+	    
+	    return res;
+	}
+
 }

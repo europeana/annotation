@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service;
 
 import java.util.List;
+import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
@@ -36,4 +37,12 @@ public interface AnnotationService {
 	 */
 	public List<? extends SolrTag> getTagByQuery(String resourceId, String query);
 
+	/**
+	 * This method is used for query faceting.
+	 * @param qf
+	 * @param queries
+	 * @return
+	 */
+	public Map<String, Integer> getAnnotationByFacetedQuery(String [] qf, List<String> queries);
+	
 }

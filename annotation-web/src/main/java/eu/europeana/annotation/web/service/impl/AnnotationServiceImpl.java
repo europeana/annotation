@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -13,6 +14,7 @@ import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
+import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
@@ -75,6 +77,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 		try {
 			return getSolrService().search(query);
 //			return getSolrService().searchByTerm(query);
+		} catch (AnnotationServiceException e) {
+			Logger.getLogger(getClass().getName()).warn(e);
+			return null;
+		}		
+	}
+
+	@Override
+	public Map<String, Integer> getAnnotationByFacetedQuery(String [] qf, List<String> queries) {
+		try {
+			return getSolrService().queryFacetSearch(SolrAnnotationConst.ALL_SOLR_ENTRIES, qf, queries);
 		} catch (AnnotationServiceException e) {
 			Logger.getLogger(getClass().getName()).warn(e);
 			return null;
@@ -151,6 +163,9 @@ public class AnnotationServiceImpl implements AnnotationService {
   		if (StringUtils.isNotBlank(annotation.getAnnotationId().toString())) {
   			solrAnnotationImpl.setAnnotationIdString(annotation.getAnnotationId().toString());
   		}
+		if (StringUtils.isNotBlank(solrAnnotationImpl.getTagId())) {
+			solrAnnotationImpl.setTagId(solrAnnotationImpl.getTagId());
+		}
 
         res = solrAnnotationImpl;
 

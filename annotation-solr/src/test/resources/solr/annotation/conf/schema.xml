@@ -99,6 +99,8 @@
 		<!--  @Field("label") -->	
 		<field name="label" type="text" indexed="true"
 			stored="true" multiValued="false" />
+		<field name="tag_id" type="text" indexed="true"
+			required="false" multiValued="false" stored="true" />
 
 		<!--  @Field("value") -->	
 		<!-- 
@@ -109,6 +111,15 @@
 			default="NOW" multiValued="false" />
 		
 		<dynamicField name="*_multilingual" type="text" indexed="true" stored="true" multiValued="false" /> 
+		
+		<!-- facets -->
+		<dynamicField name="annotationId_string.*" type="string"
+			indexed="true" stored="false" multiValued="true" />
+		<dynamicField name="language.*" type="string"
+			indexed="true" stored="false" multiValued="true" />
+		<dynamicField name="body_type.*" type="string"
+			indexed="true" stored="false" multiValued="true" />
+		
 <!-- 		
 		<field name="tag_id" type="string" indexed="true"
 			required="true" multiValued="false" stored="true" />
@@ -140,8 +151,10 @@
 	<defaultSearchField>text</defaultSearchField>
 	<copyField source="body_value" dest="text" />
 	<copyField source="label" dest="text" />
+	<copyField source="tag_id" dest="text" />
 	<copyField source="*_multilingual" dest="text" />
-	
-	
+	<copyField source="annotationId_string.*" dest="text" />
+	<copyField source="language.*" dest="text" />
+	<copyField source="body_type.*" dest="text" />		
 	
 </schema>

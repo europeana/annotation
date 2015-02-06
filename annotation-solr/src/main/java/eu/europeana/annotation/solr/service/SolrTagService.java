@@ -63,4 +63,14 @@ public interface SolrTagService {
 	 */
 	public void findOrStore(SolrTag queryObject)  throws TagServiceException;
 		
+	/**
+	 * This method retrieves available Tags by searching for given map key and value.
+	 * @param searchKey
+	 * @param searchValue
+	 * @return
+	 * @throws TagServiceException
+	 */
+	public List<? extends SolrTag> searchByMapKey(String searchKey, String searchValue)  throws TagServiceException;
+		
+	
 }

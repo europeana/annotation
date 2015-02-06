@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.junit.Assert;
 import org.junit.Before;
 //import org.easymock.EasyMock;
 import org.junit.Test;
@@ -38,6 +40,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
+import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 
@@ -317,6 +320,20 @@ public class SolrAnnotationServiceTest {
 		printListWithMap(solrAnnotationsByMapKey, "list with map after query...", true);
 	}
 	
+	@Test
+	public void testQueryFacetSearch() throws AnnotationServiceException {
+		List<String> queries = new ArrayList<String>();
+		queries.add(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField() 
+				+ SolrAnnotationConst.DELIMETER
+				+ SolrAnnotationConst.STAR);
+		List<String> qfList = new ArrayList<String>();
+		qfList.add(SolrAnnotationConst.SolrAnnotationFields.LANGUAGE.getSolrAnnotationField());
+		qfList.add(SolrAnnotationConst.SolrAnnotationFields.BODY_TYPE.getSolrAnnotationField());
+		String[] qf = qfList.toArray(new String[qfList.size()]);
+		Assert.assertNotNull(solrAnnotationService.queryFacetSearch(
+				SolrAnnotationConst.ALL_SOLR_ENTRIES, qf, queries));
+	}
+
 	public void printList(List<? extends SolrAnnotation> beans, String msg) {
 		
 		printListWithMap(beans, msg, false);

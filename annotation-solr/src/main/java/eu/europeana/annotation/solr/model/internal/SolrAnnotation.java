@@ -37,4 +37,7 @@ public interface SolrAnnotation extends Annotation {
 	
 	public String getAnnotationType();
 	
+	public void setTagId(String id);
+
+	public String getTagId();
 }

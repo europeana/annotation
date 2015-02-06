@@ -18,6 +18,7 @@ package eu.europeana.annotation.solr.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -278,4 +279,72 @@ public class SolrTagServiceTest {
 		assertFalse(solrTags.size() > 0);		
 	}
 		
+	@Test
+	public void testSearchSolrTagByTagId() throws MalformedURLException, IOException, TagServiceException {
+		
+		/**
+		 * Create solr tag with new label and check the tag_id
+		 */
+		SolrTagImpl solrTag = storeTestObjectByLabel(TEST_VALUE_2);
+		Logger.getLogger(getClass().getName()).info("search by label test: " +  solrTag);
+		assertNotNull(solrTag.getId());
+		
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.search(solrTag.getId());			   
+		assertTrue(solrTags.size() > 0);				
+	}
+	
+	@Test
+	public void testSearchSolrTagByMultilingualMapLabel() throws MalformedURLException, IOException, TagServiceException {
+		
+		/**
+		 * Create solr Tag with new label
+		 */
+		SolrTagImpl solrTag = storeTestObject();
+
+		/**
+		 * add multilingual labels
+		 */
+		solrTag.addLabelInMapping("EN", "leaf");
+		solrTag.addLabelInMapping("DE", "blatt");
+		
+		Logger.getLogger(getClass().getName()).info("Solr Tag before update. The multilingual map: " + 
+				solrTag.getMultilingual().toString());
+
+		solrTagService.update(solrTag);
+		
+		/**
+		 * query from SOLR by map key
+		 */
+		List<? extends SolrTag> solrTagsByMapKey = solrTagService.searchByMapKey("EN_multilingual", "leaf");			   
+		assertTrue(solrTagsByMapKey.size() > 0);				
+		printListWithMap(solrTagsByMapKey, "list with map after query...", true);
+	}
+	
+	public void printList(List<? extends SolrTag> beans, String msg) {
+		
+		printListWithMap(beans, msg, false);
+	}
+		
+	public void printListWithMap(List<? extends SolrTag> beans, String msg, boolean withMap) {
+		
+		Logger.getLogger(getClass().getName()).info(msg);
+		
+		/**
+		 * Get the results 
+		 */
+        if (beans.size() > 0) {
+			for (SolrTag bean : beans) {
+				Logger.getLogger(getClass().getName()).info(bean.toString());
+				if (withMap 
+						&& ((SolrTagImpl) bean).getMultilingual() != null
+						&& ((SolrTagImpl) bean).getMultilingual().size() > 0) {
+					Logger.getLogger(getClass().getName()).info("multilingual map: " + 
+							((SolrTagImpl) bean).getMultilingual().toString());
+				}
+			}
+		}
+	}
 }

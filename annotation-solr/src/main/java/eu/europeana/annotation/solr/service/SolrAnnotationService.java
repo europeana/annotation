@@ -1,6 +1,7 @@
 package eu.europeana.annotation.solr.service;
 
 import java.util.List;
+import java.util.Map;
 
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
@@ -96,5 +97,15 @@ public interface SolrAnnotationService {
 	 * @throws AnnotationServiceException
 	 */
 	public List<? extends SolrAnnotation> searchByTerm(String id) throws AnnotationServiceException;
+	
+	/**
+	 * This method supports faceting for Annotation.
+	 * @param query
+	 * @param qf
+	 * @param queries
+	 * @return
+	 * @throws AnnotationServiceException
+	 */
+	Map<String, Integer> queryFacetSearch(String query, String[] qf, List<String> queries) throws AnnotationServiceException;
 	
 }

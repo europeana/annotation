@@ -10,6 +10,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
@@ -25,6 +26,27 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String http_uri;
 	private String language;
 	
+	@Override
+	@Field("tag_id")
+	public void setTagId(String id) {
+		if (super.getBody() == null) {
+			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+					BodyTypes.SEMANTIC_TAG.name());
+			((PlainTagBody) body).setTagId(id);
+			super.setBody(body);
+		} else {
+			((PlainTagBody) super.getBody()).setTagId(id);
+		}
+//		super.setId(id);
+	}
+
+	public String getTagId() {
+		String res = "";
+		if (getBody() != null && ((PlainTagBody) super.getBody()).getTagId() != null) 
+			res = ((PlainTagBody) super.getBody()).getTagId();
+		return res;
+	}
+
 	public String getBodyType() {
 		String res = "";
 		if (getBody() != null && getBody().getBodyType() != null) 

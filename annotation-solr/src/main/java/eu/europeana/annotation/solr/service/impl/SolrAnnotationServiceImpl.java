@@ -3,6 +3,7 @@ package eu.europeana.annotation.solr.service.impl;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 //import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -422,4 +423,37 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
     	deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
 	}
 
+	@Override
+	public Map<String, Integer> queryFacetSearch(String query, String[] qf, List<String> queries) 
+			throws AnnotationServiceException {
+		SolrQuery solrQuery = new SolrQuery();
+		solrQuery.setQuery(query);
+		if (qf != null) {
+			solrQuery.addFilterQuery(qf);
+		}
+		solrQuery.setRows(0);
+		solrQuery.setFacet(true);
+		solrQuery.setTimeAllowed(SolrAnnotationConst.TIME_ALLOWED);
+		for (String queryFacet : queries) {
+			solrQuery.addFacetQuery(queryFacet);
+		}
+		QueryResponse response;
+		Map<String, Integer> queryFacets = null;
+		try {
+			if (log.isDebugEnabled()) {
+				log.debug("Solr query is: " + solrQuery.toString());
+			}
+			response = solrServer.query(solrQuery);
+			log.info("queryFacetSearch" + response.getElapsedTime());
+			queryFacets = response.getFacetQuery();
+		} catch (Exception e) {
+			log.error("Exception: " + e.getClass().getCanonicalName() + " " + e.getMessage() + " for query " 
+					+ solrQuery.toString());
+			e.printStackTrace();
+		}
+
+		return queryFacets;
+	}
+
+	
 }

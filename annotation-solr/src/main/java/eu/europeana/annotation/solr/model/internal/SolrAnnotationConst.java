@@ -110,6 +110,20 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 		    return false;
 		}	
 	
+		public static String getLanguageItemByValue(String value) {
+
+			String res = value;
+			
+		    for (SolrAnnotationLanguages c : SolrAnnotationLanguages.values()) {
+		        if (c.name().equals(value) || c.getSolrAnnotationLanguage().equals(value)) {
+		            res = c.name();
+		            break;
+		        }
+		    }
+
+		    return res;
+		}	
+	
 	}
 	
 	/**
@@ -122,5 +136,15 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 	 */
 	public static final String ALL_SOLR_ENTRIES = "*:*";
 	public static final String DELIMETER = ":";
+	public static final String DEFAULT_LANGUAGE = "EN";
+	public static final String UNDERSCORE = "_";
+	public static final String STAR = "*";
 	
+	/**
+	 * Facets
+	 */
+	/**
+	 * Number of milliseconds before the query is aborted by SOLR
+	 */
+	public static final int TIME_ALLOWED = 30000;
 }
