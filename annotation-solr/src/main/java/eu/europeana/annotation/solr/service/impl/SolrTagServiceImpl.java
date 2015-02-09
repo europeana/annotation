@@ -241,6 +241,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	     * Construct a SolrQuery 
 	     */
 	    SolrQuery query = new SolrQuery();
+//	    query.setQuery(searchValue);
 	    query.setQuery(searchKey + ":" + searchValue);
 	    
 	    /**
