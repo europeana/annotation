@@ -109,7 +109,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				}
 				
 			} catch (AnnotationMongoException e) {
-				throw new AnnotationValidationException("Cannot validate Tag Body", e);
+				throw new AnnotationValidationException("Cannot read tag from database", e);
 			}
 		}
 		return tag;

@@ -30,9 +30,10 @@
 						</div>
 						-->
 						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
-						Annotation component is a service that implements the management and indexing of UserTags
+						Annotation component is a service that implements the management and indexing of Web Annotations
 					</div>
 
+					<h3>JSON  API  </h3>
 					<div id="table" style="width: 100%;">	
 					<table>
 						<thead>
@@ -46,15 +47,15 @@
 						<tr>
 							<td class="clsCellBorder cls0_0">GET</td>
 							<td class="clsCellBorder">TEXT</td>
-							<td class="clsCellBorder"><a href="annotations/component">[/annotation-web]/annotations/component</a></td>
+							<td class="clsCellBorder"><a href="annotations/component" target="_new">[/annotation-web]/annotations/component</a></td>
 							<td class="clsCellBorder">Display the name of the current component</td>
 						</tr>
 						<tr>
 							<td class="clsCellBorder cls0_0">GET</td>
 							<td class="clsCellBorder">JSON</td>
 							<td class="clsCellBorder">
-								<a href="annotations/15502/GG_8285?wskey=xy&profile=annotations">
-									[/annotation-web]/annotations/{collection}>/{object}?wskey=&amp;profile=</a></td>
+								<a href="annotations/testCollection/testObject.json?wskey=xy&profile=annotations" target="_new">
+									[/annotation-web]/annotations/{collection}>/{object}.json?wskey=&amp;profile=</a></td>
 							<td class="clsCellBorder">get the list of annotations available for the given object</td>
 						</tr>
 						
@@ -62,8 +63,8 @@
 							<td class="clsCellBorder cls0_0">GET</td>
 							<td class="clsCellBorder">JSON</td>
 							<td class="clsCellBorder"><a
-								href="annotations/testCollection/testObject/1?wskey=xy&profile=annotations">
-									[annotation-web]/annotations/{collection}/{object_hash}/{annotationNr}?wskey=&amp;profile=
+								href="annotations/testCollection/testObject/1.json?wskey=xy&profile=annotations" target="_new">
+									[annotation-web]/annotations/{collection}/{object_hash}/{annotationNr}.json?wskey=&amp;profile=
 							</a></td>
 							<td class="clsCellBorder">get the annotation identified by the given annotation NR</td>
 						</tr>
@@ -124,9 +125,9 @@
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/{collection}/{object_hash}<br>
+									[annotation-web]/annotations/{collection}/{object_hash}.json<br>
 									ObjectTag as JSON:
-								<form action="annotations/testCollection/testObject/" method="post">
+								<form action="annotations/testCollection/testObject.json" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="20" cols="25" name="annotation" >
@@ -187,9 +188,9 @@
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/{collection}/{object_hash}<br>
+									[annotation-web]/annotations/{collection}/{object_hash}.json<br>
 									ObjectTag as JSON:
-								<form action="annotations/testCollection/testObject/" method="post">
+								<form action="annotations/testCollection/testObject.json" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="20" cols="25" name="annotation" >
@@ -245,6 +246,7 @@
 							</td>
 						</tr>						
 
+<!-- 
 <tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
@@ -298,6 +300,7 @@
 								create an (simple) image annotation (BodyType) and return the object as stored in the database
 							</td>
 						</tr>						
+-->
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
@@ -309,12 +312,13 @@
 					</div>
 					<!--  end table div -->	
 
-
+<!-- 
 					<div class="">
 						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
 						Annotation component is a service that implements the management and indexing of ImageAnnotations
 					</div>
-
+-->
+					<h3>JSON-LD  API  </h3>
 					<div id="table" style="width: 100%;">	
 					<table>
 						<thead>
@@ -325,14 +329,36 @@
 							<td class="clsHeaderCell">Function</td>
 						</tr>
 						</thead>
+						
+						<!-- 
+						<tr>
+							<td class="clsCellBorder cls0_0">GET</td>
+							<td class="clsCellBorder">JSON-LD</td>
+							<td class="clsCellBorder">
+								<a href="annotations/testCollection/testObject.jsonld?wskey=xy&profile=annotations">
+									[/annotation-web]/annotations/{collection}>/{object}.jsonld?wskey=&amp;profile=</a></td>
+							<td class="clsCellBorder">get the list of annotations available for the given object</td>
+						</tr>
+						 -->
+						
+						<tr>
+							<td class="clsCellBorder cls0_0">GET</td>
+							<td class="clsCellBorder">JSON-LD</td>
+							<td class="clsCellBorder"><a
+								href="annotations/testCollection/testObject/1.json?wskey=xy&profile=annotations" target="_new">
+									[annotation-web]/annotations/{collection}/{object_hash}/{annotationNr}.jsonld?wskey=&amp;profile=
+							</a></td>
+							<td class="clsCellBorder">get the annotation identified by the given annotation NR</td>
+						</tr> 
+ 						
 
 <tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
-							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder" valign="top">JSON_LD</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/create/{collection}/{object_hash}<br>
+									[annotation-web]/annotations/{collection}/{object_hash}.jsonld<br>
 									Object as JSON-LD:
-								<form action="annotations/create/testCollection/testObject/" method="post">
+								<form action="annotations/testCollection/testObject.jsonld" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="20" cols="25" name="annotation" >
@@ -340,7 +366,7 @@
     "@context": {
         "oa": "http://www.w3.org/ns/oa-context-20130208.json"
     },
-    "@type": "OBJECT_TYPE",
+    "@type": "OBJECT_TAG",
     "annotatedAt": "2012-11-10T09:08:07",
     "annotatedBy": {
         "@id": "open_id_1",
@@ -390,7 +416,7 @@
 								</form>
 							</td>
 							<td class="clsCellBorder" valign="top">
-								create a semantic annotation (BaseObjectTag) and return the object as stored in the database
+								create a semantic annotation (ObjectTag) and return the object as stored in the database
 							</td>
 						</tr>						
 
@@ -406,12 +432,14 @@
 					<!--  end table div -->	
 						
 						
-						
+<!-- 		
 					<div class="">
 						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
 						Annotation component is a service that implements the search for Annotations
 					</div>
+-->					
 
+					<h3>Search Annotations API</h3>
 					<div id="table" style="width: 100%;">	
 					<table>
 						<thead>
@@ -428,9 +456,9 @@
 							<td class="clsCellBorder cls0_0" valign="top">GET</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/search/{collection}/{object_hash}<br>
+									[annotation-web]/annotations/search<br>
 									Search for annotation (all fields or by field):
-								<form action="annotations/search/testCollection/testObject/" method="get">
+								<form action="annotations/search" method="get" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="1" cols="10" name="query" >
@@ -447,13 +475,16 @@
 								<option name=en value=en> EN </option>
 								<option name=de value=de> DE </option>
 								<option name=ro value=ro> RO </option>
-								</select>&nbsp;Facet
+								</select>
+								<!-- 
+								&nbsp;Facet
 								<select name="facet">
 								<option name=all value=all> All </option>
 								<option name=language value=language> language </option>
 								<option name=body_type value=body_type> body type </option>
 								<option name=annotationId_string value=annotationId_string> annotation ID string </option>
 								</select>
+								 -->
 								<br>
 								<input type="submit" name="search" value="search">
 								</form>
@@ -473,11 +504,14 @@
 					</div>
 					<!--  end table div -->
 					
+					<!-- 
 					<div class="">
 						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
 						Tag component is a service that implements the search for Tags
 					</div>
+					 -->
 
+					<h3>Search Tags  API  </h3>
 					<div id="table" style="width: 100%;">	
 					<table>
 						<thead>
@@ -494,9 +528,9 @@
 							<td class="clsCellBorder cls0_0" valign="top">GET</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/tags/search/{collection}/{object_hash}<br>
+									[annotation-web]/tags/search<br>
 									Search for tags (all fields or by field):
-								<form action="tags/search/testCollection/testObject/" method="get">
+								<form action="tags/search" method="get" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								<textarea rows="1" cols="10" name="query" >

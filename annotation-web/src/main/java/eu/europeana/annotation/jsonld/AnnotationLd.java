@@ -224,23 +224,14 @@ public class AnnotationLd extends JsonLd {
 		    }		    
 		}	
 		
+		//TODO: change this by making europeana ID mandatory
 		if (annotation.getTarget() != null && StringUtils.isEmpty(annotation.getTarget().getEuropeanaId()))
 			annotation.getTarget().setEuropeanaId(WebAnnotationFields.DEFAULT_EURIPEANA_ID);
-		if (annotation.getStyledBy() != null && StringUtils.isEmpty(annotation.getStyledBy().getHttpUri()))
-			annotation.getStyledBy().setHttpUri(WebAnnotationFields.DEFAULT_STYLE_TYPE);
+//		if (annotation.getStyledBy() != null && StringUtils.isEmpty(annotation.getStyledBy().getHttpUri()))
+//			annotation.getStyledBy().setHttpUri(WebAnnotationFields.DEFAULT_STYLE_TYPE);
 		if (annotation.getBody() != null && StringUtils.isEmpty(annotation.getBody().getMediaType()))
 			annotation.getBody().setMediaType(WebAnnotationFields.DEFAULT_MEDIA_TYPE);
 
-		/**
-		 * Check types and replace if necessary 
-		 */
-		if (annotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-			annotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		if (annotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
-			annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		}
-        
 		return annotation;
     }
 

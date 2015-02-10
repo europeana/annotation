@@ -145,10 +145,10 @@ public class PersistentTagServiceImpl extends
 				&& tag.getHttpUri() == null)
 			throw new InvalidTagException(
 					InvalidTagException.MESSAGE_NULL_ATTRIBUTE + "httpUri");
-		else if(!TagTypes.SEMANTIC_TAG.name().equals(tag.getTagType())
-				&& tag.getHttpUri() != null)
-			throw new InvalidTagException(
-					InvalidTagException.MESSAGE_WRONG_VALUE + " httpUri: " + tag.getHttpUri());
+//		else if(!TagTypes.SEMANTIC_TAG.name().equals(tag.getTagType())
+//				&& tag.getHttpUri() != null)
+//			throw new InvalidTagException(
+//					InvalidTagException.MESSAGE_WRONG_VALUE + " httpUri: " + tag.getHttpUri());
 		
 	}
 

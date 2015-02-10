@@ -9,18 +9,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 public class AnnotationControllerHelper {
 
-	protected AbstractAnnotation copyIntoWebAnnotation(Annotation annotation,
-			String apiKey) {
-
-//		AbstractAnnotation to = (AbstractAnnotation) (AnnotationObjectFactory
-//				.getInstance().createAnnotationInstance(annotation.getType()));
-		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance()
-				.createModelObjectInstance(annotation.getType());
-		copyAnnotationAttributes(annotation, to);
-
-		return to;
-	}
-
 	public AbstractAnnotation copyIntoWebAnnotation(Annotation annotation) {
 
 		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance()

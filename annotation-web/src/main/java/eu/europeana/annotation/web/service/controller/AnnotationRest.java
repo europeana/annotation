@@ -2,9 +2,9 @@ package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +20,16 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
-import eu.europeana.annotation.web.model.TagOperationResponse;
+import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api2.utils.JsonUtils;
@@ -43,12 +46,14 @@ public class AnnotationRest {
 	AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
 
 	TypeUtils typeUtils = new TypeUtils();
+	
+	
 
-	public TypeUtils getTypeUtils() {
+	TypeUtils getTypeUtils() {
 		return typeUtils;
 	}
 
-	public AnnotationConfiguration getConfiguration() {
+	AnnotationConfiguration getConfiguration() {
 		return configuration;
 	}
 
@@ -68,7 +73,7 @@ public class AnnotationRest {
 		this.configuration = configuration;
 	}
 
-	public AnnotationControllerHelper getControllerHelper() {
+	AnnotationControllerHelper getControllerHelper() {
 		return controllerHelper;
 	}
 	
@@ -78,7 +83,7 @@ public class AnnotationRest {
 		return getConfiguration().getComponentName();
 	}
 
-	@RequestMapping(value = "/annotations/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ModelAndView getAnnotationList(@PathVariable String collection,
 			@PathVariable String object,
 			@RequestParam(value = "apiKey", required = false) String apiKey,
@@ -88,23 +93,44 @@ public class AnnotationRest {
 		List<? extends Annotation> annotations = getAnnotationService()
 				.getAnnotationList(resourceId);
 		
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
-				apiKey, "/annotations/collection/object");
-		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
-
-		AbstractAnnotation webAnnotation;
-		for (Annotation annotation : annotations) {
-			webAnnotation = getControllerHelper().copyIntoWebAnnotation(
-					annotation, apiKey);
-			response.items.add(webAnnotation);
-		}
-		response.itemsCount = response.items.size();
-		response.totalResults = annotations.size();
+		String action = "/annotations/collection/object.json";
+		
+		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
+				annotations, apiKey, action);
 
 		return JsonUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	private AnnotationSearchResults<AbstractAnnotation> buildSearchResponse(
+			List<? extends Annotation> annotations, String apiKey, String action) {
+		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
+				apiKey, action);
+		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
+
+		AbstractAnnotation webAnnotation;
+		for (Annotation annotation : annotations) {
+			webAnnotation = getControllerHelper().copyIntoWebAnnotation(annotation);
+			response.items.add(webAnnotation);
+		}
+		response.itemsCount = response.items.size();
+		response.totalResults = annotations.size();
+		return response;
+	}
+
+	private AnnotationSearchResults<AbstractAnnotation> buildSearchErrorResponse(
+			String apiKey, String action, Throwable th) {
+		
+		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
+				apiKey, action);
+		response.success = false;
+		response.error = th.getMessage();
+		response.requestNumber = 0L;
+		
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getAnnotation(@PathVariable String collection,
 			@PathVariable String object, @PathVariable Integer annotationNr,
@@ -117,27 +143,60 @@ public class AnnotationRest {
 				resourceId, annotationNr);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, "/annotations/collection/object/annotationNr");
+				apiKey, "/annotations/collection/object/annotationNr.json");
 
 		if (annotation != null) {
 
+			response = new AnnotationOperationResponse(
+					apiKey, "/annotations/collection/object/annotationNr.json");
+			
 			response.success = true;
 			response.requestNumber = 0L;
 
 			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-					annotation, apiKey));
+					annotation));
 		}else{
-			response.success = false;
-			response.action = "get: /annotations/"+collection+"/"
-					+object+"/"+annotationNr;
+			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			String action = "get: /annotations/"+collection+"/"
+					+object+"/"+annotationNr+".json";
 			
-			response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			response = buildErrorResponse(errorMessage, action, apiKey);
 		}
 		
 		return JsonUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/annotations/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	AnnotationOperationResponse buildErrorResponse(String errorMessage,
+			String action, String apiKey) {
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(
+				apiKey, action);
+		
+		response.success = false;
+		response.error = errorMessage;
+		return response;
+	}
+
+	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAnnotationLd(@PathVariable String collection,
+			@PathVariable String object, @PathVariable Integer annotationNr,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile) {
+
+		String resourceId = toResourceId(collection, object);
+		
+		Annotation annotation = getAnnotationService().getAnnotationById(
+				resourceId, annotationNr);
+		
+		AnnotationLd annotationLd = new AnnotationLd(annotation);
+        String jsonLd = annotationLd.toString(4);
+	
+		return JsonUtils.toJson(jsonLd, null);
+	}
+
+	
+	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView createAnnotation(@PathVariable String collection,
 			@PathVariable String object,
@@ -153,19 +212,19 @@ public class AnnotationRest {
 				persistantAnnotation);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, "create:/annotations/collection/object/");
+				apiKey, "create:/annotations/collection/object.json");
 		response.success = true;
 		response.requestNumber = 0L;
 
 		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-				storedAnnotation, apiKey));
+				storedAnnotation));
 
 		return JsonUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/annotations/create/{collection}/{object}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView createAnnotationObject(@PathVariable String collection,
+	public ModelAndView createAnnotationLd(@PathVariable String collection,
 			@PathVariable String object,
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
@@ -191,7 +250,12 @@ public class AnnotationRest {
         	 */
         	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
 		} catch (Exception e) {
-			e.printStackTrace();
+			String errorMessage = "Cannot Parse JSON-LD input! ";
+			Logger.getLogger(getClass().getName()).error(errorMessage, e);
+			
+			errorMessage += e.getMessage();
+			AnnotationOperationResponse errorResponse = buildErrorResponse(errorMessage, "/annotations/{collection}/{object}.jsonld", apiKey);
+			return JsonUtils.toJson(errorResponse, null);
 		}
         
         /**
@@ -210,21 +274,15 @@ public class AnnotationRest {
 		Annotation resAnnotation = controllerHelper
 				.copyIntoWebAnnotation(storedAnnotation);
 
-		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, "create:/annotations/create/collection/object/");
-		response.success = true;
-		response.requestNumber = 0L;
-
-		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-				resAnnotation, apiKey));
-
-		return JsonUtils.toJson(response, null);
+		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
+        String jsonLd = annotationLd.toString(4);
+	
+		return JsonUtils.toJson(jsonLd, null);
 	}
 
-	@RequestMapping(value = "/annotations/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView searchAnnotationByField(@PathVariable String collection,
-			@PathVariable String object, 
+	public ModelAndView searchAnnotationByField(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
@@ -232,7 +290,7 @@ public class AnnotationRest {
 			@RequestParam(value = "language", required = true) String language,
 			@RequestParam(value = "facet", required = false) String facet) {
 
-		String resourceId = toResourceId(collection, object);
+		//String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
 //		field = getTypeUtils().removeTabs(field);
 //		language = getTypeUtils().removeTabs(language);
@@ -252,79 +310,76 @@ public class AnnotationRest {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
 		}
 		
-		boolean withFacet = false;
-		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
-			withFacet = true;
-			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				String prefix = "";
-				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
-						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-					}
-				}
-				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-			}
-		}
+//		boolean withFacet = false;
+//		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
+//			withFacet = true;
+//			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
+//				String prefix = "";
+//				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+//					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
+//					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+//						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+//					}
+//				}
+//				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
+//			}
+//		}
 
-		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, "/annotations/search/collection/object/");
+//		AnnotationSearchResults<? extends Annotation> response = new AnnotationSearchResults<AbstractAnnotation>(
+//				apiKey, );
 
-		if (!withFacet) {
-			List<? extends Annotation> annotationList = getAnnotationService().getAnnotationByQuery(
-					resourceId, query);
-
-			if (annotationList != null && annotationList.size() > 0) {
-
-				response.success = true;
-				response.requestNumber = 0L;
-
-				response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-						annotationList.get(0), apiKey));
-			} else {
-				response.success = false;
-				response.action = "get: /annotations/"+collection+"/"
-						+object+"/"+ query;
+		
+		
+//		if (!withFacet) {
+			List<? extends Annotation> annotationList;
+			AnnotationSearchResults<AbstractAnnotation> response;
+			
+			try {
+				annotationList = getAnnotationService().searchAnnotations(query);
+				response = buildSearchResponse(
+						annotationList, apiKey, "/annotations/search");
 				
-				response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			} catch (AnnotationServiceException e) {
+				Logger.getLogger(getClass().getName()).error(e);
+				response = buildSearchErrorResponse(apiKey, "/annotations/search", e);
 			}
-		} else {
-			List<String> queries = new ArrayList<String>();
-			queries.add(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField() 
-					+ SolrAnnotationConst.DELIMETER
-					+ SolrAnnotationConst.STAR);
-			List<String> qfList = new ArrayList<String>();
-			qfList.add(facet);
-			String[] qf = qfList.toArray(new String[qfList.size()]);
-			Map<String,Integer> annotationMap = getAnnotationService().getAnnotationByFacetedQuery(qf, queries);
-			if (annotationMap != null && annotationMap.size() > 0) {
 
-				response.success = true;
-				response.requestNumber = 0L;
-				response.action = JsonUtils.mapToStringExt(annotationMap);
-			} else {
-				response.success = false;
-				response.action = "get: /annotations/"+collection+"/"
-						+object+"/"+ query;
-				
-				response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
-			}
-		}
+			
+//		} else {
+//			List<String> queries = new ArrayList<String>();
+//			queries.add(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField() 
+//					+ SolrAnnotationConst.DELIMETER
+//					+ SolrAnnotationConst.STAR);
+//			List<String> qfList = new ArrayList<String>();
+//			qfList.add(facet);
+//			String[] qf = qfList.toArray(new String[qfList.size()]);
+//			Map<String,Integer> annotationMap = getAnnotationService().getAnnotationByFacetedQuery(qf, queries);
+//			if (annotationMap != null && annotationMap.size() > 0) {
+//
+//				response.success = true;
+//				response.requestNumber = 0L;
+//				response.action = JsonUtils.mapToStringExt(annotationMap);
+//			} else {
+//				response.success = false;
+//				response.action = "get: /annotations/search?"+ query;
+//				
+//				response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+//			}
+//		}
 				
 		return JsonUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/tags/search/{collection}/{object}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView searchTagByField(@PathVariable String collection,
-			@PathVariable String object, 
+	public ModelAndView searchTagByField(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
 			@RequestParam(value = "field", required = true) String field,
 			@RequestParam(value = "language", required = true) String language) {
 
-		String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
 //		field = getTypeUtils().removeTabs(field);
 //		language = getTypeUtils().removeTabs(language);
@@ -344,25 +399,36 @@ public class AnnotationRest {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
 		}
 
-		List<? extends SolrTag> tagList = getAnnotationService().getTagByQuery(
-				resourceId, query);
+//		List<? extends TagResource> tagList = getAnnotationService().searchTags(
+//				query);
 
-		TagOperationResponse response = new TagOperationResponse(
-				apiKey, "/tag/search/collection/object/");
-
-		if (tagList != null && tagList.size() > 0) {
-
+		TagSearchResults<BaseTagResource> response;
+		response = new TagSearchResults<BaseTagResource>(
+				apiKey, "/tags/search");
+		
+		try{
+			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(query);
+			response.itemsCount = response.items.size();
+			response.totalResults = response.items.size();
 			response.success = true;
-			response.requestNumber = 0L;
-
-			response.setTag(tagList.get(0));
-		} else {
+		} catch (Exception e){
+			Logger.getLogger(getClass().getName()).error(e);
 			response.success = false;
-			response.action = "get: /annotations/"+collection+"/"
-					+object+"/"+ query;
-			
-			response.error = TagOperationResponse.ERROR_NO_OBJECT_FOUND;
+			response.error = e.getMessage();
 		}
+
+//		if (tagList != null && tagList.size() > 0) {
+//
+//			response.success = true;
+//			response.requestNumber = 0L;
+//
+//			response.setTag(tagList.get(0));
+//		} else {
+//			response.success = false;
+//			response.action = "get: /tags/search?"+ query;
+//			
+//			response.error = TagOperationResponse.ERROR_NO_OBJECT_FOUND;
+//		}
 		
 		return JsonUtils.toJson(response, null);
 	}

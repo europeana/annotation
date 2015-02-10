@@ -72,37 +72,35 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public List<? extends Annotation> getAnnotationByQuery(String resourceId,
-			String query) {
-		try {
+	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
+		//try {
 			return getSolrService().search(query);
 //			return getSolrService().searchByTerm(query);
-		} catch (AnnotationServiceException e) {
-			Logger.getLogger(getClass().getName()).warn(e);
-			return null;
-		}		
+//		} catch (AnnotationServiceException e) {
+//			Logger.getLogger(getClass().getName()).warn(e);
+//			return null;
+//		}		
 	}
 
 	@Override
-	public Map<String, Integer> getAnnotationByFacetedQuery(String [] qf, List<String> queries) {
-		try {
+	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException {
+		//try {
 			return getSolrService().queryFacetSearch(SolrAnnotationConst.ALL_SOLR_ENTRIES, qf, queries);
-		} catch (AnnotationServiceException e) {
-			Logger.getLogger(getClass().getName()).warn(e);
-			return null;
-		}		
+//		} catch (AnnotationServiceException e) {
+//			Logger.getLogger(getClass().getName()).warn(e);
+//			return null;
+//		}		
 	}
 
 	@Override
-	public List<? extends SolrTag> getTagByQuery(String resourceId,
-			String query) {
-		try {
+	public List<? extends SolrTag> searchTags(
+			String query) throws TagServiceException {
 			return getSolrTagService().search(query);
 //			return getSolrTagService().searchByTerm(query);
-		} catch (TagServiceException e) {
-			Logger.getLogger(getClass().getName()).warn(e);
-			return null;
-		}		
+//		} catch (TagServiceException e) {
+//			Logger.getLogger(getClass().getName()).warn(e);
+//			return null;
+//		}		
 	}
 
 	@Override

@@ -187,8 +187,12 @@ public abstract class AbstractAnnotation implements Annotation {
 	public MotivationTypes getMotivationType() {
 		if(getMotivatedBy() == null)
 			return null;
+		for(MotivationTypes element : MotivationTypes.values()){
+			if(element.getOaType().equals(getMotivatedBy()))
+				return element;
+		}
 		
-		return MotivationTypes.valueOf(getMotivatedBy());		
+		return  MotivationTypes.UNKNOWN;		
 	}
 	
 	@Override

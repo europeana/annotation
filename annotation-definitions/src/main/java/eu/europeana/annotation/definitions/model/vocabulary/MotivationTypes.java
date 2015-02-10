@@ -13,7 +13,8 @@ public enum MotivationTypes {
 	, MODERATING("oa:moderating")
 	, QUESTIONING("oa:questioning")
 	, REPLYING("oa:replying")
-	, TAGGING("oa:tagging"); 
+	, TAGGING("oa:tagging"),
+	UNKNOWN("oa:unknown"); 
 
 	
 	private String oaType;
@@ -25,4 +26,5 @@ public enum MotivationTypes {
 	public String getOaType(){
 		return oaType;
 	}
+	
 }

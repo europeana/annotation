@@ -32,9 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
 import eu.europeana.annotation.jsonld.AnnotationTestObjectBuilder;
@@ -81,12 +79,12 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Check types and replace if necessary 
 		 */
-		if (testAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-			testAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		if (testAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
-			testAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		}
+//		if (testAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+//			testAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+//		}
+//		if (testAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+//			testAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+//		}
 		
 		/**
 		 * Convert the test annotation object to the PersistentAnnotation object type.
@@ -117,13 +115,13 @@ public class WebAnnotationServiceTest {
 //		    	webAnnotation.setType(WebAnnotationFields.OA_ANNOTATION);
 //		    }
 		}
-		if (StringUtils.isBlank(webAnnotation.getMotivatedBy())) {
-			webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
-		} else {
-			if (webAnnotation.getMotivatedBy().equals(MotivationTypes.TAGGING.name())) {
-				webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
-			}
-		}
+//		if (StringUtils.isBlank(webAnnotation.getMotivatedBy())) {
+//			webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
+//		} else {
+//			if (webAnnotation.getMotivatedBy().equals(MotivationTypes.TAGGING.name())) {
+//				webAnnotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
+//			}
+//		}
 		
 		System.out.println("testAnnotation: " + testAnnotation.toString());
 		System.out.println("webAnnotation: " + webAnnotation.toString());
@@ -218,12 +216,12 @@ public class WebAnnotationServiceTest {
         /**
 		 * Check types and replace if necessary 
 		 */
-		if (testAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-			testAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		if (testAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
-			testAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		}
+//		if (testAnnotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+//			testAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+//		}
+//		if (testAnnotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+//			testAnnotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+//		}
 //		if (annotationFromAnnotationLd.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
 //			annotationFromAnnotationLd.setType(AnnotationTypes.OBJECT_TAG.name());
 //		}

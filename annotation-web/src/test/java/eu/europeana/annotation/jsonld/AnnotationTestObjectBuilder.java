@@ -98,8 +98,9 @@ public class AnnotationTestObjectBuilder {
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
 		
-		annotation.setType(WebAnnotationFields.OA_ANNOTATION);
-        annotation.setAnnotatedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
+		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
+        
+		annotation.setAnnotatedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
         annotation.setSerializedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
 
         // set target
@@ -120,7 +121,7 @@ public class AnnotationTestObjectBuilder {
 		annotation.setSerializedBy(agent);
 				
 		// motivation
-		annotation.setMotivatedBy(WebAnnotationFields.OA_TAGGING);
+		annotation.setMotivatedBy(MotivationTypes.TAGGING.getOaType());
 		
 		// set styledBy
 		Style style = buildStyledBy();
@@ -129,12 +130,13 @@ public class AnnotationTestObjectBuilder {
         /**
 		 * Check types and replace if necessary 
 		 */
-		if (annotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-			annotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		if (annotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
+		//if (annotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
+		//TODO	
+		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		//}
+		//if (annotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
 			annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		}
+		//}
         
 		return annotation;
 	}

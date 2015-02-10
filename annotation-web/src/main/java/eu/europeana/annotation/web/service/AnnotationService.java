@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.solr.model.internal.SolrTag;
+import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.TagServiceException;
 
 public interface AnnotationService {
 
@@ -26,23 +28,26 @@ public interface AnnotationService {
 	 * @param europeanaId
 	 * @param query
 	 * @return
+	 * @throws AnnotationServiceException 
 	 */
-	public List<? extends Annotation> getAnnotationByQuery(String europeanaId, String query);
+	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException;
 	
 	/**
 	 * Search for tags by the given text query.
 	 * @param resourceId
 	 * @param query
 	 * @return
+	 * @throws TagServiceException 
 	 */
-	public List<? extends SolrTag> getTagByQuery(String resourceId, String query);
+	public List<? extends TagResource> searchTags(String query) throws TagServiceException;
 
 	/**
 	 * This method is used for query faceting.
 	 * @param qf
 	 * @param queries
 	 * @return
+	 * @throws AnnotationServiceException 
 	 */
-	public Map<String, Integer> getAnnotationByFacetedQuery(String [] qf, List<String> queries);
+	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException;
 	
 }
