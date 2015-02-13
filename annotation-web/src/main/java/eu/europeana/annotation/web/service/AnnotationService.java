@@ -25,7 +25,6 @@ public interface AnnotationService {
 	
 	/**
 	 * Search for annotations by the given text query.
-	 * @param europeanaId
 	 * @param query
 	 * @return
 	 * @throws AnnotationServiceException 
@@ -33,13 +32,33 @@ public interface AnnotationService {
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException;
 	
 	/**
+	 * Search for annotations by the given text query, row start position and rows limit. 	 
+	 * @param query
+	 * @param startOn
+	 * @param limit
+	 * @return
+	 * @throws AnnotationServiceException 
+	 */
+	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit) 
+			throws AnnotationServiceException;
+	
+	/**
 	 * Search for tags by the given text query.
-	 * @param resourceId
 	 * @param query
 	 * @return
 	 * @throws TagServiceException 
 	 */
 	public List<? extends TagResource> searchTags(String query) throws TagServiceException;
+
+	/**
+	 * Search for tags by the given text query, row start position and rows limit.
+	 * @param query
+	 * @param startOn
+	 * @param limit
+	 * @return
+	 * @throws TagServiceException 
+	 */
+	public List<? extends TagResource> searchTags(String query, String startOn, String limit) throws TagServiceException;
 
 	/**
 	 * This method is used for query faceting.

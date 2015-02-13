@@ -22,8 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -55,7 +53,6 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.api2.utils.JsonUtils;
 
@@ -102,14 +99,14 @@ public class AnnotationLd extends JsonLd {
                 
     	setUseTypeCoercion(false);
         setUseCuries(true);
-        addNamespacePrefix("http://www.w3.org/ns/oa-context-20130208.json", "oa");
+        addNamespacePrefix(WebAnnotationFields.OA_PREFIX, WebAnnotationFields.OA);
 
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
         if (!StringUtils.isNotBlank(annotation.getType())) {
         	jsonLdResource.addType(annotation.getType());
         } else {
-        	jsonLdResource.addType(WebAnnotationFields.ANNOTATION_LD_TYPE);
+        	jsonLdResource.addType(WebAnnotationFields.DEFAULT_ANNOTATION_TYPE);
         }
         
         if (annotation.getAnnotationId() != null && !StringUtils.isBlank(annotation.getAnnotationId().toString())) 
@@ -131,28 +128,28 @@ public class AnnotationLd extends JsonLd {
         put(jsonLdResource);
     }
 
-    public String parseByKey(String key, String term) {
-    	String res = "";
-    	if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(term)
-    			&& term.contains(key)) {
-//    		int indexKey = term.indexOf(key);
-    		String patternRegex = key + "\":\"\\w+\"";
-    		Pattern pattern = Pattern.compile(patternRegex);
-    	    // in case you would like to ignore case sensitivity,
-    	    // you could use this statement:
-    	    // Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
-    	    Matcher matcher = pattern.matcher(term);
-    	    // check all occurance
-    	    while (matcher.find()) {
-    	      System.out.print("Start index: " + matcher.start());
-    	      System.out.print(" End index: " + matcher.end() + " ");
-    	      System.out.println(matcher.group());
-    	    }
-//    		List<String> termList = Arrays.asList(term.split("\""));
-    		res = "";
-    	}
-    	return res;
-    }
+//    public String parseByKey(String key, String term) {
+//    	String res = "";
+//    	if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(term)
+//    			&& term.contains(key)) {
+////    		int indexKey = term.indexOf(key);
+//    		String patternRegex = key + "\":\"\\w+\"";
+//    		Pattern pattern = Pattern.compile(patternRegex);
+//    	    // in case you would like to ignore case sensitivity,
+//    	    // you could use this statement:
+//    	    // Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
+//    	    Matcher matcher = pattern.matcher(term);
+//    	    // check all occurance
+//    	    while (matcher.find()) {
+//    	      System.out.print("Start index: " + matcher.start());
+//    	      System.out.print(" End index: " + matcher.end() + " ");
+//    	      System.out.println(matcher.group());
+//    	    }
+////    		List<String> termList = Arrays.asList(term.split("\""));
+//    		res = "";
+//    	}
+//    	return res;
+//    }
     
     /**
      * This method converts AnnotationLd to Annotation object.
@@ -223,14 +220,6 @@ public class AnnotationLd extends JsonLd {
 		    	break;
 		    }		    
 		}	
-		
-		//TODO: change this by making europeana ID mandatory
-		if (annotation.getTarget() != null && StringUtils.isEmpty(annotation.getTarget().getEuropeanaId()))
-			annotation.getTarget().setEuropeanaId(WebAnnotationFields.DEFAULT_EURIPEANA_ID);
-//		if (annotation.getStyledBy() != null && StringUtils.isEmpty(annotation.getStyledBy().getHttpUri()))
-//			annotation.getStyledBy().setHttpUri(WebAnnotationFields.DEFAULT_STYLE_TYPE);
-		if (annotation.getBody() != null && StringUtils.isEmpty(annotation.getBody().getMediaType()))
-			annotation.getBody().setMediaType(WebAnnotationFields.DEFAULT_MEDIA_TYPE);
 
 		return annotation;
     }
@@ -372,8 +361,10 @@ public class AnnotationLd extends JsonLd {
 				InternetResource source = new BaseInternetResource();
 				if (hasValue(propertyValue2, WebAnnotationFields.CONTENT_TYPE)) 
 					source.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
-				if (hasValue(propertyValue2, WebAnnotationFields.SID)) 
+				if (hasValue(propertyValue2, WebAnnotationFields.SID)) {
 					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.SID));
+					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
+				}
 				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
 					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
 				target.setSource(source);

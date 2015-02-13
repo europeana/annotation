@@ -73,34 +73,30 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
-		//try {
-			return getSolrService().search(query);
-//			return getSolrService().searchByTerm(query);
-//		} catch (AnnotationServiceException e) {
-//			Logger.getLogger(getClass().getName()).warn(e);
-//			return null;
-//		}		
+		return getSolrService().search(query);
+	}
+
+	@Override
+	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit) 
+			throws AnnotationServiceException {
+		return getSolrService().search(query, startOn, limit);
 	}
 
 	@Override
 	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException {
-		//try {
-			return getSolrService().queryFacetSearch(SolrAnnotationConst.ALL_SOLR_ENTRIES, qf, queries);
-//		} catch (AnnotationServiceException e) {
-//			Logger.getLogger(getClass().getName()).warn(e);
-//			return null;
-//		}		
+		return getSolrService().queryFacetSearch(SolrAnnotationConst.ALL_SOLR_ENTRIES, qf, queries);
 	}
 
 	@Override
 	public List<? extends SolrTag> searchTags(
 			String query) throws TagServiceException {
-			return getSolrTagService().search(query);
-//			return getSolrTagService().searchByTerm(query);
-//		} catch (TagServiceException e) {
-//			Logger.getLogger(getClass().getName()).warn(e);
-//			return null;
-//		}		
+		return getSolrTagService().search(query);
+	}
+
+	@Override
+	public List<? extends SolrTag> searchTags(
+			String query, String startOn, String limit) throws TagServiceException {
+		return getSolrTagService().search(query, startOn, limit);
 	}
 
 	@Override

@@ -130,13 +130,8 @@ public class AnnotationTestObjectBuilder {
         /**
 		 * Check types and replace if necessary 
 		 */
-		//if (annotation.getType().equals(WebAnnotationFields.OA_ANNOTATION)) {
-		//TODO	
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		//}
-		//if (annotation.getMotivatedBy().equals(WebAnnotationFields.OA_TAGGING)) {
-			annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
-		//}
+		annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
         
 		return annotation;
 	}

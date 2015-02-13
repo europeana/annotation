@@ -3,6 +3,7 @@ package eu.europeana.annotation.solr.service.impl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -20,7 +21,8 @@ public class SolrTagServiceImpl implements SolrTagService {
 
 	SolrServer solrServer;
 
-	private static final Logger log = Logger.getLogger(SolrTagServiceImpl.class);
+//	private static final Logger log = Logger.getLogger(SolrTagServiceImpl.class);
+	private static final Logger log = Logger.getLogger(SolrAnnotationConst.ROOT);
 	
 	public void setSolrServer(SolrServer solrServer) {
 		this.solrServer = solrServer;
@@ -63,6 +65,43 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    return res;
 	}
 
+	@Override
+	public List<? extends SolrTag> search(String term, String startOn, String limit) throws TagServiceException {
+			
+		List<? extends SolrTag> res = null;
+		
+		String msg = term + "' and start: '" + startOn + "' and rows: '" + limit + "'.";
+		log.info("search Tag by term: '" + msg);
+		
+	    /**
+	     * Construct a SolrQuery 
+	     */
+	    SolrQuery query = new SolrQuery(term);
+	    try {
+	    	if (StringUtils.isNotEmpty(startOn)) 
+	    		query.setStart(Integer.parseInt(startOn));
+	    	if (StringUtils.isNotEmpty(limit))
+	    		query.setRows(Integer.parseInt(limit));
+		} catch (Exception e) {
+			throw new TagServiceException(
+					"Unexpected exception occured when searching tags for: " + msg, e);
+        }
+		log.info("limited query: " + query.toString());	    
+	    
+	    /**
+	     * Query the server 
+	     */
+	    try {
+	    	QueryResponse rsp =  solrServer.query( query );
+			log.info("query response: " + rsp.toString());
+	    	res = rsp.getBeans(SolrTagImpl.class);
+		} catch (SolrServerException e) {
+			throw new TagServiceException("Unexpected exception occured when searching tags for: " + term, e);
+        }
+	    
+	    return res;
+	}
+	
 	public List<? extends SolrTag> searchAll() throws TagServiceException {
 			
 		List<? extends SolrTag> res = null;

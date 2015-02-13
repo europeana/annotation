@@ -128,7 +128,7 @@ public class JsonUtils {
 	    while (it.hasNext()) {
 	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
 	        if (res.length() > 0) {
-	        	res = "," + res;
+	        	res = res + ",";
 	        }
 	        res = res + pairs.getKey() + SolrAnnotationConst.DELIMETER + pairs.getValue();
 	        it.remove(); // avoids a ConcurrentModificationException
@@ -145,7 +145,7 @@ public class JsonUtils {
 	    while (it.hasNext()) {
 	        Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>) it.next();
 	        if (res.length() > 0) {
-	        	res = "," + res;
+	        	res = res + ",";
 	        }
 	        res = res + pairs.getKey() + SolrAnnotationConst.DELIMETER + pairs.getValue();
 	        it.remove(); // avoids a ConcurrentModificationException
@@ -177,7 +177,7 @@ public class JsonUtils {
     
     /**
      * This method converts a multilingual part of the JsonLd string for Annotation
-     * in a multilingual value that is conform for Solr.
+     * in a multilingual value that is conform for Solr. E.g. 'en' in 'EN_multilingual'
      * @param jsonLdAnnotationStr
      * @return
      */
@@ -206,6 +206,43 @@ public class JsonUtils {
 				        }
 			        }    			    
     			    res = jsonLdAnnotationStr.replace(multilingualMapStr, solrMultilingualStr);
+    			}		
+    		}    		
+    	}
+    	
+    	return res;
+    }
+    	
+    /**
+     * This method converts a multilingual value that is conform for Solr
+     * in a multilingual part of the JsonLd string for Annotation. E.g. 'EN_multilingual' in 'en'
+     * @param jsonLdAnnotationStr
+     * @return
+     */
+    public static String convertMultilingualFromSolrTypeToJsonLd(String solrAnnotationStr) {
+    	String res = solrAnnotationStr;
+    	
+    	/**
+    	 * Check whether a multilingual part exist. If exist extract this part.
+    	 */
+    	if (solrAnnotationStr.contains(SolrAnnotationConst.MULTILINGUAL)) {
+    		if (!solrAnnotationStr.isEmpty()) {
+    			Pattern pattern = Pattern.compile(SolrAnnotationConst.MULTILINGUAL + "\":\\s+\"(.*?)]");
+    			Matcher matcher = pattern.matcher(solrAnnotationStr);
+    			if (matcher.find()) {
+    			    String multilingualMapStr = matcher.group(1).replace("[", "");
+    			    String solrMultilingualStr = multilingualMapStr;
+			        String[] tokens = multilingualMapStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+			        for(String t : tokens) {
+				        String[] pair = t.split(SolrAnnotationConst.DELIMETER);
+				        String language = pair[0].substring(0,2);
+						if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+				        	solrMultilingualStr = solrMultilingualStr.replace(
+				        			pair[0]	+ SolrAnnotationConst.DELIMETER
+				        			, language.toLowerCase() + SolrAnnotationConst.DELIMETER);
+				        }
+			        }    			    
+    			    res = solrAnnotationStr.replace(multilingualMapStr, solrMultilingualStr);
     			}		
     		}    		
     	}

@@ -39,6 +39,16 @@ public interface SolrTagService {
 	
 	
 	/**
+	 * This method retrieves available Tags by searching for given term, row start position and rows limit.
+	 * @param term
+	 * @param startOn
+	 * @param limit
+	 * @return found rows
+	 * @throws TagServiceException
+	 */
+	public List<? extends SolrTag> search(String term, String startOn, String limit) throws TagServiceException;
+
+	/**
 	 * This method retrieves available tags by searching all terms provided with the given object into the corresponding solr fields .
 	 * @param fieldName The SOLR field name
 	 * @return

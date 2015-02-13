@@ -366,7 +366,7 @@
     "@context": {
         "oa": "http://www.w3.org/ns/oa-context-20130208.json"
     },
-    "@type": "OBJECT_TAG",
+    "@type": "[oa:annotation,euType:OBJECT_TAG]",
     "annotatedAt": "2012-11-10T09:08:07",
     "annotatedBy": {
         "@id": "open_id_1",
@@ -476,6 +476,8 @@
 								<option name=de value=de> DE </option>
 								<option name=ro value=ro> RO </option>
 								</select>
+								&nbsp;start on:&nbsp;<input name="startOn" type="text" size="5" maxlength="5" value="0">
+								&nbsp;limit:&nbsp;<input name="limit" type="text" size="5" maxlength="5" value="">
 								<!-- 
 								&nbsp;Facet
 								<select name="facet">
@@ -504,13 +506,6 @@
 					</div>
 					<!--  end table div -->
 					
-					<!-- 
-					<div class="">
-						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
-						Tag component is a service that implements the search for Tags
-					</div>
-					 -->
-
 					<h3>Search Tags  API  </h3>
 					<div id="table" style="width: 100%;">	
 					<table>
@@ -547,6 +542,8 @@
 								<option name=de value=de> DE </option>
 								<option name=ro value=ro> RO </option>
 								</select>
+								&nbsp;start on:&nbsp;<input name="startOn" type="text" size="5" maxlength="5" value="0">
+								&nbsp;limit:&nbsp;<input name="limit" type="text" size="5" maxlength="5" value="">
 								<br>
 								<input type="submit" name="search" value="search">
 								</form>

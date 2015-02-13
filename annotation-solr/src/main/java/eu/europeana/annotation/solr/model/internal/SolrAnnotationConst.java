@@ -132,6 +132,11 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 	public static final String ALL = "all";
 
 	/**
+	 * Logger name
+	 */
+	public static final String ROOT = "root";
+
+	/**
 	 * Solr query
 	 */
 	public static final String ALL_SOLR_ENTRIES = "*:*";
@@ -139,6 +144,10 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 	public static final String DEFAULT_LANGUAGE = "EN";
 	public static final String UNDERSCORE = "_";
 	public static final String STAR = "*";
+	public static final String AND = "&";
+	public static final String START = "start";
+	public static final String ROWS = "rows";
+	public static final String EQUALS = "=";
 	
 	/**
 	 * Facets

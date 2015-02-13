@@ -20,13 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
-import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.TagSearchResults;
@@ -276,6 +274,7 @@ public class AnnotationRest {
 
 		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
         String jsonLd = annotationLd.toString(4);
+        jsonLd = JsonUtils.convertMultilingualFromSolrTypeToJsonLd(jsonLd);
 	
 		return JsonUtils.toJson(jsonLd, null);
 	}
@@ -288,13 +287,11 @@ public class AnnotationRest {
 			@RequestParam(value = "query", required = true) String query,
 			@RequestParam(value = "field", required = true) String field,
 			@RequestParam(value = "language", required = true) String language,
+			@RequestParam(value = "startOn", required = true) String startOn,
+			@RequestParam(value = "limit", required = true) String limit,
 			@RequestParam(value = "facet", required = false) String facet) {
 
-		//String resourceId = toResourceId(collection, object);
 		query = getTypeUtils().removeTabs(query);
-//		field = getTypeUtils().removeTabs(field);
-//		language = getTypeUtils().removeTabs(language);
-//		facet = getTypeUtils().removeTabs(facet);
 		if (StringUtils.isNotEmpty(field)) {
 			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
 				String prefix = "";
@@ -325,22 +322,18 @@ public class AnnotationRest {
 //			}
 //		}
 
-//		AnnotationSearchResults<? extends Annotation> response = new AnnotationSearchResults<AbstractAnnotation>(
-//				apiKey, );
-
-		
-		
 //		if (!withFacet) {
 			List<? extends Annotation> annotationList;
 			AnnotationSearchResults<AbstractAnnotation> response;
 			
 			try {
-				annotationList = getAnnotationService().searchAnnotations(query);
+				annotationList = getAnnotationService().searchAnnotations(query, startOn, limit);
 				response = buildSearchResponse(
 						annotationList, apiKey, "/annotations/search");
 				
 			} catch (AnnotationServiceException e) {
-				Logger.getLogger(getClass().getName()).error(e);
+//				Logger.getLogger(getClass().getName()).error(e);
+				Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
 				response = buildSearchErrorResponse(apiKey, "/annotations/search", e);
 			}
 
@@ -378,16 +371,15 @@ public class AnnotationRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
 			@RequestParam(value = "field", required = true) String field,
+			@RequestParam(value = "startOn", required = true) String startOn,
+			@RequestParam(value = "limit", required = true) String limit,
 			@RequestParam(value = "language", required = true) String language) {
 
 		query = getTypeUtils().removeTabs(query);
-//		field = getTypeUtils().removeTabs(field);
-//		language = getTypeUtils().removeTabs(language);
 		if (StringUtils.isNotEmpty(field)) {
 			if (SolrAnnotationConst.SolrTagFields.contains(field)) {
 				String prefix = "";
 				if (field.equals(SolrAnnotationConst.SolrTagFields.MULTILINGUAL.getSolrTagField())) {
-//					prefix = ".*" + SolrAnnotationConst.UNDERSCORE;
 					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
 					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
 						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
@@ -399,37 +391,21 @@ public class AnnotationRest {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
 		}
 
-//		List<? extends TagResource> tagList = getAnnotationService().searchTags(
-//				query);
-
 		TagSearchResults<BaseTagResource> response;
 		response = new TagSearchResults<BaseTagResource>(
 				apiKey, "/tags/search");
 		
 		try{
-			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(query);
+			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(query, startOn, limit);
 			response.itemsCount = response.items.size();
 			response.totalResults = response.items.size();
 			response.success = true;
 		} catch (Exception e){
-			Logger.getLogger(getClass().getName()).error(e);
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
 
-//		if (tagList != null && tagList.size() > 0) {
-//
-//			response.success = true;
-//			response.requestNumber = 0L;
-//
-//			response.setTag(tagList.get(0));
-//		} else {
-//			response.success = false;
-//			response.action = "get: /tags/search?"+ query;
-//			
-//			response.error = TagOperationResponse.ERROR_NO_OBJECT_FOUND;
-//		}
-		
 		return JsonUtils.toJson(response, null);
 	}
 

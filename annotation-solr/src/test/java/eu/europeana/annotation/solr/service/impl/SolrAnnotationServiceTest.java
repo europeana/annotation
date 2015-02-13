@@ -293,6 +293,29 @@ public class SolrAnnotationServiceTest {
 		assertFalse(solrAnnotations.size() > 0);		
 	}
 	
+	public void testSearchSolrAnnotationByLimit() throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create solr annotation with new label
+		 */
+		SolrAnnotationImpl solrAnnotation = storeTestObjectByLabel(TEST_VALUE_2);
+		storeTestObjectByLabel(TEST_VALUE);
+		storeTestObjectByLabel(TEST_VALUE);
+		Logger.getLogger(getClass().getName()).info("search by label with limit test: " +  solrAnnotation);
+
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrAnnotation> solrAnnotations = solrAnnotationService.search(TEST_VALUE, "0", "2");			   
+		assertTrue(solrAnnotations.size() == 2);				
+
+		/**
+		 * Check the results 
+		 */
+		SolrAnnotation resSolrAnnotation = solrAnnotations.get(0);
+		assertTrue(resSolrAnnotation.getLabel().equals(TEST_VALUE));
+	}
+	
 	@Test
 	public void testSearchSolrAnnotationByMultilingualMapLabel() throws MalformedURLException, IOException, AnnotationServiceException {
 		

@@ -108,4 +108,14 @@ public interface SolrAnnotationService {
 	 */
 	Map<String, Integer> queryFacetSearch(String query, String[] qf, List<String> queries) throws AnnotationServiceException;
 	
+	/**
+	 * This method retrieves available Annotations by searching for given term, row start position and rows limit.
+	 * @param term
+	 * @param startOn
+	 * @param limit
+	 * @return found rows
+	 * @throws AnnotationServiceException
+	 */
+	public List<? extends SolrAnnotation> search(String term, String startOn, String limit) throws AnnotationServiceException;
+	
 }

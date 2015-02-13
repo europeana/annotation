@@ -185,6 +185,30 @@ public class SolrTagServiceTest {
 	}
 	
 	@Test
+	public void testSearchSolrTagByLimit() throws MalformedURLException, IOException, TagServiceException {
+		
+		/**
+		 * Create solr tag with new label
+		 */
+		SolrTagImpl solrTag = storeTestObjectByLabel(TEST_VALUE_2);
+		storeTestObjectByLabel(TEST_VALUE);
+		storeTestObjectByLabel(TEST_VALUE);
+		Logger.getLogger(getClass().getName()).info("search by label with limit test: " +  solrTag);
+
+		/**
+		 * query from SOLR
+		 */
+		List<? extends SolrTag> solrTags = solrTagService.search(TEST_VALUE, "0", "2");			   
+		assertTrue(solrTags.size() == 2);				
+
+		/**
+		 * Check the results 
+		 */
+		SolrTag resSolrTag = solrTags.get(0);
+		assertTrue(resSolrTag.getLabel().equals(TEST_VALUE));
+	}
+	
+	@Test
 	public void testSearchSolrTagByQueryObject() throws MalformedURLException, IOException, TagServiceException {
 		
 		SolrTagImpl querySolrTag = storeTestObject();

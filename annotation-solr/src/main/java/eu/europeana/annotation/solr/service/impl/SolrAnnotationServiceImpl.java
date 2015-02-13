@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
+
+import org.apache.commons.lang.StringUtils;
 //import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -24,7 +27,8 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 
 	SolrServer solrServer;
 
-	private static final Logger log = Logger.getLogger(SolrAnnotationServiceImpl.class);
+//	private static final Logger log = Logger.getLogger(SolrAnnotationServiceImpl.class);
+	private static final Logger log = Logger.getLogger(SolrAnnotationConst.ROOT);
 	
 	public void setSolrServer(SolrServer solrServer) {
 		this.solrServer = solrServer;
@@ -58,6 +62,43 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 	     */
 	    SolrQuery query = new SolrQuery(term);
 		log.info("query: " + query.toString());	    
+	    
+	    /**
+	     * Query the server 
+	     */
+	    try {
+	    	QueryResponse rsp =  solrServer.query( query );
+			log.info("query response: " + rsp.toString());
+			res = setAnnotationType(rsp);
+		} catch (SolrServerException e) {
+			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for: " + term, e);
+        }
+	    
+	    return res;
+	}
+
+	@Override
+	public List<? extends SolrAnnotation> search(String term, String startOn, String limit) throws AnnotationServiceException {
+			
+		List<? extends SolrAnnotation> res = null;
+		
+		String msg = term + "' and start: '" + startOn + "' and rows: '" + limit + "'.";
+		log.info("search Annotation by term: '" + msg);
+		
+	    /**
+	     * Construct a SolrQuery 
+	     */
+	    SolrQuery query = new SolrQuery(term);
+	    try {
+	    	if (StringUtils.isNotEmpty(startOn)) 
+	    		query.setStart(Integer.parseInt(startOn));
+	    	if (StringUtils.isNotEmpty(limit))
+	    		query.setRows(Integer.parseInt(limit));
+		} catch (Exception e) {
+			throw new AnnotationServiceException(
+					"Unexpected exception occured when searching annotations for: " + msg, e);
+        }
+		log.info("limited query: " + query.toString());	    
 	    
 	    /**
 	     * Query the server 
