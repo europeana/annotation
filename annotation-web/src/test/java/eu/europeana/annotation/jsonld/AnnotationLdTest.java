@@ -252,6 +252,8 @@ public class AnnotationLdTest {
 
         assertEquals(originalAnnotation.getMotivatedBy(), annotationFromAnnotationLd.getMotivatedBy());
         assertEquals(originalAnnotation.getAnnotationId(), annotationFromAnnotationLd.getAnnotationId());
+        // Original object does not have EuropeanaUri
+        originalAnnotation.getTarget().setEuropeanaId(annotationFromAnnotationLd.getTarget().getEuropeanaId());
         assertEquals(originalAnnotation, annotationFromAnnotationLd);
     }
             
@@ -331,6 +333,8 @@ public class AnnotationLdTest {
         
         assertEquals(originalAnnotation.getMotivatedBy(), annotationFromAnnotationLd.getMotivatedBy());
         assertEquals(originalAnnotation.getAnnotationId(), annotationFromAnnotationLd.getAnnotationId());
+        // Original object does not have EuropeanaUri
+        originalAnnotation.getTarget().setEuropeanaId(annotationFromAnnotationLd.getTarget().getEuropeanaId());
         assertEquals(originalAnnotation, annotationFromAnnotationLd);
     }
             

@@ -155,7 +155,9 @@ public class WebAnnotationServiceTest {
         
         /**
          * Compare original Annotation object with retrieved serialized Annotation object.
-         */       
+         */     
+        // Original object does not have EuropeanaUri
+        testAnnotation.getTarget().setEuropeanaId(annotationFromAnnotationLd.getTarget().getEuropeanaId());
         assertEquals(testAnnotation, annotationFromAnnotationLd);        
 	}
 		
