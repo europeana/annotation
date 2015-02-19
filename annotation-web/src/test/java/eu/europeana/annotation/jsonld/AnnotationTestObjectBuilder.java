@@ -15,6 +15,9 @@
 */
 package eu.europeana.annotation.jsonld;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -213,5 +216,23 @@ public class AnnotationTestObjectBuilder {
 		return annotation;
 	}
 	         
+	public static Selector buildSelector() {
+		
+		Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
+				SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
+		
+		selector.setSelectorType("[oa:SvgRectangle,euType:"
+				+ SelectorTypes.SVG_RECTANGLE_SELECTOR.name() 
+				+ "]"
+				);
+		
+		Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
+		dimensionMap.put("left", 5);
+		dimensionMap.put("right", 3);
+		selector.setDimensionMap(dimensionMap);
+		
+		return selector;
+	}
+    	
 }
 

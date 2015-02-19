@@ -90,8 +90,9 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	    }
 
 	    if ((this.getSelector() != null) && (that.getSelector() != null) &&
-	    		(this.getSelector().getSelectorType() != null) && (that.getSelector().getSelectorType() != null) &&
-	    		(!this.getSelector().getSelectorType().equals(that.getSelector().getSelectorType()))) {
+	    		(!this.getSelector().equals(that.getSelector()))) {
+//	    		(this.getSelector().getSelectorType() != null) && (that.getSelector().getSelectorType() != null) &&
+//	    		(!this.getSelector().getSelectorType().equals(that.getSelector().getSelectorType()))) {
 	    	System.out.println("Target objects have different selectors.");
 	    	res = false;
 	    }

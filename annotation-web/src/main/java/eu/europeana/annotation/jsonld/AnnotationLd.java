@@ -369,10 +369,18 @@ public class AnnotationLd extends JsonLd {
 					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
 				target.setSource(source);
 				
-				Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
-						SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
-//				Rectangle selector = new SvgRectangleSelector();
-				target.setSelector((Selector)selector);
+				JsonLdProperty selectorProperty = propertyValue.getProperty(WebAnnotationFields.SELECTOR);
+				if (selectorProperty != null) {
+					JsonLdPropertyValue propertyValue3 = (JsonLdPropertyValue) selectorProperty.getValues().get(0);
+					Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
+							SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
+					if (hasValue(propertyValue3, WebAnnotationFields.AT_TYPE)) 
+						selector.setSelectorType(propertyValue3.getValues().get(WebAnnotationFields.AT_TYPE));
+					if (hasValue(propertyValue3, WebAnnotationFields.DIMENSION_MAP)) 
+						selector.setDimensionMap(
+								JsonUtils.stringToMapExt(propertyValue3.getValues().get(WebAnnotationFields.DIMENSION_MAP)));
+					target.setSelector((Selector)selector);
+				}
 			}
 		}
 		return target;
@@ -398,9 +406,6 @@ public class AnnotationLd extends JsonLd {
 				
 				body = BodyObjectFactory.getInstance().createModelObjectInstance(euType);
 				
-//				body = (Body) objectFactory.createModelObjectInstance(
-//						AnnotationPartTypes.BODY.name() + WebAnnotationFields.SPLITTER + euType);
-//				
 				body.setBodyType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 
 				if (hasValue(propertyValue, WebAnnotationFields.CHARS)) 
@@ -544,8 +549,18 @@ public class AnnotationLd extends JsonLd {
 	        
 	        JsonLdProperty selectorProperty = new JsonLdProperty(WebAnnotationFields.SELECTOR);
 	        JsonLdPropertyValue propertyValue3 = new JsonLdPropertyValue();
-	        propertyValue3.setType(""); // if property is empty - set empty type
-	        
+
+            if (!StringUtils.isBlank(annotation.getTarget().getSelector().getSelectorType()))         	
+            	propertyValue3.getValues().put(WebAnnotationFields.AT_TYPE
+            			, annotation.getTarget().getSelector().getSelectorType());
+            else
+            	propertyValue3.setType(""); // if property is empty - set empty type
+
+            if (!StringUtils.isBlank(annotation.getTarget().getSelector().getDimensionMap().toString()))         	
+            	propertyValue3.getValues().put(
+            			WebAnnotationFields.DIMENSION_MAP
+            			, JsonUtils.mapToStringExt(annotation.getTarget().getSelector().getDimensionMap()));
+
 	        selectorProperty.addValue(propertyValue3);        
 	        propertyValue.putProperty(selectorProperty);
 	        

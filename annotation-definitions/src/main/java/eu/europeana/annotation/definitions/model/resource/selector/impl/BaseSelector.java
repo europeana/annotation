@@ -47,7 +47,38 @@ public abstract class BaseSelector implements Selector{
 		
 		if (getSelectorType() != null) 
 			res = res + "\t\t" + "selectorType:" + getSelectorType().toString() + "\n";
+		if (getDimensionMap() != null) 
+			res = res + "\t\t" + "dimensionMap:" + getDimensionMap().toString() + "\n";
+//		res = res + "\t\t" + "dimensionMap:" + TypeUtils.mapToStringExt(getDimensionMap()) + "\n";
 		return res;
 	}	
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (!(other instanceof Selector)) {
+	        return false;
+	    }
+
+	    Selector that = (Selector) other;
+
+	    boolean res = true;
+	    
+	    /**
+	     * equality check for all relevant fields.
+	     */
+	    if ((this.getSelectorType() != null) && (that.getSelectorType() != null) &&
+	    		(!this.getSelectorType().equals(that.getSelectorType()))) {
+	    	System.out.println("Selector objects have different 'selectorType' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getDimensionMap() != null) && (that.getDimensionMap() != null) &&
+	    		(!this.getDimensionMap().equals(that.getDimensionMap()))) {
+	    	System.out.println("Selector objects have different 'dimensionMap' fields.");
+	    	res = false;
+	    }
+	    
+	    return res;
+	}			
 	
 }

@@ -176,6 +176,25 @@ public class JsonUtils {
     }
     
     /**
+     * This method converts JSON string to map<String,Integer>.
+     * @param value The input string
+     * @return resulting map<String,Integer>
+     */
+    public static Map<String, Integer> stringToMapExt(String value) {
+    	String reg = ",";
+        Map<String,Integer> res = new HashMap<String, Integer>();
+        if (!value.isEmpty()) {
+			value = value.substring(1, value.length() - 1); // remove braces
+	        String[] arrValue = value.split(reg);
+	        for (String string : arrValue) {
+	            String[] mapPair = string.split(SolrAnnotationConst.DELIMETER);
+	            res.put(mapPair[0], Integer.valueOf(mapPair[1]));
+	    	}
+        }
+        return res;
+    }
+    
+    /**
      * This method converts a multilingual part of the JsonLd string for Annotation
      * in a multilingual value that is conform for Solr. E.g. 'en' in 'EN_multilingual'
      * @param jsonLdAnnotationStr

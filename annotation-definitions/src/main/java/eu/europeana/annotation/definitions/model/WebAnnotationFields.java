@@ -25,6 +25,7 @@ public interface WebAnnotationFields {
 	public static final String BODY                 = "body";
 	public static final String BODY_TYPE            = "bodyType";
 	public static final String TARGET_TYPE          = "targetType";
+	public static final String DIMENSION_MAP        = "dimensionMap";
 	public static final String CHARS                = "chars";
 	public static final String DC_LANGUAGE          = "language";
 	public static final String FORMAT               = "format";
