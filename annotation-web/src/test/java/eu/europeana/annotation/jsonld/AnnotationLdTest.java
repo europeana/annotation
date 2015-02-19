@@ -32,6 +32,7 @@ import org.junit.Test;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
@@ -86,13 +87,13 @@ public class AnnotationLdTest {
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);
-        String expected = "{\"@type\":\"annotatedBy\":{\"@type\":\"[SOFTWARE_AGENT]\"},\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"multilingual\":\"\"},\"serializedBy\":{\"@type\":\"[SOFTWARE_AGENT]\"},\"styledBy\":},\"target\":]}";
+        String expected = "{\"@type\":\"annotatedBy\":{\"@type\":\"[SOFTWARE_AGENT]\"},\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"multilingual\":\"\"},\"serializedBy\":{\"@type\":\"[SOFTWARE_AGENT]\"}}";
         
         assertEquals(expected, actual);
         
         String actualIndent = annotationLd.toString(4);
         AnnotationLd.toConsole("", actualIndent);
-        String expectedIndent = "{\n    \"@type\":     \"annotatedBy\": {\n        \"@type\": \"[SOFTWARE_AGENT]\"\n    },\n    \"body\": {\n        \"@type\": \"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\n        \"foaf:page\": \"https://www.freebase.com/m/035br4\",\n        \"format\": \"text/plain\",\n        \"multilingual\": \"\"\n    },\n    \"serializedBy\": {\n        \"@type\": \"[SOFTWARE_AGENT]\"\n    },\n    \"styledBy\": \n    },\n    \"target\": \n    ]\n}";
+        String expectedIndent = "{\n    \"@type\":     \"annotatedBy\": {\n        \"@type\": \"[SOFTWARE_AGENT]\"\n    },\n    \"body\": {\n        \"@type\": \"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\n        \"foaf:page\": \"https://www.freebase.com/m/035br4\",\n        \"format\": \"text/plain\",\n        \"multilingual\": \"\"\n    },\n    \"serializedBy\": {\n        \"@type\": \"[SOFTWARE_AGENT]\"\n    }\n}";
         
         assertEquals(expectedIndent, actualIndent);
     }
@@ -118,6 +119,64 @@ public class AnnotationLdTest {
         String expectedIndent = "{\n    \"@type\": \"[oa:annotation,euType:OBJECT_TAG]\",\n    \"annotatedAt\": \"2012-11-10T09:08:07\",\n    \"annotatedBy\": {\n        \"@id\": \"open_id_1\",\n        \"@type\": \"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]\",\n        \"name\": \"annonymous web user\"\n    },\n    \"body\": {\n        \"@type\": \"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\n        \"chars\": \"Vlad Tepes\",\n        \"foaf:page\": \"https://www.freebase.com/m/035br4\",\n        \"format\": \"text/plain\",\n        \"language\": \"ro\",\n        \"multilingual\": \"\"\n    },\n    \"motivatedBy\": \"TAGGING\",\n    \"serializedAt\": \"2012-11-10T09:08:07\",\n    \"serializedBy\": {\n        \"@id\": \"open_id_2\",\n        \"@type\": \"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]\",\n        \"foaf:homepage\": \"http://annotorious.github.io/\",\n        \"name\": \"Annotorious\"\n    },\n    \"styledBy\": {\n        \"@type\": \"[oa:CssStyle,euType:CSS]\",\n        \"source\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\n        \"styleClass\": \"annotorious-popup\"\n    },\n    \"target\": {\n        \"@type\": \"[oa:SpecificResource,euType:IMAGE]\",\n        \"contentType\": \"image/jpeg\",\n        \"httpUri\": \"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\n        \"selector\": {\n            \"@type\": \"\",\n            \"dimensionMap\": \"\"\n        },\n        \"source\": {\n            \"@id\": \"http://europeana.eu/portal/record//15502/GG_8285.html\",\n            \"contentType\": \"text/html\",\n            \"format\": \"dctypes:Text\"\n        },\n        \"targetType\": \"[oa:SpecificResource,euType:IMAGE]\"\n    },\n    \"type\": \"OBJECT_TAG\"\n}";
         
         assertEquals(expectedIndent, actualIndent);
+    }
+            
+    /**
+     * This test converts Annotation object to AnnotationLd by empty target
+     * object that implements JsonLd format.
+     */
+    @Test
+    public void testAnnotationToAnnotationLdWithMissingTarget() {
+    	
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();     
+        baseObjectTag.setTarget(null);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        
+        String actual = annotationLd.toString();
+        AnnotationLd.toConsole("", actual);       
+        assertTrue(!actual.contains(WebAnnotationFields.TARGET));
+    }
+            
+    /**
+     * This test converts Annotation object to AnnotationLd by empty target entries.
+     * object that implements JsonLd format.
+     */
+    @Test
+    public void testAnnotationToAnnotationLdWithMissingTargetEntries() {
+    	
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();     
+        baseObjectTag.getTarget().setContentType(null);
+        baseObjectTag.getTarget().setHttpUri(null);
+        baseObjectTag.getTarget().setEuropeanaId(null);
+        baseObjectTag.getTarget().setLanguage(null);
+        baseObjectTag.getTarget().setMediaType(null);
+        baseObjectTag.getTarget().setSelector(null);
+        baseObjectTag.getTarget().setSource(null);
+        baseObjectTag.getTarget().setState(null);
+        baseObjectTag.getTarget().setStyleClass(null);
+        baseObjectTag.getTarget().setTargetType(null);
+        baseObjectTag.getTarget().setValue(null);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        
+        String actual = annotationLd.toString();
+        AnnotationLd.toConsole("", actual);       
+        assertTrue(!actual.contains(WebAnnotationFields.TARGET));
+    }
+            
+    /**
+     * This test converts Annotation object to AnnotationLd by empty body
+     * object that implements JsonLd format.
+     */
+    @Test
+    public void testAnnotationToAnnotationLdWithMissingBody() {
+    	
+        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();     
+        baseObjectTag.setBody(null);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        
+        String actual = annotationLd.toString();
+        AnnotationLd.toConsole("", actual);       
+        assertTrue(!actual.contains(WebAnnotationFields.BODY));
     }
             
     @Test

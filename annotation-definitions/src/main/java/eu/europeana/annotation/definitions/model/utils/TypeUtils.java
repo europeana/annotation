@@ -3,6 +3,8 @@ package eu.europeana.annotation.definitions.model.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 public class TypeUtils {
@@ -16,7 +18,7 @@ public class TypeUtils {
 	 */
 	public String getEuTypeFromTypeArray(String typeArray) {
 		String res = "";
-		if (!typeArray.isEmpty()) {
+		if (StringUtils.isNotEmpty(typeArray)) {
 			Pattern pattern = Pattern.compile(WebAnnotationFields.EU_TYPE + ":(.*?)]");
 			Matcher matcher = pattern.matcher(typeArray);
 			if (matcher.find()) {
