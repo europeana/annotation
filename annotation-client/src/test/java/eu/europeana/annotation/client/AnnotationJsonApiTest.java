@@ -1,9 +1,23 @@
 package eu.europeana.annotation.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class AnnotationManagerTest {
+import java.util.List;
 
-	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/testObject";
+import org.junit.Test;
+
+import com.google.gson.Gson;
+
+import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
+import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
+
+
+public class AnnotationJsonApiTest {
+
+//	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/testObject";
 
 //	@Test
 //	public void createSemanticTag(){
@@ -73,4 +87,66 @@ public class AnnotationManagerTest {
 //		
 //				
 //	} 
+	
+	@Test
+	public void createAnnotation() {
+		
+		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+		testAnnotation.getTarget().setSelector(null); // TODO double selectorType entries
+		testAnnotation.getTarget().setSource(null); // TODO InternetResource could not be instantiated
+//		testAnnotation.setAnnotatedAt(null); // TODO GSON Date format
+//		testAnnotation.setSerializedAt(null); // TODO GSON Date format
+//		testAnnotation.setEuropeanaId(TEST_COLLECTION_CLIENT_TEST_OBJECT);
+		
+		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
+		assertNotNull(annotation);
+	}
+	
+	@Test
+	public void getAnnotations(){
+		//TODO: create object within the test and do not rely on the objects stored in the database
+		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
+		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject");
+		assertNotNull(results);
+		assertTrue(results.size() > 0);
+		Gson gson = new Gson();
+		
+		for (Annotation annotation : results) {
+			System.out.println(gson.toJson(annotation));
+			
+		}
+		
+	}
+	
+	@Test(expected = TechnicalRuntimeException.class)
+	public void getAnnotationError(){
+		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
+		retrievalApi.getAnnotation("testCollection", "testObject", -1);		
+	}
+	
+	@Test
+	public void getAnnotation(){
+		//TODO: create object within the test and do not rely on the objects stored in the database
+		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
+		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject");
+		
+		if(results.isEmpty()){
+			System.out.println("No objects found in the database, test skipped");
+			return;
+		}
+		
+		Annotation anno = results.get(0);
+		Annotation annotation = retrievalApi.getAnnotation(anno.getAnnotationId().getResourceId(), anno.getAnnotationId().getAnnotationNr());
+		
+		assertNotNull(annotation);
+		assertEquals(anno.getType(), annotation.getType());
+		
+		
+	}
+	
 }

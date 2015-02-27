@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import eu.europeana.annotation.client.http.HttpConnection;
 import eu.europeana.annotation.client.model.json.AnnotationDeserializer;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.utils.ModelConst;
 
 public class BaseApiConnection {
 
@@ -63,7 +64,12 @@ public class BaseApiConnection {
 			// AnnotationDeserializer annoDeserializer = new
 			// AnnotationDeserializer();
 			// builder.registerTypeAdapter(Annotation.class, annoDeserializer);
-			gson = builder.create();
+//			.setDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz").create();
+//			gson = builder.create();
+			gson = builder.setDateFormat(ModelConst.GSON_DATE_FORMAT).create();
+//			gson = builder.setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
+//			gson = builder.setDateFormat("yyyy-MM-dd hh:mm:ss.S").create(); yyyy-MM-dd'T'HH:mm:ss.SSSZ
+//			gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create(); 
 		}
 		return gson;
 	}

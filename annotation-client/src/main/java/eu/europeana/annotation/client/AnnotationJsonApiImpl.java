@@ -9,16 +9,57 @@ import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.ImageAnnotation;
 
-public class AnnotationRetrievalApi extends BaseAnnotationApi implements AnnotationRetrieval{
+public class AnnotationJsonApiImpl extends BaseAnnotationApi implements AnnotationJsonApi {
 
-	public AnnotationRetrievalApi(ClientConfiguration configuration, AnnotationApiConnection apiConnection){
+	public AnnotationJsonApiImpl(ClientConfiguration configuration,
+			AnnotationApiConnection apiConnection) {
 		super(configuration, apiConnection);
 	}
 	
-	public AnnotationRetrievalApi(){
-		 super();		
+	public AnnotationJsonApiImpl(){
+		super();
 	}
+
+	@Override
+	public Annotation createAnnotation(Annotation annotation){
+		
+		AnnotationOperationResponse res;
+		try {
+			res = apiConnection.createAnnotation(annotation);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
+		}
+
+		return res.getAnnotation();
+	}
+	
+	@Override
+	public ImageAnnotation createImageAnnotation(ImageAnnotation annotation){
+		
+		AnnotationOperationResponse res;
+		try {
+			res = apiConnection.createAnnotation(annotation);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
+		}
+
+		return (ImageAnnotation)res.getAnnotation();
+	}
+	
+//	@Override
+//	public SemanticTag createSemanticTag(SemanticTag annotation){
+//		
+//		AnnotationOperationResponse res;
+//		try {
+//			res = apiConnection.createAnnotation(annotation);
+//		} catch (IOException e) {
+//			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
+//		}
+//
+//		return (SemanticTag)res.getAnnotation();
+//	}
 	
 	@Override
 	public List<Annotation> getAnnotations(String collectionId, String objectHash){
@@ -58,4 +99,5 @@ public class AnnotationRetrievalApi extends BaseAnnotationApi implements Annotat
 
 		return res.getAnnotation();
 	}
+	
 }
