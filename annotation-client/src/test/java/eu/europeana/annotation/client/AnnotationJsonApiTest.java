@@ -97,11 +97,7 @@ public class AnnotationJsonApiTest {
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
-		testAnnotation.getTarget().setSelector(null); // TODO double selectorType entries
-		testAnnotation.getTarget().setSource(null); // TODO InternetResource could not be instantiated
-//		testAnnotation.setAnnotatedAt(null); // TODO GSON Date format
-//		testAnnotation.setSerializedAt(null); // TODO GSON Date format
-//		testAnnotation.setEuropeanaId(TEST_COLLECTION_CLIENT_TEST_OBJECT);
+//		testAnnotation.getTarget().setSource(null); // TODO InternetResource could not be instantiated
 		
 		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
 		assertNotNull(annotation);

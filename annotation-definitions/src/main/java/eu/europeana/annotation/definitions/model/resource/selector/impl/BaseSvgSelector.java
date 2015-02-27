@@ -1,7 +1,6 @@
 package eu.europeana.annotation.definitions.model.resource.selector.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +11,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 
 public abstract class BaseSvgSelector extends BaseSelector implements SvgSelector{
 
-	private String selectorType;
+//	private String selectorType;
 	private Point origin;
 	private List<Point> points;
-	private Map<String, Integer> dimensionMap;
+//	private Map<String, Integer> dimensionMap;
 	
 	/* Style elements */
 	String cssClass;
@@ -24,17 +23,17 @@ public abstract class BaseSvgSelector extends BaseSelector implements SvgSelecto
 
 	@Override
 	public String getSelectorType() {
-		return selectorType;
+		return getSelectorType();
 	}
 
 	@Override
 	public void setSelectorType(String selectorType) {
-		this.selectorType = selectorType;
+		setSelectorType(selectorType);
 	}
 	
 	@Override
 	public void setSelectorTypeEnum(SelectorTypes selectorType) {
-		this.selectorType = selectorType.name();
+		setSelectorTypeEnum(selectorType);
 	}
 
 	@Override
@@ -59,14 +58,16 @@ public abstract class BaseSvgSelector extends BaseSelector implements SvgSelecto
 
 	@Override
 	public Map<String, Integer> getDimensionMap() {
-		if (dimensionMap == null)
-			dimensionMap = new HashMap<String, Integer>();
-		return dimensionMap;
+		return getDimensionMap();
+//		if (dimensionMap == null)
+//			dimensionMap = new HashMap<String, Integer>();
+//		return dimensionMap;
 	}
 
 	@Override
 	public void setDimensionMap(Map<String, Integer> dimensionMap) {
-		this.dimensionMap = dimensionMap;
+		setDimensionMap(dimensionMap);
+//		this.dimensionMap = dimensionMap;
 	}
 
 	@Override
