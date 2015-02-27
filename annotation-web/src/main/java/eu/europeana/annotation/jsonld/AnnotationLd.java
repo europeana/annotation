@@ -16,10 +16,6 @@
 */
 package eu.europeana.annotation.jsonld;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -54,7 +50,7 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
-import eu.europeana.api2.utils.JsonUtils;
+import eu.europeana.annotation.utils.JsonUtils;
 
 /**
  * The AnnotationLd class provides an API to create a JSON-LD object structure for Annotation
@@ -117,12 +113,12 @@ public class AnnotationLd extends JsonLd {
         if (serializedByProperty != null)      	
         	jsonLdResource.putProperty(serializedByProperty);        
         if (annotation.getAnnotatedAt() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.ANNOTATED_AT, convertDateToStr(annotation.getAnnotatedAt()));
+        	jsonLdResource.putProperty(WebAnnotationFields.ANNOTATED_AT, TypeUtils.convertDateToStr(annotation.getAnnotatedAt()));
         JsonLdProperty annotatedByProperty = addAnnotatedByProperty(annotation);
         if (annotatedByProperty != null)
         	jsonLdResource.putProperty(annotatedByProperty);                
         if (annotation.getSerializedAt() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_AT, convertDateToStr(annotation.getSerializedAt()));
+        	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_AT, TypeUtils.convertDateToStr(annotation.getSerializedAt()));
         if (!StringUtils.isBlank(annotation.getMotivatedBy())) 
         	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATED_BY, annotation.getMotivatedBy());
         JsonLdProperty styledByProperty = addStyledByProperty(annotation);
@@ -168,12 +164,12 @@ public class AnnotationLd extends JsonLd {
 		    case WebAnnotationFields.ANNOTATED_AT:
 		    	String annotatedAtValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(annotatedAtValue)) 
-					annotation.setAnnotatedAt(AnnotationLd.convertStrToDate(annotatedAtValue));
+					annotation.setAnnotatedAt(TypeUtils.convertStrToDate(annotatedAtValue));
 		    	break;
 		    case WebAnnotationFields.SERIALIZED_AT:
 		    	String serializedAtValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(serializedAtValue)) 
-					annotation.setSerializedAt(AnnotationLd.convertStrToDate(serializedAtValue));
+					annotation.setSerializedAt(TypeUtils.convertStrToDate(serializedAtValue));
 		    	break;
 		    case WebAnnotationFields.MOTIVATED_BY:
 		    	String motivatedByValue = getLiteralPropertyValue(mapValue);
@@ -470,24 +466,6 @@ public class AnnotationLd extends JsonLd {
     	Annotation res = null;
     	AnnotationLd annotationLd = new AnnotationLd(deserialisedJsonLd);
     	res = annotationLd.getAnnotation();
-    	return res;
-    }
-    
-    public static Date convertStrToDate(String str) {
-    	Date res = null; 
-    	DateFormat formatter = new SimpleDateFormat(WebAnnotationFields.DATE_FORMAT);
-    	try {
-			res = formatter.parse(str);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    	return res;
-    }
-    
-    public static String convertDateToStr(Date date) {
-    	String res = "";    	
-    	DateFormat df = new SimpleDateFormat(WebAnnotationFields.DATE_FORMAT);
-    	res = df.format(date);    	
     	return res;
     }
     

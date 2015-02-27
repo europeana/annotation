@@ -26,6 +26,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	private Agent serializedBy;
 	private Style styledBy;
 	
+	private MotivationTypes motivationType;
+	
 	
 	public AbstractAnnotation(){
 		super();
@@ -185,6 +187,7 @@ public abstract class AbstractAnnotation implements Annotation {
 
 	@Override
 	public MotivationTypes getMotivationType() {
+		motivationType = MotivationTypes.UNKNOWN;
 		if(getMotivatedBy() == null)
 			return null;
 		for(MotivationTypes element : MotivationTypes.values()){

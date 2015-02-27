@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package eu.europeana.annotation.jsonld;
+package eu.europeana.annotation.definitions.model.test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +33,7 @@ import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResou
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
@@ -95,7 +96,7 @@ public class AnnotationTestObjectBuilder {
 		
 		return target;
 	}
-
+    
 	public static Annotation createBaseObjectTagInstance() {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
@@ -103,8 +104,8 @@ public class AnnotationTestObjectBuilder {
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
         
-		annotation.setAnnotatedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
-        annotation.setSerializedAt(AnnotationLd.convertStrToDate("2012-11-10T09:08:07"));
+		annotation.setAnnotatedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+        annotation.setSerializedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
 
         // set target
 		Target target = buildTarget();

@@ -15,4 +15,5 @@ public interface Target extends SpecificResource{
 
 	public abstract String getTargetType();
 
+	public abstract String getResourceId();
 }

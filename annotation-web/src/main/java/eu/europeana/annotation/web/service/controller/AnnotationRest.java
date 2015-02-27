@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-//import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
+import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.api2.utils.JsonUtils;
+import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
 public class AnnotationRest {
@@ -96,7 +96,7 @@ public class AnnotationRest {
 		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
 				annotations, apiKey, action);
 
-		return JsonUtils.toJson(response, null);
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	private AnnotationSearchResults<AbstractAnnotation> buildSearchResponse(
@@ -122,7 +122,7 @@ public class AnnotationRest {
 				apiKey, action);
 		response.success = false;
 		response.error = th.getMessage();
-		response.requestNumber = 0L;
+//		response.requestNumber = 0L;
 		
 		return response;
 	}
@@ -149,7 +149,7 @@ public class AnnotationRest {
 					apiKey, "/annotations/collection/object/annotationNr.json");
 			
 			response.success = true;
-			response.requestNumber = 0L;
+//			response.requestNumber = 0L;
 
 			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
 					annotation));
@@ -161,7 +161,7 @@ public class AnnotationRest {
 			response = buildErrorResponse(errorMessage, action, apiKey);
 		}
 		
-		return JsonUtils.toJson(response, null);
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	AnnotationOperationResponse buildErrorResponse(String errorMessage,
@@ -190,7 +190,7 @@ public class AnnotationRest {
 		AnnotationLd annotationLd = new AnnotationLd(annotation);
         String jsonLd = annotationLd.toString(4);
 	
-		return JsonUtils.toJson(jsonLd, null);
+		return JsonWebUtils.toJson(jsonLd, null);
 	}
 
 	
@@ -212,12 +212,12 @@ public class AnnotationRest {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "create:/annotations/collection/object.json");
 		response.success = true;
-		response.requestNumber = 0L;
+//		response.requestNumber = 0L;
 
 		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
 				storedAnnotation));
 
-		return JsonUtils.toJson(response, null);
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	@RequestMapping(value = "/annotations/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -231,7 +231,7 @@ public class AnnotationRest {
 		/**
 		 * Set multilingual values.
 		 */
-		jsonAnno = JsonUtils.convertMultilingualFromJsonLdToSolrType(jsonAnno);
+//		jsonAnno = JsonUtils.convertMultilingualFromJsonLdToSolrType(jsonAnno);
 		
         /**
          * parse JsonLd string using JsonLdParser.
@@ -253,7 +253,7 @@ public class AnnotationRest {
 			
 			errorMessage += e.getMessage();
 			AnnotationOperationResponse errorResponse = buildErrorResponse(errorMessage, "/annotations/{collection}/{object}.jsonld", apiKey);
-			return JsonUtils.toJson(errorResponse, null);
+			return JsonWebUtils.toJson(errorResponse, null);
 		}
         
         /**
@@ -274,9 +274,9 @@ public class AnnotationRest {
 
 		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
         String jsonLd = annotationLd.toString(4);
-        jsonLd = JsonUtils.convertMultilingualFromSolrTypeToJsonLd(jsonLd);
+//        jsonLd = JsonUtils.convertMultilingualFromSolrTypeToJsonLd(jsonLd);
 	
-		return JsonUtils.toJson(jsonLd, null);
+		return JsonWebUtils.toJson(jsonLd, null);
 	}
 
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -297,9 +297,9 @@ public class AnnotationRest {
 				String prefix = "";
 				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
 					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+//					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
 						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-					}
+//					}
 				}
 				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
 			}
@@ -360,7 +360,7 @@ public class AnnotationRest {
 //			}
 //		}
 				
-		return JsonUtils.toJson(response, null);
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -381,9 +381,9 @@ public class AnnotationRest {
 				String prefix = "";
 				if (field.equals(SolrAnnotationConst.SolrTagFields.MULTILINGUAL.getSolrTagField())) {
 					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
+//					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
 						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-					}
+//					}
 				}
 				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
 			}
@@ -406,7 +406,7 @@ public class AnnotationRest {
 			response.error = e.getMessage();
 		}
 
-		return JsonUtils.toJson(response, null);
+		return JsonWebUtils.toJson(response, null);
 	}
 
 }

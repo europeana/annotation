@@ -40,10 +40,11 @@ public interface WebAnnotationFields {
 	//public static final String OA_TAGGING           = "oa:tagging"; //"oa:Tagging";
 	public static final String LAST_INDEXED_TIMESTAMP = "lastIndexedTimestamp";
 	public static final String MULTILINGUAL         = "multilingual";
-	public static final String DEFAULT_EURIPEANA_ID = "/testCollection/testObject";
+//	public static final String DEFAULT_EURIPEANA_ID = "/testCollection/testObject";
 //	public static final String DEFAULT_STYLE_TYPE   = "[oa:CssStyle,euType:STYLE#CSS]";
 	public static final String DEFAULT_MEDIA_TYPE   = "[oa:SemanticTag]";
 	public static final String DEFAULT_ANNOTATION_TYPE = "[oa:annotation,euType:OBJECT_TAG]";
 	public static final String OA                   = "oa";
 	public static final String OA_PREFIX            = "http://www.w3.org/ns/oa-context-20130208.json";
+	public static final String SEPARATOR_SEMICOLON = ":";
 }

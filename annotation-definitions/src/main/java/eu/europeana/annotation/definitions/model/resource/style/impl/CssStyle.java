@@ -6,6 +6,7 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 public class CssStyle extends BaseInternetResource implements Style{
 
 	private String annotationClass;
+	private boolean embedded;
 
 	@Override
 	public String getAnnotationClass() {
@@ -26,6 +27,7 @@ public class CssStyle extends BaseInternetResource implements Style{
 	
 	@Override
 	public boolean isEmbedded(){
-		return getValue()!= null && !getValue().isEmpty() && (getHttpUri() == null || getHttpUri().isEmpty());
+		embedded = getValue()!= null && !getValue().isEmpty() && (getHttpUri() == null || getHttpUri().isEmpty());
+		return embedded;
 	}
 }

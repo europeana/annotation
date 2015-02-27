@@ -31,12 +31,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
-import eu.europeana.annotation.jsonld.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper;
 
@@ -138,9 +137,11 @@ public class WebAnnotationServiceTest {
 		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
 		
 		testAnnotation.getBody().addLabelInMapping(
-				SolrAnnotationConst.SolrAnnotationLanguages.RO.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_RO_VALUE);
+				"ro", AnnotationLdTest.TEST_RO_VALUE);
+//		SolrAnnotationConst.SolrAnnotationLanguages.RO.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_RO_VALUE);
 		testAnnotation.getBody().addLabelInMapping(
-				SolrAnnotationConst.SolrAnnotationLanguages.EN.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_EN_VALUE);
+				"en", AnnotationLdTest.TEST_EN_VALUE);
+//		SolrAnnotationConst.SolrAnnotationLanguages.EN.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_EN_VALUE);
 
 		/**
 		 * Convert the test annotation object to the PersistentAnnotation object type.

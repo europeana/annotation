@@ -8,7 +8,17 @@ public class BaseTarget extends OaSpecificResource implements Target {
  
 	private String targetType;
 	private String europeanaId;
+	private String resourceId;
 	
+
+	@Override
+	public String getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
+	}
 
 	@Override
 	public String getTargetType() {
@@ -164,6 +174,8 @@ public class BaseTarget extends OaSpecificResource implements Target {
 			res = res + "\t\t" + "Selector:" + getSelector().toString() + "\n";
 		if (getSource() != null) 
 			res = res + "\t\t" + "Source:" + getSource().toString() + "\n";
+		if (getResourceId() != null) 
+			res = res + "\t\t" + "ResourceId:" + getResourceId() + "\n";
 		return res;
 	}	
 }

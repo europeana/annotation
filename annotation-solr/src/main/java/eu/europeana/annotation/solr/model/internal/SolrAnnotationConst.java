@@ -2,6 +2,7 @@ package eu.europeana.annotation.solr.model.internal;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
+
 public interface SolrAnnotationConst extends WebAnnotationFields{
 
 	/**
@@ -83,49 +84,49 @@ public interface SolrAnnotationConst extends WebAnnotationFields{
 	
 	}
 	
-	public enum SolrAnnotationLanguages {
-		
-		EN("en")
-		, DE("de")
-		, RO("ro");
-			
-		private String language;
-			
-		SolrAnnotationLanguages(String language){
-			this.language = language;
-		}
-			
-		public String getSolrAnnotationLanguage(){
-			return language;
-		}
-		
-		public static boolean contains(String value) {
-
-		    for (SolrAnnotationLanguages c : SolrAnnotationLanguages.values()) {
-		        if (c.name().equals(value) || c.getSolrAnnotationLanguage().equals(value)) {
-		            return true;
-		        }
-		    }
-
-		    return false;
-		}	
-	
-		public static String getLanguageItemByValue(String value) {
-
-			String res = value;
-			
-		    for (SolrAnnotationLanguages c : SolrAnnotationLanguages.values()) {
-		        if (c.name().equals(value) || c.getSolrAnnotationLanguage().equals(value)) {
-		            res = c.name();
-		            break;
-		        }
-		    }
-
-		    return res;
-		}	
-	
-	}
-	
+//	public enum SolrAnnotationLanguages {
+//		
+//		EN("en")
+//		, DE("de")
+//		, RO("ro");
+//			
+//		private String language;
+//			
+//		SolrAnnotationLanguages(String language){
+//			this.language = language;
+//		}
+//			
+//		public String getSolrAnnotationLanguage(){
+//			return language;
+//		}
+//		
+//		public static boolean contains(String value) {
+//
+//		    for (SolrAnnotationLanguages c : SolrAnnotationLanguages.values()) {
+//		        if (c.name().equals(value) || c.getSolrAnnotationLanguage().equals(value)) {
+//		            return true;
+//		        }
+//		    }
+//
+//		    return false;
+//		}	
+//	
+//		public static String getLanguageItemByValue(String value) {
+//
+//			String res = value;
+//			
+//		    for (SolrAnnotationLanguages c : SolrAnnotationLanguages.values()) {
+//		        if (c.name().equals(value) || c.getSolrAnnotationLanguage().equals(value)) {
+//		            res = c.name();
+//		            break;
+//		        }
+//		    }
+//
+//		    return res;
+//		}	
+//	
+//	}
+//	
 	/**
 	 * Search fields for Web Service
 	 */
