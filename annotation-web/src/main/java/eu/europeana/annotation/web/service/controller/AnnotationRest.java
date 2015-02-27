@@ -228,11 +228,6 @@ public class AnnotationRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
-		/**
-		 * Set multilingual values.
-		 */
-//		jsonAnno = JsonUtils.convertMultilingualFromJsonLdToSolrType(jsonAnno);
-		
         /**
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object
@@ -274,7 +269,6 @@ public class AnnotationRest {
 
 		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
         String jsonLd = annotationLd.toString(4);
-//        jsonLd = JsonUtils.convertMultilingualFromSolrTypeToJsonLd(jsonLd);
 	
 		return JsonWebUtils.toJson(jsonLd, null);
 	}

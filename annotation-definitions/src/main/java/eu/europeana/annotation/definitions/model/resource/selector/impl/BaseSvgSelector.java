@@ -23,17 +23,17 @@ public abstract class BaseSvgSelector extends BaseSelector implements SvgSelecto
 
 	@Override
 	public String getSelectorType() {
-		return getSelectorType();
+		return super.getSelectorType();
 	}
 
 	@Override
 	public void setSelectorType(String selectorType) {
-		setSelectorType(selectorType);
+		super.setSelectorType(selectorType);
 	}
 	
 	@Override
 	public void setSelectorTypeEnum(SelectorTypes selectorType) {
-		setSelectorTypeEnum(selectorType);
+		super.setSelectorTypeEnum(selectorType);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public abstract class BaseSvgSelector extends BaseSelector implements SvgSelecto
 
 	@Override
 	public Map<String, Integer> getDimensionMap() {
-		return getDimensionMap();
+		return super.getDimensionMap();
 //		if (dimensionMap == null)
 //			dimensionMap = new HashMap<String, Integer>();
 //		return dimensionMap;
@@ -66,7 +66,7 @@ public abstract class BaseSvgSelector extends BaseSelector implements SvgSelecto
 
 	@Override
 	public void setDimensionMap(Map<String, Integer> dimensionMap) {
-		setDimensionMap(dimensionMap);
+		super.setDimensionMap(dimensionMap);
 //		this.dimensionMap = dimensionMap;
 	}
 

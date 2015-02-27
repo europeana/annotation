@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 
 
+
+
 import org.apache.commons.lang.StringUtils;
 //import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
@@ -26,6 +28,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.state.State;
 import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
@@ -36,16 +39,10 @@ import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
-//import eu.europeana.annotation.definitions.model.utils.serialization.AgentDeserializer;
-//import eu.europeana.annotation.definitions.model.utils.serialization.AnnotationDeserializer;
-//import eu.europeana.annotation.definitions.model.utils.serialization.AnnotationIdDeserializer;
-//import eu.europeana.annotation.definitions.model.utils.serialization.BodyDeserializer;
-//import eu.europeana.annotation.definitions.model.utils.serialization.SelectorDeserializer;
-//import eu.europeana.annotation.definitions.model.utils.serialization.TargetDeserializer;
-//import eu.europeana.corelib.logging.Logger;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationIdDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
+import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
 import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
 import eu.europeana.annotation.utils.serialization.TargetDeserializer;
 
@@ -73,6 +70,7 @@ public class JsonUtils {
 			module.addDeserializer(Body.class, new BodyDeserializer());  
 			module.addDeserializer(Agent.class, new AgentDeserializer());
 			module.addDeserializer(Selector.class, new SelectorDeserializer());
+			module.addDeserializer(InternetResource.class, new InternetResourceDeserializer());
 			//module.addDeserializer(State.class, new StateDeserializer());
 //			module.addDeserializer(Agent.class, new AgentDeserializer());
 			module.addDeserializer(AnnotationId.class, new AnnotationIdDeserializer());
@@ -171,83 +169,6 @@ public class JsonUtils {
         return res;
     }
     
-    /**
-     * TODO do it in JsonLdParser
-     * This method converts a multilingual part of the JsonLd string for Annotation
-     * in a multilingual value that is conform for Solr. E.g. 'en' in 'EN_multilingual'
-     * @param jsonLdAnnotationStr
-     * @return
-     */
-//    public static String convertMultilingualFromJsonLdToSolrType(String jsonLdAnnotationStr) {
-//    	String res = jsonLdAnnotationStr;
-//    	
-//    	/**
-//    	 * Check whether a multilingual part exist. If exist extract this part.
-//    	 */
-//    	if (jsonLdAnnotationStr.contains(WebAnnotationFields.MULTILINGUAL)) {
-//    		if (!jsonLdAnnotationStr.isEmpty()) {
-//    			Pattern pattern = Pattern.compile(WebAnnotationFields.MULTILINGUAL + "\":\\s+\"(.*?)]");
-//    			Matcher matcher = pattern.matcher(jsonLdAnnotationStr);
-//    			if (matcher.find()) {
-//    			    String multilingualMapStr = matcher.group(1).replace("[", "");
-//    			    String solrMultilingualStr = multilingualMapStr;
-//			        String[] tokens = multilingualMapStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-//			        for(String t : tokens) {
-//				        String[] pair = t.split(WebAnnotationFields.SEPARATOR_SEMICOLON);
-//				        
-//				        if (SolrAnnotationConst.SolrAnnotationLanguages.contains(pair[0])) {
-//				        	solrMultilingualStr = solrMultilingualStr.replace(
-//				        			pair[0] + SolrAnnotationConst.DELIMETER
-//				        			, SolrAnnotationConst.SolrAnnotationLanguages.getLanguageItemByValue(pair[0]) 
-//				        				+ SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL 
-//				        				+ SolrAnnotationConst.DELIMETER);
-//				        }
-//			        }    			    
-//    			    res = jsonLdAnnotationStr.replace(multilingualMapStr, solrMultilingualStr);
-//    			}		
-//    		}    		
-//    	}
-//    	
-//    	return res;
-//    }
-    	
-    /**
-     * This method converts a multilingual value that is conform for Solr
-     * in a multilingual part of the JsonLd string for Annotation. E.g. 'EN_multilingual' in 'en'
-     * @param jsonLdAnnotationStr
-     * @return
-     */
-//    public static String convertMultilingualFromSolrTypeToJsonLd(String solrAnnotationStr) {
-//    	String res = solrAnnotationStr;
-//    	
-//    	/**
-//    	 * Check whether a multilingual part exist. If exist extract this part.
-//    	 */
-//    	if (solrAnnotationStr.contains(SolrAnnotationConst.MULTILINGUAL)) {
-//    		if (!solrAnnotationStr.isEmpty()) {
-//    			Pattern pattern = Pattern.compile(SolrAnnotationConst.MULTILINGUAL + "\":\\s+\"(.*?)]");
-//    			Matcher matcher = pattern.matcher(solrAnnotationStr);
-//    			if (matcher.find()) {
-//    			    String multilingualMapStr = matcher.group(1).replace("[", "");
-//    			    String solrMultilingualStr = multilingualMapStr;
-//			        String[] tokens = multilingualMapStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-//			        for(String t : tokens) {
-//				        String[] pair = t.split(SolrAnnotationConst.DELIMETER);
-//				        String language = pair[0].substring(0,2);
-//						if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
-//				        	solrMultilingualStr = solrMultilingualStr.replace(
-//				        			pair[0]	+ SolrAnnotationConst.DELIMETER
-//				        			, language.toLowerCase() + SolrAnnotationConst.DELIMETER);
-//				        }
-//			        }    			    
-//    			    res = solrAnnotationStr.replace(multilingualMapStr, solrMultilingualStr);
-//    			}		
-//    		}    		
-//    	}
-//    	
-//    	return res;
-//    }
-    
 	public static String extractAnnotationStringFromJsonString(String jsonString) {
 		String res = "";
 		if (StringUtils.isNotEmpty(jsonString)) {
@@ -258,7 +179,7 @@ public class JsonUtils {
 			    res = matcher.group(1) + "}";
 			}
 		}
-	return res;
-}
+		return res;
+	}
     
 }

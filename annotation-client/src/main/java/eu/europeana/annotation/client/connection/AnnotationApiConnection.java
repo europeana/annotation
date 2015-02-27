@@ -53,24 +53,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += ModelConst.JSON_REST;
 //		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 
-		/**
-		 * Check date format.
-		 */
-//		if (annotation.getAnnotatedAt() != null) {
-//			String unixDateStr = TypeUtils.getUnixDateStringFromDate(annotation.getAnnotatedAt());
-//			annotation.setAnnotatedAt(TypeUtils.convertUnixTimestampStrToDate(unixDateStr));
-//		}
-//		if (annotation.getSerializedAt() != null) {
-//			String unixDateStr = TypeUtils.getUnixDateStringFromDate(annotation.getSerializedAt());
-//			annotation.setSerializedAt(TypeUtils.convertUnixTimestampStrToDate(unixDateStr));
-//		}
 		// Execute Europeana API request
 		String jsonPost = getAnnotationGson().toJson(annotation);
-//		jsonPost = TypeUtils.validateDates(jsonPost);
 		String json = getJSONResult(url, ModelConst.ANNOTATION, jsonPost);
-		
-//		json = TypeUtils.validateDateExt(ModelConst.ANNOTATED_AT, json);
-//		json = TypeUtils.validateDateExt(ModelConst.SERIALIZED_AT, json);
 		
 		//JSONObject jsonObj = (JSONObject) new JSONParser().parse(json);
 //		AnnotationOperationResponse aor = new ObjectMapper().readValue(json, AnnotationOperationResponse.class);

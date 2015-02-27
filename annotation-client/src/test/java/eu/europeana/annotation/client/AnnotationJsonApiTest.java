@@ -96,9 +96,7 @@ public class AnnotationJsonApiTest {
 		/**
 		 * Create a test annotation object.
 		 */
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
-//		testAnnotation.getTarget().setSource(null); // TODO InternetResource could not be instantiated
-		
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
 		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
 		assertNotNull(annotation);
 	}
