@@ -473,13 +473,4 @@ public class AnnotationLdTest {
         AnnotationLd.toConsole("", origIndent);
 	}        
     
-//	@Test
-//	public void testConvertMultilingualFromJsonLdToSolrType() 
-//			throws MalformedURLException, IOException, AnnotationServiceException {
-//		
-//		String solrString = JsonUtils.convertMultilingualFromJsonLdToSolrType(annotationJsonLdObjectString);
-//        assertTrue(solrString.replaceAll(" ", "").contains(
-//        		"\"multilingual\":\"[RO_multilingual:Vlad Tepes,EN_multilingual:Vlad the Impaler]\"".replaceAll(" ", "")));
-//	}        
-    
 }

@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
+import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -107,7 +110,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 		// add solr indexing here
         try {
-       	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
+       	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
        	    getSolrService().store(indexedAnnotation);
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).warn(
@@ -137,19 +140,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	private SolrAnnotation copyIntoSolrAnnotation(Annotation annotation) {
 		
+		return copyIntoSolrAnnotation(annotation, false);
+	}
+
+	private SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual) {
+		
 		SolrAnnotation res = null;
 		
   		SolrAnnotationImpl solrAnnotationImpl = new SolrAnnotationImpl();
 //  		solrAnnotationImpl.setType(annotation.getType()); 
   		solrAnnotationImpl.setAnnotationType(annotation.getType()); 
   		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
-  		solrAnnotationImpl.setBody(annotation.getBody());
+  		Body body = annotation.getBody();
+  		if (withMultilingual) 
+  			body = convertToSolrMultilingual(body);
+		solrAnnotationImpl.setBody(body);
   		solrAnnotationImpl.setAnnotatedAt(annotation.getAnnotatedAt());
   		solrAnnotationImpl.setAnnotatedByString(annotation.getAnnotatedBy().getName());
   		solrAnnotationImpl.setTarget(annotation.getTarget());
   		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
-  		solrAnnotationImpl.setLabel(annotation.getBody().getValue());
-  		solrAnnotationImpl.setLanguage(annotation.getBody().getLanguage());
+  		solrAnnotationImpl.setLabel(body.getValue());
+  		solrAnnotationImpl.setLanguage(body.getLanguage());
   		solrAnnotationImpl.setMotivatedBy(annotation.getMotivatedBy());
   		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
   		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
@@ -167,6 +178,40 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	/**
+     * This method converts a multilingual part of the Annotation Body
+     * in a multilingual value that is conform for Solr. E.g. 'en' in 'EN_multilingual'
+	 * @param body
+	 * @return converted body
+	 */
+	private Body convertToSolrMultilingual(Body body) {
+		Body bodyRes = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.SEMANTIC_TAG.name());
+  		Map<String, String> multilingualMap = body.getMultilingual();
+  		Map<String, String> solrMultilingualMap = new HashMap<String, String>();
+		for (Map.Entry<String, String> entry : multilingualMap.entrySet()) {
+		    String key = entry.getKey();
+		    if (!key.contains(SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL)) {
+		    	key = key.toUpperCase() + SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL;
+		    }
+			solrMultilingualMap.put(key, entry.getValue());
+		}
+		if (solrMultilingualMap.size() > 0)
+			bodyRes.setMultilingual(solrMultilingualMap);
+		if (StringUtils.isNotEmpty(body.getBodyType()))
+			bodyRes.setBodyType(body.getBodyType());
+		if (StringUtils.isNotEmpty(body.getContentType()))
+			bodyRes.setContentType(body.getContentType());
+		if (StringUtils.isNotEmpty(body.getHttpUri()))
+			bodyRes.setHttpUri(body.getHttpUri());
+		if (StringUtils.isNotEmpty(body.getLanguage()))
+			bodyRes.setLanguage(body.getLanguage());
+		if (StringUtils.isNotEmpty(body.getMediaType()))
+			bodyRes.setMediaType(body.getMediaType());
+		if (StringUtils.isNotEmpty(body.getValue()))
+			bodyRes.setValue(body.getValue());
+		return bodyRes;
+	}
+
+	/**
 	 * This method converts Body object in SolrTag object.
 	 * @param tag The body object
 	 * @return the SolrTag object
@@ -175,6 +220,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
 		SolrTag res = null;
 		
+  		tag = convertToSolrMultilingual(tag);
   		SolrTagImpl solrTagImpl = new SolrTagImpl();
 		if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
 			solrTagImpl.setId(((PlainTagBody) tag).getTagId());

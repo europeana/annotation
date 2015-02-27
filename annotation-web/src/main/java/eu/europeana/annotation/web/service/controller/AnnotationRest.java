@@ -292,20 +292,7 @@ public class AnnotationRest {
 			@RequestParam(value = "facet", required = false) String facet) {
 
 		query = getTypeUtils().removeTabs(query);
-		if (StringUtils.isNotEmpty(field)) {
-			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				String prefix = "";
-				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-//					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
-						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-//					}
-				}
-				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-			}
-		} else {
-			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
-		}
+		query = addFieldToQuery(query, field, language);
 		
 //		boolean withFacet = false;
 //		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
@@ -363,6 +350,30 @@ public class AnnotationRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
+	/**
+	 * This method extends SOLR query by field and language if given.
+	 * @param query
+	 * @param field
+	 * @param language
+	 * @return extended query
+	 */
+	private String addFieldToQuery(String query, String field, String language) {
+		if (StringUtils.isNotEmpty(field)) {
+			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
+				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
+				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+					if (StringUtils.isNotEmpty(language)) {
+						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+					}
+				}
+				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
+			}
+		} else {
+			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
+		}
+		return query;
+	}
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -376,20 +387,7 @@ public class AnnotationRest {
 			@RequestParam(value = "language", required = true) String language) {
 
 		query = getTypeUtils().removeTabs(query);
-		if (StringUtils.isNotEmpty(field)) {
-			if (SolrAnnotationConst.SolrTagFields.contains(field)) {
-				String prefix = "";
-				if (field.equals(SolrAnnotationConst.SolrTagFields.MULTILINGUAL.getSolrTagField())) {
-					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-//					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
-						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-//					}
-				}
-				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-			}
-		} else {
-			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
-		}
+		query = addFieldToQuery(query, field, language);
 
 		TagSearchResults<BaseTagResource> response;
 		response = new TagSearchResults<BaseTagResource>(
