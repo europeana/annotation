@@ -47,7 +47,7 @@ public class BaseApiConnection {
 		this.httpConnection = httpConnection;
 	}
 	
-	Gson getAnnotationGson() {
+	public Gson getAnnotationGson() {
 		if (gson == null) {
 			// Load results object from JSON
 			GsonBuilder builder = new GsonBuilder();

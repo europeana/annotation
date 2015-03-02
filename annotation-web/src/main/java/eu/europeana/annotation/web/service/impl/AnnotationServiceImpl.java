@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.stanbol.commons.jsonld.JsonLd;
+import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -13,6 +15,7 @@ import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -25,6 +28,7 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -100,6 +104,38 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public List<? extends SolrTag> searchTags(
 			String query, String startOn, String limit) throws TagServiceException {
 		return getSolrTagService().search(query, startOn, limit);
+	}
+
+	@Override
+	public Annotation createAnnotation(String annotationJsonLdStr) {
+	    
+		/**
+	     * parse JsonLd string using JsonLdParser.
+	     * JsonLd string -> JsonLdParser -> JsonLd object
+	     */
+	    AnnotationLd parsedAnnotationLd = null;
+	    JsonLd parsedJsonLd = null;
+	    try {
+	    	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
+	    	
+	    	/**
+	    	 * convert JsonLd to AnnotationLd.
+	    	 * JsonLd object -> AnnotationLd object
+	    	 */
+	    	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+		} catch (Exception e) {
+			String errorMessage = "Cannot Parse JSON-LD input! ";
+			Logger.getLogger(getClass().getName()).error(errorMessage, e);
+		}
+	    
+	    /**
+	     * AnnotationLd object -> Annotation object.
+	     */
+	    Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper.copyIntoPersistantAnnotation(webAnnotation);
+		
+		return createAnnotation(persistentAnnotation);
 	}
 
 	@Override

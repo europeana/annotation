@@ -13,11 +13,8 @@ import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.codehaus.jackson.node.ObjectNode;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
 public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 	

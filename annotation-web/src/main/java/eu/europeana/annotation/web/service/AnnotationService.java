@@ -16,6 +16,13 @@ public interface AnnotationService {
 	
 	public Annotation createAnnotation(Annotation newAnnotation);
 	
+	/**
+	 * This method creates Annotation object from a JsonLd string.
+	 * @param annotationJsonLdStr
+	 * @return Annotation object
+	 */
+	public Annotation createAnnotation(String annotationJsonLdStr);
+
 	public Annotation updateAnnotation(Annotation newAnnotation);
 	
 	public void deleteAnnotation(String resourceId,

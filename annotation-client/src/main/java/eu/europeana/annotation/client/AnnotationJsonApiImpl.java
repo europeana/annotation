@@ -29,7 +29,7 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		try {
 			res = apiConnection.createAnnotation(annotation);
 		} catch (IOException e) {
-			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
 		}
 
 		return res.getAnnotation();

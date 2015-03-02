@@ -102,8 +102,16 @@ public class AnnotationJsonApiTest {
 	}
 	
 	@Test
-	public void getAnnotations(){
-		//TODO: create object within the test and do not rely on the objects stored in the database
+	public void getAnnotations() {
+		
+		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
+		
+		/**
+		 * Create object within the test and do not rely on the objects stored in the database.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
+		annotationJsonApi.createAnnotation(testAnnotation);
+		
 		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
 		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject");
 		assertNotNull(results);
@@ -111,23 +119,29 @@ public class AnnotationJsonApiTest {
 		Gson gson = new Gson();
 		
 		for (Annotation annotation : results) {
-			System.out.println(gson.toJson(annotation));
-			
+			System.out.println(gson.toJson(annotation));			
 		}
 		
 	}
 	
 	@Test(expected = TechnicalRuntimeException.class)
-	public void getAnnotationError(){
+	public void getAnnotationError() {
 		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
 		retrievalApi.getAnnotation("testCollection", "testObject", -1);		
 	}
 	
 	@Test
-	public void getAnnotation(){
-		//TODO: create object within the test and do not rely on the objects stored in the database
-		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
-		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject");
+	public void getAnnotation() {
+		
+		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
+		
+		/**
+		 * Create object within the test and do not rely on the objects stored in the database.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
+		annotationJsonApi.createAnnotation(testAnnotation);
+		
+		List<Annotation> results = annotationJsonApi.getAnnotations("testCollection", "testObject");
 		
 		if(results.isEmpty()){
 			System.out.println("No objects found in the database, test skipped");
@@ -135,7 +149,7 @@ public class AnnotationJsonApiTest {
 		}
 		
 		Annotation anno = results.get(0);
-		Annotation annotation = retrievalApi.getAnnotation(anno.getAnnotationId().getResourceId(), anno.getAnnotationId().getAnnotationNr());
+		Annotation annotation = annotationJsonApi.getAnnotation(anno.getAnnotationId().getResourceId(), anno.getAnnotationId().getAnnotationNr());
 		
 		assertNotNull(annotation);
 		assertEquals(anno.getType(), annotation.getType());
