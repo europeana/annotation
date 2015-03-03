@@ -40,7 +40,7 @@ public class AgentDeserializer extends StdDeserializer<Agent> {
 		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 		while (elementsIterator.hasNext()) {
 			Entry<String, JsonNode> element = elementsIterator.next();
-			if (ModelConst.AGENT_TYPES.equals(element.getKey())) {
+			if (ModelConst.AGENT_TYPE.equals(element.getKey())) {
 				String textValue = element.getValue().toString();//.getTextValue();
 				String typeValue = TypeUtils.getEuTypeFromTypeArrayStatic(textValue).replace("\"", "");
 				realClass = AgentObjectFactory.getInstance()
