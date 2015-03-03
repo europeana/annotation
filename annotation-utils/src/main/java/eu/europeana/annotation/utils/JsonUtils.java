@@ -7,11 +7,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
-
-
-
 import org.apache.commons.lang.StringUtils;
 //import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
@@ -72,8 +67,8 @@ public class JsonUtils {
 			module.addDeserializer(Selector.class, new SelectorDeserializer());
 			module.addDeserializer(InternetResource.class, new InternetResourceDeserializer());
 			//module.addDeserializer(State.class, new StateDeserializer());
-//			module.addDeserializer(Agent.class, new AgentDeserializer());
 			module.addDeserializer(AnnotationId.class, new AnnotationIdDeserializer());
+//			module.addDeserializer(Map.class, new MapDeserializer());
 			
 			//module.addDeserializer(Style.class, new StyleDeserializer());  
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 

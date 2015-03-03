@@ -203,6 +203,14 @@ public class AnnotationRest {
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
+		if (webAnnotation.getBody() != null 
+				&& webAnnotation.getBody().getLanguage() != null
+				&& webAnnotation.getBody().getValue() != null
+				&& webAnnotation.getBody().getHttpUri() == null // only for simple tag
+				&& webAnnotation.getBody().getMultilingual().size() == 0) {
+			webAnnotation.getBody().getMultilingual().put(
+					webAnnotation.getBody().getLanguage(), webAnnotation.getBody().getValue());
+		}
 		Annotation persistantAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
 
