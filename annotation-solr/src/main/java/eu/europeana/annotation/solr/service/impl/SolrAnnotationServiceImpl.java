@@ -1,6 +1,7 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
@@ -122,6 +124,20 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 		while (iter.hasNext()) {
 			SolrAnnotationImpl annotation = iter.next();
 			annotation.setType(annotation.getAnnotationType());
+			if (annotation.getBody() != null) {				
+
+		  		Map<String, String> multilingualMap = annotation.getBody().getMultilingual();
+		  		Map<String, String> solrMultilingualMap = new HashMap<String, String>();
+				for (Map.Entry<String, String> entry : multilingualMap.entrySet()) {
+				    String key = entry.getKey();
+				    if (key.contains(SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL)) {
+				    	key = key.replace(SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL, "").toLowerCase();
+				    }
+					solrMultilingualMap.put(key, entry.getValue());
+				}
+				if (solrMultilingualMap.size() > 0)
+					annotation.getBody().setMultilingual(solrMultilingualMap);
+			}					
 		}
 //	    	res = rsp.getBeans(SolrAnnotationImpl.class);
 		res = annotationList;
