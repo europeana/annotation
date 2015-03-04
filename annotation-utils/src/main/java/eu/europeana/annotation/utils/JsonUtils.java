@@ -38,6 +38,7 @@ import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationIdDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
 import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
+import eu.europeana.annotation.utils.serialization.MapDeserializer;
 import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
 import eu.europeana.annotation.utils.serialization.TargetDeserializer;
 
@@ -68,14 +69,12 @@ public class JsonUtils {
 			module.addDeserializer(InternetResource.class, new InternetResourceDeserializer());
 			//module.addDeserializer(State.class, new StateDeserializer());
 			module.addDeserializer(AnnotationId.class, new AnnotationIdDeserializer());
-//			module.addDeserializer(Map.class, new MapDeserializer());
+			module.addDeserializer(Map.class, new MapDeserializer());
 			
 			//module.addDeserializer(Style.class, new StyleDeserializer());  
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
 			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
 			module.addAbstractTypeMapping(State.class, BaseState.class);
-			
-//			module.addAbstractTypeMapping(Date.class, DateImpl.class); 
 
 			objectMapper.registerModule(module); 
 	
