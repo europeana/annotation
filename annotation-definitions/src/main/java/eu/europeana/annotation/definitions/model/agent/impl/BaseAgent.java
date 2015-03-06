@@ -12,24 +12,24 @@ public abstract class BaseAgent implements Agent {
 
 //	private AgentTypes agentType;
 //	private String agentType;
-	private List<String> agentTypes = new ArrayList<String>(2);
+	private List<String> agentType = new ArrayList<String>(2);
 	private String name;
 	private String mbox;
 	private String openId;
 	private String homepage;
 	
 	public void addType(String newType) {
-		if (!agentTypes.contains(newType)) {
-			agentTypes.add(newType);
+		if (!agentType.contains(newType)) {
+			agentType.add(newType);
 		}
 	}
 	
 	public List<String> getAgentTypes() {
-		return agentTypes;
+		return agentType;
 	}
 	
 	public void setAgentTypes(List<String> agentTypes) {
-		this.agentTypes = agentTypes;
+		this.agentType = agentTypes;
 	}
 
 	@Override
@@ -70,9 +70,9 @@ public abstract class BaseAgent implements Agent {
 //	}
 	public String getAgentType() {
 		String listStr = "";
-		if (agentTypes.size() > 0) {
+		if (agentType.size() > 0) {
 			listStr = "[";
-			for (String s : agentTypes)
+			for (String s : agentType)
 			{
 				if (listStr.equals("[")) {
 				    listStr += s;
@@ -86,19 +86,19 @@ public abstract class BaseAgent implements Agent {
 	}
 	
 	@Override
-	public void setAgentTypeEnum(AgentTypes agentType) {
-		agentTypes.add(agentType.name());
+	public void setAgentTypeEnum(AgentTypes curAgentType) {
+		agentType.add(curAgentType.name());
 //		this.agentType = agentType;
 	}
 	
 	@Override
 	public void setAgentType(String agentTypeStr) {
-		agentTypes.clear();
+		agentType.clear();
 	    if (!StringUtils.isBlank(agentTypeStr)) { 
-	    	agentTypeStr = agentTypeStr.replace("[", "").replace("]", "");
+	    	agentTypeStr = agentTypeStr.replace("[", "").replace("]", "").replace(" ", "");
 	        String[] tokens = agentTypeStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 	        for(String t : tokens) {
-	        	agentTypes.add(t);
+	        	agentType.add(t);
 	        }
 		}
 		

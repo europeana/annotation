@@ -20,7 +20,7 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	}
 	@Override
 	public void setBodyType(String bodyTypeStr) {
-		this.bodyType = bodyTypeStr;
+		this.bodyType = bodyTypeStr.replace(" ", "");
 	}
 
 	protected BaseBody(){} 
