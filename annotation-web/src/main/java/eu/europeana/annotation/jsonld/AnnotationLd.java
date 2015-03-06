@@ -241,7 +241,7 @@ public class AnnotationLd extends JsonLd {
 			
 			agent = AgentObjectFactory.getInstance().createModelObjectInstance(euType);
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-				agent.setAgentType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));			
+				agent.setAgentTypeAsString(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));			
 			if (hasValue(propertyValue, WebAnnotationFields.SID)) 
 				agent.setOpenId(propertyValue.getValues().get(WebAnnotationFields.SID));
 			if (hasValue(propertyValue, WebAnnotationFields.NAME)) 
@@ -574,8 +574,8 @@ public class AnnotationLd extends JsonLd {
         	propertyValue.getValues().put(WebAnnotationFields.SID, agent.getOpenId());
 //        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
 //        	propertyValue.setType(agent.getAgentType());
-        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
-        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getAgentType());
+        if (agent != null && !StringUtils.isBlank(TypeUtils.getTypeListAsStr(agent.getAgentType()))) 
+        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(agent.getAgentType()));
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 

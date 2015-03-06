@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -199,6 +200,28 @@ public class TypeUtils {
 			}		
 		}
 		return res;
+	}
+	
+	/**
+	 * This method presents a type list as a string.
+	 * @param typeList
+	 * @return type list string
+	 */
+	public static String getTypeListAsStr(List<String> typeList) {
+		String listStr = "";
+		if (typeList.size() > 0) {
+			listStr = "[";
+			for (String s : typeList)
+			{
+				if (listStr.equals("[")) {
+				    listStr += s;
+				} else {
+					listStr += "," + s;
+				}
+			}
+			listStr += "]";
+		}
+		return listStr;
 	}
 	
 }

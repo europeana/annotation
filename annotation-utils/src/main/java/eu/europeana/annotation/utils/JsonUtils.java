@@ -1,8 +1,10 @@
 package eu.europeana.annotation.utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +40,7 @@ import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationIdDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
 import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
+import eu.europeana.annotation.utils.serialization.ListDeserializer;
 import eu.europeana.annotation.utils.serialization.MapDeserializer;
 import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
 import eu.europeana.annotation.utils.serialization.TargetDeserializer;
@@ -70,6 +73,7 @@ public class JsonUtils {
 			//module.addDeserializer(State.class, new StateDeserializer());
 			module.addDeserializer(AnnotationId.class, new AnnotationIdDeserializer());
 			module.addDeserializer(Map.class, new MapDeserializer());
+			module.addDeserializer(List.class, new ListDeserializer());
 			
 			//module.addDeserializer(Style.class, new StyleDeserializer());  
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
@@ -207,4 +211,24 @@ public class JsonUtils {
 		}
 		return res;
 	}
+	
+    /**
+     * This method converts JSON string to List<String>.
+     * @param value The input string
+     * @return resulting List<String>
+     */
+    public static List<String> stringToList(String value) {
+    	String reg = ",";
+    	value = value.replace(" ", ""); // remove blanks
+        List<String> res = new ArrayList<String>();
+        if (!value.isEmpty()) {
+			value = value.substring(1, value.length() - 1); // remove braces
+	        String[] arrValue = value.split(reg);
+	        for (String string : arrValue) {
+	        	res.add(string);
+	    	}
+        }
+        return res;
+    }
+	
 }

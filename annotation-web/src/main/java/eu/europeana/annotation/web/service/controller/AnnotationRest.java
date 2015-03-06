@@ -233,38 +233,7 @@ public class AnnotationRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
-//        /**
-//         * parse JsonLd string using JsonLdParser.
-//         * JsonLd string -> JsonLdParser -> JsonLd object
-//         */
-//        AnnotationLd parsedAnnotationLd = null;
-//        JsonLd parsedJsonLd = null;
-//        try {
-//        	parsedJsonLd = JsonLdParser.parseExt(jsonAnno);
-//        	
-//        	/**
-//        	 * convert JsonLd to AnnotationLd.
-//        	 * JsonLd object -> AnnotationLd object
-//        	 */
-//        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
-//		} catch (Exception e) {
-//			String errorMessage = "Cannot Parse JSON-LD input! ";
-//			Logger.getLogger(getClass().getName()).error(errorMessage, e);
-//			
-//			errorMessage += e.getMessage();
-//			AnnotationOperationResponse errorResponse = buildErrorResponse(errorMessage, "/annotations/{collection}/{object}.jsonld", apiKey);
-//			return JsonWebUtils.toJson(errorResponse, null);
-//		}
-//        
-//        /**
-//         * AnnotationLd object -> Annotation object.
-//         */
-//        Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-//		Annotation persistentAnnotation = getControllerHelper()
-//				.copyIntoPersistantAnnotation(webAnnotation);
-
 		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
-//				persistentAnnotation);
 
 		/**
 		 * Convert PersistentAnnotation in Annotation.
@@ -348,30 +317,6 @@ public class AnnotationRest {
 				
 		return JsonWebUtils.toJson(response, null);
 	}
-
-	/**
-	 * This method extends SOLR query by field and language if given.
-	 * @param query
-	 * @param field
-	 * @param language
-	 * @return extended query
-	 */
-//	private String addFieldToQuery(String query, String field, String language) {
-//		if (StringUtils.isNotEmpty(field)) {
-//			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-//				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-//				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-//					if (StringUtils.isNotEmpty(language)) {
-//						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-//					}
-//				}
-//				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-//			}
-//		} else {
-//			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
-//		}
-//		return query;
-//	}
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

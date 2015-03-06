@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 
 public abstract class BaseAgent implements Agent {
@@ -24,12 +25,12 @@ public abstract class BaseAgent implements Agent {
 		}
 	}
 	
-	public List<String> getAgentTypes() {
+	public List<String> getAgentType() {
 		return agentType;
 	}
 	
-	public void setAgentTypes(List<String> agentTypes) {
-		this.agentType = agentTypes;
+	public void setAgentType(List<String> agentTypeList) {
+		this.agentType = agentTypeList;
 	}
 
 	@Override
@@ -64,26 +65,27 @@ public abstract class BaseAgent implements Agent {
 	public void setHomepage(String homepage) {
 		this.homepage = homepage;
 	}
-	@Override
+//	@Override
 //	public AgentTypes getAgentType() {
 //		return agentType;
+//	
+	
+//	public String getAgentTypeStr() {
+//		String listStr = "";
+//		if (agentType.size() > 0) {
+//			listStr = "[";
+//			for (String s : agentType)
+//			{
+//				if (listStr.equals("[")) {
+//				    listStr += s;
+//				} else {
+//					listStr += "," + s;
+//				}
+//			}
+//			listStr += "]";
+//		}
+//		return listStr;
 //	}
-	public String getAgentType() {
-		String listStr = "";
-		if (agentType.size() > 0) {
-			listStr = "[";
-			for (String s : agentType)
-			{
-				if (listStr.equals("[")) {
-				    listStr += s;
-				} else {
-					listStr += "," + s;
-				}
-			}
-			listStr += "]";
-		}
-		return listStr;
-	}
 	
 	@Override
 	public void setAgentTypeEnum(AgentTypes curAgentType) {
@@ -92,7 +94,7 @@ public abstract class BaseAgent implements Agent {
 	}
 	
 	@Override
-	public void setAgentType(String agentTypeStr) {
+	public void setAgentTypeAsString(String agentTypeStr) {
 		agentType.clear();
 	    if (!StringUtils.isBlank(agentTypeStr)) { 
 	    	agentTypeStr = agentTypeStr.replace("[", "").replace("]", "").replace(" ", "");
@@ -146,7 +148,7 @@ public abstract class BaseAgent implements Agent {
 		String res = "\t### Agent ###\n";
 		
 		if (getAgentType() != null) 
-			res = res + "\t\t" + "agentType:" + getAgentType().toString() + "\n";
+			res = res + "\t\t" + "agentType:" + TypeUtils.getTypeListAsStr(getAgentType()) + "\n";
 		if (getName() != null) 
 			res = res + "\t\t" + "name:" + getName() + "\n";
 		if (getHomepage() != null) 
