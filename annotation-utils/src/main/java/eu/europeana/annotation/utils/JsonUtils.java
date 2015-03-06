@@ -176,6 +176,19 @@ public class JsonUtils {
 		return res;
 	}
     
+	public static String extractAnnotationListStringFromJsonString(String jsonString) {
+		String res = "";
+		if (StringUtils.isNotEmpty(jsonString)) {
+			Pattern pattern = Pattern.compile(ModelConst.ITEMS + "\":(.*?)}}]");
+			Matcher matcher = pattern.matcher(jsonString);
+			if (matcher.find())
+			{
+			    res = matcher.group(1) + "}}]";
+			}
+		}
+		return res;
+	}
+    
 	/**
 	 * This method extracts EuropeanaId from the JsonLd string in order to find out
 	 * the collection and object IDs for the REST service URL.

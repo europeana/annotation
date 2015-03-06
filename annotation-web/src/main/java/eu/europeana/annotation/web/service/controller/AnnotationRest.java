@@ -3,10 +3,7 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -236,38 +233,38 @@ public class AnnotationRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "annotation", required = true) String jsonAnno) {
 
-        /**
-         * parse JsonLd string using JsonLdParser.
-         * JsonLd string -> JsonLdParser -> JsonLd object
-         */
-        AnnotationLd parsedAnnotationLd = null;
-        JsonLd parsedJsonLd = null;
-        try {
-        	parsedJsonLd = JsonLdParser.parseExt(jsonAnno);
-        	
-        	/**
-        	 * convert JsonLd to AnnotationLd.
-        	 * JsonLd object -> AnnotationLd object
-        	 */
-        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
-		} catch (Exception e) {
-			String errorMessage = "Cannot Parse JSON-LD input! ";
-			Logger.getLogger(getClass().getName()).error(errorMessage, e);
-			
-			errorMessage += e.getMessage();
-			AnnotationOperationResponse errorResponse = buildErrorResponse(errorMessage, "/annotations/{collection}/{object}.jsonld", apiKey);
-			return JsonWebUtils.toJson(errorResponse, null);
-		}
-        
-        /**
-         * AnnotationLd object -> Annotation object.
-         */
-        Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-		Annotation persistentAnnotation = getControllerHelper()
-				.copyIntoPersistantAnnotation(webAnnotation);
+//        /**
+//         * parse JsonLd string using JsonLdParser.
+//         * JsonLd string -> JsonLdParser -> JsonLd object
+//         */
+//        AnnotationLd parsedAnnotationLd = null;
+//        JsonLd parsedJsonLd = null;
+//        try {
+//        	parsedJsonLd = JsonLdParser.parseExt(jsonAnno);
+//        	
+//        	/**
+//        	 * convert JsonLd to AnnotationLd.
+//        	 * JsonLd object -> AnnotationLd object
+//        	 */
+//        	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+//		} catch (Exception e) {
+//			String errorMessage = "Cannot Parse JSON-LD input! ";
+//			Logger.getLogger(getClass().getName()).error(errorMessage, e);
+//			
+//			errorMessage += e.getMessage();
+//			AnnotationOperationResponse errorResponse = buildErrorResponse(errorMessage, "/annotations/{collection}/{object}.jsonld", apiKey);
+//			return JsonWebUtils.toJson(errorResponse, null);
+//		}
+//        
+//        /**
+//         * AnnotationLd object -> Annotation object.
+//         */
+//        Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
+//		Annotation persistentAnnotation = getControllerHelper()
+//				.copyIntoPersistantAnnotation(webAnnotation);
 
-		Annotation storedAnnotation = getAnnotationService().createAnnotation(
-				persistentAnnotation);
+		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
+//				persistentAnnotation);
 
 		/**
 		 * Convert PersistentAnnotation in Annotation.
@@ -294,7 +291,7 @@ public class AnnotationRest {
 			@RequestParam(value = "facet", required = false) String facet) {
 
 		query = getTypeUtils().removeTabs(query);
-		query = addFieldToQuery(query, field, language);
+		query = JsonWebUtils.addFieldToQuery(query, field, language);
 		
 //		boolean withFacet = false;
 //		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
@@ -359,22 +356,22 @@ public class AnnotationRest {
 	 * @param language
 	 * @return extended query
 	 */
-	private String addFieldToQuery(String query, String field, String language) {
-		if (StringUtils.isNotEmpty(field)) {
-			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-					if (StringUtils.isNotEmpty(language)) {
-						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-					}
-				}
-				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-			}
-		} else {
-			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
-		}
-		return query;
-	}
+//	private String addFieldToQuery(String query, String field, String language) {
+//		if (StringUtils.isNotEmpty(field)) {
+//			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
+//				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
+//				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+//					if (StringUtils.isNotEmpty(language)) {
+//						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+//					}
+//				}
+//				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
+//			}
+//		} else {
+//			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
+//		}
+//		return query;
+//	}
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -389,7 +386,7 @@ public class AnnotationRest {
 			@RequestParam(value = "language", required = true) String language) {
 
 		query = getTypeUtils().removeTabs(query);
-		query = addFieldToQuery(query, field, language);
+		query = JsonWebUtils.addFieldToQuery(query, field, language);
 
 		TagSearchResults<BaseTagResource> response;
 		response = new TagSearchResults<BaseTagResource>(

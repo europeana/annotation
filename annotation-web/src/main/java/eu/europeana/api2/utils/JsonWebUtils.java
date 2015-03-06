@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.jsonldjava.utils.JSONUtils;
 
+import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
+
 public class JsonWebUtils {
 	
 	private static final Logger log = Logger.getLogger(JSONUtils.class);
@@ -55,4 +57,29 @@ public class JsonWebUtils {
 		}
 		return new ModelAndView(resultPage, model);
 	}
+	
+	/**
+	 * This method extends SOLR query by field and language if given.
+	 * @param query
+	 * @param field
+	 * @param language
+	 * @return extended query
+	 */
+	public static String addFieldToQuery(String query, String field, String language) {
+		if (StringUtils.isNotEmpty(field)) {
+			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
+				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
+				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+					if (StringUtils.isNotEmpty(language)) {
+						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+					}
+				}
+				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
+			}
+		} else {
+			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
+		}
+		return query;
+	}
+		
 }
