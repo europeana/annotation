@@ -244,6 +244,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 			bodyRes.setMediaType(body.getMediaType());
 		if (StringUtils.isNotEmpty(body.getValue()))
 			bodyRes.setValue(body.getValue());
+		if (StringUtils.isNotBlank(((PlainTagBody) body).getTagId())) {
+			((PlainTagBody) bodyRes).setTagId(((PlainTagBody) body).getTagId());
+		}
 		return bodyRes;
 	}
 

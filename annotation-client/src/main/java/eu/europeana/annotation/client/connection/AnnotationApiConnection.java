@@ -37,7 +37,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationSearchResults getAnnotationsForObject(String collectionId,
 			String objectHash) throws IOException {
 		String url = getAnnotationServiceUri();
-		url += collectionId + "/" + objectHash;
+		url += "/" + collectionId + "/" + objectHash + ".json";
 		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 
 		// Execute Europeana API request
