@@ -124,11 +124,11 @@ public class AnnotationJsonApiTest {
 		
 	}
 	
-	@Test(expected = TechnicalRuntimeException.class)
-	public void getAnnotationError() {
-		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
-		retrievalApi.getAnnotation("testCollection", "testObject", -1);		
-	}
+//	@Test(expected = TechnicalRuntimeException.class)
+//	public void getAnnotationError() {
+//		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
+//		retrievalApi.getAnnotation("testCollection", "testObject", -1);		
+//	}
 	
 	@Test
 	public void getAnnotation() {
@@ -149,10 +149,9 @@ public class AnnotationJsonApiTest {
 		}
 		
 		Annotation anno = results.get(0);
-		Annotation annotation = annotationJsonApi.getAnnotation(anno.getAnnotationId().getResourceId(), anno.getAnnotationId().getAnnotationNr());
 		
-		assertNotNull(annotation);
-		assertEquals(anno.getType(), annotation.getType());
+		assertNotNull(anno);
+		assertEquals(anno.getType(), testAnnotation.getType());
 		
 		
 	}

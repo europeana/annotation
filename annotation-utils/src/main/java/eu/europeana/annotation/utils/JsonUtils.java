@@ -181,9 +181,13 @@ public class JsonUtils {
 	}
     
 	public static String extractAnnotationListStringFromJsonString(String jsonString) {
+		return extractAnnotationListStringFromJsonString(jsonString, "\":(.*?)}}]");
+	}
+    
+	public static String extractAnnotationListStringFromJsonString(String jsonString, String regex) {
 		String res = "";
 		if (StringUtils.isNotEmpty(jsonString)) {
-			Pattern pattern = Pattern.compile(ModelConst.ITEMS + "\":(.*?)}}]");
+			Pattern pattern = Pattern.compile(ModelConst.ITEMS + regex);
 			Matcher matcher = pattern.matcher(jsonString);
 			if (matcher.find())
 			{

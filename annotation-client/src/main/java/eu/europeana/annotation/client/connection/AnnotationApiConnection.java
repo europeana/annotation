@@ -42,10 +42,13 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 		// Execute Europeana API request
 		String json = getJSONResult(url);
-		Gson gson = getAnnotationGson();
-
-		return (AnnotationSearchResults) gson.fromJson(json,
-				AnnotationSearchResults.class);
+		
+		return getAnnotationSearchResults(json);
+//
+//		Gson gson = getAnnotationGson();
+//
+//		return (AnnotationSearchResults) gson.fromJson(json,
+//				AnnotationSearchResults.class);
 	}
 	
 	public AnnotationOperationResponse createAnnotation(Annotation annotation) throws IOException {
@@ -115,10 +118,19 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		 */
 		String json = getJSONResult(url);
 		
+		return getAnnotationSearchResults(json);
+	}
+
+	/**
+	 * This method converts json response in AnnotationSearchResults.
+	 * @param json
+	 * @return AnnotationSearchResults
+	 */
+	private AnnotationSearchResults getAnnotationSearchResults(String json) {
 		AnnotationSearchResults asr = new AnnotationSearchResults();
 		asr.setSuccess("true");
 		asr.setAction("create:/annotations/search");
-		String annotationListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json);
+		String annotationListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json, "\":(.*?)}]");
 		if (StringUtils.isNotEmpty(annotationListJsonString)) {
 	        if (!annotationListJsonString.isEmpty()) {
 	        	annotationListJsonString = 
