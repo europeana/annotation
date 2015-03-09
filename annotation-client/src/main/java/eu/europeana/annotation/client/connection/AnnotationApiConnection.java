@@ -2,9 +2,7 @@ package eu.europeana.annotation.client.connection;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
@@ -16,7 +14,6 @@ import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.utils.JsonUtils;
 
@@ -111,9 +108,46 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 */
 	public AnnotationSearchResults search(String query, String startOn, String limit) 
 			throws IOException {
+		String url = buildUrl(query, startOn, limit, ModelConst.ANNOTATION);
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		String json = getJSONResult(url);
+		
+		AnnotationSearchResults asr = new AnnotationSearchResults();
+		asr.setSuccess("true");
+		asr.setAction("create:/annotations/search");
+		String annotationListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json);
+		if (StringUtils.isNotEmpty(annotationListJsonString)) {
+	        if (!annotationListJsonString.isEmpty()) {
+	        	annotationListJsonString = 
+	        			annotationListJsonString.substring(1, annotationListJsonString.length() - 1); // remove braces
+		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(annotationListJsonString);
+		        List<Annotation> annotationList = new ArrayList<Annotation>();
+		        for (String annotationJsonString : arrValue) {
+		        	if (!annotationJsonString.startsWith("{"))
+		        		annotationJsonString = "{" + annotationJsonString;
+		    		Annotation annotationObject = JsonUtils.toAnnotationObject(annotationJsonString + "}}");
+					annotationList.add(annotationObject);
+		    	}
+		        asr.setItems(annotationList);
+	        }
+		}
+		return asr;
+	}
+
+	/**
+	 * This method consturcts url dependent on search parameter.
+	 * @param query
+	 * @param startOn
+	 * @param limit
+	 * @param type The type of the object. E.g. annotation or tag
+	 * @return query
+	 */
+	private String buildUrl(String query, String startOn, String limit, String type) {
 		String url = getAnnotationServiceUri();
-//		url += "/search?wsKey=key&profile=annotation";
-		url += "/search?wsKey=" + getApiKey() + "&profile=annotation";
+		url += "/search?wsKey=" + getApiKey() + "&profile=" + type;
 		if (StringUtils.isNotEmpty(query)) {
 			url += "&query=" + query;
 			if (!query.contains("field"))
@@ -129,30 +163,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url += "&limit=" + limit;
 		else
 			url += "&limit=";
-		
-		/**
-		 * Execute Europeana API request
-		 */
-		String json = getJSONResult(url);
-		
-		AnnotationSearchResults asr = new AnnotationSearchResults();
-		asr.setSuccess("true");
-		asr.setAction("create:/annotations/search");
-		String annotationListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json);
-		if (StringUtils.isNotEmpty(annotationListJsonString)) {
-	    	String reg = "/},/{";
-	        if (!annotationListJsonString.isEmpty()) {
-	        	annotationListJsonString = 
-	        			annotationListJsonString.substring(1, annotationListJsonString.length() - 1); // remove braces
-//		        String[] arrValue = annotationListJsonString.split(reg);
-		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(annotationListJsonString);
-		        for (String annotationJsonString : arrValue) {
-//		        	if (annotationJsonString)
-		    		asr.getItems().add(JsonUtils.toAnnotationObject(annotationJsonString + "}}"));
-		    	}
-	        }
-		}
-		return asr;
+		return url;
 	}
 
 	public AnnotationSearchResults search(String query) throws IOException {
@@ -166,9 +177,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public TagSearchResults searchTags(String query, String startOn, String limit) throws IOException {
-		String url = getAnnotationServiceUri();
-		url += "/" + query;
-		url += "?wsKey=" + getApiKey() + "&profile=tag";
+		
+		String url = buildUrl(query, startOn, limit, ModelConst.TAG);
 		
 		/**
 		 * Execute Europeana API request
@@ -178,8 +188,23 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		TagSearchResults tsr = new TagSearchResults();
 		tsr.setSuccess("true");
 		tsr.setAction("create:/tags/search");
-		String tagJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
-//		tsr.setAnnotation(JsonUtils.toAnnotationObject(annotationJsonString));
+//		String tagJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
+//		String tagListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json);
+//		if (StringUtils.isNotEmpty(tagListJsonString)) {
+//	        if (!tagListJsonString.isEmpty()) {
+//	        	tagListJsonString = 
+//	        			tagListJsonString.substring(1, tagListJsonString.length() - 1); // remove braces
+//		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(tagListJsonString);
+//		        List<SolrTag> tagList = new ArrayList<SolrTag>();
+//		        for (String tagJsonString : arrValue) {
+//		        	if (!tagJsonString.startsWith("{"))
+//		        		tagJsonString = "{" + tagJsonString;
+//		    		SolrTag tagObject = JsonUtils.toTagObject(tagJsonString + "}}");
+//					tagList.add(tagObject);
+//		    	}
+//		        tsr.setItems(tagList);
+//	        }
+//		}
 		return tsr;
 	}
 

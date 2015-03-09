@@ -43,9 +43,9 @@ public class AgentDeserializer extends StdDeserializer<Agent> {
 			if (ModelConst.AGENT_TYPE.equals(element.getKey())) {
 				String textValue = element.getValue().toString();//.getTextValue();
 				String typeValue = TypeUtils.getEuTypeFromTypeArrayStatic(textValue).replace("\"", "");
-//				if (typeValue.equals("")) {
-//					typeValue = textValue;
-//				}
+				if (typeValue.equals("")) {
+					typeValue = textValue.replace("\"", "").replace("[", "").replace("]", "");
+				}
 				realClass = AgentObjectFactory.getInstance()
 						.getClassForType(typeValue);
 				break;

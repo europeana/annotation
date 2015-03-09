@@ -9,6 +9,7 @@ public class ModelConst {
 	public static final String GSON_DATE_FORMAT   = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"; //"EEE, dd MMM yyyy HH:mm:ss zzz";
 	public static final String JSON_REST          = ".json";
 	public static final String ANNOTATION         = "annotation";
+	public static final String TAG                = "tag";
 	public static final String ITEMS              = "items";
 	public static final String SERIALIZED_AT      = "serializedAt";
 	public static final String ANNOTATED_AT       = "annotatedAt";

@@ -56,7 +56,7 @@ public class AnnotationSearchApiTest {
 		assertTrue(annotationList.size() > 0);
 	}
 
-	@Test
+	//@Test
 	public void searchTag() throws Exception {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
@@ -68,7 +68,7 @@ public class AnnotationSearchApiTest {
 		assertTrue(tagList.size() > 0);
 	}
 
-	@Test
+	//@Test
 	public void searchTagByLimit() throws Exception {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
@@ -80,7 +80,7 @@ public class AnnotationSearchApiTest {
 		assertTrue(tagList.size() > 0);
 	}
 
-	@Test
+	//@Test
 	public void searchTagByLanguage() throws Exception {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
