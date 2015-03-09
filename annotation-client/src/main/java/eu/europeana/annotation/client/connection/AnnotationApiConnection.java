@@ -68,6 +68,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		aor.setSuccess("true");
 		aor.setAction("create:/annotations/collection/object.json");
 		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
+		annotationJsonString = annotationJsonString
+				.replace("\"\\\"", "").replace("\\\"\"","").replace(":[",":\"[").replace("],","]\",");
 		aor.setAnnotation(JsonUtils.toAnnotationObject(annotationJsonString));
 		return aor;
 
@@ -143,10 +145,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	        	annotationListJsonString = 
 	        			annotationListJsonString.substring(1, annotationListJsonString.length() - 1); // remove braces
 //		        String[] arrValue = annotationListJsonString.split(reg);
-		        String[] arrValue = JsonLdParser.splitToArray(annotationListJsonString);
+		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(annotationListJsonString);
 		        for (String annotationJsonString : arrValue) {
 //		        	if (annotationJsonString)
-		    		asr.getItems().add(JsonUtils.toAnnotationObject(annotationJsonString + "}"));
+		    		asr.getItems().add(JsonUtils.toAnnotationObject(annotationJsonString + "}}"));
 		    	}
 	        }
 		}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.DeserializationContext;
@@ -21,8 +22,9 @@ public class ListDeserializer extends JsonDeserializer<List<String>> {
         List<String> valueList = new ArrayList<String>();
         JsonNode jn = mapper.readTree(jp);
         if (jn != null) {
-            String valueListStr = jn.getTextValue();
-            valueList = JsonUtils.stringToList(valueListStr);
+            String valueListStr = jn.toString();//getTextValue();
+            if (StringUtils.isNotEmpty(valueListStr))
+            	valueList = JsonUtils.stringToList(valueListStr);
         }
         return valueList;
     }
