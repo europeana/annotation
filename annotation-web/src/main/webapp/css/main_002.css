@@ -1591,7 +1591,7 @@ input[type="text"],input[type="password"],input[type="file"],input[type="submit"
 	{
 	font: 1em Arial, Helvetica, Verdana, sans-serif;
 	margin: 2px 2px 2px 0;
-	padding: 4px 1px;
+
 }
 
 input[type="text"],input[type="password"],select,textarea,.textarea {
