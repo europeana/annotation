@@ -90,14 +90,17 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	 * @param language
 	 * @return extended query
 	 */
-	public String addFieldToQuery(String query, String field, String language) {
+	public static String addFieldToQuery(String query, String field, String language) {
 		if (StringUtils.isNotEmpty(field)) {
 			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
 				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
 				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-					if (StringUtils.isNotEmpty(language)) {
+					if (StringUtils.isNotEmpty(language) 
+							&& field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
 						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
 					}
+				} else {
+					prefix = "";
 				}
 				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
 			}
@@ -106,5 +109,5 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 		}
 		return query;
 	}
-		
+				
 }
