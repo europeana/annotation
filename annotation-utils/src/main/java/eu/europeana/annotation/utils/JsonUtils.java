@@ -180,6 +180,25 @@ public class JsonUtils {
 		return res;
 	}
     
+	/**
+	 * This method extracts value from json string.
+	 * @param valueName
+	 * @param jsonString
+	 * @return value
+	 */
+	public static String extractValueFromJsonString(String valueName, String jsonString) {
+		String res = "";
+		if (StringUtils.isNotEmpty(jsonString)) {
+			Pattern pattern = Pattern.compile(valueName + "\":\"(.*?)\"");
+			Matcher matcher = pattern.matcher(jsonString);
+			if (matcher.find())
+			{
+			    res = matcher.group(1);
+			}
+		}
+		return res;
+	}
+    
 	public static String extractAnnotationListStringFromJsonString(String jsonString) {
 		return extractAnnotationListStringFromJsonString(jsonString, "\":(.*?)}}]");
 	}

@@ -17,7 +17,7 @@ public class AnnotationSearchApiTest {
 	public static String START_ON  = "0";
 	public static String LIMIT     = "10";
 	public static String FIELD     = "multilingual";
-	public static String LANGUAGE  = "en";
+	public static String LANGUAGE  = "ro";
 	
 	
 	@Test
@@ -56,7 +56,7 @@ public class AnnotationSearchApiTest {
 		assertTrue(annotationList.size() > 0);
 	}
 
-	//@Test
+	@Test
 	public void searchTag() throws Exception {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
@@ -66,27 +66,16 @@ public class AnnotationSearchApiTest {
 		
 		assertNotNull(tagList);
 		assertTrue(tagList.size() > 0);
+		assertTrue(tagList.get(0).getLabel().contains(VALUE));
 	}
 
-	//@Test
+	@Test
 	public void searchTagByLimit() throws Exception {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
 		
 		List<? extends SolrTag> tagList = 
 				annotationSearchApi.searchTags(VALUE, START_ON, LIMIT, null, null);
-		
-		assertNotNull(tagList);
-		assertTrue(tagList.size() > 0);
-	}
-
-	//@Test
-	public void searchTagByLanguage() throws Exception {
-
-		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
-		
-		List<? extends SolrTag> tagList = 
-				annotationSearchApi.searchTags(VALUE, START_ON, LIMIT, FIELD, LANGUAGE);
 		
 		assertNotNull(tagList);
 		assertTrue(tagList.size() > 0);

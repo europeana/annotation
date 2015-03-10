@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 
-import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
 

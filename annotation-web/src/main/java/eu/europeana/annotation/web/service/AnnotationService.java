@@ -76,4 +76,11 @@ public interface AnnotationService {
 	 */
 	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException;
 	
+	/**
+	 * This method converts Annotation object to AnnotationLd string.
+	 * @param annotation
+	 * @return AnnotationLd string
+	 * @throws AnnotationServiceException
+	 */
+//	public String convertAnnotationToAnnotationLdString(Annotation annotation) throws AnnotationServiceException;
 }

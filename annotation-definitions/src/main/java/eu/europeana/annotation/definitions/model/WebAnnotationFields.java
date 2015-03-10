@@ -46,5 +46,11 @@ public interface WebAnnotationFields {
 	public static final String DEFAULT_ANNOTATION_TYPE = "[oa:annotation,euType:OBJECT_TAG]";
 	public static final String OA                   = "oa";
 	public static final String OA_PREFIX            = "http://www.w3.org/ns/oa-context-20130208.json";
-	public static final String SEPARATOR_SEMICOLON = ":";
+	public static final String SEPARATOR_SEMICOLON  = ":";
+	
+	public static final String LABEL                = "label";
+	public static final String ID                   = "id";
+	public static final String LANGUAGE             = "language";
+	public static final String VALUE                = "value";
+	public static final String TAG_TYPE             = "tagType";
 }

@@ -319,5 +319,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 		this.solrTagService = solrTagService;
 	}
 
+//	@Override 
+//	public String convertAnnotationToAnnotationLdString(Annotation annotation) throws AnnotationServiceException {
+//		String res = "";
+//		AnnotationLd annotationLd = new AnnotationLd(annotation);
+//		res = annotationLd.toString(4);
+//		return res;
+//	}
 
 }

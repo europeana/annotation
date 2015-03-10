@@ -7,14 +7,15 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 
-import com.google.gson.Gson;
-
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
+import eu.europeana.annotation.solr.model.internal.SolrTag;
+import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationApiConnection extends BaseApiConnection {
@@ -50,6 +51,17 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		return (AnnotationSearchResults) gson.fromJson(json,
 //				AnnotationSearchResults.class);
 	}
+	
+//	public AnnotationSearchResults convertAnnotationToAnnotationLdString(Annotation annotation) throws IOException {
+//		String url = getAnnotationServiceUri();
+//		url += "/" + collectionId + "/" + objectHash + ".json";
+//		url += "?wsKey=" + getApiKey() + "&profile=annotation";
+//
+//		// Execute Europeana API request
+//		String json = getJSONResult(url);
+//		
+//		return getAnnotationSearchResults(json);
+//	}
 	
 	public AnnotationOperationResponse createAnnotation(Annotation annotation) throws IOException {
 		String url = getAnnotationServiceUri();
@@ -191,6 +203,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public TagSearchResults searchTags(String query, String startOn, String limit) throws IOException {
 		
 		String url = buildUrl(query, startOn, limit, ModelConst.TAG);
+		url = url.replace("annotations", "tags");
 		
 		/**
 		 * Execute Europeana API request
@@ -200,26 +213,52 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		TagSearchResults tsr = new TagSearchResults();
 		tsr.setSuccess("true");
 		tsr.setAction("create:/tags/search");
-//		String tagJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
-//		String tagListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json);
-//		if (StringUtils.isNotEmpty(tagListJsonString)) {
-//	        if (!tagListJsonString.isEmpty()) {
-//	        	tagListJsonString = 
-//	        			tagListJsonString.substring(1, tagListJsonString.length() - 1); // remove braces
-//		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(tagListJsonString);
-//		        List<SolrTag> tagList = new ArrayList<SolrTag>();
-//		        for (String tagJsonString : arrValue) {
-//		        	if (!tagJsonString.startsWith("{"))
-//		        		tagJsonString = "{" + tagJsonString;
-//		    		SolrTag tagObject = JsonUtils.toTagObject(tagJsonString + "}}");
-//					tagList.add(tagObject);
-//		    	}
-//		        tsr.setItems(tagList);
-//	        }
-//		}
+		String tagListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json, "\":(.*?)}]");
+		if (StringUtils.isNotEmpty(tagListJsonString)) {
+	        if (!tagListJsonString.isEmpty()) {
+	        	tagListJsonString = 
+	        			tagListJsonString.substring(1, tagListJsonString.length() - 2); // remove braces
+		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(tagListJsonString);
+		        List<SolrTag> tagList = new ArrayList<SolrTag>();
+		        for (String tagJsonStringElem : arrValue) {
+		        	if (!tagJsonStringElem.startsWith("{"))
+		        		tagJsonStringElem = "{" + tagJsonStringElem;
+		        	if (!tagJsonStringElem.endsWith("}"))
+		        		tagJsonStringElem = tagJsonStringElem + "}";
+		    		SolrTag tagObject = toTagObject(tagJsonStringElem);
+					tagList.add(tagObject);
+		    	}
+		        tsr.setItems(tagList);
+	        }
+		}
 		return tsr;
 	}
 
+	/**
+	 * This method converts json string into SolrTag object.
+	 * @param json
+	 * @return tag object
+	 */
+	public SolrTag toTagObject(String json) {
+		SolrTagImpl tag = new SolrTagImpl();
+		String id = JsonUtils.extractValueFromJsonString(WebAnnotationFields.ID, json);
+		if (StringUtils.isNotEmpty(id))
+			tag.setId(id);
+		String label = JsonUtils.extractValueFromJsonString(WebAnnotationFields.LABEL, json);
+		if (StringUtils.isNotEmpty(label))
+			tag.setLabel(label);
+		String httpUri = JsonUtils.extractValueFromJsonString(WebAnnotationFields.HTTP_URI, json);
+		if (StringUtils.isNotEmpty(httpUri))
+			tag.setHttpUri(httpUri);
+		String value = JsonUtils.extractValueFromJsonString(WebAnnotationFields.VALUE, json);
+		if (StringUtils.isNotEmpty(value))
+			tag.setValue(value);
+		String language = JsonUtils.extractValueFromJsonString(WebAnnotationFields.LANGUAGE, json);
+		if (StringUtils.isNotEmpty(language))
+			tag.setLanguage(language);
+		return tag;
+	}
+	
 	public TagSearchResults searchTags(String query) throws IOException {
 	    return searchTags(query, null, null);
 	}
