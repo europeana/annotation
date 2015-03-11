@@ -269,6 +269,7 @@ public class AnnotationServiceImpl implements AnnotationService {
   		solrTagImpl.setLanguage(tag.getLanguage());
   		solrTagImpl.setContentType(tag.getContentType());
   		solrTagImpl.setHttpUri(tag.getHttpUri());
+  		solrTagImpl.setMultilingual(tag.getMultilingual());
 
         res = solrTagImpl;
 

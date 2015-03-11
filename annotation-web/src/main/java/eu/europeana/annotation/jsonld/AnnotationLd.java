@@ -96,10 +96,13 @@ public class AnnotationLd extends JsonLd {
     	setUseTypeCoercion(false);
         setUseCuries(true);
         addNamespacePrefix(WebAnnotationFields.OA_PREFIX, WebAnnotationFields.OA);
+        //TODO: verify if the following check is needed
+        //if(isApplyNamespaces())
+        	setUsedNamespaces(namespacePrefixMap);
 
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
-        if (!StringUtils.isNotBlank(annotation.getType())) {
+        if (!StringUtils.isBlank(annotation.getType())) {
         	jsonLdResource.addType(annotation.getType());
         } else {
         	jsonLdResource.addType(WebAnnotationFields.DEFAULT_ANNOTATION_TYPE);
