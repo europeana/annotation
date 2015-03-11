@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -186,7 +187,12 @@ public class AnnotationRest {
 		
 		AnnotationLd annotationLd = new AnnotationLd(annotation);
         String jsonLd = annotationLd.toString(4);
-	
+        if (!jsonLd.contains("context")) {
+	        String key = annotationLd.getNamespacePrefixMap().keySet().toString().replace("[", "").replace("]", "");
+	        String value = annotationLd.getNamespacePrefixMap().values().toString().replace("[", "").replace("]", "");
+	        String context = "{\n   \"@context\":{\r\n\"" + value + "\":\"" + key + "\"\r\n},";
+	        jsonLd = context + jsonLd.substring(1);
+        }	
 		return JsonWebUtils.toJson(jsonLd, null);
 	}
 
