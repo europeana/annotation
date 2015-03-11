@@ -45,7 +45,7 @@ public interface WebAnnotationFields {
 	public static final String DEFAULT_MEDIA_TYPE   = "[oa:SemanticTag]";
 	public static final String DEFAULT_ANNOTATION_TYPE = "[oa:annotation,euType:OBJECT_TAG]";
 	public static final String OA                   = "oa";
-	public static final String OA_PREFIX            = "http://www.w3.org/ns/oa-context-20130208.json";
+	public static final String OA_CONTEXT            = "http://www.w3.org/ns/oa-context-20130208.json";
 	public static final String SEPARATOR_SEMICOLON  = ":";
 	
 	public static final String LABEL                = "label";
