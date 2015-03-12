@@ -1,10 +1,13 @@
 package eu.europeana.annotation.definitions.model.resource.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 
 public class BaseTagResource extends BaseInternetResource implements TagResource{
 
@@ -14,15 +17,28 @@ public class BaseTagResource extends BaseInternetResource implements TagResource
 	private String lastUpdatedBy;
 	private String creator;
 	private String tagType;
-	private Map<String, String> translations; 
 	private List<String> sameAs; 
-	
+	protected Map<String, String> multilingual;
+
+			
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	@Override
+	public String getLabel() {
+		return getValue();
+	}
+
+	@Override
+	public void setLabel(String label) {
+		setValue(label);
+	}
+
+	
 	public Long getCreationTimestamp() {
 		return creationTimestamp;
 	}
@@ -53,12 +69,7 @@ public class BaseTagResource extends BaseInternetResource implements TagResource
 	public void setTagType(String tagType) {
 		this.tagType = tagType;
 	}
-	public Map<String, String> getTranslations() {
-		return translations;
-	}
-	public void setTranslations(Map<String, String> translations) {
-		this.translations = translations;
-	}
+	
 	public List<String> getSameAs() {
 		return sameAs;
 	}
@@ -77,6 +88,29 @@ public class BaseTagResource extends BaseInternetResource implements TagResource
 	public String toString() {
 		return "SolrTag [id:" + getId() + ", creator:" + getCreator() + 
 				", language:" + getLanguage() + ", label:" + getValue() + "]";
+	}
+	
+	@Override
+	public void setTagTypeEnum(TagTypes tagType) {
+		setTagType(tagType.name());
+	}
+	
+	@Override
+	public Map<String, String> getMultilingual() {
+		return multilingual;
+	}
+
+	@Override
+	public void setMultilingual(Map<String, String> multilingual) {
+		this.multilingual = multilingual;
+	}
+	
+	@Override
+	public void addMultilingualLabel(String language, String label) {
+	    if(this.multilingual == null) {
+	        this.multilingual = new HashMap<String, String>();
+	    }
+	    this.multilingual.put(language, label);
 	}
 	
 }

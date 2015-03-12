@@ -81,7 +81,7 @@ public class PersistentTagServiceTest {
 		tag.setContentType("text");
 		tag.setLanguage("ro");
 		tag.setLabel("Vlad Tepes");
-		tag.setTagType(TagTypes.SIMPLE_TAG);
+		tag.setTagTypeEnum(TagTypes.SIMPLE_TAG);
 		
 		return tag;
 	}
@@ -92,7 +92,7 @@ public class PersistentTagServiceTest {
 		tag.setContentType("text");
 		//tag.setLanguage("ro");
 		tag.setLabel("Vlad Tepes");
-		tag.setTagType(TagTypes.SIMPLE_TAG);
+		tag.setTagTypeEnum(TagTypes.SIMPLE_TAG);
 		
 		return tag;
 	}
@@ -100,7 +100,7 @@ public class PersistentTagServiceTest {
 	@Test
 	public void createSemanticTag() throws AnnotationMongoException{
 		PersistentTag tag = buildTestTag();
-		tag.setTagType(TagTypes.SEMANTIC_TAG);
+		tag.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
 		tag.setHttpUri("http://ro.dbpedia.org/resource/Vlad_Țepeș");
 		
 		
@@ -121,7 +121,7 @@ public class PersistentTagServiceTest {
 	@Test(expected=InvalidTagException.class)
 	public void createSemanticTagException() throws AnnotationMongoException{
 		PersistentTag tag = buildTestTag();
-		tag.setTagType(TagTypes.SEMANTIC_TAG);
+		tag.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
 		tagService.create(tag);
 	}
 	

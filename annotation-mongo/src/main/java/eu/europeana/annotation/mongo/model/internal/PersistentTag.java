@@ -12,10 +12,10 @@ public interface PersistentTag extends TagResource, NoSqlEntity{
 		public static final String FIELD_HTTPURI = "httpUri";
 		public static final String FIELD_TAG_TYPE = "tagType";
 		
-		public abstract ObjectId getId();
+		public abstract ObjectId getObjectId();
 		public abstract String getLabel();
 		public abstract void setLabel(String label);
-		public abstract void setTagType(TagTypes tagType);
+		public abstract void setTagTypeEnum(TagTypes tagType);
 		public abstract void setTagType(String tagType);
 		public abstract String getTagType();
 		

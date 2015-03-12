@@ -97,9 +97,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 //				query.setValue(body.getValue());
 //				query.setHttpUri(body.getHttpUri());
 			if(BodyTypes.isSimpleTagBody(body.getBodyType()))
-				query.setTagType(TagTypes.SIMPLE_TAG);
+				query.setTagTypeEnum(TagTypes.SIMPLE_TAG);
 			else if(BodyTypes.isSemanticTagBody(body.getBodyType()))
-				query.setTagType(TagTypes.SEMANTIC_TAG);
+				query.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
 			
 			try {
 				tag = tagService.find(query);

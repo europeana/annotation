@@ -16,14 +16,9 @@
  */
 package eu.europeana.annotation.solr.model.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.solr.client.solrj.beans.Field;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
-import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 
 /**
  * @see eu.europeana.corelib.definitions.solr.beans.BriefBean
@@ -38,19 +33,9 @@ public class SolrTagImpl extends BaseTagResource implements SolrTag {
 	}
 
 	@Override
-	public String getLabel() {
-		return getValue();
-	}
-
-	@Override
 	@Field("label")
 	public void setLabel(String label) {
-		setValue(label);
-	}
-
-	@Override
-	public void setTagType(TagTypes tagType) {
-		setTagType(tagType.name());
+		super.setLabel(label);;
 	}
 	
 	@Override
@@ -77,24 +62,4 @@ public class SolrTagImpl extends BaseTagResource implements SolrTag {
 		super.setCreator(creator);
 	}
 	
-	protected Map<String, String> multilingual;
-
-	@Override
-	public Map<String, String> getMultilingual() {
-		return multilingual;
-	}
-
-	@Override
-	public void setMultilingual(Map<String, String> multilingual) {
-		this.multilingual = multilingual;
-	}
-	
-	@Override
-	public void addLabelInMapping(String language, String label) {
-	    if(this.multilingual == null) {
-	        this.multilingual = new HashMap<String, String>();
-	    }
-	    this.multilingual.put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
-	}
-
 }

@@ -19,7 +19,7 @@ package eu.europeana.annotation.jsonld;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;

@@ -331,8 +331,8 @@ public class SolrTagServiceTest {
 		/**
 		 * add multilingual labels
 		 */
-		solrTag.addLabelInMapping("EN", "leaf");
-		solrTag.addLabelInMapping("DE", "blatt");
+		solrTag.addMultilingualLabel("EN", "leaf");
+		solrTag.addMultilingualLabel("DE", "blatt");
 		
 		Logger.getLogger(getClass().getName()).info("Solr Tag before update. The multilingual map: " + 
 				solrTag.getMultilingual().toString());

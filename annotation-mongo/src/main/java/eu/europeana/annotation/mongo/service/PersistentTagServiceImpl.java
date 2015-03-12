@@ -118,7 +118,7 @@ public class PersistentTagServiceImpl extends
 			tag.setLastUpdateTimestamp(tag.getCreationTimestamp());
 		
 		if (tag.getTagType() == null)
-			tag.setTagType(TagTypes.SIMPLE_TAG);
+			tag.setTagTypeEnum(TagTypes.SIMPLE_TAG);
 
 		validateTag(tag);
 
