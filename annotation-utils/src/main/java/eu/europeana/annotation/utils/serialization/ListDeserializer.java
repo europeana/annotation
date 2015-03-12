@@ -13,6 +13,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import eu.europeana.annotation.utils.JsonUtils;
 
+/**
+ * @author RomanG, GordeaS
+ */
 public class ListDeserializer extends JsonDeserializer<List<String>> {
 
     @Override
