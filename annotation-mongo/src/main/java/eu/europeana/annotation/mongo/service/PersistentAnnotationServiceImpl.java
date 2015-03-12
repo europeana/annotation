@@ -112,6 +112,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				throw new AnnotationValidationException("Cannot read tag from database", e);
 			}
 		}
+		if (tag.getId() == null && tag.getObjectId() != null)
+			((PersistentTagImpl) tag).setId(tag.getObjectId().toString());
 		return tag;
 	}	
 
