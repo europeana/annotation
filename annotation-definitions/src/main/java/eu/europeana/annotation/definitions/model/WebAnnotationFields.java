@@ -53,4 +53,13 @@ public interface WebAnnotationFields {
 	public static final String LANGUAGE             = "language";
 	public static final String VALUE                = "value";
 	public static final String TAG_TYPE             = "tagType";
+	
+	public static final String DEFAULT_LANGUAGE = "EN";
+	public static final String UNDERSCORE = "_";
+
+	/**
+	 * Solr query
+	 */
+	public static final String ALL_SOLR_ENTRIES = "*:*";
+	public static final String DELIMETER = ":";
 }

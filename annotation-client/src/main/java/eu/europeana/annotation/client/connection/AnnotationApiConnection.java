@@ -13,9 +13,9 @@ import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.solr.model.internal.SolrTag;
-import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationApiConnection extends BaseApiConnection {
@@ -219,13 +219,13 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	        	tagListJsonString = 
 	        			tagListJsonString.substring(1, tagListJsonString.length() - 2); // remove braces
 		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(tagListJsonString);
-		        List<SolrTag> tagList = new ArrayList<SolrTag>();
+		        List<TagResource> tagList = new ArrayList<TagResource>();
 		        for (String tagJsonStringElem : arrValue) {
 		        	if (!tagJsonStringElem.startsWith("{"))
 		        		tagJsonStringElem = "{" + tagJsonStringElem;
 		        	if (!tagJsonStringElem.endsWith("}"))
 		        		tagJsonStringElem = tagJsonStringElem + "}";
-		    		SolrTag tagObject = toTagObject(tagJsonStringElem);
+		        	TagResource tagObject = toTagObject(tagJsonStringElem);
 					tagList.add(tagObject);
 		    	}
 		        tsr.setItems(tagList);
@@ -235,12 +235,12 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 	/**
-	 * This method converts json string into SolrTag object.
+	 * This method converts json string into TagResource object.
 	 * @param json
 	 * @return tag object
 	 */
-	public SolrTag toTagObject(String json) {
-		SolrTagImpl tag = new SolrTagImpl();
+	public TagResource toTagObject(String json) {
+		BaseTagResource tag = new BaseTagResource();
 		String id = JsonUtils.extractValueFromJsonString(WebAnnotationFields.ID, json);
 		if (StringUtils.isNotEmpty(id))
 			tag.setId(id);

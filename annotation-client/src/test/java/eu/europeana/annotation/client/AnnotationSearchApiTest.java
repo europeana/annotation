@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.solr.model.internal.SolrTag;
+import eu.europeana.annotation.definitions.model.resource.TagResource;
 
 
 public class AnnotationSearchApiTest {
@@ -61,7 +61,7 @@ public class AnnotationSearchApiTest {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
 		
-		List<? extends SolrTag> tagList = 
+		List<? extends TagResource> tagList = 
 				annotationSearchApi.searchTags(VALUE);
 		
 		assertNotNull(tagList);
@@ -74,7 +74,7 @@ public class AnnotationSearchApiTest {
 
 		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
 		
-		List<? extends SolrTag> tagList = 
+		List<? extends TagResource> tagList = 
 				annotationSearchApi.searchTags(VALUE, START_ON, LIMIT, null, null);
 		
 		assertNotNull(tagList);

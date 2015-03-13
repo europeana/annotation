@@ -1,19 +1,8 @@
 package eu.europeana.annotation.client.model.json;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.deser.std.StdDeserializer;
-import org.codehaus.jackson.node.ObjectNode;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,14 +16,11 @@ import com.google.gson.JsonParseException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
-import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 
@@ -127,7 +113,7 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 		@Override
 		public AnnotationId createInstance(Type type) {
 			System.out.println("##### createInstance() type: " + type.toString());
-			return new GeneratedAnnotationIdImpl(type.toString());
+			return new BaseAnnotationId(type.toString());
 //			return new GeneratedAnnotationIdImpl(this.createInstance(type).getResourceId()
 //					, this.createInstance(type).getAnnotationNr());
 		}

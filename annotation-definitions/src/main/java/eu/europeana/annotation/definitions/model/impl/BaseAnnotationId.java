@@ -11,6 +11,18 @@ public class BaseAnnotationId implements AnnotationId{
 	private String resourceId;
 	private Integer annotationNr = -1;
 
+	public BaseAnnotationId(){
+	}
+	
+	public BaseAnnotationId(String europeanaId){
+		this.resourceId = europeanaId;
+	}
+	
+	public BaseAnnotationId(String europeanaId, Integer annotationNr){
+		this.resourceId = europeanaId;
+		this.annotationNr = annotationNr;
+	}
+	
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
 	}

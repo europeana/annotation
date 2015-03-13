@@ -11,8 +11,8 @@ import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
-import eu.europeana.annotation.solr.model.internal.SolrTag;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.resource.TagResource;
 
 public class AnnotationSearchApiImpl extends BaseAnnotationApi implements AnnotationSearchApi {
 
@@ -56,7 +56,7 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	}
 
 	@Override
-	public List<? extends SolrTag> searchTags(String query) {
+	public List<? extends TagResource> searchTags(String query) {
 		TagSearchResults res;
 		try {
 			res = apiConnection.searchTags(query);
@@ -68,7 +68,7 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	}
 
 	@Override
-	public List<? extends SolrTag> searchTags(
+	public List<? extends TagResource> searchTags(
 			String query, String startOn, String limit, String field, String language) {
 		
 		TagSearchResults res;
@@ -92,20 +92,20 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	 */
 	public static String addFieldToQuery(String query, String field, String language) {
 		if (StringUtils.isNotEmpty(field)) {
-			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+//			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
+				String prefix = WebAnnotationFields.DEFAULT_LANGUAGE + WebAnnotationFields.UNDERSCORE;
+				if (field.equals(WebAnnotationFields.MULTILINGUAL)) {
 					if (StringUtils.isNotEmpty(language) 
-							&& field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+							&& field.equals(WebAnnotationFields.MULTILINGUAL)) {
+						prefix = language.toUpperCase() + WebAnnotationFields.UNDERSCORE;
 					}
 				} else {
 					prefix = "";
 				}
-				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-			}
+				query = prefix + field + WebAnnotationFields.DELIMETER + query;
+//			}
 		} else {
-			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
+			query = WebAnnotationFields.ALL_SOLR_ENTRIES;
 		}
 		return query;
 	}
