@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
@@ -25,59 +23,15 @@ import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.TagSearchResults;
-import eu.europeana.annotation.web.service.AnnotationConfiguration;
-import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
-public class AnnotationRest {
-
-	@Autowired
-	AnnotationConfiguration configuration;
-
-	@Autowired
-	private AnnotationService annotationService;
-
-	AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-
-	TypeUtils typeUtils = new TypeUtils();
-	
-	
-
-	TypeUtils getTypeUtils() {
-		return typeUtils;
-	}
-
-	AnnotationConfiguration getConfiguration() {
-		return configuration;
-	}
-
-	protected AnnotationService getAnnotationService() {
-		return annotationService;
-	}
-
-	public void setAnnotationService(AnnotationService annotationService) {
-		this.annotationService = annotationService;
-	}
+public class AnnotationRest extends BaseRest {
 
 	private String toResourceId(String collection, String object) {
 		return "/"+ collection +"/" + object;
 	}
 	
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
-	}
-
-	AnnotationControllerHelper getControllerHelper() {
-		return controllerHelper;
-	}
-	
-	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = "text/*")
-	@ResponseBody
-	public String getComponentName() {
-		return getConfiguration().getComponentName();
-	}
-
 	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ModelAndView getAnnotationList(@PathVariable String collection,
 			@PathVariable String object,
