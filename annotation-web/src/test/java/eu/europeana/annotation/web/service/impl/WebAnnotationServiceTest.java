@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -31,11 +32,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper;
 
@@ -177,6 +181,160 @@ public class WebAnnotationServiceTest {
         		&& webAnnotation.getBody().getMultilingual().containsValue(AnnotationLdTest.TEST_RO_VALUE));
 		assertEquals(testAnnotation, webAnnotation);
 		assertEquals(testAnnotation.getBody(), webAnnotation.getBody());
+	}
+		
+	@Test
+	public void testDeleteAnnotation() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+        
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		
+		/**
+		 * Delete Annotation.
+		 */
+		webAnnotationService.deleteAnnotation(
+				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getAnnotationNr());
+		
+		/**
+		 * Search Annotation.
+		 */
+		List<? extends Annotation> resList = webAnnotationService.searchAnnotations(
+				((PersistentAnnotation) storedAnnotation).getId().toString(), "0", "10");
+		assertTrue(resList.size() == 0);
+	}
+		
+	@Test
+	public void testIndexAnnotation() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+        
+		/**
+		 * Search Annotation.
+		 */
+		List<? extends Annotation> originalList = webAnnotationService.searchAnnotations(
+				testAnnotation.getBody().getValue(), "0", "10");
+
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		
+		/**
+		 * Reindex Annotation.
+		 */
+		webAnnotationService.indexAnnotation(
+				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getAnnotationNr());
+		
+		/**
+		 * Search Annotation.
+		 */
+		List<? extends Annotation> resList = webAnnotationService.searchAnnotations(
+				storedAnnotation.getBody().getValue(), "0", "10");
+		assertTrue(resList.size() == originalList.size());
+	}
+		
+	@Test
+	public void testDisableAnnotation() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+        
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		
+		/**
+		 * Reindex Annotation.
+		 */
+		Annotation disabledAnnotation = webAnnotationService.disableAnnotation(
+				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getAnnotationNr());
+		
+		/**
+		 * Search Annotation.
+		 */
+		assertTrue(disabledAnnotation.isDisabled() == true);
+	}
+		
+	@Test
+	public void testDeleteTag() 
+			throws MalformedURLException, IOException, TagServiceException {
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+        
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		
+		/**
+		 * Delete Annotation.
+		 */
+		webAnnotationService.deleteAnnotation(
+				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getAnnotationNr());
+		
+		/**
+		 * Delete Annotation.
+		 */
+//		webAnnotationService.deleteTag(((PersistentAnnotation) storedAnnotation).getId().toString());
+		
+		/**
+		 * Search Tag by TagId.
+		 */
+		List<? extends TagResource> resList = null;
+		resList = webAnnotationService.searchTags(
+				((PersistentAnnotation) storedAnnotation).getId().toString());
+		assertTrue(resList.size() == 0);
 	}
 		
 }

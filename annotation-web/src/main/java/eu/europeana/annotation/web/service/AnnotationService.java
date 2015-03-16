@@ -41,8 +41,9 @@ public interface AnnotationService {
 	 * from the solr/annotation.
 	 * @param resourceId
 	 * @param annotationNr
+	 * @return disabled Annotation
 	 */
-	public void disableAnnotation(String resourceId, int annotationNr);
+	public Annotation disableAnnotation(String resourceId, int annotationNr);
 	
 	public Annotation getAnnotationById(String europeanaId, int annotationNr);
 	
