@@ -221,6 +221,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		if (persistentAnnotation != null && persistentAnnotation.getAnnotationId() != null) {
 			remove(persistentAnnotation.getAnnotationId().getResourceId(), persistentAnnotation.getAnnotationId().getAnnotationNr());	
 			persistentAnnotation.setId(null);
+			if (persistentAnnotation.getBody() != null) {
+				((TagBody) persistentAnnotation.getBody()).setTagId(null);
+			}
 			res = store(persistentAnnotation);
 		} else {
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATION_ID);
@@ -230,7 +233,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	@Override
-//	public Annotation updateIndexingTime(PersistentAnnotation annotation) {
 	public Annotation updateIndexingTime(AnnotationId annoId) {
 		
 		Annotation res = null;

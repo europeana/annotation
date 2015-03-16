@@ -36,6 +36,14 @@ public interface AnnotationService {
 	 */
 	public void indexAnnotation(String resourceId, int annotationNr);
 	
+	/**
+	 * This method sets 'disable' field to true in database and removes the annotation 
+	 * from the solr/annotation.
+	 * @param resourceId
+	 * @param annotationNr
+	 */
+	public void disableAnnotation(String resourceId, int annotationNr);
+	
 	public Annotation getAnnotationById(String europeanaId, int annotationNr);
 	
 	/**

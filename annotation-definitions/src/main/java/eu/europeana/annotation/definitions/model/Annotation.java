@@ -52,19 +52,8 @@ public interface Annotation {
 	
 	public abstract void setType(String type);
 
-	//public abstract void setType(String type);
+	public abstract void setDisabled(boolean isDisabled);
 
-//	public abstract Integer getAnnotationNr();
-
-	//
-	// public abstract void setAnnotationNr(String nr);
-
-//	public abstract String getEuropeanaId();
-//
-//	public abstract void setEuropeanaId(String europeanaId);
-
-//	public abstract String getCreator();
-//
-//	public abstract void setCreator(String creator);
+	public abstract boolean isDisabled();
 
 }

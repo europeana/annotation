@@ -28,6 +28,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	
 	private MotivationTypes motivationType;
 	
+	private boolean disabled;
+	
 	
 	public AbstractAnnotation(){
 		super();
@@ -253,6 +255,15 @@ public abstract class AbstractAnnotation implements Annotation {
 		this.annotationId = annotationId;
 	}
 	
+	@Override
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+		
 	@Override
 	public String toString() {
 		String res = "### Annotation ###\n";

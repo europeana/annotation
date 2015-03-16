@@ -353,6 +353,19 @@ public class AnnotationServiceImpl implements AnnotationService {
         }
 	}
 
+	@Override
+	public void disableAnnotation(String resourceId, int annotationNr) {
+        try {
+    		Annotation res =  getMongoPersistence().find(resourceId, annotationNr);
+    	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
+    	    getSolrService().delete(indexedAnnotation);
+    	    res.setDisabled(true);
+    		getMongoPersistence().update(res);
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+	}
+
 	public SolrAnnotationService getSolrService() {
 		return solrService;
 	}

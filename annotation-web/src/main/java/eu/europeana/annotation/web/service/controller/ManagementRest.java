@@ -70,6 +70,31 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
+	@RequestMapping(value = "/annotations/admin/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public AnnotationOperationResponse disableAnnotationById(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "query", required = true) String query,
+			@RequestParam(value = "europeana_id", required = true) String resourceId) {
+
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(
+				apiKey, "/annotations/admin/disable");
+			
+		try{
+			getAnnotationService().disableAnnotation(resourceId, Integer.valueOf(query));
+			response.success = true;
+		} catch (Exception e){
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			response.success = false;
+			response.error = e.getMessage();
+		}
+
+		return response;
+	}
+
 	@RequestMapping(value = "/tags/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse deleteTagById(

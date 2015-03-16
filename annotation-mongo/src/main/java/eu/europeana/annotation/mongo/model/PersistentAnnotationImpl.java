@@ -46,6 +46,8 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Style styledBy;
 
 	private Long lastIndexedTimestamp;
+	
+	private boolean disabled;
 
 	
 	@Override
@@ -173,9 +175,18 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		return lastIndexedTimestamp;
 	}
 	
+	@Override
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+	
 	public String toString() {
 		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", annotatedAt:" + getAnnotatedAt() + 
-				", Id:" + getId() + ", last update: " + getLastIndexedTimestamp() + "]";
+				", Id:" + getId() + ", last update: " + getLastIndexedTimestamp() + ", disabled: " + isDisabled() + "]";
 	}
 			
 }
