@@ -16,7 +16,6 @@ import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
-import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -294,25 +293,25 @@ public class AnnotationServiceImpl implements AnnotationService {
 	 * @param tag The body object
 	 * @return the SolrTag object
 	 */
-	private SolrTag copyPersistentTagIntoSolrTag(PersistentTag tag) {
-		
-		SolrTag res = null;
-		
-  		SolrTagImpl solrTagImpl = new SolrTagImpl();
-		if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
-			solrTagImpl.setId(((PlainTagBody) tag).getTagId());
-		}
-  		solrTagImpl.setTagType(tag.getTagType());
-  		solrTagImpl.setValue(tag.getValue());
-  		solrTagImpl.setLanguage(tag.getLanguage());
-  		solrTagImpl.setContentType(tag.getContentType());
-  		solrTagImpl.setHttpUri(tag.getHttpUri());
-  		solrTagImpl.setMultilingual(tag.getMultilingual());
-
-        res = solrTagImpl;
-
-        return res;
-	}
+//	private SolrTag copyPersistentTagIntoSolrTag(PersistentTag tag) {
+//		
+//		SolrTag res = null;
+//		
+//  		SolrTagImpl solrTagImpl = new SolrTagImpl();
+//		if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
+//			solrTagImpl.setId(((PlainTagBody) tag).getTagId());
+//		}
+//  		solrTagImpl.setTagType(tag.getTagType());
+//  		solrTagImpl.setValue(tag.getValue());
+//  		solrTagImpl.setLanguage(tag.getLanguage());
+//  		solrTagImpl.setContentType(tag.getContentType());
+//  		solrTagImpl.setHttpUri(tag.getHttpUri());
+//  		solrTagImpl.setMultilingual(tag.getMultilingual());
+//
+//        res = solrTagImpl;
+//
+//        return res;
+//	}
 
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
@@ -330,8 +329,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void deleteAnnotation(String resourceId,
-			int annotationNr) {
+	public void deleteAnnotation(String resourceId, int annotationNr) {
         try {
 //    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
     		Annotation res =  getMongoPersistence().find(resourceId, annotationNr);
@@ -341,6 +339,18 @@ public class AnnotationServiceImpl implements AnnotationService {
         	throw new RuntimeException(e);
         }
 		getMongoPersistence().remove(resourceId, annotationNr);
+	}
+
+	@Override
+	public void indexAnnotation(String resourceId, int annotationNr) {
+        try {
+    		Annotation res =  getMongoPersistence().find(resourceId, annotationNr);
+       	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
+    	    getSolrService().delete(indexedAnnotation);
+    	    getSolrService().store(indexedAnnotation);
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
 	}
 
 	public SolrAnnotationService getSolrService() {
@@ -364,7 +374,7 @@ public class AnnotationServiceImpl implements AnnotationService {
         try {
     		Annotation res = getMongoPersistence().findByID(tagId);
     		if (res == null) {
-    			PersistentTag persistentTag = getMongoTagPersistence().findByID(tagId);
+//    			PersistentTag persistentTag = getMongoTagPersistence().findByID(tagId);
 //	    	    SolrTag indexedTag = copyPersistentTagIntoSolrTag(persistentTag);
 	    	    SolrTag solrTag = getSolrTagService().search(tagId).get(0);
 	    	    getSolrTagService().delete(solrTag);

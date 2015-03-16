@@ -25,8 +25,16 @@ public interface AnnotationService {
 
 	public Annotation updateAnnotation(Annotation newAnnotation);
 	
-	public void deleteAnnotation(String resourceId,
-			int annotationNr);
+	public void deleteAnnotation(String resourceId, int annotationNr);
+
+	/**
+	 * This method forces reindexing of the annotation, which means 
+	 * deletion in solr/annotation if exists and creation of new entry 
+	 * in solr/annotation.
+	 * @param resourceId
+	 * @param annotationNr
+	 */
+	public void indexAnnotation(String resourceId, int annotationNr);
 	
 	public Annotation getAnnotationById(String europeanaId, int annotationNr);
 	
