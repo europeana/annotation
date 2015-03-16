@@ -54,6 +54,11 @@
 		<beans:property name="configuration" ref="configuration"/>
     </beans:bean>	
     
+	<beans:bean id="managementRest" class="eu.europeana.annotation.web.service.controller.ManagementRest">
+		<beans:property name="annotationService" ref="annotationService"/>
+		<beans:property name="configuration" ref="configuration"/>
+    </beans:bean>	
+    
     <!--  own beans -->
 	<!-- 
     <beans:bean id="myBean" class="com.mycompany.myservice.MyBean"/>

@@ -1,9 +1,6 @@
 package eu.europeana.annotation.web.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
@@ -44,12 +41,6 @@ public class BaseRest {
 
 	protected AnnotationControllerHelper getControllerHelper() {
 		return controllerHelper;
-	}
-
-	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = "text/*")
-	@ResponseBody
-	public String getComponentName() {
-		return getConfiguration().getComponentName();
 	}
 
 }

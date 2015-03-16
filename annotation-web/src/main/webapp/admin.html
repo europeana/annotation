@@ -42,11 +42,17 @@
 						</tr>
 						</thead>
 						<tr>
+							<td class="clsCellBorder cls0_0">GET</td>
+							<td class="clsCellBorder">TEXT</td>
+							<td class="clsCellBorder"><a href="annotations/admin/component" target="_new">[/annotation-web]/annotations/admin/component</a></td>
+							<td class="clsCellBorder">Display the name of the current component</td>
+						</tr>
+						<tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/delete<br>									
-								<form action="annotations/delete" method="post" target="_new">
+									[annotation-web]/annotations/admin/delete<br>									
+								<form action="annotations/admin/delete" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								Delete annotation by ID:&nbsp;<br>
@@ -62,8 +68,8 @@
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/index<br>									
-								<form action="annotations/delete" method="post" target="_new">
+									[annotation-web]/annotations/admin/index<br>									
+								<form action="annotations/admin/delete" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								Index annotation by ID:&nbsp;<br>
@@ -80,8 +86,8 @@
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotations/disable<br>									
-								<form action="annotations/delete" method="post" target="_new">
+									[annotation-web]/annotations/admin/disable<br>									
+								<form action="annotations/admin/delete" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								Disable annotation by ID:&nbsp;<br>
@@ -116,13 +122,12 @@
 						</tr>
 						</thead>
 											
-
 						<tr>
 							<td class="clsCellBorder cls0_0" valign="top">POST</td>
 							<td class="clsCellBorder" valign="top">JSON</td>
 							<td class="clsCellBorder">
-									[annotation-web]/tags/delete<br>
-								<form action="tags/search" method="post" target="_new">
+									[annotation-web]/tags/admin/delete<br>
+								<form action="tags/admin/delete" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
 								<input type="hidden" name="profile" value="webtest">
 								Delete tag by ID:&nbsp;<input name="query" type="text" size="5" maxlength="5" value="0">
