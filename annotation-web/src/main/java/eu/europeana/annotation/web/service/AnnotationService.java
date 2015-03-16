@@ -77,10 +77,8 @@ public interface AnnotationService {
 	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException;
 	
 	/**
-	 * This method converts Annotation object to AnnotationLd string.
-	 * @param annotation
-	 * @return AnnotationLd string
-	 * @throws AnnotationServiceException
+	 * This method removes Tag object from database and Solr but only when no annotation uses the tag.
+	 * @param tagId
 	 */
-//	public String convertAnnotationToAnnotationLdString(Annotation annotation) throws AnnotationServiceException;
+	public void deleteTag(String tagId);
 }

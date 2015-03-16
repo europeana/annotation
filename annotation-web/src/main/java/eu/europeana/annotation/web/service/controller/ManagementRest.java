@@ -45,4 +45,27 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
+	@RequestMapping(value = "/tags/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public AnnotationOperationResponse deleteTagById(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "query", required = true) String query) {
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(
+				apiKey, "/tags/admin/delete");
+			
+		try{
+			getAnnotationService().deleteTag(query);
+			response.success = true;
+		} catch (Exception e){
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			response.success = false;
+			response.error = e.getMessage();
+		}
+
+		return response;
+	}
+
 }

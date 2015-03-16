@@ -16,7 +16,9 @@ import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
@@ -39,6 +41,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	PersistentAnnotationService mongoPersistance;
 	
 	@Autowired
+	PersistentTagService mongoTagPersistance;
+	
+	@Autowired
 	SolrAnnotationService solrService;
 	
 	@Autowired
@@ -57,7 +62,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		this.configuration = configuration;
 	}
 
-	protected PersistentAnnotationService getMongoPersistance() {
+	protected PersistentAnnotationService getMongoPersistence() {
 		return mongoPersistance;
 	}
 
@@ -65,16 +70,24 @@ public class AnnotationServiceImpl implements AnnotationService {
 		this.mongoPersistance = mongoPersistance;
 	}
 
+	public PersistentTagService getMongoTagPersistence() {
+		return mongoTagPersistance;
+	}
+
+	public void setMongoTagPersistance(PersistentTagService mongoTagPersistance) {
+		this.mongoTagPersistance = mongoTagPersistance;
+	}
+
 	@Override
 	public List<? extends Annotation> getAnnotationList(String resourceId) {
 		
-		return getMongoPersistance().getAnnotationList(resourceId);
+		return getMongoPersistence().getAnnotationList(resourceId);
 	}
 	
 	@Override
 	public Annotation getAnnotationById(String resourceId,
 			int annotationNr) {
-		return getMongoPersistance().find(resourceId, annotationNr);
+		return getMongoPersistence().find(resourceId, annotationNr);
 		
 	}
 
@@ -142,7 +155,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public Annotation createAnnotation(Annotation newAnnotation) {
 		
 		// store in mongo database
-		Annotation res =  getMongoPersistance().store(newAnnotation);
+		Annotation res =  getMongoPersistence().store(newAnnotation);
 
 		// add solr indexing here
         try {
@@ -165,7 +178,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
         // save the time of the last SOLR indexing
         try {
-    	    getMongoPersistance().updateIndexingTime(res.getAnnotationId()); 	    
+    	    getMongoPersistence().updateIndexingTime(res.getAnnotationId()); 	    
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).warn(
          		   "The time of the last SOLR indexing could not be saved. " + e);
@@ -276,10 +289,35 @@ public class AnnotationServiceImpl implements AnnotationService {
         return res;
 	}
 
+	/**
+	 * This method converts Body object in SolrTag object.
+	 * @param tag The body object
+	 * @return the SolrTag object
+	 */
+	private SolrTag copyPersistentTagIntoSolrTag(PersistentTag tag) {
+		
+		SolrTag res = null;
+		
+  		SolrTagImpl solrTagImpl = new SolrTagImpl();
+		if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
+			solrTagImpl.setId(((PlainTagBody) tag).getTagId());
+		}
+  		solrTagImpl.setTagType(tag.getTagType());
+  		solrTagImpl.setValue(tag.getValue());
+  		solrTagImpl.setLanguage(tag.getLanguage());
+  		solrTagImpl.setContentType(tag.getContentType());
+  		solrTagImpl.setHttpUri(tag.getHttpUri());
+  		solrTagImpl.setMultilingual(tag.getMultilingual());
+
+        res = solrTagImpl;
+
+        return res;
+	}
+
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
 		
-		Annotation res = getMongoPersistance().update(annotation);
+		Annotation res = getMongoPersistence().update(annotation);
 
 		try {
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
@@ -296,13 +334,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 			int annotationNr) {
         try {
 //    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
-    		Annotation res =  getMongoPersistance().find(resourceId, annotationNr);
+    		Annotation res =  getMongoPersistence().find(resourceId, annotationNr);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
     	    getSolrService().delete(indexedAnnotation);
         } catch (Exception e) {
         	throw new RuntimeException(e);
         }
-		getMongoPersistance().remove(resourceId, annotationNr);
+		getMongoPersistence().remove(resourceId, annotationNr);
 	}
 
 	public SolrAnnotationService getSolrService() {
@@ -321,12 +359,23 @@ public class AnnotationServiceImpl implements AnnotationService {
 		this.solrTagService = solrTagService;
 	}
 
-//	@Override 
-//	public String convertAnnotationToAnnotationLdString(Annotation annotation) throws AnnotationServiceException {
-//		String res = "";
-//		AnnotationLd annotationLd = new AnnotationLd(annotation);
-//		res = annotationLd.toString(4);
-//		return res;
-//	}
-
+	@Override
+	public void deleteTag(String tagId) {
+        try {
+    		Annotation res = getMongoPersistence().findByID(tagId);
+    		if (res == null) {
+    			PersistentTag persistentTag = getMongoTagPersistence().findByID(tagId);
+//	    	    SolrTag indexedTag = copyPersistentTagIntoSolrTag(persistentTag);
+	    	    SolrTag solrTag = getSolrTagService().search(tagId).get(0);
+	    	    getSolrTagService().delete(solrTag);
+	    		getMongoTagPersistence().remove(tagId);
+    		} else {
+    			throw new TagServiceException("Tag with ID: '" + tagId + 
+    					"' can't be removed since it is referenced by annotation '" + 
+    					res.getAnnotationId().toString() + "'.");
+    		}
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+	}
 }
