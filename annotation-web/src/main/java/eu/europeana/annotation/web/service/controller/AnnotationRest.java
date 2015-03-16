@@ -351,4 +351,29 @@ public class AnnotationRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
+	@RequestMapping(value = "/annotations/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public AnnotationOperationResponse deleteAnnotationById(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "query", required = true) String query,
+			@RequestParam(value = "europeana_id", required = true) String resourceId) {
+
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(
+				apiKey, "/annotations/delete");
+			
+		try{
+			getAnnotationService().deleteAnnotation(resourceId, Integer.valueOf(query));
+			response.success = true;
+		} catch (Exception e){
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			response.success = false;
+			response.error = e.getMessage();
+		}
+
+		return response;
+	}
+
 }

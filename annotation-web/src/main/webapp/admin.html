@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Europeana Creative - Management Console</title>
+<link href="css/css1.css" rel="stylesheet" type="text/css" />
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+<link href="css/main_002.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<div id="wrapper" class="max-width">
+		<header id="banner"><!-- role="banner" ? -->
+			<img class="display-none" src="img/creative-logo.png" alt=""> <img
+				class="bg" src="img/creative-banner.jpg" alt="Europeana Projects">
+			<h2>Europeana Creative - Annotation Component Management Console</h2>
+		</header>
+		<div id="mainblock">
+			<div id="content">
+				<!-- Box for the Service Description -->
+					<div class="">
+						<!--  <h3>Annotation</h3>
+						
+						<div class="left">
+							
+						</div>
+						-->
+						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
+						Management console for annotation component is a service that implements the management of database and SOLR entries for Web Annotations
+					</div>
+
+					<h3>Delete Annotations API  </h3>
+					<div id="table" style="width: 100%;">	
+					<table>
+						<thead>
+						<tr>
+							<td class="clsHeaderCell">Method</td>
+							<td class="clsHeaderCell">Response</td>
+							<td class="clsHeaderCell">Path</td>
+							<td class="clsHeaderCell">Function</td>
+						</tr>
+						</thead>
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/delete<br>									
+								<form action="annotations/delete" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								Delete annotation by ID:&nbsp;<br>
+								annotation Nr:&nbsp;<input name="query" type="text" size="5" maxlength="5" value="0"><br>
+								europeana ID:&nbsp;<input name="europeana_id" type="text" size="25" value="/testCollection/testObject"><br>								<input type="submit" name="delete" value="delete">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Delete the annotation identified by the given ID from database and indexing.
+							</td>
+						</tr>						
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/index<br>									
+								<form action="annotations/delete" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								Index annotation by ID:&nbsp;<br>
+								annotation Nr:&nbsp;<input name="query" type="text" size="5" maxlength="5" value="0"><br>
+								europeana ID:&nbsp;<input name="europeana_id" type="text" size="25" value="/testCollection/testObject"><br>
+								<input type="submit" name="index" value="index">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Index the annotation identified by the given ID. This service forces reindexing of the annotation, which means deletion in SOLR annotation if exists and creation of new entry in SOLR annotation.
+							</td>
+						</tr>						
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotations/disable<br>									
+								<form action="annotations/delete" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								Disable annotation by ID:&nbsp;<br>
+								annotation Nr:&nbsp;<input name="query" type="text" size="5" maxlength="5" value="0"><br>
+								europeana ID:&nbsp;<input name="europeana_id" type="text" size="25" value="/testCollection/testObject"><br>								<input type="submit" name="disable" value="disable">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Disable the annotation identified by the given ID. This service sets field 'disabled' in annotation object to true in database and removes the annotation from the SOLR annotation.
+							</td>
+						</tr>						
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					
+					</div>
+					<!--  end table div -->
+					
+					<h3>Delete Tags  API  </h3>
+					<div id="table" style="width: 100%;">	
+					<table>
+						<thead>
+						<tr>
+							<td class="clsHeaderCell">Method</td>
+							<td class="clsHeaderCell">Response</td>
+							<td class="clsHeaderCell">Path</td>
+							<td class="clsHeaderCell">Function</td>
+						</tr>
+						</thead>
+											
+
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON</td>
+							<td class="clsCellBorder">
+									[annotation-web]/tags/delete<br>
+								<form action="tags/search" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								Delete tag by ID:&nbsp;<input name="query" type="text" size="5" maxlength="5" value="0">
+								<br>
+								<input type="submit" name="delete" value="delete">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Delete the tag identified by the given ID  from database and indexing but only when no annotation uses the tag.
+							</td>
+						</tr>						
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					
+					</div>
+					<!--  end table div -->	
+						
+			</div>
+			<!-- end of content -->
+		</div>
+		<!-- end of mainblock -->
+
+		<hr />
+		<!--Europeana Group Block-->
+		<footer id="footer">
+			<div class="middle f-left">
+				<a href="http://www.pro.europeana.eu/web/guest/projects"
+					class="f-left">Europeana Network projects</a>
+			</div>
+			<span class="f-right">co-funded by the European Union<img
+				alt="european union flag" src="img/eu-flag.gif"></span>
+		</footer>
+
+
+	</div>
+	<!-- end of wrapper -->
+</body>
+</html>
+

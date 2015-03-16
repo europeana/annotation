@@ -295,7 +295,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public void deleteAnnotation(String resourceId,
 			int annotationNr) {
         try {
-    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
+//    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
+    		Annotation res =  getMongoPersistance().find(resourceId, annotationNr);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
     	    getSolrService().delete(indexedAnnotation);
         } catch (Exception e) {
