@@ -2058,10 +2058,32 @@ SwaggerResource.prototype.help = function (dontPrint) {
   }
 };
 
+/*readBasePath = function readBasePathSetting() {
+	var res = 'undefined';
+	//alert(this.api.basePath);
+	var request = new XMLHttpRequest();
+	request.open('GET', 'swagger.properties', false);
+	request.send();
+	var textFileContent = request.responseText
+	//alert(textFileContent);
+	var regex = "basePath=(.*?)";
+	resFromFile = regex.exec(textFileContent);
+	if (resFromFile)
+		res = resFromFile;
+	//alert(res);
+	return res;
+}
+*/
+
+function getBasePathProperty() {
+    return "http://localhost:8081";
+};
+
 SwaggerResource.prototype.getAbsoluteBasePath = function (relativeBasePath) {
   var pos, url;
-  //url = "http://localhost:8081"; //this.api.basePath;
-  url = this.api.basePath;
+  
+  url = getBasePathProperty();
+  
   pos = url.lastIndexOf(relativeBasePath);
   var parts = url.split('/');
   var rootUrl = parts[0] + '//' + parts[2];
@@ -2082,6 +2104,7 @@ SwaggerResource.prototype.getAbsoluteBasePath = function (relativeBasePath) {
     else
       return base + '/' + relativeBasePath;
   }
+  
 };
 
 SwaggerResource.prototype.addApiDeclaration = function (response) {
