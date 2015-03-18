@@ -1,6 +1,8 @@
 package eu.europeana.annotation.web.service.controller;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
@@ -31,7 +33,8 @@ public class ManagementRest extends BaseRest {
 		return getConfiguration().getComponentName() + "-admin";
 	}
 
-	@RequestMapping(value = "/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@DELETE
+	@RequestMapping(value = "/admin/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse deleteAnnotationById(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
@@ -56,7 +59,8 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
-	@RequestMapping(value = "/admin/index", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PUT
+	@RequestMapping(value = "/admin/index", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse indexAnnotationById(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
@@ -81,7 +85,8 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
-	@RequestMapping(value = "/admin/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PUT
+	@RequestMapping(value = "/admin/disable", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse disableAnnotationById(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
@@ -106,7 +111,8 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
-	@RequestMapping(value = "/admin/tag/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@DELETE
+	@RequestMapping(value = "/admin/tag/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse deleteTagById(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
