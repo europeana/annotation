@@ -25,6 +25,9 @@
 	<import resource="./annotation-web-context.xml"/>
 	
 	<context:component-scan base-package="eu.europeana.annotation.web.service.controller" />
+	<bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig">
+		
+	</bean>
 
 	<!--Basic application beans. -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -39,5 +42,5 @@
 	<bean id="annotation_mvc_views_json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"
 		p:objectMapper="#{annotation_mvc_views_jsonObjectMapper.setAnnotationIntrospector(annotation_mvc_views_jaxbAnnotationBinder)}" 
 	/>
-
+ 	
 </beans>

@@ -9,10 +9,11 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
-    <context-param>
+	<context-param>
         <param-name>contextConfigLocation</param-name>
  		<param-value>classpath:/annotation-web-context.xml</param-value>
     </context-param>
+
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -25,6 +26,16 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:/annotation-web-mvc.xml</param-value>
 		</init-param>
+		<init-param>
+	  		<param-name>swagger.api.basepath</param-name>
+	  		<param-value>http://localhost:8081</param-value>
+		</init-param>
+		<!-- 
+		<init-param>
+		    <param-name>swagger.config.reader</param-name>
+		    <param-value>com.wordnik.swagger.sample.CustomConfigReader</param-value>
+		</init-param>
+		 -->
 		<!-- 
 		<load-on-startup>2</load-on-startup>
 		 -->
@@ -49,6 +60,7 @@
         <url-pattern>/</url-pattern>
     </filter-mapping>
  -->
+ 
  
     <session-config>
         <session-timeout>30</session-timeout>

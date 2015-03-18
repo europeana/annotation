@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
@@ -26,9 +28,22 @@ import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
+//@EnableWebMvc
+//@EnableSwagger
+//@ComponentScan("com.myapp.packages")
+
+//@Path("rest")
+@Api(value = "annotations", description = "Annotation Rest Service")
 public class AnnotationRest extends BaseRest {
 
-	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = "text/*")
+
+//	@GET
+//	@Path("/annotate")
+//	@ApiOperation(value = "Get component name", response = String.class)
+//	@Produces({ "text/*"})
+
+//	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = "text/*")
+	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
 		return getConfiguration().getComponentName();
