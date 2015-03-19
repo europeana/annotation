@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 

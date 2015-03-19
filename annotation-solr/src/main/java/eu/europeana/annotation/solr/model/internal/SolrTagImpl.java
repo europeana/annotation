@@ -16,6 +16,8 @@
  */
 package eu.europeana.annotation.solr.model.internal;
 
+import java.util.Map;
+
 import org.apache.solr.client.solrj.beans.Field;
 
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
@@ -60,6 +62,12 @@ public class SolrTagImpl extends BaseTagResource implements SolrTag {
 	@Field("creator")
 	public void setCreator(String creator) {
 		super.setCreator(creator);
+	}
+	
+	@Override
+	@Field("*_multilingual")
+	public void setMultilingual(Map<String, String> multilingual) {
+		super.setMultilingual(multilingual);
 	}
 	
 }
