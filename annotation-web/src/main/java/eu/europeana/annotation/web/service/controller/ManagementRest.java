@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.Api;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 
@@ -40,7 +41,7 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "europeana_id", required = true) String resourceId) {
+			@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId) {
 
 
 		AnnotationOperationResponse response;
@@ -66,7 +67,7 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "europeana_id", required = true) String resourceId) {
+			@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId) {
 
 
 		AnnotationOperationResponse response;
@@ -92,7 +93,7 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "europeana_id", required = true) String resourceId) {
+			@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId) {
 
 
 		AnnotationOperationResponse response;
@@ -117,7 +118,7 @@ public class ManagementRest extends BaseRest {
 	public AnnotationOperationResponse deleteTagById(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam(value = "query", required = true) String query) {
+			@RequestParam(value = "query", required = true, defaultValue = WebAnnotationFields.REST_TAG_ID) String query) {
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(

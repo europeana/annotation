@@ -62,4 +62,77 @@ public interface WebAnnotationFields {
 	 */
 	public static final String ALL_SOLR_ENTRIES = "*:*";
 	public static final String DELIMETER = ":";
+	
+	/**
+	 * Default values for the Rest API services
+	 */
+	public static final String REST_COLLECTION      = "15502";
+	public static final String REST_OBJECT          = "GG_8285";
+	public static final String REST_RESOURCE_ID     = "/" + REST_COLLECTION + "/" + REST_OBJECT;
+	public static final String REST_ANNOTATION_NR   = "1";
+	public static final String REST_TAG_ID          = "5506c37343247ba48753d1e5";
+	public static final String REST_LANGUAGE        = "en";
+	public static final String REST_START_ON        = "0";
+	public static final String REST_LIMIT           = "10";
+	public static final String REST_ANNOTATION_JSON = 
+		"{\"annotatedAt\": 1403852113248,"
+		+ "\"type\": \"OBJECT_TAG\","
+		+ "\"annotatedBy\": {"
+		+ "\"agentType\": \"[foaf:Person, euType:PERSON]\","
+		+ "\"name\": \"annonymous web user\","
+		+ "\"homepage\": null,"
+		+ "\"mbox\": null,"
+		+ "\"openId\": null},"
+		+ "\"body\": {"
+		+ "\"contentType\": \"Link\","
+		+ "\"mediaType\": null,"
+		+ "\"httpUri\": \"https://www.freebase.com/m/035br4\","
+		+ "\"language\": \"ro\","
+		+ "\"value\": \"Vlad Tepes\","
+		+ "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\","
+		+ "\"bodyType\": \"[oa:Tag,euType:SEMANTIC_TAG]\"},"
+		+ "\"target\": {"
+		+ "\"contentType\": \"text-html\","
+		+ "\"mediaType\": \"image\","
+		+ "\"language\": \"en\","
+		+ "\"value\": \"Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)\","
+		+ "\"httpUri\": \"http://europeana.eu/portal/record/15502/GG_8285.html\","
+		+ "\"targetType\": \"[euType:WEB_PAGE]\","
+		+ "\"europeanaId\": \"/15502/GG_8285\"},"
+		+ "\"serializedAt\": \"\","
+		+ "\"serializedBy\": {"
+		+ "\"agentType\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
+		+ "\"name\": \"annonymous web user\","
+		+ "\"homepage\": null,"
+		+ "\"mbox\": null,"
+		+ "\"openId\": null},"
+		+ "\"styledBy\":{"
+		+ "\"contentType\": \"style\","
+		+ "\"mediaType\": \"text/css\","
+		+ "\"httpUri\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\","
+		+ "\"value\": null,"
+		+ "\"annotationClass\": \".annotorious-popup\"}}";
+	
+	public static final String REST_ANNOTATION_JSON_LD = 
+        "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},"
+        + "\"@type\":\"[oa:annotation,euType:OBJECT_TAG]\",\"annotatedAt\":\"2012-11-10T09:08:07\","
+        + "\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[foaf:Person, euType:PERSON]\","
+        + "\"name\":\"annonymous web user\"},\"body\":{\"@type\":"
+        + "\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\","
+        + "\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\","
+        + "\"language\":\"ro\",\"multilingual\":\"[ro:Vlad Tepes,en:Vlad the Impaler]\"},"
+        + "\"motivatedBy\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
+        + "\"serializedBy\":{\"@id\": \"open_id_2\",\"@type\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
+        + "\"foaf:homepage\": \"http://annotorious.github.io/\",\"name\": \"Annotorious\"},"
+        + "\"styledBy\": {\"@type\": \"[oa:CssStyle,euType:CSS]\","
+        + "\"source\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\","
+        + "\"styleClass\": \"annotorious-popup\"},"
+        + "\"target\": {\"@type\": \"[oa:SpecificResource,euType:IMAGE]\",\"contentType\": \"image/jpeg\","
+        + "\"httpUri\": \"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\","
+        + "\"selector\": {\"@type\": \"[oa:SvgRectangle,euType:SVG_RECTANGLE_SELECTOR]\","
+        + "\"dimensionMap\": \"[left:5,right:3]\"},\"source\": {\"@id\": \"/15502/GG_8285\","
+        + "\"contentType\": \"text/html\",\"format\": \"dctypes:Text\"},"
+        + "\"targetType\": \"[oa:SpecificResource,euType:IMAGE]\"},"
+        + "\"type\": \"OBJECT_TAG\"}";
+	
 }

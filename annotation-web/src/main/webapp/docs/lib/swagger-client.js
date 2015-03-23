@@ -2075,15 +2075,10 @@ SwaggerResource.prototype.help = function (dontPrint) {
 }
 */
 
-//function getBasePathProperty() {
-//    return "http://localhost:8081";
-//};
-
 SwaggerResource.prototype.getAbsoluteBasePath = function (relativeBasePath) {
   var pos, url;
   
   url = window.location.protocol + '//' + window.location.host;
-  //url = getBasePathProperty();
   
   pos = url.lastIndexOf(relativeBasePath);
   var parts = url.split('/');

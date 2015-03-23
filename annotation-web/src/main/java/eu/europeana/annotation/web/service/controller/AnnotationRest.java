@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.wordnik.swagger.annotations.Api;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.jsonld.AnnotationLd;
@@ -172,7 +174,7 @@ public class AnnotationRest extends BaseRest {
 			@PathVariable String object,
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam(value = "annotation", required = true) String jsonAnno) {
+			@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
 		if (webAnnotation.getBody() != null 
@@ -206,7 +208,7 @@ public class AnnotationRest extends BaseRest {
 			@PathVariable String object,
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam(value = "annotation", required = true) String jsonAnno) {
+			@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON_LD) String jsonAnno) {
 
 		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
 
@@ -228,10 +230,10 @@ public class AnnotationRest extends BaseRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "field", required = true) String field,
-			@RequestParam(value = "language", required = true) String language,
-			@RequestParam(value = "startOn", required = true) String startOn,
-			@RequestParam(value = "limit", required = true) String limit,
+			@RequestParam(value = "field", required = true, defaultValue = WebAnnotationFields.MULTILINGUAL) String field,
+			@RequestParam(value = "language", required = true, defaultValue = WebAnnotationFields.REST_LANGUAGE) String language,
+			@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
+			@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit,
 			@RequestParam(value = "facet", required = false) String facet) {
 
 		query = getTypeUtils().removeTabs(query);
@@ -300,10 +302,10 @@ public class AnnotationRest extends BaseRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "query", required = true) String query,
-			@RequestParam(value = "field", required = true) String field,
-			@RequestParam(value = "startOn", required = true) String startOn,
-			@RequestParam(value = "limit", required = true) String limit,
-			@RequestParam(value = "language", required = true) String language) {
+			@RequestParam(value = "field", required = true, defaultValue = WebAnnotationFields.MULTILINGUAL) String field,
+			@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
+			@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit,
+			@RequestParam(value = "language", required = true, defaultValue = WebAnnotationFields.REST_LANGUAGE) String language) {
 
 		query = getTypeUtils().removeTabs(query);
 		query = JsonWebUtils.addFieldToQuery(query, field, language);
