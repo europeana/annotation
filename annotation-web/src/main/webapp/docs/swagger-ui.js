@@ -1864,7 +1864,7 @@ ParameterView = (function(_super) {
   ParameterView.prototype.render = function() {
     var contentTypeModel, isParam, parameterContentTypeView, ref, responseContentTypeView, schema, signatureModel, signatureView, template, type;
     type = this.model.type || this.model.dataType;
-    if (typeof type === 'undefined') {
+    /*if (typeof type === 'undefined') {
       schema = this.model.schema;
       if (schema && schema['$ref']) {
         ref = schema['$ref'];
@@ -1874,7 +1874,7 @@ ParameterView = (function(_super) {
           type = ref;
         }
       }
-    }
+    }*/
     this.model.type = type;
     this.model.paramType = this.model["in"] || this.model.paramType;
     if (this.model.paramType === 'body' || this.model["in"] === 'body') {
@@ -2184,9 +2184,9 @@ this["Handlebars"]["templates"]["signature"] = Handlebars.template({"compiler":[
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<div>\n<ul class=\"signature-nav\">\n  <li><a class=\"description-link\" href=\"#\">Model</a></li>\n  <li><a class=\"snippet-link\" href=\"#\">Model Schema</a></li>\n</ul>\n<div>\n\n<div class=\"signature-container\">\n  <div class=\"description\">\n    ";
   stack1 = ((helper = (helper = helpers.signature || (depth0 != null ? depth0.signature : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"signature","hash":{},"data":data}) : helper));
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n  </div>\n\n  <div class=\"snippet\">\n    <pre><code>"
-    + escapeExpression(((helper = (helper = helpers.sampleJSON || (depth0 != null ? depth0.sampleJSON : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"sampleJSON","hash":{},"data":data}) : helper)))
-    + "</code></pre>\n    <small class=\"notice\"></small>\n  </div>\n</div>\n\n";
+  return "";//buffer + "\n  </div>\n\n  <div class=\"snippet\">\n    <pre><code>"
+    //+ escapeExpression(((helper = (helper = helpers.sampleJSON || (depth0 != null ? depth0.sampleJSON : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"sampleJSON","hash":{},"data":data}) : helper)))
+    //+ "</code></pre>\n    <small class=\"notice\"></small>\n  </div>\n</div>\n\n";
 },"useData":true});
 var StatusCodeView,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },

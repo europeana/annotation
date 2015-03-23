@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -224,20 +228,28 @@ public class AnnotationRest extends BaseRest {
 		return JsonWebUtils.toJson(jsonLd, null);
 	}
 
+	//@ApiModelProperty(allowableValues="", access="hidden", hidden=true, required=false)
+	//@ApiOperation()
+	@ApiOperation(
+			    value = "List all people",
+			    notes = "List all people using paging",
+			    response = Annotation.class,
+			    responseContainer = "List"
+			)
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView searchAnnotationByField(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam(value = "query", required = true) String query,
+			@RequestParam(value = "value", required = true) String value,
 			@RequestParam(value = "field", required = true, defaultValue = WebAnnotationFields.MULTILINGUAL) String field,
 			@RequestParam(value = "language", required = true, defaultValue = WebAnnotationFields.REST_LANGUAGE) String language,
 			@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
 			@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit,
 			@RequestParam(value = "facet", required = false) String facet) {
 
-		query = getTypeUtils().removeTabs(query);
-		query = JsonWebUtils.addFieldToQuery(query, field, language);
+		value = getTypeUtils().removeTabs(value);
+		value = JsonWebUtils.addFieldToQuery(value, field, language);
 		
 //		boolean withFacet = false;
 //		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
@@ -259,7 +271,7 @@ public class AnnotationRest extends BaseRest {
 			AnnotationSearchResults<AbstractAnnotation> response;
 			
 			try {
-				annotationList = getAnnotationService().searchAnnotations(query, startOn, limit);
+				annotationList = getAnnotationService().searchAnnotations(value, startOn, limit);
 				response = buildSearchResponse(
 						annotationList, apiKey, "/annotations/search");
 				
@@ -301,21 +313,21 @@ public class AnnotationRest extends BaseRest {
 	public ModelAndView searchTagByField(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam(value = "query", required = true) String query,
+			@RequestParam(value = "value", required = true) String value,
 			@RequestParam(value = "field", required = true, defaultValue = WebAnnotationFields.MULTILINGUAL) String field,
 			@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
 			@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit,
 			@RequestParam(value = "language", required = true, defaultValue = WebAnnotationFields.REST_LANGUAGE) String language) {
 
-		query = getTypeUtils().removeTabs(query);
-		query = JsonWebUtils.addFieldToQuery(query, field, language);
+		value = getTypeUtils().removeTabs(value);
+		value = JsonWebUtils.addFieldToQuery(value, field, language);
 
 		TagSearchResults<BaseTagResource> response;
 		response = new TagSearchResults<BaseTagResource>(
 				apiKey, "/tags/search");
 		
 		try{
-			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(query, startOn, limit);
+			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(value, startOn, limit);
 			response.itemsCount = response.items.size();
 			response.totalResults = response.items.size();
 			response.success = true;
