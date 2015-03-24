@@ -14,17 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
-import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -34,21 +29,10 @@ import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
-//@EnableWebMvc
-//@EnableSwagger
-//@ComponentScan("com.myapp.packages")
-
-//@Path("rest")
-@Api(value = "annotations", description = "Annotation Rest Service")
+@Api(value = "annotations", description = "Annotation JSON Rest Service")
 public class AnnotationRest extends BaseRest {
 
 
-//	@GET
-//	@Path("/annotate")
-//	@ApiOperation(value = "Get component name", response = String.class)
-//	@Produces({ "text/*"})
-
-//	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = "text/*")
 	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
@@ -153,25 +137,6 @@ public class AnnotationRest extends BaseRest {
 		return response;
 	}
 
-	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public ModelAndView getAnnotationLd(@PathVariable String collection,
-			@PathVariable String object, @PathVariable Integer annotationNr,
-			@RequestParam(value = "apiKey", required = false) String apiKey,
-			@RequestParam(value = "profile", required = false) String profile) {
-
-		String resourceId = toResourceId(collection, object);
-		
-		Annotation annotation = getAnnotationService().getAnnotationById(
-				resourceId, annotationNr);
-		
-		AnnotationLd annotationLd = new AnnotationLd(annotation);
-        String jsonLd = annotationLd.toString(4);
-       	
-		return JsonWebUtils.toJson(jsonLd, null);
-	}
-
-	
 	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView createAnnotation(@PathVariable String collection,
@@ -206,36 +171,6 @@ public class AnnotationRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/annotations/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public ModelAndView createAnnotationLd(@PathVariable String collection,
-			@PathVariable String object,
-			@RequestParam(value = "apiKey", required = false) String apiKey,
-			@RequestParam(value = "profile", required = false) String profile,
-			@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON_LD) String jsonAnno) {
-
-		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
-
-		/**
-		 * Convert PersistentAnnotation in Annotation.
-		 */
-		Annotation resAnnotation = controllerHelper
-				.copyIntoWebAnnotation(storedAnnotation);
-
-		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
-        String jsonLd = annotationLd.toString(4);
-	
-		return JsonWebUtils.toJson(jsonLd, null);
-	}
-
-	//@ApiModelProperty(allowableValues="", access="hidden", hidden=true, required=false)
-	//@ApiOperation()
-	@ApiOperation(
-			    value = "List all people",
-			    notes = "List all people using paging",
-			    response = Annotation.class,
-			    responseContainer = "List"
-			)
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView searchAnnotationByField(

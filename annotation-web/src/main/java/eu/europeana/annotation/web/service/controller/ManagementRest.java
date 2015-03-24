@@ -20,17 +20,13 @@ import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 
 
 @Controller
-@Api(value = "admin", description = "Management Rest Service")
+@Api(value = "admin", description = "Annotation Management Rest Service")
 public class ManagementRest extends BaseRest {
 
 	@GET
-//	@RequestMapping(value = "/admin/component", method = RequestMethod.GET, produces = "text/*")
 	@RequestMapping(value = "/admin/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
-//		String res = getConfiguration().getComponentName() + "-admin";
-//		System.out.println("component name: " + res);
-//		return res;
 		return getConfiguration().getComponentName() + "-admin";
 	}
 
