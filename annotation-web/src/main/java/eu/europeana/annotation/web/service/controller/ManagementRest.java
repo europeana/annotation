@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
+import java.util.List;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -7,16 +9,22 @@ import javax.ws.rs.PUT;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.wordnik.swagger.annotations.Api;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
+import eu.europeana.annotation.web.model.AnnotationSearchResults;
+import eu.europeana.api2.utils.JsonWebUtils;
 
 
 @Controller
@@ -132,4 +140,22 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
+	@RequestMapping(value = "/admin/disabled/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ModelAndView getDisabledAnnotationList(@PathVariable String collection,
+			@PathVariable String object,
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "profile", required = false) String profile) {
+		
+		String resourceId = toResourceId(collection, object);
+		List<? extends Annotation> annotations = getAnnotationService()
+				.getDisabledAnnotationList(resourceId);
+		
+		String action = "/admin/disabled/collection/object.json";
+		
+		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
+				annotations, apiKey, action);
+
+		return JsonWebUtils.toJson(response, null);
+	}
+	
 }

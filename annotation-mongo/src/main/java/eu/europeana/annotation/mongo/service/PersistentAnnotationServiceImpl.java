@@ -29,7 +29,8 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
-public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String> implements PersistentAnnotationService {
+public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String> 
+	implements PersistentAnnotationService {
 
 	@Resource
 	private PersistentTagService tagService;
@@ -142,8 +143,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 	
 	public List<? extends Annotation> getAnnotationList(String europeanaId) {
+		return getAnnotationListFilteredByDisabled(europeanaId, false);		
+	}
+
+	public List<? extends Annotation> getAnnotationListFilteredByDisabled(String europeanaId, boolean isDisabled) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+		query.filter(PersistentAnnotation.FIELD_DISABLED, isDisabled);
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();		
 	}

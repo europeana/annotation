@@ -30,6 +30,7 @@ public class AnnotationControllerHelper {
 		to.setSerializedAt(annotation.getSerializedAt());
 		to.setSerializedBy(annotation.getSerializedBy());
 		to.setStyledBy(annotation.getStyledBy());
+		to.setDisabled(annotation.isDisabled());
 	}
 
 	@SuppressWarnings("deprecation")

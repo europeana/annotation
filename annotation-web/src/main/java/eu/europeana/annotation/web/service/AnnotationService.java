@@ -12,7 +12,19 @@ public interface AnnotationService {
 
 	public String getComponentName();
 	
+	/**
+	 * This method retrieves all not disabled annotations.
+	 * @param resourceId
+	 * @return the list of not disabled annotations
+	 */
 	public List<? extends Annotation> getAnnotationList(String resourceId);
+	
+	/**
+	 * This method retrieves all disabled annotations.
+	 * @param resourceId
+	 * @return the list of disabled annotations
+	 */
+	public List<? extends Annotation> getDisabledAnnotationList(String resourceId);
 	
 	public Annotation createAnnotation(Annotation newAnnotation);
 	

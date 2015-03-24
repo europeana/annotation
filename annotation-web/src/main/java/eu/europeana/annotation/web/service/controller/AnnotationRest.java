@@ -1,6 +1,5 @@
 package eu.europeana.annotation.web.service.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -39,10 +38,6 @@ public class AnnotationRest extends BaseRest {
 		return getConfiguration().getComponentName();
 	}
 
-	private String toResourceId(String collection, String object) {
-		return "/"+ collection +"/" + object;
-	}
-	
 	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ModelAndView getAnnotationList(@PathVariable String collection,
 			@PathVariable String object,
@@ -61,35 +56,6 @@ public class AnnotationRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
-	private AnnotationSearchResults<AbstractAnnotation> buildSearchResponse(
-			List<? extends Annotation> annotations, String apiKey, String action) {
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
-				apiKey, action);
-		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
-
-		AbstractAnnotation webAnnotation;
-		for (Annotation annotation : annotations) {
-			webAnnotation = getControllerHelper().copyIntoWebAnnotation(annotation);
-			response.items.add(webAnnotation);
-		}
-		response.itemsCount = response.items.size();
-		response.totalResults = annotations.size();
-		return response;
-	}
-
-	private AnnotationSearchResults<AbstractAnnotation> buildSearchErrorResponse(
-			String apiKey, String action, Throwable th) {
-		
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(
-				apiKey, action);
-		response.success = false;
-		response.error = th.getMessage();
-//		response.requestNumber = 0L;
-		
-		return response;
-	}
-	
-	
 	@RequestMapping(value = "/annotations/{collection}/{object}/{annotationNr}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getAnnotation(@PathVariable String collection,
@@ -124,17 +90,6 @@ public class AnnotationRest extends BaseRest {
 		}
 		
 		return JsonWebUtils.toJson(response, null);
-	}
-
-	AnnotationOperationResponse buildErrorResponse(String errorMessage,
-			String action, String apiKey) {
-		AnnotationOperationResponse response;
-		response = new AnnotationOperationResponse(
-				apiKey, action);
-		
-		response.success = false;
-		response.error = errorMessage;
-		return response;
 	}
 
 	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

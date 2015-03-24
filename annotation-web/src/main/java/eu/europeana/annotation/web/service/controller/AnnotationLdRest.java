@@ -28,10 +28,6 @@ public class AnnotationLdRest extends BaseRest {
 		return getConfiguration().getComponentName() + "-annotationLd";
 	}
 
-	private String toResourceId(String collection, String object) {
-		return "/"+ collection +"/" + object;
-	}
-	
 	@RequestMapping(value = "/annotationld/{collection}/{object}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getAnnotationLd(@PathVariable String collection,

@@ -78,9 +78,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public List<? extends Annotation> getAnnotationList(String resourceId) {
-		
+	public List<? extends Annotation> getAnnotationList(String resourceId) {		
 		return getMongoPersistence().getAnnotationList(resourceId);
+	}
+	
+	@Override
+	public List<? extends Annotation> getDisabledAnnotationList(String resourceId) {		
+		return getMongoPersistence().getAnnotationListFilteredByDisabled(resourceId, true);
 	}
 	
 	@Override

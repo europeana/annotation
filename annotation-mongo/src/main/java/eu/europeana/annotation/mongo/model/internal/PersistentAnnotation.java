@@ -16,6 +16,7 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 
 	public final static String FIELD_EUROPEANA_ID = "annotationId.resourceId";
 	public final static String FIELD_ANNOTATION_NR = "annotationId.annotationNr";
+	public final static String FIELD_DISABLED = "disabled";
 	
 	
 	/**
