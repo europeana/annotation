@@ -17,14 +17,18 @@ public interface AnnotationService {
 	 * @param resourceId
 	 * @return the list of not disabled annotations
 	 */
-	public List<? extends Annotation> getAnnotationList(String resourceId);
+	public List<? extends Annotation> getAnnotationList (String resourceId);
 	
 	/**
-	 * This method retrieves all disabled annotations.
+	 * This method retrieves annotations applying filters.
 	 * @param resourceId
-	 * @return the list of disabled annotations
+	 * @param startOn
+	 * @param limit
+	 * @param isDisabled
+	 * @return the list of annotations
 	 */
-	public List<? extends Annotation> getDisabledAnnotationList(String resourceId);
+	public List<? extends Annotation> getFilteredAnnotationList (
+			String resourceId, String startOn, String limit, boolean isDisabled);
 	
 	public Annotation createAnnotation(Annotation newAnnotation);
 	

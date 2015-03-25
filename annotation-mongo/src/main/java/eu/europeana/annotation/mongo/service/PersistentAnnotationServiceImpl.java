@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
 
+import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -142,14 +144,29 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return (PersistentAnnotationDao<PersistentAnnotation, String>) getDao();
 	}
 	
+	@Override
 	public List<? extends Annotation> getAnnotationList(String europeanaId) {
-		return getAnnotationListFilteredByDisabled(europeanaId, false);		
+		return getFilteredAnnotationList(europeanaId, null, null, false);		
 	}
 
-	public List<? extends Annotation> getAnnotationListFilteredByDisabled(String europeanaId, boolean isDisabled) {
+	@Override
+	public List<? extends Annotation> getFilteredAnnotationList (
+			String europeanaId, String startOn, String limit, boolean isDisabled) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_DISABLED, isDisabled);
+		try {
+	    	if (StringUtils.isNotEmpty(startOn)) 
+	    		query.offset(Integer.parseInt(startOn));
+	    	if (StringUtils.isNotEmpty(limit))
+	    		query.limit(Integer.parseInt(limit));
+		} catch (Exception e) {
+			throw new AnnotationAttributeInstantiationException (
+					"Unexpected exception occured when searching annotations. " 
+							+ AnnotationAttributeInstantiationException.BASE_MESSAGE
+							, "startOn: " + startOn + ", limit: " + limit + ". ", e);
+        }
+		
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();		
 	}

@@ -9,7 +9,6 @@ import javax.ws.rs.PUT;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -141,14 +140,17 @@ public class ManagementRest extends BaseRest {
 	}
 
 	@RequestMapping(value = "/admin/disabled/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView getDisabledAnnotationList(@PathVariable String collection,
-			@PathVariable String object,
+	public ModelAndView getDisabledAnnotationList(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
-			@RequestParam(value = "profile", required = false) String profile) {
+			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
+			@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
+			@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit) {
 		
 		String resourceId = toResourceId(collection, object);
 		List<? extends Annotation> annotations = getAnnotationService()
-				.getDisabledAnnotationList(resourceId);
+				.getFilteredAnnotationList(resourceId, startOn, limit, true);
 		
 		String action = "/admin/disabled/collection/object.json";
 		
