@@ -1,9 +1,12 @@
 package eu.europeana.annotation.web.service.controller;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
@@ -71,4 +74,18 @@ public class AnnotationControllerHelper {
 //		((ImageAnnotation) to).setShape(mongoShape);
 //	}
 		
+	/**
+	 * This methdo converts BaseAnnotationId into persistent MongoAnnotationId.
+	 * @param resourceId
+	 * @param provider
+	 * @return MongoAnnotationId object
+	 */
+	public MongoAnnotationId initAnnotationId(String resourceId, String provider) {
+		AnnotationId annotationId = (new AnnotationIdHelper()).initializeAnnotationId(
+	    		resourceId, provider);
+	    MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
+	    mongoAnnotationId.copyFrom(annotationId);
+		return mongoAnnotationId;
+	}
+			
 }

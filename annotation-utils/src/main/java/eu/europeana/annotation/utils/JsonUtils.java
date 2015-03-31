@@ -38,7 +38,6 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
-import eu.europeana.annotation.utils.serialization.AnnotationIdDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
 import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
 import eu.europeana.annotation.utils.serialization.ListDeserializer;

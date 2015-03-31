@@ -32,11 +32,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
@@ -144,7 +142,8 @@ public class WebAnnotationServiceTest {
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
-	    MongoAnnotationId mongoAnnotationId = initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
+	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper())
+	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
 		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
 		/**
@@ -182,19 +181,6 @@ public class WebAnnotationServiceTest {
 			);
 	}
 
-	/**
-	 * @param resourceId
-	 * @param provider
-	 * @return
-	 */
-	MongoAnnotationId initAnnotationId(String resourceId, String provider) {
-		AnnotationId annotationId = (new AnnotationIdHelper()).initializeAnnotationId(
-	    		resourceId, provider);
-	    MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
-	    mongoAnnotationId.copyFrom(annotationId);
-		return mongoAnnotationId;
-	}
-		
 	@Test
 	public void testCreateAnnotationHistorypin() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
@@ -204,7 +190,7 @@ public class WebAnnotationServiceTest {
 		 */
 		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstanceWithSameAs(
 				"http://historypin.com/annotation/1234");
-	    MongoAnnotationId mongoAnnotationId = initAnnotationId(
+	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
 	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);
 	    mongoAnnotationId.setAnnotationNr(1);
 		testAnnotation.setAnnotationId(mongoAnnotationId);		

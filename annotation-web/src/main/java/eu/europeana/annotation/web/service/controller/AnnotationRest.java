@@ -20,6 +20,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -142,7 +143,9 @@ public class AnnotationRest extends BaseRest {
 		} else {
 			AnnotationId annotationId = (new AnnotationIdHelper())
 					.initializeAnnotationId(collection, object, provider);
-			webAnnotation.setAnnotationId(annotationId);
+		    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
+		    		annotationId.getResourceId(), annotationId.getProvider());
+			webAnnotation.setAnnotationId(mongoAnnotationId);
 		}		
 
 		if (webAnnotation.getBody() != null 
