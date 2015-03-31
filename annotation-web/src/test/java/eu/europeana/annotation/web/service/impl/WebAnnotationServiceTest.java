@@ -144,10 +144,7 @@ public class WebAnnotationServiceTest {
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
-	    AnnotationId annotationId = (new AnnotationIdHelper()).initializeAnnotationId(
-	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
-	    MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
-	    mongoAnnotationId.copyFrom(annotationId);
+	    MongoAnnotationId mongoAnnotationId = initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
 		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
 		/**
@@ -184,6 +181,19 @@ public class WebAnnotationServiceTest {
 				+ WebAnnotationFields.SLASH )
 			);
 	}
+
+	/**
+	 * @param resourceId
+	 * @param provider
+	 * @return
+	 */
+	MongoAnnotationId initAnnotationId(String resourceId, String provider) {
+		AnnotationId annotationId = (new AnnotationIdHelper()).initializeAnnotationId(
+	    		resourceId, provider);
+	    MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
+	    mongoAnnotationId.copyFrom(annotationId);
+		return mongoAnnotationId;
+	}
 		
 	@Test
 	public void testCreateAnnotationHistorypin() 
@@ -194,6 +204,10 @@ public class WebAnnotationServiceTest {
 		 */
 		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstanceWithSameAs(
 				"http://historypin.com/annotation/1234");
+	    MongoAnnotationId mongoAnnotationId = initAnnotationId(
+	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);
+	    mongoAnnotationId.setAnnotationNr(1);
+		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
 		/**
 		 * Convert the test annotation object to the PersistentAnnotation object type.
