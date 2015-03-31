@@ -25,6 +25,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.state.State;
@@ -71,11 +72,12 @@ public class JsonUtils {
 			module.addDeserializer(Selector.class, new SelectorDeserializer());
 			module.addDeserializer(InternetResource.class, new InternetResourceDeserializer());
 			//module.addDeserializer(State.class, new StateDeserializer());
-			module.addDeserializer(AnnotationId.class, new AnnotationIdDeserializer());
+			//TODO: needs improvement, otherwise all strings and maps will be converted to String entries
 			module.addDeserializer(Map.class, new MapDeserializer());
 			module.addDeserializer(List.class, new ListDeserializer());
 			
 			//module.addDeserializer(Style.class, new StyleDeserializer());  
+			module.addAbstractTypeMapping(AnnotationId.class, BaseAnnotationId.class);
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
 			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
 			module.addAbstractTypeMapping(State.class, BaseState.class);

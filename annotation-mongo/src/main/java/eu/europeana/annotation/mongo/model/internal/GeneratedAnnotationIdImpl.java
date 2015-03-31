@@ -1,10 +1,12 @@
 package eu.europeana.annotation.mongo.model.internal;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 /**
  * This class is used to generate the Annotation IDs in form of europeanaId/annotationNr, where the 
@@ -42,6 +44,7 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		this.annotationNr = annotationNr;
 	}
 	
+	
 	@Override
 	public Integer getAnnotationNr() {
 		return annotationNr;
@@ -61,8 +64,9 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	public boolean equals(Object obj) {
 		//europeana id and annotation number must not be null
 		if(obj instanceof AnnotationId 
-				&& this.getResourceId() != null && this.getAnnotationNr() != null
+				&& this.getResourceId() != null && StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
 				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
+				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
 				&& this.getAnnotationNr().equals(((AnnotationId)obj).getAnnotationNr()))
 			return true;
 				
@@ -76,12 +80,26 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	
 	@Override
 	public String toString() {
-		return getResourceId()+"/"+getAnnotationNr();
+		return getResourceId() + WebAnnotationFields.SLASH + getProvider() 
+				+ WebAnnotationFields.SLASH + getAnnotationNr();
 	}
 	
 	@Override
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
 		
+	}
+
+	@Override
+	public String getProvider() {
+		return null;
+	}
+
+	@Override
+	/**
+	 * not used as ids are generated only for own annotations (webanno as provider)  
+	 */
+	public void setProvider(String provider) {
+		//this.provider = provider;		
 	} 
 }

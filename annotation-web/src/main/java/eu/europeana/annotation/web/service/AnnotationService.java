@@ -20,6 +20,14 @@ public interface AnnotationService {
 	public List<? extends Annotation> getAnnotationList (String resourceId);
 	
 	/**
+	 * This method retrieves all not disabled annotations for given provider.
+	 * @param resourceId
+	 * @param provider
+	 * @return the list of not disabled annotations
+	 */
+	public List<? extends Annotation> getAnnotationListByProvider (String resourceId, String provider);
+	
+	/**
 	 * This method retrieves annotations applying filters.
 	 * @param resourceId
 	 * @param startOn
@@ -30,8 +38,6 @@ public interface AnnotationService {
 	public List<? extends Annotation> getFilteredAnnotationList (
 			String resourceId, String startOn, String limit, boolean isDisabled);
 	
-	public Annotation createAnnotation(Annotation newAnnotation);
-	
 	/**
 	 * This method creates Annotation object from a JsonLd string.
 	 * @param annotationJsonLdStr
@@ -39,29 +45,52 @@ public interface AnnotationService {
 	 */
 	public Annotation createAnnotation(String annotationJsonLdStr);
 
+	/**
+	 * This method stores Annotation object in database and in Solr.
+	 * @param annotation
+	 * @return Annotation object
+	 */
+	public Annotation storeAnnotation(Annotation annotation);
+
 	public Annotation updateAnnotation(Annotation newAnnotation);
 	
-	public void deleteAnnotation(String resourceId, int annotationNr);
+	/**
+	 * This method deletes annotation by annotationId values.
+	 * @param resourceId
+	 * @param provider
+	 * @param annotationNr
+	 */
+	public void deleteAnnotation(String resourceId, String provider, int annotationNr);
 
 	/**
 	 * This method forces reindexing of the annotation, which means 
 	 * deletion in solr/annotation if exists and creation of new entry 
 	 * in solr/annotation.
 	 * @param resourceId
+	 * @param provider
 	 * @param annotationNr
 	 */
-	public void indexAnnotation(String resourceId, int annotationNr);
+	public void indexAnnotation(String resourceId, String provider, int annotationNr);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
 	 * @param resourceId
+	 * @param provider
 	 * @param annotationNr
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(String resourceId, int annotationNr);
+	public Annotation disableAnnotation(String resourceId, String provider, int annotationNr);
 	
-	public Annotation getAnnotationById(String europeanaId, int annotationNr);
+	/**
+	 * This method returns annotation object for given annotationId that
+	 * comprises europeanaId, provider and annotationNr.
+	 * @param europeanaId
+	 * @param provider
+	 * @param annotationNr
+	 * @return annotation object
+	 */
+	public Annotation getAnnotationById(String europeanaId, String provider, int annotationNr);
 	
 	/**
 	 * Search for annotations by the given text query.

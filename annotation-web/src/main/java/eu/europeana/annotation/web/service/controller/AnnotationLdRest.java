@@ -2,7 +2,6 @@ package eu.europeana.annotation.web.service.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,17 +27,21 @@ public class AnnotationLdRest extends BaseRest {
 		return getConfiguration().getComponentName() + "-annotationLd";
 	}
 
-	@RequestMapping(value = "/annotationld/{collection}/{object}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotationld/{collection}/{object}/{provider}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView getAnnotationLd(@PathVariable String collection,
-			@PathVariable String object, @PathVariable Integer annotationNr,
-			@RequestParam(value = "apiKey", required = false) String apiKey,
-			@RequestParam(value = "profile", required = false) String profile) {
+	public ModelAndView getAnnotationLd (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile,
+		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Integer annotationNr
+		) {
 
 		String resourceId = toResourceId(collection, object);
 		
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				resourceId, annotationNr);
+				resourceId, provider, annotationNr);
 		
 		AnnotationLd annotationLd = new AnnotationLd(annotation);
         String jsonLd = annotationLd.toString(4);
@@ -47,12 +50,14 @@ public class AnnotationLdRest extends BaseRest {
 	}
 
 	
-	@RequestMapping(value = "/annotationld/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotationld/{collection}/{object}/{provider}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView createAnnotationLd(@PathVariable String collection,
-			@PathVariable String object,
+	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
+			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
+			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 			@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON_LD) String jsonAnno) {
 
 		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);

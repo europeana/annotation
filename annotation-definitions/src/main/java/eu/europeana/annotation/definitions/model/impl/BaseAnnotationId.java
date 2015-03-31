@@ -1,6 +1,7 @@
 package eu.europeana.annotation.definitions.model.impl;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 public class BaseAnnotationId implements AnnotationId{
 
@@ -8,8 +9,10 @@ public class BaseAnnotationId implements AnnotationId{
 	 * 
 	 */
 	private static final long serialVersionUID = -5342617580049965304L;
+
 	private String resourceId;
 	private Integer annotationNr = -1;
+	private String provider;
 
 	public BaseAnnotationId(){
 	}
@@ -20,6 +23,12 @@ public class BaseAnnotationId implements AnnotationId{
 	
 	public BaseAnnotationId(String europeanaId, Integer annotationNr){
 		this.resourceId = europeanaId;
+		this.annotationNr = annotationNr;
+	}
+	
+	public BaseAnnotationId(String europeanaId, String provider, Integer annotationNr){
+		this.resourceId = europeanaId;
+		this.provider = provider;
 		this.annotationNr = annotationNr;
 	}
 	
@@ -44,11 +53,22 @@ public class BaseAnnotationId implements AnnotationId{
 	}
 
 	@Override
+	public String getProvider() {
+		return provider;
+	}
+
+	@Override
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		//europeana id and annotation number must not be null
 		if(obj instanceof AnnotationId 
 				&& this.getResourceId() != null && this.getAnnotationNr() != null
 				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
+				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
 				&& this.getAnnotationNr().equals(((AnnotationId)obj).getAnnotationNr()))
 			return true;
 				
@@ -62,7 +82,10 @@ public class BaseAnnotationId implements AnnotationId{
 	
 	@Override
 	public String toString() {
-		return getResourceId()+"/"+getAnnotationNr();
+		return WebAnnotationFields.ANNOTATION_ID_PREFIX 
+				+ getResourceId() + WebAnnotationFields.SLASH
+				+ getProvider() + WebAnnotationFields.SLASH
+				+ getAnnotationNr();
 	}
 	
 }

@@ -157,7 +157,7 @@ public class AnnotationLd extends JsonLd {
 		    case WebAnnotationFields.SID:
 		    	String annotationIdValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(annotationIdValue)) 
-					((BaseObjectTag) annotation).calculateAnnotationIdByString(annotationIdValue);
+					((BaseObjectTag) annotation).parse(annotationIdValue);
 		    	break;
 		    case WebAnnotationFields.TYPE:
 		    	String typeValue = getLiteralPropertyValue(mapValue);

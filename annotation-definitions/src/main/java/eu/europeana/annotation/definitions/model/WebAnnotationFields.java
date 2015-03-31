@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model;
 
+
 public interface WebAnnotationFields {
 
 	/**
@@ -58,17 +59,28 @@ public interface WebAnnotationFields {
 	public static final String UNDERSCORE = "_";
 
 	/**
+	 * AnnotationId
+	 */
+	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotations"; 
+	public static final String SLASH = "/"; 
+	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4; 
+	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3; 
+	public static final String PROVIDER_HISTORY_PIN = "historypin"; 
+	
+	/**
 	 * Solr query
 	 */
 	public static final String ALL_SOLR_ENTRIES = "*:*";
 	public static final String DELIMETER = ":";
 	
+	public static final String PROVIDER_WEBANNO = "webanno";	
 	/**
 	 * Default values for the Rest API services
 	 */
 	public static final String REST_COLLECTION      = "15502";
 	public static final String REST_OBJECT          = "GG_8285";
-	public static final String REST_RESOURCE_ID     = "/" + REST_COLLECTION + "/" + REST_OBJECT;
+	public static final String REST_PROVIDER        = "webanno";
+	public static final String REST_RESOURCE_ID     = SLASH + REST_COLLECTION + SLASH + REST_OBJECT;
 	public static final String REST_ANNOTATION_NR   = "1";
 	public static final String REST_TAG_ID          = "5506c37343247ba48753d1e5";
 	public static final String REST_LANGUAGE        = "en";

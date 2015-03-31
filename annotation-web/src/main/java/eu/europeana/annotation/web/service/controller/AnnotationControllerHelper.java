@@ -31,6 +31,7 @@ public class AnnotationControllerHelper {
 		to.setSerializedBy(annotation.getSerializedBy());
 		to.setStyledBy(annotation.getStyledBy());
 		to.setDisabled(annotation.isDisabled());
+		to.setSameAs(annotation.getSameAs());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -69,4 +70,5 @@ public class AnnotationControllerHelper {
 //		}
 //		((ImageAnnotation) to).setShape(mongoShape);
 //	}
+		
 }

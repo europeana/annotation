@@ -13,10 +13,36 @@ public interface AnnotationJsonApi {
 
 	//public SemanticTag createSemanticTag(SemanticTag annotation);
 
+	/**
+	 * @param collectionId
+	 * @param objectHash
+	 * @return
+	 */
 	public List<Annotation> getAnnotations(String collectionId, String objectHash);
+
+	/**
+	 * @param collectionId
+	 * @param objectHash
+	 * @param provider
+	 * @return
+	 */
+	public List<Annotation> getAnnotations(String collectionId, String objectHash, String provider);
+
+	/**
+	 * @param europeanaId
+	 * @param provider
+	 * @param annotationNr
+	 * @return
+	 */
+	public Annotation getAnnotation(String europeanaId, String provider, Integer annotationNr);
 	
-	public Annotation getAnnotation(String europeanaId, Integer annotationNr);
-	
-	public Annotation getAnnotation(String collectionId, String objectHash,
-			Integer annotationNr);	
+	/**
+	 * @param collectionId
+	 * @param objectHash
+	 * @param provider
+	 * @param annotationNr
+	 * @return
+	 */
+	public Annotation getAnnotation(
+			String collectionId, String objectHash, String provider, Integer annotationNr);	
 }

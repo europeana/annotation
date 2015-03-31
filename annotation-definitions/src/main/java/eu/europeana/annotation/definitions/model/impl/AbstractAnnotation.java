@@ -2,33 +2,33 @@ package eu.europeana.annotation.definitions.model.impl;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public abstract class AbstractAnnotation implements Annotation {
 
 	protected AnnotationId annotationId = null;
 	private String type;
-	//private Long annotatedAtTs;
 	private Date annotatedAt;
 	private Agent annotatedBy;
 	private Body body;
 	private Target target;
 	private String motivatedBy;
-	//private Long serializedAtTs;
 	private Date serializedAt;
-	
 	private Agent serializedBy;
-	private Style styledBy;
-	
-	private MotivationTypes motivationType;
-	
-	private boolean disabled;
+	private Style styledBy;	
+	protected MotivationTypes motivationType;	
+	private boolean disabled;	
+	private String sameAs;
 	
 	
 	public AbstractAnnotation(){
@@ -51,6 +51,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	    if ((this.getAnnotationId() != null) && (that.getAnnotationId() != null) &&
 	    		(this.getAnnotationId().getAnnotationNr() != null) && (that.getAnnotationId().getAnnotationNr() != null) &&
 	    		(this.getAnnotationId().getResourceId() != null) && (that.getAnnotationId().getResourceId() != null) &&
+	    		(this.getAnnotationId().getProvider() != null) && (that.getAnnotationId().getProvider() != null) &&
 	    		(!this.getAnnotationId().getAnnotationNr().equals(that.getAnnotationId().getAnnotationNr())
 	    		|| !this.getAnnotationId().getResourceId().equals(that.getAnnotationId().getResourceId()))) {
 	    	System.out.println("Annotation objects have different 'annotationId' objects.");
@@ -119,15 +120,40 @@ public abstract class AbstractAnnotation implements Annotation {
 	 * @param annotationId The annotationId_string
 	 * @return AnnotationId object
 	 */
-	public AnnotationId calculateAnnotationIdByString(String annotationId){
-		int pos = annotationId.lastIndexOf("/");
+	public AnnotationId parse(String annotationId){
+//		int pos = annotationId.lastIndexOf("/");
+
 //		System.out.println("annotationIdString() annotationId: " + annotationId + ", pos: " + pos);
 		AnnotationId annoId = new BaseAnnotationId();
-//		System.out.println("annotationIdString() annotationId.substring(0, pos): " + annotationId.substring(0, pos));
-		annoId.setResourceId(annotationId.substring(0, pos));
-//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
-		String annoNr = annotationId.substring(pos + 1);
-		annoId.setAnnotationNr(Integer.parseInt(annoNr));
+		if (StringUtils.isNotEmpty(annotationId)) {
+	        String[] arrValue = annotationId.split(WebAnnotationFields.SLASH);
+	        if (arrValue.length >= WebAnnotationFields.MIN_ANNOTATION_ID_COMPONENT_COUNT) {
+	//		System.out.println("annotationIdString() annotationId.substring(0, pos): " + annotationId.substring(0, pos));
+//			annoId.setResourceId(annotationId.substring(0, pos));
+	        	//computed from the end of the url
+	        	int collectionPosition = arrValue.length - 4;
+	        	//computed from the end of the url
+	        	int objectPosition = arrValue.length - 3;
+	        	//computed from the end of the url
+	        	int providerPosition = arrValue.length - 2;
+	        	//computed from the end of the url
+	        	int annotationNrPosition = arrValue.length - 1;
+					        	
+				String collection = arrValue[collectionPosition];
+	        	String object     = arrValue[objectPosition];
+				if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
+					annoId.setResourceId((new AnnotationIdHelper()).createResourceId(collection, object));
+	//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
+//				String annoNr = annotationId.substring(pos + 1);
+//				annoId.setAnnotationNr(Integer.parseInt(annoNr));
+				String provider = arrValue[providerPosition];
+				if (StringUtils.isNotEmpty(provider))
+					annoId.setProvider(provider);
+				String annotationNrStr = arrValue[annotationNrPosition];
+				if (StringUtils.isNotEmpty(annotationNrStr))
+					annoId.setAnnotationNr(Integer.parseInt(annotationNrStr));
+	        }
+		}
 		return annoId;
 	}
 
@@ -231,16 +257,6 @@ public abstract class AbstractAnnotation implements Annotation {
 		this.serializedBy = serializedBy;
 	}
 
-//	@Override
-//	public Long getAnnotatedAtTs() {
-//		return annotatedAt.getTime();
-//	}
-//
-//	@Override
-//	public void setAnnotatedAtTs(Long annotatedAtTs) {
-//		this.annotatedAt = new Date(annotatedAtTs);
-//	}
-
 	@Override
 	public void setAnnotatedAt(Date annotatedAt) {
 		this.annotatedAt = annotatedAt;
@@ -264,6 +280,14 @@ public abstract class AbstractAnnotation implements Annotation {
 		this.disabled = disabled;
 	}
 		
+	public String getSameAs() {
+		return sameAs;
+	}
+
+	public void setSameAs(String sameAs) {
+		this.sameAs = sameAs;
+	}
+
 	@Override
 	public String toString() {
 		String res = "### Annotation ###\n";
@@ -285,6 +309,8 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "target:" + target.toString() + "\n";
 		if (body != null) 
 			res = res + "\t" + "body:" + body.toString() + "\n";
+		if (StringUtils.isNotEmpty(sameAs)) 
+			res = res + "\t" + "sameAs:" + sameAs + "\n";
 		return res;
 	}	
 	

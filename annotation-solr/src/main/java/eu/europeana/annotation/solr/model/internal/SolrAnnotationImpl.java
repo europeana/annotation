@@ -133,7 +133,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field("annotationId_string")
 	public void setAnnotationIdString(String annotationId){
 		int pos = annotationId.lastIndexOf("/");
-		AnnotationId annoId = calculateAnnotationIdByString(annotationId);
+		AnnotationId annoId = parse(annotationId);
 		setAnnotationId(annoId);
 		this.annotationId_string = annotationId;
 		this.resourceId = annotationId.substring(1, pos);

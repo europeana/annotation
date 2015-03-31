@@ -10,6 +10,7 @@ import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 public class AnnotationJsonApiImpl extends BaseAnnotationApi implements AnnotationJsonApi {
 
@@ -75,20 +76,32 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 	}
 
 	@Override
-	public Annotation getAnnotation(String collectionId, String objectHash,
+	public List<Annotation> getAnnotations(String collectionId, String objectHash, String provider){
+		AnnotationSearchResults res;
+		try {
+			res = apiConnection.getAnnotationsForObject(collectionId, objectHash, provider);
+		} catch (IOException e) {
+
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
+		}
+		return res.getItems();
+		
+	}
+
+	@Override
+	public Annotation getAnnotation(String collectionId, String objectHash, String provider,
 			Integer annotationNr) {
 		
-		return getAnnotation(collectionId + "/" + objectHash, annotationNr);
+		return getAnnotation(collectionId + WebAnnotationFields.SLASH + objectHash, provider, annotationNr);
 	}
 	
 	@Override
-	public Annotation getAnnotation(String europeanaId,
-			Integer annotationNr) {
+	public Annotation getAnnotation(String europeanaId, String provider, Integer annotationNr) {
 		
 		AnnotationOperationResponse res;
 		
 		try {
-			res = apiConnection.getAnnotation(europeanaId, annotationNr);
+			res = apiConnection.getAnnotation(europeanaId, provider, annotationNr);
 			
 			if(!Boolean.valueOf(res.getSuccess()))
 				throw new TechnicalRuntimeException(res.getError() + " " + res.getAction());

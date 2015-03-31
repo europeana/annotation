@@ -15,6 +15,14 @@ import eu.europeana.corelib.db.dao.NosqlDao;
  */
 public interface PersistentAnnotationDao<E extends PersistentAnnotation, T extends Serializable > extends NosqlDao<E, T> {
 
+	/**
+	 * This method sets default provider. Currently there are two providers:
+	 *    1. 'webanno' e.g. "http://data.europeana.eu/annotations/15502/GG_8285/webanno/1"
+	 *    2. 'historypin' e.g. "http://historypin.com/annotation/1234"
+	 * @param europeanaId
+	 * @param sameAs
+	 * @return AnnotationId object
+	 */
 	AnnotationId generateNextAnnotationId(String europeanaId);
-
+	
 }

@@ -18,7 +18,6 @@ import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
-import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;

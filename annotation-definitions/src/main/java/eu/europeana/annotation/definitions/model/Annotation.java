@@ -56,4 +56,8 @@ public interface Annotation {
 
 	public abstract boolean isDisabled();
 
+	public abstract void setSameAs(String sameAs);
+
+	public abstract String getSameAs();
+
 }

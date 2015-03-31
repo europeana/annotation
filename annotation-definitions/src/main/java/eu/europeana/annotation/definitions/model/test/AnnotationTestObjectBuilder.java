@@ -18,6 +18,8 @@ package eu.europeana.annotation.definitions.model.test;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -90,7 +92,8 @@ public class AnnotationTestObjectBuilder {
 		
 		InternetResource source = new BaseInternetResource();
 		source.setContentType("text/html");
-		source.setHttpUri("http://europeana.eu/portal/record//15502/GG_8285.html");
+//		source.setHttpUri("http://europeana.eu/portal/record//15502/GG_8285.html");
+		source.setHttpUri("http://europeana.eu/portal/record/" + TEST_EUROPEANA_ID + ".html");
 		source.setMediaType("dctypes:Text");
 		target.setSource(source);
 		
@@ -98,9 +101,17 @@ public class AnnotationTestObjectBuilder {
 	}
     
 	public static Annotation createBaseObjectTagInstance() {
+	    return createBaseObjectTagInstanceWithSameAs(null);
+	}
+		
+	public static Annotation createBaseObjectTagInstanceWithSameAs(String sameAs) {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
+		
+		if (StringUtils.isNotEmpty(sameAs)) {
+			annotation.setSameAs(sameAs);
+		}
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
         

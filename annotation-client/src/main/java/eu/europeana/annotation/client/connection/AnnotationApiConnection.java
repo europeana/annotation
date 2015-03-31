@@ -38,7 +38,29 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationSearchResults getAnnotationsForObject(String collectionId,
 			String objectHash) throws IOException {
 		String url = getAnnotationServiceUri();
-		url += "/" + collectionId + "/" + objectHash + ".json";
+		url += WebAnnotationFields.SLASH + collectionId 
+				+ WebAnnotationFields.SLASH + objectHash 
+				+ ".json";
+		url += "?wsKey=" + getApiKey() + "&profile=annotation";
+
+		// Execute Europeana API request
+		String json = getJSONResult(url);
+		
+		return getAnnotationSearchResults(json);
+//
+//		Gson gson = getAnnotationGson();
+//
+//		return (AnnotationSearchResults) gson.fromJson(json,
+//				AnnotationSearchResults.class);
+	}
+	
+	public AnnotationSearchResults getAnnotationsForObject(String collectionId,
+			String objectHash, String provider) throws IOException {
+		String url = getAnnotationServiceUri();
+		url += WebAnnotationFields.SLASH + collectionId 
+				+ WebAnnotationFields.SLASH + objectHash 
+				+ WebAnnotationFields.SLASH + provider 
+				+ ".json";
 		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 
 		// Execute Europeana API request
@@ -263,14 +285,16 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	    return searchTags(query, null, null);
 	}
 
-	public AnnotationOperationResponse getAnnotation(String europeanaId, Integer annotationNr) throws IOException {
+	public AnnotationOperationResponse getAnnotation(
+			String europeanaId, String provider, Integer annotationNr) throws IOException {
 		
 		String url = getAnnotationServiceUri();
-		if(!europeanaId.startsWith("/"))
-			url += "/" ;
+		if(!europeanaId.startsWith(WebAnnotationFields.SLASH))
+			url += WebAnnotationFields.SLASH ;
 		
 		url += europeanaId;
-		url += "/" + annotationNr;
+		url += WebAnnotationFields.SLASH + provider;
+		url += WebAnnotationFields.SLASH + annotationNr;
 		
 		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 

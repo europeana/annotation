@@ -16,5 +16,12 @@ public interface AnnotationId extends Serializable {
 
 	public Integer getAnnotationNr();
 
+	/**
+	 * Provider name e.g. 'webanno' or 'historypin'
+	 * @return
+	 */
+	public String getProvider();
+
+	public void setProvider(String provider);
 	
 }

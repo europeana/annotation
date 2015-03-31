@@ -33,6 +33,7 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 //		BaseAnnotationId realClass = null;
 		
 		String resourceId = "";
+		String provider = "";
 		Integer annotationNr = 0;
 		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 		while (elementsIterator.hasNext()) {
@@ -40,9 +41,12 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 			if (ModelConst.RESOURCE_ID.equals(element.getKey())) {
 				resourceId = element.getValue().toString();//.getTextValue();
 			}
-//			if (ModelConst.ANNOTATION_NR.equals(element.getKey())) {
-//				annotationNr = Integer.valueOf(element.getValue().getTextValue());
-//			}
+			if (ModelConst.PROVIDER.equals(element.getKey())) {
+				provider = element.getValue().toString();//.getTextValue();
+			}
+			if (ModelConst.ANNOTATION_NR.equals(element.getKey())) {
+				annotationNr = Integer.valueOf(element.getValue().getTextValue());
+			}
 //			if (ModelConst.AGENT_TYPES.equals(element.getKey())) {
 //				String textValue = element.getValue().toString();//.getTextValue();
 //				String typeValue = TypeUtils.getEuTypeFromTypeArrayStatic(textValue).replace("\"", "");
@@ -54,13 +58,14 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 		
 		BaseAnnotationId annotationId = new BaseAnnotationId();
 		annotationId.setAnnotationNr(annotationNr);
+		annotationId.setProvider(provider);
 		annotationId.setResourceId(resourceId);
 		
 //		realClass = (Class<? extends AnnotationId>) annotationId;
 //		realClass = annotationId;
 		
-		if (realClass == null)
-			return null;
+//		if (realClass == null)
+//			return null;
 		
 		return mapper.readValue(root, realClass);
 	}

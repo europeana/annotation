@@ -48,6 +48,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Long lastIndexedTimestamp;
 	
 	private boolean disabled;
+	private String sameAs;
 
 	
 	@Override
@@ -187,6 +188,16 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	public String toString() {
 		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", annotatedAt:" + getAnnotatedAt() + 
 				", Id:" + getId() + ", last update: " + getLastIndexedTimestamp() + ", disabled: " + isDisabled() + "]";
+	}
+
+	@Override
+	public void setSameAs(String sameAs) {
+		this.sameAs = sameAs;
+	}
+
+	@Override
+	public String getSameAs() {
+		return sameAs;
 	}
 			
 }

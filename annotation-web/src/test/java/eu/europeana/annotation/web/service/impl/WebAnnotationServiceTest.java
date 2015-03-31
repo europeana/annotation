@@ -32,11 +32,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -89,7 +93,7 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
 		
 		/**
 		 * Convert PersistentAnnotation in Annotation.
@@ -133,6 +137,100 @@ public class WebAnnotationServiceTest {
 	}
 		
 	@Test
+	public void testCreateAnnotationWebanno() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+	    AnnotationId annotationId = (new AnnotationIdHelper()).initializeAnnotationId(
+	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
+	    MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
+	    mongoAnnotationId.copyFrom(annotationId);
+		testAnnotation.setAnnotationId(mongoAnnotationId);		
+
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
+		
+		/**
+		 * Convert PersistentAnnotation in Annotation.
+		 */
+		Annotation webAnnotation = controllerHelper
+				.copyIntoWebAnnotation(storedAnnotation);
+		
+		if (StringUtils.isBlank(webAnnotation.getType())) {
+			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		}
+		
+		System.out.println("testAnnotation: " + testAnnotation.toString());
+		System.out.println("webAnnotation: " + webAnnotation.toString());
+		
+		assertTrue(webAnnotation.getAnnotationId() != null 
+			&& webAnnotation.getAnnotationId().toString().contains( 
+				WebAnnotationFields.ANNOTATION_ID_PREFIX 
+				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
+				+ WebAnnotationFields.SLASH 
+				+ WebAnnotationFields.PROVIDER_WEBANNO 
+				+ WebAnnotationFields.SLASH )
+			);
+	}
+		
+	@Test
+	public void testCreateAnnotationHistorypin() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstanceWithSameAs(
+				"http://historypin.com/annotation/1234");
+
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
+		
+		/**
+		 * Convert PersistentAnnotation in Annotation.
+		 */
+		Annotation webAnnotation = controllerHelper
+				.copyIntoWebAnnotation(storedAnnotation);
+		
+		if (StringUtils.isBlank(webAnnotation.getType())) {
+			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		}
+		
+		System.out.println("testAnnotation: " + testAnnotation.toString());
+		System.out.println("webAnnotation: " + webAnnotation.toString());
+		
+		assertTrue(webAnnotation.getAnnotationId() != null 
+				&& webAnnotation.getAnnotationId().toString().contains( 
+					WebAnnotationFields.ANNOTATION_ID_PREFIX 
+					+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
+					+ WebAnnotationFields.SLASH 
+					+ WebAnnotationFields.PROVIDER_HISTORY_PIN
+					+ WebAnnotationFields.SLASH )
+				);
+	}
+		
+	@Test
 	public void testMultilingualAnnotation() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
@@ -158,7 +256,7 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
 		
 		/**
 		 * Convert PersistentAnnotation in Annotation.
@@ -202,13 +300,14 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
 		
 		/**
 		 * Delete Annotation.
 		 */
 		webAnnotationService.deleteAnnotation(
 				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
@@ -244,13 +343,14 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
 		
 		/**
 		 * Reindex Annotation.
 		 */
 		webAnnotationService.indexAnnotation(
 				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
@@ -280,13 +380,14 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
 		
 		/**
 		 * Reindex Annotation.
 		 */
 		Annotation disabledAnnotation = webAnnotationService.disableAnnotation(
 				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
@@ -314,13 +415,14 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.createAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
 		
 		/**
 		 * Delete Annotation.
 		 */
 		webAnnotationService.deleteAnnotation(
 				storedAnnotation.getAnnotationId().getResourceId()
+				, storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
