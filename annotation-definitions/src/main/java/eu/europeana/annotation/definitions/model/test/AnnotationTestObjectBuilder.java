@@ -84,7 +84,7 @@ public class AnnotationTestObjectBuilder {
 		
 		target.setContentType("image/jpeg");
 		target.setHttpUri("http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE");
-		target.setEuropeanaId(TEST_EUROPEANA_ID);
+//		target.setEuropeanaId(TEST_EUROPEANA_ID);
 		
 		Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
 				SelectorTypes.SVG_RECTANGLE_SELECTOR.name());

@@ -34,53 +34,14 @@ import eu.europeana.api2.utils.JsonWebUtils;
 public class AnnotationRest extends BaseRest {
 
 
+//	@ApiOperation(value = "", position = 0)
 	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
 		return getConfiguration().getComponentName();
 	}
 
-	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView getAnnotationList (
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
-		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object
-		) {
-		
-		String resourceId = toResourceId(collection, object);
-		List<? extends Annotation> annotations = getAnnotationService()
-				.getAnnotationList(resourceId);
-		
-		String action = "/annotations/collection/object.json";
-		
-		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
-				annotations, apiKey, action);
-
-		return JsonWebUtils.toJson(response, null);
-	}
-
-	@RequestMapping(value = "/annotations/{collection}/{object}/{provider}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView getAnnotationListByProvider (
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
-		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
-		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider
-		) {
-		
-		String resourceId = toResourceId(collection, object);
-		List<? extends Annotation> annotations = getAnnotationService()
-				.getAnnotationListByProvider(resourceId, provider);
-		
-		String action = "/annotations/collection/object/provider.json";
-		
-		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
-				annotations, apiKey, action);
-
-		return JsonWebUtils.toJson(response, null);
-	}
-
+//	@ApiOperation(value = "", position = 1)
 	@RequestMapping(value = "/annotations/{collection}/{object}/{provider}/{annotationNr}.json"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -121,9 +82,55 @@ public class AnnotationRest extends BaseRest {
 		
 		return JsonWebUtils.toJson(response, null);
 	}
+	
+//	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+////	@ApiOperation(value = "2", position = 2)
+//	public ModelAndView getAnnotationList (
+//		@RequestParam(value = "apiKey", required = false) String apiKey,
+//		@RequestParam(value = "profile", required = false) String profile,
+//		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+//		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object
+//		) {
+//		
+//		String resourceId = toResourceId(collection, object);
+//		List<? extends Annotation> annotations = getAnnotationService()
+//				.getAnnotationList(resourceId);
+//		
+//		String action = "/annotations/collection/object.json";
+//		
+//		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
+//				annotations, apiKey, action);
+//
+//		return JsonWebUtils.toJson(response, null);
+//	}
+
+//	@RequestMapping(value = "/annotations/{collection}/{object}/{provider}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ModelAndView getAnnotationList (
+//			public ModelAndView getAnnotationListByProvider (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile,
+		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
+//		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider
+		@RequestParam(value = "provider", required = false) String provider
+		) {
+		
+		String resourceId = toResourceId(collection, object);
+		List<? extends Annotation> annotations = getAnnotationService()
+				.getAnnotationListByProvider(resourceId, provider);
+		
+		String action = "/annotations/collection/object/provider.json";
+		
+		AnnotationSearchResults<AbstractAnnotation> response = buildSearchResponse(
+				annotations, apiKey, action);
+
+		return JsonWebUtils.toJson(response, null);
+	}
 
 	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+//	@ApiOperation(value = "3", position = 3)
 	public ModelAndView createAnnotation (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -175,6 +182,7 @@ public class AnnotationRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+//	@ApiOperation(value = "4", position = 4)
 	public ModelAndView searchAnnotationByField(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -247,6 +255,7 @@ public class AnnotationRest extends BaseRest {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+//	@ApiOperation(value = "5", position = 5)
 	public ModelAndView searchTagByField(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,

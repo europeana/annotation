@@ -7,7 +7,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 public class BaseTarget extends OaSpecificResource implements Target {
  
 	private String targetType;
-	private String europeanaId;
+//	private String europeanaId;
 
 	@Override
 	public String getTargetType() {
@@ -35,15 +35,15 @@ public class BaseTarget extends OaSpecificResource implements Target {
 		super();
 		setTargetTypeEnum(targetType);
 	}
-	@Override
-	public String getEuropeanaId() {
-		return europeanaId;
-	}
-
-	@Override
-	public void setEuropeanaId(String europeanaId) {
-		this.europeanaId = europeanaId;
-	};
+//	@Override
+//	public String getEuropeanaId() {
+//		return europeanaId;
+//	}
+//
+//	@Override
+//	public void setEuropeanaId(String europeanaId) {
+//		this.europeanaId = europeanaId;
+//	};
 	
 	@Override
 	public boolean equals(Object other) {
@@ -64,11 +64,11 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	    	res = false;
 	    }
 	    		
-	    if ((this.getEuropeanaId() != null) && (that.getEuropeanaId() != null) &&
-	    		(!this.getEuropeanaId().equals(that.getEuropeanaId()))) {
-	    	System.out.println("Target objects have different EuropeanaIds.");
-	    	res = false;
-	    }
+//	    if ((this.getEuropeanaId() != null) && (that.getEuropeanaId() != null) &&
+//	    		(!this.getEuropeanaId().equals(that.getEuropeanaId()))) {
+//	    	System.out.println("Target objects have different EuropeanaIds.");
+//	    	res = false;
+//	    }
 
 	    if ((this.getHttpUri() != null) && (that.getHttpUri() != null) &&
 	    		(!this.getHttpUri().equals(that.getHttpUri()))) {

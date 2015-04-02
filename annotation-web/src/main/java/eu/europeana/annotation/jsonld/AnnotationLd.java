@@ -346,7 +346,7 @@ public class AnnotationLd extends JsonLd {
 					source.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
 				if (hasValue(propertyValue2, WebAnnotationFields.SID)) {
 					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.SID));
-					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
+//					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
 				}
 				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
 					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));

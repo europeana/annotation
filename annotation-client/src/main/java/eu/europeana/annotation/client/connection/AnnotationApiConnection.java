@@ -15,6 +15,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.utils.JsonUtils;
 
@@ -88,7 +89,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationOperationResponse createAnnotation(Annotation annotation) throws IOException {
 		String url = getAnnotationServiceUri();
 //		url += annotation.getAnnotationId().getResourceId();
-		url += annotation.getTarget().getEuropeanaId();
+		url += (new AnnotationIdHelper()).extractResourceId(annotation);
+//		url += annotation.getTarget().getEuropeanaId();
 		url += ModelConst.JSON_REST;
 //		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 

@@ -5,9 +5,9 @@ import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
 public interface Target extends SpecificResource{
 
-	public abstract void setEuropeanaId(String europeanaId);
+//	public abstract void setEuropeanaId(String europeanaId);
 
-	public abstract String getEuropeanaId();
+//	public abstract String getEuropeanaId();
 
 	public abstract void setTargetTypeEnum(TargetTypes targetType);
 

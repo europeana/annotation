@@ -160,7 +160,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	     * AnnotationLd object -> Annotation object.
 	     */
 	    Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-		Annotation persistentAnnotation = controllerHelper.copyIntoPersistantAnnotation(webAnnotation);
+		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);
 		
 		return storeAnnotation(persistentAnnotation);
 	}
