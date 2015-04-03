@@ -13,6 +13,7 @@ import com.wordnik.swagger.annotations.Api;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.api2.utils.JsonWebUtils;
 
@@ -50,17 +51,26 @@ public class AnnotationLdRest extends BaseRest {
 	}
 
 	
-	@RequestMapping(value = "/annotationld/{collection}/{object}/{provider}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotationld/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
-			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+			@RequestParam(value = "provider", required = false) String provider,
 			@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON_LD) String jsonAnno) {
 
-		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
+//		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
+		Annotation webAnnotation = getAnnotationService().createAnnotation(jsonAnno);
+		String action = "create:/annotationld/collection/object.json";
+		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
+			return getValidationReport(apiKey, action);
+		
+		getAnnotationService().appendAnnotationId(collection, object, provider, webAnnotation);
+				
+		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);		
+		Annotation storedAnnotation = getAnnotationService().storeAnnotation(persistentAnnotation);
 
 		/**
 		 * Convert PersistentAnnotation in Annotation.

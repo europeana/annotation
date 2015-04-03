@@ -15,12 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.wordnik.swagger.annotations.Api;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -141,20 +139,12 @@ public class AnnotationRest extends BaseRest {
 
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
 		
-		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) {
-			AnnotationOperationResponse response = new AnnotationOperationResponse(
-					apiKey, "create:/annotations/collection/object.json");
-			String errorMessage = AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH;			
-			response = buildErrorResponse(errorMessage, response.action, response.apikey);
-			return JsonWebUtils.toJson(response, null);
-		} else {
-			AnnotationId annotationId = (new AnnotationIdHelper())
-					.initializeAnnotationId(collection, object, provider);
-		    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
-		    		annotationId.getResourceId(), annotationId.getProvider());
-			webAnnotation.setAnnotationId(mongoAnnotationId);
-		}		
-
+		String action = "create:/annotations/collection/object.json";
+		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
+			return getValidationReport(apiKey, action);
+		
+		getAnnotationService().appendAnnotationId(collection, object, provider, webAnnotation);		
+		
 		if (webAnnotation.getBody() != null 
 				&& webAnnotation.getBody().getLanguage() != null
 				&& webAnnotation.getBody().getValue() != null
@@ -163,6 +153,7 @@ public class AnnotationRest extends BaseRest {
 			webAnnotation.getBody().getMultilingual().put(
 					webAnnotation.getBody().getLanguage(), webAnnotation.getBody().getValue());
 		}
+		
 		Annotation persistantAnnotation = getControllerHelper()
 				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
 				
@@ -170,7 +161,7 @@ public class AnnotationRest extends BaseRest {
 				persistantAnnotation);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, "create:/annotations/collection/object.json");
+				apiKey, action);
 		response.success = true;
 //		response.requestNumber = 0L;
 

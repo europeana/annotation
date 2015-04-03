@@ -12,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -159,10 +162,11 @@ public class AnnotationServiceImpl implements AnnotationService {
 	    /**
 	     * AnnotationLd object -> Annotation object.
 	     */
-	    Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);
+	    return parsedAnnotationLd.getAnnotation();
+//	    Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
+//		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);
 		
-		return storeAnnotation(persistentAnnotation);
+//		return storeAnnotation(persistentAnnotation);
 	}
 
 	/**
@@ -485,4 +489,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 			String resourceId, String provider) {
 		return getMongoPersistence().getAnnotationListByProvider(resourceId, provider);
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.web.service.AnnotationService#appendAnnotationId(java.lang.String, java.lang.String, java.lang.String, eu.europeana.annotation.definitions.model.Annotation)
+	 */
+	public void appendAnnotationId(String collection, String object, String provider,
+			Annotation webAnnotation) {
+		AnnotationId annotationId = (new AnnotationIdHelper())
+				.initializeAnnotationId(collection, object, provider);
+	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
+	    		annotationId.getResourceId(), annotationId.getProvider());
+		webAnnotation.setAnnotationId(mongoAnnotationId);
+	}
+		
 }

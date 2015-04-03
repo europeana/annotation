@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
@@ -12,6 +13,7 @@ import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.api2.utils.JsonWebUtils;
 
 public class BaseRest {
 
@@ -91,6 +93,20 @@ public class BaseRest {
 		response.success = false;
 		response.error = errorMessage;
 		return response;
+	}
+
+	/**
+	 * This method generates validation error report.
+	 * @param apiKey
+	 * @param action
+	 * @return
+	 */
+	ModelAndView getValidationReport(String apiKey, String action) {
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, action);
+		String errorMessage = AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH;			
+		response = buildErrorResponse(errorMessage, response.action, response.apikey);
+		return JsonWebUtils.toJson(response, null);
 	}
 
 }
