@@ -25,7 +25,7 @@ public class AnnotationLdRest extends BaseRest {
 	@RequestMapping(value = "/annotationld/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
-		return getConfiguration().getComponentName() + "-annotationLd";
+		return getConfiguration().getComponentName() + "ld";
 	}
 
 	@RequestMapping(value = "/annotationld/{collection}/{object}/{provider}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

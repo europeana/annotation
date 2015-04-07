@@ -38,7 +38,6 @@ import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilde
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
-import eu.europeana.annotation.mongo.service.impl.AnnotationTestDataBuilder;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 
 
