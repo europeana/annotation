@@ -52,7 +52,7 @@ import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml", "/annotation-solr-test.xml" })
-public class WebAnnotationServiceTest {
+public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	@Resource 
 	AnnotationService webAnnotationService;
@@ -176,7 +176,7 @@ public class WebAnnotationServiceTest {
 	 * @return Annotation
 	 */
 	Annotation createTestAnnotation() {
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();
+		Annotation testAnnotation = createBaseObjectTagInstance();
 	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper())
 	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
 		testAnnotation.setAnnotationId(mongoAnnotationId);
@@ -190,7 +190,7 @@ public class WebAnnotationServiceTest {
 		/**
 		 * Create a test annotation object.
 		 */
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstanceWithSameAs(
+		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
 				"http://historypin.com/annotation/1234");
 	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
 	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);

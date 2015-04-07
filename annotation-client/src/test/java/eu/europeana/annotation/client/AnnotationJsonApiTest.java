@@ -14,7 +14,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
 
 
-public class AnnotationJsonApiTest {
+public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 
 //	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/testObject";
 
@@ -95,7 +95,10 @@ public class AnnotationJsonApiTest {
 		/**
 		 * Create a test annotation object.
 		 */
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
+		Annotation testAnnotation = createBaseObjectTagInstance();	
+//	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper())
+//	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
+//		testAnnotation.setAnnotationId(mongoAnnotationId);
 		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
 		assertNotNull(annotation);
 	}
@@ -108,7 +111,7 @@ public class AnnotationJsonApiTest {
 		/**
 		 * Create object within the test and do not rely on the objects stored in the database.
 		 */
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
+		Annotation testAnnotation = createBaseObjectTagInstance();	
 		annotationJsonApi.createAnnotation(testAnnotation);
 		
 		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
@@ -137,7 +140,7 @@ public class AnnotationJsonApiTest {
 		/**
 		 * Create object within the test and do not rely on the objects stored in the database.
 		 */
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
+		Annotation testAnnotation = createBaseObjectTagInstance();	
 		annotationJsonApi.createAnnotation(testAnnotation);
 		
 		List<Annotation> results = annotationJsonApi.getAnnotations("testCollection", "testObject");

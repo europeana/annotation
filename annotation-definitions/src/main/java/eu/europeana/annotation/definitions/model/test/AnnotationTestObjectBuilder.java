@@ -100,11 +100,11 @@ public class AnnotationTestObjectBuilder {
 		return target;
 	}
     
-	public static Annotation createBaseObjectTagInstance() {
+	public Annotation createBaseObjectTagInstance() {
 	    return createBaseObjectTagInstanceWithSameAs(null);
 	}
 		
-	public static Annotation createBaseObjectTagInstanceWithSameAs(String sameAs) {
+	public Annotation createBaseObjectTagInstanceWithSameAs(String sameAs) {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
@@ -151,7 +151,7 @@ public class AnnotationTestObjectBuilder {
 		return annotation;
 	}
 
-	private static Style buildStyledBy() {
+	private Style buildStyledBy() {
 		Style style = StyleObjectFactory.getInstance().createModelObjectInstance(
 				StyleTypes.CSS.name());
 		style.setHttpUri("[oa:CssStyle,euType:" 
@@ -162,7 +162,7 @@ public class AnnotationTestObjectBuilder {
 		return style;
 	}
 
-	private static Agent buildAnnotatedByAgent() {
+	private Agent buildAnnotatedByAgent() {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE_AGENT.name());
 		agent.addType("foaf:Person");
@@ -174,7 +174,7 @@ public class AnnotationTestObjectBuilder {
 		return agent;
 	}
 
-	private static Agent buildSerializedByAgent() {
+	private Agent buildSerializedByAgent() {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE_AGENT.name());
 		agent.addType("prov:SoftwareAgent");
@@ -186,7 +186,7 @@ public class AnnotationTestObjectBuilder {
 		return agent;
 	}
 	 
-	public static Annotation createEmptyBaseObjectTagInstance() {
+	public Annotation createEmptyBaseObjectTagInstance() {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());

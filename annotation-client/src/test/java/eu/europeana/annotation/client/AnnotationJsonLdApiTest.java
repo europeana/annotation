@@ -5,7 +5,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
 
 
-public class AnnotationJsonLdApiTest {
+public class AnnotationJsonLdApiTest extends AnnotationTestObjectBuilder{
 
 //	@Test
 	public void createAnnotation() {
@@ -15,7 +15,7 @@ public class AnnotationJsonLdApiTest {
 		/**
 		 * Create a test annotation object.
 		 */
-		Annotation testAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance();	
+		Annotation testAnnotation = createBaseObjectTagInstance();	
         
         /**
          * convert Annotation object to AnnotationLd object.

@@ -38,13 +38,14 @@ import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilde
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.mongo.service.impl.AnnotationTestDataBuilder;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 
 
 /**
  *
  */
-public class AnnotationLdTest {
+public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
 	public static String TEST_RO_VALUE = "Vlad Tepes";
@@ -83,7 +84,7 @@ public class AnnotationLdTest {
     @Test
     public void testCreateEmptyAnnotationLd() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createEmptyBaseObjectTagInstance();        
+        Annotation baseObjectTag = createEmptyBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String actual = annotationLd.toString();
@@ -106,7 +107,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationToAnnotationLd() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String actual = annotationLd.toString();
@@ -129,7 +130,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationToAnnotationLdWithMissingTarget() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();     
+        Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.setTarget(null);
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
@@ -145,7 +146,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationToAnnotationLdWithMissingTargetEntries() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();     
+        Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.getTarget().setContentType(null);
         baseObjectTag.getTarget().setHttpUri(null);
 //        baseObjectTag.getTarget().setEuropeanaId(null);
@@ -171,7 +172,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationToAnnotationLdWithMissingBody() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();     
+        Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.setBody(null);
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
@@ -183,7 +184,7 @@ public class AnnotationLdTest {
     @Test
     public void testGsonSerializationForAnnotationLd() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String annotationLdOriginal = annotationLd.toString();
@@ -203,7 +204,7 @@ public class AnnotationLdTest {
     @Test
     public void testAnnotationLdToJsonLd() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String annotationLdStr = annotationLd.toString();
@@ -244,7 +245,7 @@ public class AnnotationLdTest {
     @Test
     public void testParseAnnotationLdStringToJsonLd() {
     	
-        Annotation baseObjectTag = AnnotationTestObjectBuilder.createBaseObjectTagInstance();        
+        Annotation baseObjectTag = createBaseObjectTagInstance();        
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
         String actual = annotationLd.toString();
@@ -292,7 +293,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = createBaseObjectTagInstance(); 
         
         /**
          * convert Annotation object to AnnotationLd object.
@@ -326,7 +327,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = createBaseObjectTagInstance(); 
         String originalAgentType = TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType());
         originalAnnotation.getSerializedBy().addType(AgentTypes.SOFTWARE_AGENT.name());
         assertEquals(originalAgentType, TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType()));
@@ -350,7 +351,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = createBaseObjectTagInstance(); 
 		
         /**
          * convert Annotation object to AnnotationLd object.
@@ -407,7 +408,7 @@ public class AnnotationLdTest {
     	/**
     	 * create initial Annotation object.
     	 */
-        Annotation originalAnnotation = AnnotationTestObjectBuilder.createBaseObjectTagInstance(); 
+        Annotation originalAnnotation = createBaseObjectTagInstance(); 
         
         /**
          * add Selector to the Target in Annotation object
