@@ -66,6 +66,7 @@ public interface WebAnnotationFields {
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4; 
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3; 
 	public static final String PROVIDER_HISTORY_PIN = "historypin"; 
+	public static final String PROVIDER_WRONG = "wrong"; 
 	
 	/**
 	 * Solr query

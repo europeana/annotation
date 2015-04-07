@@ -26,11 +26,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
@@ -56,6 +59,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	@Resource 
 	AnnotationService webAnnotationService;
+	
+	@Rule public ExpectedException thrown= ExpectedException.none();
 	
 	@Test
 	public void testStoreAnnotationInDbRetrieveAndSerialize() 
@@ -230,6 +235,34 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 					+ WebAnnotationFields.PROVIDER_HISTORY_PIN
 					+ WebAnnotationFields.SLASH )
 				);
+	}
+		
+	@Test
+	public void testCreateAnnotationWrongProvider() 
+			throws MalformedURLException, IOException, AnnotationServiceException {
+		
+		thrown.expect( AnnotationValidationException.class );
+		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = createBaseObjectTagInstance();
+	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
+	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_WRONG);
+		testAnnotation.setAnnotationId(mongoAnnotationId);		
+
+		/**
+		 * Convert the test annotation object to the PersistentAnnotation object type.
+		 */
+		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+		Annotation persistentAnnotation = controllerHelper
+				.copyIntoPersistantAnnotation(testAnnotation);
+		
+		/**
+		 * Store Annotation in database.
+		 */
+		webAnnotationService.storeAnnotation(persistentAnnotation);
+
 	}
 		
 	@Test
