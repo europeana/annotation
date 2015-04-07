@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -53,6 +54,7 @@ public class AnnotationLdRest extends BaseRest {
 	
 	@RequestMapping(value = "/annotationld/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@ApiOperation(notes="Please find JSON-LD samples for annotation in <a href=\"samples.html\" target=\"_blank\">samples</a>", value="")
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
