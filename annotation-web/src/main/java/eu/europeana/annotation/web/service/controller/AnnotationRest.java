@@ -172,7 +172,7 @@ public class AnnotationRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	/*@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 //	@ApiOperation(value = "4", position = 4)
 	public ModelAndView searchAnnotationByField(
@@ -276,6 +276,6 @@ public class AnnotationRest extends BaseRest {
 		}
 
 		return JsonWebUtils.toJson(response, null);
-	}
+	}*/
 
 }
