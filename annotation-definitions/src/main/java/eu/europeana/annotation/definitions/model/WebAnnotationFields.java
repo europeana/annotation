@@ -72,8 +72,8 @@ public interface WebAnnotationFields {
 	/**
 	 * Notes
 	 */
-	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"samples.html\" target=\"_blank\">samples</a>";
-	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"samples.html\" target=\"_blank\">samples</a>";
+	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"templates.html\" target=\"_blank\">templates</a>";
+	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"templates.html\" target=\"_blank\">templates</a>";
 
 	/**
 	 * Solr query

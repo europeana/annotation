@@ -28,7 +28,7 @@ public class JsonWebUtils {
 	public static ModelAndView toJson(String json, String callback) {
 		String resultPage = "json";
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("json", json);
+		model.put(resultPage, json);
 		if (StringUtils.isNotBlank(callback)) {
 			resultPage = "jsonp";
 			model.put("callback", callback);
@@ -39,23 +39,22 @@ public class JsonWebUtils {
 	public static ModelAndView toJson(Object object, String callback) {
 		
 		objectMapper.setSerializationInclusion(Inclusion.NON_NULL);
+		String errorMessage = null;
 		try {
 			return toJson(objectMapper.writeValueAsString(object), callback);
 		} catch (JsonGenerationException e) {
 			log.error("Json Generation Exception: " + e.getMessage(),e);
+			errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";
 		} catch (JsonMappingException e) {
 			log.error("Json Mapping Exception: " + e.getMessage(),e);
+			errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";
 		} catch (IOException e) {
 			log.error("I/O Exception: " + e.getMessage(),e);
+			errorMessage = "I/O Exception: " + e.getMessage() + " See error logs!";
 		}
-		// TODO report error...
+		//Report technical errors...
 		String resultPage = "json";
-		Map<String, Object> model = new HashMap<String, Object>();
-		if (StringUtils.isNotBlank(callback)) {
-			resultPage = "jsonp";
-			model.put("callback", callback);
-		}
-		return new ModelAndView(resultPage, model);
+		return new ModelAndView(resultPage, "errorMessage", errorMessage);
 	}
 	
 	/**

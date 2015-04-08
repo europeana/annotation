@@ -61,10 +61,10 @@ public class AnnotationLdRest extends BaseRest {
 			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 			@RequestParam(value = "provider", required = false) String provider,
-			@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON_LD) String jsonAnno) {
+//			@RequestBody @RequestParam(value = "annotation", required = true) String annotation) {
+			@RequestBody String annotation) {
 
-//		Annotation storedAnnotation = getAnnotationService().createAnnotation(jsonAnno);
-		Annotation webAnnotation = getAnnotationService().createAnnotation(jsonAnno);
+		Annotation webAnnotation = getAnnotationService().createAnnotation(annotation);
 		String action = "create:/annotationld/collection/object.json";
 		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
 			return getValidationReport(apiKey, action);
