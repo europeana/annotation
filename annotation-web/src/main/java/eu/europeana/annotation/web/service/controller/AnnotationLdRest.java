@@ -54,7 +54,7 @@ public class AnnotationLdRest extends BaseRest {
 	
 	@RequestMapping(value = "/annotationld/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes="Please find JSON-LD samples for annotation in <a href=\"samples.html\" target=\"_blank\">samples</a>", value="")
+	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,

@@ -52,6 +52,36 @@ public class AnnotationIdHelper {
 	}
 		
 	/**
+     * Extract collection from resourceId.
+	 * @param resourceId
+	 * @return collection
+	 */
+	public String extractCollectionFromResourceId(String resourceId) {
+		String res = "";
+		int COLLECTION_CHUNK_POS = 1;
+		if (StringUtils.isNotEmpty(resourceId)) {
+			String[] arr = resourceId.split("/");
+			res = arr[COLLECTION_CHUNK_POS];
+		}
+		return res;
+	}
+		
+	/**
+     * Extract object from resourceId.
+	 * @param resourceId
+	 * @return object
+	 */
+	public String extractObjectFromResourceId(String resourceId) {
+		String res = "";
+		int OBJECT_CHUNK_POS = 2;
+		if (StringUtils.isNotEmpty(resourceId)) {
+			String[] arr = resourceId.split("/");
+			res = arr[OBJECT_CHUNK_POS];
+		}
+		return res;
+	}
+		
+	/**
 	 * This method validates ResourceId.
 	 * @param annotation
 	 * @param collection

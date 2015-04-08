@@ -96,9 +96,6 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstance();	
-//	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper())
-//	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
-//		testAnnotation.setAnnotationId(mongoAnnotationId);
 		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
 		assertNotNull(annotation);
 	}

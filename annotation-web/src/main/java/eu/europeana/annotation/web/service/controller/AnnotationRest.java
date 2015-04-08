@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -128,7 +129,7 @@ public class AnnotationRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-//	@ApiOperation(value = "3", position = 3)
+	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSON_LINK, value="")
 	public ModelAndView createAnnotation (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
