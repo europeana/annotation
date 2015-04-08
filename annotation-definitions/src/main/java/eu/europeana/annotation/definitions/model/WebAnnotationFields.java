@@ -67,6 +67,7 @@ public interface WebAnnotationFields {
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3; 
 	public static final String PROVIDER_HISTORY_PIN = "historypin"; 
 	public static final String PROVIDER_WRONG = "wrong"; 
+	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
 	
 	/**
 	 * Notes

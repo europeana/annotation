@@ -196,7 +196,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
-				"http://historypin.com/annotation/1234");
+				WebAnnotationFields.TEST_HISTORYPIN_URL);
 	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
 	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);
 	    mongoAnnotationId.setAnnotationNr(1);
