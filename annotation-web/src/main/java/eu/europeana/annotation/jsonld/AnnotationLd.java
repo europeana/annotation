@@ -133,6 +133,8 @@ public class AnnotationLd extends JsonLd {
         JsonLdProperty targetProperty = addTargetProperty(annotation);
         if (targetProperty != null)
         	jsonLdResource.putProperty(targetProperty);
+        if (annotation.getSameAs() != null) 
+        	jsonLdResource.putProperty(WebAnnotationFields.SAME_AS, annotation.getSameAs());
         
         put(jsonLdResource);
     }
@@ -198,6 +200,11 @@ public class AnnotationLd extends JsonLd {
 		    case WebAnnotationFields.STYLED_BY:
 		    	Style style = getStyledBy(mapValue);
 				annotation.setStyledBy(style);
+		    	break;
+		    case WebAnnotationFields.SAME_AS:
+		    	String sameAsValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(sameAsValue)) 
+					annotation.setSameAs(sameAsValue);
 		    	break;
 		    default:
 		    	break;
