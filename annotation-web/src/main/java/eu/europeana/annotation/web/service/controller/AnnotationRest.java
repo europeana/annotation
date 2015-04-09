@@ -2,7 +2,6 @@ package eu.europeana.annotation.web.service.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,14 +17,10 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
-import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
@@ -136,9 +131,11 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = false) String provider,
-		@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
+		@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
+		@RequestBody String annotation) {
+//		@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
 
-		Annotation webAnnotation = JsonUtils.toAnnotationObject(jsonAnno);
+		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
 		
 		String action = "create:/annotations/collection/object.json";
 		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
@@ -159,7 +156,7 @@ public class AnnotationRest extends BaseRest {
 				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
 				
 		Annotation storedAnnotation = getAnnotationService().storeAnnotation(
-				persistantAnnotation);
+				persistantAnnotation, indexing);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
@@ -171,111 +168,5 @@ public class AnnotationRest extends BaseRest {
 
 		return JsonWebUtils.toJson(response, null);
 	}
-
-	/*@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-//	@ApiOperation(value = "4", position = 4)
-	public ModelAndView searchAnnotationByField(
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "value", required = true) String value,
-		@RequestParam(value = "field", required = true, defaultValue = WebAnnotationFields.MULTILINGUAL) String field,
-		@RequestParam(value = "language", required = true, defaultValue = WebAnnotationFields.REST_LANGUAGE) String language,
-		@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
-		@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit,
-		@RequestParam(value = "facet", required = false) String facet) {
-
-		value = getTypeUtils().removeTabs(value);
-		value = JsonWebUtils.addFieldToQuery(value, field, language);
-		
-//		boolean withFacet = false;
-//		if (StringUtils.isNotEmpty(facet) && !facet.equals(SolrAnnotationConst.ALL)) {
-//			withFacet = true;
-//			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-//				String prefix = "";
-//				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-//					prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-//					if (SolrAnnotationConst.SolrAnnotationLanguages.contains(language)) {
-//						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-//					}
-//				}
-//				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-//			}
-//		}
-
-//		if (!withFacet) {
-			List<? extends Annotation> annotationList;
-			AnnotationSearchResults<AbstractAnnotation> response;
-			
-			try {
-				annotationList = getAnnotationService().searchAnnotations(value, startOn, limit);
-				response = buildSearchResponse(
-						annotationList, apiKey, "/annotations/search");
-				
-			} catch (AnnotationServiceException e) {
-//				Logger.getLogger(getClass().getName()).error(e);
-				Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
-				response = buildSearchErrorResponse(apiKey, "/annotations/search", e);
-			}
-
-			
-//		} else {
-//			List<String> queries = new ArrayList<String>();
-//			queries.add(SolrAnnotationConst.SolrAnnotationFields.LABEL.getSolrAnnotationField() 
-//					+ SolrAnnotationConst.DELIMETER
-//					+ SolrAnnotationConst.STAR);
-//			List<String> qfList = new ArrayList<String>();
-//			qfList.add(facet);
-//			String[] qf = qfList.toArray(new String[qfList.size()]);
-//			Map<String,Integer> annotationMap = getAnnotationService().getAnnotationByFacetedQuery(qf, queries);
-//			if (annotationMap != null && annotationMap.size() > 0) {
-//
-//				response.success = true;
-//				response.requestNumber = 0L;
-//				response.action = JsonUtils.mapToStringExt(annotationMap);
-//			} else {
-//				response.success = false;
-//				response.action = "get: /annotations/search?"+ query;
-//				
-//				response.error = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
-//			}
-//		}
-				
-		return JsonWebUtils.toJson(response, null);
-	}
-
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-//	@ApiOperation(value = "5", position = 5)
-	public ModelAndView searchTagByField(
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "value", required = true) String value,
-		@RequestParam(value = "field", required = true, defaultValue = WebAnnotationFields.MULTILINGUAL) String field,
-		@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
-		@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit,
-		@RequestParam(value = "language", required = true, defaultValue = WebAnnotationFields.REST_LANGUAGE) String language) {
-
-		value = getTypeUtils().removeTabs(value);
-		value = JsonWebUtils.addFieldToQuery(value, field, language);
-
-		TagSearchResults<BaseTagResource> response;
-		response = new TagSearchResults<BaseTagResource>(
-				apiKey, "/tags/search");
-		
-		try{
-			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(value, startOn, limit);
-			response.itemsCount = response.items.size();
-			response.totalResults = response.items.size();
-			response.success = true;
-		} catch (Exception e){
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
-			response.success = false;
-			response.error = e.getMessage();
-		}
-
-		return JsonWebUtils.toJson(response, null);
-	}*/
 
 }

@@ -52,6 +52,14 @@ public interface AnnotationService {
 	 */
 	public Annotation storeAnnotation(Annotation annotation);
 
+	/**
+	 * This method stores Annotation object in database and in Solr if 'indexing' is true.
+	 * @param annotation
+	 * @param indexing
+	 * @return Annotation object
+	 */
+	public Annotation storeAnnotation(Annotation annotation, boolean indexing);
+
 	public Annotation updateAnnotation(Annotation newAnnotation);
 	
 	/**

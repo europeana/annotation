@@ -169,13 +169,19 @@ public class AnnotationServiceImpl implements AnnotationService {
 //		return storeAnnotation(persistentAnnotation);
 	}
 
-	/**
-	 *   
-	 * @param newAnnotation
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.web.service.AnnotationService#storeAnnotation(eu.europeana.annotation.definitions.model.Annotation)
 	 */
 	@Override
 	public Annotation storeAnnotation(Annotation newAnnotation) {
+		return storeAnnotation(newAnnotation, true);
+	}
+		
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.web.service.AnnotationService#storeAnnotation(eu.europeana.annotation.definitions.model.Annotation, boolean)
+	 */
+	@Override
+	public Annotation storeAnnotation(Annotation newAnnotation, boolean indexing) {
 		
 		//must have annotaionId with resourceId and provider.
 		validateAnnotationId(newAnnotation);
@@ -183,32 +189,34 @@ public class AnnotationServiceImpl implements AnnotationService {
 		// store in mongo database
 		Annotation res =  getMongoPersistence().store(newAnnotation);
 		
-		// add solr indexing here
-        try {
-       	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
-       	    getSolrService().store(indexedAnnotation);
-        } catch (Exception e) {
-            Logger.getLogger(getClass().getName()).warn(
-        		   "The annotation was stored correctly into the Mongo, but it was not indexed yet. " + e);
-//    	    throw new RuntimeException(e);
-        }
-        
-        // check if the tag is already indexed 
-        try {
-       	    SolrTag indexedTag = copyIntoSolrTag(res.getBody());
-       	    getSolrTagService().findOrStore(indexedTag);
-        } catch (Exception e) {
-            Logger.getLogger(getClass().getName()).warn(
-        		   "The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. " + e);
-        }
-		
-        // save the time of the last SOLR indexing
-        try {
-    	    getMongoPersistence().updateIndexingTime(res.getAnnotationId()); 	    
-        } catch (Exception e) {
-            Logger.getLogger(getClass().getName()).warn(
-         		   "The time of the last SOLR indexing could not be saved. " + e);
-        }
+		if (indexing) {
+			// add solr indexing here
+	        try {
+	       	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
+	       	    getSolrService().store(indexedAnnotation);
+	        } catch (Exception e) {
+	            Logger.getLogger(getClass().getName()).warn(
+	        		   "The annotation was stored correctly into the Mongo, but it was not indexed yet. " + e);
+	//    	    throw new RuntimeException(e);
+	        }
+	        
+	        // check if the tag is already indexed 
+	        try {
+	       	    SolrTag indexedTag = copyIntoSolrTag(res.getBody());
+	       	    getSolrTagService().findOrStore(indexedTag);
+	        } catch (Exception e) {
+	            Logger.getLogger(getClass().getName()).warn(
+	        		   "The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. " + e);
+	        }
+			
+	        // save the time of the last SOLR indexing
+	        try {
+	    	    getMongoPersistence().updateIndexingTime(res.getAnnotationId()); 	    
+	        } catch (Exception e) {
+	            Logger.getLogger(getClass().getName()).warn(
+	         		   "The time of the last SOLR indexing could not be saved. " + e);
+	        }
+	   }
 		
        return res;
 	}

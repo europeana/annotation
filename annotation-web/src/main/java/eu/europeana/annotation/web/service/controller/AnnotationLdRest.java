@@ -61,6 +61,7 @@ public class AnnotationLdRest extends BaseRest {
 			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 			@RequestParam(value = "provider", required = false) String provider,
+			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 //			@RequestBody @RequestParam(value = "annotation", required = true) String annotation) {
 			@RequestBody String annotation) {
 
@@ -72,7 +73,7 @@ public class AnnotationLdRest extends BaseRest {
 		getAnnotationService().appendAnnotationId(collection, object, provider, webAnnotation);
 				
 		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);		
-		Annotation storedAnnotation = getAnnotationService().storeAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = getAnnotationService().storeAnnotation(persistentAnnotation, indexing);
 
 		/**
 		 * Convert PersistentAnnotation in Annotation.
