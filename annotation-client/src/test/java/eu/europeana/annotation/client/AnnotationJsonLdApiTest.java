@@ -2,7 +2,7 @@ package eu.europeana.annotation.client;
 
 import static org.junit.Assert.assertNotNull;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 
 
 public class AnnotationJsonLdApiTest extends AnnotationTestObjectBuilder{

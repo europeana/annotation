@@ -105,34 +105,33 @@ public class AnnotationIdHelper {
 	 * @return AnnotationId object
 	 */
 	public AnnotationId initializeAnnotationId(String collection, String object,
-			String provider) {
-		
-		String resourceId = "";
-		if (!StringUtils.isEmpty(collection) && !StringUtils.isEmpty(object)) 
-			resourceId = createResourceId(collection, object);
-		return initializeAnnotationId(resourceId, provider);
-	}
-	
-	/**
-	 * This method initializes AnnotationId object by passed
-	 * resourceId and provider. 
-	 * @param resourceId
-	 * @param provider
-	 * @return AnnotationId object
-	 */
-	public AnnotationId initializeAnnotationId(String resourceId, String provider) {
+			String provider, String sameAs) {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
-		if (StringUtils.isEmpty(provider)) 
-			provider = WebAnnotationFields.PROVIDER_WEBANNO;
-		annotationId.setProvider(provider);
-		if (!StringUtils.isEmpty(resourceId)) 
-			annotationId.setResourceId(resourceId);
+		annotationId.setResourceId(createResourceId(collection, object));
+		
+		if (StringUtils.isEmpty(sameAs)
+				|| StringUtils.isEmpty(provider)) { 
+			annotationId.setProvider(WebAnnotationFields.PROVIDER_WEBANNO);
+		}else if (!StringUtils.isEmpty(sameAs)){
+			processExternalId(annotationId, provider, sameAs);
+		}
 		
 		return annotationId;
+		
 	}
 	
-    /**
+    private void processExternalId(AnnotationId annotationId, String provider, String sameAs) {
+    	if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider) && sameAs.contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)){
+    		String[] parts = sameAs.split(WebAnnotationFields.SLASH);
+    		annotationId.setProvider(provider);
+    		int annotationNr = Integer.parseInt(parts[parts.length -1]);
+			annotationId.setAnnotationNr(annotationNr);
+    	}
+	}
+
+
+	/**
      * This method creates ResourceId string from collection and object.
      * @param collection
      * @param object

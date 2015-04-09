@@ -16,10 +16,10 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
-import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -33,7 +33,6 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -52,11 +51,11 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Autowired
 	SolrTagService solrTagService;
 	
-	AnnotationControllerHelper controllerHelper;
+	AnnotationBuilder controllerHelper;
 	
-	public AnnotationControllerHelper getControllerHelper() {
+	public AnnotationBuilder getControllerHelper() {
 		if(controllerHelper == null)
-			controllerHelper = new AnnotationControllerHelper();
+			controllerHelper = new AnnotationBuilder();
 		return controllerHelper;
 	}
 
@@ -138,7 +137,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation createAnnotation(String annotationJsonLdStr) {
+	public Annotation parseAnnotation(String annotationJsonLdStr) {
 	    
 		/**
 	     * parse JsonLd string using JsonLdParser.
@@ -163,10 +162,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 	     * AnnotationLd object -> Annotation object.
 	     */
 	    return parsedAnnotationLd.getAnnotation();
-//	    Annotation webAnnotation = parsedAnnotationLd.getAnnotation();
-//		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);
-		
-//		return storeAnnotation(persistentAnnotation);
 	}
 
 	/* (non-Javadoc)
@@ -244,39 +239,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
 		return copyIntoSolrAnnotation(annotation, false);
 	}
-	
-	/**
-	 * This method initializes AnnotationId dependent on provider.
-	 * @param newAnnotation
-	 * @return Annotation object initialized with AnnotationId
-	 */
-//	public AnnotationId initializeAnnotationId(Annotation newAnnotation) {
-//		if (StringUtils.isNotEmpty(newAnnotation.getSameAs()) 
-//			&& newAnnotation.getSameAs().contains(WebAnnotationFields.HISTORY_PIN)) {
-//			MongoAnnotationId annotationId = new MongoAnnotationId();
-//	        String[] arrValue = newAnnotation.getSameAs().split(WebAnnotationFields.SLASH);
-//	        if (arrValue.length >= WebAnnotationFields.MIN_HISTORY_PIN_COMPONENT_COUNT) {
-//				String resourceId = new AnnotationControllerHelper().extractResourceId(newAnnotation);
-//				if (StringUtils.isNotEmpty(resourceId))
-//					annotationId.setResourceId(resourceId);
-//	        	annotationId.setProvider(WebAnnotationFields.HISTORY_PIN);
-//				//the external id of the annotation is found in the last element of the url
-//	        	String annotationNrStr = arrValue[arrValue.length - 1];
-//				if (StringUtils.isNotEmpty(annotationNrStr))
-//					annotationId.setAnnotationNr(Integer.parseInt(annotationNrStr));
-//	        }
-//	    }
-//		
-//		// set default provider if sameAs field is empty
-//		if (StringUtils.isEmpty(newAnnotation.getSameAs())
-//				|| StringUtils.isEmpty(res.getAnnotationId().getProvider())) { 
-//			String provider = WebAnnotationFields.WEB_ANNO;
-//			res.getAnnotationId().setProvider(provider);
-//		}
-//		
-//		
-//		return newAnnotation;
-//	}
 
 	private SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual) {
 		
@@ -498,16 +460,36 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoPersistence().getAnnotationListByProvider(resourceId, provider);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.europeana.annotation.web.service.AnnotationService#appendAnnotationId(java.lang.String, java.lang.String, java.lang.String, eu.europeana.annotation.definitions.model.Annotation)
+	/**
+	 * This method initializes AnnotationId dependent on provider.
+	 * @param newAnnotation
+	 * @return Annotation object initialized with AnnotationId
 	 */
-	public void appendAnnotationId(String collection, String object, String provider,
-			Annotation webAnnotation) {
-		AnnotationId annotationId = (new AnnotationIdHelper())
-				.initializeAnnotationId(collection, object, provider);
-	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
-	    		annotationId.getResourceId(), annotationId.getProvider());
-		webAnnotation.setAnnotationId(mongoAnnotationId);
-	}
-		
+//	public AnnotationId initializeAnnotationId(Annotation newAnnotation) {
+//		if (StringUtils.isNotEmpty(newAnnotation.getSameAs()) 
+//			&& newAnnotation.getSameAs().contains(WebAnnotationFields.HISTORY_PIN)) {
+//			MongoAnnotationId annotationId = new MongoAnnotationId();
+//	        String[] arrValue = newAnnotation.getSameAs().split(WebAnnotationFields.SLASH);
+//	        if (arrValue.length >= WebAnnotationFields.MIN_HISTORY_PIN_COMPONENT_COUNT) {
+//				String resourceId = new AnnotationControllerHelper().extractResourceId(newAnnotation);
+//				if (StringUtils.isNotEmpty(resourceId))
+//					annotationId.setResourceId(resourceId);
+//	        	annotationId.setProvider(WebAnnotationFields.HISTORY_PIN);
+//				//the external id of the annotation is found in the last element of the url
+//	        	String annotationNrStr = arrValue[arrValue.length - 1];
+//				if (StringUtils.isNotEmpty(annotationNrStr))
+//					annotationId.setAnnotationNr(Integer.parseInt(annotationNrStr));
+//	        }
+//	    }
+//		
+//		// set default provider if sameAs field is empty
+//		if (StringUtils.isEmpty(newAnnotation.getSameAs())
+//				|| StringUtils.isEmpty(res.getAnnotationId().getProvider())) { 
+//			String provider = WebAnnotationFields.WEB_ANNO;
+//			res.getAnnotationId().setProvider(provider);
+//		}
+//		
+//		
+//		return newAnnotation;
+//	}
 }

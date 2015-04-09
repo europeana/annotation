@@ -33,7 +33,7 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 //import eu.europeana.annotation.definitions.model.utils.JsonUtils;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;

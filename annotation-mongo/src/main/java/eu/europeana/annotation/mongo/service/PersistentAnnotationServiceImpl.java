@@ -20,12 +20,16 @@ import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
+import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
@@ -37,6 +41,16 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Resource
 	private PersistentTagService tagService;
+	
+	AnnotationBuilder annotationBuilder = new AnnotationBuilder();
+
+	public AnnotationBuilder getAnnotationBuilder() {
+		return annotationBuilder;
+	}
+
+	public void setAnnotationBuilder(AnnotationBuilder annotationBuilder) {
+		this.annotationBuilder = annotationBuilder;
+	}
 
 	/**
 	 * This method shouldn't be public but protected. Anyway, it is forced to be
@@ -102,6 +116,7 @@ public class PersistentAnnotationServiceImpl extends
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
 		MongoAnnotationId embeddedId;
 		String provider = object.getAnnotationId().getProvider(); 
+
 		if(StringUtils.isEmpty(provider) || WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
 			embeddedId = generateAnnotationId(object.getAnnotationId().getResourceId());		
 			embeddedId.setProvider(provider);
@@ -186,7 +201,13 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public Annotation store(Annotation object) {
-		return this.store((PersistentAnnotation) object);
+		if(object instanceof PersistentAnnotation)
+			return this.store((PersistentAnnotation) object);
+		else{
+			PersistentAnnotation persistentObject = copyIntoPersistentAnnotation(object);
+			return this.store(persistentObject); 
+		}
+		
 	}
 
 	@Override
@@ -358,4 +379,20 @@ public class PersistentAnnotationServiceImpl extends
 		return res;
 	}
 
+	
+	
+	@SuppressWarnings("deprecation")
+	public PersistentAnnotation copyIntoPersistentAnnotation(Annotation annotation) {
+
+		PersistentAnnotationImpl persistentAnnotation = (PersistentAnnotationImpl) (PersistentAnnotationFactory
+				.getInstance().createAnnotationInstance(annotation.getType()));
+
+		MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
+	    mongoAnnotationId.copyFrom(annotation.getAnnotationId());
+	    persistentAnnotation.setAnnotationId(mongoAnnotationId);
+	    
+		getAnnotationBuilder().copyAnnotationAttributes(annotation, persistentAnnotation);
+		return persistentAnnotation;
+	}
+			
 }

@@ -37,16 +37,14 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
-import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
-import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.annotation.web.service.controller.AnnotationControllerHelper;
 
 
 /**
@@ -81,24 +79,11 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		
         String origIndent = origAnnotationLd.toString(4);
         AnnotationLd.toConsole("", origIndent);
-        
-		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
+        		
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
-		
-		/**
-		 * Convert PersistentAnnotation in Annotation.
-		 */
-		Annotation webAnnotation = controllerHelper
-				.copyIntoWebAnnotation(storedAnnotation);
+		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		if (StringUtils.isBlank(webAnnotation.getType())) {
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
@@ -142,22 +127,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createTestAnnotation();		
 
 		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
-		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
-		
-		/**
-		 * Convert PersistentAnnotation in Annotation.
-		 */
-		Annotation webAnnotation = controllerHelper
-				.copyIntoWebAnnotation(storedAnnotation);
+		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		if (StringUtils.isBlank(webAnnotation.getType())) {
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
@@ -182,9 +154,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	 */
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
-	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper())
-	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
-		testAnnotation.setAnnotationId(mongoAnnotationId);
+//	    MongoAnnotationId mongoAnnotationId = (new AnnotationBuilder())
+//	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
+//		testAnnotation.setAnnotationId(mongoAnnotationId);
 		return testAnnotation;
 	}
 
@@ -197,28 +169,15 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
 				WebAnnotationFields.TEST_HISTORYPIN_URL);
-	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
-	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);
-	    mongoAnnotationId.setAnnotationNr(1);
-		testAnnotation.setAnnotationId(mongoAnnotationId);		
+//	    MongoAnnotationId mongoAnnotationId = (new AnnotationBuilder()).initAnnotationId(
+//	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);
+//	    mongoAnnotationId.setAnnotationNr(1);
+//		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
-		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
 		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
-		
-		/**
-		 * Convert PersistentAnnotation in Annotation.
-		 */
-		Annotation webAnnotation = controllerHelper
-				.copyIntoWebAnnotation(storedAnnotation);
+		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		if (StringUtils.isBlank(webAnnotation.getType())) {
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
@@ -247,21 +206,14 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstance();
-	    MongoAnnotationId mongoAnnotationId = (new AnnotationControllerHelper()).initAnnotationId(
-	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_WRONG);
-		testAnnotation.setAnnotationId(mongoAnnotationId);		
+//	    MongoAnnotationId mongoAnnotationId = (new AnnotationBuilder()).initAnnotationId(
+//	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_WRONG);
+//		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
-		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
 		/**
 		 * Store Annotation in database.
 		 */
-		webAnnotationService.storeAnnotation(persistentAnnotation);
+		webAnnotationService.storeAnnotation(testAnnotation);
 
 	}
 		
@@ -279,22 +231,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 //		SolrAnnotationConst.SolrAnnotationLanguages.EN.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_EN_VALUE);
 
 		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
-		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
-		
-		/**
-		 * Convert PersistentAnnotation in Annotation.
-		 */
-		Annotation webAnnotation = controllerHelper
-				.copyIntoWebAnnotation(storedAnnotation);
+		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		/**
 		 * Put original types if necessary 
@@ -320,16 +259,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createTestAnnotation();		
         
 		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
-		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		/**
 		 * Delete Annotation.
@@ -360,16 +292,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 				testAnnotation.getBody().getValue(), "0", "10");
 
 		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
-		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		/**
 		 * Reindex Annotation.
@@ -394,16 +319,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createTestAnnotation();		
         
 		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
-		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		/**
 		 * Reindex Annotation.
@@ -426,16 +344,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createTestAnnotation();		
         
 		/**
-		 * Convert the test annotation object to the PersistentAnnotation object type.
-		 */
-		AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
-		Annotation persistentAnnotation = controllerHelper
-				.copyIntoPersistantAnnotation(testAnnotation);
-		
-		/**
 		 * Store Annotation in database.
 		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(persistentAnnotation);
+		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
 		
 		/**
 		 * Delete Annotation.

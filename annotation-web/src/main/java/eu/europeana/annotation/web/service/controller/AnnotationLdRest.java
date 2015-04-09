@@ -13,6 +13,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.jsonld.AnnotationLd;
@@ -21,7 +22,6 @@ import eu.europeana.api2.utils.JsonWebUtils;
 @Controller
 @Api(value = "annotationld", description = "Annotation-Ld Rest Service")
 public class AnnotationLdRest extends BaseRest {
-
 
 	@RequestMapping(value = "/annotationld/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
@@ -65,20 +65,22 @@ public class AnnotationLdRest extends BaseRest {
 //			@RequestBody @RequestParam(value = "annotation", required = true) String annotation) {
 			@RequestBody String annotation) {
 
-		Annotation webAnnotation = getAnnotationService().createAnnotation(annotation);
+		Annotation webAnnotation = getAnnotationService().parseAnnotation(annotation);
 		String action = "create:/annotationld/collection/object.json";
-		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
+		annotationIdHelper = new AnnotationIdHelper();
+		if (!annotationIdHelper.validateResouceId(webAnnotation, collection, object)) 
 			return getValidationReport(apiKey, action);
 		
-		getAnnotationService().appendAnnotationId(collection, object, provider, webAnnotation);
-				
-		Annotation persistentAnnotation = getControllerHelper().copyIntoPersistantAnnotation(webAnnotation);		
-		Annotation storedAnnotation = getAnnotationService().storeAnnotation(persistentAnnotation, indexing);
+		AnnotationId annoId = annotationIdHelper
+		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
+		
+		webAnnotation.setAnnotationId(annoId);		
+		Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);
 
 		/**
 		 * Convert PersistentAnnotation in Annotation.
 		 */
-		Annotation resAnnotation = controllerHelper
+		Annotation resAnnotation = annotationBuilder
 				.copyIntoWebAnnotation(storedAnnotation);
 
 		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);

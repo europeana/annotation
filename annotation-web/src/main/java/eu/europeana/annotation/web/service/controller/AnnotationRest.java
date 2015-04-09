@@ -15,6 +15,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
@@ -135,13 +136,20 @@ public class AnnotationRest extends BaseRest {
 		@RequestBody String annotation) {
 //		@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
 
-		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
-		
 		String action = "create:/annotations/collection/object.json";
+		
+		//parse
+		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
+
+		//validate input params
 		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
 			return getValidationReport(apiKey, action);
-		
-		getAnnotationService().appendAnnotationId(collection, object, provider, webAnnotation);		
+
+		//initialize
+		AnnotationId annoId = annotationIdHelper
+				.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
+				
+		webAnnotation.setAnnotationId(annoId);		
 		
 		if (webAnnotation.getBody() != null 
 				&& webAnnotation.getBody().getLanguage() != null
@@ -152,12 +160,11 @@ public class AnnotationRest extends BaseRest {
 					webAnnotation.getBody().getLanguage(), webAnnotation.getBody().getValue());
 		}
 		
-		Annotation persistantAnnotation = getControllerHelper()
-				.copyIntoPersistantAnnotation(webAnnotation, apiKey);
-				
+		//store				
 		Annotation storedAnnotation = getAnnotationService().storeAnnotation(
-				persistantAnnotation, indexing);
+				webAnnotation, indexing);
 
+		//build response
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
 		response.success = true;

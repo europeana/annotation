@@ -43,7 +43,7 @@ public interface AnnotationService {
 	 * @param annotationJsonLdStr
 	 * @return Annotation object
 	 */
-	public Annotation createAnnotation(String annotationJsonLdStr);
+	public Annotation parseAnnotation(String annotationJsonLdStr);
 
 	/**
 	 * This method stores Annotation object in database and in Solr.
@@ -151,15 +151,4 @@ public interface AnnotationService {
 	 * @param tagId
 	 */
 	public void deleteTag(String tagId);
-
-	/**
-	 * This method creates and appends AnnotationId object to an Annotation object
-	 * for given parameters.
-	 * @param collection
-	 * @param object
-	 * @param provider
-	 * @param webAnnotation The Annotation object
-	 */
-	public void appendAnnotationId(String collection, String object, String provider,
-			Annotation webAnnotation);
 }

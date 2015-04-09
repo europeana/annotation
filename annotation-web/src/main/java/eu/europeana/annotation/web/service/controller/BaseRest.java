@@ -8,6 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -21,7 +23,10 @@ public class BaseRest {
 	AnnotationConfiguration configuration;
 	@Autowired
 	private AnnotationService annotationService;
-	protected AnnotationControllerHelper controllerHelper = new AnnotationControllerHelper();
+	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
+	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
+
+
 	TypeUtils typeUtils = new TypeUtils();
 
 	public BaseRest() {
@@ -48,8 +53,8 @@ public class BaseRest {
 		this.configuration = configuration;
 	}
 
-	protected AnnotationControllerHelper getControllerHelper() {
-		return controllerHelper;
+	protected AnnotationBuilder getControllerHelper() {
+		return annotationBuilder;
 	}
 	
 	public String toResourceId(String collection, String object) {

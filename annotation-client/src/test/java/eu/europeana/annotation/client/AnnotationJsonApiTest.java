@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.test.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 
 
 public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
