@@ -17,6 +17,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
@@ -60,19 +61,25 @@ public class AnnotationLdRest extends BaseRest {
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
-			@RequestParam(value = "provider", required = false) String provider,
+			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
 			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 //			@RequestBody @RequestParam(value = "annotation", required = true) String annotation) {
 			@RequestBody String annotation) {
 
+		// parse
 		Annotation webAnnotation = getAnnotationService().parseAnnotation(annotation);
 		String action = "create:/annotationld/collection/object.json";
 		annotationIdHelper = new AnnotationIdHelper();
-		if (!annotationIdHelper.validateResouceId(webAnnotation, collection, object)) 
-			return getValidationReport(apiKey, action);
+
+		// validate input parameters
+		if (!annotationIdHelper.validateResouceId(webAnnotation, collection, object))
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
+		if (!annotationIdHelper.validateProvider(webAnnotation, provider)) 
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
 		
+		//initialize
 		AnnotationId annoId = annotationIdHelper
-		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
+				.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 		
 		webAnnotation.setAnnotationId(annoId);		
 		Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);

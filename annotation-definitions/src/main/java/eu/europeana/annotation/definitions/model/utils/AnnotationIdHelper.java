@@ -97,6 +97,23 @@ public class AnnotationIdHelper {
 	}
 
 	/**
+	 * This method validates provider.
+	 * @param annotation
+	 * @param provider
+	 * @return
+	 */
+	public boolean validateProvider(Annotation annotation, String provider) {
+		boolean res = true;
+		if (StringUtils.isNotEmpty(annotation.getSameAs())
+				&& annotation.getSameAs().contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)
+				&& StringUtils.isNotEmpty(provider) 
+				&& !provider.equals(WebAnnotationFields.PROVIDER_HISTORY_PIN)
+				)
+			res = false;
+		return res;
+	}
+
+	/**
 	 * This method initializes AnnotationId object by passed
 	 * collection, object and provider.
 	 * @param collection

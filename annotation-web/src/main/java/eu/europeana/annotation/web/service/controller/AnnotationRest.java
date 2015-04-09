@@ -131,7 +131,7 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
-		@RequestParam(value = "provider", required = false) String provider,
+		@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
 		@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 		@RequestBody String annotation) {
 //		@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
@@ -142,8 +142,10 @@ public class AnnotationRest extends BaseRest {
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
 
 		//validate input params
-		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object)) 
-			return getValidationReport(apiKey, action);
+		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object))
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
+		if (!(new AnnotationIdHelper()).validateProvider(webAnnotation, provider)) 
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
 
 		//initialize
 		AnnotationId annoId = annotationIdHelper

@@ -104,12 +104,12 @@ public class BaseRest {
 	 * This method generates validation error report.
 	 * @param apiKey
 	 * @param action
+	 * @param errorMessage
 	 * @return
 	 */
-	ModelAndView getValidationReport(String apiKey, String action) {
+	ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
-		String errorMessage = AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH;			
 		response = buildErrorResponse(errorMessage, response.action, response.apikey);
 		return JsonWebUtils.toJson(response, null);
 	}
