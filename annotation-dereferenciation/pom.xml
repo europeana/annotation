@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.europeana</groupId>
+    <artifactId>api2</artifactId>
+    <version>2.1</version>
+  </parent>
+  <groupId>eu.europeana.annotation</groupId>
+  <artifactId>annotation-dereferenciation</artifactId>
+  <version>${version.annotationApiSnapshot}</version>
+  <name>annotation-dereferenciation</name>
+  <description>This project supports SKOS functionality</description>
+  
+  <dependencies>
+	   	<dependency>
+	      <groupId>eu.europeana.annotation</groupId>
+	      <artifactId>annotation-definitions</artifactId>
+	      <version>${version.annotationApiSnapshot}</version>
+	    </dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+			<scope>test</scope>
+		</dependency>		
+  </dependencies>
+  
+</project>
