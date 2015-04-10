@@ -8,7 +8,6 @@ public interface WebAnnotationFields {
 	 */
 	public static final String EU_TYPE              = "euType";
 	public static final String SPLITTER             = "#";
-//	public static final String ANNOTATION_LD_TYPE   = "OBJECT_TYPE"; //"oa:Annotation";
 	public static final String ANNOTATED_BY         = "annotatedBy";
 	public static final String ANNOTATED_AT         = "annotatedAt";
 	public static final String NAME                 = "name";
@@ -38,12 +37,13 @@ public interface WebAnnotationFields {
 	public static final String TYPE                 = "type";
 	public static final String ANNOTATION_ID        = "annotationId";
 	public static final String DATE_FORMAT          = "yyyy-MM-dd'T'HH:mm:ss";
-	//public static final String OA_ANNOTATION        = "oa:annotation"; //"oa:Annotation"
-	//public static final String OA_TAGGING           = "oa:tagging"; //"oa:Tagging";
 	public static final String LAST_INDEXED_TIMESTAMP = "lastIndexedTimestamp";
 	public static final String MULTILINGUAL         = "multilingual";
-//	public static final String DEFAULT_EURIPEANA_ID = "/testCollection/testObject";
-//	public static final String DEFAULT_STYLE_TYPE   = "[oa:CssStyle,euType:STYLE#CSS]";
+	public static final String PREF_LABEL           = "prefLabel";
+	public static final String ALT_LABEL            = "altLabel";
+	public static final String HIDDEN_LABEL         = "hiddenLabel";
+	public static final String IN_SCHEME            = "inScheme";
+	public static final String TOP_CONCEPT_OF       = "topConceptOf";
 	public static final String DEFAULT_MEDIA_TYPE   = "[oa:SemanticTag]";
 	public static final String DEFAULT_ANNOTATION_TYPE = "[oa:annotation,euType:OBJECT_TAG]";
 	public static final String OA                   = "oa";
@@ -119,8 +119,6 @@ public interface WebAnnotationFields {
 		+ "\"value\": \"Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)\","
 		+ "\"httpUri\": \"http://europeana.eu/portal/record/15502/GG_8285.html\","
 		+ "\"targetType\": \"[euType:WEB_PAGE]\"},"
-//		+ "\"targetType\": \"[euType:WEB_PAGE]\","
-//		+ "\"europeanaId\": \"/15502/GG_8285\"},"
 		+ "\"serializedAt\": \"\","
 		+ "\"serializedBy\": {"
 		+ "\"agentType\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
