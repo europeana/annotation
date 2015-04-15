@@ -140,6 +140,8 @@ public class AnnotationLd extends JsonLd {
         	jsonLdResource.putProperty(targetProperty);
         if (annotation.getSameAs() != null) 
         	jsonLdResource.putProperty(WebAnnotationFields.SAME_AS, annotation.getSameAs());
+        if (annotation.getEquivalentTo() != null) 
+        	jsonLdResource.putProperty(WebAnnotationFields.EQUIVALENT_TO, annotation.getEquivalentTo());
         
         put(jsonLdResource);
     }
@@ -210,6 +212,11 @@ public class AnnotationLd extends JsonLd {
 		    	String sameAsValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(sameAsValue)) 
 					annotation.setSameAs(sameAsValue);
+		    	break;
+		    case WebAnnotationFields.EQUIVALENT_TO:
+		    	String equivalentToValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(equivalentToValue)) 
+					annotation.setEquivalentTo(equivalentToValue);
 		    	break;
 		    default:
 		    	break;
@@ -465,7 +472,7 @@ public class AnnotationLd extends JsonLd {
 	private Concept getConcept(Object mapValue) {
 		Concept concept = null;
 		JsonLdProperty property = ((JsonLdPropertyValue) mapValue).getProperty(WebAnnotationFields.CONCEPT);
-		if (property.getValues() != null && property.getValues().size() > 0) {
+		if (property != null && property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
 			concept = ConceptObjectFactory.getInstance().createModelObjectInstance(

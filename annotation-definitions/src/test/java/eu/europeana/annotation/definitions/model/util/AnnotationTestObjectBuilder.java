@@ -112,6 +112,8 @@ public class AnnotationTestObjectBuilder {
 		if (StringUtils.isNotEmpty(sameAs)) {
 			annotation.setSameAs(sameAs);
 		}
+
+		annotation.setEquivalentTo("http://historypin.com/annotation/1234");
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
         

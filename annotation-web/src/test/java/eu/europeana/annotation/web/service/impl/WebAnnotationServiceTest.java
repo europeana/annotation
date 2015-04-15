@@ -169,10 +169,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
 				WebAnnotationFields.TEST_HISTORYPIN_URL);
-//	    MongoAnnotationId mongoAnnotationId = (new AnnotationBuilder()).initAnnotationId(
-//	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_HISTORY_PIN);
-//	    mongoAnnotationId.setAnnotationNr(1);
-//		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
 		/**
 		 * Store Annotation in database.
@@ -206,9 +202,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstance();
-//	    MongoAnnotationId mongoAnnotationId = (new AnnotationBuilder()).initAnnotationId(
-//	    		AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, WebAnnotationFields.PROVIDER_WRONG);
-//		testAnnotation.setAnnotationId(mongoAnnotationId);		
 
 		/**
 		 * Store Annotation in database.

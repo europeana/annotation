@@ -30,6 +30,7 @@ public class AnnotationBuilder {
 		to.setStyledBy(annotation.getStyledBy());
 		to.setDisabled(annotation.isDisabled());
 		to.setSameAs(annotation.getSameAs());
+		to.setEquivalentTo(annotation.getEquivalentTo());
 	}
 
 	/**

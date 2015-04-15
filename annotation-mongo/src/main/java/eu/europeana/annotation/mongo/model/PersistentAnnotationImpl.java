@@ -49,6 +49,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	private boolean disabled;
 	private String sameAs;
+	private String equivalentTo;
 
 	
 	@Override
@@ -198,6 +199,16 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Override
 	public String getSameAs() {
 		return sameAs;
+	}
+			
+	@Override
+	public void setEquivalentTo(String equivalentTo) {
+		this.equivalentTo = equivalentTo;
+	}
+
+	@Override
+	public String getEquivalentTo() {
+		return equivalentTo;
 	}
 			
 }

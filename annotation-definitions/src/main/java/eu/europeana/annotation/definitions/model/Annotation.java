@@ -60,4 +60,8 @@ public interface Annotation {
 
 	public abstract String getSameAs();
 
+	public abstract void setEquivalentTo(String equivalentTo);
+
+	public abstract String getEquivalentTo();
+
 }

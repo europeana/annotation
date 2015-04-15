@@ -17,6 +17,7 @@ public interface WebAnnotationFields {
 	public static final String MOTIVATED_BY         = "motivatedBy";
 	public static final String STYLED_BY            = "styledBy";
 	public static final String SAME_AS              = "sameAs";
+	public static final String EQUIVALENT_TO        = "equivalentTo";
 	public static final String CONTENT_TYPE         = "contentType";
 	public static final String HTTP_URI             = "httpUri";
 	public static final String SOURCE               = "source";

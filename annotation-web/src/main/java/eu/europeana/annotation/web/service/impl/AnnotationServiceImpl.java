@@ -269,6 +269,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 		if (StringUtils.isNotBlank(solrAnnotationImpl.getSameAs())) {
 			solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
 		}
+		if (StringUtils.isNotBlank(solrAnnotationImpl.getEquivalentTo())) {
+			solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
+		}
 
         res = solrAnnotationImpl;
 
