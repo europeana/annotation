@@ -29,7 +29,7 @@ import eu.europeana.annotation.definitions.model.concept.Concept;
  *	    "broader": "skos:broader",
  *	    "related": "skos:related",
  */
-public abstract class BaseConcept implements Concept {
+public class BaseConcept implements Concept {
 
 	protected Map<String, String> prefLabel;
 	protected Map<String, String> altLabel;
@@ -139,11 +139,11 @@ public abstract class BaseConcept implements Concept {
 		}
 	}
 	
-	public List<String> getbroader() {
+	public List<String> getBroader() {
 		return broader;
 	}
 	
-	public void setbroader(List<String> broaderList) {
+	public void setBroader(List<String> broaderList) {
 		this.broader = broaderList;
 	}
 	
@@ -163,7 +163,7 @@ public abstract class BaseConcept implements Concept {
 		this.related = relatedList;
 	}
 	
-	protected BaseConcept(){}
+	public BaseConcept(){}
 	
 	@Override
 	public boolean equals(Object other) {
@@ -179,8 +179,26 @@ public abstract class BaseConcept implements Concept {
 	     * equality check for all relevant fields.
 	     */
 	    if ((this.getNotation() != null) && (that.getNotation() != null) &&
-	    		(!this.getNotation().equals(that.getNotation()))) {
+	    		(!this.getNotation().toString().equals(that.getNotation().toString()))) {
 	    	System.out.println("Concept objects have different 'Notation' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getNarrower() != null) && (that.getNarrower() != null) &&
+	    		(!this.getNarrower().toString().equals(that.getNarrower().toString()))) {
+	    	System.out.println("Concept objects have different 'Narrower' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getBroader() != null) && (that.getBroader() != null) &&
+	    		(!this.getBroader().toString().equals(that.getBroader().toString()))) {
+	    	System.out.println("Concept objects have different 'Broader' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getRelated() != null) && (that.getRelated() != null) &&
+	    		(!this.getRelated().toString().equals(that.getRelated().toString()))) {
+	    	System.out.println("Concept objects have different 'Related' fields.");
 	    	res = false;
 	    }
 	    
@@ -193,6 +211,18 @@ public abstract class BaseConcept implements Concept {
 		
 		if (getNotation() != null) 
 			res = res + "\t\t" + "notation:" + getNotation() + "\n";
+		if (getNarrower() != null) 
+			res = res + "\t\t" + "narrower:" + getNarrower() + "\n";
+		if (getBroader() != null) 
+			res = res + "\t\t" + "broader:" + getBroader() + "\n";
+		if (getRelated() != null) 
+			res = res + "\t\t" + "related:" + getRelated() + "\n";
+		if (getPrefLabel() != null) 
+			res = res + "\t\t" + "prefLabel:" + getPrefLabel() + "\n";
+		if (getHiddenLabel() != null) 
+			res = res + "\t\t" + "hiddenLabel:" + getHiddenLabel() + "\n";
+		if (getAltLabel() != null) 
+			res = res + "\t\t" + "altLabel:" + getAltLabel() + "\n";
 		return res;
 	}	
 }

@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -203,7 +205,7 @@ public class TypeUtils {
 	}
 	
 	/**
-	 * This method presents a type list as a string.
+	 * This method presents a list as a string in JSON-LD format.
 	 * @param typeList
 	 * @return type list string
 	 */
@@ -223,5 +225,29 @@ public class TypeUtils {
 		}
 		return listStr;
 	}
+	
+	/**
+	 * This method presents a map as a string in JSON-LD format.
+	 * @param mp
+	 * @return
+	 */
+	public static String getTypeMapAsString(Map<String,String> mp) {
+		String res = "";
+	    Iterator<Map.Entry<String, String>> it = mp.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
+	        if (res.length() > 0) {
+	        	res = res + ",";
+	        }
+	        res = res + "\"" + pairs.getKey() + "\"" + WebAnnotationFields.SEPARATOR_SEMICOLON 
+	        		+ "\"" + pairs.getValue() + "\"";
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    if (res.length() > 0) {
+	    	res = "{" + res + "}";
+	    }
+	    return res;
+	}	
+		
 	
 }

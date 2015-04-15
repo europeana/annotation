@@ -16,7 +16,9 @@
 */
 package eu.europeana.annotation.jsonld;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,9 +37,11 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.ConceptObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.SelectorObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.StyleObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
@@ -49,6 +53,7 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.utils.JsonUtils;
 
@@ -409,8 +414,72 @@ public class AnnotationLd extends JsonLd {
 				if (hasValue(propertyValue, WebAnnotationFields.MULTILINGUAL)) 
 					body.setMultilingual(JsonUtils.stringToMap(propertyValue.getValues().get(WebAnnotationFields.MULTILINGUAL)));
 			}
+			
+			Concept concept = getConcept(propertyValue); 
+			body.setConcept(concept);
 		}
 		return body;
+	}
+    
+	/**
+	 * This method parses string list given in JSON-LD format.
+	 * @param propertyValue
+	 * @param fieldName
+	 * @return string list
+	 */
+	private List<String> parseList(JsonLdPropertyValue propertyValue, String fieldName) {
+		List<String> res = null;
+		if (hasValue(propertyValue, fieldName)) {
+			String fieldContent = "[" + propertyValue.getValues().get(fieldName) + "]";
+			res = JsonUtils.stringToList(fieldContent);
+		}
+		return res;
+	}
+	
+	/**
+	 * This method parses string map given in JSON-LD format.
+	 * @param propertyValue
+	 * @param fieldName
+	 * @return string map
+	 */
+	private Map<String, String> parseMap(JsonLdPropertyValue propertyValue, String fieldName) {
+		Map<String, String> res = null;
+		String fieldNameId = fieldName + ":@" + WebAnnotationFields.ID;
+//		String fieldNameContainer = fieldName + ":@" + WebAnnotationFields.CONTAINER;
+		String fieldNameContainer = "@" + WebAnnotationFields.CONTAINER;
+		if (hasValue(propertyValue, fieldNameId)) {
+			res = new HashMap<String, String>();
+			res.put("@" + WebAnnotationFields.ID, propertyValue.getValues().get(fieldNameId));
+			res.put("@" + WebAnnotationFields.CONTAINER, propertyValue.getValues().get(fieldNameContainer));
+//			String fieldContent = "" + propertyValue.getValues().get(fieldNameId) + "]";
+//			res = JsonUtils.stringToMap(fieldContent);
+		}
+		return res;
+	}
+	
+	/**
+	 * This method parses a Concept object from JSON-LD string.
+	 * @param mapValue
+	 * @return Concept object
+	 */
+	private Concept getConcept(Object mapValue) {
+		Concept concept = null;
+		JsonLdProperty property = ((JsonLdPropertyValue) mapValue).getProperty(WebAnnotationFields.CONCEPT);
+		if (property.getValues() != null && property.getValues().size() > 0) {
+			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
+			
+			concept = ConceptObjectFactory.getInstance().createModelObjectInstance(
+					ConceptTypes.BASE_CONCEPT.name());
+			concept.setNotation(parseList(propertyValue, WebAnnotationFields.NOTATION));
+			concept.setRelated(parseList(propertyValue, WebAnnotationFields.RELATED));
+			concept.setNarrower(parseList(propertyValue, WebAnnotationFields.NARROWER));
+			concept.setBroader(parseList(propertyValue, WebAnnotationFields.BROADER));
+			concept.setPrefLabel(parseMap(propertyValue, WebAnnotationFields.PREF_LABEL));
+			concept.setHiddenLabel(parseMap(propertyValue, WebAnnotationFields.HIDDEN_LABEL));
+			concept.setAltLabel(parseMap(propertyValue, WebAnnotationFields.ALT_LABEL));
+		}
+		
+		return concept;
 	}
     
 	/**
@@ -541,6 +610,52 @@ public class AnnotationLd extends JsonLd {
 		return targetProperty;
 	}
     
+	private JsonLdProperty addConceptProperty(Concept concept) {
+        JsonLdProperty conceptProperty = new JsonLdProperty(WebAnnotationFields.CONCEPT);
+        JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();                
+        
+    	if (concept != null) { 
+            addListToProperty(concept.getNotation(), propertyValue, WebAnnotationFields.NOTATION);
+            addListToProperty(concept.getNarrower(), propertyValue, WebAnnotationFields.NARROWER);
+            addListToProperty(concept.getBroader(), propertyValue, WebAnnotationFields.BROADER);
+            addListToProperty(concept.getRelated(), propertyValue, WebAnnotationFields.RELATED);
+            
+            addMapToProperty(concept.getPrefLabel(), propertyValue, WebAnnotationFields.PREF_LABEL);
+            addMapToProperty(concept.getHiddenLabel(), propertyValue, WebAnnotationFields.HIDDEN_LABEL);
+            addMapToProperty(concept.getAltLabel(), propertyValue, WebAnnotationFields.ALT_LABEL);
+            if (propertyValue.getValues().size() != 0) {
+            	conceptProperty.addValue(propertyValue);        
+            }
+    	}	
+    	return conceptProperty;
+	}
+
+	/**
+	 * @param map
+	 * @param propertyValue
+	 * @param field
+	 */
+	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
+		String mapString = TypeUtils.getTypeMapAsString(map);
+		if (!StringUtils.isBlank(mapString)) 
+			propertyValue.getValues().put(field, mapString);
+	}
+	
+	/**
+	 * @param list
+	 * @param propertyValue
+	 * @param field
+	 */
+	private void addListToProperty(List<String> list, JsonLdPropertyValue propertyValue, String field) {
+		String listString = TypeUtils.getTypeListAsStr(list);
+		if (!StringUtils.isBlank(listString)) 
+			propertyValue.getValues().put(field, listString);
+	}
+	
+	/**
+	 * @param annotation
+	 * @return
+	 */
 	private JsonLdProperty addBodyProperty(Annotation annotation) {
 		JsonLdProperty bodyProperty = new JsonLdProperty(WebAnnotationFields.BODY);
 		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
@@ -558,6 +673,8 @@ public class AnnotationLd extends JsonLd {
             	propertyValue.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
             if (annotation.getBody().getMultilingual() != null)         	
             	propertyValue.getValues().put(WebAnnotationFields.MULTILINGUAL, JsonUtils.mapToString(annotation.getBody().getMultilingual()));
+            if (annotation.getBody().getConcept() != null)         	
+            	propertyValue.putProperty(addConceptProperty(annotation.getBody().getConcept()));
             if (propertyValue.getValues().size() == 0)
             	return null;
 	        bodyProperty.addValue(propertyValue);        

@@ -2,6 +2,7 @@ package eu.europeana.annotation.definitions.model.body;
 
 import java.util.Map;
 
+import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 
 public interface Body extends InternetResource{
@@ -20,5 +21,9 @@ public interface Body extends InternetResource{
 	 * @param label
 	 */
 	public void addLabelInMapping(String language, String label);
+	
+	public abstract Concept getConcept();
+	
+	public abstract void setConcept(Concept concept);
 	
 }

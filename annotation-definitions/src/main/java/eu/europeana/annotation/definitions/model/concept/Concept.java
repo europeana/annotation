@@ -40,9 +40,9 @@ public interface Concept {
 
 	public abstract void addBroader(String newbroader);
 	
-	public abstract List<String> getbroader();
+	public abstract List<String> getBroader();
 	
-	public abstract void setbroader(List<String> broaderList);
+	public abstract void setBroader(List<String> broaderList);
 
 	public abstract void addRelated(String newRelated);
 	

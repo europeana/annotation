@@ -71,6 +71,17 @@ public interface WebAnnotationFields {
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
 	
 	/**
+	 * SKOS concept
+	 */
+	public static final String CONCEPT   = "concept";
+	public static final String NOTATION  = "notation";
+	public static final String CONTAINER = "container";
+	public static final String NARROWER  = "narrower";
+	public static final String BROADER   = "broader";
+	public static final String RELATED   = "related";
+	public static final String SKOS      = "skos";
+	
+	/**
 	 * Notes
 	 */
 	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"templates.html\" target=\"_blank\">templates</a>";

@@ -5,10 +5,12 @@ import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 public abstract class BaseBody extends BaseInternetResource implements Body {
+	
 	private String bodyType;
 	
 	@Override
@@ -23,6 +25,18 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 		this.bodyType = bodyTypeStr.replace(" ", "");
 	}
 
+	private Concept concept;
+	
+	@Override
+	public Concept getConcept() {
+		return concept;
+	}
+	
+	@Override
+	public void setConcept(Concept concept) {
+		this.concept = concept;
+	}
+	
 	protected BaseBody(){} 
 	
 	protected Map<String, String> multilingual;
@@ -103,6 +117,12 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	    	res = false;
 	    }
 	    
+	    if ((this.getConcept() != null) && (that.getConcept() != null) &&
+	    		(!this.getConcept().equals(that.getConcept()))) {
+	    	System.out.println("Body objects have different concept objects.");
+	    	res = false;
+	    }
+
 	    return res;
 	}
 		
@@ -124,6 +144,8 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 			res = res + "\t\t" + "value:" + getValue().toString() + "\n";
 		if (getMultilingual() != null) 
 			res = res + "\t\t" + "multilingual:" + getMultilingual().toString() + "\n";
+		if (getConcept() != null) 
+			res = res + "\n\t\t" + "Concept:" + getConcept().toString() + "\n";
 		return res;
 	}	
 }

@@ -92,6 +92,7 @@ public class AnnotationLdRest extends BaseRest {
 
 		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
         String jsonLd = annotationLd.toString(4);
+        jsonLd = jsonLd.replace("\\\"", "\""); 
 	
 		return JsonWebUtils.toJson(jsonLd, null);
 	}
