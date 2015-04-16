@@ -51,6 +51,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 public class AnnotationTestObjectBuilder {
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
+	public final static String TEST_COLLECTION   = "testCollection";
+	public final static String TEST_OBJECT       = "testObject";
 
 	public static Body buildSemanticTagBody(String text, String language) {
 		

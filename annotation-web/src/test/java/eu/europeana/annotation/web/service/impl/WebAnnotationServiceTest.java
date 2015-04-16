@@ -35,9 +35,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.AnnotationLdTest;
@@ -58,6 +60,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	@Resource 
 	AnnotationService webAnnotationService;
 	
+	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
+	
 	@Rule public ExpectedException thrown= ExpectedException.none();
 	
 	@Test
@@ -73,7 +77,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
         
         String original = origAnnotationLd.toString();
         AnnotationLd.toConsole("", original);
-        String expectedOrig = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@id\":\"http://data.europeana.eu/annotations/testCollection/testObject/webanno/-1\",\"@type\":\"OBJECT_TAG\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]\",\"name\":\"annonymous web user\"},\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"language\":\"ro\",\"multilingual\":\"\"},\"motivatedBy\":\"TAGGING\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"[oa:CssStyle,euType:CSS]\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:SpecificResource,euType:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\",\"dimensionMap\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//testCollection/testObject.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"targetType\":\"[oa:SpecificResource,euType:IMAGE]\"},\"type\":\"OBJECT_TAG\"}";
+        String expectedOrig = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@id\":\"http://data.europeana.eu/annotations/testCollection/testObject/webanno/-1\",\"@type\":\"OBJECT_TAG\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]\",\"name\":\"annonymous web user\"},\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"language\":\"ro\",\"multilingual\":\"\"},\"equivalentTo\":\"http://historypin.com/annotation/1234\",\"motivatedBy\":\"TAGGING\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"[oa:CssStyle,euType:CSS]\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:SpecificResource,euType:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\",\"dimensionMap\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//testCollection/testObject.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"targetType\":\"[oa:SpecificResource,euType:IMAGE]\"},\"type\":\"OBJECT_TAG\"}";
         
         assertEquals(expectedOrig, original);
 		
@@ -116,7 +120,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
          * Compare original Annotation object with retrieved serialized Annotation object.
          */     
         // Original object does not have EuropeanaUri
-//        testAnnotation.getTarget().setEuropeanaId(annotationFromAnnotationLd.getTarget().getEuropeanaId());
+        annotationFromAnnotationLd.setAnnotationId(testAnnotation.getAnnotationId());
         assertEquals(testAnnotation, annotationFromAnnotationLd);        
 	}
 		
@@ -154,9 +158,14 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	 */
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
-//	    MongoAnnotationId mongoAnnotationId = (new AnnotationBuilder())
-//	    		.initAnnotationId(AnnotationTestObjectBuilder.TEST_EUROPEANA_ID, null);
-//		testAnnotation.setAnnotationId(mongoAnnotationId);
+		AnnotationId annoId = annotationIdHelper
+				.initializeAnnotationId(
+						AnnotationTestObjectBuilder.TEST_COLLECTION
+						, AnnotationTestObjectBuilder.TEST_OBJECT
+						, WebAnnotationFields.PROVIDER_WEBANNO
+						, null);
+				
+		testAnnotation.setAnnotationId(annoId);					
 		return testAnnotation;
 	}
 
@@ -170,6 +179,15 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
 				WebAnnotationFields.TEST_HISTORYPIN_URL);
 
+		AnnotationId annoId = annotationIdHelper
+				.initializeAnnotationId(
+						AnnotationTestObjectBuilder.TEST_COLLECTION
+						, AnnotationTestObjectBuilder.TEST_OBJECT
+						, WebAnnotationFields.PROVIDER_HISTORY_PIN
+						, testAnnotation.getSameAs());
+				
+		testAnnotation.setAnnotationId(annoId);		
+		
 		/**
 		 * Store Annotation in database.
 		 */
@@ -310,7 +328,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
 		Annotation testAnnotation = createTestAnnotation();		
-        
+
 		/**
 		 * Store Annotation in database.
 		 */
