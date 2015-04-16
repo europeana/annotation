@@ -643,9 +643,21 @@ public class AnnotationLd extends JsonLd {
 	 * @param field
 	 */
 	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
-		String mapString = TypeUtils.getTypeMapAsString(map);
-		if (!StringUtils.isBlank(mapString)) 
-			propertyValue.getValues().put(field, mapString);
+        JsonLdProperty fieldProperty = new JsonLdProperty(field);
+        JsonLdPropertyValue fieldPropertyValue = new JsonLdPropertyValue();
+        
+	    Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
+	        String curValue = pairs.getValue();
+        	if (!StringUtils.isBlank(curValue)) 
+        		fieldPropertyValue.getValues().put(pairs.getKey(), pairs.getValue());
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+        if (fieldPropertyValue.getValues().size() != 0) {
+         	fieldProperty.addValue(fieldPropertyValue);        
+         	propertyValue.putProperty(fieldProperty);
+    	}
 	}
 	
 	/**

@@ -23,6 +23,7 @@ public class ModelConst {
 	public static final String BODY_TYPE          = "bodyType";
 	public static final String TARGET_TYPE        = "targetType";
 	public static final String SELECTOR_TYPE      = "selectorType";
+	public static final String CONCEPT_TYPE       = "conceptType";
 	public static final String RESOURCE_ID        = "resourceId";
 	public static final String ANNOTATION_NR      = "annotationNr";
 	public static final String PROVIDER           = "provider";
