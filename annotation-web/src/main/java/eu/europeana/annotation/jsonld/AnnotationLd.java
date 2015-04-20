@@ -156,7 +156,8 @@ public class AnnotationLd extends JsonLd {
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
     	
-    	JsonLdResource resource = getResource("");
+		Iterator<String> itrSubjects = this.getResourceSubjects().iterator();
+    	JsonLdResource resource = getResource(itrSubjects.next()); //"");
     	Iterator<?> it = resource.getPropertyMap().entrySet().iterator();
 		while (it.hasNext()) {
 		    Map.Entry pairs = (Map.Entry)it.next();
@@ -423,7 +424,8 @@ public class AnnotationLd extends JsonLd {
 			}
 			
 			Concept concept = getConcept(propertyValue); 
-			body.setConcept(concept);
+			if (concept != null)
+				body.setConcept(concept);
 		}
 		return body;
 	}
