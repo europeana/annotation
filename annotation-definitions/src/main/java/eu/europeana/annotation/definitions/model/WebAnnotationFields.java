@@ -15,6 +15,7 @@ public interface WebAnnotationFields {
 	public static final String SERIALIZED_BY        = "serializedBy";
 	public static final String FOAF_HOMEPAGE        = "foaf:homepage";
 	public static final String MOTIVATED_BY         = "motivatedBy";
+	public static final String MOTIVATION           = "motivation";
 	public static final String STYLED_BY            = "styledBy";
 	public static final String SAME_AS              = "sameAs";
 	public static final String EQUIVALENT_TO        = "equivalentTo";

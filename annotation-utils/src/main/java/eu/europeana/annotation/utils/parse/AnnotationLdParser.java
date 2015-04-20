@@ -11,6 +11,17 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
+import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
 public class AnnotationLdParser extends JsonLdParser {
 
@@ -50,7 +61,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @param jld
 	 *            JsonLd object to add the created subject resource.
 	 */
-	@SuppressWarnings("deprecation")
+//	@SuppressWarnings("deprecation")
 	private void parseJsonObject(JSONObject jo, Annotation annoLd, int bnodeCount,
 			String profile) {
 
@@ -140,11 +151,56 @@ public class AnnotationLdParser extends JsonLdParser {
 		//jld.setNamespacePrefixMap(namespaces);
 	}
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+//    @SuppressWarnings({ "rawtypes", "unchecked" })
 	private static void handleProperty(Annotation annoLd, JSONObject jo,
 			String property) throws JSONException {
 		
 		Object valueObject = jo.get(property);
+		
+		switch (property) {
+		case WebAnnotationFields.ANNOTATED_AT:
+			if (valueObject != null)
+				annoLd.setAnnotatedAt(TypeUtils.convertStrToDate((String) valueObject));
+			break;
+		case WebAnnotationFields.SERIALIZED_AT:
+			if (valueObject != null)
+				annoLd.setSerializedAt(TypeUtils.convertStrToDate((String) valueObject));
+			break;
+		case WebAnnotationFields.SERIALIZED_BY:
+			if (valueObject != null) {
+				Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(AgentTypes.PERSON.name());
+				agent.setAgentTypeAsString(AgentTypes.PERSON.name());			
+				agent.setName((String) valueObject);
+				annoLd.setSerializedBy(agent);
+			}
+			break;
+		case WebAnnotationFields.MOTIVATION:
+			if (valueObject != null)
+				annoLd.setMotivatedBy((String) valueObject);
+			break;
+		case WebAnnotationFields.BODY:
+			if (valueObject != null) {
+				Body body = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.TAG.name());	
+				body.setBodyType(BodyTypes.TAG.name());
+				body.setValue((String) valueObject);
+				annoLd.setBody(body);
+			}
+			break;
+		case WebAnnotationFields.TARGET:
+			if (valueObject != null) {
+				Target target = TargetObjectFactory.getInstance().createModelObjectInstance(TargetTypes.TEXT.name());	
+				target.setTargetType(TargetTypes.TEXT.name());
+				target.setValue((String) valueObject);
+				annoLd.setTarget(target);
+			}
+			break;
+		case WebAnnotationFields.EQUIVALENT_TO:
+			if (valueObject != null)
+				annoLd.setEquivalentTo((String) valueObject);
+			break;
+		default:
+			break;
+		}
 		
 //		if (valueObject instanceof JSONObject) {			
 //			JSONObject jsonValue = (JSONObject) valueObject;
