@@ -46,6 +46,13 @@ public interface AnnotationService {
 	public Annotation parseAnnotation(String annotationJsonLdStr);
 
 	/**
+	 * This method creates Europeana Annotation object from a JsonLd string.
+	 * @param annotationJsonLdStr
+	 * @return Annotation object
+	 */
+	public Annotation parseEuropeanaAnnotation(String annotationJsonLdStr);
+
+	/**
 	 * This method stores Annotation object in database and in Solr.
 	 * @param annotation
 	 * @return Annotation object

@@ -107,7 +107,7 @@ public class BaseRest {
 	 * @param errorMessage
 	 * @return
 	 */
-	ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {
+	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
 		response = buildErrorResponse(errorMessage, response.action, response.apikey);

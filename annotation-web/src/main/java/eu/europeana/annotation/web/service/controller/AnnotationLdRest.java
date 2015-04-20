@@ -22,7 +22,7 @@ import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
 @Api(value = "annotationld", description = "Annotation-Ld Rest Service")
-public class AnnotationLdRest extends BaseRest {
+public class AnnotationLdRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotationld/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody

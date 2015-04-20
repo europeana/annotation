@@ -114,6 +114,23 @@ public class AnnotationIdHelper {
 	}
 
 	/**
+	 * This method validates europeana provider.
+	 * @param annotation
+	 * @param provider
+	 * @return
+	 */
+	public boolean validateEuropeanaProvider(Annotation annotation, String provider) {
+		boolean res = true;
+		if (StringUtils.isNotEmpty(annotation.getEquivalentTo())
+				&& annotation.getEquivalentTo().contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)
+				&& StringUtils.isNotEmpty(provider) 
+				&& !provider.equals(WebAnnotationFields.PROVIDER_HISTORY_PIN)
+				)
+			res = false;
+		return res;
+	}
+
+	/**
 	 * This method initializes AnnotationId object by passed
 	 * collection, object and provider.
 	 * @param collection

@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -151,6 +152,34 @@ public class AnnotationServiceImpl implements AnnotationService {
 	    	 * JsonLd object -> AnnotationLd object
 	    	 */
 	    	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
+		} catch (Exception e) {
+			String errorMessage = "Cannot Parse JSON-LD input! ";
+			Logger.getLogger(getClass().getName()).error(errorMessage, e);
+		}
+	    
+	    /**
+	     * AnnotationLd object -> Annotation object.
+	     */
+	    return parsedAnnotationLd.getAnnotation();
+	}
+
+	@Override
+	public Annotation parseEuropeanaAnnotation(String annotationJsonLdStr) {
+	    
+		/**
+	     * parse JsonLd string using JsonLdParser.
+	     * JsonLd string -> JsonLdParser -> JsonLd object
+	     */
+	    AnnotationLd parsedAnnotationLd = null;
+	    JsonLd parsedJsonLd = null;
+	    try {
+	    	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
+	    	
+	    	/**
+	    	 * convert JsonLd to AnnotationLd.
+	    	 * JsonLd object -> AnnotationLd object
+	    	 */
+	    	parsedAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
 		} catch (Exception e) {
 			String errorMessage = "Cannot Parse JSON-LD input! ";
 			Logger.getLogger(getClass().getName()).error(errorMessage, e);

@@ -490,6 +490,105 @@
 					</div>
 					<!--  end table div -->	
 											
+					<h3>EUROPEANA-LD  API  </h3>
+					<div id="table" style="width: 100%;">	
+					<table>
+						<thead>
+						<tr>
+							<td class="clsHeaderCell">Method</td>
+							<td class="clsHeaderCell">Response</td>
+							<td class="clsHeaderCell">Path</td>
+							<td class="clsHeaderCell">Function</td>
+						</tr>
+						</thead>
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON_LD</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotation/create.jsonld<br>
+									Object as JSON-LD:
+								<form action="annotation/create.jsonld" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="20" cols="60" name="annotation" >
+{
+    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@type": "oa:Annotation",
+    "@id": "http://data.europeana.eu/annotation/historypin/456",
+    "annotatedBy": {
+        "@id": "https://www.historypin.org/en/person/55376/",
+        "@type": "foaf:Person",
+        "name": "John Smith"
+    },
+    "annotatedAt": "2015-02-27T12:00:43Z",
+    "serializedAt": "2015-02-28T13:00:34Z",
+    "serializedBy": "http://www.historypin.org",
+    "motivation": "oa:tagging",
+    "body": "church",
+    "target": "http://data.europeana.eu/item/123/xyz",
+    "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+}
+</textarea>
+								<br>
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create an europeana annotation (SimpleTag) and return the object as stored in the database for 'historypin' provider. 
+								Identification of annotation types works as follows. Simple Tagging (when motivation is “oa:tagging” and body is a string literal).
+							</td>
+						</tr>						
+
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON_LD</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotation/create.jsonld<br>
+									Object as JSON-LD:
+								<form action="annotation/create.jsonld" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="20" cols="60" name="annotation" >
+{
+    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@type": "oa:Annotation",
+    "@id": "http://data.europeana.eu/annotation/historypin/456"
+    "annotatedBy": {
+        "@id": "https://www.historypin.org/en/person/55376/",
+        "@type": "foaf:Person",
+        "name": "John Smith"
+    },
+    "annotatedAt": "2015-02-27T12:00:43Z",
+    "serializedAt": "2015-02-28T13:00:34Z",
+    "serializedBy": "http://www.historypin.org",
+    "motivation": "oa:linking",
+    "target": [
+        "http://www.europeana.eu/portal/record/123/xyz.html", 
+        "http://www.europeana.eu/portal/record/333/xxx.html"
+    ],
+    "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+}
+</textarea>
+								<br>
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create an europeana annotation (SimpleLink) and return the object as stored in the database for 'historypin' provider. 
+								Simple Object Linking (when motivation is “oa:linking” and no body is provided and target contains an array with at least 2 urls)
+							</td>
+						</tr>						
+
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					
+					</div>
+					<!--  end table div -->	
+											
+
 			</div>
 			<!-- end of content -->
 		</div>
