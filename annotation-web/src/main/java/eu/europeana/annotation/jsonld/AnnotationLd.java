@@ -114,7 +114,7 @@ public class AnnotationLd extends JsonLd {
         }
         
         if (annotation.getAnnotationId() != null && !StringUtils.isBlank(annotation.getAnnotationId().toString())) 
-        	jsonLdResource.putProperty(WebAnnotationFields.SID, annotation.getAnnotationId().toString());   
+        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toString());   
         if (!StringUtils.isBlank(annotation.getType())) 
         	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
        	JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
@@ -164,7 +164,7 @@ public class AnnotationLd extends JsonLd {
 		    String key = pairs.getKey().toString();
 		    Object mapValue = pairs.getValue();
 		    switch (key) {
-		    case WebAnnotationFields.SID:
+		    case WebAnnotationFields.AT_ID:
 		    	String annotationIdValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(annotationIdValue)) 
 					((BaseObjectTag) annotation).parse(annotationIdValue);
@@ -265,8 +265,8 @@ public class AnnotationLd extends JsonLd {
 			agent = AgentObjectFactory.getInstance().createModelObjectInstance(euType);
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
 				agent.setAgentTypeAsString(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));			
-			if (hasValue(propertyValue, WebAnnotationFields.SID)) 
-				agent.setOpenId(propertyValue.getValues().get(WebAnnotationFields.SID));
+			if (hasValue(propertyValue, WebAnnotationFields.AT_ID)) 
+				agent.setOpenId(propertyValue.getValues().get(WebAnnotationFields.AT_ID));
 			if (hasValue(propertyValue, WebAnnotationFields.NAME)) 
 				agent.setName(propertyValue.getValues().get(WebAnnotationFields.NAME));
 			if (hasValue(propertyValue, WebAnnotationFields.FOAF_HOMEPAGE)) 
@@ -344,8 +344,8 @@ public class AnnotationLd extends JsonLd {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
-			if (hasValue(propertyValue, WebAnnotationFields.TARGET_TYPE)) {
-				String euType = extractEuType(propertyValue, WebAnnotationFields.TARGET_TYPE);			
+			if (hasValue(propertyValue, WebAnnotationFields.TYPE)) {
+				String euType = extractEuType(propertyValue, WebAnnotationFields.TYPE);			
 				//if not set 
 				if (StringUtils.isBlank(euType))
 					throw new AnnotationAttributeInstantiationException(euType);
@@ -353,7 +353,7 @@ public class AnnotationLd extends JsonLd {
 				target = TargetObjectFactory.getInstance().createModelObjectInstance(euType);
 //				target = (Target) objectFactory.createModelObjectInstance(
 //						AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER + euType);
-				target.setTargetType(propertyValue.getValues().get(WebAnnotationFields.TARGET_TYPE));
+				target.setType(propertyValue.getValues().get(WebAnnotationFields.TYPE));
 				if (hasValue(propertyValue, WebAnnotationFields.CONTENT_TYPE)) 
 					target.setContentType(propertyValue.getValues().get(WebAnnotationFields.CONTENT_TYPE));
 				if (hasValue(propertyValue, WebAnnotationFields.HTTP_URI)) 
@@ -364,8 +364,8 @@ public class AnnotationLd extends JsonLd {
 				InternetResource source = new BaseInternetResource();
 				if (hasValue(propertyValue2, WebAnnotationFields.CONTENT_TYPE)) 
 					source.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
-				if (hasValue(propertyValue2, WebAnnotationFields.SID)) {
-					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.SID));
+				if (hasValue(propertyValue2, WebAnnotationFields.AT_ID)) {
+					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.AT_ID));
 //					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
 				}
 				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
@@ -562,12 +562,12 @@ public class AnnotationLd extends JsonLd {
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         
         if (annotation != null && annotation.getTarget() != null) {
-        	if (!StringUtils.isBlank(annotation.getTarget().getTargetType())) 
+        	if (!StringUtils.isBlank(annotation.getTarget().getType())) 
 //        		propertyValue.addType(annotation.getTarget().getTargetType());
-    			propertyValue.addType(annotation.getTarget().getTargetType().replace("[", "").replace("]", ""));
+    			propertyValue.addType(annotation.getTarget().getType().replace("[", "").replace("]", ""));
 
-            if (!StringUtils.isBlank(annotation.getTarget().getTargetType()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.TARGET_TYPE, annotation.getTarget().getTargetType());
+            if (!StringUtils.isBlank(annotation.getTarget().getType()))         	
+            	propertyValue.getValues().put(WebAnnotationFields.TYPE, annotation.getTarget().getType());
             if (!StringUtils.isBlank(annotation.getTarget().getContentType()))         	
             	propertyValue.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getContentType());
             if (!StringUtils.isBlank(annotation.getTarget().getHttpUri()))         	
@@ -580,7 +580,7 @@ public class AnnotationLd extends JsonLd {
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getContentType())) 
             		propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getSource().getContentType());
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getHttpUri())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.SID, annotation.getTarget().getSource().getHttpUri());
+            		propertyValue2.getValues().put(WebAnnotationFields.AT_ID, annotation.getTarget().getSource().getHttpUri());
             	if (!StringUtils.isBlank(annotation.getTarget().getSource().getMediaType())) 
             		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
                 if (propertyValue2.getValues().size() != 0) {
@@ -719,7 +719,7 @@ public class AnnotationLd extends JsonLd {
 	private void addAgentByProperty(JsonLdPropertyValue propertyValue,
 			Agent agent) {
 		if (agent != null && !StringUtils.isBlank(agent.getOpenId())) 
-        	propertyValue.getValues().put(WebAnnotationFields.SID, agent.getOpenId());
+        	propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
 //        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
 //        	propertyValue.setType(agent.getAgentType());
         if (agent != null && !StringUtils.isBlank(TypeUtils.getTypeListAsStr(agent.getAgentType()))) 

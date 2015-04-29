@@ -78,7 +78,7 @@ public class AnnotationTestObjectBuilder {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(
 				TargetTypes.IMAGE.name());
 
-		target.setTargetType(
+		target.setType(
 				"[oa:SpecificResource,euType:" 
 				+ TargetTypes.IMAGE.name() 
 				+ "]"
@@ -168,10 +168,10 @@ public class AnnotationTestObjectBuilder {
 
 	private Agent buildAnnotatedByAgent() {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
-				AgentTypes.SOFTWARE_AGENT.name());
+				AgentTypes.SOFTWARE.name());
 		agent.addType("foaf:Person");
 		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-				+ AgentTypes.SOFTWARE_AGENT.name());
+				+ AgentTypes.SOFTWARE.name());
 		agent.setName("annonymous web user");
 		agent.setOpenId("open_id_1");
 		//		agent.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
@@ -180,10 +180,10 @@ public class AnnotationTestObjectBuilder {
 
 	private Agent buildSerializedByAgent() {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
-				AgentTypes.SOFTWARE_AGENT.name());
+				AgentTypes.SOFTWARE.name());
 		agent.addType("prov:SoftwareAgent");
 		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-				+ AgentTypes.SOFTWARE_AGENT.name());
+				+ AgentTypes.SOFTWARE.name());
 		agent.setName("Annotorious");
 		agent.setHomepage("http://annotorious.github.io/");
 		agent.setOpenId("open_id_2");
@@ -208,13 +208,13 @@ public class AnnotationTestObjectBuilder {
 				
 		// set annotatedBy
 		Agent annotatedByAgent = AgentObjectFactory.getInstance().createModelObjectInstance(
-				AgentTypes.SOFTWARE_AGENT.name());
+				AgentTypes.SOFTWARE.name());
 		annotatedByAgent .setName(null);
 		annotation.setAnnotatedBy(annotatedByAgent);
 		
 		// set serializedBy
 		Agent serializedByAgent = AgentObjectFactory.getInstance().createModelObjectInstance(
-				AgentTypes.SOFTWARE_AGENT.name());
+				AgentTypes.SOFTWARE.name());
 		serializedByAgent.setName(null);
 		serializedByAgent.setHomepage(null);
 		annotation.setSerializedBy(serializedByAgent);

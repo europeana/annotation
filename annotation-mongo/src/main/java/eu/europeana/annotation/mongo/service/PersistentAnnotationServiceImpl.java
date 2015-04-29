@@ -193,6 +193,9 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
+		if(BodyTypes.TAG.equals(object.getBody().getBodyType()))
+			return true;
+		
 		String euType = new TypeUtils().getEuTypeFromTypeArray(object.getBody()
 				.getBodyType());
 		return BodyTypes.isTagBody(euType);
@@ -264,7 +267,7 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public PersistentAnnotation find(String europeanaId, String provider,
-			Integer annotationNr) {
+			Long annotationNr) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
@@ -300,7 +303,7 @@ public class PersistentAnnotationServiceImpl extends
 	 * eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
 	 * (java.lang.String, java.lang.Integer)
 	 */
-	public void remove(String resourceId, String provider, Integer annotationNr) {
+	public void remove(String resourceId, String provider, Long annotationNr) {
 		// String objectId = findObjectId(resourceId, annotationNr);
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
@@ -384,7 +387,7 @@ public class PersistentAnnotationServiceImpl extends
 	public PersistentAnnotation copyIntoPersistentAnnotation(Annotation annotation) {
 
 		PersistentAnnotationImpl persistentAnnotation = (PersistentAnnotationImpl) (PersistentAnnotationFactory
-				.getInstance().createAnnotationInstance(annotation.getType()));
+				.getInstance().createAnnotationInstance(annotation.getInternalType()));
 
 		MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
 	    mongoAnnotationId.copyFrom(annotation.getAnnotationId());

@@ -18,6 +18,7 @@ public abstract class AbstractAnnotation implements Annotation {
 
 	protected AnnotationId annotationId = null;
 	private String type;
+	private String internalType;
 	private Date annotatedAt;
 	private Agent annotatedBy;
 	private Body body;
@@ -152,7 +153,7 @@ public abstract class AbstractAnnotation implements Annotation {
 					annoId.setProvider(provider);
 				String annotationNrStr = arrValue[annotationNrPosition];
 				if (StringUtils.isNotEmpty(annotationNrStr))
-					annoId.setAnnotationNr(Integer.parseInt(annotationNrStr));
+					annoId.setAnnotationNr(Long.parseLong(annotationNrStr));
 	        }
 		}
 		return annoId;
@@ -172,6 +173,16 @@ public abstract class AbstractAnnotation implements Annotation {
 	public void setType(String type) {
 		this.type = type;
 		
+	}
+	
+	@Override
+	public String getInternalType() {
+		return internalType;
+	}
+
+	@Override
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
 	}
 
 	@Override

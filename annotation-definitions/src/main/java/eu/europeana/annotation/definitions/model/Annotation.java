@@ -16,6 +16,8 @@ public interface Annotation {
 
 	public abstract String getType();
 
+	public abstract String getInternalType();
+
 	public abstract void setSerializedBy(Agent serializedBy);
 
 	public abstract Agent getSerializedBy();
@@ -63,5 +65,7 @@ public interface Annotation {
 	public abstract void setEquivalentTo(String equivalentTo);
 
 	public abstract String getEquivalentTo();
+
+	public void setInternalType(String internalType);
 
 }

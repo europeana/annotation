@@ -30,6 +30,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private MongoAnnotationId annotationId;
 	
 	private String type;
+	private String internalType;
 	private Date annotatedAt;
 	
 	@Embedded
@@ -209,6 +210,16 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Override
 	public String getEquivalentTo() {
 		return equivalentTo;
+	}
+
+	@Override
+	public String getInternalType() {
+		return internalType;
+	}
+
+	@Override
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
 	}
 			
 }

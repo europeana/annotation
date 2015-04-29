@@ -148,7 +148,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field("annotatedBy_string")
 	public void setAnnotatedByString(String annotatedBy) {
 		Agent creator = AgentObjectFactory.getInstance().createModelObjectInstance(
-				AgentTypes.SOFTWARE_AGENT.name());
+				AgentTypes.SOFTWARE.name());
 		creator.setName(annotatedBy);
 		super.setAnnotatedBy(creator);
 	}

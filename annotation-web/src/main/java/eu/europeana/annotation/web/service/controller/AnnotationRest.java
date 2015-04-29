@@ -46,7 +46,7 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Integer annotationNr
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
 		) {
 
 		String resourceId = toResourceId(collection, object);
@@ -142,13 +142,13 @@ public class AnnotationRest extends BaseRest {
 		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
 
 		//validate input params
-		if (!(new AnnotationIdHelper()).validateResouceId(webAnnotation, collection, object))
+		if (!getAnnotationIdHelper().validateResouceId(webAnnotation, collection, object))
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
-		if (!(new AnnotationIdHelper()).validateProvider(webAnnotation, provider)) 
+		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
 
 		//initialize
-		AnnotationId annoId = annotationIdHelper
+		AnnotationId annoId = getAnnotationIdHelper()
 				.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 				
 		webAnnotation.setAnnotationId(annoId);		

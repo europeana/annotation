@@ -39,7 +39,7 @@ public class AgentObjectFactory extends
 			returnType = Organization.class;
 			break;
 
-		case SOFTWARE_AGENT:
+		case SOFTWARE:
 			returnType = SoftwareAgent.class; 
 			break;
 

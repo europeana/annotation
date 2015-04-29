@@ -9,10 +9,10 @@ public interface Target extends SpecificResource{
 
 //	public abstract String getEuropeanaId();
 
-	public abstract void setTargetTypeEnum(TargetTypes targetType);
+	public abstract void setTypeEnum(TargetTypes targetType);
 
-	public abstract void setTargetType(String targetType);
+	public abstract void setType(String targetType);
 
-	public abstract String getTargetType();
+	public abstract String getType();
 	
 }

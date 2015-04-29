@@ -6,6 +6,6 @@ public class TextTarget extends BaseTarget {
 
 	public TextTarget(){
 		super();
-		setTargetTypeEnum(TargetTypes.TEXT);
+		setTypeEnum(TargetTypes.TEXT);
 	}
 }

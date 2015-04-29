@@ -11,7 +11,7 @@ public class BaseAnnotationId implements AnnotationId{
 	private static final long serialVersionUID = -5342617580049965304L;
 
 	private String resourceId;
-	private Integer annotationNr = -1;
+	private Long annotationNr = null;
 	private String provider;
 
 	public BaseAnnotationId(){
@@ -21,12 +21,12 @@ public class BaseAnnotationId implements AnnotationId{
 		this.resourceId = europeanaId;
 	}
 	
-	public BaseAnnotationId(String europeanaId, Integer annotationNr){
+	public BaseAnnotationId(String europeanaId, Long annotationNr){
 		this.resourceId = europeanaId;
 		this.annotationNr = annotationNr;
 	}
 	
-	public BaseAnnotationId(String europeanaId, String provider, Integer annotationNr){
+	public BaseAnnotationId(String europeanaId, String provider, Long annotationNr){
 		this.resourceId = europeanaId;
 		this.provider = provider;
 		this.annotationNr = annotationNr;
@@ -42,13 +42,13 @@ public class BaseAnnotationId implements AnnotationId{
 	}
 
 	@Override
-	public void setAnnotationNr(Integer nr) {
-		this.annotationNr = nr;
+	public void setAnnotationNr(Long annotationNr) {
+		this.annotationNr = annotationNr;
 
 	}
 
 	@Override
-	public Integer getAnnotationNr() {
+	public Long getAnnotationNr() {
 		return annotationNr;
 	}
 

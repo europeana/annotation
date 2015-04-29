@@ -27,4 +27,11 @@ public enum MotivationTypes {
 		return oaType;
 	}
 	
+	public static MotivationTypes getType(String oaType){
+		String[] values = oaType.split(":", 2);
+		//last token
+		String value = values[values.length -1];
+		return valueOf(value.toUpperCase());
+	}
+	
 }

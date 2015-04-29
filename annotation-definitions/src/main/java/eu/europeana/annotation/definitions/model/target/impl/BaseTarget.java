@@ -10,17 +10,17 @@ public class BaseTarget extends OaSpecificResource implements Target {
 //	private String europeanaId;
 
 	@Override
-	public String getTargetType() {
+	public String getType() {
 		return targetType;
 	}
 
 	@Override
-	public void setTargetType(String targetType) {
+	public void setType(String targetType) {
 		this.targetType = targetType;
 	}
 	
 	@Override
-	public void setTargetTypeEnum(TargetTypes targetType) {
+	public void setTypeEnum(TargetTypes targetType) {
 		this.targetType = targetType.name();
 	}
 	
@@ -28,12 +28,12 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	
 	public BaseTarget(String targetType){
 		super();
-		setTargetType(targetType);
+		setType(targetType);
 	}
 
 	public BaseTarget(TargetTypes targetType){
 		super();
-		setTargetTypeEnum(targetType);
+		setTypeEnum(targetType);
 	}
 //	@Override
 //	public String getEuropeanaId() {
@@ -128,8 +128,8 @@ public class BaseTarget extends OaSpecificResource implements Target {
 		    }
 	    }
 	    
-	    if ((this.getTargetType() != null) && (that.getTargetType() != null) &&
-	    		(!this.getTargetType().equals(that.getTargetType()))) {
+	    if ((this.getType() != null) && (that.getType() != null) &&
+	    		(!this.getType().equals(that.getType()))) {
 	    	System.out.println("Target objects have different target type values.");
 	    	res = false;
 	    }
@@ -147,8 +147,8 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	public String toString() {
 		String res = "\t### Target ###\n";
 		
-		if (getTargetType() != null) 
-			res = res + "\t\t" + "targetType:" + getTargetType().toString() + "\n";
+		if (getType() != null) 
+			res = res + "\t\t" + "targetType:" + getType().toString() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
 		if (getMediaType() != null) 

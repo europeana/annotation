@@ -24,7 +24,7 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	private static final long serialVersionUID = -4554805997975526594L;
 	@Id
 	private String resourceId;
-	private Integer annotationNr;
+	private Long annotationNr;
 	
 	public static final String SEQUENCE_COLUMN_NAME = "annotationNr";
 	
@@ -39,20 +39,20 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		this.resourceId = europeanaId;
 	}
 	
-	public GeneratedAnnotationIdImpl(String europeanaId, Integer annotationNr){
+	public GeneratedAnnotationIdImpl(String europeanaId, Long annotationNr){
 		this.resourceId = europeanaId;
 		this.annotationNr = annotationNr;
 	}
 	
 	
 	@Override
-	public Integer getAnnotationNr() {
+	public Long getAnnotationNr() {
 		return annotationNr;
 	}
 
 	@Override
-	public void setAnnotationNr(Integer nr) {
-		this.annotationNr = nr;
+	public void setAnnotationNr(Long annotationNr) {
+		this.annotationNr = annotationNr;
 	}
 
 	@Override

@@ -28,6 +28,8 @@
 						-->
 						<img src="http://www.tehamaschools.org/files/Fether%20Grey.png" height="64" />
 						Annotation component is a service that implements the management and indexing of Web Annotations
+						This is an utility test page, which supports easy testing of the Rest APIs in different scenarios.
+						The API Documentation using swagger console can be accessed here: <a href="./docs/index.html" target="_new">API Docs (swagger)</a> 
 					</div>
 
 					<h3>JSON  API  </h3>
@@ -418,6 +420,44 @@
 								create a semantic annotation (ObjectTag) and return the object as stored in the database
 							</td>
 						</tr>						
+
+<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON_LD</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotation.jsonld<br>
+									Simple Tag as (Europeana) JSON-LD:
+								<form action="annotation.jsonld" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="provider" value="historypin">
+								<textarea rows="20" cols="25" name="annotation" >
+{
+ "@context": "http://www.europeana.eu/annotation/context.jsonld",
+ "@type": "oa:Annotation",
+ "@id": "http://data.europeana.eu/annotation/historypin/456",
+ "annotatedBy": {
+   "@id": "https://www.historypin.org/en/person/55376/",
+   "@type": "foaf:Person",
+   "name": "John Smith"
+ },
+ "annotatedAt": "2015-02-27T12:00:43Z",
+ "serializedAt": "2015-02-28T13:00:34Z",
+ "serializedBy": "http://www.historypin.org",
+ "motivation": "oa:tagging",
+ "body": "church",
+ "target": "http://data.europeana.eu/item/123/xyz",
+ "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+}
+</textarea>
+								<br>
+								<input type="submit" name="create" value="create">
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								create a simple tag (ObjectTag) and return the object as stored in the database
+							</td>
+						</tr>						
+
 
 						<tr>
 							<td>&nbsp;</td>

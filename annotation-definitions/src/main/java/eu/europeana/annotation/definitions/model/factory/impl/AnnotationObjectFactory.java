@@ -30,7 +30,13 @@ public class AnnotationObjectFactory
 
 	}
 	
-
+	@Override
+	public Annotation createObjectInstance(Enum<AnnotationTypes> modelObjectType) {
+		Annotation res = super.createObjectInstance(modelObjectType);
+		res.setInternalType(modelObjectType.name());
+		return res;
+	}
+	
 	@Override
 	public Class<? extends Annotation> getClassForType(
 			Enum<AnnotationTypes> modelType) {

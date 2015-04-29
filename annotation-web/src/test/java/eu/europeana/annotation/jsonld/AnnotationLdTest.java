@@ -155,7 +155,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         baseObjectTag.getTarget().setSource(null);
         baseObjectTag.getTarget().setState(null);
         baseObjectTag.getTarget().setStyleClass(null);
-        baseObjectTag.getTarget().setTargetType(null);
+        baseObjectTag.getTarget().setType(null);
         baseObjectTag.getTarget().setValue(null);
         AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
         
@@ -328,7 +328,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     	 */
         Annotation originalAnnotation = createBaseObjectTagInstance(); 
         String originalAgentType = TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType());
-        originalAnnotation.getSerializedBy().addType(AgentTypes.SOFTWARE_AGENT.name());
+        originalAnnotation.getSerializedBy().addType(AgentTypes.SOFTWARE.name());
         assertEquals(originalAgentType, TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType()));
         originalAnnotation.getSerializedBy().addType("new type");
         System.out.println("Agent type: " + TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType()));

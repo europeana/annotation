@@ -7,7 +7,7 @@ public class ImageTarget extends BaseTarget implements Target {
 
 	public ImageTarget(){
 		super();
-		setTargetTypeEnum(TargetTypes.IMAGE);
+		setTypeEnum(TargetTypes.IMAGE);
 	}
 
 	

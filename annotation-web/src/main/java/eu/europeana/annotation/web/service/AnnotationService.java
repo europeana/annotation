@@ -3,6 +3,8 @@ package eu.europeana.annotation.web.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.stanbol.commons.exception.JsonParseException;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -49,8 +51,9 @@ public interface AnnotationService {
 	 * This method creates Europeana Annotation object from a JsonLd string.
 	 * @param annotationJsonLdStr
 	 * @return Annotation object
+	 * @throws JsonParseException 
 	 */
-	public Annotation parseEuropeanaAnnotation(String annotationJsonLdStr);
+	public Annotation parseAnnotationLd(String annotationJsonLdStr) throws JsonParseException;
 
 	/**
 	 * This method stores Annotation object in database and in Solr.
@@ -75,7 +78,7 @@ public interface AnnotationService {
 	 * @param provider
 	 * @param annotationNr
 	 */
-	public void deleteAnnotation(String resourceId, String provider, int annotationNr);
+	public void deleteAnnotation(String resourceId, String provider, Long annotationNr);
 
 	/**
 	 * This method forces reindexing of the annotation, which means 
@@ -85,7 +88,7 @@ public interface AnnotationService {
 	 * @param provider
 	 * @param annotationNr
 	 */
-	public void indexAnnotation(String resourceId, String provider, int annotationNr);
+	public void indexAnnotation(String resourceId, String provider, Long annotationNr);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -95,7 +98,7 @@ public interface AnnotationService {
 	 * @param annotationNr
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(String resourceId, String provider, int annotationNr);
+	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr);
 	
 	/**
 	 * This method returns annotation object for given annotationId that
@@ -105,7 +108,7 @@ public interface AnnotationService {
 	 * @param annotationNr
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(String europeanaId, String provider, int annotationNr);
+	public Annotation getAnnotationById(String europeanaId, String provider, Long annotationNr);
 	
 	/**
 	 * Search for annotations by the given text query.

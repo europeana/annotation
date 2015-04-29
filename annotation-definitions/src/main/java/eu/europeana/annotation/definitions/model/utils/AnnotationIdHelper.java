@@ -12,9 +12,11 @@ public class AnnotationIdHelper {
 
 	/**
 	 * This method extracts resourceId from passed httpUri.
+	 * use the {@link #extractResoureIdPartsFromHttpUri(String)} method
 	 * @param httpUri
 	 * @return resourceId
 	 */
+	@Deprecated
 	public String extractResoureIdFromHttpUri(String httpUri) {
 		String res = "";
 		if (StringUtils.isNotEmpty(httpUri)) {
@@ -25,13 +27,37 @@ public class AnnotationIdHelper {
         	
 			String collection = arrValue[collectionPosition];
         	String object     = arrValue[objectPosition].replace(".html", "");
-			if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
+        	if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
 				res = WebAnnotationFields.SLASH + collection
 						+ WebAnnotationFields.SLASH + object;
 		}
 		return res;
 	}
-		
+	
+	
+	public String buildResourseId(String[] parts){
+//		if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
+//			res = WebAnnotationFields.SLASH + collection
+//					+ WebAnnotationFields.SLASH + object;
+		return WebAnnotationFields.SLASH + parts[0]
+				+ WebAnnotationFields.SLASH + parts[1];
+	}
+	
+	public String[] extractResoureIdPartsFromHttpUri(String httpUri) {
+		String res[] = new String[2];
+		if (StringUtils.isNotEmpty(httpUri)) {
+	        String[] arrValue = httpUri.split(WebAnnotationFields.SLASH);
+        	//computed from the end of the url
+        	int collectionPosition = arrValue.length - 2;
+        	int objectPosition = arrValue.length - 1;			
+        	
+			String collection = arrValue[collectionPosition];
+        	String object     = arrValue[objectPosition].replace(".html", "");
+        	res[0] = collection;
+        	res[1] = object;
+        }
+		return res;
+	}
 	
 	/**
      * Extract resourceId from target.source.httpUri if source exists
@@ -159,7 +185,7 @@ public class AnnotationIdHelper {
     	if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider) && sameAs.contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)){
     		String[] parts = sameAs.split(WebAnnotationFields.SLASH);
     		annotationId.setProvider(provider);
-    		int annotationNr = Integer.parseInt(parts[parts.length -1]);
+    		Long annotationNr = Long.parseLong(parts[parts.length -1]);
 			annotationId.setAnnotationNr(annotationNr);
     	}
 	}

@@ -35,7 +35,7 @@ public abstract class AbstractModelObjectFactory <O, E extends Enum<E>> {
 
 
 	private Enum<E> getEnumEntry(String modelObjectType) {
-		return  Enum.valueOf(getEnumClass(), modelObjectType);
+		return  Enum.valueOf(getEnumClass(), modelObjectType.toUpperCase());
 	}
 	
 	public abstract Class<? extends O> getClassForType(Enum<E> modelType);

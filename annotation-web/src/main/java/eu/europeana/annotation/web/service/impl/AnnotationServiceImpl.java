@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
+import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
 
@@ -102,7 +104,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	
 	@Override
 	public Annotation getAnnotationById(String resourceId, String provider,
-			int annotationNr) {
+			Long annotationNr) {
 		return getMongoPersistence().find(resourceId, provider, annotationNr);
 		
 	}
@@ -164,31 +166,34 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation parseEuropeanaAnnotation(String annotationJsonLdStr) {
+	public Annotation parseAnnotationLd(String annotationJsonLdStr) throws JsonParseException {
 	    
 		/**
 	     * parse JsonLd string using JsonLdParser.
 	     * JsonLd string -> JsonLdParser -> JsonLd object
 	     */
-	    AnnotationLd parsedAnnotationLd = null;
-	    JsonLd parsedJsonLd = null;
-	    try {
-	    	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
-	    	
-	    	/**
-	    	 * convert JsonLd to AnnotationLd.
-	    	 * JsonLd object -> AnnotationLd object
-	    	 */
-	    	parsedAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
-		} catch (Exception e) {
-			String errorMessage = "Cannot Parse JSON-LD input! ";
-			Logger.getLogger(getClass().getName()).error(errorMessage, e);
-		}
-	    
-	    /**
-	     * AnnotationLd object -> Annotation object.
-	     */
-	    return parsedAnnotationLd.getAnnotation();
+		AnnotationLdParser europeanaParser = new AnnotationLdParser();
+		return europeanaParser.parseAnnotation(annotationJsonLdStr);
+		
+//	    AnnotationLd parsedAnnotationLd = null;
+//	    JsonLd parsedJsonLd = null;
+//	    try {
+//	    	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
+//	    	
+//	    	/**
+//	    	 * convert JsonLd to AnnotationLd.
+//	    	 * JsonLd object -> AnnotationLd object
+//	    	 */
+//	    	parsedAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
+//		} catch (Exception e) {
+//			String errorMessage = "Cannot Parse JSON-LD input! ";
+//			Logger.getLogger(getClass().getName()).error(errorMessage, e);
+//		}
+//	    
+//	    /**
+//	     * AnnotationLd object -> Annotation object.
+//	     */
+//	    return parsedAnnotationLd.getAnnotation();
 	}
 
 	/* (non-Javadoc)
@@ -411,7 +416,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void deleteAnnotation(String resourceId, String provider, int annotationNr) {
+	public void deleteAnnotation(String resourceId, String provider, Long annotationNr) {
         try {
 //    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
     		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
@@ -424,7 +429,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void indexAnnotation(String resourceId, String provider, int annotationNr) {
+	public void indexAnnotation(String resourceId, String provider, Long annotationNr) {
         try {
     		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
        	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
@@ -436,7 +441,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation disableAnnotation(String resourceId, String provider, int annotationNr) {
+	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr) {
         try {
     		Annotation res = getMongoPersistence().find(resourceId, provider, annotationNr);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);

@@ -27,7 +27,7 @@ public interface WebAnnotationFields {
 	public static final String AT_TYPE              = "@type";
 	public static final String BODY                 = "body";
 	public static final String BODY_TYPE            = "bodyType";
-	public static final String TARGET_TYPE          = "targetType";
+//	public static final String TARGET_TYPE          = "targetType";
 	public static final String DIMENSION_MAP        = "dimensionMap";
 	public static final String CHARS                = "chars";
 	public static final String DC_LANGUAGE          = "language";
@@ -35,7 +35,7 @@ public interface WebAnnotationFields {
 	public static final String MEDIA_TYPE           = "mediaType";
 	public static final String FOAF_PAGE            = "foaf:page";
 	public static final String TARGET               = "target";
-	public static final String SID                  = "@id";
+	public static final String AT_ID               = "@id";
 	public static final String TYPE                 = "type";
 	public static final String ANNOTATION_ID        = "annotationId";
 	public static final String DATE_FORMAT          = "yyyy-MM-dd'T'HH:mm:ss";

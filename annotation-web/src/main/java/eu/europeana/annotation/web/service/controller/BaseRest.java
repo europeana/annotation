@@ -24,8 +24,14 @@ public class BaseRest {
 	@Autowired
 	private AnnotationService annotationService;
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
-	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
+	protected AnnotationIdHelper annotationIdHelper;
 
+
+	public AnnotationIdHelper getAnnotationIdHelper() {
+		if(annotationIdHelper == null)
+			annotationIdHelper = new AnnotationIdHelper();
+		return annotationIdHelper;
+	}
 
 	TypeUtils typeUtils = new TypeUtils();
 

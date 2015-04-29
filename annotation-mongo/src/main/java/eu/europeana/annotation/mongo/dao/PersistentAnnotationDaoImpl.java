@@ -35,7 +35,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 
 			// if first annotationId
 			if (nextAnnotationId == null) {
-				nextAnnotationId = new GeneratedAnnotationIdImpl(europeanaId, 1);
+				nextAnnotationId = new GeneratedAnnotationIdImpl(europeanaId, 1L);
 				ds.save(nextAnnotationId);
 			}
 		}
