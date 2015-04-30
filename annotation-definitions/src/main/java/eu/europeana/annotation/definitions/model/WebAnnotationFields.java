@@ -7,6 +7,7 @@ public interface WebAnnotationFields {
 	 * Helping constants for Annotation mapping to the JSON-LD format 
 	 */
 	public static final String EU_TYPE              = "euType";
+	public static final String CONTEXT              = "@context";
 	public static final String SPLITTER             = "#";
 	public static final String ANNOTATED_BY         = "annotatedBy";
 	public static final String ANNOTATED_AT         = "annotatedAt";

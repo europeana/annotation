@@ -86,13 +86,14 @@ public class EuropeanaAnnotationLd extends JsonLd {
                 
     	setUseTypeCoercion(false);
         setUseCuries(true);
-        addNamespacePrefix(WebAnnotationFields.OA_CONTEXT, WebAnnotationFields.OA);
+//        addNamespacePrefix(WebAnnotationFields.OA_CONTEXT, WebAnnotationFields.OA);
         //TODO: verify if the following check is needed
         //if(isApplyNamespaces())
         	setUsedNamespaces(namespacePrefixMap);
 
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
+    	jsonLdResource.putProperty(WebAnnotationFields.CONTEXT, WebAnnotationFields.OA_CONTEXT);   
         if (!StringUtils.isBlank(annotation.getType())) {
         	jsonLdResource.addType(annotation.getType());
         } else {
