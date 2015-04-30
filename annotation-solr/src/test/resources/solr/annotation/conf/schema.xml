@@ -101,6 +101,12 @@
 			stored="true" multiValued="false" />
 		<field name="tag_id" type="text" indexed="true"
 			required="false" multiValued="false" stored="true" />
+		<!--  @Field("internalType") -->	
+		<field name="internal_type" type="text" indexed="true"
+			stored="true" multiValued="false" />
+		<!--  @Field("equivalentTo") -->	
+		<field name="equivalent_to" type="text" indexed="true"
+			stored="true" multiValued="false" />
 
 		<!--  @Field("value") -->	
 		<!-- 

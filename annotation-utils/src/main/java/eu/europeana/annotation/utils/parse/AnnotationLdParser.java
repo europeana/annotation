@@ -499,7 +499,8 @@ public class AnnotationLdParser extends JsonLdParser {
 
 			Agent agent = AgentObjectFactory.getInstance()
 					.createModelObjectInstance(agentType);
-			agent.addType(webType);
+//			agent.addType(webType);
+			agent.setAgentType(webType);
 
 			agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
 

@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
@@ -169,9 +168,10 @@ public class AnnotationTestObjectBuilder {
 	private Agent buildAnnotatedByAgent() {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
-		agent.addType("foaf:Person");
-		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-				+ AgentTypes.SOFTWARE.name());
+//		agent.addType("foaf:Person");
+		agent.setAgentType("foaf:Person");
+//		agent.addType(WebAnnotationFields.EU_TYPE + ":"
+//				+ AgentTypes.SOFTWARE.name());
 		agent.setName("annonymous web user");
 		agent.setOpenId("open_id_1");
 		//		agent.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
@@ -181,9 +181,10 @@ public class AnnotationTestObjectBuilder {
 	private Agent buildSerializedByAgent() {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
-		agent.addType("prov:SoftwareAgent");
-		agent.addType(WebAnnotationFields.EU_TYPE + ":"
-				+ AgentTypes.SOFTWARE.name());
+//		agent.addType("prov:SoftwareAgent");
+		agent.setAgentType("prov:SoftwareAgent");
+//		agent.addType(WebAnnotationFields.EU_TYPE + ":"
+//				+ AgentTypes.SOFTWARE.name());
 		agent.setName("Annotorious");
 		agent.setHomepage("http://annotorious.github.io/");
 		agent.setOpenId("open_id_2");

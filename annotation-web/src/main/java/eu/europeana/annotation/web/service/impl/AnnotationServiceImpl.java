@@ -287,7 +287,7 @@ public class AnnotationServiceImpl implements AnnotationService {
   		//TODO: update this to store the internal type instead of the oa type in the index
   		//TODO: add the internal type solr configs
 		solrAnnotationImpl.setAnnotationType(annotation.getInternalType()); 
-  		//solrAnnotationImpl.setInternalType(annotation.getInternalType());
+//  		solrAnnotationImpl.setInternalType(annotation.getInternalType());
   		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
   		Body body = annotation.getBody();
   		if (withMultilingual) 

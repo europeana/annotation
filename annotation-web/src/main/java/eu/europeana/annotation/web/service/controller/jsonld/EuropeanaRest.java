@@ -70,7 +70,7 @@ public class EuropeanaRest extends BaseRest{
 
 		String action = "create:/annotation.jsonld";
 		
-		try{
+		try {
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotation);
 			//annotationIdHelper = new AnnotationIdHelper();

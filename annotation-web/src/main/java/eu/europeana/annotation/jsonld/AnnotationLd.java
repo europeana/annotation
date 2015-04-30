@@ -722,8 +722,10 @@ public class AnnotationLd extends JsonLd {
         	propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
 //        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
 //        	propertyValue.setType(agent.getAgentType());
-        if (agent != null && !StringUtils.isBlank(TypeUtils.getTypeListAsStr(agent.getAgentType()))) 
-        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(agent.getAgentType()));
+//        if (agent != null && !StringUtils.isBlank(TypeUtils.getTypeListAsStr(agent.getAgentType()))) 
+//        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(agent.getAgentType()));
+        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
+        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getAgentType());
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 

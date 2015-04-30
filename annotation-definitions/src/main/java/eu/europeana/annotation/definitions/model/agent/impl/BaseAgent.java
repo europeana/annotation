@@ -12,28 +12,45 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 public abstract class BaseAgent implements Agent {
 
 //	private AgentTypes agentType;
-//	private String agentType;
-	private List<String> agentType = new ArrayList<String>(2);
+	private String agentType;
+//	private List<String> agentType = new ArrayList<String>(2);
+	private String internalType;
 	private String name;
 	private String mbox;
 	private String openId;
 	private String homepage;
 	private String inputString;
 	
-	public void addType(String newType) {
-		if (!agentType.contains(newType)) {
-			agentType.add(newType);
-		}
-	}
-	
-	public List<String> getAgentType() {
+//	public void addType(String newType) {
+//		if (!agentType.contains(newType)) {
+//			agentType.add(newType);
+//		}
+//	}
+//	
+//	public List<String> getAgentType() {
+//		return agentType;
+//	}
+//	
+//	public void setAgentType(List<String> agentTypeList) {
+//		this.agentType = agentTypeList;
+//	}
+
+	@Override
+	public String getAgentType() {
 		return agentType;
 	}
-	
-	public void setAgentType(List<String> agentTypeList) {
-		this.agentType = agentTypeList;
+	@Override
+	public void setAgentType(String agentType) {
+		this.agentType = agentType;
 	}
-
+	@Override
+	public String getInternalType() {
+		return internalType;
+	}
+	@Override
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
+	}
 	@Override
 	public String getName() {
 		return name;
@@ -99,22 +116,24 @@ public abstract class BaseAgent implements Agent {
 	
 	@Override
 	public void setAgentTypeEnum(AgentTypes curAgentType) {
-		agentType.add(curAgentType.name());
+//		agentType.add(curAgentType.name());
+		agentType = curAgentType.name();
 //		this.agentType = agentType;
 	}
 	
 	@Override
 	public void setAgentTypeAsString(String agentTypeStr) {
-		agentType.clear();
-	    if (!StringUtils.isBlank(agentTypeStr)) { 
-	    	agentTypeStr = agentTypeStr.replace("[", "").replace("]", "").replace(" ", "");
-	        String[] tokens = agentTypeStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-	        for(String t : tokens) {
-	        	agentType.add(t);
-	        }
-		}
+		agentType = agentTypeStr;
+//		agentType.clear();
+//	    if (!StringUtils.isBlank(agentTypeStr)) { 
+//	    	agentTypeStr = agentTypeStr.replace("[", "").replace("]", "").replace(" ", "");
+//	        String[] tokens = agentTypeStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+//	        for(String t : tokens) {
+//	        	agentType.add(t);
+//	        }
+//		}
 		
-//		setAgentTypeEnum(AgentTypes.valueOf(agentTypeStr));
+////		setAgentTypeEnum(AgentTypes.valueOf(agentTypeStr));
 	}
 	
 	protected BaseAgent(){}
@@ -158,7 +177,8 @@ public abstract class BaseAgent implements Agent {
 		String res = "\t### Agent ###\n";
 		
 		if (getAgentType() != null) 
-			res = res + "\t\t" + "agentType:" + TypeUtils.getTypeListAsStr(getAgentType()) + "\n";
+			res = res + "\t\t" + "agentType:" + getAgentType() + "\n";
+//			res = res + "\t\t" + "agentType:" + TypeUtils.getTypeListAsStr(getAgentType()) + "\n";
 		if (getName() != null) 
 			res = res + "\t\t" + "name:" + getName() + "\n";
 		if (getHomepage() != null) 
