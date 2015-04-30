@@ -193,7 +193,7 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		if(BodyTypes.TAG.equals(object.getBody().getBodyType()))
+		if(BodyTypes.isTagBody(object.getBody().getBodyType()))
 			return true;
 		
 		String euType = new TypeUtils().getEuTypeFromTypeArray(object.getBody()

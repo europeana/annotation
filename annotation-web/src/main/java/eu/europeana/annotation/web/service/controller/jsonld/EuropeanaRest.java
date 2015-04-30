@@ -16,7 +16,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.web.exception.FunctionalRuntimeException;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -44,9 +43,11 @@ public class EuropeanaRest extends BaseRest{
 		) {
 
 		Annotation annotation = getAnnotationService().getAnnotationById(provider, annotationNr);
-		
-		AnnotationLd annotationLd = new AnnotationLd(annotation);
-        String jsonLd = annotationLd.toString(4);
+		Annotation resAnnotation = annotationBuilder
+				.copyIntoWebAnnotation(annotation);
+
+		JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
+		String jsonLd = annotationLd.toString(4);
        	
 		return JsonWebUtils.toJson(jsonLd, null);
 	}
@@ -69,6 +70,9 @@ public class EuropeanaRest extends BaseRest{
 	
 			AnnotationId annoId = buildAnnotationId(wskey, provider, action,
 					webAnnotation);
+			
+			//if exists...
+			
 			
 			webAnnotation.setAnnotationId(annoId);		
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);

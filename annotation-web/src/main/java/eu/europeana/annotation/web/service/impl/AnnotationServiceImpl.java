@@ -283,7 +283,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 		
   		SolrAnnotationImpl solrAnnotationImpl = new SolrAnnotationImpl();
 //  		solrAnnotationImpl.setType(annotation.getType()); 
-  		solrAnnotationImpl.setAnnotationType(annotation.getType()); 
+  		//TODO: update this to store the internal type instead of the oa type in the index
+  		//TODO: add the internal type solr configs
+		solrAnnotationImpl.setAnnotationType(annotation.getInternalType()); 
+  		//solrAnnotationImpl.setInternalType(annotation.getInternalType());
   		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
   		Body body = annotation.getBody();
   		if (withMultilingual) 
@@ -299,19 +302,13 @@ public class AnnotationServiceImpl implements AnnotationService {
   		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
   		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
   		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
-  		if (StringUtils.isNotBlank(annotation.getAnnotationId().toString())) {
-  			solrAnnotationImpl.setAnnotationIdString(annotation.getAnnotationId().toString());
-  		}
-		if (StringUtils.isNotBlank(solrAnnotationImpl.getTagId())) {
-			solrAnnotationImpl.setTagId(solrAnnotationImpl.getTagId());
-		}
-		if (StringUtils.isNotBlank(solrAnnotationImpl.getSameAs())) {
-			solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
-		}
-		if (StringUtils.isNotBlank(solrAnnotationImpl.getEquivalentTo())) {
-			solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
-		}
-
+  		solrAnnotationImpl.setAnnotationIdString(annotation.getAnnotationId().toUri());
+  		
+  		solrAnnotationImpl.setTagId(solrAnnotationImpl.getTagId());
+		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
+		//TODO: add the equivalent to solr configs
+		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
+		
         res = solrAnnotationImpl;
 
         return res;

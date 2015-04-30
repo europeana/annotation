@@ -768,7 +768,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	}
 
 	private boolean isJsonObjectInput(String inputString) {
-		return inputString.contains("{");
+		return inputString!= null && inputString.contains("{");
 	}
 
 	private JsonLdProperty addStyledByProperty(Annotation annotation) {
