@@ -102,6 +102,15 @@ public interface AnnotationService {
 	
 	/**
 	 * This method returns annotation object for given annotationId that
+	 * comprises provider and annotationNr.
+	 * @param provider
+	 * @param annotationNr
+	 * @return annotation object
+	 */
+	public Annotation getAnnotationById(String provider, Long annotationNr);
+	
+	/**
+	 * This method returns annotation object for given annotationId that
 	 * comprises europeanaId, provider and annotationNr.
 	 * @param europeanaId
 	 * @param provider

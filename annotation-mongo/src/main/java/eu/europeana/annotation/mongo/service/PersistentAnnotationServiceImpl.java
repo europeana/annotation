@@ -266,6 +266,15 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
+	public PersistentAnnotation find(String provider, Long annotationNr) {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
+		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+
+		return getAnnotationDao().findOne(query);
+	}
+
+	@Override
 	public PersistentAnnotation find(String europeanaId, String provider,
 			Long annotationNr) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();

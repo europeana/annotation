@@ -19,7 +19,6 @@ import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
-import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -102,6 +101,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
 	}
 	
+	@Override
+	public Annotation getAnnotationById(String provider, Long annotationNr) {
+		return getMongoPersistence().find(provider, annotationNr);
+		
+	}
+
 	@Override
 	public Annotation getAnnotationById(String resourceId, String provider,
 			Long annotationNr) {

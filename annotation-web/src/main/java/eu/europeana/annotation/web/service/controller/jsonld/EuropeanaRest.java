@@ -34,6 +34,23 @@ GET /<annotation-web>/search.jsonld
 @Api(value = "europeanald", description = "Europeana Annotation-Ld Rest Service")
 public class EuropeanaRest extends BaseRest{
 
+	@RequestMapping(value = "/annotationld/{provider}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAnnotationLd (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile,
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		) {
+
+		Annotation annotation = getAnnotationService().getAnnotationById(provider, annotationNr);
+		
+		AnnotationLd annotationLd = new AnnotationLd(annotation);
+        String jsonLd = annotationLd.toString(4);
+       	
+		return JsonWebUtils.toJson(jsonLd, null);
+	}
+	
 	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
