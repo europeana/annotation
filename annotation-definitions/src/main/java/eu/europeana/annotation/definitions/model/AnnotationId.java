@@ -24,4 +24,6 @@ public interface AnnotationId extends Serializable {
 
 	public void setProvider(String provider);
 	
+	public String toUri();
+	
 }

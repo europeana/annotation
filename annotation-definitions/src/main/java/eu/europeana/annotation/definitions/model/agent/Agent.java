@@ -33,5 +33,9 @@ public interface Agent {
 	public abstract void setName(String name);
 
 	public abstract String getName();
+	
+	public abstract void setInputString(String string);
+	
+	public abstract String getInputString();
 
 }

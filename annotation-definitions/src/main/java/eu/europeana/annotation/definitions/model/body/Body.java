@@ -26,4 +26,8 @@ public interface Body extends InternetResource{
 	
 	public abstract void setConcept(Concept concept);
 	
+	public abstract void setInputString(String string);
+	
+	public abstract String getInputString();
+	
 }

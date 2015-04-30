@@ -233,6 +233,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			break;
 		case WebAnnotationFields.ANNOTATED_BY:
 			Agent annotator = parseAnnotator(valueObject);
+			annotator.setInputString(valueObject.toString());
 			anno.setAnnotatedBy(annotator);
 			break;
 		case WebAnnotationFields.SERIALIZED_AT:
@@ -241,6 +242,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			break;
 		case WebAnnotationFields.SERIALIZED_BY:
 			Agent serializer = parseSerializer(valueObject);
+			serializer.setInputString(valueObject.toString());
 			anno.setSerializedBy(serializer);
 			break;
 		case WebAnnotationFields.MOTIVATION:
@@ -248,12 +250,15 @@ public class AnnotationLdParser extends JsonLdParser {
 			break;
 		case WebAnnotationFields.BODY:
 			Body body = parseBody(valueObject);
+			body.setInputString(valueObject.toString());
 			anno.setBody(body);
 			break;
 		case WebAnnotationFields.TARGET:
 			// TODO: move the parsing of ID and target in the upper method to
 			// avoid redundant computations
-			anno.setTarget(parseTarget(valueObject));
+			Target target = parseTarget(valueObject);
+			target.setInputString(valueObject.toString());
+			anno.setTarget(target);
 			break;
 		case (WebAnnotationFields.OA + ":" + WebAnnotationFields.EQUIVALENT_TO):
 			anno.setEquivalentTo((String) valueObject);

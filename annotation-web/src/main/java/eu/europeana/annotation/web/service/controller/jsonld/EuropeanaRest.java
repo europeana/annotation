@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +62,7 @@ public class EuropeanaRest extends BaseRest{
 			Annotation resAnnotation = annotationBuilder
 					.copyIntoWebAnnotation(storedAnnotation);
 	
-			AnnotationLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
+			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
 	        String jsonLd = annotationLd.toString(4);
 	        return JsonWebUtils.toJson(jsonLd, null);			
 		}catch (Exception e){

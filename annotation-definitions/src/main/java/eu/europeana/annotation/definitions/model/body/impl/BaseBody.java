@@ -12,6 +12,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 public abstract class BaseBody extends BaseInternetResource implements Body {
 	
 	private String bodyType;
+	private String inputString;
 	
 	@Override
 	public String getBodyType() {
@@ -60,6 +61,16 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	        this.multilingual = new HashMap<String, String>();
 	    }
 	    this.multilingual.put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
+	}
+
+	@Override
+	public String getInputString() {
+		return inputString;
+	}
+
+	@Override
+	public void setInputString(String inputString) {
+		this.inputString = inputString;
 	}
 
 	@Override

@@ -8,6 +8,7 @@ public class BaseTarget extends OaSpecificResource implements Target {
  
 	private String targetType;
 //	private String europeanaId;
+	private String inputString;
 
 	@Override
 	public String getType() {
@@ -35,6 +36,15 @@ public class BaseTarget extends OaSpecificResource implements Target {
 		super();
 		setTypeEnum(targetType);
 	}
+	@Override
+	public String getInputString() {
+		return inputString;
+	}
+	@Override
+	public void setInputString(String inputString) {
+		this.inputString = inputString;
+	}
+	
 //	@Override
 //	public String getEuropeanaId() {
 //		return europeanaId;

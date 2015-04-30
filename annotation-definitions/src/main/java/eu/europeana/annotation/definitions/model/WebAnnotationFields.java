@@ -25,6 +25,7 @@ public interface WebAnnotationFields {
 	public static final String SELECTOR             = "selector";
 	public static final String STYLE_CLASS          = "styleClass";
 	public static final String AT_TYPE              = "@type";
+	public static final String INPUT_STRING         = "inputString";
 	public static final String BODY                 = "body";
 	public static final String BODY_TYPE            = "bodyType";
 //	public static final String TARGET_TYPE          = "targetType";
@@ -64,7 +65,7 @@ public interface WebAnnotationFields {
 	/**
 	 * AnnotationId
 	 */
-	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotations"; 
+	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotation"; 
 	public static final String SLASH = "/"; 
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4; 
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3; 

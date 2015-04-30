@@ -18,6 +18,7 @@ public abstract class BaseAgent implements Agent {
 	private String mbox;
 	private String openId;
 	private String homepage;
+	private String inputString;
 	
 	public void addType(String newType) {
 		if (!agentType.contains(newType)) {
@@ -65,6 +66,15 @@ public abstract class BaseAgent implements Agent {
 	public void setHomepage(String homepage) {
 		this.homepage = homepage;
 	}
+	@Override
+	public String getInputString() {
+		return inputString;
+	}
+	@Override
+	public void setInputString(String inputString) {
+		this.inputString = inputString;
+	}
+	
 //	@Override
 //	public AgentTypes getAgentType() {
 //		return agentType;

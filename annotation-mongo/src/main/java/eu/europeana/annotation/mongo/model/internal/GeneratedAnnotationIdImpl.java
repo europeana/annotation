@@ -85,6 +85,11 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	}
 	
 	@Override
+	public String toUri() {
+		return getProvider() + WebAnnotationFields.SLASH + getAnnotationNr();
+	}
+	
+	@Override
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
 		

@@ -9,7 +9,7 @@ public class AnnotationBuilder {
 	public AbstractAnnotation copyIntoWebAnnotation(Annotation annotation) {
 
 		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance()
-				.createModelObjectInstance(annotation.getType());
+				.createModelObjectInstance(annotation.getInternalType());
 		
 		copyAnnotationId(annotation, to);
 		copyAnnotationAttributes(annotation, to);
@@ -20,6 +20,7 @@ public class AnnotationBuilder {
 	public void copyAnnotationAttributes(Annotation annotation,
 			Annotation to) {
 		to.setType(annotation.getType());
+		to.setInternalType(annotation.getInternalType());
 		to.setAnnotatedAt(annotation.getAnnotatedAt());
 		to.setAnnotatedBy(annotation.getAnnotatedBy());
 		to.setBody(annotation.getBody());

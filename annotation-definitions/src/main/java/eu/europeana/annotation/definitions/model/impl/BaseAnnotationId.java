@@ -87,5 +87,13 @@ public class BaseAnnotationId implements AnnotationId{
 				+ getProvider() + WebAnnotationFields.SLASH
 				+ getAnnotationNr();
 	}
+
+	@Override
+	public String toUri() {
+		return WebAnnotationFields.ANNOTATION_ID_PREFIX 
+				//+ getResourceId() + WebAnnotationFields.SLASH
+				+ getProvider() + WebAnnotationFields.SLASH
+				+ getAnnotationNr();
+	}
 	
 }
