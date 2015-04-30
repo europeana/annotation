@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -497,6 +498,21 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoPersistence().getAnnotationListByProvider(resourceId, provider);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.web.service.AnnotationService#existsInDb(eu.europeana.annotation.definitions.model.AnnotationId)
+	 */
+	public boolean existsInDb(AnnotationId annoId) {
+		boolean res = false;
+        try {
+    		Annotation dbRes =  getMongoPersistence().find(annoId.getProvider(), annoId.getAnnotationNr());
+    		if (dbRes != null)
+    			res = true;
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+		return res;
+	}
+	
 	/**
 	 * This method initializes AnnotationId dependent on provider.
 	 * @param newAnnotation
@@ -530,3 +546,4 @@ public class AnnotationServiceImpl implements AnnotationService {
 //		return newAnnotation;
 //	}
 }
+

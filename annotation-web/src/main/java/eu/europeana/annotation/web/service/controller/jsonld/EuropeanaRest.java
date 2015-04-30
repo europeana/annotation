@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.web.exception.FunctionalRuntimeException;
+import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
@@ -71,8 +72,9 @@ public class EuropeanaRest extends BaseRest{
 			AnnotationId annoId = buildAnnotationId(wskey, provider, action,
 					webAnnotation);
 			
-			//if exists...
-			
+			// check whether annotation vor given provider and annotationNr already exist in database
+			if (getAnnotationService().existsInDb(annoId)) 
+				return getValidationReport(wskey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB);			
 			
 			webAnnotation.setAnnotationId(annoId);		
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);

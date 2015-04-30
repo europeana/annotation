@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -170,4 +171,10 @@ public interface AnnotationService {
 	 * @param tagId
 	 */
 	public void deleteTag(String tagId);
+	
+	/**
+	 * Check whether annotation for given provider and annotationNr already exist in database.
+	 */
+	public boolean existsInDb(AnnotationId annoId); 
+	
 }

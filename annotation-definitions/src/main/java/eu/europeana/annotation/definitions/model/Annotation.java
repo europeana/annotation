@@ -67,5 +67,5 @@ public interface Annotation {
 	public abstract String getEquivalentTo();
 
 	public void setInternalType(String internalType);
-
+	
 }
