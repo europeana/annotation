@@ -42,15 +42,21 @@ public class EuropeanaRest extends BaseRest{
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
 		) {
-
-		Annotation annotation = getAnnotationService().getAnnotationById(provider, annotationNr);
-		Annotation resAnnotation = annotationBuilder
-				.copyIntoWebAnnotation(annotation);
-
-		JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
-		String jsonLd = annotationLd.toString(4);
-       	
-		return JsonWebUtils.toJson(jsonLd, null);
+		
+		String action = "get:/annotationld/{provider}/{annotationNr}.jsonld";
+		
+		try {
+			Annotation annotation = getAnnotationService().getAnnotationById(provider, annotationNr);
+			Annotation resAnnotation = annotationBuilder
+					.copyIntoWebAnnotation(annotation);
+	
+			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
+			String jsonLd = annotationLd.toString(4);
+	       	
+			return JsonWebUtils.toJson(jsonLd, null);
+		} catch (Exception e) {
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage());		
+		}	
 	}
 	
 	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
