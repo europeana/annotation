@@ -14,7 +14,7 @@ public class AnnotationOperationResponse extends ApiResponse{
 			"Passed 'provider' parameter does not match to the provider given in the JSON string!";	
 	
 	public static String ERROR_ANNOTATION_EXISTS_IN_DB = 
-			"Passed 'provider' and 'annotationNr' already exist in database!";	
+			"Cannot store object! An object with the given id already exists in the database: ";
 	
 	public AnnotationOperationResponse(String apiKey, String action){
 		super(apiKey, action);

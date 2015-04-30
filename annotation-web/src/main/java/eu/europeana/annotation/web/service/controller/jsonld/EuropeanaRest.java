@@ -74,7 +74,7 @@ public class EuropeanaRest extends BaseRest{
 			
 			// check whether annotation vor given provider and annotationNr already exist in database
 			if (getAnnotationService().existsInDb(annoId)) 
-				return getValidationReport(wskey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB);			
+				return getValidationReport(wskey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toUri());			
 			
 			webAnnotation.setAnnotationId(annoId);		
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);
