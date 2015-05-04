@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -29,6 +30,7 @@ public class SearchRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@ApiOperation(notes=WebAnnotationFields.SEARCH_FIELDS_LINK, value="")
 	public ModelAndView searchAnnotationByField(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -101,6 +103,7 @@ public class SearchRest extends BaseRest {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@ApiOperation(notes=WebAnnotationFields.SEARCH_FIELDS_LINK, value="")
 	public ModelAndView searchTagByField(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
