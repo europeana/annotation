@@ -1,12 +1,6 @@
 package eu.europeana.annotation.definitions.model.agent.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 
 public abstract class BaseAgent implements Agent {
@@ -36,11 +30,11 @@ public abstract class BaseAgent implements Agent {
 //	}
 
 	@Override
-	public String getAgentType() {
+	public String getType() {
 		return agentType;
 	}
 	@Override
-	public void setAgentType(String agentType) {
+	public void setType(String agentType) {
 		this.agentType = agentType;
 	}
 	@Override
@@ -151,8 +145,8 @@ public abstract class BaseAgent implements Agent {
 	    /**
 	     * equality check for all relevant fields.
 	     */
-	    if ((this.getAgentType() != null) && (that.getAgentType() != null) &&
-	    		(!this.getAgentType().equals(that.getAgentType()))) {
+	    if ((this.getType() != null) && (that.getType() != null) &&
+	    		(!this.getType().equals(that.getType()))) {
 	    	System.out.println("Agent objects have different 'agentType' fields.");
 	    	res = false;
 	    }
@@ -176,8 +170,8 @@ public abstract class BaseAgent implements Agent {
 	public String toString() {
 		String res = "\t### Agent ###\n";
 		
-		if (getAgentType() != null) 
-			res = res + "\t\t" + "agentType:" + getAgentType() + "\n";
+		if (getType() != null) 
+			res = res + "\t\t" + "agentType:" + getType() + "\n";
 //			res = res + "\t\t" + "agentType:" + TypeUtils.getTypeListAsStr(getAgentType()) + "\n";
 		if (getName() != null) 
 			res = res + "\t\t" + "name:" + getName() + "\n";

@@ -2,7 +2,7 @@ package eu.europeana.annotation.definitions.model.factory;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 
-public abstract class AbstractModelObjectFactory <O, E extends Enum<E>> {
+public abstract class AbstractModelObjectFactory <O , E extends Enum<E>> {
 
 //	 private Class<E> enumClass;
 //

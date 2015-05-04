@@ -24,6 +24,13 @@ public class AgentObjectFactory extends
 		return singleton;
 
 	}
+	
+	@Override
+	public Agent createObjectInstance(Enum<AgentTypes> modelObjectType) {
+		Agent res = super.createObjectInstance(modelObjectType);
+		res.setInternalType(modelObjectType.name());
+		return res;
+	}	
 
 	@Override
 	public Class<? extends Agent> getClassForType(Enum<AgentTypes> modelType) {

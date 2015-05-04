@@ -1,6 +1,8 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -11,21 +13,64 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 public abstract class BaseBody extends BaseInternetResource implements Body {
 	
-	private String bodyType;
+//	private String bodyType;
+	private List<String> bodyType = new ArrayList<String>(2);
 	private String inputString;
+	private String internalType;
 	
-	@Override
-	public String getBodyType() {
+//	@Override
+//	public String getBodyType() {
+//		return bodyType;
+//	}
+	public void setTypeEnum(BodyTypes curBodyType) {
+//		this.bodyType = bodyType.name();
+		bodyType.add(curBodyType.name());
+	}
+//	@Override
+//	public void setBodyType(String bodyTypeStr) {
+//		this.bodyType = bodyTypeStr.replace(" ", "");
+//	}
+
+	public void addType(String newType) {
+		if (!bodyType.contains(newType)) {
+			bodyType.add(newType);
+		}
+	}
+	
+	public List<String> getType() {
 		return bodyType;
 	}
-	protected void setBodyTypeEnum(BodyTypes bodyType) {
-		this.bodyType = bodyType.name();
+	
+	public void setType(List<String> bodyTypeList) {
+		this.bodyType = bodyTypeList;
+	}
+	
+//	public String getTypeStr() {
+//		String listStr = "";
+//		if (bodyType.size() > 0) {
+//			listStr = "[";
+//			for (String s : bodyType)
+//			{
+//				if (listStr.equals("[")) {
+//				    listStr += s;
+//				} else {
+//					listStr += "," + s;
+//				}
+//			}
+//			listStr += "]";
+//		}
+//		return listStr;
+//	}
+	
+	@Override
+	public String getInternalType() {
+		return internalType;
 	}
 	@Override
-	public void setBodyType(String bodyTypeStr) {
-		this.bodyType = bodyTypeStr.replace(" ", "");
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
 	}
-
+	
 	private Concept concept;
 	
 	@Override
@@ -86,8 +131,8 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	    /**
 	     * equality check for all relevant fields.
 	     */
-	    if ((this.getBodyType() != null) && (that.getBodyType() != null) &&
-	    		(!this.getBodyType().equals(that.getBodyType()))) {
+	    if ((this.getType() != null) && (that.getType() != null) &&
+	    		(!this.getType().equals(that.getType()))) {
 	    	System.out.println("Body objects have different body types.");
 	    	res = false;
 	    }
@@ -141,8 +186,8 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	public String toString() {
 		String res = "\t### Body ###\n";
 		
-		if (getBodyType() != null) 
-			res = res + "\t\t" + "bodyType:" + getBodyType().toString() + "\n";
+		if (getType() != null) 
+			res = res + "\t\t" + "bodyType:" + getType().toString() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
 		if (getMediaType() != null) 

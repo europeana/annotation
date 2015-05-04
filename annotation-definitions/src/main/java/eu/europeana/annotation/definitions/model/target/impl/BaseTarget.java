@@ -7,8 +7,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 public class BaseTarget extends OaSpecificResource implements Target {
  
 	private String targetType;
-//	private String europeanaId;
 	private String inputString;
+	private String internalType;
 
 	@Override
 	public String getType() {
@@ -36,6 +36,16 @@ public class BaseTarget extends OaSpecificResource implements Target {
 		super();
 		setTypeEnum(targetType);
 	}
+
+	@Override
+	public String getInternalType() {
+		return internalType;
+	}
+	@Override
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
+	}
+	
 	@Override
 	public String getInputString() {
 		return inputString;

@@ -31,6 +31,13 @@ public class BodyObjectFactory extends
 	}
 
 	@Override
+	public Body createObjectInstance(Enum<BodyTypes> modelObjectType) {
+		Body res = super.createObjectInstance(modelObjectType);
+		res.setInternalType(modelObjectType.name());
+		return res;
+	}
+		
+	@Override
 	public Class<? extends Body> getClassForType(Enum<BodyTypes> modelType) {
 		// TEXT, TAG, SEMANTIC_TAG, SEMANTIC_LINK;
 		Class<? extends Body> returnType = null;

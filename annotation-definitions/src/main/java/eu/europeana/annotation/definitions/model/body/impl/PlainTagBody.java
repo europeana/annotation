@@ -9,7 +9,7 @@ public class PlainTagBody extends BaseBody implements TagBody{
 	
 	public PlainTagBody(){
 		super();
-		setBodyTypeEnum(BodyTypes.TAG);
+		setTypeEnum(BodyTypes.TAG);
 	}
 
 	@Override

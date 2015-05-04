@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
@@ -334,8 +335,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 		}
 		if (solrMultilingualMap.size() > 0)
 			bodyRes.setMultilingual(solrMultilingualMap);
-		if (StringUtils.isNotEmpty(body.getBodyType()))
-			bodyRes.setBodyType(body.getBodyType());
+//		if (StringUtils.isNotEmpty(body.getType()))
+		if (body.getType() != null)
+			bodyRes.setType(body.getType());
 		if (StringUtils.isNotEmpty(body.getContentType()))
 			bodyRes.setContentType(body.getContentType());
 		if (StringUtils.isNotEmpty(body.getHttpUri()))
@@ -366,7 +368,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 		if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
 			solrTagImpl.setId(((PlainTagBody) tag).getTagId());
 		}
-  		solrTagImpl.setTagType(tag.getBodyType());
+//  		solrTagImpl.setTagType(tag.getType());
+  		solrTagImpl.setTagType(TypeUtils.getTypeListAsStr(tag.getType()));
   		solrTagImpl.setValue(tag.getValue());
   		solrTagImpl.setLanguage(tag.getLanguage());
   		solrTagImpl.setContentType(tag.getContentType());

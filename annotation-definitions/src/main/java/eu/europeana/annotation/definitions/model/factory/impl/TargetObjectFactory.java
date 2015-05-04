@@ -29,6 +29,13 @@ public class TargetObjectFactory extends AbstractModelObjectFactory<Target, Targ
 	}
 
 	@Override
+	public Target createObjectInstance(Enum<TargetTypes> modelObjectType) {
+		Target res = super.createObjectInstance(modelObjectType);
+		res.setInternalType(modelObjectType.name());
+		return res;
+	}
+
+	@Override
 	public Class<? extends Target> getClassForType(Enum<TargetTypes> modelType) {
 				Class<? extends Target> returnType = null;
 				TargetTypes targetType = TargetTypes.valueOf(modelType.name());

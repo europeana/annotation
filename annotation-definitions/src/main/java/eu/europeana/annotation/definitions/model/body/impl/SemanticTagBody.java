@@ -6,6 +6,6 @@ public class SemanticTagBody extends PlainTagBody{
 
 	public SemanticTagBody(){
 		super();
-		setBodyTypeEnum(BodyTypes.SEMANTIC_TAG);
+		setTypeEnum(BodyTypes.SEMANTIC_TAG);
 	}
 }

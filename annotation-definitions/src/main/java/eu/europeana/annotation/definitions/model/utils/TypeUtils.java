@@ -3,6 +3,7 @@ package eu.europeana.annotation.definitions.model.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -227,6 +228,23 @@ public class TypeUtils {
 	}
 	
 	/**
+	 * This method converts JSON-LD string to a Java list.
+	 * @param typeStr
+	 * @return list of strings.
+	 */
+	public static List<String> convertStringToList(String typeStr) {
+		List<String> res = new ArrayList<String>(2);
+	    if (!StringUtils.isBlank(typeStr)) { 
+	    	typeStr = typeStr.replace("[", "").replace("]", "").replace(" ", "");
+	        String[] tokens = typeStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+	        for(String t : tokens) {
+	        	res.add(t);
+	        }
+		}
+	    return res;		
+	}
+
+	/**
 	 * This method presents a map as a string in JSON-LD format.
 	 * @param mp
 	 * @return
@@ -249,5 +267,24 @@ public class TypeUtils {
 	    return res;
 	}	
 		
+	/**
+	 * This method checks whether a query type is in a type list.
+	 * @param queryTypeName
+	 * @param types
+	 * @return true if type is in list.
+	 */
+	public static boolean isTypeInList(String queryTypeName, List<String> types){
+		boolean res = false;
+		Iterator<String> itr = types.iterator();
+		while (itr.hasNext()) {
+			String type = itr.next();
+			if (queryTypeName.equals(type)) {
+				res = true;
+				break;
+			}				
+		}
+		return res;
+	}
+	
 	
 }

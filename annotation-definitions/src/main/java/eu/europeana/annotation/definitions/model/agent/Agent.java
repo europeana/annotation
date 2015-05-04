@@ -5,7 +5,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 public interface Agent {
 
 //	public abstract void setAgentType(List<String> agentType);
-	public abstract void setAgentType(String agentTypeStr);
+	public abstract void setType(String agentTypeStr);
 	public abstract void setAgentTypeAsString(String agentTypeStr);
 
 //	public abstract void addType(String newType);
@@ -14,7 +14,7 @@ public interface Agent {
 
 //	public abstract AgentTypes getAgentType();
 //	public abstract List<String> getAgentType();
-	public abstract String getAgentType();
+	public abstract String getType();
 
 	public String getInternalType();
 

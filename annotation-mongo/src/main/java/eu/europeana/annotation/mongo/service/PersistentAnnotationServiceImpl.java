@@ -21,7 +21,6 @@ import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
@@ -169,9 +168,9 @@ public class PersistentAnnotationServiceImpl extends
 			body.copyInto(query);
 			// query.setValue(body.getValue());
 			// query.setHttpUri(body.getHttpUri());
-			if (BodyTypes.isSimpleTagBody(body.getBodyType()))
+			if (BodyTypes.isSimpleTagBody(body.getType()))
 				query.setTagTypeEnum(TagTypes.SIMPLE_TAG);
-			else if (BodyTypes.isSemanticTagBody(body.getBodyType()))
+			else if (BodyTypes.isSemanticTagBody(body.getType()))
 				query.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
 
 			try {
@@ -193,12 +192,17 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		if(BodyTypes.isTagBody(object.getBody().getBodyType()))
+		if(BodyTypes.isTagBody(object.getBody().getType()))
 			return true;
-		
-		String euType = new TypeUtils().getEuTypeFromTypeArray(object.getBody()
-				.getBodyType());
-		return BodyTypes.isTagBody(euType);
+///		List<String> types = object.getBody().getType();
+//		Iterator<String> itr = types.iterator();
+//		while(itr.hasNext()) {
+//			if(BodyTypes.isTagBody(itr.next()))
+//				return true;
+///		}		
+//		String euType = new TypeUtils().getEuTypeFromTypeArray(type);
+//		return BodyTypes.isTagBody(object.getBody().getInternalType());//
+		return BodyTypes.isTagBody(object.getBody().getInternalType());
 	}
 
 	@Override

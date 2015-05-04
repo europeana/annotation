@@ -414,7 +414,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		else if (valueObject instanceof JSONArray)
 			return parseTarget((JSONArray)valueObject);
 		else
-			throw new JsonParseException("unsupported body deserialization for: " + valueObject);
+			throw new JsonParseException("unsupported target+- deserialization for: " + valueObject);
 	}
 
 	private Target parseTarget(String defaultType, String valueObject) {
@@ -500,7 +500,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			Agent agent = AgentObjectFactory.getInstance()
 					.createModelObjectInstance(agentType);
 //			agent.addType(webType);
-			agent.setAgentType(webType);
+			agent.setType(webType);
 
 			agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
 
@@ -527,19 +527,54 @@ public class AnnotationLdParser extends JsonLdParser {
 		
 		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
 				defaultType);
-		body.setBodyType(defaultType);
+		body.addType(defaultType);
 		body.setValue((String) valueObject);
 		return body;
 	}
 
 	private Body parseBody(JSONObject valueObject) throws JsonParseException {
-		throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject);
+		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.TAG.name());
+		try {
+			@SuppressWarnings("rawtypes")
+			Iterator iterator = ((JSONObject) valueObject).keys(); 
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
+				Object value = ((JSONObject) valueObject).get(key); 
+				switch (key) {
+				case WebAnnotationFields.AT_TYPE:
+					if (value.getClass().equals(JSONArray.class)) {
+						for (int i=0; i < ((JSONArray) value).length(); i++) 
+							body.addType(((JSONArray) value).getString(i));
+					}
+					else
+						body.addType(value.toString());
+					body.setInternalType(BodyTypes.TAG.name());
+					break;
+				case WebAnnotationFields.CHARS:
+					body.setValue(value.toString());
+					break;
+				case WebAnnotationFields.DC_LANGUAGE:
+					body.setLanguage(value.toString());
+					break;
+				case WebAnnotationFields.FORMAT:
+					body.setContentType(value.toString());
+					break;
+				default:
+					break;
+				}
+			}
+		} catch (JSONException e) {
+			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+		}
+		
+		
+//		throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject);
 		
 //		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
 //				BodyTypes.TAG.name());
 //		body.setBodyType(BodyTypes.TAG.name());
 //		body.setValue((String) valueObject);
-		//return body;
+		return body;
 	}
 	
 	public AnnotationIdHelper getIdHelper() {

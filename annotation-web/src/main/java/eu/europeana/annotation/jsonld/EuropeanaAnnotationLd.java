@@ -428,7 +428,10 @@ public class EuropeanaAnnotationLd extends JsonLd {
 				
 				body = BodyObjectFactory.getInstance().createModelObjectInstance(euType);
 				
-				body.setBodyType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+//				body.setType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+//				body.addType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+				if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
+					body.setType(TypeUtils.convertStringToList(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE)));			
 
 				if (hasValue(propertyValue, WebAnnotationFields.INPUT_STRING)) 
 					body.setInputString(propertyValue.getValues().get(WebAnnotationFields.INPUT_STRING));
@@ -707,8 +710,10 @@ public class EuropeanaAnnotationLd extends JsonLd {
         if (annotation != null && annotation.getBody() != null) {	
             if (!StringUtils.isBlank(annotation.getBody().getInputString())) 
             	propertyValue.getValues().put(WebAnnotationFields.INPUT_STRING, annotation.getBody().getInputString());
-            if (!StringUtils.isBlank(annotation.getBody().getBodyType()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getBodyType());
+//            if (!StringUtils.isBlank(annotation.getBody().getType()))         	
+//            	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getType());
+            if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getBody().getType()))) 
+        	    propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(annotation.getBody().getType()));            
             if (!StringUtils.isBlank(annotation.getBody().getValue()))         	
             	propertyValue.getValues().put(WebAnnotationFields.CHARS, annotation.getBody().getValue());
             if (!StringUtils.isBlank(annotation.getBody().getLanguage()))         	
@@ -751,8 +756,8 @@ public class EuropeanaAnnotationLd extends JsonLd {
 //        	propertyValue.setType(agent.getAgentType());
 //        if (agent != null && !StringUtils.isBlank(TypeUtils.getTypeListAsStr(agent.getAgentType()))) 
 //        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(agent.getAgentType()));
-        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
-        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getAgentType());
+        if (agent != null && !StringUtils.isBlank(agent.getType())) 
+        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getType());
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 

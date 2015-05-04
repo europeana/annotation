@@ -2,6 +2,7 @@ package eu.europeana.annotation.solr.model.internal;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
@@ -47,11 +48,14 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		return res;
 	}
 
-	public String getBodyType() {
-		String res = "";
-		if (getBody() != null && getBody().getBodyType() != null) 
-			res = getBody().getBodyType();
-		return res;
+	public List<String> getBodyType() {
+//		public String getBodyType() {
+//		String res = "";
+		
+//		if (getBody() != null && getBody().getType() != null) 
+//			res = getBody().getType();
+//		return res;
+		return getBody().getType();
 	}
 
 	@Field("body_type")
@@ -59,10 +63,12 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		if (super.getBody() == null) {
 			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
 					BodyTypes.SEMANTIC_TAG.name());
-			body.setBodyType(bodyType);
+//			body.setType(bodyType);
+			body.addType(bodyType);
 			super.setBody(body);
 		} else {
-			super.getBody().setBodyType(bodyType);
+//			super.getBody().setType(bodyType);
+			super.getBody().addType(bodyType);
 		}
 		//this.bodyType = bodyType;
 	}

@@ -58,10 +58,15 @@ public class AnnotationTestObjectBuilder {
 		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
 				BodyTypes.SEMANTIC_TAG.name());
 		
-		body.setBodyType("[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:"
-				+ BodyTypes.SEMANTIC_TAG.name() 
-				+ "]"
-				);
+//		body.setType("[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:"
+//				+ BodyTypes.SEMANTIC_TAG.name() 
+//				+ "]"
+//				);
+		
+		body.addType("oa:Tag");
+		body.addType("cnt:ContentAsText");
+		body.addType("dctypes:Text");
+		body.addType(BodyTypes.SEMANTIC_TAG.name());
 		
 		body.setValue(text);
 		body.setLanguage(language);
@@ -169,7 +174,7 @@ public class AnnotationTestObjectBuilder {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
 //		agent.addType("foaf:Person");
-		agent.setAgentType("foaf:Person");
+		agent.setType("foaf:Person");
 //		agent.addType(WebAnnotationFields.EU_TYPE + ":"
 //				+ AgentTypes.SOFTWARE.name());
 		agent.setName("annonymous web user");
@@ -182,7 +187,7 @@ public class AnnotationTestObjectBuilder {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
 //		agent.addType("prov:SoftwareAgent");
-		agent.setAgentType("prov:SoftwareAgent");
+		agent.setType("prov:SoftwareAgent");
 //		agent.addType(WebAnnotationFields.EU_TYPE + ":"
 //				+ AgentTypes.SOFTWARE.name());
 		agent.setName("Annotorious");
