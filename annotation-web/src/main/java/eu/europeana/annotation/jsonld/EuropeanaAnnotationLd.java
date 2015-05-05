@@ -302,7 +302,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 
 	private String extractEuType(JsonLdPropertyValue propertyValue, String fieldName) {
 		String typeArray = propertyValue.getValues().get(fieldName);
-		String euType = getTypeHelper().getEuTypeFromTypeArray(typeArray);
+		String euType = getTypeHelper().getInternalTypeFromTypeArray(typeArray);
 		return euType;
 	}
 
@@ -329,10 +329,10 @@ public class EuropeanaAnnotationLd extends JsonLd {
 			
 			String euType = "";
 			if (!StringUtils.isBlank(propertyValue.getType())) 
-				euType = getTypeHelper().getEuTypeFromTypeArray(propertyValue.getType());
+				euType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getType());
 //				euType = propertyValue.getType();
 			if (StringUtils.isBlank(euType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-				euType = getTypeHelper().getEuTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+				euType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 			//if not set 
 			if (StringUtils.isBlank(euType))
 				throw new AnnotationAttributeInstantiationException(euType);

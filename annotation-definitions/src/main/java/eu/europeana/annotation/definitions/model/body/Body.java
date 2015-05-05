@@ -21,8 +21,6 @@ public interface Body extends InternetResource{
 
 	public abstract List<String> getType();
 	
-//	public String getTypeStr();
-	
 	public abstract Map<String, String> getMultilingual();
 
 	public abstract void setMultilingual(Map<String, String> multiLingual);

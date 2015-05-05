@@ -66,7 +66,7 @@ public class AnnotationTestObjectBuilder {
 		body.addType("oa:Tag");
 		body.addType("cnt:ContentAsText");
 		body.addType("dctypes:Text");
-		body.addType(BodyTypes.SEMANTIC_TAG.name());
+//		body.addType(BodyTypes.SEMANTIC_TAG.name());
 		
 		body.setValue(text);
 		body.setLanguage(language);
@@ -82,11 +82,13 @@ public class AnnotationTestObjectBuilder {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(
 				TargetTypes.IMAGE.name());
 
-		target.setType(
-				"[oa:SpecificResource,euType:" 
-				+ TargetTypes.IMAGE.name() 
-				+ "]"
-				);
+		target.setType("oa:" + TargetTypes.IMAGE.name());
+		
+//		target.setType(
+//				"[oa:SpecificResource,euType:" 
+//				+ TargetTypes.IMAGE.name() 
+//				+ "]"
+//				);
 		
 		target.setContentType("image/jpeg");
 		target.setHttpUri("http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE");
@@ -162,9 +164,10 @@ public class AnnotationTestObjectBuilder {
 	private Style buildStyledBy() {
 		Style style = StyleObjectFactory.getInstance().createModelObjectInstance(
 				StyleTypes.CSS.name());
-		style.setHttpUri("[oa:CssStyle,euType:" 
-				+ StyleTypes.CSS.name() 
-				+ "]");
+//		style.setHttpUri("[oa:CssStyle,euType:" 
+//				+ StyleTypes.CSS.name() 
+//				+ "]");
+		style.setHttpUri("oa:" + StyleTypes.CSS.name());
 		style.setContentType("annotorious-popup");
 		style.setValue("http://annotorious.github.io/latest/themes/dark/annotorious-dark.css");
 		return style;
@@ -187,7 +190,8 @@ public class AnnotationTestObjectBuilder {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
 //		agent.addType("prov:SoftwareAgent");
-		agent.setType("prov:SoftwareAgent");
+//		agent.setType("prov:SoftwareAgent");
+		agent.setType("prov:Software");
 //		agent.addType(WebAnnotationFields.EU_TYPE + ":"
 //				+ AgentTypes.SOFTWARE.name());
 		agent.setName("Annotorious");
@@ -243,11 +247,13 @@ public class AnnotationTestObjectBuilder {
 		Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
 				SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
 		
-		selector.setSelectorType("[oa:SvgRectangle,euType:"
-				+ SelectorTypes.SVG_RECTANGLE_SELECTOR.name() 
-				+ "]"
-				);
+		selector.setSelectorType("oa:" + SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
 		
+//		selector.setSelectorType("[oa:SvgRectangle,euType:"
+//				+ SelectorTypes.SVG_RECTANGLE_SELECTOR.name() 
+//				+ "]"
+//				);
+//		
 		Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
 		dimensionMap.put("left", 5);
 		dimensionMap.put("right", 3);

@@ -22,26 +22,53 @@ public class TypeUtils {
 	private static Logger log = Logger.getRootLogger();
 	
 	/**
-	 * This method extracts euType from the input string with multiple types.
-	 * The syntax of the euType is as follows: "euType:<Annotation Part>#<Object Type>"
-	 * e.g. BODY#SEMANTIC_TAG
+	 * This method extracts internalType from the input string with multiple types.
+	 * The syntax of the internalType is as follows: "<internalType key>:<Object Type>"
+	 * e.g. 'oa:Tag' or 'foaf:Person'.
 	 * @param typesString
 	 * @return
 	 */
-	public String getEuTypeFromTypeArray(String typeArray) {
+	public String getInternalTypeFromTypeArray(String typeArray) {
 		String res = "";
 		if (StringUtils.isNotEmpty(typeArray)) {
-			Pattern pattern = Pattern.compile(WebAnnotationFields.EU_TYPE + ":(.*?)]");
-			Matcher matcher = pattern.matcher(typeArray);
-			if (matcher.find()) {
-			    res = matcher.group(1);
-			}		
+		    for (WebAnnotationFields.TypeNamespaces tn : WebAnnotationFields.TypeNamespaces.values()) {
+				res = matchType(typeArray, tn.name());	
+				if (StringUtils.isNotBlank(res)) 
+		            return res;
+		    }
+			
+//			res = matchType(typeArray, WebAnnotationFields.INTERNAL_TYPE);	
+//			/**
+//			 * When no entry for 'oa' try 'foaf'
+//			 */
+//			if (res.equals("")) 
+//			res = matchType(typeArray, WebAnnotationFields.FOAF);					
+		}
+		return res;
+	}
+
+	/**
+	 * @param typeArray
+	 * @param key
+	 * @return
+	 */
+	private String matchType(String typeArray, String key) {
+		String res = "";
+		//			Pattern pattern = Pattern.compile(WebAnnotationFields.INTERNAL_TYPE + ":(.*?)]");
+//		String regex = ":(.*?)[,]";
+//		if (!typeArray.contains(","))
+//			regex = ":(.*)$";
+		String regex = ":(.*?)(?:[,]|$)";
+		Pattern pattern = Pattern.compile(key + regex);
+		Matcher matcher = pattern.matcher(typeArray);
+		if (matcher.find()) {
+		    res = matcher.group(1);
 		}
 		return res;
 	}
 	
-	public static String getEuTypeFromTypeArrayStatic(String typeArray) {
-	    return (new TypeUtils()).getEuTypeFromTypeArray(typeArray);
+	public static String getInternalTypeFromTypeArrayStatic(String typeArray) {
+	    return (new TypeUtils()).getInternalTypeFromTypeArray(typeArray);
 	}
 	
 	/**

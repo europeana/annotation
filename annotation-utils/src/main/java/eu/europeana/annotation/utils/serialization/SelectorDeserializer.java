@@ -36,7 +36,7 @@ public class SelectorDeserializer extends StdDeserializer<Selector> {
 		while (elementsIterator.hasNext()) {
 			Entry<String, JsonNode> element = elementsIterator.next();
 			if (ModelConst.SELECTOR_TYPE.equals(element.getKey())) {
-				String typeValue = TypeUtils.getEuTypeFromTypeArrayStatic(element.getValue().getTextValue());
+				String typeValue = TypeUtils.getInternalTypeFromTypeArrayStatic(element.getValue().getTextValue());
 				realClass = SelectorObjectFactory.getInstance()
 						.getClassForType(typeValue);
 				break;

@@ -6,7 +6,8 @@ public interface WebAnnotationFields {
 	/**
 	 * Helping constants for Annotation mapping to the JSON-LD format 
 	 */
-	public static final String EU_TYPE              = "euType";
+//	public static final String EU_TYPE              = "euType";
+	public static final String INTERNAL_TYPE        = "oa";
 	public static final String CONTEXT              = "@context";
 	public static final String SPLITTER             = "#";
 	public static final String ANNOTATED_BY         = "annotatedBy";
@@ -36,6 +37,7 @@ public interface WebAnnotationFields {
 	public static final String FORMAT               = "format";
 	public static final String MEDIA_TYPE           = "mediaType";
 	public static final String FOAF_PAGE            = "foaf:page";
+	public static final String FOAF                 = "foaf";
 	public static final String TARGET               = "target";
 	public static final String AT_ID               = "@id";
 	public static final String TYPE                 = "type";
@@ -171,4 +173,10 @@ public interface WebAnnotationFields {
         + "\"targetType\": \"[oa:SpecificResource,euType:IMAGE]\"},"
         + "\"type\": \"OBJECT_TAG\"}";
 	
+	/**
+	 * These namespace prefixes are employed for evaluation of the internal type of the objects in Annotation.
+	 */
+	public enum TypeNamespaces {
+		oa, foaf, prov;
+	}	
 }

@@ -54,4 +54,15 @@ public enum BodyTypes {
 	    return false;
 	}	
 	
+	public static String isRegisteredAs(String test) {
+
+	    for (BodyTypes c : BodyTypes.values()) {
+	        if (c.name().toLowerCase().equals(test.replace("_", "").toLowerCase())) {
+	            return c.name();
+	        }
+	    }
+
+	    return "";
+	}	
+	
 }

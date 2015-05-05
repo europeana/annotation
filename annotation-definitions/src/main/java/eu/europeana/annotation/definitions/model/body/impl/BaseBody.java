@@ -24,6 +24,7 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 //	}
 	public void setTypeEnum(BodyTypes curBodyType) {
 //		this.bodyType = bodyType.name();
+		bodyType.clear();
 		bodyType.add(curBodyType.name());
 	}
 //	@Override

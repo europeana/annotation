@@ -52,9 +52,13 @@ import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.utils.JsonUtils;
 
 /**
@@ -257,12 +261,13 @@ public class AnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			String euType = extractEuType(propertyValue);
+			String internalType = extractInternalType(propertyValue);
+			String registeredInternalType = AgentTypes.isRegisteredAs(internalType);
 			//if not set 
-			if (StringUtils.isBlank(euType))
-				throw new AnnotationAttributeInstantiationException(euType);
+			if (StringUtils.isBlank(registeredInternalType))
+				throw new AnnotationAttributeInstantiationException(internalType);
 			
-			agent = AgentObjectFactory.getInstance().createModelObjectInstance(euType);
+			agent = AgentObjectFactory.getInstance().createModelObjectInstance(registeredInternalType);
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
 				agent.setAgentTypeAsString(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));			
 			if (hasValue(propertyValue, WebAnnotationFields.AT_ID)) 
@@ -279,14 +284,16 @@ public class AnnotationLd extends JsonLd {
 		return !StringUtils.isBlank(propertyValue.getValues().get(fieldName));
 	}
 
-	private String extractEuType(JsonLdPropertyValue propertyValue) {
-		return extractEuType(propertyValue, WebAnnotationFields.AT_TYPE);
+	private String extractInternalType(JsonLdPropertyValue propertyValue) {
+		return extractInternalType(propertyValue, WebAnnotationFields.AT_TYPE);
 	}
 
-	private String extractEuType(JsonLdPropertyValue propertyValue, String fieldName) {
+	private String extractInternalType(JsonLdPropertyValue propertyValue, String fieldName) {
 		String typeArray = propertyValue.getValues().get(fieldName);
-		String euType = getTypeHelper().getEuTypeFromTypeArray(typeArray);
-		return euType;
+		String internalType = getTypeHelper().getInternalTypeFromTypeArray(typeArray);
+//		if (internalType.equals("") && !typeArray.contains(",")) 
+//			internalType = typeArray;					
+		return internalType;
 	}
 
 	/**
@@ -310,17 +317,17 @@ public class AnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			String euType = "";
+			String internalType = "";
 			if (!StringUtils.isBlank(propertyValue.getType())) 
-				euType = getTypeHelper().getEuTypeFromTypeArray(propertyValue.getType());
-//				euType = propertyValue.getType();
-			if (StringUtils.isBlank(euType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-				euType = getTypeHelper().getEuTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+				internalType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getType());
+			if (StringUtils.isBlank(internalType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
+				internalType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+			String registeredInternalType = StyleTypes.isRegisteredAs(internalType);
 			//if not set 
-			if (StringUtils.isBlank(euType))
-				throw new AnnotationAttributeInstantiationException(euType);
+			if (StringUtils.isBlank(registeredInternalType))
+				throw new AnnotationAttributeInstantiationException(internalType);
 			
-			style = StyleObjectFactory.getInstance().createModelObjectInstance(euType);
+			style = StyleObjectFactory.getInstance().createModelObjectInstance(registeredInternalType);
 			
 			if (!StringUtils.isBlank(propertyValue.getType())) 
 				style.setHttpUri(propertyValue.getType());
@@ -345,12 +352,13 @@ public class AnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			if (hasValue(propertyValue, WebAnnotationFields.TYPE)) {
-				String euType = extractEuType(propertyValue, WebAnnotationFields.TYPE);			
+				String internalType = extractInternalType(propertyValue, WebAnnotationFields.TYPE);			
+				String registeredInternalType = TargetTypes.isRegisteredAs(internalType);
 				//if not set 
-				if (StringUtils.isBlank(euType))
-					throw new AnnotationAttributeInstantiationException(euType);
+				if (StringUtils.isBlank(registeredInternalType))
+					throw new AnnotationAttributeInstantiationException(internalType);
 				
-				target = TargetObjectFactory.getInstance().createModelObjectInstance(euType);
+				target = TargetObjectFactory.getInstance().createModelObjectInstance(registeredInternalType);
 //				target = (Target) objectFactory.createModelObjectInstance(
 //						AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER + euType);
 				target.setType(propertyValue.getValues().get(WebAnnotationFields.TYPE));
@@ -401,16 +409,18 @@ public class AnnotationLd extends JsonLd {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) {
-				String euType = extractEuType(propertyValue);
+				String internalType = extractInternalType(propertyValue);
+				String registeredInternalType = BodyTypes.isRegisteredAs(internalType);
 
 				//if not set 
-				if (StringUtils.isBlank(euType))
-					throw new AnnotationAttributeInstantiationException(euType);
+				if (StringUtils.isBlank(registeredInternalType))
+					throw new AnnotationAttributeInstantiationException(internalType);
 				
-				body = BodyObjectFactory.getInstance().createModelObjectInstance(euType);
+				body = BodyObjectFactory.getInstance().createModelObjectInstance(registeredInternalType);
 				
-				body.addType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
-
+//				body.addType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+				if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
+					body.setType(TypeUtils.convertStringToList(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE)));			
 				if (hasValue(propertyValue, WebAnnotationFields.CHARS)) 
 					body.setValue(propertyValue.getValues().get(WebAnnotationFields.CHARS));
 				if (hasValue(propertyValue, WebAnnotationFields.DC_LANGUAGE)) 

@@ -36,7 +36,7 @@ public class TargetDeserializer extends StdDeserializer<Target> {
 		while (elementsIterator.hasNext()) {
 			Entry<String, JsonNode> element = elementsIterator.next();
 			if (ModelConst.TARGET_TYPE.equals(element.getKey())) {
-				String typeValue = TypeUtils.getEuTypeFromTypeArrayStatic(element.getValue().getTextValue());
+				String typeValue = TypeUtils.getInternalTypeFromTypeArrayStatic(element.getValue().getTextValue());
 				realClass = TargetObjectFactory.getInstance()
 						.getClassForType(typeValue);
 				break;

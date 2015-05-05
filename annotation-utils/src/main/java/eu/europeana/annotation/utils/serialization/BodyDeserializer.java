@@ -36,7 +36,7 @@ public class BodyDeserializer extends StdDeserializer<Body> {
 		while (elementsIterator.hasNext()) {
 			Entry<String, JsonNode> element = elementsIterator.next();
 			if (ModelConst.BODY_TYPE.equals(element.getKey())) {
-				String typeValue = TypeUtils.getEuTypeFromTypeArrayStatic(element.getValue().getTextValue());
+				String typeValue = TypeUtils.getInternalTypeFromTypeArrayStatic(element.getValue().getTextValue());
 				realClass = BodyObjectFactory.getInstance()
 						.getClassForType(typeValue);
 				break;
