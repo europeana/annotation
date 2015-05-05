@@ -4,6 +4,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
+import eu.europeana.annotation.definitions.model.impl.BaseObjectLinking;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 
@@ -53,6 +54,9 @@ public class AnnotationObjectFactory
 			break;
 		case IMAGE_ANNOTATION:
 			ret = BaseImageAnnotation.class;
+			break;
+		case OBJECT_LINKING:
+			ret = BaseObjectLinking.class;
 			break;
 		default:
 			throw new RuntimeException(

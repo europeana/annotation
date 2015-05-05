@@ -21,6 +21,7 @@ import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
@@ -59,6 +60,11 @@ public class PersistentAnnotationServiceImpl extends
 	 */
 	@Override
 	public PersistentAnnotation store(PersistentAnnotation object) {
+		validatePersistentAnnotation(object);		
+		return super.store(object);
+	}
+
+	private void validatePersistentAnnotation(PersistentAnnotation object) {
 		if (object.getAnnotatedAt() == null) {
 			object.setAnnotatedAt(new Date());
 			object.setSerializedAt(object.getAnnotatedAt());
@@ -70,9 +76,16 @@ public class PersistentAnnotationServiceImpl extends
 			throw new AnnotationValidationException(
 					AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 		
-		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getResourceId())) 
-			throw new AnnotationValidationException(
-					"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
+		if (object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
+			if (object.getAnnotationId() == null) 
+				throw new AnnotationValidationException(
+						"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
+		} else {
+			if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getResourceId())) 
+	//		if (object.getAnnotationId() == null) // TODO check provider instead of resourceId 
+				throw new AnnotationValidationException(
+						"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
+		}
 		
 		// check target
 		if (object.getTarget() == null)
@@ -85,30 +98,30 @@ public class PersistentAnnotationServiceImpl extends
 			throw new AnnotationValidationException(
 					AnnotationValidationException.ERROR_NULL_ANNOTATED_BY);
 
-		// check body
-		// note: Bookmarks or Highlights may not have a body .. but they are not
-		// supported yet
-		if (object.getBody() == null)
-			throw new AnnotationValidationException(
-					AnnotationValidationException.ERROR_NULL_EUROPEANA_ID);
-
-		// check if TAG
-		if (hasTagBody(object)) {
-
-			TagBody body = (TagBody) object.getBody();
-			PersistentTag tag = findOrCreateTag(object, body);
-			// set tagId
-			body.setTagId(tag.getId().toString());
+		if (!object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
+			// check body
+			// note: Bookmarks or Highlights may not have a body .. but they are not
+			// supported yet
+			if (object.getBody() == null)
+				throw new AnnotationValidationException(
+						AnnotationValidationException.ERROR_NULL_EUROPEANA_ID);
+	
+			// check if TAG
+			if (hasTagBody(object)) {
+	
+				TagBody body = (TagBody) object.getBody();
+				PersistentTag tag = findOrCreateTag(object, body);
+				// set tagId
+				body.setTagId(tag.getId().toString());
+			}
 		}
-
+		
 		MongoAnnotationId embeddedId = initializeAnnotationId(object);
 		object.setAnnotationId(embeddedId);
 		
 		//validate annotation NR
 		if(object.getAnnotationId().getAnnotationNr() < 1)
 			throw new AnnotationValidationException("Annotaion.AnnotationId.annotaionNr must be a positive number!");
-		
-		return super.store(object);
 	}
 
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {

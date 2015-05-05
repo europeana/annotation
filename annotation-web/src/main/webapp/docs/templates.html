@@ -551,7 +551,7 @@
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-    "@id": "http://data.europeana.eu/annotation/historypin/456"
+    "@id": "http://data.europeana.eu/annotation/historypin/456",
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -620,6 +620,42 @@
 							<td class="clsCellBorder" valign="top">
 								create an europeana annotation (SimpleTag) and return the object as stored in the database for 'historypin' provider. 
 								Identification of annotation types works as follows. Simple Tagging (when motivation is “oa:tagging” and body type is a string list).
+							</td>
+						</tr>											
+
+						<tr>
+							<td class="clsCellBorder cls0_0" valign="top">POST</td>
+							<td class="clsCellBorder" valign="top">JSON_LD</td>
+							<td class="clsCellBorder">
+									[annotation-web]/annotation/create.jsonld<br>
+									Object as JSON-LD:
+								<form action="annotation/create.jsonld" method="post" target="_new">
+								<input type="hidden" name="wskey" value="key">
+								<input type="hidden" name="profile" value="webtest">
+								<textarea rows="20" cols="60" name="annotation" >
+{
+ "@context": "http://www.europeana.eu/annotation/context.jsonld",
+ "@type": "oa:Annotation",
+ 
+ "annotatedBy": {
+   "@id": "https://www.historypin.org/en/person/55376/",
+   "@type": "foaf:Person",
+   "name": "John Smith"
+ },
+ "annotatedAt": "2015-02-27T12:00:43Z",
+ "serializedAt": "2015-02-28T13:00:34Z",
+ "serializedBy": "http://data.europeana.eu/provider/Historypin",
+ "motivation": "oa:tagging",
+ "body": ["church", "orthodox"] ,
+ "target": "http://data.europeana.eu/item/123/xyz",
+ "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+}
+</textarea>
+								<br>
+								</form>
+							</td>
+							<td class="clsCellBorder" valign="top">
+								Multiple Simple Tags (when motivation is “oa:tagging” and body is a string array).
 							</td>
 						</tr>						
 

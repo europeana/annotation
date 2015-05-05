@@ -1,5 +1,8 @@
 package eu.europeana.annotation.definitions.model.resource.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 
@@ -11,6 +14,22 @@ public class BaseInternetResource implements InternetResource{
 	private String language;
 	private String value;
 
+	private List<String> values = new ArrayList<String>(2);
+
+	public void addValue(String value) {
+		if (!values.contains(value)) {
+			values.add(value);
+		}
+	}
+	
+	public List<String> getValues() {
+		return values;
+	}
+	
+	public void setValues(List<String> values) {
+		this.values = values;
+	}	
+	
 	@Override
 	public String getContentType() {
 		return contentType;

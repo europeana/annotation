@@ -135,22 +135,31 @@ public class EuropeanaAnnotationLd extends JsonLd {
         if (styledByProperty != null)
         	jsonLdResource.putProperty(styledByProperty);                
 
-        if (isJsonObjectInput(annotation.getBody().getInputString())){
-        	annotation.getBody().setInputString(null);
-	        JsonLdProperty bodyProperty = addBodyProperty(annotation);
-	        if (bodyProperty != null)
-	        	jsonLdResource.putProperty(bodyProperty);
-        } else {
-        	jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
+        if (!annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
+	        if (isJsonObjectInput(annotation.getBody().getInputString())){
+	        	annotation.getBody().setInputString(null);
+		        JsonLdProperty bodyProperty = addBodyProperty(annotation);
+		        if (bodyProperty != null)
+		        	jsonLdResource.putProperty(bodyProperty);
+	        } else {
+	        	jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
+	        }
         }
-
+        
         if (isJsonObjectInput(annotation.getTarget().getInputString())){
         	annotation.getTarget().setInputString(null);
 	        JsonLdProperty targetProperty = addTargetProperty(annotation);
 	        if (targetProperty != null)
 	        	jsonLdResource.putProperty(targetProperty);
         } else {
-        	jsonLdResource.putProperty(WebAnnotationFields.TARGET, annotation.getTarget().getInputString());
+            if (annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
+	            if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getTarget().getValues())))  
+//	            	JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
+//	            	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));            
+	            	jsonLdResource.putProperty(WebAnnotationFields.TARGET, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));
+            } else {
+            	jsonLdResource.putProperty(WebAnnotationFields.TARGET, annotation.getTarget().getInputString());
+            }
         }
 
 	    if (annotation.getSameAs() != null) 

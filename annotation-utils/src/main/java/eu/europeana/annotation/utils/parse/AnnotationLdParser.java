@@ -429,7 +429,16 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	private Target parseTarget(JSONArray valueObject) throws JsonParseException {
-		throw new JsonParseException("Multiple target deserialization is not supported yet: " + valueObject);
+		Target target = TargetObjectFactory.getInstance()
+				.createModelObjectInstance(TargetTypes.WEB_PAGE.name());
+		try {
+			for (int i=0; i < valueObject.length(); i++) 
+				target.addValue(valueObject.getString(i));
+		} catch (JSONException e) {
+			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+		}
+//		throw new JsonParseException("Multiple target deserialization is not supported yet: " + valueObject);
+		return target;
 	}
 	
 	private Target parseTarget(JSONObject jo) throws JsonParseException {

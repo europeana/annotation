@@ -1,11 +1,19 @@
 package eu.europeana.annotation.definitions.model.resource;
 
+import java.util.List;
+
 public interface InternetResource {
 
 	public abstract void setValue(String value);
 
 	public abstract String getValue();
 
+	public abstract void setValues(List<String> values);
+
+	public abstract void addValue(String value);
+
+	public abstract List<String> getValues();
+	
 	public abstract void setLanguage(String language);
 
 	public abstract String getLanguage();
