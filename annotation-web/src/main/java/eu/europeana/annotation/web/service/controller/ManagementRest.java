@@ -44,7 +44,7 @@ public class ManagementRest extends BaseRest {
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "query", required = true) String query,
-		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
+//		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
 
 
@@ -53,7 +53,8 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/admin/delete");
 			
 		try{
-			getAnnotationService().deleteAnnotation(resourceId, provider, Long.valueOf(query));
+			getAnnotationService().deleteAnnotation(provider, Long.valueOf(query));
+//			getAnnotationService().deleteAnnotation(resourceId, provider, Long.valueOf(query));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -71,7 +72,7 @@ public class ManagementRest extends BaseRest {
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "query", required = true) String query,
-		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
+//		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
 
 		AnnotationOperationResponse response;
@@ -79,7 +80,8 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/annotations/admin/index");
 			
 		try{
-			getAnnotationService().indexAnnotation(resourceId, provider, Long.valueOf(query));
+			getAnnotationService().indexAnnotation(provider, Long.valueOf(query));
+//			getAnnotationService().indexAnnotation(resourceId, provider, Long.valueOf(query));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -132,7 +134,8 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/admin/disable");
 			
 		try{
-			getAnnotationService().disableAnnotation(resourceId, provider, Long.valueOf(query));
+			getAnnotationService().disableAnnotation(provider, Long.valueOf(query));
+//			getAnnotationService().disableAnnotation(resourceId, provider, Long.valueOf(query));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);

@@ -79,7 +79,8 @@ public interface AnnotationService {
 	 * @param provider
 	 * @param annotationNr
 	 */
-	public void deleteAnnotation(String resourceId, String provider, Long annotationNr);
+	public void deleteAnnotation(String provider, Long annotationNr);
+//	public void deleteAnnotation(String resourceId, String provider, Long annotationNr);
 
 	/**
 	 * This method forces reindexing of the annotation, which means 
@@ -89,7 +90,8 @@ public interface AnnotationService {
 	 * @param provider
 	 * @param annotationNr
 	 */
-	public void indexAnnotation(String resourceId, String provider, Long annotationNr);
+	public void indexAnnotation(String provider, Long annotationNr);
+//	public void indexAnnotation(String resourceId, String provider, Long annotationNr);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -99,7 +101,8 @@ public interface AnnotationService {
 	 * @param annotationNr
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr);
+	public Annotation disableAnnotation(String provider, Long annotationNr);
+//	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr);
 	
 	/**
 	 * This method returns annotation object for given annotationId that

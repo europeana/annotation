@@ -52,10 +52,11 @@ public abstract class AbstractAnnotation implements Annotation {
 	     */
 	    if ((this.getAnnotationId() != null) && (that.getAnnotationId() != null) &&
 	    		(this.getAnnotationId().getAnnotationNr() != null) && (that.getAnnotationId().getAnnotationNr() != null) &&
-	    		(this.getAnnotationId().getResourceId() != null) && (that.getAnnotationId().getResourceId() != null) &&
+//	    		(this.getAnnotationId().getResourceId() != null) && (that.getAnnotationId().getResourceId() != null) &&
 	    		(this.getAnnotationId().getProvider() != null) && (that.getAnnotationId().getProvider() != null) &&
 	    		(!this.getAnnotationId().getAnnotationNr().equals(that.getAnnotationId().getAnnotationNr())
-	    		|| !this.getAnnotationId().getResourceId().equals(that.getAnnotationId().getResourceId()))) {
+//	    		|| !this.getAnnotationId().getResourceId().equals(that.getAnnotationId().getResourceId())
+	    		)) {
 	    	System.out.println("Annotation objects have different 'annotationId' objects.");
 	    	res = false;
 	    }
@@ -143,8 +144,8 @@ public abstract class AbstractAnnotation implements Annotation {
 					        	
 				String collection = arrValue[collectionPosition];
 	        	String object     = arrValue[objectPosition];
-				if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
-					annoId.setResourceId((new AnnotationIdHelper()).createResourceId(collection, object));
+//				if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
+//					annoId.setResourceId((new AnnotationIdHelper()).createResourceId(collection, object));
 	//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
 //				String annoNr = annotationId.substring(pos + 1);
 //				annoId.setAnnotationNr(Integer.parseInt(annoNr));

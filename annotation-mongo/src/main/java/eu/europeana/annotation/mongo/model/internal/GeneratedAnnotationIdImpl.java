@@ -23,7 +23,8 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	 */
 	private static final long serialVersionUID = -4554805997975526594L;
 	@Id
-	private String resourceId;
+//	private String resourceId;
+	private String provider;
 	private Long annotationNr;
 	
 	public static final String SEQUENCE_COLUMN_NAME = "annotationNr";
@@ -35,12 +36,14 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		
 	}
 	
-	public GeneratedAnnotationIdImpl(String europeanaId){
-		this.resourceId = europeanaId;
+	public GeneratedAnnotationIdImpl(String provider){
+//		this.resourceId = provider;
+		this.provider = provider;
 	}
 	
-	public GeneratedAnnotationIdImpl(String europeanaId, Long annotationNr){
-		this.resourceId = europeanaId;
+	public GeneratedAnnotationIdImpl(String provider, Long annotationNr){
+//		this.resourceId = provider;
+		this.provider = provider;
 		this.annotationNr = annotationNr;
 	}
 	
@@ -55,17 +58,20 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		this.annotationNr = annotationNr;
 	}
 
-	@Override
-	public String getResourceId() {
-		return resourceId;
-	}
+//	@Override
+//	public String getResourceId() {
+//		return null;
+////		return resourceId;
+//	}
 
 	@Override
 	public boolean equals(Object obj) {
-		//europeana id and annotation number must not be null
+		////europeana id and annotation number must not be null
+		//provider and annotation number must not be null
 		if(obj instanceof AnnotationId 
-				&& this.getResourceId() != null && StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
-				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
+//				&& this.getResourceId() != null && StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
+				&& StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
+//				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
 				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
 				&& this.getAnnotationNr().equals(((AnnotationId)obj).getAnnotationNr()))
 			return true;
@@ -80,8 +86,8 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	
 	@Override
 	public String toString() {
-		return getResourceId() + WebAnnotationFields.SLASH + getProvider() 
-				+ WebAnnotationFields.SLASH + getAnnotationNr();
+		return //getResourceId() + WebAnnotationFields.SLASH + 
+				getProvider() + WebAnnotationFields.SLASH + getAnnotationNr();
 	}
 	
 	@Override
@@ -89,15 +95,16 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		return getProvider() + WebAnnotationFields.SLASH + getAnnotationNr();
 	}
 	
-	@Override
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
-		
-	}
+//	@Override
+//	public void setResourceId(String resourceId) {
+////		this.resourceId = resourceId;
+//		
+//	}
 
 	@Override
 	public String getProvider() {
-		return null;
+//		return null;
+		return provider;
 	}
 
 	@Override
@@ -105,6 +112,6 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	 * not used as ids are generated only for own annotations (webanno as provider)  
 	 */
 	public void setProvider(String provider) {
-		//this.provider = provider;		
+		this.provider = provider;		
 	} 
 }

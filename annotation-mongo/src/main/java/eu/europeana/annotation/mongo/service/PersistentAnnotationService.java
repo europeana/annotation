@@ -49,7 +49,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @param annotationNr
 	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
 	 */
-	public void remove(String resourceId, String provider, Long annotationNr);
+	public void remove(String provider, Long annotationNr);
+//	public void remove(String resourceId, String provider, Long annotationNr);
 	
 	/**
 	 * 
@@ -70,7 +71,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public Annotation updateIndexingTime(AnnotationId annoId);
 
-	public abstract AnnotationId generateAnnotationId(String resourceId);
+	public abstract AnnotationId generateAnnotationId(String provider);
+//	public abstract AnnotationId generateAnnotationId(String resourceId);
 
 }
 

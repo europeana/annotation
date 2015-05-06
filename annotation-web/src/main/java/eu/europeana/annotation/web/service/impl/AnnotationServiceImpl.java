@@ -265,9 +265,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 			throw new AnnotationValidationException(
 					"Annotaion.AnnotationId must not be null!");
 			
-		if (newAnnotation.getAnnotationId().getResourceId() == null)
-			throw new AnnotationValidationException(
-					"Annotaion.AnnotationId.resourceId must not be null!");
+//		if (newAnnotation.getAnnotationId().getResourceId() == null)
+//			throw new AnnotationValidationException(
+//					"Annotaion.AnnotationId.resourceId must not be null!");
 			
 		if (newAnnotation.getAnnotationId().getProvider() == null)
 			throw new AnnotationValidationException(
@@ -422,22 +422,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void deleteAnnotation(String resourceId, String provider, Long annotationNr) {
+//	public void deleteAnnotation(String resourceId, String provider, Long annotationNr) {
+	public void deleteAnnotation(String provider, Long annotationNr) {
         try {
 //    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
-    		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
+//    		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
+    		Annotation res =  getMongoPersistence().find(provider, annotationNr);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
     	    getSolrService().delete(indexedAnnotation);
         } catch (Exception e) {
         	throw new RuntimeException(e);
         }
-		getMongoPersistence().remove(resourceId, provider, annotationNr);
+//		getMongoPersistence().remove(resourceId, provider, annotationNr);
+		getMongoPersistence().remove(provider, annotationNr);
 	}
 
 	@Override
-	public void indexAnnotation(String resourceId, String provider, Long annotationNr) {
+//	public void indexAnnotation(String resourceId, String provider, Long annotationNr) {
+	public void indexAnnotation(String provider, Long annotationNr) {
         try {
-    		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
+//    		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
+    		Annotation res =  getMongoPersistence().find(provider, annotationNr);
        	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
     	    getSolrService().delete(indexedAnnotation);
     	    getSolrService().store(indexedAnnotation);
@@ -447,10 +452,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr) {
+//	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr) {
+	public Annotation disableAnnotation(String provider, Long annotationNr) {
         try {
-    		Annotation res = getMongoPersistence().find(resourceId, provider, annotationNr);
+//    		Annotation res = getMongoPersistence().find(resourceId, provider, annotationNr);
+    		Annotation res = getMongoPersistence().find(provider, annotationNr);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
+    	    indexedAnnotation.setAnnotationId(res.getAnnotationId());
     	    getSolrService().delete(indexedAnnotation);
     	    res.setDisabled(true);
     		return getMongoPersistence().update(res);

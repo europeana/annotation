@@ -483,10 +483,10 @@ public class AnnotationLdParser extends JsonLdParser {
 		annoId.setAnnotationNr(annotationNr);
 
 		Target target = parseTarget(jo);
-		String resourceId = getIdHelper().extractResoureIdFromHttpUri(
-				target.getHttpUri());
+//		String resourceId = getIdHelper().extractResoureIdFromHttpUri(
+//				target.getHttpUri());
 
-		annoId.setResourceId(resourceId);
+//		annoId.setResourceId(resourceId);
 		return annoId;
 	}
 

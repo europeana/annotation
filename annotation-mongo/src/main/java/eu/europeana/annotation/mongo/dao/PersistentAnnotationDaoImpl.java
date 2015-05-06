@@ -18,14 +18,14 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		super(datastore, clazz);
 	}
 
-	public AnnotationId generateNextAnnotationId(String europeanaId) {
+	public AnnotationId generateNextAnnotationId(String provider) {
 
 		GeneratedAnnotationIdImpl nextAnnotationId = null;
 
-		synchronized (europeanaId) {
+		synchronized (provider) {
 
 			Query<GeneratedAnnotationIdImpl> q = getDatastore().find(
-					GeneratedAnnotationIdImpl.class, "_id", europeanaId);
+					GeneratedAnnotationIdImpl.class, "_id", provider);
 			
 			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
 					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
@@ -35,7 +35,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 
 			// if first annotationId
 			if (nextAnnotationId == null) {
-				nextAnnotationId = new GeneratedAnnotationIdImpl(europeanaId, 1L);
+				nextAnnotationId = new GeneratedAnnotationIdImpl(provider, 1L);
 				ds.save(nextAnnotationId);
 			}
 		}

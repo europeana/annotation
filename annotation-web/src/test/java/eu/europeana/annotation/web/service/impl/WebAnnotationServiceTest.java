@@ -77,7 +77,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
         
         String original = origAnnotationLd.toString();
         AnnotationLd.toConsole("", original);
-        String expectedOrig = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@id\":\"http://data.europeana.eu/annotations/testCollection/testObject/webanno/-1\",\"@type\":\"OBJECT_TAG\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[SOFTWARE_AGENT,foaf:Person,euType:SOFTWARE_AGENT]\",\"name\":\"annonymous web user\"},\"body\":{\"@type\":\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"language\":\"ro\",\"multilingual\":\"\"},\"equivalentTo\":\"http://historypin.com/annotation/1234\",\"motivatedBy\":\"TAGGING\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"[SOFTWARE_AGENT,prov:SoftwareAgent,euType:SOFTWARE_AGENT]\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"[oa:CssStyle,euType:CSS]\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:SpecificResource,euType:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\",\"dimensionMap\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//testCollection/testObject.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"targetType\":\"[oa:SpecificResource,euType:IMAGE]\"},\"type\":\"OBJECT_TAG\"}";
+        String expectedOrig = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@id\":\"http://data.europeana.eu/annotation/webanno/null\",\"@type\":\"OBJECT_TAG\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"foaf:Person\",\"name\":\"annonymous web user\"},\"body\":{\"@type\":\"[SEMANTIC_TAG,oa:Tag,cnt:ContentAsText,dctypes:Text]\",\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"language\":\"ro\",\"multilingual\":\"\"},\"equivalentTo\":\"http://historypin.com/annotation/1234\",\"motivatedBy\":\"TAGGING\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"prov:Software\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"oa:CSS\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\",\"dimensionMap\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//testCollection/testObject.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"type\":\"oa:IMAGE\"},\"type\":\"OBJECT_TAG\"}";
         
         assertEquals(expectedOrig, original);
 		
@@ -145,8 +145,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		assertTrue(webAnnotation.getAnnotationId() != null 
 			&& webAnnotation.getAnnotationId().toString().contains( 
 				WebAnnotationFields.ANNOTATION_ID_PREFIX 
-				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-				+ WebAnnotationFields.SLASH 
+//				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
+//				+ WebAnnotationFields.SLASH 
 				+ WebAnnotationFields.PROVIDER_WEBANNO 
 				+ WebAnnotationFields.SLASH )
 			);
@@ -203,8 +203,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		assertTrue(webAnnotation.getAnnotationId() != null 
 				&& webAnnotation.getAnnotationId().toString().contains( 
 					WebAnnotationFields.ANNOTATION_ID_PREFIX 
-					+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-					+ WebAnnotationFields.SLASH 
+//					+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
+//					+ WebAnnotationFields.SLASH 
 					+ WebAnnotationFields.PROVIDER_HISTORY_PIN
 					+ WebAnnotationFields.SLASH )
 				);
@@ -278,8 +278,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Delete Annotation.
 		 */
 		webAnnotationService.deleteAnnotation(
-				storedAnnotation.getAnnotationId().getResourceId()
-				, storedAnnotation.getAnnotationId().getProvider()
+//				storedAnnotation.getAnnotationId().getResourceId()
+				storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
@@ -311,8 +311,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Reindex Annotation.
 		 */
 		webAnnotationService.indexAnnotation(
-				storedAnnotation.getAnnotationId().getResourceId()
-				, storedAnnotation.getAnnotationId().getProvider()
+//				storedAnnotation.getAnnotationId().getResourceId()
+				storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
@@ -338,8 +338,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Reindex Annotation.
 		 */
 		Annotation disabledAnnotation = webAnnotationService.disableAnnotation(
-				storedAnnotation.getAnnotationId().getResourceId()
-				, storedAnnotation.getAnnotationId().getProvider()
+//				storedAnnotation.getAnnotationId().getResourceId()
+				storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**
@@ -363,8 +363,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Delete Annotation.
 		 */
 		webAnnotationService.deleteAnnotation(
-				storedAnnotation.getAnnotationId().getResourceId()
-				, storedAnnotation.getAnnotationId().getProvider()
+//				storedAnnotation.getAnnotationId().getResourceId()
+				storedAnnotation.getAnnotationId().getProvider()
 				, storedAnnotation.getAnnotationId().getAnnotationNr());
 		
 		/**

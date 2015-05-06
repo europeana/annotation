@@ -113,7 +113,8 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 		@Override
 		public AnnotationId createInstance(Type type) {
 			System.out.println("##### createInstance() type: " + type.toString());
-			return new BaseAnnotationId(type.toString());
+//			return new BaseAnnotationId(type.toString());
+			return new BaseAnnotationId();
 //			return new GeneratedAnnotationIdImpl(this.createInstance(type).getResourceId()
 //					, this.createInstance(type).getAnnotationNr());
 		}

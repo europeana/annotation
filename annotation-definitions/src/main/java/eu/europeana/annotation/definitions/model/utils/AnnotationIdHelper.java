@@ -168,7 +168,7 @@ public class AnnotationIdHelper {
 			String provider, String sameAs) {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
-		annotationId.setResourceId(createResourceId(collection, object));
+//		annotationId.setResourceId(createResourceId(collection, object));
 		
 		if (StringUtils.isEmpty(sameAs)
 				|| StringUtils.isEmpty(provider)) { 

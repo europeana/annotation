@@ -23,7 +23,7 @@ public class MongoAnnotationId extends BaseAnnotationId implements PersistentObj
 	@Override
 	public void copyFrom(Object volatileObject) {
 		if(volatileObject instanceof AnnotationId){
-			this.setResourceId(((AnnotationId) volatileObject).getResourceId());
+//			this.setResourceId(((AnnotationId) volatileObject).getResourceId());
 			this.setProvider(((AnnotationId) volatileObject).getProvider());
 			this.setAnnotationNr(((AnnotationId) volatileObject).getAnnotationNr());
 			

@@ -81,8 +81,8 @@ public class PersistentAnnotationServiceImpl extends
 				throw new AnnotationValidationException(
 						"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
 		} else {
-			if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getResourceId())) 
-	//		if (object.getAnnotationId() == null) // TODO check provider instead of resourceId 
+//			if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getResourceId())) 
+			if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider())) 
 				throw new AnnotationValidationException(
 						"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
 		}
@@ -129,7 +129,8 @@ public class PersistentAnnotationServiceImpl extends
 		String provider = object.getAnnotationId().getProvider(); 
 
 		if(StringUtils.isEmpty(provider) || WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
-			embeddedId = generateAnnotationId(object.getAnnotationId().getResourceId());		
+//			embeddedId = generateAnnotationId(object.getAnnotationId().getResourceId());		
+			embeddedId = generateAnnotationId(object.getAnnotationId().getProvider());		
 			embeddedId.setProvider(provider);
 		}else{
 			embeddedId = copyInto(object.getAnnotationId());
@@ -138,9 +139,12 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
-	public MongoAnnotationId generateAnnotationId(String resourceId) {
+//	public MongoAnnotationId generateAnnotationId(String resourceId) {
+//		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(
+//				resourceId);
+	public MongoAnnotationId generateAnnotationId(String provider) {
 		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(
-				resourceId);
+				provider);
 		
 		MongoAnnotationId embeddedId = copyInto(annoId);
 		return embeddedId;
@@ -304,8 +308,9 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public PersistentAnnotation find(AnnotationId annoId) {
-		return find(annoId.getResourceId(), annoId.getProvider(),
-				annoId.getAnnotationNr());
+//		return find(annoId.getResourceId(), annoId.getProvider(),
+//				annoId.getAnnotationNr());
+		return find(annoId.getProvider(), annoId.getAnnotationNr());
 	}
 
 	@Override
@@ -329,10 +334,11 @@ public class PersistentAnnotationServiceImpl extends
 	 * eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
 	 * (java.lang.String, java.lang.Integer)
 	 */
-	public void remove(String resourceId, String provider, Long annotationNr) {
+//	public void remove(String resourceId, String provider, Long annotationNr) {
+	public void remove(String provider, Long annotationNr) {
 		// String objectId = findObjectId(resourceId, annotationNr);
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
+//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
 
@@ -356,8 +362,9 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public void remove(AnnotationId annoId) {
-		remove(annoId.getResourceId(), annoId.getProvider(),
-				annoId.getAnnotationNr());
+//		remove(annoId.getResourceId(), annoId.getProvider(),
+//				annoId.getAnnotationNr());
+		remove(annoId.getProvider(), annoId.getAnnotationNr());
 	}
 
 	@Override
@@ -369,7 +376,7 @@ public class PersistentAnnotationServiceImpl extends
 
 		if (persistentAnnotation != null
 				&& persistentAnnotation.getAnnotationId() != null) {
-			remove(persistentAnnotation.getAnnotationId().getResourceId(),
+			remove(//persistentAnnotation.getAnnotationId().getResourceId(),
 					persistentAnnotation.getAnnotationId().getProvider(),
 					persistentAnnotation.getAnnotationId().getAnnotationNr());
 			persistentAnnotation.setId(null);
