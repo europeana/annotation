@@ -142,7 +142,10 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		        if (bodyProperty != null)
 		        	jsonLdResource.putProperty(bodyProperty);
 	        } else {
-	        	jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
+	        	if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0)
+	            	jsonLdResource.putProperty(WebAnnotationFields.BODY, TypeUtils.getTypeListAsStr(annotation.getBody().getValues()));
+	        	else
+	        		jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
 	        }
         }
         
@@ -154,8 +157,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
         } else {
             if (annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
 	            if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getTarget().getValues())))  
-//	            	JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
-//	            	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));            
 	            	jsonLdResource.putProperty(WebAnnotationFields.TARGET, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));
             } else {
             	jsonLdResource.putProperty(WebAnnotationFields.TARGET, annotation.getTarget().getInputString());

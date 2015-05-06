@@ -435,7 +435,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			for (int i=0; i < valueObject.length(); i++) 
 				target.addValue(valueObject.getString(i));
 		} catch (JSONException e) {
-			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+			throw new JsonParseException("unsupported target deserialization for json represetnation: " + valueObject + " " + e.getMessage());
 		}
 //		throw new JsonParseException("Multiple target deserialization is not supported yet: " + valueObject);
 		return target;
@@ -528,6 +528,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return parseBody(BodyTypes.TAG.name(), (String) valueObject);
 			else if (valueObject instanceof JSONObject)
 				return parseBody((JSONObject)valueObject);
+			else if (valueObject instanceof JSONArray)
+				return parseBody((JSONArray)valueObject);
 			else
 				throw new JsonParseException("unsupported body deserialization for: " + valueObject);
 	}
@@ -583,6 +585,18 @@ public class AnnotationLdParser extends JsonLdParser {
 //				BodyTypes.TAG.name());
 //		body.setBodyType(BodyTypes.TAG.name());
 //		body.setValue((String) valueObject);
+		return body;
+	}
+	
+	private Body parseBody(JSONArray valueObject) throws JsonParseException {
+		Body body = BodyObjectFactory.getInstance()
+				.createModelObjectInstance(BodyTypes.TAG.name());
+		try {
+			for (int i=0; i < valueObject.length(); i++) 
+				body.addValue(valueObject.getString(i));
+		} catch (JSONException e) {
+			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+		}
 		return body;
 	}
 	
