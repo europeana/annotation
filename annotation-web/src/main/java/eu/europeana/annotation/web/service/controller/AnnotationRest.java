@@ -18,7 +18,6 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -132,6 +131,7 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
+		@RequestParam(value = "annotationNr", required = false) Long annotationNr,
 		@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 		@RequestBody String annotation) {
 //		@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
@@ -149,7 +149,8 @@ public class AnnotationRest extends BaseRest {
 
 		//initialize
 		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
+				.initializeAnnotationId(provider, annotationNr);
+//		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 				
 		webAnnotation.setAnnotationId(annoId);		
 		

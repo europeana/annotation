@@ -11,7 +11,6 @@ import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public abstract class AbstractAnnotation implements Annotation {
@@ -134,16 +133,16 @@ public abstract class AbstractAnnotation implements Annotation {
 	//		System.out.println("annotationIdString() annotationId.substring(0, pos): " + annotationId.substring(0, pos));
 //			annoId.setResourceId(annotationId.substring(0, pos));
 	        	//computed from the end of the url
-	        	int collectionPosition = arrValue.length - 4;
+	        	//int collectionPosition = arrValue.length - 4;
 	        	//computed from the end of the url
-	        	int objectPosition = arrValue.length - 3;
+	        	//int objectPosition = arrValue.length - 3;
 	        	//computed from the end of the url
 	        	int providerPosition = arrValue.length - 2;
 	        	//computed from the end of the url
 	        	int annotationNrPosition = arrValue.length - 1;
 					        	
-				String collection = arrValue[collectionPosition];
-	        	String object     = arrValue[objectPosition];
+				//String collection = arrValue[collectionPosition];
+	        	//String object     = arrValue[objectPosition];
 //				if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
 //					annoId.setResourceId((new AnnotationIdHelper()).createResourceId(collection, object));
 	//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));

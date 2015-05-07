@@ -58,21 +58,24 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		return getBody().getType();
 	}
 
-	@Field("body_type")
-	public void setBodyType(String bodyType) {
+	@Field("body_internaltype")
+	public void setBodyInternalType(String bodyInternalType) {
+		
 		if (super.getBody() == null) {
 			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-					BodyTypes.SEMANTIC_TAG.name());
-//			body.setType(bodyType);
-			body.addType(bodyType);
+					bodyInternalType);
 			super.setBody(body);
-		} else {
-//			super.getBody().setType(bodyType);
-			super.getBody().addType(bodyType);
 		}
-		//this.bodyType = bodyType;
+		
+		super.getBody().setInternalType(bodyInternalType);
 	}
 
+	@Field("body_type")
+	public void setBodyType(List<String> bodyType) {
+			super.getBody().setType(bodyType);
+		//this.bodyType = bodyType;
+	}
+	
 	public String getBodyValue() {
 		String res = "";
 		if (getBody() != null && getBody().getValue() != null) 
@@ -83,14 +86,14 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 
 	@Field("body_value")
 	public void setBodyValue(String bodyValue) {
-		if (super.getBody() == null) {
-			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-					BodyTypes.SEMANTIC_TAG.name());
-			body.setValue(bodyValue);
-			super.setBody(body);
-		} else {
+//		if (super.getBody() == null) {
+//			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+//					BodyTypes.SEMANTIC_TAG.name());
+//			body.setValue(bodyValue);
+//			super.setBody(body);
+//		} else {
 			super.getBody().setValue(bodyValue);
-		}
+		//}
 //		this.bodyValue = bodyValue;
 	}
 
@@ -107,14 +110,14 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 
 	@Field("*_multilingual")
 	public void setMultilingual(Map<String, String> multilingual) {
-		if (super.getBody() == null) {
-			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-					BodyTypes.SEMANTIC_TAG.name());
-			body.setMultilingual(multilingual);
-			super.setBody(body);
-		} else {
+//		if (super.getBody() == null) {
+//			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
+//					BodyTypes.SEMANTIC_TAG.name());
+//			body.setMultilingual(multilingual);
+//			super.setBody(body);
+//		} else {
 			super.getBody().setMultilingual(multilingual);
-		}
+//		}
 //		this.multiLingual = multiLingual;
 	}
 	

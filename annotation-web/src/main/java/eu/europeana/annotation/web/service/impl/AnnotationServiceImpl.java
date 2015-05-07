@@ -55,6 +55,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 	
 	AnnotationBuilder controllerHelper;
 	
+	Logger logger = Logger.getLogger(getClass());
+	
 	public AnnotationBuilder getControllerHelper() {
 		if(controllerHelper == null)
 			controllerHelper = new AnnotationBuilder();
@@ -163,13 +165,19 @@ public class AnnotationServiceImpl implements AnnotationService {
 	    	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
 		} catch (Exception e) {
 			String errorMessage = "Cannot Parse JSON-LD input! ";
-			Logger.getLogger(getClass().getName()).error(errorMessage, e);
+			getLogger().error(errorMessage, e);
 		}
 	    
 	    /**
 	     * AnnotationLd object -> Annotation object.
 	     */
 	    return parsedAnnotationLd.getAnnotation();
+	}
+
+
+
+	private Logger getLogger() {
+		return logger;
 	}
 
 	@Override

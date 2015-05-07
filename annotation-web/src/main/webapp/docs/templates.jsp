@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
@@ -74,7 +75,7 @@
     "contentType": "text-html",
     "mediaType": "image",
     "language": "en",
-    "value": "Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)",
+    "value": "Vlad IV. Tzepesch, der PfÃ¤hler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
     "targetType": "[euType:WEB_PAGE]"
 },
@@ -138,7 +139,7 @@
     "contentType": "text-html",
     "mediaType": "image",
     "language": "en",
-    "value": "Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)",
+    "value": "Vlad IV. Tzepesch, der PfÃ¤hler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
     "targetType": "[euType:WEB_PAGE]"
 },
@@ -199,7 +200,7 @@
     "contentType": "text-html",
     "mediaType": "image",
     "language": "de",
-    "value": "Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)",
+    "value": "Vlad IV. Tzepesch, der PfÃ¤hler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
     "targetType": "[euType:WEB_PAGE]"
 },
@@ -534,7 +535,7 @@
 							</td>
 							<td class="clsCellBorder" valign="top">
 								create an europeana annotation (SimpleTag) and return the object as stored in the database for 'historypin' provider. 
-								Identification of annotation types works as follows. Simple Tagging (when motivation is “oa:tagging” and body is a string literal).
+								Identification of annotation types works as follows. Simple Tagging (when motivation is 'oa:tagging' and body is a string literal).
 							</td>
 						</tr>						
 
@@ -551,7 +552,6 @@
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-    "@id": "http://data.europeana.eu/annotation/historypin/456",
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -573,7 +573,7 @@
 							</td>
 							<td class="clsCellBorder" valign="top">
 								create an europeana annotation (SimpleLink) and return the object as stored in the database for 'historypin' provider. 
-								Simple Object Linking (when motivation is “oa:linking” and no body is provided and target contains an array with at least 2 urls)
+								Simple Object Linking (when motivation is 'oa:linking' and no body is provided and target contains an array with at least 2 urls)
 							</td>
 						</tr>						
 
@@ -590,7 +590,6 @@
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-    "@id": "http://data.europeana.eu/annotation/historypin/456",
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -619,7 +618,7 @@
 							</td>
 							<td class="clsCellBorder" valign="top">
 								create an europeana annotation (SimpleTag) and return the object as stored in the database for 'historypin' provider. 
-								Identification of annotation types works as follows. Simple Tagging (when motivation is “oa:tagging” and body type is a string list).
+								Identification of annotation types works as follows. Simple Tagging (when motivation is 'oa:tagging' and body type is a string list).
 							</td>
 						</tr>											
 
@@ -654,7 +653,7 @@
 								</form>
 							</td>
 							<td class="clsCellBorder" valign="top">
-								Multiple Simple Tags (when motivation is “oa:tagging” and body is a string array).
+								Multiple Simple Tags (when motivation is 'oa:tagging' and body is a string array).
 							</td>
 						</tr>						
 

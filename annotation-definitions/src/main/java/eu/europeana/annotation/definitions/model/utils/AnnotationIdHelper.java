@@ -145,16 +145,16 @@ public class AnnotationIdHelper {
 	 * @param provider
 	 * @return
 	 */
-	public boolean validateEuropeanaProvider(Annotation annotation, String provider) {
-		boolean res = true;
-		if (StringUtils.isNotEmpty(annotation.getEquivalentTo())
-				&& annotation.getEquivalentTo().contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)
-				&& StringUtils.isNotEmpty(provider) 
-				&& !provider.equals(WebAnnotationFields.PROVIDER_HISTORY_PIN)
-				)
-			res = false;
-		return res;
-	}
+//	public boolean validateEuropeanaProvider(Annotation annotation, String provider) {
+//		boolean res = true;
+//		if (StringUtils.isNotEmpty(annotation.getEquivalentTo())
+//				&& annotation.getEquivalentTo().contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)
+//				&& StringUtils.isNotEmpty(provider) 
+//				&& !provider.equals(WebAnnotationFields.PROVIDER_HISTORY_PIN)
+//				)
+//			res = false;
+//		return res;
+//	}
 
 	/**
 	 * This method initializes AnnotationId object by passed
@@ -164,18 +164,21 @@ public class AnnotationIdHelper {
 	 * @param provider
 	 * @return AnnotationId object
 	 */
-	public AnnotationId initializeAnnotationId(String collection, String object,
-			String provider, String sameAs) {
+	public AnnotationId initializeAnnotationId(
+			String provider, Long annotationNr) {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
-//		annotationId.setResourceId(createResourceId(collection, object));
+		annotationId.setProvider(provider);
+		annotationId.setAnnotationNr(annotationNr);
 		
-		if (StringUtils.isEmpty(sameAs)
-				|| StringUtils.isEmpty(provider)) { 
-			annotationId.setProvider(WebAnnotationFields.PROVIDER_WEBANNO);
-		}else if (!StringUtils.isEmpty(sameAs)){
-			processExternalId(annotationId, provider, sameAs);
-		}
+		//		annotationId.setResourceId(createResourceId(collection, object));
+		
+//		if (StringUtils.isEmpty(sameAs)
+//				|| StringUtils.isEmpty(provider)) { 
+//			annotationId.setProvider(WebAnnotationFields.PROVIDER_WEBANNO);
+//		}else if (!StringUtils.isEmpty(sameAs)){
+//			processExternalId(annotationId, provider, sameAs);
+//		}
 		
 		return annotationId;
 		

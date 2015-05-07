@@ -35,16 +35,17 @@ public class AnnotationLdRest extends BaseJsonldRest {
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
-		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
+//		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+//		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
 		) {
 
-		String resourceId = toResourceId(collection, object);
+//		String resourceId = toResourceId(collection, object);
 		
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				resourceId, provider, annotationNr);
+				provider, annotationNr);
+//		resourceId, provider, annotationNr);
 		
 		AnnotationLd annotationLd = new AnnotationLd(annotation);
         String jsonLd = annotationLd.toString(4);
@@ -59,9 +60,10 @@ public class AnnotationLdRest extends BaseJsonldRest {
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
-			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
-			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
+//			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
+//			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
+			@RequestParam(value = "annotationNr", required = false) Long annotationNr,
 			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 //			@RequestBody @RequestParam(value = "annotation", required = true) String annotation) {
 			@RequestBody String annotation) {
@@ -72,14 +74,15 @@ public class AnnotationLdRest extends BaseJsonldRest {
 		annotationIdHelper = new AnnotationIdHelper();
 
 		// validate input parameters
-		if (!annotationIdHelper.validateResouceId(webAnnotation, collection, object))
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
+//		if (!annotationIdHelper.validateResouceId(webAnnotation, collection, object))
+//			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
 		if (!annotationIdHelper.validateProvider(webAnnotation, provider)) 
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
 		
 		//initialize
 		AnnotationId annoId = annotationIdHelper
-				.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
+				.initializeAnnotationId(provider, annotationNr);
+//		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 		
 		webAnnotation.setAnnotationId(annoId);		
 		Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);

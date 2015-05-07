@@ -160,9 +160,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createBaseObjectTagInstance();
 		AnnotationId annoId = annotationIdHelper
 				.initializeAnnotationId(
-						AnnotationTestObjectBuilder.TEST_COLLECTION
-						, AnnotationTestObjectBuilder.TEST_OBJECT
-						, WebAnnotationFields.PROVIDER_WEBANNO
+//						AnnotationTestObjectBuilder.TEST_COLLECTION
+//						, AnnotationTestObjectBuilder.TEST_OBJECT
+						WebAnnotationFields.PROVIDER_WEBANNO
 						, null);
 				
 		testAnnotation.setAnnotationId(annoId);					
@@ -181,10 +181,11 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 		AnnotationId annoId = annotationIdHelper
 				.initializeAnnotationId(
-						AnnotationTestObjectBuilder.TEST_COLLECTION
-						, AnnotationTestObjectBuilder.TEST_OBJECT
-						, WebAnnotationFields.PROVIDER_HISTORY_PIN
-						, testAnnotation.getSameAs());
+//						AnnotationTestObjectBuilder.TEST_COLLECTION
+//						, AnnotationTestObjectBuilder.TEST_OBJECT
+						WebAnnotationFields.PROVIDER_HISTORY_PIN
+						, 1L);
+//		, testAnnotation.getSameAs());
 				
 		testAnnotation.setAnnotationId(annoId);		
 		

@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,6 +27,11 @@ public class BaseRest {
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 	protected AnnotationIdHelper annotationIdHelper;
 
+	Logger logger = Logger.getLogger(getClass());
+	
+	public Logger getLogger() {
+		return logger;
+	}
 
 	public AnnotationIdHelper getAnnotationIdHelper() {
 		if(annotationIdHelper == null)
@@ -113,11 +119,15 @@ public class BaseRest {
 	 * @param errorMessage
 	 * @return
 	 */
-	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {
+	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th) {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
 		response = buildErrorResponse(errorMessage, response.action, response.apikey);
 		return JsonWebUtils.toJson(response, null);
+	}
+
+	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {
+		return getValidationReport(apiKey, action, errorMessage, null);
 	}
 
 }
