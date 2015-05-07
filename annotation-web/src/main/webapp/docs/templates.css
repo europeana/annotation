@@ -1,0 +1,25 @@
+@CHARSET "ISO-8859-1";
+#toc {
+	list-style: none;
+	margin-bottom: 20px;
+}
+#toc li {
+	background: url(dot.gif) repeat-x bottom left;
+	overflow: hidden;
+	padding-bottom: 2px;
+}
+#toc a,
+#toc span {
+	display: inline-block;
+	background: #fff;
+	position: relative;
+	bottom: -4px;
+}
+#toc a {
+	float: right;
+	padding: 0 0 3px 2px;
+}
+#toc span {
+	float: left;
+	padding: 0 2px 3px 0;
+}
