@@ -142,8 +142,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		        if (bodyProperty != null)
 		        	jsonLdResource.putProperty(bodyProperty);
 	        } else {
-	        	if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0)
-	            	jsonLdResource.putProperty(WebAnnotationFields.BODY, TypeUtils.getTypeListAsStr(annotation.getBody().getValues()));
+	        	if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0) {
+//	            	jsonLdResource.putProperty(WebAnnotationFields.BODY, TypeUtils.getTypeListAsStr(annotation.getBody().getValues()));
+			        JsonLdProperty bodyProperty = addArrayProperty(WebAnnotationFields.BODY, annotation.getBody().getValues());
+			        if (bodyProperty != null)
+			        	jsonLdResource.putProperty(bodyProperty);
+	        	}
 	        	else
 	        		jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
 	        }
@@ -156,8 +160,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	        	jsonLdResource.putProperty(targetProperty);
         } else {
             if (annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
-	            if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getTarget().getValues())))  
-	            	jsonLdResource.putProperty(WebAnnotationFields.TARGET, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));
+	            if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getTarget().getValues())))  {
+//	            	jsonLdResource.putProperty(WebAnnotationFields.TARGET, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));
+			        JsonLdProperty targetProperty = addArrayProperty(WebAnnotationFields.TARGET, annotation.getTarget().getValues());
+			        if (targetProperty != null)
+			        	jsonLdResource.putProperty(targetProperty);
+	            }
             } else {
             	jsonLdResource.putProperty(WebAnnotationFields.TARGET, annotation.getTarget().getInputString());
             }
@@ -709,6 +717,26 @@ public class EuropeanaAnnotationLd extends JsonLd {
 			propertyValue.getValues().put(field, listString);
 	}
 	
+	/**
+	 * @param annotation
+	 * @return
+	 */
+	private JsonLdProperty addArrayProperty(String propertyName, List<String> valueList) {
+		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
+        if (valueList != null) {
+        	Iterator<String> itr = valueList.iterator();
+        	while (itr.hasNext()) {
+        		String value = itr.next();
+        		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
+        		propertyValue.setValue(value);
+    	        arrProperty.addValue(propertyValue);        
+        	}
+        } else {
+        	return null;
+        }
+		return arrProperty;
+	}
+
 	/**
 	 * @param annotation
 	 * @return
