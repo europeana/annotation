@@ -91,7 +91,8 @@ public interface WebAnnotationFields {
 	 * Notes
 	 */
 	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>";
-	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>";
+	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>. " +
+			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
 	public static final String SEARCH_FIELDS_LINK = "Valid fields are 'all', 'label', 'body_value', 'tag_id', 'multilingual'.";
 
 	/**

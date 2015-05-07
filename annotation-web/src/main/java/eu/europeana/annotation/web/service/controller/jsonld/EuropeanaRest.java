@@ -1,8 +1,11 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import javax.ws.rs.PathParam;
+
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +39,20 @@ public class EuropeanaRest extends BaseRest{
 
 	@RequestMapping(value = "/annotationld/{provider}/{annotationNr}.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	public ModelAndView getAnnotationLdByPath (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+//		@RequestParam(value = "profile", required = false) String profile,
+		@PathVariable(value = "provider") String provider,
+		@PathVariable(value = "annotationNr") Long annotationNr
+		) {
+		
+		String action = "get:/annotationld/{provider}/{annotationNr}.jsonld";
+		return getAnnotation(apiKey, provider, annotationNr, action);	
+	}
+
+//	@RequestMapping(value = "/annotation.jsonld?provider=&annotationNr=", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 //		@RequestParam(value = "profile", required = false) String profile,
@@ -43,7 +60,12 @@ public class EuropeanaRest extends BaseRest{
 		@RequestParam(value = "annotationNr", required = true) Long annotationNr
 		) {
 		
-		String action = "get:/annotationld/{provider}/{annotationNr}.jsonld";
+		String action = "get:/annotation.jsonld";
+		return getAnnotation(apiKey, provider, annotationNr, action);	
+	}
+
+	private ModelAndView getAnnotation(String apiKey, String provider,
+			Long annotationNr, String action) {
 		
 		try {
 			Annotation annotation = getAnnotationService().getAnnotationById(provider, annotationNr);
@@ -57,7 +79,7 @@ public class EuropeanaRest extends BaseRest{
 		} catch (Exception e) {
 			getLogger().error("An error occured during the invocation of :" + action, e);
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage(), e);		
-		}	
+		}
 	}
 	
 	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
