@@ -84,7 +84,7 @@
 			stored="true" multiValued="false" />
 		<!--  @Field("bodyType") -->	
 		<field name="body_type" type="string" indexed="true"
-			stored="true" multiValued="false" />
+			stored="true" multiValued="true" />
 		<!--  @Field("annotation_type") - change to keyword -->	
 		<field name="annotation_type" type="string" indexed="true"
 			stored="true" multiValued="false" />

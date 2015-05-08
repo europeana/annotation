@@ -70,8 +70,13 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		super.getBody().setInternalType(bodyInternalType);
 	}
 
+	public String getBodyInternalType() {	
+		return super.getBody().getInternalType();
+	}
+
 	@Field("body_type")
 	public void setBodyType(List<String> bodyType) {
+		if (super.getBody() != null)
 			super.getBody().setType(bodyType);
 		//this.bodyType = bodyType;
 	}
@@ -92,6 +97,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 //			body.setValue(bodyValue);
 //			super.setBody(body);
 //		} else {
+		if (super.getBody() != null)
 			super.getBody().setValue(bodyValue);
 		//}
 //		this.bodyValue = bodyValue;
@@ -116,6 +122,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 //			body.setMultilingual(multilingual);
 //			super.setBody(body);
 //		} else {
+		if (super.getBody() != null) 
 			super.getBody().setMultilingual(multilingual);
 //		}
 //		this.multiLingual = multiLingual;

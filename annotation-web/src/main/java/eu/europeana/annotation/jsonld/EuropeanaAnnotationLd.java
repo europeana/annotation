@@ -43,16 +43,6 @@ import eu.europeana.annotation.utils.JsonUtils;
 
 public class EuropeanaAnnotationLd extends JsonLd {
 
-//	public EuropeanaAnnotationLd(Annotation annotation) {
-//		super(annotation);
-//		// TODO Auto-generated constructor stub
-//	}
-//
-//	public EuropeanaAnnotationLd(JsonLd json) {
-//		super(json);
-//		// TODO Auto-generated constructor stub
-//	}
-
     private static final Logger logger = LoggerFactory.getLogger(AnnotationLd.class);
     
     TypeUtils typeHelper = new TypeUtils();

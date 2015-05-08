@@ -258,7 +258,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         AnnotationLd parsedAnnotationLd = null;
         JsonLd parsedJsonLd = null;
         try {
-        	parsedJsonLd = JsonLdParser.parseExt(actual);
+//        	parsedJsonLd = JsonLdParser.parseExt(actual);
         	parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -267,7 +267,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         parsedAnnotationLd.setUseTypeCoercion(false);
         parsedAnnotationLd.setUseCuries(true);
         
-        String parsedJsonLdStr = parsedJsonLd.toString();        
+//        String parsedJsonLdStr = parsedJsonLd.toString();        
         String parsedAnnotationLdStr = parsedAnnotationLd.toString();        
         AnnotationLd.toConsole("", parsedAnnotationLdStr);
         AnnotationLd.toConsole("", parsedAnnotationLd.toString(4));

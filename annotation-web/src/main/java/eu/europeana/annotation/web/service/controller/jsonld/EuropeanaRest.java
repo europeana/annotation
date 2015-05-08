@@ -1,7 +1,5 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
-import javax.ws.rs.PathParam;
-
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -55,7 +53,6 @@ public class EuropeanaRest extends BaseRest{
 	@ResponseBody
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
-//		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 		@RequestParam(value = "annotationNr", required = true) Long annotationNr
 		) {

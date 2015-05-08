@@ -22,7 +22,6 @@ import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -470,25 +469,25 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	/** not supported anymore. It will be sent through the equivalent to */
-	@Deprecated
-	private AnnotationId parseIdFromUri(String valueObject, JSONObject jo)
-			throws JsonParseException {
-		// TODO: check if already implemented or if can be moved in
-		// AnnotationIdDeserializer
-		String parts[] = valueObject.split("/");
-		Long annotationNr = Long.valueOf(parts[parts.length - 1]);
-		String provider = parts[parts.length - 2];
-		BaseAnnotationId annoId = new BaseAnnotationId();
-		annoId.setProvider(provider);
-		annoId.setAnnotationNr(annotationNr);
-
-		Target target = parseTarget(jo);
-//		String resourceId = getIdHelper().extractResoureIdFromHttpUri(
-//				target.getHttpUri());
-
-//		annoId.setResourceId(resourceId);
-		return annoId;
-	}
+//	@Deprecated
+//	private AnnotationId parseIdFromUri(String valueObject, JSONObject jo)
+//			throws JsonParseException {
+//		// TODO: check if already implemented or if can be moved in
+//		// AnnotationIdDeserializer
+//		String parts[] = valueObject.split("/");
+//		Long annotationNr = Long.valueOf(parts[parts.length - 1]);
+//		String provider = parts[parts.length - 2];
+//		BaseAnnotationId annoId = new BaseAnnotationId();
+//		annoId.setProvider(provider);
+//		annoId.setAnnotationNr(annotationNr);
+//
+//		Target target = parseTarget(jo);
+////		String resourceId = getIdHelper().extractResoureIdFromHttpUri(
+////				target.getHttpUri());
+//
+////		annoId.setResourceId(resourceId);
+//		return annoId;
+//	}
 
 	private Agent parseAgent(AgentTypes type, String valueObject) {
 		Agent agent = AgentObjectFactory.getInstance()
