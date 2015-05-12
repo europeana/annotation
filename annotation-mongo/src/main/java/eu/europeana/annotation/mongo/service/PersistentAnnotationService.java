@@ -25,6 +25,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public List<? extends Annotation> getAnnotationListByProvider(String europeanaId, String provider);
 
+	public List<? extends Annotation> getAnnotationListByTarget(String target);
+
 	/**
 	 * This method retrieves annotations applying filters.
 	 * @param europeanaId

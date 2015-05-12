@@ -260,6 +260,49 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
+	public List<? extends Annotation> getAnnotationListByTarget(
+			String target) {
+		List<? extends Annotation> results = filterAnnotationListByTarget(target, false);
+		if (results.size() == 0)
+			results = filterAnnotationListByTarget(target, true);
+//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+//		if (StringUtils.isNotEmpty(target)) {
+////			query.filter(PersistentAnnotation.FIELD_VALUE, target);
+//			query.disableValidation().filter("target." + PersistentAnnotation.FIELD_VALUE, target); //
+////			query.or(query.disableValidation().criteria("target." + PersistentAnnotation.FIELD_VALUES).hasThisElement(target));
+//			query.disableValidation().field("target." + PersistentAnnotation.FIELD_VALUES).equal(target);
+////			query.disableValidation().filter("target." + PersistentAnnotation.FIELD_VALUES,target);
+//		}
+//		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+//		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
+//				.find(query);
+//		return results.asList();
+		return results;
+	}
+
+	/**
+	 * This method filters active annotations by target. By searching in 'target.value' parameter 'multiple' is false.
+	 * By searching in 'target.values' parameter 'multiple' is true.
+	 * @param target
+	 * @param multiple
+	 * @return evaluated list
+	 */
+	public List<? extends Annotation> filterAnnotationListByTarget(
+			String target, boolean multiple) {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		if (StringUtils.isNotEmpty(target)) {
+			if (multiple)
+				query.disableValidation().field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUES).equal(target);
+			else
+				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUE, target); 
+		}
+		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
+				.find(query);
+		return results.asList();
+	}
+
+	@Override
 	public List<? extends Annotation> getFilteredAnnotationList(
 			String europeanaId, String provider, String startOn, String limit,
 			boolean isDisabled) {

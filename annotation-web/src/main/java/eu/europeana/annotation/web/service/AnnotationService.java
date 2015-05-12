@@ -31,6 +31,13 @@ public interface AnnotationService {
 	public List<? extends Annotation> getAnnotationListByProvider (String resourceId, String provider);
 	
 	/**
+	 * This method retrieves all not disabled annotations for given target.
+	 * @param target
+	 * @return the list of not disabled annotations
+	 */
+	public List<? extends Annotation> getAnnotationListByTarget (String target);
+	
+	/**
 	 * This method retrieves annotations applying filters.
 	 * @param resourceId
 	 * @param startOn

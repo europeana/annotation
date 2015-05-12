@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,27 @@ import eu.europeana.api2.utils.JsonWebUtils;
 @Controller
 @Api(value = "search", description = "Annotation Search Rest Service")
 public class SearchRest extends BaseRest {
+
+	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView searchLd(
+		@RequestParam(value = "wsKey", required = false) String wsKey,
+		@RequestParam(value = "target", required = false) String target,
+		@RequestParam(value = "resourceId", required = false) String resourceId) {
+
+		List<? extends Annotation> annotationList = null;
+		AnnotationSearchResults<AbstractAnnotation> response;
+		
+		if (StringUtils.isNotEmpty(target)) {
+			annotationList = getAnnotationService().getAnnotationListByTarget(target);
+		}
+		if (StringUtils.isNotEmpty(resourceId)) {
+			annotationList = getAnnotationService().getAnnotationList(resourceId);
+		}
+		response = buildSearchResponse(
+				annotationList, wsKey, "/annotations/search.jsonld");
+		return JsonWebUtils.toJson(response, null);
+	}
 
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
