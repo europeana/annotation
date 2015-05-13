@@ -8,6 +8,7 @@ import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Polymorphic;
+//import com.google.code.morphia.annotations.Reference;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -38,6 +39,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Embedded
 	private Body body;
 	@Embedded
+//	@Reference(lazy=true)
 	private Target target;
 	
 	private String motivatedBy;

@@ -265,18 +265,6 @@ public class PersistentAnnotationServiceImpl extends
 		List<? extends Annotation> results = filterAnnotationListByTarget(target, false);
 		if (results.size() == 0)
 			results = filterAnnotationListByTarget(target, true);
-//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-//		if (StringUtils.isNotEmpty(target)) {
-////			query.filter(PersistentAnnotation.FIELD_VALUE, target);
-//			query.disableValidation().filter("target." + PersistentAnnotation.FIELD_VALUE, target); //
-////			query.or(query.disableValidation().criteria("target." + PersistentAnnotation.FIELD_VALUES).hasThisElement(target));
-//			query.disableValidation().field("target." + PersistentAnnotation.FIELD_VALUES).equal(target);
-////			query.disableValidation().filter("target." + PersistentAnnotation.FIELD_VALUES,target);
-//		}
-//		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-//		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
-//				.find(query);
-//		return results.asList();
 		return results;
 	}
 
