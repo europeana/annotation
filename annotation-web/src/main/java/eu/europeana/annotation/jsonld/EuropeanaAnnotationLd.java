@@ -94,9 +94,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
         	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUri());   
         if (!StringUtils.isBlank(annotation.getType())) 
         	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
-//       	JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
-//        if (serializedByProperty != null)      	
-//        	jsonLdResource.putProperty(serializedByProperty);        
         if (isJsonObjectInput(annotation.getSerializedBy().getInputString())){
         	annotation.getSerializedBy().setInputString(null);
             JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
@@ -133,7 +130,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		        	jsonLdResource.putProperty(bodyProperty);
 	        } else {
 	        	if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0) {
-//	            	jsonLdResource.putProperty(WebAnnotationFields.BODY, TypeUtils.getTypeListAsStr(annotation.getBody().getValues()));
 			        JsonLdProperty bodyProperty = addArrayProperty(WebAnnotationFields.BODY, annotation.getBody().getValues());
 			        if (bodyProperty != null)
 			        	jsonLdResource.putProperty(bodyProperty);
@@ -151,7 +147,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
         } else {
             if (annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
 	            if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getTarget().getValues())))  {
-//	            	jsonLdResource.putProperty(WebAnnotationFields.TARGET, TypeUtils.getTypeListAsStr(annotation.getTarget().getValues()));
 			        JsonLdProperty targetProperty = addArrayProperty(WebAnnotationFields.TARGET, annotation.getTarget().getValues());
 			        if (targetProperty != null)
 			        	jsonLdResource.putProperty(targetProperty);
@@ -338,7 +333,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
 			String euType = "";
 			if (!StringUtils.isBlank(propertyValue.getType())) 
 				euType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getType());
-//				euType = propertyValue.getType();
 			if (StringUtils.isBlank(euType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
 				euType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 			//if not set 
@@ -376,8 +370,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
 					throw new AnnotationAttributeInstantiationException(euType);
 				
 				target = TargetObjectFactory.getInstance().createModelObjectInstance(euType);
-//				target = (Target) objectFactory.createModelObjectInstance(
-//						AnnotationPartTypes.TARGET.name() + WebAnnotationFields.SPLITTER + euType);
 				target.setType(propertyValue.getValues().get(WebAnnotationFields.TYPE));
 				if (hasValue(propertyValue, WebAnnotationFields.INPUT_STRING)) 
 					target.setInputString(propertyValue.getValues().get(WebAnnotationFields.INPUT_STRING));
@@ -393,7 +385,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
 					source.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
 				if (hasValue(propertyValue2, WebAnnotationFields.AT_ID)) {
 					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.AT_ID));
-//					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
 				}
 				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
 					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
@@ -436,8 +427,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
 				
 				body = BodyObjectFactory.getInstance().createModelObjectInstance(euType);
 				
-//				body.setType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
-//				body.addType(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 				if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
 					body.setType(TypeUtils.convertStringToList(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE)));			
 
@@ -486,14 +475,11 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	private Map<String, String> parseMap(JsonLdPropertyValue propertyValue, String fieldName) {
 		Map<String, String> res = null;
 		String fieldNameId = fieldName + ":@" + WebAnnotationFields.ID;
-//		String fieldNameContainer = fieldName + ":@" + WebAnnotationFields.CONTAINER;
 		String fieldNameContainer = "@" + WebAnnotationFields.CONTAINER;
 		if (hasValue(propertyValue, fieldNameId)) {
 			res = new HashMap<String, String>();
 			res.put("@" + WebAnnotationFields.ID, propertyValue.getValues().get(fieldNameId));
 			res.put("@" + WebAnnotationFields.CONTAINER, propertyValue.getValues().get(fieldNameContainer));
-//			String fieldContent = "" + propertyValue.getValues().get(fieldNameId) + "]";
-//			res = JsonUtils.stringToMap(fieldContent);
 		}
 		return res;
 	}
@@ -597,7 +583,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
             if (!StringUtils.isBlank(annotation.getTarget().getInputString())) 
             	propertyValue.getValues().put(WebAnnotationFields.INPUT_STRING, annotation.getTarget().getInputString());
         	if (!StringUtils.isBlank(annotation.getTarget().getType())) 
-//        		propertyValue.addType(annotation.getTarget().getTargetType());
     			propertyValue.addType(annotation.getTarget().getType().replace("[", "").replace("]", ""));
 
             if (!StringUtils.isBlank(annotation.getTarget().getType()))         	
@@ -738,8 +723,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
         if (annotation != null && annotation.getBody() != null) {	
             if (!StringUtils.isBlank(annotation.getBody().getInputString())) 
             	propertyValue.getValues().put(WebAnnotationFields.INPUT_STRING, annotation.getBody().getInputString());
-//            if (!StringUtils.isBlank(annotation.getBody().getType()))         	
-//            	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, annotation.getBody().getType());
             if (!StringUtils.isBlank(TypeUtils.getTypeListAsStr(annotation.getBody().getType()))) 
         	    propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(annotation.getBody().getType()));            
             if (!StringUtils.isBlank(annotation.getBody().getValue()))         	
@@ -776,14 +759,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 
 	private void addAgentByProperty(JsonLdPropertyValue propertyValue,
 			Agent agent) {
-//        if (agent != null && !StringUtils.isBlank(agent.getInputString())) 
-//        	propertyValue.getValues().put(WebAnnotationFields.INPUT_STRING, agent.getInputString());
-//		if (agent != null && !StringUtils.isBlank(agent.getOpenId())) 
-        	propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
-//        if (agent != null && !StringUtils.isBlank(agent.getAgentType())) 
-//        	propertyValue.setType(agent.getAgentType());
-//        if (agent != null && !StringUtils.isBlank(TypeUtils.getTypeListAsStr(agent.getAgentType()))) 
-//        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, TypeUtils.getTypeListAsStr(agent.getAgentType()));
+       	propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
         if (agent != null && !StringUtils.isBlank(agent.getType())) 
         	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getType());
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
@@ -813,8 +789,6 @@ public class EuropeanaAnnotationLd extends JsonLd {
         Style style = annotation.getStyledBy();        
         if (style != null && !StringUtils.isBlank(style.getHttpUri())) 
         	propertyValue.setType(style.getHttpUri());
-//        if (style != null && !StringUtils.isBlank(style.getMediaType())) 
-//        	propertyValue.setType(style.getMediaType());
         if (style != null && !StringUtils.isBlank(style.getContentType())) 
         	propertyValue.getValues().put(WebAnnotationFields.STYLE_CLASS, style.getContentType());
         if (style != null && !StringUtils.isBlank(style.getValue())) 
