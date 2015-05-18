@@ -33,7 +33,7 @@
 "annotatedAt": 1403852113248,
 "type": "OBJECT_TAG",
 "annotatedBy": {
-    "agentType": "[foaf:Person, euType:PERSON]",
+    "agentType": "foaf:Person",
     "name": "annonymous web user",
     "homepage": null,
     "mbox": null,
@@ -54,11 +54,11 @@
     "language": "en",
     "value": "Vlad IV. Tzepesch, der Pfaehler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
-    "targetType": "[euType:WEB_PAGE]"
+    "@type": "oa:Image"
 },
 "serializedAt": "",
 "serializedBy": {
-    "agentType": "[prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
+    "agentType": "prov:Software",
     "name": "annonymous web user",
     "homepage": null,
     "mbox": null,

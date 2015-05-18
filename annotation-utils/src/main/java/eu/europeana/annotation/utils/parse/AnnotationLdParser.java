@@ -221,6 +221,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		switch (property) {
 		case WebAnnotationFields.AT_TYPE:
 			anno.setType((String) valueObject);
+			anno.setInternalType(anno.getType());
 			break;
 		case WebAnnotationFields.AT_ID:
 			AnnotationId annotationId = parseId(valueObject, jo);

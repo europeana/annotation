@@ -179,4 +179,54 @@ public class AnnotationRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
+	@RequestMapping(value = "/annotations/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSON_LINK, value="")
+	public ModelAndView createAnnotationByProvider (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile,
+		@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
+		@RequestParam(value = "annotationNr", required = false) Long annotationNr,
+		@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
+		@RequestBody String annotation) {
+
+		String action = "create:/annotations/provider/annotationNr.json";
+		
+		//parse
+		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
+
+		//validate input params
+		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
+
+		//initialize
+		AnnotationId annoId = getAnnotationIdHelper()
+				.initializeAnnotationId(provider, annotationNr);
+				
+		webAnnotation.setAnnotationId(annoId);		
+		
+		if (webAnnotation.getBody() != null 
+				&& webAnnotation.getBody().getLanguage() != null
+				&& webAnnotation.getBody().getValue() != null
+				&& webAnnotation.getBody().getHttpUri() == null // only for simple tag
+				&& webAnnotation.getBody().getMultilingual().size() == 0) {
+			webAnnotation.getBody().getMultilingual().put(
+					webAnnotation.getBody().getLanguage(), webAnnotation.getBody().getValue());
+		}
+		
+		//store				
+		Annotation storedAnnotation = getAnnotationService().storeAnnotation(
+				webAnnotation, indexing);
+
+		//build response
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, action);
+		response.success = true;
+
+		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+				storedAnnotation));
+
+		return JsonWebUtils.toJson(response, null);
+	}
+
 }

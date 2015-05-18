@@ -15,7 +15,10 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.Version;
+import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
+import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
@@ -36,6 +39,7 @@ import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
@@ -51,8 +55,10 @@ public class JsonUtils {
 	
 //	private static Logger log = Logger.getRootLogger();
 //	private static final Logger log = Logger.getLogger(JSONUtils.class);
-	private static ObjectMapper objectMapper = new ObjectMapper();
-	private static final JsonFactory jsonFactory = new JsonFactory();
+//	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static ObjectMapper objectMapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY)
+			.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final JsonFactory jsonFactory = new JsonFactory();
 	
 	
 	
@@ -83,12 +89,15 @@ public class JsonUtils {
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
 			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
 			module.addAbstractTypeMapping(State.class, BaseState.class);
+//			module.addAbstractTypeMapping(Agent.class, Person.class);
+			module.addAbstractTypeMapping(Target.class, ImageTarget.class);
 
 			objectMapper.registerModule(module); 
 	
 			
 			parser.setCodec(objectMapper);
 			annotation = objectMapper.readValue(parser, Annotation.class);
+			annotation.setInternalType(annotation.getType());
 			
 		} catch (JsonParseException e) {
 			throw new AnnotationInstantiationException("Json formating exception!", e);
