@@ -1,5 +1,8 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -17,9 +20,11 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.web.exception.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
+import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
@@ -121,6 +126,29 @@ public class EuropeanaRest extends BaseRest{
 		}
 
 	}
+	
+	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView searchLd(
+		@RequestParam(value = "wsKey", required = false) String wsKey,
+		@RequestParam(value = "target", required = false) String target,
+		@RequestParam(value = "resourceId", required = false) String resourceId) {
+
+		List<? extends Annotation> annotationList = null;
+		AnnotationSearchResults<AbstractAnnotation> response;
+		
+		if (StringUtils.isNotEmpty(target)) {
+			annotationList = getAnnotationService().getAnnotationListByTarget(target);
+		}
+		if (StringUtils.isNotEmpty(resourceId)) {
+			annotationList = getAnnotationService().getAnnotationList(resourceId);
+		}
+		response = buildSearchResponse(
+				annotationList, wsKey, "/annotations/search.jsonld");
+		return JsonWebUtils.toJson(response, null);
+	}
+
+	
 //
 	private AnnotationId buildAnnotationId(String provider, Long annotationNr) throws ParamValidationException {
 		// validate input parameters
