@@ -14,6 +14,16 @@ public interface InternetResource {
 
 	public abstract List<String> getValues();
 	
+	public abstract void setResourceId(String resourceId);
+
+	public abstract String getResourceId();
+
+	public abstract void setResourceIds(List<String> resourceIds);
+
+	public abstract void addResourceId(String resourceId);
+
+	public abstract List<String> getResourceIds();
+	
 	public abstract void setLanguage(String language);
 
 	public abstract String getLanguage();

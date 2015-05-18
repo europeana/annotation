@@ -422,6 +422,8 @@ public class AnnotationLdParser extends JsonLdParser {
 		//already done through constructor 
 		//target.setTargetType(TargetTypes.TEXT.name());
 		target.setValue((String) valueObject);
+		target.setResourceId(getIdHelper().buildResourseId(
+				getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
 		target.setHttpUri(valueObject);
 		return target;
 		
@@ -431,8 +433,13 @@ public class AnnotationLdParser extends JsonLdParser {
 		Target target = TargetObjectFactory.getInstance()
 				.createModelObjectInstance(TargetTypes.WEB_PAGE.name());
 		try {
-			for (int i=0; i < valueObject.length(); i++) 
-				target.addValue(valueObject.getString(i));
+			for (int i=0; i < valueObject.length(); i++) {
+				String val = valueObject.getString(i);
+				target.addValue(val);
+				String resourceId = getIdHelper().buildResourseId(
+						getIdHelper().extractResoureIdPartsFromHttpUri(val));
+				target.addResourceId(resourceId);
+			}
 		} catch (JSONException e) {
 			throw new JsonParseException("unsupported target deserialization for json represetnation: " + valueObject + " " + e.getMessage());
 		}
@@ -539,6 +546,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				defaultType);
 		body.addType(defaultType);
 		body.setValue((String) valueObject);
+		body.setResourceId(getIdHelper().buildResourseId(
+				getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
 		return body;
 	}
 
@@ -562,6 +571,8 @@ public class AnnotationLdParser extends JsonLdParser {
 					break;
 				case WebAnnotationFields.CHARS:
 					body.setValue(value.toString());
+					body.setResourceId(getIdHelper().buildResourseId(
+							getIdHelper().extractResoureIdPartsFromHttpUri(value.toString())));
 					break;
 				case WebAnnotationFields.DC_LANGUAGE:
 					body.setLanguage(value.toString());
@@ -591,8 +602,13 @@ public class AnnotationLdParser extends JsonLdParser {
 		Body body = BodyObjectFactory.getInstance()
 				.createModelObjectInstance(BodyTypes.TAG.name());
 		try {
-			for (int i=0; i < valueObject.length(); i++) 
-				body.addValue(valueObject.getString(i));
+			for (int i=0; i < valueObject.length(); i++) {
+				String val = valueObject.getString(i);
+				body.addValue(val);
+				String resourceId = getIdHelper().buildResourseId(
+						getIdHelper().extractResoureIdPartsFromHttpUri(val));
+				body.addResourceId(resourceId);
+			}
 		} catch (JSONException e) {
 			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
 		}

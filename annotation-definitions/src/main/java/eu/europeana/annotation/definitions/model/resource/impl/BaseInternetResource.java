@@ -30,6 +30,34 @@ public class BaseInternetResource implements InternetResource{
 		this.values = values;
 	}	
 	
+	private String resourceId;
+	
+
+	@Override
+	public String getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
+	}
+	
+	private List<String> resourceIds = new ArrayList<String>(2);
+
+	public void addResourceId(String resourceId) {
+		if (!resourceIds.contains(resourceId)) {
+			resourceIds.add(resourceId);
+		}
+	}
+	
+	public List<String> getResourceIds() {
+		return resourceIds;
+	}
+	
+	public void setResourceIds(List<String> resourceIds) {
+		this.resourceIds = resourceIds;
+	}	
+	
 	@Override
 	public String getContentType() {
 		return contentType;

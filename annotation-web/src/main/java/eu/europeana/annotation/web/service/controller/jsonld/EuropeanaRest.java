@@ -99,7 +99,6 @@ public class EuropeanaRest extends BaseRest{
 		try {
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotation);
-			//annotationIdHelper = new AnnotationIdHelper();
 	
 			AnnotationId annoId = buildAnnotationId(provider, annotationNr);
 			
@@ -141,7 +140,7 @@ public class EuropeanaRest extends BaseRest{
 			annotationList = getAnnotationService().getAnnotationListByTarget(target);
 		}
 		if (StringUtils.isNotEmpty(resourceId)) {
-			annotationList = getAnnotationService().getAnnotationList(resourceId);
+			annotationList = getAnnotationService().getAnnotationListByResourceId(resourceId);
 		}
 		response = buildSearchResponse(
 				annotationList, wsKey, "/annotations/search.jsonld");

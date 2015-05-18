@@ -184,14 +184,14 @@ public class AnnotationIdHelper {
 		
 	}
 	
-    private void processExternalId(AnnotationId annotationId, String provider, String sameAs) {
-    	if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider) && sameAs.contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)){
-    		String[] parts = sameAs.split(WebAnnotationFields.SLASH);
-    		annotationId.setProvider(provider);
-    		Long annotationNr = Long.parseLong(parts[parts.length -1]);
-			annotationId.setAnnotationNr(annotationNr);
-    	}
-	}
+//    private void processExternalId(AnnotationId annotationId, String provider, String sameAs) {
+//    	if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider) && sameAs.contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)){
+//    		String[] parts = sameAs.split(WebAnnotationFields.SLASH);
+//    		annotationId.setProvider(provider);
+//    		Long annotationNr = Long.parseLong(parts[parts.length -1]);
+//			annotationId.setAnnotationNr(annotationNr);
+//    	}
+//	}
 
 
 	/**

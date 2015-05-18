@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -122,6 +123,8 @@ public class BaseRest {
 	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th) {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
+		if (StringUtils.isEmpty(errorMessage))
+			errorMessage = th.toString();
 		response = buildErrorResponse(errorMessage, response.action, response.apikey);
 		return JsonWebUtils.toJson(response, null);
 	}

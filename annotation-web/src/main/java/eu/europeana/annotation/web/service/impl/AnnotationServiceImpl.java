@@ -523,6 +523,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoPersistence().getAnnotationListByTarget(target);
 	}
 	
+	@Override
+	public List<? extends Annotation> getAnnotationListByResourceId(
+			String resourceId) {
+		return getMongoPersistence().getAnnotationListByResourceId(resourceId);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.europeana.annotation.web.service.AnnotationService#existsInDb(eu.europeana.annotation.definitions.model.AnnotationId)
 	 */
