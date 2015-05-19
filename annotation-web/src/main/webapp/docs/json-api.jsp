@@ -54,7 +54,7 @@
     "language": "en",
     "value": "Vlad IV. Tzepesch, der Pfaehler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
-    "@type": "oa:Image"
+    "targetType": "oa:Image"
 },
 "serializedAt": "",
 "serializedBy": {

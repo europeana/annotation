@@ -86,7 +86,8 @@ public class BaseAnnotationId implements AnnotationId{
 	@Override
 	public String toString() {
 		return WebAnnotationFields.ANNOTATION_ID_PREFIX 
-//				+ getResourceId() + WebAnnotationFields.SLASH
+//				+ getResourceId() 
+				+ WebAnnotationFields.SLASH
 				+ getProvider() + WebAnnotationFields.SLASH
 				+ getAnnotationNr();
 	}
