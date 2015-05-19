@@ -77,6 +77,41 @@ public class AnnotationRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 	
+	@RequestMapping(value = "/annotations/{provider}/{annotationNr}.json"
+			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAnnotationByProvider (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile,
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		) {
+
+		Annotation annotation = getAnnotationService().getAnnotationById(
+				provider, annotationNr);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/annotations/provider/annotationNr.json");
+
+		if (annotation != null) {
+
+			response = new AnnotationOperationResponse(
+					apiKey, "/annotations/provider/annotationNr.json");
+			
+			response.success = true;
+
+			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+					annotation));
+		}else{
+			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
+			String action = "get: /annotations/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+			
+			response = buildErrorResponse(errorMessage, action, apiKey);
+		}
+		
+		return JsonWebUtils.toJson(response, null);
+	}
+	
 //	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 ////	@ApiOperation(value = "2", position = 2)
 //	public ModelAndView getAnnotationList (
