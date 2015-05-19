@@ -227,41 +227,52 @@ public class AnnotationRest extends BaseRest {
 
 		String action = "create:/annotations/provider/annotationNr.json";
 		
-		//parse
-		Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
-
-		//validate input params
-		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
-
-		//initialize
-		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(provider, annotationNr);
-				
-		webAnnotation.setAnnotationId(annoId);		
-		
-		if (webAnnotation.getBody() != null 
-				&& webAnnotation.getBody().getLanguage() != null
-				&& webAnnotation.getBody().getValue() != null
-				&& webAnnotation.getBody().getHttpUri() == null // only for simple tag
-				&& webAnnotation.getBody().getMultilingual().size() == 0) {
-			webAnnotation.getBody().getMultilingual().put(
-					webAnnotation.getBody().getLanguage(), webAnnotation.getBody().getValue());
+		try {
+			//parse
+			Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
+	
+			//validate input params
+			AnnotationId annoId = buildAnnotationId(provider, annotationNr);
+			
+			// check whether annotation vor given provider and annotationNr already exist in database
+			if (getAnnotationService().existsInDb(annoId)) 
+				return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toUri(), null);			
+			
+			
+	//		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
+	//			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
+	//
+	//		//initialize
+	//		AnnotationId annoId = getAnnotationIdHelper()
+	//				.initializeAnnotationId(provider, annotationNr);
+					
+			webAnnotation.setAnnotationId(annoId);		
+			
+			if (webAnnotation.getBody() != null 
+					&& webAnnotation.getBody().getLanguage() != null
+					&& webAnnotation.getBody().getValue() != null
+					&& webAnnotation.getBody().getHttpUri() == null // only for simple tag
+					&& webAnnotation.getBody().getMultilingual().size() == 0) {
+				webAnnotation.getBody().getMultilingual().put(
+						webAnnotation.getBody().getLanguage(), webAnnotation.getBody().getValue());
+			}
+			
+			//store				
+			Annotation storedAnnotation = getAnnotationService().storeAnnotation(
+					webAnnotation, indexing);
+	
+			//build response
+			AnnotationOperationResponse response = new AnnotationOperationResponse(
+					apiKey, action);
+			response.success = true;
+	
+			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+					storedAnnotation));
+	
+			return JsonWebUtils.toJson(response, null);
+		} catch (Exception e) {
+			return getValidationReport(apiKey, action, e.getMessage(), e);		
 		}
-		
-		//store				
-		Annotation storedAnnotation = getAnnotationService().storeAnnotation(
-				webAnnotation, indexing);
-
-		//build response
-		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, action);
-		response.success = true;
-
-		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-				storedAnnotation));
-
-		return JsonWebUtils.toJson(response, null);
 	}
 
 }

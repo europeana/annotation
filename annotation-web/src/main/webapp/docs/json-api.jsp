@@ -54,7 +54,7 @@
     "language": "en",
     "value": "Vlad IV. Tzepesch, der Pfaehler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
-    "targetType": "oa:Image"
+    "targetType": "oa:WebPage"
 },
 "serializedAt": "",
 "serializedBy": {
@@ -77,7 +77,7 @@
 								</form>
 							</td>
 							<td class="clsCellBorder" valign="top">
-								create a semantic tag (BodyType) for 'webanno' provider and return the object as stored in the database. Whereas, 'resourceId' is extracted from 'target.httpUri' and 'annotationNr' is generated.
+								create a semantic tag (BodyType) for 'webanno' provider and return the object as stored in the database. Whereas, 'resourceId' is extracted from 'target.value' or 'target.values' if the first is empty and 'annotationNr' is generated.
 							</td>
 						</tr>
 						
@@ -98,7 +98,7 @@
 "sameAs": "http://historypin.com/annotation/1234",
 "equivalentTo": "http://historypin.com/annotation/1234",
 "annotatedBy": {
-    "agentType": "[foaf:Person, euType:PERSON]",
+    "agentType": "foaf:Person",
     "name": "annonymous web user",
     "homepage": null,
     "mbox": null,
@@ -119,11 +119,11 @@
     "language": "en",
     "value": "Vlad IV. Tzepesch, der Pfaehler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
-    "targetType": "[euType:WEB_PAGE]"
+    "targetType": "euType:WEB_PAGE"
 },
 "serializedAt": "",
 "serializedBy": {
-    "agentType": "[prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
+    "agentType": "prov:Software",
     "name": "annonymous web user",
     "homepage": null,
     "mbox": null,
@@ -142,7 +142,7 @@
 								</form>
 							</td>
 							<td class="clsCellBorder" valign="top">
-								create a semantic tag (BodyType) for 'historypin' provider and return the object as stored in the database. Note that field 'sameAs' is employed for that task.
+								create a semantic tag (BodyType) for 'historypin' provider and return the object as stored in the database. 
 							</td>
 						</tr>
 																	
@@ -161,7 +161,7 @@
 "annotatedAt": 1403852113248,
 "type": "OBJECT_TAG",
 "annotatedBy": {
-    "agentType": "[foaf:Person, euType:PERSON]",
+    "agentType": "foaf:Person",
     "name": "annonymous web user",
     "homepage": null,
     "mbox": null,
@@ -181,11 +181,11 @@
     "language": "de",
     "value": "Vlad IV. Tzepesch, der Pfaehler, Woywode der Walachei 1456-1462 (gestorben 1477)",
     "httpUri": "http://europeana.eu/portal/record/15502/GG_8285.html",
-    "targetType": "[euType:WEB_PAGE]"
+    "targetType": "euType:WEB_PAGE"
 },
 "serializedAt": "",
 "serializedBy": {
-    "agentType": "[prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
+    "agentType": "prov:Software",
     "name": "annonymous web user",
     "homepage": null,
     "mbox": null,

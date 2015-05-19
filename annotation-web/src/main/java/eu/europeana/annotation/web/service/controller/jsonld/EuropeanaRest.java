@@ -22,7 +22,6 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
-import eu.europeana.annotation.web.exception.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -118,12 +117,9 @@ public class EuropeanaRest extends BaseRest{
 			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
 	        String jsonLd = annotationLd.toString(4);
 	        return JsonWebUtils.toJson(jsonLd, null);			
-		}catch (Exception e){
-			
-			
+		} catch (Exception e) {
 			return getValidationReport(wskey, action, e.getMessage(), e);		
 		}
-
 	}
 	
 	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -148,44 +144,6 @@ public class EuropeanaRest extends BaseRest{
 	}
 
 	
-//
-	private AnnotationId buildAnnotationId(String provider, Long annotationNr) throws ParamValidationException {
-		// validate input parameters
-//		if (!getAnnotationIdHelper().validateEuropeanaProvider(webAnnotation, provider)) 
-//			
-//			
-		//initialize
-//		String targetUri = null;
-//		targetUri = getTargetUri(webAnnotation);
-//
-//		String[] resourceId = getAnnotationIdHelper().extractResoureIdPartsFromHttpUri(targetUri);
-//		collection = getAnnotationIdHelper().extractCollectionFromResourceId(resourceId);
-//		object = getAnnotationIdHelper().extractObjectFromResourceId(resourceId);
-
-		validateProviderAndAnnotationNr(provider, annotationNr);
-		
-		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(provider, annotationNr);
-		return annoId;
-	}
-	
-	
-private void validateProviderAndAnnotationNr(String provider, Long annotationNr) throws ParamValidationException {
-	// TODO Auto-generated method stub
-	if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider)){
-		if(annotationNr== null ||  annotationNr<1)
-			throw new ParamValidationException("Invalid annotationNr for provider! " + provider + ":" + annotationNr);
-	}else if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
-		if(annotationNr!= null)
-			throw new ParamValidationException("AnnotationNr must not be set for provider! " + provider + ":" + annotationNr);
-	}else{
-		throw new ParamValidationException("Invalid provider! " + provider);
-	}
-	
-}
-
-
-
 //	private String getTargetUri(Annotation webAnnotation) {
 //		String targetUri;
 //		// extract collection and object from Target object if it exists

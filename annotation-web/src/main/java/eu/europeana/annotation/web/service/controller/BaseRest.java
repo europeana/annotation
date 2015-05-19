@@ -9,10 +9,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.web.exception.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
@@ -133,4 +136,39 @@ public class BaseRest {
 		return getValidationReport(apiKey, action, errorMessage, null);
 	}
 
+	//
+	protected AnnotationId buildAnnotationId(String provider, Long annotationNr) throws ParamValidationException {
+		// validate input parameters
+//		if (!getAnnotationIdHelper().validateEuropeanaProvider(webAnnotation, provider)) 
+//			
+//			
+		//initialize
+//		String targetUri = null;
+//		targetUri = getTargetUri(webAnnotation);
+//
+//		String[] resourceId = getAnnotationIdHelper().extractResoureIdPartsFromHttpUri(targetUri);
+//		collection = getAnnotationIdHelper().extractCollectionFromResourceId(resourceId);
+//		object = getAnnotationIdHelper().extractObjectFromResourceId(resourceId);
+
+		validateProviderAndAnnotationNr(provider, annotationNr);
+		
+		AnnotationId annoId = getAnnotationIdHelper()
+				.initializeAnnotationId(provider, annotationNr);
+		return annoId;
+	}
+	
+	
+	private void validateProviderAndAnnotationNr(String provider, Long annotationNr) throws ParamValidationException {
+		if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider)){
+			if(annotationNr== null ||  annotationNr<1)
+				throw new ParamValidationException("Invalid annotationNr for provider! " + provider + ":" + annotationNr);
+		}else if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
+			if(annotationNr!= null)
+				throw new ParamValidationException("AnnotationNr must not be set for provider! " + provider + ":" + annotationNr);
+		}else{
+			throw new ParamValidationException("Invalid provider! " + provider);
+		}
+		
+	}
+	
 }
