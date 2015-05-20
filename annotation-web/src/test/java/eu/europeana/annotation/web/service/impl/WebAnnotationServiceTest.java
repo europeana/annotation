@@ -146,7 +146,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 			&& webAnnotation.getAnnotationId().toString().contains( 
 				WebAnnotationFields.ANNOTATION_ID_PREFIX 
 //				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-//				+ WebAnnotationFields.SLASH 
+				+ WebAnnotationFields.SLASH 
 				+ WebAnnotationFields.PROVIDER_WEBANNO 
 				+ WebAnnotationFields.SLASH )
 			);
@@ -205,7 +205,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 				&& webAnnotation.getAnnotationId().toString().contains( 
 					WebAnnotationFields.ANNOTATION_ID_PREFIX 
 //					+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-//					+ WebAnnotationFields.SLASH 
+					+ WebAnnotationFields.SLASH 
 					+ WebAnnotationFields.PROVIDER_HISTORY_PIN
 					+ WebAnnotationFields.SLASH )
 				);
