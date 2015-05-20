@@ -1,11 +1,14 @@
 package eu.europeana.annotation.definitions.model.utils;
 
+import java.util.Iterator;
+
 import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
 
 public class AnnotationIdHelper {
@@ -139,6 +142,47 @@ public class AnnotationIdHelper {
 		return res;
 	}
 
+	/**
+	 * This method automatically extracts and inserts the resourceIDs from field 'value' or if it is empty 
+	 * from 'values' in InternetResource like Target or Body. 
+	 * @param ir input InternetResource
+	 * @return output InternetResource
+	 */
+	public InternetResource setResourceIds(InternetResource ir) {
+		InternetResource res = ir;
+		if (ir != null) {
+			if (StringUtils.isNotEmpty(ir.getValue())) {
+				String resourceId = extractResourceIdFromUri(ir.getValue());
+				ir.setResourceId(resourceId);
+			}
+			if (ir.getValues() != null && ir.getValues().size() > 0) {
+				Iterator<String> itr = ir.getValues().iterator();
+				while (itr.hasNext()) {
+					String value = itr.next();
+					String resourceId = extractResourceIdFromUri(value);
+					ir.addResourceId(resourceId);
+				}
+			}
+			res = ir;
+		}
+		return res;
+	}
+
+	/**
+	 * If given URI is an annotation URI extract resource ID.
+	 * @param uri
+	 * @return resource ID 
+	 */
+	private String extractResourceIdFromUri(String uri) {
+		String resourceId = null;
+		if (StringUtils.isNotEmpty(uri) 
+				&& uri.contains(WebAnnotationFields.HTTP))
+//			&& uri.contains(WebAnnotationFields.ANNOTATION_ID_PREFIX))
+			resourceId = buildResourseId(
+				extractResoureIdPartsFromHttpUri(uri));
+		return resourceId;
+	}
+	
 	/**
 	 * This method validates europeana provider.
 	 * @param annotation

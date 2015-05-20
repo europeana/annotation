@@ -40,6 +40,7 @@ import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
@@ -60,6 +61,12 @@ public class JsonUtils {
 			.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private static final JsonFactory jsonFactory = new JsonFactory();
 	
+	private static AnnotationIdHelper idHelper;
+	public static AnnotationIdHelper getIdHelper() {
+		if (idHelper == null)
+			idHelper = new AnnotationIdHelper();
+		return idHelper;
+	}
 	
 	
 	public static Annotation toAnnotationObject(String json) {
@@ -98,7 +105,10 @@ public class JsonUtils {
 			parser.setCodec(objectMapper);
 			annotation = objectMapper.readValue(parser, Annotation.class);
 			annotation.setInternalType(annotation.getType());
-			
+			if (annotation.getTarget() != null) 
+				annotation.setTarget((Target) getIdHelper().setResourceIds(annotation.getTarget()));
+			if (annotation.getBody() != null) 
+				annotation.setBody((Body) getIdHelper().setResourceIds(annotation.getBody()));
 		} catch (JsonParseException e) {
 			throw new AnnotationInstantiationException("Json formating exception!", e);
 		} catch (IOException e) {

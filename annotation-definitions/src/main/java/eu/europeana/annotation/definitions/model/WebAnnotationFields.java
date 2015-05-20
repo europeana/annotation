@@ -75,6 +75,7 @@ public interface WebAnnotationFields {
 	public static final String PROVIDER_HISTORY_PIN = "historypin"; 
 	public static final String PROVIDER_WRONG = "wrong"; 
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
+	public static final String HTTP = "http://"; 
 	
 	/**
 	 * SKOS concept
