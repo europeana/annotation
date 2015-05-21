@@ -7,6 +7,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -71,6 +72,39 @@ public interface AnnotationService {
 	public Annotation parseAnnotationLd(String annotationJsonLdStr) throws JsonParseException;
 
 	/**
+	 * This method creates Provider object in database.
+	 * @param newProvider
+	 * @return Provider object
+	 */
+	public Provider storeProvider(Provider newProvider);
+
+	/**
+	 * @param idGeneration
+	 * @return
+	 */
+	public List<? extends Provider> getProviderList(String idGeneration);
+	
+	/**
+	 * @param idGeneration
+	 * @param startOn
+	 * @param limit
+	 * @return
+	 */
+	public List<? extends Provider> getFilteredProviderList(String idGeneration, String startOn, String limit);		
+	
+	/**
+	 * @param newProvider
+	 * @return
+	 */
+	public Provider updateProvider(Provider newProvider);
+	
+	/**
+	 * @param name
+	 * @param idGeneration
+	 */
+	public void deleteProvider(String name, String idGeneration);
+
+	/**
 	 * This method stores Annotation object in database and in Solr.
 	 * @param annotation
 	 * @return Annotation object
@@ -85,6 +119,10 @@ public interface AnnotationService {
 	 */
 	public Annotation storeAnnotation(Annotation annotation, boolean indexing);
 
+	/**
+	 * @param newAnnotation
+	 * @return
+	 */
 	public Annotation updateAnnotation(Annotation newAnnotation);
 	
 	/**
@@ -193,5 +231,10 @@ public interface AnnotationService {
 	 * Check whether annotation for given provider and annotationNr already exist in database.
 	 */
 	public boolean existsInDb(AnnotationId annoId); 
+	
+	/**
+	 * Check whether given provider already exists in database.
+	 */
+	public boolean existsProviderInDb(Provider provider); 
 	
 }

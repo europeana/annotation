@@ -12,16 +12,20 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
+import eu.europeana.annotation.definitions.exception.ProviderValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -45,7 +49,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 	PersistentAnnotationService mongoPersistance;
 	
 	@Autowired
-	PersistentTagService mongoTagPersistance;
+	PersistentTagService mongoTagPersistence;
+	
+	@Autowired
+	PersistentProviderService mongoProviderPersistance;
 	
 	@Autowired
 	SolrAnnotationService solrService;
@@ -87,11 +94,19 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	public PersistentTagService getMongoTagPersistence() {
-		return mongoTagPersistance;
+		return mongoTagPersistence;
 	}
 
-	public void setMongoTagPersistance(PersistentTagService mongoTagPersistance) {
-		this.mongoTagPersistance = mongoTagPersistance;
+	public void setMongoTagPersistance(PersistentTagService mongoTagPersistence) {
+		this.mongoTagPersistence = mongoTagPersistence;
+	}
+
+	public PersistentProviderService getMongoProviderPersistence() {
+		return mongoProviderPersistance;
+	}
+
+	public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
+		this.mongoProviderPersistance = mongoProviderPersistance;
 	}
 
 	@Override
@@ -209,6 +224,55 @@ public class AnnotationServiceImpl implements AnnotationService {
 //	     * AnnotationLd object -> Annotation object.
 //	     */
 //	    return parsedAnnotationLd.getAnnotation();
+	}
+
+	@Override
+	public Provider storeProvider(Provider newProvider) {
+		
+		//must have registered id generation type.
+		validateProvider(newProvider);
+		
+		// store in mongo database
+		Provider res =  getMongoProviderPersistence().store(newProvider);
+		
+        return res;
+	}
+		
+	/**
+	 * This method validates Provider object.
+	 * @param newProvider
+	 */
+	private void validateProvider(Provider newProvider) {
+		
+		if (newProvider.getIdGeneration() == null)
+			throw new ProviderValidationException(
+					ProviderValidationException.ERROR_NOT_NULL_ID_GENERATION);
+			
+		if (StringUtils.isEmpty(IdGenerationTypes.isRegisteredAs(newProvider.getIdGeneration())))
+			throw new ProviderValidationException(
+					ProviderValidationException.ERROR_NOT_STANDARDIZED_ID_GENERATION);
+	}
+	
+	@Override
+	public List<? extends Provider> getProviderList(String idGeneration) {		
+		return getMongoProviderPersistence().getProviderList(idGeneration);
+	}
+	
+	@Override
+	public List<? extends Provider> getFilteredProviderList(
+			String idGeneration, String startOn, String limit) {		
+		return getMongoProviderPersistence().getFilteredProviderList(idGeneration, startOn, limit);
+	}
+	
+	@Override
+	public Provider updateProvider(Provider provider) {		
+		Provider res = getMongoProviderPersistence().update(provider);
+		return res;
+	}
+
+	@Override
+	public void deleteProvider(String name, String idGeneration) {
+		getMongoProviderPersistence().remove(name, idGeneration);
 	}
 
 	/* (non-Javadoc)
@@ -536,6 +600,21 @@ public class AnnotationServiceImpl implements AnnotationService {
 		boolean res = false;
         try {
     		Annotation dbRes =  getMongoPersistence().find(annoId.getProvider(), annoId.getAnnotationNr());
+    		if (dbRes != null)
+    			res = true;
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+		return res;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.web.service.AnnotationService#existsProviderInDb(eu.europeana.annotation.definitions.model.Provider)
+	 */
+	public boolean existsProviderInDb(Provider provider) {
+		boolean res = false;
+        try {
+    		Provider dbRes =  getMongoProviderPersistence().find(provider.getName(), provider.getIdGeneration());
     		if (dbRes != null)
     			res = true;
         } catch (Exception e) {

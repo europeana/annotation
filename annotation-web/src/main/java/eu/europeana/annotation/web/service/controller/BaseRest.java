@@ -10,14 +10,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
+import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.web.exception.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
+import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api2.utils.JsonWebUtils;
@@ -90,6 +94,22 @@ public class BaseRest {
 		}
 		response.itemsCount = response.items.size();
 		response.totalResults = annotations.size();
+		return response;
+	}
+
+	public ProviderSearchResults<AbstractProvider> buildProviderSearchResponse(
+			List<? extends Provider> providers, String apiKey, String action) {
+		ProviderSearchResults<AbstractProvider> response = new ProviderSearchResults<AbstractProvider>(
+				apiKey, action);
+		response.items = new ArrayList<AbstractProvider>(providers.size());
+
+		AbstractProvider webProvider;
+		for (Provider provider : providers) {
+			webProvider = (BaseProvider) provider;
+			response.items.add(webProvider);
+		}
+		response.itemsCount = response.items.size();
+		response.totalResults = providers.size();
 		return response;
 	}
 

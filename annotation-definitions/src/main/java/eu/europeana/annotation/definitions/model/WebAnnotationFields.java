@@ -115,6 +115,7 @@ public interface WebAnnotationFields {
 	public static final String REST_LANGUAGE        = "en";
 	public static final String REST_START_ON        = "0";
 	public static final String REST_LIMIT           = "10";
+	public static final String REST_DEFAULT_PROVIDER_ID_GENERATION_TYPE = "provided";
 	public static final String REST_ANNOTATION_JSON = 
 		"{\"annotatedAt\": 1403852113248,"
 		+ "\"type\": \"OBJECT_TAG\","
