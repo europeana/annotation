@@ -211,18 +211,8 @@ public class PersistentProviderServiceImpl extends
 	public PersistentProvider copyIntoPersistentProvider(Provider provider) {
 
 		PersistentProviderImpl persistentProvider = new PersistentProviderImpl();
-//		(PersistentProviderImpl) provider; 
-//				(PersistentAnnotationFactory
-//				.getInstance().createAnnotationInstance(annotation.getInternalType()));
-//
-//		MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
-//	    mongoAnnotationId.copyFrom(annotation.getAnnotationId());
-//	    persistentAnnotation.setAnnotationId(mongoAnnotationId);
-//	    
-//		getAnnotationBuilder().copyAnnotationAttributes(annotation, persistentAnnotation);
 		persistentProvider.setName(provider.getName());
 		persistentProvider.setUri(provider.getUri());
-//		persistentProvider.setIdGeneration(IdGenerationTypes.valueOf(provider.getIdGeneration()));
 		persistentProvider.setIdGeneration(IdGenerationTypes.getValueByType(provider.getIdGeneration()));
 		return persistentProvider;
 	}

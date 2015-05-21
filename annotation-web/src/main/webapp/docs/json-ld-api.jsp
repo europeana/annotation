@@ -33,11 +33,11 @@
     "@context": {
         "oa": "http://www.w3.org/ns/oa-context-20130208.json"
     },
-    "@type": "[oa:annotation,euType:OBJECT_TAG]",
+    "@type": "oa:annotation",
     "annotatedAt": "2012-11-10T09:08:07",
     "annotatedBy": {
         "@id": "open_id_1",
-        "@type": "[foaf:Person, euType:PERSON]",
+        "@type": "foaf:Person",
         "name": "annonymous web user"
     },
     "body": {
@@ -52,17 +52,17 @@
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",
-        "@type": "[prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
+        "@type": "prov:Software",
         "foaf:homepage": "http://annotorious.github.io/",
         "name": "Annotorious"
     },
     "styledBy": {
-        "@type": "[oa:CssStyle,euType:CSS]",
+        "@type": "oa:Css",
         "source": "http://annotorious.github.io/latest/themes/dark/annotorious-dark.css",
         "styleClass": "annotorious-popup"
     },
     "target": {
-        "@type": "[oa:SpecificResource,euType:IMAGE]",
+        "type": "oa:Image",
         "contentType": "image/jpeg",
         "httpUri": "http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE",
         "selector": {
@@ -74,7 +74,7 @@
             "contentType": "text/html",
             "format": "dctypes:Text"
         },
-        "targetType": "[oa:SpecificResource,euType:IMAGE]"
+        "targetType": "oa:SpecificResource"
     },
     "type": "OBJECT_TAG"
 }
@@ -102,13 +102,13 @@
     "@context": {
         "oa": "http://www.w3.org/ns/oa-context-20130208.json"
     },
-    "@type": "[oa:annotation,euType:OBJECT_TAG]",
+    "@type": "oa:annotation",
     "sameAs": "http://historypin.com/annotation/1234",
     "equivalentTo": "http://historypin.com/annotation/1234",
     "annotatedAt": "2012-11-10T09:08:07",
     "annotatedBy": {
         "@id": "open_id_1",
-        "@type": "[foaf:Person, euType:PERSON]",
+        "@type": "foaf:Person",
         "name": "annonymous web user"
     },
     "body": {
@@ -123,17 +123,17 @@
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",
-        "@type": "[prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
+        "@type": "prov:Software",
         "foaf:homepage": "http://annotorious.github.io/",
         "name": "Annotorious"
     },
     "styledBy": {
-        "@type": "[oa:CssStyle,euType:CSS]",
+        "@type": "oa:Css",
         "source": "http://annotorious.github.io/latest/themes/dark/annotorious-dark.css",
         "styleClass": "annotorious-popup"
     },
     "target": {
-        "@type": "[oa:SpecificResource,euType:IMAGE]",
+        "type": "oa:Image",
         "contentType": "image/jpeg",
         "httpUri": "http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE",
         "selector": {
@@ -145,7 +145,7 @@
             "contentType": "text/html",
             "format": "dctypes:Text"
         },
-        "targetType": "[oa:SpecificResource,euType:IMAGE]"
+        "targetType": "oa:Image"
     },
     "type": "OBJECT_TAG"
 }
@@ -173,11 +173,11 @@
     "@context": {
         "oa": "http://www.w3.org/ns/oa-context-20130208.json"
     },
-    "@type": "[oa:annotation,euType:OBJECT_TAG]",
+    "@type": "oa:annotation",
     "annotatedAt": "2012-11-10T09:08:07",
     "annotatedBy": {
         "@id": "open_id_1",
-        "@type": "[foaf:Person, euType:PERSON]",
+        "@type": "foaf:Person",
         "name": "annonymous web user"
     },
     "body": {
@@ -210,17 +210,17 @@
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",
-        "@type": "[prov:SoftwareAgent,euType:SOFTWARE_AGENT]",
+        "@type": "prov:Software",
         "foaf:homepage": "http://annotorious.github.io/",
         "name": "Annotorious"
     },
     "styledBy": {
-        "@type": "[oa:CssStyle,euType:CSS]",
+        "@type": "oa:Css",
         "source": "http://annotorious.github.io/latest/themes/dark/annotorious-dark.css",
         "styleClass": "annotorious-popup"
     },
     "target": {
-        "@type": "[oa:SpecificResource,euType:IMAGE]",
+        "type": "oa:Image",
         "contentType": "image/jpeg",
         "httpUri": "http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE",
         "selector": {
@@ -232,7 +232,7 @@
             "contentType": "text/html",
             "format": "dctypes:Text"
         },
-        "targetType": "[oa:SpecificResource,euType:IMAGE]"
+        "targetType": "oa:Image"
     },
     "type": "OBJECT_TAG"
 }
