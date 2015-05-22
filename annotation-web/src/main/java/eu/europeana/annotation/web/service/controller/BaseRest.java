@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.web.exception.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -103,9 +104,11 @@ public class BaseRest {
 				apiKey, action);
 		response.items = new ArrayList<AbstractProvider>(providers.size());
 
-		AbstractProvider webProvider;
 		for (Provider provider : providers) {
-			webProvider = (BaseProvider) provider;
+			BaseProvider webProvider = new BaseProvider();
+			webProvider.setName(provider.getName());
+			webProvider.setUri(provider.getUri());
+			webProvider.setIdGeneration(IdGenerationTypes.getValueByType(provider.getIdGeneration()));
 			response.items.add(webProvider);
 		}
 		response.itemsCount = response.items.size();
