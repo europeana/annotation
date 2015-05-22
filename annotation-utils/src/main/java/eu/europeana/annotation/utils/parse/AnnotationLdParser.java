@@ -49,7 +49,13 @@ public class AnnotationLdParser extends JsonLdParser {
 			throws JsonParseException {
 		Annotation annotaion = null;
 
-		JSONObject jo = parseJson(jsonLdString);
+		JSONObject jo;
+		try {
+			jo = parseJson(jsonLdString);
+		} catch (JSONException e) {
+			throw new JsonParseException("Cannot parse json string: " + jsonLdString, e);
+		}
+		
 		if (jo != null) {
 			annotaion = createAnnotationInstance(jo);
 			parseJsonObject(jo, annotaion, 1, null);
