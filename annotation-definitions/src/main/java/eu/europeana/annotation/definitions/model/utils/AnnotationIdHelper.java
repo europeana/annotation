@@ -42,6 +42,9 @@ public class AnnotationIdHelper {
 //		if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
 //			res = WebAnnotationFields.SLASH + collection
 //					+ WebAnnotationFields.SLASH + object;
+		if(parts == null || parts.length < 2)
+			return null;
+		
 		return WebAnnotationFields.SLASH + parts[0]
 				+ WebAnnotationFields.SLASH + parts[1];
 	}
@@ -50,6 +53,12 @@ public class AnnotationIdHelper {
 		String res[] = new String[2];
 		if (StringUtils.isNotEmpty(httpUri)) {
 	        String[] arrValue = httpUri.split(WebAnnotationFields.SLASH);
+	        
+	        //"http://data.europeana.eu/item/123/xyz"
+	        //TODO: clarify resource identification policies
+	        //must have at least a domain and type/collection and id in order to have a valid uri
+	        if(!(arrValue.length > 2) )
+	        	return null;
         	//computed from the end of the url
         	int collectionPosition = arrValue.length - 2;
         	int objectPosition = arrValue.length - 1;			

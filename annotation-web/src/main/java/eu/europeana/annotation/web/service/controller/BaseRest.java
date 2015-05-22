@@ -152,7 +152,11 @@ public class BaseRest {
 		if (StringUtils.isEmpty(errorMessage))
 			errorMessage = th.toString();
 		response = buildErrorResponse(errorMessage, response.action, response.apikey);
-		return JsonWebUtils.toJson(response, null);
+		//logg error message
+		logger.debug("Error when invoking action: " + action + " with wskey: " + apiKey);
+		logger.error(errorMessage, th);
+		ModelAndView ret = JsonWebUtils.toJson(response, null);
+		return ret;
 	}
 
 	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {

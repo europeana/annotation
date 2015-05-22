@@ -118,7 +118,7 @@ public class EuropeanaRest extends BaseRest{
 	        String jsonLd = annotationLd.toString(4);
 	        return JsonWebUtils.toJson(jsonLd, null);			
 		} catch (Exception e) {
-			return getValidationReport(wskey, action, e.getMessage(), e);		
+			return getValidationReport(wskey, action, e.toString(), e);		
 		}
 	}
 	

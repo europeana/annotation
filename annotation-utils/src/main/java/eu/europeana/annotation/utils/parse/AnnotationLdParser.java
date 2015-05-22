@@ -553,8 +553,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				defaultType);
 		body.addType(defaultType);
 		body.setValue((String) valueObject);
-		body.setResourceId(getIdHelper().buildResourseId(
-				getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
+//		body.setResourceId(getIdHelper().buildResourseId(
+//				getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
 		return body;
 	}
 
