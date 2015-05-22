@@ -326,8 +326,8 @@ public class PersistentAnnotationServiceImpl extends
 			String europeanaId, String provider, String startOn, String limit,
 			boolean isDisabled) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		if (StringUtils.isNotEmpty(europeanaId))
-			query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+//		if (StringUtils.isNotEmpty(europeanaId))
+//			query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		if (StringUtils.isNotEmpty(provider))
 			query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_DISABLED, isDisabled);
@@ -361,7 +361,7 @@ public class PersistentAnnotationServiceImpl extends
 	public PersistentAnnotation find(String europeanaId, String provider,
 			Long annotationNr) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
 
