@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
@@ -227,7 +228,8 @@ public class AnnotationLdParser extends JsonLdParser {
 		switch (property) {
 		case WebAnnotationFields.AT_TYPE:
 			anno.setType((String) valueObject);
-			anno.setInternalType(anno.getType());
+			if (StringUtils.isEmpty(anno.getInternalType()))
+				anno.setInternalType(anno.getType());
 			break;
 		case WebAnnotationFields.AT_ID:
 			AnnotationId annotationId = parseId(valueObject, jo);
