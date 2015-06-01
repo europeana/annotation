@@ -68,45 +68,21 @@ public class AnnotationLdParser extends JsonLdParser {
 	protected Annotation createAnnotationInstance(JSONObject jo)
 			throws JsonParseException {
 
+		String motivation;
+		
 		try {
-			String motivation = jo.getString(WebAnnotationFields.MOTIVATION)
-					.trim();
-
-			MotivationTypes motivationType = MotivationTypes
-					.getType(motivation);
-			AnnotationTypes annoType = null;
-			switch (motivationType) {
-			case TAGGING:
-				// TODO when needed make differentiation between simple tagging
-				// and semantic tagging
-				// i.e. body is a string literal or an object
-				annoType = AnnotationTypes.OBJECT_TAG;
-				break;
-			case LINKING:
-				// TODO when needed make differantiation between linking
-				// europeana objects and linking europeana object with external
-				// web pages
-				// i.e. all targets are europeana objects or not ...
-				annoType = AnnotationTypes.OBJECT_LINKING;
-				break;
-			default:
-				break;
-			}
-
-			if (annoType == null)
-				throw new AnnotationInstantiationException(
-						"Unsupported Annotation/Motivation Type:" + jo);
-
-			return AnnotationObjectFactory.getInstance().createObjectInstance(
-					annoType);
-
+			
+			motivation = jo.getString(WebAnnotationFields.MOTIVATION)
+				.trim();
 		} catch (JSONException e) {
 			throw new JsonParseException("motivation not found in json object!"
 					+ jo, e);
 		}
-
+			
+		return AnnotationObjectFactory.getInstance().createAnnotationInstance(motivation);
 	}
 
+	
 	/**
 	 * Parses a single subject.
 	 * 
@@ -228,8 +204,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		switch (property) {
 		case WebAnnotationFields.AT_TYPE:
 			anno.setType((String) valueObject);
-			if (StringUtils.isEmpty(anno.getInternalType()))
-				anno.setInternalType(anno.getType());
+			//anno.setInternalType(anno.getType());
 			break;
 		case WebAnnotationFields.AT_ID:
 			AnnotationId annotationId = parseId(valueObject, jo);

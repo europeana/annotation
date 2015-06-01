@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
+import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
@@ -7,6 +8,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectLinking;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class AnnotationObjectFactory 
 //    implements AnnotationPart
@@ -37,6 +39,38 @@ public class AnnotationObjectFactory
 		res.setInternalType(modelObjectType.name());
 		return res;
 	}
+	
+	public Annotation createAnnotationInstance(String motivation) {
+		MotivationTypes motivationType = MotivationTypes
+				.getType(motivation);
+		AnnotationTypes annoType = null;
+		switch (motivationType) {
+		case TAGGING:
+			// TODO when needed make differentiation between simple tagging
+			// and semantic tagging
+			// i.e. body is a string literal or an object
+			annoType = AnnotationTypes.OBJECT_TAG;
+			break;
+		case LINKING:
+			// TODO when needed make differantiation between linking
+			// europeana objects and linking europeana object with external
+			// web pages
+			// i.e. all targets are europeana objects or not ...
+			annoType = AnnotationTypes.OBJECT_LINKING;
+			break;
+		default:
+			break;
+		}
+
+		if (annoType == null)
+			throw new AnnotationInstantiationException(
+					"Unsupported Annotation/Motivation Type:" + motivation);
+
+		return createObjectInstance(
+				annoType);
+	}
+
+	
 	
 	@Override
 	public Class<? extends Annotation> getClassForType(

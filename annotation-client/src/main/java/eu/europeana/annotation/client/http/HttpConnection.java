@@ -68,6 +68,26 @@ public class HttpConnection {
     }
 
     
+    public String getURLContentWithBody(String url, String jsonParamValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PostMethod post = new PostMethod(url);
+        post.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(post);
+
+            if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = post.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+                return res;
+            } else {
+                return null;
+            }
+
+        } finally {
+        	post.releaseConnection();
+        }
+    }
     
     
 //    public boolean writeURLContent(String url, OutputStream out) throws IOException {
