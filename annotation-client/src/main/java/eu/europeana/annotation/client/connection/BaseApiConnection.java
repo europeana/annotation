@@ -95,4 +95,9 @@ public class BaseApiConnection {
 		logger.trace("Call to Annotation API (POST): " + url);
 		return getHttpConnection(). getURLContent(url, paramName, jsonPost);
 	}
+	
+	String getJSONResultWithBody(String url, String jsonPost) throws IOException {
+		logger.trace("Call to Annotation API (POST) with body: " + url);
+		return getHttpConnection(). getURLContentWithBody(url, jsonPost);
+	}
 }

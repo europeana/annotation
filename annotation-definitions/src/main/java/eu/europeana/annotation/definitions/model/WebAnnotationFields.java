@@ -103,6 +103,19 @@ public interface WebAnnotationFields {
 	public static final String DELIMETER = ":";
 	
 	public static final String PROVIDER_WEBANNO = "webanno";	
+	
+	/**
+	 * AnnotationLd
+	 */
+	public static final String AND              = "&"; 
+	public static final String EQUALS           = "="; 
+	public static final String WSKEY            = "wskey"; 
+	public static final String INDEXING         = "indexing"; 
+	public static final String PROVIDER         = "provider"; 
+	public static final String ANNOTATION_NR    = "annotationNr"; 
+	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
+	public static final String PAR_CHAR         = "?";
+	
 	/**
 	 * Default values for the Rest API services
 	 */

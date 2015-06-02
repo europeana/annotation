@@ -113,6 +113,50 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //				AnnotationOperationResponse.class);
 	}
 
+	
+	/**
+	 * This method creates Europeana Annotation object from JsonLd string.
+	 * The HTTP request sample is:
+	 *     http://localhost:8081/annotation-web/annotation.jsonld?wskey=ws&provider=historypin&annotationNr=161&indexing=true
+	 * @param provider
+	 * @param annotationNr
+	 * @param europeanaLdStr The Annotation
+	 * @return annotation operation response
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse createEuropeanaAnnotationLd(
+			String provider, Long annotationNr, String europeanaLdStr) throws IOException {
+		
+		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+
+		/**
+		 * Execute Europeana API request
+		 */
+		String json = getJSONResultWithBody(url, europeanaLdStr);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("create:/annotation.jsonld");
+		
+		
+//		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
+//		aor.setAnnotation(JsonUtils.toAnnotationObject(annotationJsonString));
+//		aor.setAnnotation(JsonUtils.toAnnotationObject(json));
+		aor.setJson(json);
+		return aor;
+		
+//		return (AnnotationOperationResponse) getAnnotationGson().fromJson(json,
+//				AnnotationOperationResponse.class);
+//		int jj = 4;
+//		AnnotationSearchResults asr = getAnnotationSearchResults(json);
+//		return null;
+	}
+
 	/**
 	 * This method creates Annotation object from JsonLd string.
 	 * @param annotationJsonLdStr The Annotation
