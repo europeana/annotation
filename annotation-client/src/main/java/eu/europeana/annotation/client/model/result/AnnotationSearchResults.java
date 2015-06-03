@@ -9,6 +9,7 @@ public class AnnotationSearchResults extends AbstractAnnotationApiResponse{
 	private String itemsCount;
 	private String totalResults;
 	private List<Annotation> items;
+	private String json;
 	
 	public String getItemsCount() {
 		return itemsCount;
@@ -27,6 +28,12 @@ public class AnnotationSearchResults extends AbstractAnnotationApiResponse{
 	}
 	public void setItems(List<Annotation> annotations) {
 		this.items = annotations;
+	}
+	public String getJson() {
+		return json;
+	}
+	public void setJson(String json) {
+		this.json = json;
 	}
 	
 	

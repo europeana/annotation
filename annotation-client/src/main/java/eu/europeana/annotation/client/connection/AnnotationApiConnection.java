@@ -75,6 +75,60 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //				AnnotationSearchResults.class);
 	}
 	
+	/**
+	 * This method retrieves the Europeana AnnotationLd object by provider and annotationNr.
+	 * The HTTP request sample is:
+	 *     http://localhost:8081/annotation-web/annotation.jsonld?provider=webanno&annotationNr=111
+	 * @param provider
+	 * @param annotationNr
+	 * @return
+	 */
+	public AnnotationSearchResults getAnnotationLd(String provider, Long annotationNr) throws IOException {
+		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		if (StringUtils.isNotEmpty(provider))
+			url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (annotationNr != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr;
+
+		/**
+		 * Execute Europeana API request
+		 */
+		String json = getJSONResult(url);
+		AnnotationSearchResults asr = new AnnotationSearchResults();
+		asr.setJson(json);
+		return asr;
+	}
+	
+	/**
+	 * This method searches for Europeana AnnotationLd objects by target or by resourceId.
+	 * The HTTP request sample for target is:
+	 *     http://localhost:8081/annotation-web/annotations/search.jsonld?target=http%3A%2F%2Fdata.europeana.eu%2Fitem%2F123%2Fxyz&
+	 * The HTTP request sample for resourceId is:
+	 *     http://localhost:8081/annotation-web/annotations/search.jsonld?resourceId=%2F123%2Fxyz
+	 * @param target 
+	 * @param resourceId
+	 * @return
+	 */
+	public AnnotationSearchResults searchAnnotationLd(String target, String resourceId) throws IOException {
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH; 
+		url += WebAnnotationFields.SEARCH_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		if (StringUtils.isNotEmpty(target))
+			url += WebAnnotationFields.TARGET + WebAnnotationFields.EQUALS + target;
+		if (StringUtils.isNotEmpty(resourceId))
+			url += WebAnnotationFields.RESOURCE_ID + WebAnnotationFields.EQUALS + resourceId;
+
+		/**
+		 * Execute Europeana API request
+		 */
+		String json = getJSONResult(url);
+		AnnotationSearchResults asr = new AnnotationSearchResults();
+		asr.setJson(json);
+		return asr;
+	}
+	
 //	public AnnotationSearchResults convertAnnotationToAnnotationLdString(Annotation annotation) throws IOException {
 //		String url = getAnnotationServiceUri();
 //		url += "/" + collectionId + "/" + objectHash + ".json";

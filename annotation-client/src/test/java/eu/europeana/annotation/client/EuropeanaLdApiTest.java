@@ -9,7 +9,10 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 
 public class EuropeanaLdApiTest {
-
+	
+    private static String TEST_RESOURCE_ID = "/123/xyz";
+	private static String TEST_TARGET = "http://data.europeana.eu/item" + TEST_RESOURCE_ID;
+	
     private EuropeanaLdApiImpl europeanaLdApi;
     
     public static String taggingAnnotation = 
@@ -26,7 +29,7 @@ public class EuropeanaLdApiTest {
     		"\"serializedBy\": \"http://www.historypin.org\"," +
     		"\"motivation\": \"oa:tagging\"," +
     		"\"body\": \"church\"," +
-    		"\"target\": \"http://data.europeana.eu/item/123/xyz\"" +
+    		"\"target\": \"" + TEST_TARGET + "\"" +
     		"}";
 
     @Before
@@ -57,6 +60,57 @@ public class EuropeanaLdApiTest {
 				, taggingAnnotation
 				);
 		System.out.println("webanno annotation test: " + annotation);
+		assertNotNull(annotation);
+	}
+	
+	@Test
+	public void getHistoryPinAnnotationByAnnotationNumber() {
+		
+		long annotationNr = System.currentTimeMillis();
+		String annotation = europeanaLdApi.createAnnotationLd(
+				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				, annotationNr
+				, taggingAnnotation
+				);
+		annotation = europeanaLdApi.getAnnotationLd(
+				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				, annotationNr
+				);
+		System.out.println("historypin get annotation test: " + annotation);
+		assertNotNull(annotation);
+	}
+	
+	@Test
+	public void searchHistoryPinAnnotationByTarget() {
+		
+		long annotationNr = System.currentTimeMillis();
+		String annotation = europeanaLdApi.createAnnotationLd(
+				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				, annotationNr
+				, taggingAnnotation
+				);
+		annotation = europeanaLdApi.searchLd(
+				TEST_TARGET
+				, null
+				);
+		System.out.println("historypin search annotation by target test: " + annotation);
+		assertNotNull(annotation);
+	}
+	
+	@Test
+	public void searchHistoryPinAnnotationByResourceId() {
+		
+		long annotationNr = System.currentTimeMillis();
+		String annotation = europeanaLdApi.createAnnotationLd(
+				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				, annotationNr
+				, taggingAnnotation
+				);
+		annotation = europeanaLdApi.searchLd(
+				null
+				, TEST_RESOURCE_ID
+				);
+		System.out.println("historypin search annotation by resourceId test: " + annotation);
 		assertNotNull(annotation);
 	}
 	
