@@ -108,6 +108,49 @@ public class AnnotationTestObjectBuilder {
 		return target;
 	}
     
+	public Annotation createAnnotationJsonInstance() {
+		
+		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
+				AnnotationTypes.OBJECT_TAG.name());
+		
+		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
+        
+		annotation.setAnnotatedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+        annotation.setSerializedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+
+        // set target
+		Target target = buildTarget();
+		annotation.setTarget(target);
+			
+		//set Body
+		String comment = "Vlad Tepes";
+		Body body = buildSemanticTagBody(comment, "ro");
+		annotation.setBody(body);
+				
+		// set annotatedBy
+		Agent annotatedByAgent = buildAnnotatedByAgent();
+		annotation.setAnnotatedBy(annotatedByAgent);
+		
+		// set serializedBy
+		Agent agent = buildSerializedByAgent();
+		annotation.setSerializedBy(agent);
+				
+		// motivation
+		annotation.setMotivatedBy(MotivationTypes.TAGGING.getOaType());
+		
+		// set styledBy
+		Style style = buildStyledBy();
+		annotation.setStyledBy(style);
+		
+        /**
+		 * Check types and replace if necessary 
+		 */
+		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
+		annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+        
+		return annotation;
+	}
+
 	public Annotation createBaseObjectTagInstance() {
 	    return createBaseObjectTagInstanceWithSameAs(null);
 	}

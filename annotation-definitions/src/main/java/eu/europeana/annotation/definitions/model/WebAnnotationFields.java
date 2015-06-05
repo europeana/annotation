@@ -114,9 +114,12 @@ public interface WebAnnotationFields {
 	public static final String PROVIDER         = "provider"; 
 	public static final String ANNOTATION_NR    = "annotationNr"; 
 	public static final String RESOURCE_ID      = "resourceId"; 
+	public static final String JSON_REST        = ".json";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
 	public static final String SEARCH_JSON_LD_REST = "search.jsonld";
 	public static final String PAR_CHAR         = "?";
+	public static final String COLLECTION       = "collection";
+	public static final String OBJECT           = "object";
 	
 	/**
 	 * Default values for the Rest API services

@@ -24,7 +24,9 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 	}
 
 	@Override
-	public Annotation createAnnotation(Annotation annotation){
+//	public String createAnnotation(String annotation){
+	public String createAnnotation(Annotation annotation){
+//		public Annotation createAnnotation(Annotation annotation){
 		
 		AnnotationOperationResponse res;
 		try {
@@ -33,7 +35,8 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
 		}
 
-		return res.getAnnotation();
+		return res.getJson();
+//		return res.getAnnotation();
 	}
 	
 	@Override
@@ -76,7 +79,8 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 	}
 
 	@Override
-	public List<Annotation> getAnnotations(String collectionId, String objectHash, String provider){
+	public String getAnnotations(String collectionId, String objectHash, String provider){
+//		public List<Annotation> getAnnotations(String collectionId, String objectHash, String provider){
 		AnnotationSearchResults res;
 		try {
 			res = apiConnection.getAnnotationsForObject(collectionId, objectHash, provider);
@@ -84,7 +88,8 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationApi", e);
 		}
-		return res.getItems();
+//		return res.getItems();
+		return res.getJson();
 		
 	}
 

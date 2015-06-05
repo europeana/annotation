@@ -7,7 +7,9 @@ import eu.europeana.annotation.definitions.model.ImageAnnotation;
 
 public interface AnnotationJsonApi {
 
-	public Annotation createAnnotation(Annotation annotation);
+//	public Annotation createAnnotation(Annotation annotation);
+	public String createAnnotation(Annotation annotation);
+//	public String createAnnotation(String annotation);
 
 	public ImageAnnotation createImageAnnotation(ImageAnnotation annotation);
 
@@ -26,7 +28,8 @@ public interface AnnotationJsonApi {
 	 * @param provider
 	 * @return
 	 */
-	public List<Annotation> getAnnotations(String collectionId, String objectHash, String provider);
+	public String getAnnotations(String collectionId, String objectHash, String provider);
+//	public List<Annotation> getAnnotations(String collectionId, String objectHash, String provider);
 
 	/**
 	 * @param europeanaId

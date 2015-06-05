@@ -36,6 +36,12 @@ public class AnnotationApiConnection extends BaseApiConnection {
 				ClientConfiguration.getInstance().getApiKey());
 	}
 	
+	/**
+	 * @param collectionId
+	 * @param objectHash
+	 * @return
+	 * @throws IOException
+	 */
 	public AnnotationSearchResults getAnnotationsForObject(String collectionId,
 			String objectHash) throws IOException {
 		String url = getAnnotationServiceUri();
@@ -55,19 +61,38 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //				AnnotationSearchResults.class);
 	}
 	
+	/**
+	 * The HTTP request sample:
+	 *     http://localhost:8081/annotation-web/annotations/{collection}/{object}.json?collection=15502&object=GG_8285&provider=webanno
+	 * @param collectionId
+	 * @param objectHash
+	 * @param provider
+	 * @return
+	 * @throws IOException
+	 */
 	public AnnotationSearchResults getAnnotationsForObject(String collectionId,
 			String objectHash, String provider) throws IOException {
 		String url = getAnnotationServiceUri();
 		url += WebAnnotationFields.SLASH + collectionId 
-				+ WebAnnotationFields.SLASH + objectHash 
-				+ WebAnnotationFields.SLASH + provider 
-				+ ".json";
-		url += "?wsKey=" + getApiKey() + "&profile=annotation";
+				+ WebAnnotationFields.SLASH + objectHash; 
+//				+ WebAnnotationFields.SLASH + provider 
+//				+ ".json";
+		url += WebAnnotationFields.JSON_REST + WebAnnotationFields.PAR_CHAR;
+//		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.COLLECTION + WebAnnotationFields.EQUALS + collectionId + WebAnnotationFields.AND;
+		url += WebAnnotationFields.OBJECT + WebAnnotationFields.EQUALS + objectHash + WebAnnotationFields.AND;
+		if (StringUtils.isNotEmpty(provider))
+			url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider;// + WebAnnotationFields.AND;
+//		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 
 		// Execute Europeana API request
 		String json = getJSONResult(url);
 		
-		return getAnnotationSearchResults(json);
+//		return getAnnotationSearchResults(json);
+		AnnotationSearchResults asr = new AnnotationSearchResults();
+		asr.setJson(json);
+		return asr;
+
 //
 //		Gson gson = getAnnotationGson();
 //
@@ -150,7 +175,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 				+ "&provider=" + WebAnnotationFields.PROVIDER_WEBANNO;
 		// Execute Europeana API request
 		String jsonPost = getAnnotationGson().toJson(annotation);
-		String json = getJSONResult(url, ModelConst.ANNOTATION, jsonPost);
+//		String json = getJSONResult(url, ModelConst.ANNOTATION, jsonPost);
+		String json = getJSONResultWithBody(url, jsonPost);
 		
 		//JSONObject jsonObj = (JSONObject) new JSONParser().parse(json);
 //		AnnotationOperationResponse aor = new ObjectMapper().readValue(json, AnnotationOperationResponse.class);
@@ -158,9 +184,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		aor.setSuccess("true");
 		aor.setAction("create:/annotations/collection/object.json");
 		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
-		annotationJsonString = annotationJsonString
-				.replace("\"\\\"", "").replace("\\\"\"","").replace(":[",":\"[").replace("],","]\",");
-		aor.setAnnotation(JsonUtils.toAnnotationObject(annotationJsonString));
+//		annotationJsonString = annotationJsonString
+//				.replace("\"\\\"", "").replace("\\\"\"","").replace(":[",":\"[").replace("],","]\",").replace("]", "]\"");
+//		aor.setAnnotation(JsonUtils.toAnnotationObject(annotationJsonString));
+		aor.setJson(annotationJsonString);
 		return aor;
 
 //		return (AnnotationOperationResponse) getAnnotationGson().fromJson(json,

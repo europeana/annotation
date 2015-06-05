@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -15,6 +16,58 @@ import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilde
 
 
 public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
+
+    private AnnotationJsonApiImpl annotationJsonApi;
+    
+    @Before
+    public void initObjects() {
+    	annotationJsonApi = new AnnotationJsonApiImpl();
+    }
+
+	public static String annotationJson = 
+		"{" +
+		"\"annotatedAt\": 1403852113248," + 
+		"\"type\": \"OBJECT_TAG\"," + 
+		"\"annotatedBy\": {" +
+			"\"agentType\": \"foaf:Person\"," +
+			"\"name\": \"annonymous web user\"," +
+			"\"homepage\": null," +
+			"\"mbox\": null," + 
+			"\"openId\": null" + 
+		"}," +
+		"\"body\": {" + 
+			"\"contentType\": \"Link\"," + 
+			"\"mediaType\": null," + 
+			"\"httpUri\": \"https://www.freebase.com/m/035br4\"," + 
+			"\"language\": \"ro\"," + 
+			"\"value\": \"Vlad Tepes\"," + 
+			"\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\"," + 
+			"\"bodyType\": \"[oa:Tag,euType:SEMANTIC_TAG]\"" + 
+		"}," + 
+		"\"target\": {" + 
+			"\"contentType\": \"text-html\"," + 
+			"\"mediaType\": \"image\"," + 
+			"\"language\": \"en\"," + 
+			"\"value\": \"Vlad IV. Tzepesch, der Pfaehler, Woywode der Walachei 1456-1462 (gestorben 1477)\"," + 
+			"\"httpUri\": \"http://europeana.eu/portal/record/15502/GG_8285.html\"," + 
+			"\"targetType\": \"oa:WebPage\"" + 
+		"}," + 
+		"\"serializedAt\": \"\"," + 
+		"\"serializedBy\": {" + 
+			"\"agentType\": \"prov:Software\"," + 
+			"\"name\": \"annonymous web user\"," + 
+			"\"homepage\": null," + 
+			"\"mbox\": null," + 
+			"\"openId\": null" + 
+		"}," + 
+		"\"styledBy\":{" + 
+			"\"contentType\": \"style\"," + 
+			"\"mediaType\": \"text/css\"," + 
+			"\"httpUri\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\"," + 
+			"\"value\": null," + 
+			"\"annotationClass\": \".annotorious-popup\"" + 
+		"}" + 
+		"}";
 
 //	private static final String TEST_COLLECTION_CLIENT_TEST_OBJECT = "/testCollection/testObject";
 
@@ -90,20 +143,22 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 	@Test
 	public void createAnnotation() {
 		
-		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
+//		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
 		
 		/**
 		 * Create a test annotation object.
 		 */
 		Annotation testAnnotation = createBaseObjectTagInstance();	
-		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
+//		Annotation annotation = annotationJsonApi.createAnnotation(testAnnotation);
+		String annotation = annotationJsonApi.createAnnotation(testAnnotation);
+//		String annotation = annotationJsonApi.createAnnotation(annotationJson);
 		assertNotNull(annotation);
 	}
 	
-//	@Test
+	@Test
 	public void getAnnotations() {
 		
-		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
+//		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
 		
 		/**
 		 * Create object within the test and do not rely on the objects stored in the database.
@@ -112,14 +167,15 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		annotationJsonApi.createAnnotation(testAnnotation);
 		
 		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
-		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject");
+//		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject", "webanno");
+		String results = retrievalApi.getAnnotations("testCollection", "testObject", "webanno");
 		assertNotNull(results);
-		assertTrue(results.size() > 0);
-		Gson gson = new Gson();
-		
-		for (Annotation annotation : results) {
-			System.out.println(gson.toJson(annotation));			
-		}
+//		assertTrue(results.size() > 0);
+//		Gson gson = new Gson();
+//		
+//		for (Annotation annotation : results) {
+//			System.out.println(gson.toJson(annotation));			
+//		}
 		
 	}
 	
@@ -132,7 +188,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 //	@Test
 	public void getAnnotation() {
 		
-		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
+//		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
 		
 		/**
 		 * Create object within the test and do not rely on the objects stored in the database.
