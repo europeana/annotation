@@ -163,6 +163,10 @@ public class BaseInternetResource implements InternetResource{
 	    return res;
 	}
 		
+	public boolean equalsContent(Object other) {
+		return equals(other);
+	}
+		
 	@Override
 	public String toString() {
 		String res = "\t### BaseInternetResource ###\n";

@@ -44,4 +44,5 @@ public interface Body extends InternetResource{
 
 	public void setInternalType(String internalType);
 	
+	public boolean equalsContent(Object other);	
 }

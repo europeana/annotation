@@ -10,4 +10,5 @@ public interface Style extends InternetResource{
 
 	public abstract String getAnnotationClass();
 	
+	public boolean equalsContent(Object other);	
 }

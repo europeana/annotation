@@ -100,7 +100,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		assertNotNull(annotation);
 	}
 	
-	@Test
+//	@Test
 	public void getAnnotations() {
 		
 		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
@@ -129,7 +129,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 //		retrievalApi.getAnnotation("testCollection", "testObject", -1);		
 //	}
 	
-	@Test
+//	@Test
 	public void getAnnotation() {
 		
 		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();

@@ -183,6 +183,10 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	    return res;
 	}
 		
+	public boolean equalsContent(Object other) {
+		return equals(other);
+	}
+	
 	@Override
 	public String toString() {
 		String res = "\t### Body ###\n";

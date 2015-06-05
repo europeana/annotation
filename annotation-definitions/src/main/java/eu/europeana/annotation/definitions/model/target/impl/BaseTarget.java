@@ -163,6 +163,10 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	    return res;
 	}
 		
+	public boolean equalsContent(Object other) {
+		return equals(other);
+	}
+	
 	@Override
 	public String toString() {
 		String res = "\t### Target ###\n";

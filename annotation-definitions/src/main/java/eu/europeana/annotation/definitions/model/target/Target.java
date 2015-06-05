@@ -19,4 +19,5 @@ public interface Target extends SpecificResource{
 
 	public void setInternalType(String internalType);
 	
+	public boolean equalsContent(Object other);	
 }

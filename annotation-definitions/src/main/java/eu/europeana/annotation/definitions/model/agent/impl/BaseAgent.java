@@ -166,6 +166,10 @@ public abstract class BaseAgent implements Agent {
 	    return res;
 	}
 			
+	public boolean equalsContent(Object other) {
+		return equals(other);
+	}
+	
 	@Override
 	public String toString() {
 		String res = "\t### Agent ###\n";

@@ -39,5 +39,7 @@ public interface Agent {
 	public abstract void setInputString(String string);
 	
 	public abstract String getInputString();
+	
+	public boolean equalsContent(Object other);
 
 }

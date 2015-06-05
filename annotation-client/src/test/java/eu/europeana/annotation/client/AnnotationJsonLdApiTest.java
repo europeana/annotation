@@ -1,13 +1,16 @@
 package eu.europeana.annotation.client;
 
 import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 
 
 public class AnnotationJsonLdApiTest extends AnnotationTestObjectBuilder{
 
-//	@Test
+	@Test
 	public void createAnnotation() {
 		
 		AnnotationJsonLdApiImpl annotationJsonLdApi = new AnnotationJsonLdApiImpl();

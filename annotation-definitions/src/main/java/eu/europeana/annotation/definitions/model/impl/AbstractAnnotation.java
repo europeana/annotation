@@ -117,6 +117,75 @@ public abstract class AbstractAnnotation implements Annotation {
 	    return res;
 	}
 	
+	public boolean equalsContent(Object other) {
+	    if (!(other instanceof Annotation)) {
+	        return false;
+	    }
+
+	    Annotation that = (Annotation) other;
+
+	    boolean res = true;
+	    
+	    /**
+	     * equality check for all relevant fields.
+	     */
+	    if ((this.getType() != null) && (that.getType() != null) &&
+	    		(!this.getType().equals(that.getType()))) {
+	    	System.out.println("Annotation objects have different 'type' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getAnnotatedAt() != null) && (that.getAnnotatedAt() != null) &&
+	    		(!this.getAnnotatedAt().equals(that.getAnnotatedAt()))) {
+	    	System.out.println("Annotation objects have different 'annotatedAt' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getAnnotatedBy() != null) && (that.getAnnotatedBy() != null) &&
+	    		(!this.getAnnotatedBy().equalsContent(that.getAnnotatedBy()))) {
+	    	System.out.println("Annotation objects have different 'annotatedBy' objects.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getBody() != null) && (that.getBody() != null) &&
+	    		(!this.getBody().equalsContent(that.getBody()))) {
+	    	System.out.println("Annotation objects have different Body objects.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getTarget() != null) && (that.getTarget() != null) &&
+	    		(!this.getTarget().equalsContent(that.getTarget()))) {
+	    	System.out.println("Annotation objects have different Target objects.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getMotivatedBy() != null) && (that.getMotivatedBy() != null) &&
+	    		(!this.getMotivatedBy().equals(that.getMotivatedBy()))) {
+	    	System.out.println("Annotation objects have different 'motivatedBy' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getSerializedAt() != null) && (that.getSerializedAt() != null) &&
+	    		(!this.getSerializedAt().equals(that.getSerializedAt()))) {
+	    	System.out.println("Annotation objects have different 'serializedAt' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getSerializedBy() != null) && (that.getSerializedBy() != null) &&
+	    		(!this.getSerializedBy().equalsContent(that.getSerializedBy()))) {
+	    	System.out.println("Annotation objects have different 'serializedBy' objects.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getStyledBy() != null) && (that.getStyledBy() != null) &&
+	    		(!this.getStyledBy().equalsContent(that.getStyledBy()))) {
+	    	System.out.println("Annotation objects have different 'styledBy' objects.");
+	    	res = false;
+	    }
+	    
+	    return res;
+	}
+	
 	/**
 	 * This method converts annotationId_string to AnnotaionId object.
 	 * @param annotationId The annotationId_string
