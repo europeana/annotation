@@ -31,16 +31,44 @@ import eu.europeana.annotation.definitions.model.concept.Concept;
  */
 public class BaseConcept implements Concept {
 
-	protected Map<String, String> prefLabel;
-	protected Map<String, String> altLabel;
-	protected Map<String, String> hiddenLabel;
+	private String uri;
+	private List<String> type;
+	Map<String, String> prefLabel;
+	Map<String, String> altLabel;
+	Map<String, String> hiddenLabel;
+	private List<String> notation;
+	private List<String> narrower;
+	private List<String> related;
+
+	
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	public List<String> getType() {
+		return type;
+	}
+
+	public void setType(List<String> type) {
+		this.type = type;
+	}
+	
+	public void addType(String newType) {
+		if(type == null)
+			type = new ArrayList<String>();
+		
+		if(! type.contains(newType))
+			type.add(newType);
+	}
+	
 
 	@Override
 	public Map<String, String> getPrefLabel() {
-	    if(this.prefLabel == null) {
-	        this.prefLabel = new HashMap<String, String>();
-	    }
-		return prefLabel;
+	  	return prefLabel;
 	}
 
 	@Override
@@ -71,10 +99,7 @@ public class BaseConcept implements Concept {
 
 	@Override
 	public Map<String, String> getAltLabel() {
-	    if(this.altLabel == null) {
-	        this.altLabel = new HashMap<String, String>();
-	    }
-		return altLabel;
+	   return altLabel;
 	}
 
 	@Override
@@ -92,16 +117,12 @@ public class BaseConcept implements Concept {
 
 	@Override
 	public Map<String, String> getHiddenLabel() {
-	    if(this.hiddenLabel == null) {
-	        this.hiddenLabel = new HashMap<String, String>();
-	    }
-		return hiddenLabel;
+	   return hiddenLabel;
 	}
 
-	    
-	private List<String> notation = new ArrayList<String>(2);
-
 	public void addNotation(String newNotation) {
+		if(notation == null)
+			notation = new ArrayList<String>(2);
 		if (!notation.contains(newNotation)) {
 			notation.add(newNotation);
 		}
@@ -115,9 +136,9 @@ public class BaseConcept implements Concept {
 		this.notation = notationList;
 	}
 	
-	private List<String> narrower = new ArrayList<String>(2);
-
 	public void addNarrower(String newNarrower) {
+		if(narrower == null)
+			narrower = new ArrayList<String>(2);
 		if (!narrower.contains(newNarrower)) {
 			narrower.add(newNarrower);
 		}
@@ -134,6 +155,8 @@ public class BaseConcept implements Concept {
 	private List<String> broader = new ArrayList<String>(2);
 
 	public void addBroader(String newbroader) {
+		if(broader == null)
+			broader = new ArrayList<String>(2);
 		if (!broader.contains(newbroader)) {
 			broader.add(newbroader);
 		}
@@ -147,9 +170,9 @@ public class BaseConcept implements Concept {
 		this.broader = broaderList;
 	}
 	
-	private List<String> related = new ArrayList<String>(2);
-
 	public void addRelated(String newRelated) {
+		if(related == null)
+			related = new ArrayList<String>(2);
 		if (!related.contains(newRelated)) {
 			related.add(newRelated);
 		}
@@ -163,7 +186,6 @@ public class BaseConcept implements Concept {
 		this.related = relatedList;
 	}
 	
-	public BaseConcept(){}
 	
 	@Override
 	public boolean equals(Object other) {

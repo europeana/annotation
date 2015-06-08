@@ -1,11 +1,17 @@
 package eu.europeana.annotation.client;
 
-import static org.junit.Assert.assertNotNull;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 
 public class EuropeanaLdApiTest {
@@ -38,19 +44,30 @@ public class EuropeanaLdApiTest {
     }
     
 	@Test
-	public void createHistoryPinAnnotation() {
+	public void createHistoryPinAnnotation() throws JsonParseException {
 		
-		String annotation = europeanaLdApi.createAnnotationLd(
+		long annotationNr = System.currentTimeMillis();
+		String providerHistoryPin = WebAnnotationFields.PROVIDER_HISTORY_PIN;
+		
+		String annotationStr = europeanaLdApi.createAnnotationLd(
 //				Annotation annotation = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, System.currentTimeMillis()
+				providerHistoryPin
+				, annotationNr
 				, taggingAnnotation
 				);
-		System.out.println("historypin annotation test: " + annotation);
-		assertNotNull(annotation);
+		assertNotNull(annotationStr);
+		AnnotationLdParser europeanaParser = new AnnotationLdParser();
+		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		
+		System.out.println("Annotation URI: " + annotation.getAnnotationId().toUri());
+		System.out.println("historypin annotation test: " + annotationStr);
+		
+		assertEquals(providerHistoryPin, annotation.getAnnotationId().getProvider());
+		assertEquals((Long)annotationNr, annotation.getAnnotationId().getAnnotationNr());
+		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
-	@Test
+	//@Test
 	public void createWebannoAnnotation() {
 		
 		String annotation = europeanaLdApi.createAnnotationLd(
@@ -63,7 +80,7 @@ public class EuropeanaLdApiTest {
 		assertNotNull(annotation);
 	}
 	
-	@Test
+	//@Test
 	public void getHistoryPinAnnotationByAnnotationNumber() {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -80,7 +97,7 @@ public class EuropeanaLdApiTest {
 		assertNotNull(annotation);
 	}
 	
-	@Test
+	//@Test
 	public void searchHistoryPinAnnotationByTarget() {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -97,7 +114,7 @@ public class EuropeanaLdApiTest {
 		assertNotNull(annotation);
 	}
 	
-	@Test
+	//@Test
 	public void searchHistoryPinAnnotationByResourceId() {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -113,5 +130,6 @@ public class EuropeanaLdApiTest {
 		System.out.println("historypin search annotation by resourceId test: " + annotation);
 		assertNotNull(annotation);
 	}
+
 	
 }

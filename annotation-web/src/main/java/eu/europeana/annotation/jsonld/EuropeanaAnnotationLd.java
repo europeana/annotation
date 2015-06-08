@@ -117,7 +117,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
         if (annotation.getSerializedAt() != null) 
         	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_AT, TypeUtils.convertDateToStr(annotation.getSerializedAt()));
         if (!StringUtils.isBlank(annotation.getMotivatedBy())) 
-        	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATED_BY, annotation.getMotivatedBy());
+        	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATION, annotation.getMotivatedBy());
         JsonLdProperty styledByProperty = addStyledByProperty(annotation);
         if (styledByProperty != null)
         	jsonLdResource.putProperty(styledByProperty);                
