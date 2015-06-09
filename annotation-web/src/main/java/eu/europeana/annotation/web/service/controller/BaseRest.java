@@ -193,7 +193,7 @@ public class BaseRest {
 			if(annotationNr!= null)
 				throw new ParamValidationException("AnnotationNr must not be set for provider! " + provider + ":" + annotationNr);
 		}else{
-			throw new ParamValidationException("Invalid provider! " + provider);
+			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER + " " + provider);
 		}
 		
 	}

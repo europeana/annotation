@@ -122,6 +122,11 @@ public interface WebAnnotationFields {
 	public static final String OBJECT           = "object";
 	
 	/**
+	 * Error messages
+	 */
+	public static final String INVALID_PROVIDER = "Invalid provider!";
+	
+	/**
 	 * Default values for the Rest API services
 	 */
 	public static final String REST_COLLECTION      = "15502";
