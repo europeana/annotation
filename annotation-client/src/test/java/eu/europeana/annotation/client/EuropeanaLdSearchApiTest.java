@@ -3,9 +3,7 @@ package eu.europeana.annotation.client;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
@@ -98,7 +96,8 @@ public class EuropeanaLdSearchApiTest extends EuropeanaLdApiTest {
 				, simpleLinkAnnotation
 				);
 		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		List<Long> idList = new ArrayList<Long>();
+		String resJson = "";
+//		List<Long> idList = new ArrayList<Long>();
 		Iterator<String> itr = annotation.getTarget().getValues().iterator();
 		while (itr.hasNext()) {
 			String target = itr.next();
@@ -108,10 +107,17 @@ public class EuropeanaLdSearchApiTest extends EuropeanaLdApiTest {
 					);
 			System.out.println("historypin search annotation by target test: " + annotationStrRes);
 			assertNotNull(annotationStrRes);
-			Annotation annotationRes = europeanaParser.parseAnnotation(annotationStrRes);
-			idList.add(annotationRes.getAnnotationId().getAnnotationNr());
+			resJson = resJson + annotationStrRes;
+//			AnnotationSearchResults asr = europeanaLdApi.getAnnotationSearchResults(annotationStrRes);
+//			List<Annotation> annotationList = asr.getItems();
+//			Iterator<Annotation> itrAnnotationList = annotationList.iterator();
+//			while (itrAnnotationList.hasNext()) {
+//				Annotation anno = itrAnnotationList.next();
+//				idList.add(anno.getAnnotationId().getAnnotationNr());
+//			}
 		}
-		assertTrue(idList.contains(annotationNr));
+		assertTrue(resJson.contains("\"" + WebAnnotationFields.ANNOTATION_NR + "\":" + annotationNr));
+//		assertTrue(idList.contains(annotationNr));
 	}
 	
 	@Test
@@ -124,7 +130,6 @@ public class EuropeanaLdSearchApiTest extends EuropeanaLdApiTest {
 				, simpleLinkAnnotation
 				);
 		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		List<Long> idList = new ArrayList<Long>();
 		Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();
 		while (itr.hasNext()) {
 			String resourceId = itr.next();
@@ -134,10 +139,8 @@ public class EuropeanaLdSearchApiTest extends EuropeanaLdApiTest {
 					);
 			System.out.println("historypin search annotation by target test: " + annotationStrRes);
 			assertNotNull(annotationStrRes);
-			Annotation annotationRes = europeanaParser.parseAnnotation(annotationStrRes);
-			idList.add(annotationRes.getAnnotationId().getAnnotationNr());
+			assertTrue(annotationStrRes.contains(resourceId));
 		}
-		assertTrue(idList.contains(annotationNr));
 	}
 	
 	

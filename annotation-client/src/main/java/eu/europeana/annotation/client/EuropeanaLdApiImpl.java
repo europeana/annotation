@@ -60,4 +60,11 @@ public class EuropeanaLdApiImpl extends BaseAnnotationApi implements EuropeanaLd
 		return res.getJson();
 	}
 	
+	public AnnotationSearchResults getAnnotationSearchResults(String json) {
+		AnnotationSearchResults res;
+		res = apiConnection.getAnnotationSearchResults(json);
+		return res;
+	}
+
+	
 }

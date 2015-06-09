@@ -288,7 +288,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param json
 	 * @return AnnotationSearchResults
 	 */
-	private AnnotationSearchResults getAnnotationSearchResults(String json) {
+	public AnnotationSearchResults getAnnotationSearchResults(String json) {
 		AnnotationSearchResults asr = new AnnotationSearchResults();
 		asr.setSuccess("true");
 		asr.setAction("create:/annotations/search");
