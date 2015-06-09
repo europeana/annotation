@@ -1,11 +1,17 @@
 package eu.europeana.annotation.client;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Before;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 
@@ -16,6 +22,7 @@ public class EuropeanaLdApiTest {
 	
     protected EuropeanaLdApiImpl europeanaLdApi;
     protected AnnotationLdParser europeanaParser;
+    
     
     public static String simpleTagAnnotation = 
     		"{" +
@@ -34,6 +41,7 @@ public class EuropeanaLdApiTest {
     		"\"target\": \"" + TEST_TARGET + "\"" +
     		"}";
 
+    
     public static String multipleSimpleTagAnnotation =
     		"{" +
     		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
@@ -51,6 +59,7 @@ public class EuropeanaLdApiTest {
     		"\"target\": \"" + TEST_TARGET + "\"," +
        	 	"\"oa:equivalentTo\": \"" + TEST_TARGET + "\"" +
     		"}";
+    
     
     public static String semanticTagAnnotation =
     		"{" +
@@ -72,7 +81,7 @@ public class EuropeanaLdApiTest {
     	    "\"target\": \"" + TEST_TARGET + "\"" +
     		"}";
     
-    		
+    
     public static String simpleLinkAnnotation =
     		"{" +
     		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
@@ -93,6 +102,7 @@ public class EuropeanaLdApiTest {
        	 	"\"oa:equivalentTo\": \"" + TEST_TARGET + "\"" +
     		"}";
     
+    
     @Before
     public void initObjects() {
     	europeanaLdApi = new EuropeanaLdApiImpl();
@@ -112,9 +122,41 @@ public class EuropeanaLdApiTest {
 		System.out.println("Annotation URI: " + annotation.getAnnotationId().toUri());
 		
 		assertEquals(provider, annotation.getAnnotationId().getProvider());
-		assertEquals((Long)annotationNr, annotation.getAnnotationId().getAnnotationNr());
+		if (provider.equals(WebAnnotationFields.PROVIDER_WEBANNO))
+			assertTrue(annotation.getAnnotationId().getAnnotationNr() != null);
+		else
+			assertEquals((Long)annotationNr, annotation.getAnnotationId().getAnnotationNr());
 		
 	}
 	
+	/**
+	 * This method extracts an items count parameter from a HTML response in search methods.
+	 * @param annotationStr
+	 * @return
+	 */
+	protected int extractItemsCount(String annotationStr) {
+		int res = 0;
+		String itemsCountStr = "";
+		if (StringUtils.isNotEmpty(annotationStr)) {
+			Pattern pattern = Pattern.compile(WebAnnotationFields.ITEMS_COUNT + "\":(.\\d+),");
+			Matcher matcher = pattern.matcher(annotationStr);
+			if (matcher.find())
+			{
+				itemsCountStr = matcher.group(1);
+				res = Integer.valueOf(itemsCountStr);
+			}
+		}
+		
+		return res;
+	}
     
+	/**
+	 * @param annotationStr
+	 */
+	protected void verifySearchResult(String annotationStr) {
+		assertTrue(annotationStr.contains(WebAnnotationFields.SUCCESS_TRUE));
+		int itemsCount = extractItemsCount(annotationStr);
+		assertTrue(itemsCount > 0);
+	}
+	
 }

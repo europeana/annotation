@@ -4,8 +4,6 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
 
@@ -17,7 +15,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
 	
-//	@Test
+	@Test
 	public void createSimpleTagHistoryPinAnnotation() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -34,7 +32,7 @@ public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
-//	@Test
+	@Test
 	public void createMultipleSimpleTagsHistoryPinAnnotation() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -68,7 +66,7 @@ public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
-//	@Test
+	@Test
 	public void createSimpleLinkHistoryPinAnnotation() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -86,7 +84,7 @@ public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
 		assertTrue(2 == annotation.getTarget().getValues().size());
 	}
 	
-//	@Test
+	@Test
 	public void getSemanticTagHistoryPinAnnotationByProviderAndAnnotationNumber() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -105,7 +103,7 @@ public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
-//	@Test
+	@Test
 	public void getObjectLinkingHistoryPinAnnotationByProviderAndAnnotationNumber() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -123,107 +121,19 @@ public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
 		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
 	}
 	
-	//@Test
-	public void searchSemanticTagHistoryPinAnnotationByTarget() throws JsonParseException {
+	@Test
+	public void createSimpleTagHistoryPinAnnotationWithoutAnnotationNr() throws JsonParseException {
 		
-		long annotationNr = System.currentTimeMillis();
+		String providerHistoryPin = WebAnnotationFields.PROVIDER_HISTORY_PIN;
+		
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, semanticTagAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				TEST_TARGET
+				providerHistoryPin
 				, null
-				);
-		System.out.println("historypin search annotation by target test: " + annotationStr);
-		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
-	}
-
-	//@Test
-	public void searchSemanticTagHistoryPinAnnotationByResourceId() throws JsonParseException {
-		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
 				, simpleTagAnnotation
 				);
-		annotationStr = europeanaLdApi.searchLd(
-				null
-				, TEST_RESOURCE_ID
-				);
-		System.out.println("historypin search annotation by resourceId test: " + annotationStr);
 		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
+		assertTrue(annotationStr.contains(WebAnnotationFields.SUCCESS_FALSE));
+		assertTrue(annotationStr.contains(WebAnnotationFields.INVALID_ANNOTATION_NR));
 	}
-
-	//@Test
-	public void searchObjectLinkingHistoryPinAnnotationByTarget() throws JsonParseException {
 		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, simpleLinkAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				TEST_TARGET
-				, null
-				);
-		System.out.println("historypin search annotation by target test: " + annotationStr);
-		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
-	}
-
-	//@Test
-	public void searchObjectLinkingHistoryPinAnnotationByResourceId() throws JsonParseException {
-		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, simpleLinkAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				null
-				, TEST_RESOURCE_ID
-				);
-		System.out.println("historypin search annotation by resourceId test: " + annotationStr);
-		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
-	}
-
-	//@Test
-	public void searchAnnotationsWithMultipleTargetsByEachTarget() throws JsonParseException {
-		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, simpleLinkAnnotation
-				);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		Iterator<String> itr = annotation.getTarget().getValues().iterator();
-		while (itr.hasNext()) {
-			String target = itr.next();
-			String annotationStrRes = europeanaLdApi.searchLd(
-					target
-					, null
-					);
-			System.out.println("historypin search annotation by target test: " + annotationStrRes);
-			assertNotNull(annotationStrRes);
-			Annotation annotationRes = europeanaParser.parseAnnotation(annotationStrRes);
-			validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
-		}
-	}
-	
-	
 }

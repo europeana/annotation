@@ -124,7 +124,11 @@ public interface WebAnnotationFields {
 	/**
 	 * Error messages
 	 */
+	public static final String SUCCESS_TRUE = "\"success\":true";
+	public static final String SUCCESS_FALSE = "\"success\":false";
 	public static final String INVALID_PROVIDER = "Invalid provider!";
+	public static final String INVALID_ANNOTATION_NR = "Invalid annotationNr for provider!";
+	public static final String UNNECESSARY_ANNOTATION_NR = "AnnotationNr must not be set for provider!";
 	
 	/**
 	 * Default values for the Rest API services
@@ -139,6 +143,7 @@ public interface WebAnnotationFields {
 	public static final String REST_START_ON        = "0";
 	public static final String REST_LIMIT           = "10";
 	public static final String REST_DEFAULT_PROVIDER_ID_GENERATION_TYPE = "provided";
+	public static final String ITEMS_COUNT          = "itemsCount";
 	public static final String REST_ANNOTATION_JSON = 
 		"{\"annotatedAt\": 1403852113248,"
 		+ "\"type\": \"OBJECT_TAG\","

@@ -1,6 +1,5 @@
 package eu.europeana.annotation.client;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
@@ -9,8 +8,6 @@ import org.junit.Test;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
-import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 
 public class EuropeanaLdWebannoApiTest extends EuropeanaLdApiTest {
@@ -25,15 +22,8 @@ public class EuropeanaLdWebannoApiTest extends EuropeanaLdApiTest {
 				);
 		System.out.println("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);
-		AnnotationLdParser europeanaParser = new AnnotationLdParser();
 		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
-		
-		System.out.println("Annotation URI: " + annotation.getAnnotationId().toUri());
-		System.out.println("historypin annotation test: " + annotationStr);
-		
-		assertEquals(WebAnnotationFields.PROVIDER_WEBANNO, annotation.getAnnotationId().getProvider());
-		assertTrue(annotation.getAnnotationId().getAnnotationNr() != null);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
+		validateAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, -1, annotation);
 	}
 	
 	@Test
@@ -46,7 +36,23 @@ public class EuropeanaLdWebannoApiTest extends EuropeanaLdApiTest {
 				);
 		System.out.println("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);
+		assertTrue(annotationStr.contains(WebAnnotationFields.SUCCESS_FALSE));
 		assertTrue(annotationStr.contains(WebAnnotationFields.INVALID_PROVIDER));
+	}
+	
+	@Test
+	public void createSimpleTagWebannoAnnotationWithAnnotationNr() throws JsonParseException {
+		
+		long annotationNr = System.currentTimeMillis();
+		String annotationStr = europeanaLdApi.createAnnotationLd(
+				WebAnnotationFields.PROVIDER_WEBANNO
+				, annotationNr
+				, simpleTagAnnotation
+				);
+		System.out.println("webanno annotation test: " + annotationStr);
+		assertNotNull(annotationStr);
+		assertTrue(annotationStr.contains(WebAnnotationFields.SUCCESS_FALSE));
+		assertTrue(annotationStr.contains(WebAnnotationFields.UNNECESSARY_ANNOTATION_NR));
 	}
 	
 }

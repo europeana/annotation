@@ -188,10 +188,10 @@ public class BaseRest {
 	private void validateProviderAndAnnotationNr(String provider, Long annotationNr) throws ParamValidationException {
 		if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider)){
 			if(annotationNr== null ||  annotationNr<1)
-				throw new ParamValidationException("Invalid annotationNr for provider! " + provider + ":" + annotationNr);
+				throw new ParamValidationException(WebAnnotationFields.INVALID_ANNOTATION_NR + " " + provider + ":" + annotationNr);
 		}else if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
 			if(annotationNr!= null)
-				throw new ParamValidationException("AnnotationNr must not be set for provider! " + provider + ":" + annotationNr);
+				throw new ParamValidationException(WebAnnotationFields.UNNECESSARY_ANNOTATION_NR + " " + provider + ":" + annotationNr);
 		}else{
 			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER + " " + provider);
 		}
