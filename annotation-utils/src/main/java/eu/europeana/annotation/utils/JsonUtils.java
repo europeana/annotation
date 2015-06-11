@@ -118,6 +118,32 @@ public class JsonUtils {
 		return annotation;
 	}
 	
+	public static Concept toConceptObject(String json) {
+		JsonParser parser;
+		Concept concept = null;
+		try {
+			parser = jsonFactory.createJsonParser(json);
+			SimpleModule module =  
+			      new SimpleModule("ConceptDeserializerModule",  
+			          new Version(1, 0, 0, null));  
+			    
+			module.addDeserializer(Concept.class, new ConceptDeserializer());  
+			module.addDeserializer(Map.class, new MapDeserializer());
+			module.addDeserializer(List.class, new ListDeserializer());
+			
+			objectMapper.registerModule(module); 
+			
+			parser.setCodec(objectMapper);
+			concept = objectMapper.readValue(parser, Concept.class);
+		} catch (JsonParseException e) {
+			throw new AnnotationInstantiationException("Json formating exception!", e);
+		} catch (IOException e) {
+			throw new AnnotationInstantiationException("Json reading exception!", e);
+		}
+		
+		return concept;
+	}
+	
 	public static String mapToString(Map<String,String> mp) {
 		String res = "";
 	    Iterator<Map.Entry<String, String>> it = mp.entrySet().iterator();

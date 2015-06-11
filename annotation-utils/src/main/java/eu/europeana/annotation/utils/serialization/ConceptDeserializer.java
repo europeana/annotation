@@ -35,8 +35,8 @@ public class ConceptDeserializer extends StdDeserializer<Concept> {
 		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 		while (elementsIterator.hasNext()) {
 			Entry<String, JsonNode> element = elementsIterator.next();
-			if (ModelConst.CONCEPT_TYPE.equals(element.getKey())) {
-				String typeValue = TypeUtils.getInternalTypeFromTypeArrayStatic(element.getValue().getTextValue());
+			if (ModelConst.TYPE.equals(element.getKey())) {
+				String typeValue = element.getValue().getTextValue();
 				realClass = ConceptObjectFactory.getInstance()
 						.getClassForType(typeValue);
 				break;
