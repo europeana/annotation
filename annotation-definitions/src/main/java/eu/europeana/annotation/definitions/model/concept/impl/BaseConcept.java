@@ -12,7 +12,7 @@ import eu.europeana.annotation.definitions.model.concept.Concept;
  * This is a class for Concept object that is a part of the Body object.
  * The sample SKOS presentation of this object is:
  * 
- *	   "notation": "skos:notation",
+ *	    "notation": "skos:notation",
  *	    "prefLabel": {
  *	        "@id": "skos:prefLabel",
  *	        "@container": "@language"

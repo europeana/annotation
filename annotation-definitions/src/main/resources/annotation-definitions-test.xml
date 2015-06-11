@@ -26,10 +26,6 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 	">
 
-	<!--
-	<util:properties id="europeanaProperties" location="classpath:test-config/europeana-test.properties" />
-	-->
-	
 	<!-- INTERNAL DEFINITIONS -->
 	<import resource="internal/annotation-definitions-beans.xml"/>
 

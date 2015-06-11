@@ -8,6 +8,14 @@ import java.util.Map;
  */
 public interface Concept {
 
+	public String getUri();
+	
+	public void setUri(String uri);
+
+	public List<String> getType();
+
+	public void setType(List<String> type);
+	
 	public abstract Map<String, String> getPrefLabel();
 
 	public abstract void setPrefLabel(Map<String, String> prefLabel);
