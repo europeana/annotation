@@ -28,7 +28,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 	">
 	
-	<util:properties id="europeanaProperties" location="classpath:test-config/europeana-test.properties" />
+	<util:properties id="annotationProperties" location="classpath:test-config/annotation-test.properties" />
 	
 	<!-- internal -->
 	<import resource="internal/annotation-solr-server.xml" />
@@ -40,11 +40,4 @@
 	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
 		p:solrServer-ref="annotation_solr_annotationEmbedded"
 	/>
-	<!-- 
-	<bean name="annotation_solr_tagService" class="eu.europeana.annotation.solr.service.impl.TestSolrTagServiceImpl"
-		p:solrServer-ref="annotation_solr_solrServer"
-	/>
-	 -->
-	 <!-- bean name="corelib_solr_mongoServer" class="eu.europeana.corelib.EdmMongoServerTest"/>
-	 <bean name="corelib_solr_vocabularyMongoServer" class="eu.europeana.corelib.EdmMongoServerTest"/-->
 </beans>	
