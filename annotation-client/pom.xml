@@ -24,7 +24,9 @@
       <groupId>eu.europeana.annotation</groupId>
       <artifactId>annotation-definitions</artifactId>
       <version>${version.annotationApiSnapshot}</version>
-    </dependency>
+      <classifier>test</classifier>
+      <scope>test</scope>
+   	</dependency>
     
 	<dependency>
 		<groupId>eu.europeana.annotation</groupId>
@@ -35,8 +37,16 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <version>4.11</version>
       <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>eu.europeana.annotation</groupId>
+      <artifactId>annotation-definitions</artifactId>
+      <version>${version.annotationApiSnapshot}</version>
+      <scope>test</scope>
+      <classifier>test</classifier>
     </dependency>
 <!--     
 	 <dependency>

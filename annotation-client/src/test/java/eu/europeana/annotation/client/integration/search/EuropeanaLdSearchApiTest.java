@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client;
+package eu.europeana.annotation.client.integration.search;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -8,6 +8,7 @@ import java.util.Iterator;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
 
+import eu.europeana.annotation.client.abstracts.EuropeanaLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 

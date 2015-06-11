@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client;
+package eu.europeana.annotation.client.integration.search;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 

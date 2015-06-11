@@ -1,9 +1,10 @@
-package eu.europeana.annotation.client;
+package eu.europeana.annotation.client.integration.jsonld;
 
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import eu.europeana.annotation.client.AnnotationJsonLdApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 
@@ -32,7 +33,7 @@ public class AnnotationJsonLdApiTest extends AnnotationTestObjectBuilder{
          */
 //        Annotation annotationFromAnnotationLd = annotationLd.getAnnotation();
         
-		String jsonPost = annotationJsonLdApi.apiConnection.getAnnotationGson().toJson(testAnnotation);
+		String jsonPost = annotationJsonLdApi.getApiConnection().getAnnotationGson().toJson(testAnnotation);
 //		String jsonPost = annotationJsonLdApi.apiConnection.convertAnnotationToAnnotationLdString(testAnnotation);
 
 		Annotation annotation = annotationJsonLdApi.createAnnotation(jsonPost);

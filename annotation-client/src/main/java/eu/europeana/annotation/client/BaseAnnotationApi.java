@@ -8,6 +8,10 @@ public abstract class BaseAnnotationApi {
 	protected final ClientConfiguration configuration;
 	protected final AnnotationApiConnection apiConnection;
 
+	public AnnotationApiConnection getApiConnection() {
+		return apiConnection;
+	}
+
 	public BaseAnnotationApi(ClientConfiguration configuration,
 			AnnotationApiConnection apiConnection) {
 		this.configuration = configuration;
