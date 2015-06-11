@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
+import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -25,6 +26,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -53,6 +55,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	
 	@Autowired
 	PersistentProviderService mongoProviderPersistance;
+	
+	@Autowired
+	PersistentConceptService mongoConceptPersistence;
 	
 	@Autowired
 	SolrAnnotationService solrService;
@@ -107,6 +112,14 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
 		this.mongoProviderPersistance = mongoProviderPersistance;
+	}
+
+	public PersistentConceptService getMongoConceptPersistence() {
+		return mongoConceptPersistence;
+	}
+
+	public void setMongoConceptPersistance(PersistentConceptService mongoConceptPersistence) {
+		this.mongoConceptPersistence = mongoConceptPersistence;
 	}
 
 	@Override
@@ -275,6 +288,35 @@ public class AnnotationServiceImpl implements AnnotationService {
 		getMongoProviderPersistence().remove(name, idGeneration);
 	}
 
+	
+	@Override
+	public Concept storeConcept(Concept newConcept) {
+		
+		//must have registered id generation type.
+//		validateConcept(newConcept);
+		
+		// store in mongo database
+		Concept res =  getMongoConceptPersistence().store(newConcept);
+		
+	    return res;
+	}
+		
+	@Override
+	public Concept updateConcept(Concept concept) {		
+		Concept res = getMongoConceptPersistence().update(concept);
+		return res;
+	}
+	
+	@Override
+	public void deleteConcept(String url) {
+		getMongoConceptPersistence().remove(url);
+	}
+	
+	@Override
+	public Concept getConceptByUrl(String url) {
+		return getMongoConceptPersistence().findByUrl(url);		
+	}	
+	
 	/* (non-Javadoc)
 	 * @see eu.europeana.annotation.web.service.AnnotationService#storeAnnotation(eu.europeana.annotation.definitions.model.Annotation)
 	 */
@@ -558,7 +600,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Override
 	public void deleteTag(String tagId) {
         try {
-    		Annotation res = getMongoPersistence().findByID(tagId);
+    		Annotation res = getMongoPersistence().findByTagId(tagId);
     		if (res == null) {
 //    			PersistentTag persistentTag = getMongoTagPersistence().findByID(tagId);
 //	    	    SolrTag indexedTag = copyPersistentTagIntoSolrTag(persistentTag);

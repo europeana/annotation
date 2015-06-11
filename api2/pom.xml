@@ -42,6 +42,7 @@
 	<properties>
 		<version.annotationApi>2.1</version.annotationApi>
 		<version.annotationApiSnapshot>${version.annotationApi}-SNAPSHOT</version.annotationApiSnapshot>
+		<version.junit>4.11</version.junit>
 	</properties>	 
 	<groupId>eu.europeana</groupId>
 	<version>2.1</version>

@@ -73,13 +73,7 @@
 			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApiSnapshot}</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>eu.europeana.corelib</groupId>
-			<artifactId>corelib-logging</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-		 -->
+		
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
@@ -105,39 +99,18 @@
 			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId> 
-			<version>2.2.2</version> </dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${version.spring}</version>
-		</dependency>
- 		-->
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>${version.slf4j}</version>
 		</dependency>
 
-		<!-- 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${version.spring}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		 -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
@@ -148,18 +121,26 @@
 			<artifactId>spring-oxm</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot</artifactId>
+			<version>1.2.0.RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${version.spring}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>eu.europeana.api</groupId> <artifactId>europeana-client</artifactId> 
-			<version>0.2.0-SNAPSHOT</version> <type>jar</type> </dependency> -->
-		<!-- <dependency> <groupId>eu.europeana.api</groupId> <artifactId>europeana-client</artifactId> 
-			<version>0.2.0-SNAPSHOT</version> <classifier>tests</classifier> <type>jar</type> 
-			</dependency> -->
-
+		
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java-jena</artifactId>
@@ -238,17 +219,12 @@
 
 	<properties>
 		<version.core>2.0</version.core>
-		<!-- 
-		<version.springAop>3.1.4.RELEASE</version.springAop>
-		<version.spring.tx>3.1.4.RELEASE</version.spring.tx>
-		<version.spring>3.1.4.RELEASE</version.spring>
-		 -->
+	
 		<version.springAop>4.0.9.RELEASE</version.springAop>
 		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
 		<version.spring>4.0.9.RELEASE</version.spring>
-		<!-- <version.springSecurityOauth>1.0.0.M6a</version.springSecurityOauth> -->
 		<version.slf4j>1.7.5</version.slf4j>
-		<!-- <europeana_api_key>HqHRSeD3j</europeana_api_key> -->
+		
 	</properties>
 
 </project>
