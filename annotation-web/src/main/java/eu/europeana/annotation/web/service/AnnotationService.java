@@ -8,6 +8,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
+import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -236,5 +237,29 @@ public interface AnnotationService {
 	 * Check whether given provider already exists in database.
 	 */
 	public boolean existsProviderInDb(Provider provider); 
+	
+	/**
+	 * @param newConcept
+	 * @return
+	 */
+	public Concept storeConcept(Concept newConcept);
+		
+	/**
+	 * @param concept
+	 * @return
+	 */
+	public Concept updateConcept(Concept concept);
+	
+	/**
+	 * @param url
+	 */
+	public void deleteConcept(String url);
+	
+	/**
+	 * @param url
+	 * @return
+	 */
+	public Concept getConceptByUrl(String url);
+	
 	
 }

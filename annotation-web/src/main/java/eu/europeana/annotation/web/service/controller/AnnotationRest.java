@@ -22,6 +22,7 @@ import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
+import org.apache.log4j.Logger;
 
 @Controller
 @Api(value = "annotations", description = "Annotation JSON Rest Service")
@@ -30,7 +31,6 @@ public class AnnotationRest extends BaseRest {
 
 //	@ApiOperation(value = "", position = 0)
 	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-	@ResponseBody
 	public String getComponentName() {
 		return getConfiguration().getComponentName();
 	}
