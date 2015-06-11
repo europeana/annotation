@@ -75,7 +75,14 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	}
 
 	public void setAnnotationId(AnnotationId annotationId) {
-		this.annotationId = (MongoAnnotationId) annotationId;
+		if(annotationId instanceof MongoAnnotationId)
+			this.annotationId = (MongoAnnotationId) annotationId;
+		else{
+			MongoAnnotationId id = new MongoAnnotationId();
+			id.copyFrom(annotationId);
+			this.annotationId = id;
+		}
+			
 	}
 
 	public String getType() {

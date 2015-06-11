@@ -8,7 +8,7 @@ public class PersistentObjectTagImpl extends PersistentAnnotationImpl implements
 	
 	public PersistentObjectTagImpl(){
 		super();
-		setType(AnnotationTypes.OBJECT_TAG.name());
+		setInternalType(AnnotationTypes.OBJECT_TAG.name());
 	}
 
 }

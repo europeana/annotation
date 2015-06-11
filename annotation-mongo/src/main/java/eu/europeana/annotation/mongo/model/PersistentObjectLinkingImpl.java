@@ -8,7 +8,7 @@ public class PersistentObjectLinkingImpl extends PersistentAnnotationImpl implem
 	
 	public PersistentObjectLinkingImpl(){
 		super();
-		setType(AnnotationTypes.OBJECT_LINKING.name());
+		setInternalType(AnnotationTypes.OBJECT_LINKING.name());
 	}
 
 }

@@ -10,6 +10,7 @@ import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
@@ -18,6 +19,7 @@ import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
@@ -57,6 +59,7 @@ public class AnnotationTestDataBuilder {
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
 		persistentObject.setAnnotatedBy(creator);
+		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));
 		return persistentObject;
 	}
 
@@ -91,6 +94,7 @@ public class AnnotationTestDataBuilder {
 
 	protected ImageAnnotation createSimpleAnnotationInstance() {
 		ImageAnnotation persistentObject = new PersistentImageAnnotationImpl();
+		persistentObject.setInternalType(AnnotationTypes.OBJECT_COMMENT.name());
 		
 		// set target
 		Target target = buildImageTarget();
@@ -114,6 +118,7 @@ public class AnnotationTestDataBuilder {
 		persistentObject.setMotivatedBy(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
+		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));
 		return persistentObject;
 	}
 

@@ -1,6 +1,6 @@
 package eu.europeana.annotation.mongo.dao;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,7 +30,7 @@ public class PersistentAnnotationDaoTest {
 	 */
 	@Before
 	public void setup() throws IOException {
-		annotationDao.getDatastore().getCollection(GeneratedAnnotationIdImpl.class).drop();
+		//annotationDao.getDatastore().getCollection(GeneratedAnnotationIdImpl.class).drop();
 	}
 
 	/**
@@ -48,10 +47,10 @@ public class PersistentAnnotationDaoTest {
 	public void testGenerateAnnotationId(){
 		String testEuropeanaId = "/test_europeanaId/generate_annotationId";
 		AnnotationId id1 = annotationDao.generateNextAnnotationId(testEuropeanaId);
-		assertEquals(new Integer(1), id1.getAnnotationNr());
+		assertTrue(id1.getAnnotationNr() > 0);
 		
 		AnnotationId id2 = annotationDao.generateNextAnnotationId(testEuropeanaId);
-		assertEquals(new Integer(2), id2.getAnnotationNr());
+		assertTrue(id1.getAnnotationNr() +1 == id2.getAnnotationNr());
 		
 	}
 

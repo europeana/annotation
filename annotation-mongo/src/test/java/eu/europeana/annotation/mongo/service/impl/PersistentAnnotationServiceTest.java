@@ -29,6 +29,7 @@ import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
@@ -36,6 +37,7 @@ import eu.europeana.annotation.definitions.model.resource.state.State;
 import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -51,9 +53,6 @@ import eu.europeana.corelib.db.dao.NosqlDao;
 public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 	
-	// @Resource(name="corelib_solr_mongoProvider")
-	// private MongoProvider mongoProvider;
-
 	@Resource PersistentAnnotationService annotationService;
 
 	@Resource PersistentTagService tagService;
@@ -277,6 +276,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	protected PersistentAnnotation createPersistentAnnotationInstance() {
 		
 		PersistentAnnotation persistentObject = new PersistentAnnotationImpl();
+		persistentObject.setInternalType(AnnotationTypes.OBJECT_COMMENT.name());
 		
 		// set target
 		Target target = buildTarget();
@@ -300,6 +300,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setMotivatedBy(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
+		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));
 		return persistentObject;
 	}
 	 

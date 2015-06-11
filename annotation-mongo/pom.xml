@@ -43,56 +43,29 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!-- morphia -->
-		<!-- 
-		<dependency>
-			<groupId>com.google.code.morphia</groupId>
-			<artifactId>morphia</artifactId>
-			<version>0.101.0</version>
-			<scope>compile</scope>
-		</dependency>
-		 -->
 		
-		<!-- Spring -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${version.springCore}</version>
+			<groupId>eu.europeana.corelib</groupId>
+			<artifactId>corelib-common-storage</artifactId>
+			<version>2.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${version.springSecurity}</version>
-			<exclusions>
-				<!-- EXCLUDE THIS TO FORCE NEWEST RELEASES -->
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-aop</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-expression</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-context</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>eu.europeana.corelib</groupId>
+			<artifactId>corelib-logging</artifactId>
+			<version>2.1-SNAPSHOT</version>
 		</dependency>
-			
-		<!-- Corelib -->
-		<!-- <dependency> <groupId>eu.europeana.corelib</groupId> <artifactId>corelib-utils</artifactId> 
-			<version>${version.europeanaCorelib}</version> </dependency> -->
-		<!-- Other -->
-		<!-- <dependency> <groupId>commons-lang</groupId> <artifactId>commons-lang</artifactId> 
-			<version>${version.commonsLang}</version> </dependency> <dependency> <groupId>com.google.code.morphia</groupId> 
-			<artifactId>morphia</artifactId> <version>0.99</version> <scope>compile</scope> 
-			</dependency> <dependency> <groupId>org.mongodb</groupId> <artifactId>mongo-java-driver</artifactId> 
-			<version>2.7.2</version> <scope>compile</scope> </dependency> -->
 
+		
 		<!-- TESTING PURPOSES -->
+		<dependency>
+			<groupId>eu.europeana.corelib</groupId>
+			<artifactId>corelib-db</artifactId>
+			<version>2.1-SNAPSHOT</version>
+			<classifier>test</classifier>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<scope>test</scope>
 			<groupId>org.springframework</groupId>
@@ -100,24 +73,8 @@
 			<version>${version.springCore}</version>
 		</dependency>
 		
-<!-- 		
-		<dependency>
-		    <groupId>cglib</groupId>
-		    <artifactId>cglib-nodep</artifactId>
-		    <version>[2.1_3,3.0)</version>
-		    <type>jar</type>
-		    <optional>true</optional>
-		</dependency>
-		<dependency>
-		    <groupId>com.thoughtworks.proxytoys</groupId>
-		    <artifactId>proxytoys</artifactId>
-		    <version>1.0</version>
-		    <type>jar</type>
-		    <optional>true</optional>
-		</dependency>
- -->
- 		
 	</dependencies>
+	
 	<build>
 		<!--  configure source and output locations -->
 		<directory>target</directory>

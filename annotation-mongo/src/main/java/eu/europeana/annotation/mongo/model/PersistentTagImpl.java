@@ -42,4 +42,11 @@ public class PersistentTagImpl extends BaseTagResource implements PersistentTag,
 	    }
 	    this.multilingual.put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
 	}
+	
+	@Override
+	public String getId() {
+		if(getObjectId() != null)
+			return this.getObjectId().toString();
+		else return null;
+	}
 }

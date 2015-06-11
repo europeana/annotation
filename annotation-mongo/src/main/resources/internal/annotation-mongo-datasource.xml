@@ -28,38 +28,30 @@
 		http://www.springframework.org/schema/tx/spring-tx.xsd
 	">
 
-	<!--  not sure if needed -->
-	<!-- 
-	<bean id="corelib_db_mongo" class="com.mongodb.Mongo">
-		<constructor-arg value="#{europeanaProperties['mongodb.host']}"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.port']}"/>
-	</bean>
- 	-->
 	
-	<bean id="annotation_db_mongo" class="com.mongodb.Mongo">
-		<constructor-arg value="#{europeanaProperties['mongodb.annotation.host']}" type="java.lang.String"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.annotation.port']}" type="int"/>
+	<bean id="annotation_db_mongoProvider" class="eu.europeana.corelib.MongoProvider">
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.host']}" type="java.lang.String"/>
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.port']}" type="java.lang.String"/>
 	</bean>
-
-	<bean id="annotation_db_morphia" class="com.google.code.morphia.Morphia"/>
 	
-	<!--  docu -->
-	<!-- 
-	<bean id="corelib_db_morphia_datastore" factory-bean="corelib_db_morphia" factory-method="createDatastore">
-		<constructor-arg ref="corelib_db_mongo"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.dbname']}"/>
-	</bean>
-
-	<bean id="corelib_db_morphia_datastore_apilog" factory-bean="corelib_db_morphia" factory-method="createDatastore">
-		<constructor-arg ref="corelib_db_mongo_apilog"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.apilog.dbname']}"/>
-	</bean>
-	 -->
+	<bean id="annotation_db_mongoConnector" class="eu.europeana.corelib.db.wrapper.ApiMongoConnector" />
 	
 	<!--  connection to the annotation database -->
-	<bean id="annotation_db_morphia_datastore_annotation" factory-bean="annotation_db_morphia" factory-method="createDatastore">
-		<constructor-arg ref="annotation_db_mongo"/>
-		<constructor-arg value="#{europeanaProperties['mongodb.annotation.dbname']}" type="java.lang.String"/>
-	</bean>
+	<bean id="annotation_db_morphia_datastore_annotation" factory-bean="annotation_db_mongoConnector"
+			factory-method="createDatastore">
+			<constructor-arg value="Annotation" />
+			<constructor-arg value="#{annotation_db_mongoProvider.getMongo()}" />
+			<constructor-arg value="#{annotationProperties['mongodb.annotation.dbname']}"
+				type="java.lang.String" />
+			<constructor-arg
+				value="#{annotationProperties['mongodb.annotation.username']}"
+				type="java.lang.String" />
+			<constructor-arg
+				value="#{annotationProperties['mongodb.annotation.password']}"
+				type="java.lang.String" />
+		</bean>
+	
+	
+	
 	
 </beans>

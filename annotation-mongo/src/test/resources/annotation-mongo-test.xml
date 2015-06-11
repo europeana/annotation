@@ -16,8 +16,8 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 	">
 
-	<util:properties id="europeanaProperties" 
-		location="test-config/europeana-test.properties" />
+	<util:properties id="annotationProperties" 
+		location="test-config/annotation-test.properties" />
 
 	<!-- INTERNAL DEFINITIONS -->
 	<!-- <import resource="internal/annotation-definitions-beans.xml" /> -->
@@ -33,23 +33,5 @@
 			</list>
 		</property>
 	</bean>
-
-<!-- 
-	<bean id="morphiaSlf4j" class="java.lang.Class" factory-method="forName">
-		<constructor-arg
-			value="com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory" />
-	</bean>
-
-	<bean
-		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="staticMethod"
-			value="com.google.code.morphia.logging.MorphiaLoggerFactory.registerLogger" />
-		<property name="arguments">
-			<list>
-				<ref local="morphiaSlf4j" />
-			</list>
-		</property>
-	</bean>
- -->
 
 </beans>

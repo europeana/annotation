@@ -76,16 +76,18 @@ public class PersistentAnnotationServiceImpl extends
 			throw new AnnotationValidationException(
 					AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 		
-		if (object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
-			if (object.getAnnotationId() == null) 
+		//TODO: check and remove the following code .. 
+		//if (object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
+		//check Annotation ID
+//		if (object.getAnnotationId() == null){ 
+//				throw new AnnotationValidationException(
+//						"AnnotationId must not be null.");
+//		} else 
+		
+		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider())) 
 				throw new AnnotationValidationException(
-						"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
-		} else {
-//			if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getResourceId())) 
-			if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider())) 
-				throw new AnnotationValidationException(
-						"AnnotationId must not be null. AnnotationId.resourceId attribute is required");
-		}
+						"AnnotationId must not be null. AnnotationId.provider attribute is required");
+		//}
 		
 		// check target
 		if (object.getTarget() == null)
@@ -490,6 +492,11 @@ public class PersistentAnnotationServiceImpl extends
 	    
 		getAnnotationBuilder().copyAnnotationAttributes(annotation, persistentAnnotation);
 		return persistentAnnotation;
+	}
+
+	@Override
+	public Annotation findByTagId(String tagId) {
+		throw new RuntimeException("This method is not supported yet!");
 	}
 			
 }
