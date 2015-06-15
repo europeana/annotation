@@ -139,7 +139,7 @@ public class EuropeanaLdApiTest {
 		int res = 0;
 		String itemsCountStr = "";
 		if (StringUtils.isNotEmpty(annotationStr)) {
-			Pattern pattern = Pattern.compile(WebAnnotationFields.ITEMS_COUNT + "\":(.\\d+),");
+			Pattern pattern = Pattern.compile(WebAnnotationFields.ITEMS_COUNT + "\":(\\d+),");
 			Matcher matcher = pattern.matcher(annotationStr);
 			if (matcher.find())
 			{
