@@ -35,6 +35,16 @@
 		    <groupId>com.mangofactory</groupId>
 		    <artifactId>swagger-springmvc</artifactId>
 		    <version>1.0.1</version>
+		    <exclusions>
+		    	<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-webmvc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+		    </exclusions>
 		</dependency>
 		
 		<!-- 
@@ -102,6 +112,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
 		
@@ -219,10 +234,6 @@
 
 	<properties>
 		<version.core>2.0</version.core>
-	
-		<version.springAop>4.0.9.RELEASE</version.springAop>
-		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
-		<version.spring>4.0.9.RELEASE</version.spring>
 		<version.slf4j>1.7.5</version.slf4j>
 		
 	</properties>
