@@ -25,7 +25,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	private final static String MONGO_SERVICE = "mongo_service";
 	File propertiesFile = null;
 
-	private static StandardServletEnvironment env;
+	private StandardServletEnvironment env;
 	
 	Logger logger = Logger.getLogger(getClass()); 
 
@@ -45,7 +45,8 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 		super.onApplicationEvent(event);
 
-		updateProperties(getPropertiesFile());
+		if(env != null && env.getSystemEnvironment() != null && env.getSystemEnvironment().get(MONGO_SERVICE) != null)
+			updateProperties(getPropertiesFile());
 	}
 
 	private File getPropertiesFile() {
@@ -116,26 +117,6 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 						key_timestamp + "=" + System.currentTimeMillis() + "\n",
 						true);
 				
-				
-				
-//				if (env.containsProperty(API2CANONICALURL)) {
-//					FileUtils.writeStringToFile(
-//							annotationProperties,
-//							StringUtils
-//									.replaceChars(API2CANONICALURL, "_", ".")
-//									+ "="
-//									+ HTTP
-//									+ env.getSystemEnvironment().get(
-//											API2CANONICALURL) + "\n", true);
-//				}
-//				if (env.containsProperty(API2URL)) {
-//					FileUtils.writeStringToFile(
-//							annotationProperties,
-//							StringUtils.replaceChars(API2URL, "_", ".") + "="
-//									+ HTTP
-//									+ env.getSystemEnvironment().get(API2URL)
-//									+ "\n", true);
-//				}
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
