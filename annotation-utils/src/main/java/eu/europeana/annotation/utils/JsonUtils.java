@@ -128,7 +128,7 @@ public class JsonUtils {
 			          new Version(1, 0, 0, null));  
 			    
 			module.addDeserializer(Concept.class, new ConceptDeserializer());  
-			module.addDeserializer(Map.class, new MapDeserializer());
+//			module.addDeserializer(Map.class, new MapDeserializer());
 			module.addDeserializer(List.class, new ListDeserializer());
 			
 			objectMapper.registerModule(module); 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.query.Query;
+import com.google.code.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
 
 import eu.europeana.annotation.definitions.exception.ConceptValidationException;
@@ -14,6 +15,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidConceptException;
 import eu.europeana.annotation.mongo.model.PersistentConceptImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentConcept;
+import eu.europeana.annotation.mongo.model.internal.PersistentProvider;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
 public class PersistentConceptServiceImpl extends
@@ -203,7 +205,11 @@ public class PersistentConceptServiceImpl extends
 		Query<PersistentConcept> query = getDao().createQuery();
 		query.filter(PersistentConcept.FIELD_URI, url);
 
-		return getDao().findOne(query);
+//		return getDao().findOne(query);
+		QueryResults<? extends PersistentConcept> results = getDao()
+				.find(query);
+		List<? extends PersistentConcept> conceptList = results.asList();
+		return conceptList.get(conceptList.size() - 1);
 	}
 	
 }

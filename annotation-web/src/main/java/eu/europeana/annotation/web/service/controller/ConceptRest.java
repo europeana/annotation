@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
+import javax.servlet.annotation.WebFilter;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +28,8 @@ public class ConceptRest extends BaseRest {
 	@RequestMapping(value = "/concepts/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
-		return getConfiguration().getComponentName();
+//		return getConfiguration().getComponentName();
+		return WebAnnotationFields.CONCEPT;
 	}
 
 	@RequestMapping(value = "/concepts/{uri}.json"

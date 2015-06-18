@@ -30,6 +30,7 @@ public class PersistentConceptImpl implements PersistentConcept, PersistentObjec
 	Map<String, String> altLabel;
 	Map<String, String> hiddenLabel;
 	private List<String> notation;
+	private List<String> broader;
 	private List<String> narrower;
 	private List<String> related;
 
@@ -170,13 +171,12 @@ public class PersistentConceptImpl implements PersistentConcept, PersistentObjec
 	@Override
 	public List<String> getBroader() {
 		// TODO Auto-generated method stub
-		return null;
+		return broader;
 	}
 
 	@Override
 	public void setBroader(List<String> broaderList) {
-		// TODO Auto-generated method stub
-		
+		this.broader = broaderList;
 	}
 
 	@Override
