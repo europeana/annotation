@@ -6,12 +6,12 @@ import static junit.framework.Assert.assertTrue;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
 
-import eu.europeana.annotation.client.abstracts.EuropeanaLdApiTest;
+import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 
-public class EuropeanaLdWebannoApiTest extends EuropeanaLdApiTest {
+public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	
 	@Test
 	public void createSimpleTagWebannoAnnotation() throws JsonParseException {

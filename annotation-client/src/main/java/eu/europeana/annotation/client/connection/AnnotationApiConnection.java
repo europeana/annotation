@@ -196,6 +196,39 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 	
 	/**
+	 * This method creates AnnotationLd object from JsonLd string.
+	 * The HTTP request sample is:
+	 *     http://localhost:8081/annotation-web/annotationld.jsonld?provider=historypin&annotationNr=1111&indexing=true
+	 * @param provider
+	 * @param annotationNr
+	 * @param annotationJsonLdStr The Annotation
+	 * @return annotation operation response
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse createAnnotationLd(
+			String provider, Long annotationNr, String annotationJsonLdStr) throws IOException {
+		
+		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		url += WebAnnotationFields.ANNOTATION_LD_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (annotationNr != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+
+		/**
+		 * Execute Europeana API request
+		 */
+		String json = getJSONResultWithBody(url, annotationJsonLdStr);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("create:/annotationld.jsonld");
+		aor.setJson(json);
+		return aor;
+	}
+
+	/**
 	 * This method creates Europeana Annotation object from JsonLd string.
 	 * The HTTP request sample is:
 	 *     http://localhost:8081/annotation-web/annotation.jsonld?wskey=ws&provider=historypin&annotationNr=161&indexing=true
@@ -246,14 +279,24 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public AnnotationOperationResponse createAnnotation(String annotationJsonLdStr) throws IOException {
-		String url = getAnnotationServiceUri();
-		url += JsonUtils.extractEuropeanaIdFromJsonLdStr(annotationJsonLdStr);
-		url += ModelConst.JSON_REST;
+//		String url = getAnnotationServiceUri();
+//		url += JsonUtils.extractEuropeanaIdFromJsonLdStr(annotationJsonLdStr);
+//		url += ModelConst.JSON_REST;
 
+		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+//		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+//		if (annotationNr != null)
+//			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+//		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+		
+		
 		/**
 		 * Execute Europeana API request
 		 */
-		String json = getJSONResult(url, ModelConst.ANNOTATION, annotationJsonLdStr);
+		String json = getJSONResultWithBody(url, annotationJsonLdStr);		
+//		String json = getJSONResult(url, ModelConst.ANNOTATION, annotationJsonLdStr);
 		
 		AnnotationOperationResponse aor = new AnnotationOperationResponse();
 		aor.setSuccess("true");
@@ -266,7 +309,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * This method returns a list of Annotation objects for the passed query.
      * E.g. /annotation-web/annotations/search?
-     *     wskey=key&profile=webtest&query=vlad&field=all&language=en&startOn=0&limit=&search=search	 
+     *     wskey=key&profile=webtest&value=vlad&field=all&language=en&startOn=0&limit=&search=search	 
      * @param query The query string
 	 * @return annotation operation response
 	 * @throws IOException
@@ -323,7 +366,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String url = getAnnotationServiceUri();
 		url += "/search?wsKey=" + getApiKey() + "&profile=" + type;
 		if (StringUtils.isNotEmpty(query)) {
-			url += "&query=" + query;
+//			url += "&query=" + query;
+			url += "&value=" + query;
 			if (!query.contains("field"))
 				url += "&field=" + "all";
 			if (!query.contains("language"))
@@ -336,7 +380,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		if (StringUtils.isNotEmpty(limit))
 			url += "&limit=" + limit;
 		else
-			url += "&limit=";
+			url += "&limit=10";
 		return url;
 	}
 
@@ -346,6 +390,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 	/**
 	 * This method returns a list of Tag objects for the passed query.
+     * Sample url: "http://localhost:8081/annotation-web/tags/search?value=Vlad&field=multilingual&startOn=0&limit=10&language=en";
 	 * @param query The query string
 	 * @return tag search results
 	 * @throws IOException

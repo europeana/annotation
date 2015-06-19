@@ -136,7 +136,7 @@ public class AnnotationTestObjectBuilder {
 		annotation.setSerializedBy(agent);
 				
 		// motivation
-		annotation.setMotivatedBy(MotivationTypes.TAGGING.getOaType());
+		annotation.setMotivation(MotivationTypes.TAGGING.getOaType());
 		
 		// set styledBy
 		Style style = buildStyledBy();
@@ -146,7 +146,7 @@ public class AnnotationTestObjectBuilder {
 		 * Check types and replace if necessary 
 		 */
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+		annotation.setMotivation(MotivationTypes.TAGGING.name());
         
 		return annotation;
 	}
@@ -189,7 +189,7 @@ public class AnnotationTestObjectBuilder {
 		annotation.setSerializedBy(agent);
 				
 		// motivation
-		annotation.setMotivatedBy(MotivationTypes.TAGGING.getOaType());
+		annotation.setMotivation(MotivationTypes.TAGGING.getOaType());
 		
 		// set styledBy
 		Style style = buildStyledBy();
@@ -199,7 +199,7 @@ public class AnnotationTestObjectBuilder {
 		 * Check types and replace if necessary 
 		 */
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		annotation.setMotivatedBy(MotivationTypes.TAGGING.name());
+		annotation.setMotivation(MotivationTypes.TAGGING.name());
         
 		return annotation;
 	}
@@ -273,7 +273,7 @@ public class AnnotationTestObjectBuilder {
 		annotation.setSerializedBy(serializedByAgent);
 				
 		// motivation
-		annotation.setMotivatedBy(null);
+		annotation.setMotivation(null);
 		
 		// set styledBy
 		Style style = StyleObjectFactory.getInstance().createModelObjectInstance(

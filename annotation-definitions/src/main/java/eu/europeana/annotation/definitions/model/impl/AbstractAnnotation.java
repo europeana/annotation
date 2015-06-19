@@ -22,7 +22,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	private Agent annotatedBy;
 	private Body body;
 	private Target target;
-	private String motivatedBy;
+	private String motivation;
 	private Date serializedAt;
 	private Agent serializedBy;
 	private Style styledBy;	
@@ -90,9 +90,9 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    if ((this.getMotivatedBy() != null) && (that.getMotivatedBy() != null) &&
-	    		(!this.getMotivatedBy().equals(that.getMotivatedBy()))) {
-	    	System.out.println("Annotation objects have different 'motivatedBy' fields.");
+	    if ((this.getMotivation() != null) && (that.getMotivation() != null) &&
+	    		(!this.getMotivation().equals(that.getMotivation()))) {
+	    	System.out.println("Annotation objects have different 'motivation' fields.");
 	    	res = false;
 	    }
 	    
@@ -159,9 +159,9 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    if ((this.getMotivatedBy() != null) && (that.getMotivatedBy() != null) &&
-	    		(!this.getMotivatedBy().equals(that.getMotivatedBy()))) {
-	    	System.out.println("Annotation objects have different 'motivatedBy' fields.");
+	    if ((this.getMotivation() != null) && (that.getMotivation() != null) &&
+	    		(!this.getMotivation().equals(that.getMotivation()))) {
+	    	System.out.println("Annotation objects have different 'motivation' fields.");
 	    	res = false;
 	    }
 	    
@@ -290,17 +290,17 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 
 	@Override
-	public String getMotivatedBy() {
-		return motivatedBy;
+	public String getMotivation() {
+		return motivation;
 	}
 
 	@Override
 	public MotivationTypes getMotivationType() {
 		motivationType = MotivationTypes.UNKNOWN;
-		if(getMotivatedBy() == null)
+		if(getMotivation() == null)
 			return null;
 		for(MotivationTypes element : MotivationTypes.values()){
-			if(element.getOaType().equals(getMotivatedBy()))
+			if(element.getOaType().equals(getMotivation()))
 				return element;
 		}
 		
@@ -308,8 +308,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 	
 	@Override
-	public void setMotivatedBy(String motivatedBy) {
-		this.motivatedBy = motivatedBy;
+	public void setMotivation(String motivation) {
+		this.motivation = motivation;
 	}
 
 	@Override
@@ -392,8 +392,8 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "serializedBy:" + serializedBy.toString() + "\n";
 		if (styledBy != null) 
 			res = res + "\t" + "styledBy:" + styledBy.toString() + "\n";
-		if (motivatedBy != null) 
-			res = res + "\t" + "motivatedBy:" + motivatedBy.toString() + "\n";
+		if (motivation != null) 
+			res = res + "\t" + "motivation:" + motivation.toString() + "\n";
 		if (target != null) 
 			res = res + "\t" + "target:" + target.toString() + "\n";
 		if (body != null) 

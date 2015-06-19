@@ -226,7 +226,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setSerializedBy(serializer);
 			break;
 		case WebAnnotationFields.MOTIVATION:
-			anno.setMotivatedBy((String) valueObject);
+			anno.setMotivation((String) valueObject);
 			break;
 		case WebAnnotationFields.BODY:
 			Body body = parseBody(valueObject);

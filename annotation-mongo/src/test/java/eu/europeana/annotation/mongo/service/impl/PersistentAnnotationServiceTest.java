@@ -104,12 +104,12 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		PlainTagBody body = buildPlainTagBody();
 		persistentObject.setBody(body);
 		
-		persistentObject.setMotivatedBy(MotivationTypes.TAGGING.name());
+		persistentObject.setMotivation(MotivationTypes.TAGGING.name());
 		
 		// persistentObject.setLabel("testTag");
 		Annotation storedTag = annotationService.store(persistentObject); 
 		
-		assertEquals(MotivationTypes.TAGGING.name(), storedTag.getMotivatedBy());
+		assertEquals(MotivationTypes.TAGGING.name(), storedTag.getMotivation());
 		assertEquals(MotivationTypes.TAGGING, storedTag.getMotivationType());
 	}
 
@@ -297,7 +297,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setSerializedBy(creator);
 		
 		//motivation
-		persistentObject.setMotivatedBy(MotivationTypes.COMMENTING.name());
+		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
 		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));

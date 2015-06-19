@@ -7,14 +7,14 @@ import static org.junit.Assert.assertEquals;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
 
-import eu.europeana.annotation.client.abstracts.EuropeanaLdApiTest;
+import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 
-public class EuropeanaLdHistoryPinApiTest extends EuropeanaLdApiTest {
+public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 	
 	@Test
 	public void createSimpleTagHistoryPinAnnotation() throws JsonParseException {

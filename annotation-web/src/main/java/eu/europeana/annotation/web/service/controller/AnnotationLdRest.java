@@ -54,7 +54,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 	}
 
 	
-	@RequestMapping(value = "/annotationld/{collection}/{object}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotationld.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
 	public ModelAndView createAnnotationLd (

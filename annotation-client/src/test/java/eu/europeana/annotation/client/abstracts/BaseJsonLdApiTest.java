@@ -10,17 +10,19 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Before;
 
+import eu.europeana.annotation.client.AnnotationJsonLdApiImpl;
 import eu.europeana.annotation.client.EuropeanaLdApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 
-public class EuropeanaLdApiTest {
+public class BaseJsonLdApiTest {
 	
     protected static String TEST_RESOURCE_ID = "/123/xyz";
 	protected static String TEST_TARGET = "http://data.europeana.eu/item" + TEST_RESOURCE_ID;
 	
+    protected AnnotationJsonLdApiImpl annotationJsonLdApi;
     protected EuropeanaLdApiImpl europeanaLdApi;
     protected AnnotationLdParser europeanaParser;
     
@@ -103,9 +105,63 @@ public class EuropeanaLdApiTest {
        	 	"\"oa:equivalentTo\": \"" + TEST_TARGET + "\"" +
     		"}";
     
+    public static String objectTagHistoryPinAnnotation =
+        "{" +
+        "\"@context\": {" +
+            "\"oa\": \"http://www.w3.org/ns/oa-context-20130208.json\"" +
+        "}," +
+        "\"@type\": \"oa:annotation\"," +
+        "\"sameAs\": \"http://historypin.com/annotation/1234\"," +
+        "\"equivalentTo\": \"http://historypin.com/annotation/1234\"," +
+        "\"annotatedAt\": \"2012-11-10T09:08:07\"," +
+        "\"annotatedBy\": {" +
+            "\"@id\": \"open_id_1\"," +
+            "\"@type\": \"foaf:Person\"," +
+            "\"name\": \"annonymous web user\"" +
+        "}," +
+        "\"body\": {" +
+            "\"@type\": \"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\"," +
+            "\"chars\": \"Vlad Tepes\"," +
+            "\"foaf:page\": \"https://www.freebase.com/m/035br4\"," +
+            "\"format\": \"text/plain\"," +
+            "\"language\": \"ro\"," +
+            "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\"" +
+        "}," +
+        "\"motivation\": \"oa:tagging\"," +
+        "\"serializedAt\": \"2012-11-10T09:08:07\"," +
+        "\"serializedBy\": {" +
+            "\"@id\": \"open_id_2\"," +
+            "\"@type\": \"prov:Software\"," +
+            "\"foaf:homepage\": \"http://annotorious.github.io/\"," +
+            "\"name\": \"Annotorious\"" +
+        "}," +
+        "\"styledBy\": {" +
+            "\"@type\": \"oa:Css\"," +
+            "\"source\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\"," +
+            "\"styleClass\": \"annotorious-popup\"" +
+        "}," +
+        "\"target\": {" +
+            "\"type\": \"oa:Image\"," +
+            "\"contentType\": \"image/jpeg\"," +
+            "\"httpUri\": \"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\"," +
+            "\"selector\": {" +
+                "\"@type\": \"[oa:SvgRectangle,euType:SVG_RECTANGLE_SELECTOR]\"," +
+                "\"dimensionMap\": \"[left:5,right:3]\"" +
+            "}," +
+            "\"source\": {" +
+                "\"@id\": \"/15502/GG_8285\"," +
+                "\"contentType\": \"text/html\"," +
+                "\"format\": \"dctypes:Text\"" +
+            "}," +
+            "\"targetType\": \"oa:Image\"" +
+        "}," +
+        "\"type\": \"OBJECT_TAG\"" +
+    "}";
+    		
     
     @Before
     public void initObjects() {
+    	annotationJsonLdApi = new AnnotationJsonLdApiImpl();
     	europeanaLdApi = new EuropeanaLdApiImpl();
 		europeanaParser = new AnnotationLdParser();
     }

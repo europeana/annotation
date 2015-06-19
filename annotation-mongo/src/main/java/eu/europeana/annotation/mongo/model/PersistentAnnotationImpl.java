@@ -42,7 +42,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 //	@Reference(lazy=true)
 	private Target target;
 	
-	private String motivatedBy;
+	private String motivation;
 	private Date serializedAt;
 	@Embedded
 	private Agent serializedBy;
@@ -117,17 +117,17 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.target = target;
 	}
 
-	public String getMotivatedBy() {
-		return motivatedBy;
+	public String getMotivation() {
+		return motivation;
 	}
 	
 	@Override
 	public MotivationTypes getMotivationType() {
-		return MotivationTypes.valueOf(getMotivatedBy());
+		return MotivationTypes.valueOf(getMotivation());
 	}
 
-	public void setMotivatedBy(String motivatedBy) {
-		this.motivatedBy = motivatedBy;
+	public void setMotivation(String motivation) {
+		this.motivation = motivation;
 	}
 
 	

@@ -48,7 +48,7 @@
         "language": "ro",
         "multilingual": "[ro:Vlad Tepes,en:Vlad the Impaler]"
     },
-    "motivatedBy": "oa:tagging",
+    "motivation": "oa:tagging",
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",
@@ -119,7 +119,7 @@
         "language": "ro",
         "multilingual": "[ro:Vlad Tepes,en:Vlad the Impaler]"
     },
-    "motivatedBy": "oa:tagging",
+    "motivation": "oa:tagging",
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",
@@ -206,7 +206,7 @@
             "related": "skos:related"
         }
     },
-    "motivatedBy": "oa:tagging",
+    "motivation": "oa:tagging",
     "serializedAt": "2012-11-10T09:08:07",
     "serializedBy": {
         "@id": "open_id_2",

@@ -115,7 +115,7 @@ public class AnnotationTestDataBuilder {
 		persistentObject.setSerializedBy(creator);
 		
 		//motivation
-		persistentObject.setMotivatedBy(MotivationTypes.COMMENTING.name());
+		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
 		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));

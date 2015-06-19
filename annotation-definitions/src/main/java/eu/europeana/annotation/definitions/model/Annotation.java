@@ -26,9 +26,9 @@ public interface Annotation {
 
 	public abstract Style getStyledBy();
 
-	public abstract void setMotivatedBy(String motivatedBy);
+	public abstract void setMotivation(String motivation);
 
-	public abstract String getMotivatedBy();
+	public abstract String getMotivation();
 
 	public abstract MotivationTypes getMotivationType();
 

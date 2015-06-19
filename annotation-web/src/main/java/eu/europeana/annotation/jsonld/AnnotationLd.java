@@ -131,8 +131,8 @@ public class AnnotationLd extends JsonLd {
         	jsonLdResource.putProperty(annotatedByProperty);                
         if (annotation.getSerializedAt() != null) 
         	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_AT, TypeUtils.convertDateToStr(annotation.getSerializedAt()));
-        if (!StringUtils.isBlank(annotation.getMotivatedBy())) 
-        	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATED_BY, annotation.getMotivatedBy());
+        if (!StringUtils.isBlank(annotation.getMotivation())) 
+        	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATION, annotation.getMotivation());
         JsonLdProperty styledByProperty = addStyledByProperty(annotation);
         if (styledByProperty != null)
         	jsonLdResource.putProperty(styledByProperty);                
@@ -188,10 +188,10 @@ public class AnnotationLd extends JsonLd {
 				if (!StringUtils.isBlank(serializedAtValue)) 
 					annotation.setSerializedAt(TypeUtils.convertStrToDate(serializedAtValue));
 		    	break;
-		    case WebAnnotationFields.MOTIVATED_BY:
-		    	String motivatedByValue = getLiteralPropertyValue(mapValue);
-				if (!StringUtils.isBlank(motivatedByValue)) 
-					annotation.setMotivatedBy(motivatedByValue);
+		    case WebAnnotationFields.MOTIVATION:
+		    	String motivationValue = getLiteralPropertyValue(mapValue);
+				if (!StringUtils.isBlank(motivationValue)) 
+					annotation.setMotivation(motivationValue);
 		    	break;
 		    case WebAnnotationFields.BODY:
 		    	Body body = getBody(mapValue);

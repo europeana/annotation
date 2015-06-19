@@ -16,7 +16,6 @@ public interface WebAnnotationFields {
 	public static final String SERIALIZED_AT        = "serializedAt";
 	public static final String SERIALIZED_BY        = "serializedBy";
 	public static final String FOAF_HOMEPAGE        = "foaf:homepage";
-	public static final String MOTIVATED_BY         = "motivatedBy";
 	public static final String MOTIVATION           = "motivation";
 	public static final String STYLED_BY            = "styledBy";
 	public static final String SAME_AS              = "sameAs";
@@ -116,6 +115,7 @@ public interface WebAnnotationFields {
 	public static final String RESOURCE_ID      = "resourceId"; 
 	public static final String JSON_REST        = ".json";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
+	public static final String ANNOTATION_LD_JSON_LD_REST = "annotationld.jsonld";
 	public static final String SEARCH_JSON_LD_REST = "search.jsonld";
 	public static final String PAR_CHAR         = "?";
 	public static final String COLLECTION       = "collection";
@@ -190,7 +190,7 @@ public interface WebAnnotationFields {
         + "\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\","
         + "\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\","
         + "\"language\":\"ro\",\"multilingual\":\"[ro:Vlad Tepes,en:Vlad the Impaler]\"},"
-        + "\"motivatedBy\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
+        + "\"motivation\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
         + "\"serializedBy\":{\"@id\": \"open_id_2\",\"@type\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
         + "\"foaf:homepage\": \"http://annotorious.github.io/\",\"name\": \"Annotorious\"},"
         + "\"styledBy\": {\"@type\": \"[oa:CssStyle,euType:CSS]\","
