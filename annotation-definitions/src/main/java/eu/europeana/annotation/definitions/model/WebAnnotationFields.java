@@ -116,6 +116,7 @@ public interface WebAnnotationFields {
 	public static final String JSON_REST        = ".json";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
 	public static final String ANNOTATION_LD_JSON_LD_REST = "annotationld.jsonld";
+	public static final String CONCEPT_JSON_REST = "uri.json";
 	public static final String SEARCH_JSON_LD_REST = "search.jsonld";
 	public static final String PAR_CHAR         = "?";
 	public static final String COLLECTION       = "collection";
@@ -144,6 +145,7 @@ public interface WebAnnotationFields {
 	public static final String REST_LIMIT           = "10";
 	public static final String REST_DEFAULT_PROVIDER_ID_GENERATION_TYPE = "provided";
 	public static final String ITEMS_COUNT          = "itemsCount";
+	public static final String URI                  = "uri";
 	public static final String REST_ANNOTATION_JSON = 
 		"{\"annotatedAt\": 1403852113248,"
 		+ "\"type\": \"OBJECT_TAG\","

@@ -10,6 +10,7 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
+import eu.europeana.annotation.client.model.result.ConceptOperationResponse;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -195,6 +196,28 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 	
+	/**
+	 * Sample HTTP request
+	 * 	   http://localhost:8081/annotation-web/concepts/{uri}.json?uri=myuri.com
+	 * @param conceptJson
+	 * @return
+	 * @throws IOException
+	 */
+	public ConceptOperationResponse createConcept(String conceptJson) throws IOException {
+		String url = getAnnotationServiceUri().replace("annotations","concepts") + WebAnnotationFields.SLASH; // current annotation service uri is .../annotation-web/annotations
+		url += WebAnnotationFields.CONCEPT_JSON_REST + WebAnnotationFields.PAR_CHAR;		
+		url += "uri=" + JsonUtils.extractUriFromConceptJson(conceptJson);
+		// Execute Concept API request
+		String json = getJSONResultWithBody(url, conceptJson);
+		
+		ConceptOperationResponse aor = new ConceptOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("create:/concepts/uri.json");
+		String conceptJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
+		aor.setJson(conceptJsonString);
+		return aor;
+	}
+
 	/**
 	 * This method creates AnnotationLd object from JsonLd string.
 	 * The HTTP request sample is:
@@ -477,6 +500,24 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return (AnnotationOperationResponse) getAnnotationGson().fromJson(json,
 				AnnotationOperationResponse.class);
 
+	}
+
+	public ConceptOperationResponse getConcept(
+			String uri) throws IOException {
+		
+		String url = getAnnotationServiceUri().replace("annotations","concepts") + WebAnnotationFields.SLASH; // current annotation service uri is .../annotation-web/annotations
+		url += WebAnnotationFields.CONCEPT_JSON_REST + WebAnnotationFields.PAR_CHAR;		
+		url += "uri=" + uri;
+
+		// Execute Europeana API request
+		String json = getJSONResult(url);
+		ConceptOperationResponse cor = new ConceptOperationResponse();
+		if (json != null)
+			cor.setSuccess("true");
+		cor.setJson(json);
+		return cor;
+//		return (ConceptOperationResponse) getAnnotationGson().fromJson(json,
+//				ConceptOperationResponse.class);
 	}
 
 	

@@ -216,6 +216,24 @@ public class JsonUtils {
         return res;
     }
     
+    /**
+     * This method extracts uri part from a concept JSON string.
+     * @param jsonString
+     * @return
+     */
+    public static String extractUriFromConceptJson(String jsonString) {
+		String res = "";
+		if (StringUtils.isNotEmpty(jsonString)) {
+			Pattern pattern = Pattern.compile(WebAnnotationFields.URI + "\":(.*?),");
+			Matcher matcher = pattern.matcher(jsonString);
+			if (matcher.find())
+			{
+			    res = matcher.group(1).replace(" ","").replace("\"", "");
+			}
+		}
+		return res;    	
+    }
+    
 	public static String extractAnnotationStringFromJsonString(String jsonString) {
 		String res = "";
 		if (StringUtils.isNotEmpty(jsonString)) {
