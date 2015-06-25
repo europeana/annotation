@@ -10,6 +10,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Polymorphic;
 //import com.google.code.morphia.annotations.Reference;
 
+
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -53,6 +54,8 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private boolean disabled;
 	private String sameAs;
 	private String equivalentTo;
+	
+	private String status;
 
 	
 	@Override
@@ -229,6 +232,16 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Override
 	public void setInternalType(String internalType) {
 		this.internalType = internalType;
+	}
+
+	@Override
+	public String getStatus() {
+		return status;
+	}
+
+	@Override
+	public void setStatus(String status) {
+		this.status = status;
 	}
 			
 }

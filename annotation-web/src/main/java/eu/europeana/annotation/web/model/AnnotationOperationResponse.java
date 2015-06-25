@@ -6,6 +6,8 @@ import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
 public class AnnotationOperationResponse extends ApiResponse{
 	
 	Annotation annotation;
+	
+	String status;
 
 	public static String ERROR_NO_OBJECT_FOUND = "No Object Found!";
 	public static String ERROR_RESOURCE_ID_DOES_NOT_MATCH = 
@@ -15,6 +17,12 @@ public class AnnotationOperationResponse extends ApiResponse{
 	
 	public static String ERROR_ANNOTATION_EXISTS_IN_DB = 
 			"Cannot store object! An object with the given id already exists in the database: ";
+	
+	public static String ERROR_STATUS_TYPE_NOT_REGISTERED = 
+			"Cannot set annotation status! A given status type is not registered: ";
+	
+	public static String ERROR_STATUS_ALREADY_SET = 
+			"A given status type is already set: ";
 	
 	public AnnotationOperationResponse(String apiKey, String action){
 		super(apiKey, action);
@@ -26,6 +34,14 @@ public class AnnotationOperationResponse extends ApiResponse{
 
 	public void setAnnotation(Annotation annotation) {
 		this.annotation = annotation;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

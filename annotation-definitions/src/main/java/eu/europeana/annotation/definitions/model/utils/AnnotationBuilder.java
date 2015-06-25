@@ -35,6 +35,7 @@ public class AnnotationBuilder {
 		to.setDisabled(annotation.isDisabled());
 		to.setSameAs(annotation.getSameAs());
 		to.setEquivalentTo(annotation.getEquivalentTo());
+		to.setStatus(annotation.getStatus());
 	}
 
 	/**

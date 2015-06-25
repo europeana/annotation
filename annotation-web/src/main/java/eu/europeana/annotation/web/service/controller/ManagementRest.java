@@ -6,6 +6,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -253,6 +255,92 @@ public class ManagementRest extends BaseRest {
 		response.setProvider(storedProvider);
 
 		return JsonWebUtils.toJson(response, null);
+	}
+
+	
+	@RequestMapping(value = "/annotations/get/status/{provider}/{annotationNr}.json"
+			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAnnotationStatus (
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		) {
+
+		Annotation annotation = getAnnotationService().getAnnotationById(
+				provider, annotationNr);
+
+		String action = "get: /annotations/get/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+		
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				"", action);
+
+		if (annotation != null) {
+			return getReport(action, WebAnnotationFields.STATUS + ":" + annotation.getStatus() 
+					+ ", " + WebAnnotationFields.PROVIDER + ":" + provider 
+					+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + annotationNr, "");			
+
+//			response = new AnnotationOperationResponse(
+//					"", "/annotations/get/status/provider/annotationNr.json");
+//			
+//			response.success = true;
+//
+//			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+//					annotation));
+		}else{
+			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;			
+			response = buildErrorResponse(errorMessage, action, "");
+		}
+		
+		return JsonWebUtils.toJson(response, null);
+	}
+	
+	
+	@PUT
+	@RequestMapping(value = "/annotations/set/status/{provider}/{annotationNr}.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView setAnnotationStatus(
+		@RequestParam(value = "provider", required = true) String provider, // this is an ID provider
+		@RequestParam(value = "annotationNr", required = true) Long annotationNr,
+		@RequestParam(value = "status", defaultValue = "public") String status) {
+
+		String action = "set: /annotations/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+		
+		try {
+			Annotation annotation = getAnnotationService().getAnnotationById(
+					provider, annotationNr);
+	
+			if (annotation != null) { 
+				//validate input status
+				if (!(StringUtils.isNotEmpty(status) && StatusTypes.isRegistered(status)))
+					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_TYPE_NOT_REGISTERED + status, null);			
+				
+				//check if status already set
+				if (annotation.getStatus().equals(status))
+					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_ALREADY_SET + status, null);			
+
+				//set status
+				annotation.setStatus(status);
+				Annotation updatedAnnotation = getAnnotationService().updateAnnotation(annotation);
+		
+				//build response
+//				AnnotationOperationResponse response = new AnnotationOperationResponse(
+//						"", action);
+//				response.success = true;
+//		
+//				response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+//						updatedAnnotation));
+//		
+//				return JsonWebUtils.toJson(response, null);
+				return getReport(action, WebAnnotationFields.STATUS + ":" + updatedAnnotation.getStatus() 
+						+ ", " + WebAnnotationFields.PROVIDER + ":" + updatedAnnotation.getAnnotationId().getProvider() 
+						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + updatedAnnotation.getAnnotationId().getAnnotationNr(), "");			
+			} else {
+				return getValidationReport("", action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND 
+						+ " provider: " + provider + ", annotationNr: " + annotationNr, null);			
+			}
+		} catch (Exception e) {
+			return getValidationReport("", action, e.getMessage(), e);		
+		}
 	}
 
 	

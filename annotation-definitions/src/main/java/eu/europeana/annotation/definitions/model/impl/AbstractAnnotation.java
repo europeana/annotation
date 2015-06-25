@@ -30,6 +30,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	private boolean disabled;	
 	private String sameAs;
 	private String equivalentTo;
+	private String status;
 	
 	
 	public AbstractAnnotation(){
@@ -377,6 +378,14 @@ public abstract class AbstractAnnotation implements Annotation {
 		this.equivalentTo = equivalentTo;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		String res = "### Annotation ###\n";
@@ -402,6 +411,8 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "sameAs:" + sameAs + "\n";
 		if (StringUtils.isNotEmpty(equivalentTo)) 
 			res = res + "\t" + "equivalentTo:" + equivalentTo + "\n";
+		if (StringUtils.isNotEmpty(status)) 
+			res = res + "\t" + "status:" + status + "\n";
 		return res;
 	}	
 	

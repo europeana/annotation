@@ -128,6 +128,17 @@ public class BaseRest {
 		return response;
 	}
 		
+	public AnnotationOperationResponse buildResponse(String message,
+			String action, String apiKey) {
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(
+				apiKey, action);
+		
+		response.success = true;
+		response.setStatus(message);
+		return response;
+	}
+
 	public AnnotationOperationResponse buildErrorResponse(String errorMessage,
 			String action, String apiKey) {
 		AnnotationOperationResponse response;
@@ -155,6 +166,21 @@ public class BaseRest {
 		//logg error message
 		logger.debug("Error when invoking action: " + action + " with wskey: " + apiKey);
 		logger.error(errorMessage, th);
+		ModelAndView ret = JsonWebUtils.toJson(response, null);
+		return ret;
+	}
+
+	/**
+	 * This method is employed for positive report - without errors.
+	 * @param apiKey
+	 * @param action
+	 * @param message
+	 * @return
+	 */
+	protected ModelAndView getReport(String apiKey, String action, String message) {
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, action);
+		response = buildResponse(message, response.action, response.apikey);
 		ModelAndView ret = JsonWebUtils.toJson(response, null);
 		return ret;
 	}

@@ -68,4 +68,8 @@ public interface Annotation {
 
 	public void setInternalType(String internalType);
 	
+	public abstract String getStatus();
+	
+	public void setStatus(String status);
+	
 }
