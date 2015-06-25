@@ -118,4 +118,26 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		return res.getAnnotation();
 	}
 	
+	public String setAnnotationStatus(String provider, Long annotationNr, String status) {
+		AnnotationOperationResponse res;
+		try {
+			res = apiConnection.setAnnotationStatus(provider, annotationNr, status);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
+		}
+
+		return res.getJson();		
+	}
+	
+	public String getAnnotationStatus(String provider, Long annotationNr) {
+		AnnotationOperationResponse res;
+		try {
+			res = apiConnection.getAnnotationStatus(provider, annotationNr);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
+		}
+
+		return res.getJson();		
+	}
+	
 }

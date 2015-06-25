@@ -520,5 +520,59 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //				ConceptOperationResponse.class);
 	}
 
-	
+
+	/**
+	 * Sample HTTP request:
+	 *     http://localhost:8081/annotation-web/annotations/set/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214&status=public
+	 * @param provider
+	 * @param annotationNr
+	 * @param status
+	 * @return
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse setAnnotationStatus(String provider, Long annotationNr, String status) throws IOException {
+		String url = getAnnotationServiceUri(); 
+//		url += "/set/status/{provider}/{annotationNr}.json" + WebAnnotationFields.PAR_CHAR;
+		url += "/set/status/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
+//		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (annotationNr != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+		url += WebAnnotationFields.STATUS + WebAnnotationFields.EQUALS + status;
+
+		String json = getJSONResult(url);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("set:/annotations/set/status/object.json");
+		aor.setJson(json);
+		return aor;
+	}
+
+	/**
+	 * Sample HTTP request:
+	 *     http://localhost:8081/annotation-web/annotations/get/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214
+	 * @param provider
+	 * @param annotationNr
+	 * @param status
+	 * @return
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse getAnnotationStatus(String provider, Long annotationNr) throws IOException {
+		String url = getAnnotationServiceUri(); 
+		url += "/get/status/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (annotationNr != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr;
+
+		String json = getJSONResult(url);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("get:/annotations/get/status/object.json");
+		aor.setJson(json);
+		return aor;
+	}
+
+		
 }

@@ -2,19 +2,18 @@ package eu.europeana.annotation.client.integration.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.gson.Gson;
-
 import eu.europeana.annotation.client.AnnotationJsonApi;
 import eu.europeana.annotation.client.AnnotationJsonApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
+import eu.europeana.annotation.utils.JsonUtils;
 
 
 public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
@@ -208,9 +207,40 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		Annotation anno = results.get(0);
 		
 		assertNotNull(anno);
-		assertEquals(anno.getType(), testAnnotation.getType());
+		assertEquals(anno.getType(), testAnnotation.getType());			
+	}
+	
+	@Test
+	public void setAnnotationStatus() {
 		
+		/**
+		 * Create a test annotation object.
+		 */
+		Annotation testAnnotation = createBaseObjectTagInstance();	
+		String annotation = annotationJsonApi.createAnnotation(testAnnotation);
+		Annotation annotationObject = JsonUtils.toAnnotationObject(annotation);
+		assertNotNull(annotation);
 		
+		/**
+		 * set annotation status
+		 */
+		String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
+		String updatedAnnotation = annotationJsonApi.setAnnotationStatus(
+				annotationObject.getAnnotationId().getProvider()
+				, annotationObject.getAnnotationId().getAnnotationNr()
+				, TEST_STATUS);
+		assertNotNull(updatedAnnotation);
+		
+		/**
+		 * retrieve updated annotation
+		 */
+		/*String retrievedAnnotation = annotationJsonApi.getAnnotationStatus(
+				annotationObject.getAnnotationId().getProvider()
+				, annotationObject.getAnnotationId().getAnnotationNr() + 1);
+		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(retrievedAnnotation);
+		Annotation updatedAnnotationObject = JsonUtils.toAnnotationObject(annotationJsonString);
+//		Annotation retrievedAnnotationObject = JsonUtils.toAnnotationObject(retrievedAnnotation);
+		assertEquals(updatedAnnotationObject.getStatus(), TEST_STATUS);*/
 	}
 	
 }
