@@ -48,4 +48,7 @@
 	<bean name="annotation_db_conceptService" class="eu.europeana.annotation.mongo.service.PersistentConceptServiceImpl"
 		p:dao-ref="annotation_db_conceptDao"/>
 		
+	<bean name="annotation_db_statusLogService" class="eu.europeana.annotation.mongo.service.PersistentStatusLogServiceImpl"
+		p:dao-ref="annotation_db_statusLogDao"/>
+		
 </beans>

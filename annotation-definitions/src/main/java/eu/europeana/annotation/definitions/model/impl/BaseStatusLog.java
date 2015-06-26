@@ -10,7 +10,7 @@ public class BaseStatusLog implements StatusLog {
 
 	private String user;
 	private String status;
-	private Date date;
+	private long date;
 	private AnnotationId annotationId;
 
 	
@@ -44,8 +44,8 @@ public class BaseStatusLog implements StatusLog {
 	    	res = false;
 	    }
 	    
-	    if ((this.getDate() != null) && (that.getDate() != null) &&
-	    		(!this.getDate().equals(that.getDate()))) {
+	    if ((this.getDate() > 0) && (that.getDate() > 0) &&
+	    		(this.getDate() != that.getDate())) {
 	    	System.out.println("StatusLog objects have different 'date' fields.");
 	    	res = false;
 	    }
@@ -66,7 +66,7 @@ public class BaseStatusLog implements StatusLog {
 			res = res + "\t" + "user:" + user + "\n";
 		if (status != null) 
 			res = res + "\t" + "status:" + status + "\n";
-		if (date != null) 
+		if (date > 0) 
 			res = res + "\t" + "date:" + date + "\n";
 		if (annotationId != null) 
 			res = res + "\t" + "annotationId:" + annotationId.toString() + "\n";
@@ -99,13 +99,13 @@ public class BaseStatusLog implements StatusLog {
 
 
 	@Override
-	public void setDate(Date date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 
 
 	@Override
-	public Date getDate() {
+	public long getDate() {
 		return date;
 	}
 

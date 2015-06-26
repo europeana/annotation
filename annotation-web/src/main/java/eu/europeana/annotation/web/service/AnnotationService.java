@@ -262,4 +262,10 @@ public interface AnnotationService {
 	public Concept getConceptByUrl(String url);
 	
 	
+	/**
+	 * @param annotation
+	 * @return
+	 */
+	public void logAnnotationStatusUpdate(String user, Annotation annotation);
+	
 }

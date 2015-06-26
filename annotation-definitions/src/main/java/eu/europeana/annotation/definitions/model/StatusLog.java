@@ -1,6 +1,5 @@
 package eu.europeana.annotation.definitions.model;
 
-import java.util.Date;
 
 
 public interface StatusLog {
@@ -13,9 +12,9 @@ public interface StatusLog {
 	
 	public String getStatus();
 
-	public void setDate(Date date);
+	public void setDate(long date);
 
-	public abstract Date getDate();
+	public abstract long getDate();
 
 	public void setAnnotationId(AnnotationId annotationId);
 	

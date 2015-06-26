@@ -79,6 +79,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 //	public abstract AnnotationId generateAnnotationId(String resourceId);
 
 	public abstract Annotation findByTagId(String tagId);
+	
 
 }
 

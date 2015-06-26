@@ -498,5 +498,5 @@ public class PersistentAnnotationServiceImpl extends
 	public Annotation findByTagId(String tagId) {
 		throw new RuntimeException("This method is not supported yet!");
 	}
-			
+
 }

@@ -315,12 +315,13 @@ public class ManagementRest extends BaseRest {
 					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_TYPE_NOT_REGISTERED + status, null);			
 				
 				//check if status already set
-				if (annotation.getStatus().equals(status))
+				if (annotation.getStatus() != null && annotation.getStatus().equals(status))
 					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_ALREADY_SET + status, null);			
 
 				//set status
 				annotation.setStatus(status);
 				Annotation updatedAnnotation = getAnnotationService().updateAnnotation(annotation);
+				getAnnotationService().logAnnotationStatusUpdate("", annotation);
 		
 				//build response
 //				AnnotationOperationResponse response = new AnnotationOperationResponse(

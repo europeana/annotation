@@ -16,10 +16,12 @@ import eu.europeana.annotation.definitions.exception.ProviderValidationException
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
+import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
@@ -28,6 +30,7 @@ import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
+import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
@@ -58,6 +61,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	
 	@Autowired
 	PersistentConceptService mongoConceptPersistence;
+	
+	@Autowired
+	PersistentStatusLogService mongoStatusLogPersistence;
 	
 	@Autowired
 	SolrAnnotationService solrService;
@@ -120,6 +126,14 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	public void setMongoConceptPersistance(PersistentConceptService mongoConceptPersistence) {
 		this.mongoConceptPersistence = mongoConceptPersistence;
+	}
+
+	public PersistentStatusLogService getMongoStatusLogPersistence() {
+		return mongoStatusLogPersistence;
+	}
+
+	public void setMongoStatusLogPersistance(PersistentStatusLogService mongoStatusLogPersistence) {
+		this.mongoStatusLogPersistence = mongoStatusLogPersistence;
 	}
 
 	@Override
@@ -697,5 +711,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 //		
 //		return newAnnotation;
 //	}
+	
+	public void logAnnotationStatusUpdate(String user, Annotation annotation) {
+		// store in mongo database
+		StatusLog statusLog = new BaseStatusLog();
+		statusLog.setUser(user);
+		statusLog.setStatus(annotation.getStatus());
+		long currentTimestamp = System.currentTimeMillis();
+		statusLog.setDate(currentTimestamp);
+		statusLog.setAnnotationId(annotation.getAnnotationId());
+		getMongoStatusLogPersistence().store(statusLog);		
+	}
+	
 }
 
