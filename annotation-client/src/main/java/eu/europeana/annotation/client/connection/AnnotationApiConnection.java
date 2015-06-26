@@ -551,6 +551,31 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 	/**
 	 * Sample HTTP request:
+	 *     http://localhost:8081/annotation-web/statuslogs/search?status=private&startOn=0&limit=10
+	 * @param status
+	 * @param startOn
+	 * @param limit
+	 * @return
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse searchAnnotationStatusLogs(String status, String startOn, String limit) throws IOException {
+		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		url += "/statuslogs/search" + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.STATUS + WebAnnotationFields.EQUALS + status + WebAnnotationFields.AND;
+		url += WebAnnotationFields.START_ON + WebAnnotationFields.EQUALS + startOn + WebAnnotationFields.AND;
+		url += WebAnnotationFields.LIMIT + WebAnnotationFields.EQUALS + limit;
+
+		String json = getJSONResult(url);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("search:/statuslogs.json");
+		aor.setJson(json);
+		return aor;
+	}
+
+	/**
+	 * Sample HTTP request:
 	 *     http://localhost:8081/annotation-web/annotations/get/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214
 	 * @param provider
 	 * @param annotationNr

@@ -2,12 +2,14 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
 
+import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.StatusLogValidationException;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
@@ -42,6 +44,30 @@ public class PersistentStatusLogServiceImpl extends
 		return  getDao().findOne("_id", new ObjectId(id));
 	}
 
+	@Override
+	public List<? extends StatusLog> getFilteredStatusLogList(
+			String status, String startOn, String limit
+			) {
+		Query<PersistentStatusLog> query = getDao().createQuery();
+		if (StringUtils.isNotEmpty(status))
+			query.filter(PersistentStatusLog.FIELD_STATUS, status);
+		try {
+			if (StringUtils.isNotEmpty(startOn))
+				query.offset(Integer.parseInt(startOn));
+			if (StringUtils.isNotEmpty(limit))
+				query.limit(Integer.parseInt(limit));
+		} catch (Exception e) {
+			throw new ProviderAttributeInstantiationException(
+					"Unexpected exception occured when searching annotation status logs. "
+							+ ProviderAttributeInstantiationException.BASE_MESSAGE,
+					"startOn: " + startOn + ", limit: " + limit + ". ", e);
+		}
+
+		QueryResults<? extends PersistentStatusLog> results = getDao()
+				.find(query);
+		return results.asList();
+	}
+	
 	protected Query<PersistentStatusLog> createQuery(PersistentStatusLog statusLog) {
 		Query<PersistentStatusLog> query = getDao().createQuery();
 //		if(statusLog.getStatusLogType() != null)
@@ -117,8 +143,8 @@ public class PersistentStatusLogServiceImpl extends
 		return store(statusLog);
 	}
 
-	private void validateStatusLog(PersistentStatusLog statusLog) throws InvalidStatusLogException {
-	}
+//	private void validateStatusLog(PersistentStatusLog statusLog) throws InvalidStatusLogException {
+//	}
 
 	@Override
 	public StatusLog store(StatusLog object) {

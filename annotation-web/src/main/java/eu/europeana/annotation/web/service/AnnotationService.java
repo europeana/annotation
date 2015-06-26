@@ -8,9 +8,11 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
+import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 
 public interface AnnotationService {
@@ -212,6 +214,16 @@ public interface AnnotationService {
 	 * @throws TagServiceException 
 	 */
 	public List<? extends TagResource> searchTags(String query, String startOn, String limit) throws TagServiceException;
+
+	/**
+	 * Search for annotation status logs by the given text query, row start position and rows limit.
+	 * @param query
+	 * @param startOn
+	 * @param limit
+	 * @return
+	 * @throws StatusLogServiceException 
+	 */
+	public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit) throws StatusLogServiceException;
 
 	/**
 	 * This method is used for query faceting.

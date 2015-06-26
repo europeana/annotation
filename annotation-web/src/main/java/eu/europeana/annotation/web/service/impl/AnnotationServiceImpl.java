@@ -33,6 +33,7 @@ import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
@@ -180,6 +181,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public List<? extends SolrTag> searchTags(
 			String query) throws TagServiceException {
 		return getSolrTagService().search(query);
+	}
+
+	@Override
+	public List<? extends StatusLog> searchStatusLogs(
+			String query, String startOn, String limit) throws StatusLogServiceException {
+		return getMongoStatusLogPersistence().getFilteredStatusLogList(query, startOn, limit);
 	}
 
 	@Override

@@ -32,6 +32,9 @@ public interface PersistentStatusLogService  extends AbstractNoSqlService<Persis
 	
 	public abstract StatusLog store(StatusLog object) throws StatusLogValidationException;
 	public PersistentStatusLog findByStatus(String status);
+	public List<? extends StatusLog> getFilteredStatusLogList(
+			String status, String startOn, String limit);
+	
 	public StatusLog update(StatusLog object);
 	
 }

@@ -17,10 +17,12 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
+import eu.europeana.annotation.web.model.StatusLogSearchResults;
 import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
@@ -122,6 +124,36 @@ public class SearchRest extends BaseRest {
 		
 		try{
 			response.items = (List<BaseTagResource>) getAnnotationService().searchTags(value, startOn, limit);
+			response.itemsCount = response.items.size();
+			response.totalResults = response.items.size();
+			response.success = true;
+		} catch (Exception e){
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			response.success = false;
+			response.error = e.getMessage();
+		}
+
+		return JsonWebUtils.toJson(response, null);
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/statuslogs/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(notes=WebAnnotationFields.SEARCH_STATUS_FIELDS_LINK, value="")
+	public ModelAndView showStatusLogsByStatus(
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile,
+		@RequestParam(value = "status", required = true) String status,
+		@RequestParam(value = "startOn", required = true, defaultValue = WebAnnotationFields.REST_START_ON) String startOn,
+		@RequestParam(value = "limit", required = true, defaultValue = WebAnnotationFields.REST_LIMIT) String limit) {
+
+		StatusLogSearchResults<BaseStatusLog> response;
+		response = new StatusLogSearchResults<BaseStatusLog>(
+				apiKey, "/statuslogs/search");
+		
+		try{
+			response.items = (List<BaseStatusLog>) getAnnotationService().searchStatusLogs(status, startOn, limit);
 			response.itemsCount = response.items.size();
 			response.totalResults = response.items.size();
 			response.success = true;
