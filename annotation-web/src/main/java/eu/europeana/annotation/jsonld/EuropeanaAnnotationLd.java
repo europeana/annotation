@@ -92,8 +92,8 @@ public class EuropeanaAnnotationLd extends JsonLd {
         
         if (annotation.getAnnotationId() != null && !StringUtils.isBlank(annotation.getAnnotationId().toUri())) 
         	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUri());   
-        if (!StringUtils.isBlank(annotation.getType())) 
-        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
+//        if (!StringUtils.isBlank(annotation.getType())) 
+//        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
         if (isJsonObjectInput(annotation.getSerializedBy().getInputString())){
         	annotation.getSerializedBy().setInputString(null);
             JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
