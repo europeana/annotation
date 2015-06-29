@@ -22,7 +22,6 @@ import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
-import org.apache.log4j.Logger;
 
 @Controller
 @Api(value = "annotations", description = "Annotation JSON Rest Service")

@@ -296,14 +296,18 @@ public class ManagementRest extends BaseRest {
 	
 	
 	@PUT
-	@RequestMapping(value = "/annotations/set/status/{provider}/{annotationNr}.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RequestMapping(value = "/annotations/set/status/{provider}/{annotationNr}.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RequestMapping(value = "/admin/set/status/{provider}/{annotationNr}.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/set/status/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RequestMapping(value = "/admin/set/status.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView setAnnotationStatus(
 		@RequestParam(value = "provider", required = true) String provider, // this is an ID provider
 		@RequestParam(value = "annotationNr", required = true) Long annotationNr,
 		@RequestParam(value = "status", defaultValue = "public") String status) {
 
-		String action = "set: /annotations/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+//		String action = "set: /annotations/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+		String action = "set: /admin/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
 		
 		try {
 			Annotation annotation = getAnnotationService().getAnnotationById(

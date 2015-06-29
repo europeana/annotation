@@ -1,7 +1,5 @@
 package eu.europeana.annotation.definitions.model.impl;
 
-import java.util.Date;
-
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
 

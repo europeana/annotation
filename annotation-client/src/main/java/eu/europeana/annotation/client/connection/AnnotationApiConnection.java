@@ -523,7 +523,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 	/**
 	 * Sample HTTP request:
-	 *     http://localhost:8081/annotation-web/annotations/set/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214&status=public
+	 *     //http://localhost:8081/annotation-web/annotations/set/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214&status=public
+	 *     http://localhost:8081/annotation-web/admin/set/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=294&status=public
 	 * @param provider
 	 * @param annotationNr
 	 * @param status
@@ -531,16 +532,20 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public AnnotationOperationResponse setAnnotationStatus(String provider, Long annotationNr, String status) throws IOException {
-		String url = getAnnotationServiceUri(); 
+		String url = getAnnotationServiceUri().replace("annotations","admin"); // current annotation service uri is .../annotation-web/annotations
+//		String url = getAnnotationServiceUri(); 
 //		url += "/set/status/{provider}/{annotationNr}.json" + WebAnnotationFields.PAR_CHAR;
+//		url += "/set/status/provider/annotationNr.json" + WebAnnotationFields.PAR_CHAR;
 		url += "/set/status/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
+//		url += "/set/status.json" + WebAnnotationFields.PAR_CHAR;
 //		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
 			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
 		url += WebAnnotationFields.STATUS + WebAnnotationFields.EQUALS + status;
 
-		String json = getJSONResult(url);
+//		String json = getJSONResult(url);
+		String json = getJSONResultWithBody(url, status);		
 		
 		AnnotationOperationResponse aor = new AnnotationOperationResponse();
 		aor.setSuccess("true");
