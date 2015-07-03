@@ -1,6 +1,10 @@
 package eu.europeana.annotation.definitions.model;
 
 
+/**
+ * @author GrafR
+ *
+ */
 public interface WebAnnotationFields {
 
 	/**
@@ -134,6 +138,13 @@ public interface WebAnnotationFields {
 	public static final String INVALID_PROVIDER = "Invalid provider!";
 	public static final String INVALID_ANNOTATION_NR = "Invalid annotationNr for provider!";
 	public static final String UNNECESSARY_ANNOTATION_NR = "AnnotationNr must not be set for provider!";
+	
+	/**
+	 * SKOS parsing
+	 */
+	public static final String ADD                  = "add"; 	
+	public static final String GET                  = "get"; 	
+	public static final String IN_MAPPING           = "InMapping"; 	
 	
 	/**
 	 * Default values for the Rest API services

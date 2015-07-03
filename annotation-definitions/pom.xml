@@ -42,7 +42,8 @@
 		<!-- <dependency> <groupId>com.google.code.morphia</groupId> <artifactId>morphia</artifactId> 
 			<version>0.99</version> <scope>compile</scope> </dependency> <dependency> 
 			<groupId>org.mongodb</groupId> <artifactId>mongo-java-driver</artifactId> 
-			<version>2.7.2</version> <scope>compile</scope> </dependency> -->			
+			<version>2.7.2</version> <scope>compile</scope> </dependency> -->		
+			
 	</dependencies>
 	<build>
 		<!--  configure source and output locations -->
