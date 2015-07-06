@@ -89,5 +89,53 @@ public interface Concept {
 	public abstract void addCloseMatchInMapping(String id, String label);
 
 	public abstract void addRelateMatchInMapping(String id, String label);
+	
+	public abstract String getContext();
+
+	public abstract String getVocabulary();
+	
+	public abstract List<String> getAncestors();
+
+	public abstract List<String> getInScheme();
+
+	public abstract List<String> getTopConceptOf();
+
+	public abstract Map<String, String> getScopeNote();
+
+	public abstract Map<String, String> getDefinition();
+
+	public abstract Map<String, String> getExample();
+
+	public abstract Map<String, String> getHistoryNote();
+
+	public abstract Map<String, String> getEditorialNote();
+
+	public abstract Map<String, String> getChangeNote();
+
+	public abstract Map<String, String> getNote();
+
+	public abstract Map<String, String> getSemanticRelation();
+
+	public abstract Map<String, String> getBroaderTransitive();
+
+	public abstract Map<String, String> getNarrowerTransitive();
+
+	public abstract Map<String, String> getMember();
+
+	public abstract Map<String, String> getMappingRelation();
+
+	public abstract Map<String, String> getBroadMatch();
+
+	public abstract Map<String, String> getNarrowMatch();
+
+	public abstract Map<String, String> getRelateMatch();
+
+	public abstract Map<String, String> getExactMatch();
+
+	public abstract Map<String, String> getCloseMatch();
+
+	public abstract List<String> getHasTopConcept();
+
+	public abstract List<String> getMemberList();
 
 }

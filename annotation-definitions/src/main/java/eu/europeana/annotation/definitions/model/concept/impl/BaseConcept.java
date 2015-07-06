@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
 /**
  * This is a class for Concept object that is a part of the Body object.
@@ -593,6 +596,12 @@ public class BaseConcept implements Concept {
 	    /**
 	     * equality check for all relevant fields.
 	     */
+	    if ((this.getType() != null) && (that.getType() != null) &&
+	    		(!this.getType().toString().equals(that.getType().toString()))) {
+	    	System.out.println("Concept objects have different 'Type' fields.");
+	    	res = false;
+	    }
+	    
 	    if ((this.getNotation() != null) && (that.getNotation() != null) &&
 	    		(!this.getNotation().toString().equals(that.getNotation().toString()))) {
 	    	System.out.println("Concept objects have different 'Notation' fields.");
@@ -614,6 +623,170 @@ public class BaseConcept implements Concept {
 	    if ((this.getRelated() != null) && (that.getRelated() != null) &&
 	    		(!this.getRelated().toString().equals(that.getRelated().toString()))) {
 	    	System.out.println("Concept objects have different 'Related' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getPrefLabel() != null) && (that.getPrefLabel() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getPrefLabel(), that.getPrefLabel()))) {
+	    	System.out.println("Concept objects have different 'PrefLabel' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getAltLabel() != null) && (that.getAltLabel() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getAltLabel(), that.getAltLabel()))) {
+	    	System.out.println("Concept objects have different 'AltLabel' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getHiddenLabel() != null) && (that.getHiddenLabel() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getHiddenLabel(), that.getHiddenLabel()))) {
+	    	System.out.println("Concept objects have different 'HiddenLabel' fields.");
+	    	res = false;
+	    }
+	    
+	    if (StringUtils.isNotEmpty(this.getVocabulary()) 
+	    		&& StringUtils.isNotEmpty(that.getVocabulary()) 
+	    		&& !this.getVocabulary().equals(that.getVocabulary())) {
+	    	System.out.println("Concept objects have different 'Vocabulary' fields.");
+	    	res = false;
+	    }
+
+	    if (StringUtils.isNotEmpty(this.getContext()) 
+	    		&& StringUtils.isNotEmpty(that.getContext()) 
+	    		&& !this.getContext().equals(that.getContext())) {
+	    	System.out.println("Concept objects have different 'Context' fields.");
+	    	res = false;
+	    }
+
+	    if ((this.getAncestors() != null) && (that.getAncestors() != null) &&
+	    		(!this.getAncestors().toString().equals(that.getAncestors().toString()))) {
+	    	System.out.println("Concept objects have different 'Ancestors' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getInScheme() != null) && (that.getInScheme() != null) &&
+	    		(!this.getInScheme().toString().equals(that.getInScheme().toString()))) {
+	    	System.out.println("Concept objects have different 'InScheme' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getTopConceptOf() != null) && (that.getTopConceptOf() != null) &&
+	    		(!this.getTopConceptOf().toString().equals(that.getTopConceptOf().toString()))) {
+	    	System.out.println("Concept objects have different 'TopConceptOf' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getScopeNote() != null) && (that.getScopeNote() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getScopeNote(), that.getScopeNote()))) {
+	    	System.out.println("Concept objects have different 'ScopeNote' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getDefinition() != null) && (that.getDefinition() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getDefinition(), that.getDefinition()))) {
+	    	System.out.println("Concept objects have different 'Definition' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getExample() != null) && (that.getExample() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getExample(), that.getExample()))) {
+	    	System.out.println("Concept objects have different 'Example' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getHistoryNote() != null) && (that.getHistoryNote() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getHistoryNote(), that.getHistoryNote()))) {
+	    	System.out.println("Concept objects have different 'HistoryNote' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getEditorialNote() != null) && (that.getEditorialNote() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getEditorialNote(), that.getEditorialNote()))) {
+	    	System.out.println("Concept objects have different 'EditorialNote' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getChangeNote() != null) && (that.getChangeNote() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getChangeNote(), that.getChangeNote()))) {
+	    	System.out.println("Concept objects have different 'ChangeNote' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getNote() != null) && (that.getNote() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getNote(), that.getNote()))) {
+	    	System.out.println("Concept objects have different 'Note' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getSemanticRelation() != null) && (that.getSemanticRelation() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getSemanticRelation(), that.getSemanticRelation()))) {
+	    	System.out.println("Concept objects have different 'SemanticRelation' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getBroaderTransitive() != null) && (that.getBroaderTransitive() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getBroaderTransitive(), that.getBroaderTransitive()))) {
+	    	System.out.println("Concept objects have different 'BroaderTransitive' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getNarrowerTransitive() != null) && (that.getNarrowerTransitive() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getNarrowerTransitive(), that.getNarrowerTransitive()))) {
+	    	System.out.println("Concept objects have different 'NarrowerTransitive' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getMember() != null) && (that.getMember() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getMember(), that.getMember()))) {
+	    	System.out.println("Concept objects have different 'Member' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getMappingRelation() != null) && (that.getMappingRelation() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getMappingRelation(), that.getMappingRelation()))) {
+	    	System.out.println("Concept objects have different 'MappingRelation' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getBroadMatch() != null) && (that.getBroadMatch() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getBroadMatch(), that.getBroadMatch()))) {
+	    	System.out.println("Concept objects have different 'BroadMatch' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getNarrowMatch() != null) && (that.getNarrowMatch() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getNarrowMatch(), that.getNarrowMatch()))) {
+	    	System.out.println("Concept objects have different 'NarrowMatch' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getRelateMatch() != null) && (that.getRelateMatch() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getRelateMatch(), that.getRelateMatch()))) {
+	    	System.out.println("Concept objects have different 'RelateMatch' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getExactMatch() != null) && (that.getExactMatch() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getExactMatch(), that.getExactMatch()))) {
+	    	System.out.println("Concept objects have different 'ExactMatch' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getCloseMatch() != null) && (that.getCloseMatch() != null) &&
+	    		(!TypeUtils.areEqualMaps(this.getCloseMatch(), that.getCloseMatch()))) {
+	    	System.out.println("Concept objects have different 'CloseMatch' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getHasTopConcept() != null) && (that.getHasTopConcept() != null) &&
+	    		(!this.getHasTopConcept().toString().equals(that.getHasTopConcept().toString()))) {
+	    	System.out.println("Concept objects have different 'HasTopConcept' fields.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getMemberList() != null) && (that.getMemberList() != null) &&
+	    		(!this.getMemberList().toString().equals(that.getMemberList().toString()))) {
+	    	System.out.println("Concept objects have different 'MemberList' fields.");
 	    	res = false;
 	    }
 	    

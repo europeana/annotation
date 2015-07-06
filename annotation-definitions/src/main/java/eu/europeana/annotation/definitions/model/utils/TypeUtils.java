@@ -313,5 +313,18 @@ public class TypeUtils {
 		return res;
 	}
 	
-	
+	/**
+	 * This method compares two maps.
+	 * @param m1
+	 * @param m2
+	 * @return true if maps are equal
+	 */
+	public static boolean areEqualMaps(Map<String,String>m1, Map<String,String>m2) {
+	    if (m1.size() != m2.size())
+	        return false;
+	    for (String key: m1.keySet())
+	        if (!m1.get(key).equals(m2.get(key)))
+	            return false;
+	    return true;
+	}	
 }
