@@ -58,4 +58,36 @@ public interface Concept {
 	
 	public abstract void setRelated(List<String> relatedList);
 	
+	public abstract void addScopeNoteInMapping(String id, String label);
+
+	public abstract void addDefinitionInMapping(String id, String label);
+
+	public abstract void addExampleInMapping(String id, String label);
+
+	public abstract void addHistoryNoteInMapping(String id, String label);
+
+	public abstract void addEditorialNoteInMapping(String id, String label);
+
+	public abstract void addChangeNoteInMapping(String id, String label);
+
+	public abstract void addNoteInMapping(String id, String label);
+
+	public abstract void addSemanticRelationInMapping(String id, String label);
+
+	public abstract void addBroaderTransitiveInMapping(String id, String label);
+
+	public abstract void addNarrowerTransitiveInMapping(String id, String label);
+
+	public abstract void addMappingRelationInMapping(String id, String label);
+
+	public abstract void addBroadMatchInMapping(String id, String label);
+
+	public abstract void addNarrowMatchInMapping(String id, String label);
+
+	public abstract void addExactMatchInMapping(String id, String label);
+
+	public abstract void addCloseMatchInMapping(String id, String label);
+
+	public abstract void addRelateMatchInMapping(String id, String label);
+
 }

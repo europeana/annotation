@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.concept;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -8,7 +9,8 @@ import java.util.Map;
  */
 public interface SkosConcept extends Concept {
 
-	public abstract Map<String, String> getInScheme();
+//	public abstract Map<String, String> getInScheme();
+	public abstract List<String> getInScheme();
 
 	public abstract void setInScheme(Map<String, String> inScheme);
 	
@@ -18,7 +20,8 @@ public interface SkosConcept extends Concept {
 	
 	public abstract void addTopConceptOfInMapping(String id, String label);
 	
-	public abstract Map<String, String> getTopConceptOf();
+//	public abstract Map<String, String> getTopConceptOf();
+	public abstract List<String> getTopConceptOf();
 	
 	public abstract String getSkos();
 

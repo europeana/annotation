@@ -1,11 +1,8 @@
 package eu.europeana.annotation.definitions.model.concept.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.concept.SkosConcept;
 
@@ -81,50 +78,85 @@ public abstract class BaseSkosConcept extends BaseConcept implements SkosConcept
 		this.topConcept = topConceptList;
 	}
 
-	protected Map<String, String> inScheme;
-	protected Map<String, String> topConceptOf;
+	private List<String> inScheme;
+//	protected Map<String, String> inScheme;
+//	protected Map<String, String> topConceptOf;
+	private List<String> topConceptOf;	
 
-	@Override
-	public Map<String, String> getInScheme() {
-	    if(this.inScheme == null) {
-	        this.inScheme = new HashMap<String, String>();
-	    }
+	public List<String> getInScheme() {
 		return inScheme;
 	}
 
-	@Override
-	public void setInScheme(Map<String, String> inScheme) {
+	public void setInScheme(List<String> inScheme) {
 		this.inScheme = inScheme;
 	}
-	
-	@Override
-	public void addInSchemeInMapping(String id, String label) {
-	    if(this.inScheme == null) {
-	        this.inScheme = new HashMap<String, String>();
-	    }
-	    this.inScheme.put(id + "_" + WebAnnotationFields.IN_SCHEME, label);
+
+	public void addInScheme(String newInScheme) {
+		if(inScheme == null)
+			inScheme = new ArrayList<String>(2);
+		if (!inScheme.contains(newInScheme)) {
+			inScheme.add(newInScheme);
+		}
 	}
 
-	@Override
-	public void setTopConceptOf(Map<String, String> topConceptOf) {
-		this.topConceptOf = topConceptOf;
-	}
-	
-	@Override
-	public void addTopConceptOfInMapping(String id, String label) {
-	    if(this.topConceptOf == null) {
-	        this.topConceptOf = new HashMap<String, String>();
-	    }
-	    this.topConceptOf.put(id + "_" + WebAnnotationFields.TOP_CONCEPT_OF, label);
-	}
+//	@Override
+//	public Map<String, String> getInScheme() {
+//	    if(this.inScheme == null) {
+//	        this.inScheme = new HashMap<String, String>();
+//	    }
+//		return inScheme;
+//	}
+//
+//	@Override
+//	public void setInScheme(Map<String, String> inScheme) {
+//		this.inScheme = inScheme;
+//	}
+//	
+//	@Override
+//	public void addInSchemeInMapping(String id, String label) {
+//	    if(this.inScheme == null) {
+//	        this.inScheme = new HashMap<String, String>();
+//	    }
+//	    this.inScheme.put(id + "_" + WebAnnotationFields.IN_SCHEME, label);
+//	}
 
-	@Override
-	public Map<String, String> getTopConceptOf() {
-	    if(this.topConceptOf == null) {
-	        this.topConceptOf = new HashMap<String, String>();
-	    }
+	public List<String> getTopConceptOf() {
 		return topConceptOf;
 	}
+
+	public void setTopConceptOf(List<String> topConceptOf) {
+		this.topConceptOf = topConceptOf;
+	}
+
+	public void addTopConceptOf(String newTopConceptOf) {
+		if(topConceptOf == null)
+			topConceptOf = new ArrayList<String>(2);
+		if (!topConceptOf.contains(newTopConceptOf)) {
+			topConceptOf.add(newTopConceptOf);
+		}
+	}
+	
+	
+//	@Override
+//	public void setTopConceptOf(Map<String, String> topConceptOf) {
+//		this.topConceptOf = topConceptOf;
+//	}
+//	
+//	@Override
+//	public void addTopConceptOfInMapping(String id, String label) {
+//	    if(this.topConceptOf == null) {
+//	        this.topConceptOf = new HashMap<String, String>();
+//	    }
+//	    this.topConceptOf.put(id + "_" + WebAnnotationFields.TOP_CONCEPT_OF, label);
+//	}
+//
+//	@Override
+//	public Map<String, String> getTopConceptOf() {
+//	    if(this.topConceptOf == null) {
+//	        this.topConceptOf = new HashMap<String, String>();
+//	    }
+//		return topConceptOf;
+//	}
 
 	private String skos;
 	
