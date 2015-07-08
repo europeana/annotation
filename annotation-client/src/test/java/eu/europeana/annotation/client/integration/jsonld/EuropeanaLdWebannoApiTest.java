@@ -17,7 +17,8 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	public void createSimpleTagWebannoAnnotation() throws JsonParseException {
 		
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_WEBANNO
+				"oa:tagging"
+				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, simpleTagAnnotation
 				);
@@ -31,7 +32,8 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	public void createSimpleTagAnnotationWithoutProvider() throws JsonParseException {
 		
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				null
+				"oa:tagging"
+				, null
 				, null
 				, simpleTagAnnotation
 				);
@@ -46,7 +48,8 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_WEBANNO
+				"oa:tagging"
+				, WebAnnotationFields.PROVIDER_WEBANNO
 				, annotationNr
 				, simpleTagAnnotation
 				);

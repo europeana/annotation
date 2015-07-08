@@ -11,6 +11,7 @@ import org.junit.Test;
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
@@ -20,7 +21,8 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				MotivationTypes.TAGGING.name()
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, semanticTagAnnotation
 				);
@@ -38,7 +40,8 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				MotivationTypes.TAGGING.name()
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, simpleTagAnnotation
 				);
@@ -56,7 +59,8 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				MotivationTypes.TAGGING.name()
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, simpleLinkAnnotation
 				);
@@ -74,7 +78,8 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				MotivationTypes.TAGGING.name()
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, simpleLinkAnnotation
 				);
@@ -92,7 +97,8 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				MotivationTypes.LINKING.name()
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, simpleLinkAnnotation
 				);
@@ -126,7 +132,8 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				WebAnnotationFields.PROVIDER_HISTORY_PIN
+				MotivationTypes.LINKING.name()
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, simpleLinkAnnotation
 				);

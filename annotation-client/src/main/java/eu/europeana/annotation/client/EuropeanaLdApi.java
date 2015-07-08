@@ -3,7 +3,7 @@ package eu.europeana.annotation.client;
 
 public interface EuropeanaLdApi {
 
-	public String createAnnotationLd(String provider, Long annotationNr, String europeanaLdString);
+	public String createAnnotationLd(String motivation, String provider, Long annotationNr, String europeanaLdString);
 //	public Annotation createAnnotationLd(String provider, Long annotationNr, String europeanaLdString);
 
 //	public Annotation getAnnotationLd(String provider, Long annotationNr);

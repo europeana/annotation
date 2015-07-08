@@ -83,21 +83,26 @@ public class EuropeanaRest extends BaseRest{
 		}
 	}
 	
-	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotation/{motivation}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "wskey", required = false) String wskey,
+			@PathVariable(value = "motivation") String motivation,
 			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
 			@RequestParam(value = "annotationNr", required = false) Long annotationNr,
 			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 			@RequestBody String annotation) {
 
-		String action = "create:/annotation.jsonld";
+		String action = "create:/annotation/{motivation}.jsonld";
 		
 		try {
+			// injest motivation
+			String motivationStr = "\"" + WebAnnotationFields.MOTIVATION + "\": \"" + motivation + "\",";
+			String annotationStr = annotation.substring(0, 1) + motivationStr + annotation.substring(1);
+
 			// parse
-			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotation);
+			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotationStr);
 	
 			AnnotationId annoId = buildAnnotationId(provider, annotationNr);
 			

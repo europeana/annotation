@@ -39,7 +39,7 @@ public class BaseJsonLdApiTest {
     		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
     		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
     		"\"serializedBy\": \"http://www.historypin.org\"," +
-    		"\"motivation\": \"oa:tagging\"," +
+//    		"\"motivation\": \"oa:tagging\"," +
     		"\"body\": \"church\"," +
     		"\"target\": \"" + TEST_TARGET + "\"" +
     		"}";
@@ -57,7 +57,7 @@ public class BaseJsonLdApiTest {
     		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
     		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
     		"\"serializedBy\": \"http://data.europeana.eu/provider/Historypin\"," +
-    		"\"motivation\": \"oa:tagging\"," +
+//    		"\"motivation\": \"oa:tagging\"," +
     		"\"body\": [\"church\", \"orthodox\"]," +
     		"\"target\": \"" + TEST_TARGET + "\"," +
        	 	"\"oa:equivalentTo\": \"" + TEST_TARGET + "\"" +
@@ -76,7 +76,7 @@ public class BaseJsonLdApiTest {
 	    	"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
 	    	"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
 	    	"\"serializedBy\": \"http://www.historypin.org\"," +
-	    	"\"motivation\": \"oa:tagging\"," +
+//	    	"\"motivation\": \"oa:tagging\"," +
     		"\"body\": {" +
     	    	"\"@type\": \"oa:SemanticTag\"," +
     	    	"\"related\": \"http://dbpedia.org/resource/Paris\"" + 
@@ -97,7 +97,7 @@ public class BaseJsonLdApiTest {
     		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
     		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
     		"\"serializedBy\": \"http://www.historypin.org\"," +
-    		"\"motivation\": \"oa:linking\"," +
+//    		"\"motivation\": \"oa:linking\"," +
             "\"target\": [" +
                        "\"http://www.europeana.eu/portal/record/123/xyz.html\"," + 
                        "\"http://www.europeana.eu/portal/record/333/xxx.html\"" +
@@ -127,7 +127,7 @@ public class BaseJsonLdApiTest {
             "\"language\": \"ro\"," +
             "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\"" +
         "}," +
-        "\"motivation\": \"oa:tagging\"," +
+//        "\"motivation\": \"oa:tagging\"," +
         "\"serializedAt\": \"2012-11-10T09:08:07\"," +
         "\"serializedBy\": {" +
             "\"@id\": \"open_id_2\"," +

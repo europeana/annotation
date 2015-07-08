@@ -23,7 +23,7 @@
 							<td class="clsCellBorder" valign="top">SimpleTag</td>
 							<td class="clsCellBorder" valign="top">JSON_LD</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotation/create.jsonld<br>
+									[annotation-web]/annotation/{motivation}/create.jsonld<br>
 									Object as JSON-LD:
 								<form action="annotation/create.jsonld" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
@@ -41,7 +41,6 @@
     "annotatedAt": "2015-02-27T12:00:43Z",
     "serializedAt": "2015-02-28T13:00:34Z",
     "serializedBy": "http://www.historypin.org",
-    "motivation": "oa:tagging",
     "body": "church",
     "target": "http://data.europeana.eu/item/123/xyz",
     "oa:equivalentTo": "https://www.historypin.org/en/item/456"
@@ -61,7 +60,7 @@
 							<td class="clsCellBorder" valign="top">SimpleLink</td>
 							<td class="clsCellBorder" valign="top">JSON_LD</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotation/create.jsonld<br>
+									[annotation-web]/annotation/{motivation}/create.jsonld<br>
 									Object as JSON-LD:
 								<form action="annotation/create.jsonld" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
@@ -78,7 +77,6 @@
     "annotatedAt": "2015-02-27T12:00:43Z",
     "serializedAt": "2015-02-28T13:00:34Z",
     "serializedBy": "http://www.historypin.org",
-    "motivation": "oa:linking",
     "target": [
         "http://www.europeana.eu/portal/record/123/xyz.html", 
         "http://www.europeana.eu/portal/record/333/xxx.html"
@@ -100,7 +98,7 @@
 							<td class="clsCellBorder" valign="top">SimpleTag</td>
 							<td class="clsCellBorder" valign="top">JSON_LD</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotation/create.jsonld<br>
+									[annotation-web]/annotation/{motivation}/create.jsonld<br>
 									Object as JSON-LD:
 								<form action="annotation/create.jsonld" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
@@ -117,7 +115,6 @@
     "annotatedAt": "2015-02-27T12:00:43Z",
     "serializedAt": "2015-02-28T13:00:34Z",
     "serializedBy": "http://www.historypin.org",
-    "motivation": "oa:tagging",
     "body": {
         "@type": [
         	"oa:Tag",
@@ -146,7 +143,7 @@
 							<td class="clsCellBorder" valign="top">SimpleTag</td>
 							<td class="clsCellBorder" valign="top">JSON_LD</td>
 							<td class="clsCellBorder">
-									[annotation-web]/annotation/create.jsonld<br>
+									[annotation-web]/annotation/{motivation}/create.jsonld<br>
 									Object as JSON-LD:
 								<form action="annotation/create.jsonld" method="post" target="_new">
 								<input type="hidden" name="wskey" value="key">
@@ -163,7 +160,6 @@
  "annotatedAt": "2015-02-27T12:00:43Z",
  "serializedAt": "2015-02-28T13:00:34Z",
  "serializedBy": "http://data.europeana.eu/provider/Historypin",
- "motivation": "oa:tagging",
  "body": ["church", "orthodox"] ,
  "target": "http://data.europeana.eu/item/123/xyz",
  "oa:equivalentTo": "https://www.historypin.org/en/item/456"

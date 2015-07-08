@@ -255,6 +255,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * This method creates Europeana Annotation object from JsonLd string.
 	 * The HTTP request sample is:
 	 *     http://localhost:8081/annotation-web/annotation.jsonld?wskey=ws&provider=historypin&annotationNr=161&indexing=true
+	 *     http://localhost:8081/annotation-web/annotation/oa%3Atagging.jsonld?provider=webanno&&indexing=true
+	 * @param motivation
 	 * @param provider
 	 * @param annotationNr
 	 * @param europeanaLdStr The Annotation
@@ -262,10 +264,11 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public AnnotationOperationResponse createEuropeanaAnnotationLd(
-			String provider, Long annotationNr, String europeanaLdStr) throws IOException {
+			String motivation, String provider, Long annotationNr, String europeanaLdStr) throws IOException {
 		
 		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
-		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+//		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
+		url += "annotation/" + motivation + ".jsonld" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
