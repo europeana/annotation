@@ -167,7 +167,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String retrievedAnnotationStatusResponse = annotationJsonApi.getAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr() + 1);
+				, annotationObject.getAnnotationId().getAnnotationNr());
 //		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(retrievedAnnotation);
 //		Annotation updatedAnnotationObject = JsonUtils.toAnnotationObject(annotationJsonString);
 //		Annotation retrievedAnnotationObject = JsonUtils.toAnnotationObject(retrievedAnnotation);
@@ -200,7 +200,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String retrievedAnnotationStatusResponse = annotationJsonApi.getAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr() + 1);
+				, annotationObject.getAnnotationId().getAnnotationNr());
 		assertTrue(retrievedAnnotationStatusResponse.contains(TEST_STATUS));
 		/*String retrievedAnnotation = annotationJsonApi.getAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()

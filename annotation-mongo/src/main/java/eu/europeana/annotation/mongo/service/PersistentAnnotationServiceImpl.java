@@ -479,7 +479,29 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	
-	
+	@Override
+	public Annotation updateStatus(Annotation newAnnotation) {
+
+		Annotation res = null;
+
+		PersistentAnnotation annotation = find(newAnnotation.getAnnotationId());
+
+		if (annotation != null) {
+			annotation.setStatus(newAnnotation.getStatus());
+			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao()
+					.createUpdateOperations().set(
+							WebAnnotationFields.STATUS,
+							annotation.getStatus());
+			Query<PersistentAnnotation> updateQuery = getAnnotationDao()
+					.createQuery().field("_id").equal(annotation.getId());
+			getAnnotationDao().update(updateQuery, ops);
+			res = annotation; 
+		}
+
+		return res;
+	}
+
+		
 	@SuppressWarnings("deprecation")
 	public PersistentAnnotation copyIntoPersistentAnnotation(Annotation annotation) {
 

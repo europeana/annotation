@@ -324,7 +324,7 @@ public class ManagementRest extends BaseRest {
 
 				//set status
 				annotation.setStatus(status);
-				Annotation updatedAnnotation = getAnnotationService().updateAnnotation(annotation);
+				Annotation updatedAnnotation = getAnnotationService().updateAnnotationStatus(annotation);
 				getAnnotationService().logAnnotationStatusUpdate("", annotation);
 		
 				//build response

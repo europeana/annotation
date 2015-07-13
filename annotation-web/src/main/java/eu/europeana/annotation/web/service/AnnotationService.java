@@ -251,6 +251,13 @@ public interface AnnotationService {
 	public boolean existsProviderInDb(Provider provider); 
 	
 	/**
+	 * This method updates annotation status.
+	 * @param annotation
+	 * @return
+	 */
+	public Annotation updateAnnotationStatus(Annotation annotation);
+	
+	/**
 	 * @param newConcept
 	 * @return
 	 */

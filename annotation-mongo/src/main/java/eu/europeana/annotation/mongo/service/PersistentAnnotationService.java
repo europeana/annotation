@@ -75,6 +75,13 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public Annotation updateIndexingTime(AnnotationId annoId);
 
+	/**
+	 * This method changes annotation status.
+	 * @param newAnnotation
+	 * @return
+	 */
+	public Annotation updateStatus(Annotation newAnnotation);
+	
 	public abstract AnnotationId generateAnnotationId(String provider);
 //	public abstract AnnotationId generateAnnotationId(String resourceId);
 

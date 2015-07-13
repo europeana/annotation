@@ -557,6 +557,21 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
+	public Annotation updateAnnotationStatus(Annotation annotation) {
+		
+		Annotation res = getMongoPersistence().updateStatus(annotation);
+
+		try {
+    	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
+    	    getSolrService().update(indexedAnnotation);
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+		
+		return res;
+	}
+
+	@Override
 //	public void deleteAnnotation(String resourceId, String provider, Long annotationNr) {
 	public void deleteAnnotation(String provider, Long annotationNr) {
         try {
