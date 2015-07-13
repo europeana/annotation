@@ -3,6 +3,8 @@ package eu.europeana.annotation.utils.concept;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +15,9 @@ import org.apache.log4j.Logger;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
@@ -60,6 +65,36 @@ public class SkosUtils {
     	return retrieveStatements(model);
     }
 	
+    
+    /**
+     * This method performs parsing of the SKOS RDF in XML format to Europeana Annotation Concept collection using Jena library.
+     * @param inputFileName
+     * @return A collection of the Concept objects
+     */
+    public List<Concept> parseSkosRdfXmlToConceptCollection(String inputFileName) {
+    	
+    	// create an empty model
+   	    Model model = ModelFactory.createDefaultModel();
+
+    	// use the FileManager to find the input file
+    	InputStream in = FileManager.get().open( inputFileName );
+    	
+    	if (in == null) {
+    	    throw new IllegalArgumentException(
+    	                                 "File: " + inputFileName + " not found");
+    	}
+
+    	// read the RDF/XML file
+    	model.read(in, null);
+
+    	// write it to standard out
+    	model.write(System.out);    
+    	
+    	// retrieve the statements from the model
+    	return retrieveConcepts(model);
+    }
+	
+    
 	/**
 	 * @param orig
 	 * @return
@@ -166,6 +201,47 @@ public class SkosUtils {
     		fillConcept(concept, predicate, conceptFieldName, value);
     	}
 		return concept;
+	}
+
+	
+	/**
+	 * This method retrieves concepts from a model.
+	 * @param model
+	 * @return
+	 */
+	public List<Concept> retrieveConcepts(Model model) {
+		List<Concept> res = new ArrayList<Concept>();
+		
+		ResIterator itrConcepts = model.listSubjects();
+		while (itrConcepts.hasNext()) {
+			Resource rdfNode = itrConcepts.next();
+        	System.out.println("rdfNode: " + rdfNode.toString());
+        	Property p = null;
+        	String object = null;
+			StmtIterator itr = model.listStatements(rdfNode, p, object);
+
+	    	BaseConcept concept = new BaseConcept();
+	    	concept.addType(ConceptTypes.SKOS_CONCEPT.name());
+
+	    	while (itr.hasNext()) {
+	    		Statement statement = itr.next();
+	        	Triple triple = statement.asTriple();
+	        	if (StringUtils.isEmpty(concept.getUri())) {
+	        		concept.setUri(triple.getSubject().toString());
+	        	}
+	
+	        	String predicate = triple.getPredicate().toString();
+	        	String conceptFieldName = setPredicate(predicate);
+	        	
+	        	String value = triple.getObject().toString();
+	        	log.info("Statement: " + predicate + " = " + value);
+	        	System.out.println("Statement: " + predicate + " = " + value);
+	        	
+	    		fillConcept(concept, predicate, conceptFieldName, value);
+	    	}
+	    	res.add(concept);
+		}
+		return res;
 	}
 
 	

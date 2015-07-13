@@ -798,7 +798,7 @@ public class BaseConcept implements Concept {
 		String res = "\t### Concept ###\n";
 		
 		if (getType() != null) 
-			res = res + "\t\t" + WebAnnotationFields.TYPE + ":" + getRelated() + "\n";
+			res = res + "\t\t" + WebAnnotationFields.TYPE + ":" + getType() + "\n";
 		if (getNotation() != null) 
 			res = res + "\t\t" + WebAnnotationFields.NOTATION + ":" + getNotation() + "\n";
 		if (getNarrower() != null) 

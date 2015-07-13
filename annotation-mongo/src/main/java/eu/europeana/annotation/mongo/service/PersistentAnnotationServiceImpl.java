@@ -443,6 +443,7 @@ public class PersistentAnnotationServiceImpl extends
 			remove(//persistentAnnotation.getAnnotationId().getResourceId(),
 					persistentAnnotation.getAnnotationId().getProvider(),
 					persistentAnnotation.getAnnotationId().getAnnotationNr());
+			//MongoDB object id - not annotation id
 			persistentAnnotation.setId(null);
 			if (persistentAnnotation.getBody() != null) {
 				((TagBody) persistentAnnotation.getBody()).setTagId(null);
