@@ -42,44 +42,75 @@ public class AnnotationSkosTest {
 	public final String TEST_PREV_LABEL_VALUE = "\"Music theatre\"@en";
 	public final String TEST_RDF_COLLECTION_FILE_PATH  = "D:/git/annotation/annotation-web/src/test/resources/Music-Genres.rdf";
 
+	public final String TEST_PREV_LABEL_I18N_KEY_0 = "http://www.w3.org/2004/02/skos/core#prefLabel0_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_0 = "\"Muzikal\"@sl";
+	public final String TEST_PREV_LABEL_I18N_KEY_1 = "http://www.w3.org/2004/02/skos/core#prefLabel1_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_1 = "\"Teatru muzical\"@ro";
+	public final String TEST_PREV_LABEL_I18N_KEY_2 = "http://www.w3.org/2004/02/skos/core#prefLabel2_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_2 = "\"مسرح موسيقي\"@ar";
+	public final String TEST_PREV_LABEL_I18N_KEY_3 = "http://www.w3.org/2004/02/skos/core#prefLabel3_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_3 = "\"Teatro musical\"@pt";
+	public final String TEST_PREV_LABEL_I18N_KEY_4 = "http://www.w3.org/2004/02/skos/core#prefLabel4_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_4 = "\"Teatro musical\"@es";
+	public final String TEST_PREV_LABEL_I18N_KEY_5 = "http://www.w3.org/2004/02/skos/core#prefLabel5_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_5 = "\"تئاتر موزیکال\"@fa";
+	public final String TEST_PREV_LABEL_I18N_KEY_6 = "http://www.w3.org/2004/02/skos/core#prefLabel6_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_6 = "\"Teatre musical\"@ca";
+	public final String TEST_PREV_LABEL_I18N_KEY_7 = "http://www.w3.org/2004/02/skos/core#prefLabel7_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_7 = "\"Nhạc kịch\"@vi";
+	public final String TEST_PREV_LABEL_I18N_KEY_8 = "http://www.w3.org/2004/02/skos/core#prefLabel8_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_8 = "\"ละครเพลง\"@th";
+	public final String TEST_PREV_LABEL_I18N_KEY_9 = "http://www.w3.org/2004/02/skos/core#prefLabel9_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_9 = "\"Comédie musicale\"@fr";
+	public final String TEST_PREV_LABEL_I18N_KEY_10 = "http://www.w3.org/2004/02/skos/core#prefLabel10_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_10 = "\"Muzikinis teatras\"@lt";
+	public final String TEST_PREV_LABEL_I18N_KEY_11 = "http://www.w3.org/2004/02/skos/core#prefLabel11_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_11 = "\"Мюзикл\"@ru";
+	public final String TEST_PREV_LABEL_I18N_KEY_12 = "http://www.w3.org/2004/02/skos/core#prefLabel12_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_12 = "\"Мюзикл\"@uk";
+	public final String TEST_PREV_LABEL_I18N_KEY_13 = "http://www.w3.org/2004/02/skos/core#prefLabel13_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_13 = "\"Musical\"@da";
+	public final String TEST_PREV_LABEL_I18N_KEY_14 = "http://www.w3.org/2004/02/skos/core#prefLabel14_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_14 = "\"Musical\"@nl";
+	public final String TEST_PREV_LABEL_I18N_KEY_15 = "http://www.w3.org/2004/02/skos/core#prefLabel15_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_15 = "\"Musical\"@de";
+	public final String TEST_PREV_LABEL_I18N_KEY_16 = "http://www.w3.org/2004/02/skos/core#prefLabel16_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_16 = "\"Musical\"@hu";
+	public final String TEST_PREV_LABEL_I18N_KEY_17 = "http://www.w3.org/2004/02/skos/core#prefLabel17_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_17 = "\"Musical\"@it";
+	public final String TEST_PREV_LABEL_I18N_KEY_18 = "http://www.w3.org/2004/02/skos/core#prefLabel18_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_18 = "\"Musikal\"@no";
 	public final String TEST_PREV_LABEL_I18N_KEY_19 = "http://www.w3.org/2004/02/skos/core#prefLabel19_prefLabel";
 	public final String TEST_PREV_LABEL_I18N_VALUE_19 = "\"Musikal\"@sv";
-	public final String TEST_PREV_LABEL_I18N_KEY_30 = "http://www.w3.org/2004/02/skos/core#prefLabel30_prefLabel";
-	public final String TEST_PREV_LABEL_I18N_VALUE_30 = "\"Muzikál\"@cs";
-	public final String TEST_PREV_LABEL_I18N_KEY_28 = "http://www.w3.org/2004/02/skos/core#prefLabel28_prefLabel";
-	public final String TEST_PREV_LABEL_I18N_VALUE_28 = "\"Teater musikal\"@id";
+	public final String TEST_PREV_LABEL_I18N_KEY_20 = "http://www.w3.org/2004/02/skos/core#prefLabel20_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_20 = "\"Musical\"@pl";
+	public final String TEST_PREV_LABEL_I18N_KEY_21 = "http://www.w3.org/2004/02/skos/core#prefLabel21_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_21 = "\"Musikaali\"@fi";
 	public final String TEST_PREV_LABEL_I18N_KEY_22 = "http://www.w3.org/2004/02/skos/core#prefLabel22_prefLabel";
 	public final String TEST_PREV_LABEL_I18N_VALUE_22 = "\"Müzikal tiyatro\"@tr";
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel31_prefLabel=\"Mjuzikl\"@hr,"
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel1_prefLabel=\"Teatru muzical\"@ro,"
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel9_prefLabel=\"Comédie musicale\"@fr,"
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel25_prefLabel=\"Music theatre\"@en,"
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel27_prefLabel=\"Μιούζικαλ\"@el,"
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel20_prefLabel=\"Musical\"@pl,"
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel15_prefLabel=\"Musical\"@de," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel21_prefLabel=\"Musikaali\"@fi," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel11_prefLabel=\"Мюзикл\"@ru," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel6_prefLabel=\"Teatre musical\"@ca," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel33_prefLabel=\"뮤지컬\"@ko," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel16_prefLabel=\"Musical\"@hu," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel12_prefLabel=\"Мюзикл\"@uk," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel18_prefLabel=\"Musikal\"@no," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel32_prefLabel=\"Muusikal\"@et," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel29_prefLabel=\"Muzikál\"@sk," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel0_prefLabel=\"Muzikal\"@sl," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel3_prefLabel=\"Teatro musical\"@pt," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel7_prefLabel=\"Nhạc kịch\"@vi," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel5_prefLabel=\"تئاتر موزیکال\"@fa," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel4_prefLabel=\"Teatro musical\"@es," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel17_prefLabel=\"Musical\"@it," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel24_prefLabel=\"Музикален театър\"@bg," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel10_prefLabel=\"Muzikinis teatras\"@lt," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel8_prefLabel=\"ละครเพลง\"@th," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel13_prefLabel=\"Musical\"@da," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel14_prefLabel=\"Musical\"@nl," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel26_prefLabel=\"ミュージカル\"@ja," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel23_prefLabel=\"Мјузикл\"@sr," 
-//			+ " http://www.w3.org/2004/02/skos/core#prefLabel2_prefLabel=\"مسرح موسيقي\"@ar";
+	public final String TEST_PREV_LABEL_I18N_KEY_23 = "http://www.w3.org/2004/02/skos/core#prefLabel23_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_23 = "\"Мјузикл\"@sr";
+	public final String TEST_PREV_LABEL_I18N_KEY_24 = "http://www.w3.org/2004/02/skos/core#prefLabel24_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_24 = "\"Музикален театър\"@bg";
+	public final String TEST_PREV_LABEL_I18N_KEY_25 = "http://www.w3.org/2004/02/skos/core#prefLabel25_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_25 = "\"Music theatre\"@en";
+	public final String TEST_PREV_LABEL_I18N_KEY_26 = "http://www.w3.org/2004/02/skos/core#prefLabel26_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_26 = "\"ミュージカル\"@ja";
+	public final String TEST_PREV_LABEL_I18N_KEY_27 = "http://www.w3.org/2004/02/skos/core#prefLabel27_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_27 = "\"Μιούζικαλ\"@el";
+	public final String TEST_PREV_LABEL_I18N_KEY_28 = "http://www.w3.org/2004/02/skos/core#prefLabel28_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_28 = "\"Teater musikal\"@id";
+	public final String TEST_PREV_LABEL_I18N_KEY_29 = "http://www.w3.org/2004/02/skos/core#prefLabel29_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_29 = "\"Muzikál\"@sk";
+	public final String TEST_PREV_LABEL_I18N_KEY_30 = "http://www.w3.org/2004/02/skos/core#prefLabel30_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_30 = "\"Muzikál\"@cs";
+	public final String TEST_PREV_LABEL_I18N_KEY_31 = "http://www.w3.org/2004/02/skos/core#prefLabel31_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_31 = "\"Mjuzikl\"@hr";
+	public final String TEST_PREV_LABEL_I18N_KEY_32 = "http://www.w3.org/2004/02/skos/core#prefLabel32_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_32 = "\"Muusikal\"@et";
+	public final String TEST_PREV_LABEL_I18N_KEY_33 = "http://www.w3.org/2004/02/skos/core#prefLabel33_prefLabel";
+	public final String TEST_PREV_LABEL_I18N_VALUE_33 = "\"뮤지컬\"@ko";
+
 	public final String TEST_RDF_COLLECTION_I18N_FILE_PATH  = "D:/git/annotation/annotation-web/src/test/resources/Music-Genres-i18n.rdf";
 
 	
@@ -108,7 +139,7 @@ public class AnnotationSkosTest {
 	/**
      * This test performs parsing of the SKOS RDF in XML format to Europeana Annotation Concept object using Jena library.
      */
-//    @Test
+    @Test
     public void testParseSkosRdfXmlToConcept() {
     	
     	Concept concept = getSkosUtils().parseSkosRdfXmlToConcept(TEST_RDF_FILE_PATH);    	
@@ -124,7 +155,7 @@ public class AnnotationSkosTest {
     /**
      * This test performs parsing of the SKOS RDF in XML format to Europeana Annotation Concept collection using Jena library.
      */
-//    @Test
+    @Test
     public void testParseSkosRdfXmlToConceptCollection() {
     	
     	List<Concept> concepts = getSkosUtils().parseSkosRdfXmlToConceptCollection(TEST_RDF_COLLECTION_FILE_PATH);    	
@@ -154,10 +185,40 @@ public class AnnotationSkosTest {
     	System.out.println(concept.toString());
     	String broaderValue = concept.getBroader().get(0);
     	assertEquals(broaderValue, TEST_BROADER_VALUE);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_0), TEST_PREV_LABEL_I18N_VALUE_0);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_1), TEST_PREV_LABEL_I18N_VALUE_1);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_2), TEST_PREV_LABEL_I18N_VALUE_2);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_3), TEST_PREV_LABEL_I18N_VALUE_3);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_4), TEST_PREV_LABEL_I18N_VALUE_4);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_5), TEST_PREV_LABEL_I18N_VALUE_5);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_6), TEST_PREV_LABEL_I18N_VALUE_6);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_7), TEST_PREV_LABEL_I18N_VALUE_7);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_8), TEST_PREV_LABEL_I18N_VALUE_8);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_9), TEST_PREV_LABEL_I18N_VALUE_9);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_10), TEST_PREV_LABEL_I18N_VALUE_10);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_11), TEST_PREV_LABEL_I18N_VALUE_11);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_12), TEST_PREV_LABEL_I18N_VALUE_12);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_13), TEST_PREV_LABEL_I18N_VALUE_13);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_14), TEST_PREV_LABEL_I18N_VALUE_14);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_15), TEST_PREV_LABEL_I18N_VALUE_15);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_16), TEST_PREV_LABEL_I18N_VALUE_16);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_17), TEST_PREV_LABEL_I18N_VALUE_17);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_18), TEST_PREV_LABEL_I18N_VALUE_18);
     	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_19), TEST_PREV_LABEL_I18N_VALUE_19);
-    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_30), TEST_PREV_LABEL_I18N_VALUE_30);
-    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_28), TEST_PREV_LABEL_I18N_VALUE_28);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_20), TEST_PREV_LABEL_I18N_VALUE_20);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_21), TEST_PREV_LABEL_I18N_VALUE_21);
     	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_22), TEST_PREV_LABEL_I18N_VALUE_22);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_23), TEST_PREV_LABEL_I18N_VALUE_23);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_24), TEST_PREV_LABEL_I18N_VALUE_24);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_25), TEST_PREV_LABEL_I18N_VALUE_25);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_26), TEST_PREV_LABEL_I18N_VALUE_26);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_27), TEST_PREV_LABEL_I18N_VALUE_27);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_28), TEST_PREV_LABEL_I18N_VALUE_28);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_29), TEST_PREV_LABEL_I18N_VALUE_29);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_30), TEST_PREV_LABEL_I18N_VALUE_30);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_31), TEST_PREV_LABEL_I18N_VALUE_31);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_32), TEST_PREV_LABEL_I18N_VALUE_32);
+    	assertEquals(concept.getPrefLabel().get(TEST_PREV_LABEL_I18N_KEY_33), TEST_PREV_LABEL_I18N_VALUE_33);
     }
 
     
