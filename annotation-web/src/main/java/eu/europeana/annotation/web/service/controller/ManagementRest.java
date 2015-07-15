@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -128,23 +129,25 @@ public class ManagementRest extends BaseRest {
 //	}
 
 	@PUT
-	@RequestMapping(value = "/admin/disable", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RequestMapping(value = "/admin/annotation/disable", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/disable/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse disableAnnotationById(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "query", required = true) String query,
-		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
-		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
+//		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
+//		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+//		@RequestParam(value = "annotationNr", required = true) String annotationNr) {
+		@PathVariable(value = "provider") String provider,
+		@PathVariable(value = "annotationNr") String annotationNr) {
 
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(
-				apiKey, "/admin/disable");
+				apiKey, "/admin/annotation/disable");
 			
 		try{
-			getAnnotationService().disableAnnotation(provider, Long.valueOf(query));
-//			getAnnotationService().disableAnnotation(resourceId, provider, Long.valueOf(query));
+			getAnnotationService().disableAnnotation(provider, Long.valueOf(annotationNr));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -361,12 +364,12 @@ public class ManagementRest extends BaseRest {
 
 		String action = "get: /annotations/check/visibility/" + provider + WebAnnotationFields.SLASH + annotationNr + WebAnnotationFields.SLASH + user + ".json";
 		
-//		try {
-			Annotation annotation = getAnnotationService().getAnnotationById(
-//					Annotation annotationFromDb = getAnnotationService().getAnnotationById(
+		try {
+//			Annotation annotation = getAnnotationService().getAnnotationById(
+			Annotation annotationFromDb = getAnnotationService().getAnnotationById(
 					provider, annotationNr);
 	
-//			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, null);
+			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, user);
 				
 			AnnotationOperationResponse response = new AnnotationOperationResponse(
 					"", action);
@@ -381,10 +384,13 @@ public class ManagementRest extends BaseRest {
 				response = buildErrorResponse(errorMessage, action, "");
 			}
 			return JsonWebUtils.toJson(response, null);
-//		} catch (AnnotationStatusException e) {
-//			getLogger().error("An error occured during the invocation of :" + action, e);
-//			return getValidationReport(null, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);	
-//		}
+		} catch (AnnotationStatusException e) {
+			getLogger().error("An error occured during the invocation of :" + action, e);
+			return getValidationReport(null, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);	
+		} catch (Exception e) {
+			getLogger().error("An error occured during the invocation of :" + action, e);
+			return getValidationReport(null, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);	
+		}
 	}
 	
 	

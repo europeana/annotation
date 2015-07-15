@@ -752,18 +752,15 @@ public class AnnotationServiceImpl implements AnnotationService {
 	 */
 	public Annotation checkVisibility(Annotation annotation, String user) throws AnnotationStatusException {
 		Annotation res = null;
-        try {
-    		res = getMongoPersistence().find(
-    				  annotation.getAnnotationId().getProvider()
-    				  , annotation.getAnnotationId().getAnnotationNr());
-    		if (res.isDisabled())
-    			throw new AnnotationStatusException("Annotation is not accessible.");
-    		if (!res.getAnnotatedBy().getName().equals(user))
-    			throw new AnnotationStatusException(
-    					"Given user (" + user + ") does not match to the 'annotatedBy' user (" + res.getAnnotatedBy().getName() + ").");
-        } catch (Exception e) {
-        	throw new RuntimeException(e);
-        }
+		res = getMongoPersistence().find(
+				  annotation.getAnnotationId().getProvider()
+				  , annotation.getAnnotationId().getAnnotationNr());
+		if (res.isDisabled())
+			throw new AnnotationStatusException("Annotation is not accessible.");
+		 
+		if (StringUtils.isNotEmpty(user) && !user.equals("null") && !res.getAnnotatedBy().getName().equals(user))
+			throw new AnnotationStatusException(
+					"Given user (" + user + ") does not match to the 'annotatedBy' user (" + res.getAnnotatedBy().getName() + ").");
 		return res;
 	}
 	
