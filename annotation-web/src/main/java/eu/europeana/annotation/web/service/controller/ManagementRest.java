@@ -48,23 +48,22 @@ public class ManagementRest extends BaseRest {
 	}
 
 	@DELETE
-	@RequestMapping(value = "/admin/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public AnnotationOperationResponse deleteAnnotationById(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "query", required = true) String query,
+		@RequestParam(value = "annotationNr", required = true) String annotationNr,
 //		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
 
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(
-				apiKey, "/admin/delete");
+				apiKey, "/admin/annotation/delete");
 			
 		try{
-			getAnnotationService().deleteAnnotation(provider, Long.valueOf(query));
-//			getAnnotationService().deleteAnnotation(resourceId, provider, Long.valueOf(query));
+			getAnnotationService().deleteAnnotation(provider, Long.valueOf(annotationNr));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
