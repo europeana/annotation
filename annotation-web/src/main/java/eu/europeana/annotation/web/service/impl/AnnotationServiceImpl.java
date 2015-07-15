@@ -33,6 +33,7 @@ import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
@@ -743,6 +744,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 		statusLog.setDate(currentTimestamp);
 		statusLog.setAnnotationId(annotation.getAnnotationId());
 		getMongoStatusLogPersistence().store(statusLog);		
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.web.service.AnnotationService#checkVisibility(eu.europeana.annotation.definitions.model.Annotation, java.lang.String)
+	 */
+	public Annotation checkVisibility(Annotation annotation, String user) throws AnnotationStatusException {
+		Annotation res = null;
+        try {
+    		res = getMongoPersistence().find(
+    				  annotation.getAnnotationId().getProvider()
+    				  , annotation.getAnnotationId().getAnnotationNr());
+    		if (res.isDisabled())
+    			throw new AnnotationStatusException("Annotation is not accessible.");
+    		if (!res.getAnnotatedBy().getName().equals(user))
+    			throw new AnnotationStatusException(
+    					"Given user (" + user + ") does not match to the 'annotatedBy' user (" + res.getAnnotatedBy().getName() + ").");
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+		return res;
 	}
 	
 }

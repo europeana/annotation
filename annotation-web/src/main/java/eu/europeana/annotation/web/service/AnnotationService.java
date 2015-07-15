@@ -12,6 +12,7 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 
@@ -287,4 +288,15 @@ public interface AnnotationService {
 	 */
 	public void logAnnotationStatusUpdate(String user, Annotation annotation);
 	
+	
+	/**
+	 * This method is checking the visibility of the annotation stored in the database.
+	 * @param annotation The stored annotation object
+	 * @param user The name of the current user
+	 * @return annotation object if check was successful, exception otherwise
+	 * @throws AnnotationStatusException
+	 */
+	public Annotation checkVisibility(Annotation annotation, String user) throws AnnotationStatusException;
+
+
 }

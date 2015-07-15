@@ -151,4 +151,31 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		return res.getJson();		
 	}
 	
+
+	public String disableAnnotation(String provider, Long annotationNr){
+		
+		AnnotationOperationResponse res;
+		try {
+			res = apiConnection.disableAnnotation(provider, annotationNr);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
+		}
+
+		return res.getJson();
+//		return res.getAnnotation();
+	}
+	
+
+	public String checkVisibility(Annotation annotation, String user) {
+		AnnotationOperationResponse res;
+		try {
+			res = apiConnection.checkVisibility(annotation, user);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
+		}
+
+		return res.getJson();		
+	}
+	
+
 }

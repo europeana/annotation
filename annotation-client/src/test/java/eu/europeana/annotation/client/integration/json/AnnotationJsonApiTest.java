@@ -1,6 +1,7 @@
 package eu.europeana.annotation.client.integration.json;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -145,13 +146,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 	@Test
 	public void setAnnotationStatus() {
 		
-		/**
-		 * Create a test annotation object.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstance();	
-		String annotation = annotationJsonApi.createAnnotation(testAnnotation);
-		Annotation annotationObject = JsonUtils.toAnnotationObject(annotation);
-		assertNotNull(annotation);
+		Annotation annotationObject = createTestAnnotationObject();
 		
 		/**
 		 * set annotation status
@@ -178,13 +173,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 	@Test
 	public void searchAnnotationStatusLogs() {
 		
-		/**
-		 * Create a test annotation object.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstance();	
-		String annotation = annotationJsonApi.createAnnotation(testAnnotation);
-		Annotation annotationObject = JsonUtils.toAnnotationObject(annotation);
-		assertNotNull(annotation);
+		Annotation annotationObject = createTestAnnotationObject();
 		
 		/**
 		 * set annotation status
@@ -214,5 +203,54 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 				TEST_STATUS, "0", "10");
 		assertNotNull(statusLogsStr);
 	}
+
+	
+	@Test(expected=Exception.class)
+	public void checkAnnotationVisibility() {
+		
+		Annotation annotationObject = createTestAnnotationObject();
+		
+		/**
+		 * check original annotation visibility
+		 */
+		String enabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
+		assertNotNull(enabledAnnotation);
+//		assertFalse(enabledAnnotation.isDisabled());
+		
+		/**
+		 * checking visibility with wrong user should throw an exception 
+		 */
+		annotationJsonApi.checkVisibility(annotationObject, "anonymous");
+		
+		/**
+		 * disable annotation
+		 */
+		String updatedAnnotation = annotationJsonApi.disableAnnotation(
+				annotationObject.getAnnotationId().getProvider()
+				, annotationObject.getAnnotationId().getAnnotationNr());
+		assertNotNull(updatedAnnotation);
+		annotationObject.setDisabled(true);
+		
+		/**
+		 * check visibility of the disabled annotation
+		 */
+		String disabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
+		assertNotNull(disabledAnnotation);
+//		assertTrue(disabledAnnotation.isDisabled());
+	}
+
+	
+	/**
+	 * Create a test annotation object.
+	 * @return annotation object
+	 */
+	private Annotation createTestAnnotationObject() {
+		Annotation testAnnotation = createBaseObjectTagInstance();	
+		String annotation = annotationJsonApi.createAnnotation(testAnnotation);
+		Annotation annotationObject = JsonUtils.toAnnotationObject(annotation);
+		assertNotNull(annotation);
+		return annotationObject;
+	}
+	
 	
 }

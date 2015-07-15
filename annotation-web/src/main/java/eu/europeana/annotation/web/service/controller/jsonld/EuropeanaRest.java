@@ -22,6 +22,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
+import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -69,7 +70,10 @@ public class EuropeanaRest extends BaseRest{
 			Long annotationNr, String action) {
 		
 		try {
-			Annotation annotation = getAnnotationService().getAnnotationById(provider, annotationNr);
+			Annotation annotationFromDb = getAnnotationService().getAnnotationById(provider, annotationNr);
+			
+			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, null);
+			
 			Annotation resAnnotation = annotationBuilder
 					.copyIntoWebAnnotation(annotation);
 	
@@ -77,6 +81,9 @@ public class EuropeanaRest extends BaseRest{
 			String jsonLd = annotationLd.toString(4);
 	       	
 			return JsonWebUtils.toJson(jsonLd, null);
+		} catch (AnnotationStatusException e) {
+			getLogger().error("An error occured during the invocation of :" + action, e);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);		
 		} catch (Exception e) {
 			getLogger().error("An error occured during the invocation of :" + action, e);
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage(), e);		

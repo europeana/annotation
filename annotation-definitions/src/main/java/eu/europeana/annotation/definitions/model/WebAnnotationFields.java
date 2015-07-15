@@ -10,7 +10,6 @@ public interface WebAnnotationFields {
 	/**
 	 * Helping constants for Annotation mapping to the JSON-LD format 
 	 */
-//	public static final String EU_TYPE              = "euType";
 	public static final String INTERNAL_TYPE        = "oa";
 	public static final String CONTEXT              = "@context";
 	public static final String SPLITTER             = "#";
@@ -25,6 +24,7 @@ public interface WebAnnotationFields {
 	public static final String SAME_AS              = "sameAs";
 	public static final String EQUIVALENT_TO        = "equivalentTo";
 	public static final String STATUS               = "status";
+	public static final String DISABLED             = "disabled";
 	public static final String START_ON             = "startOn";
 	public static final String LIMIT                = "limit";
 	public static final String CONTENT_TYPE         = "contentType";
@@ -141,6 +141,7 @@ public interface WebAnnotationFields {
 	public static final String WSKEY            = "wskey"; 
 	public static final String INDEXING         = "indexing"; 
 	public static final String PROVIDER         = "provider"; 
+	public static final String USER             = "user"; 
 	public static final String ANNOTATION_NR    = "annotationNr"; 
 	public static final String RESOURCE_ID      = "resourceId"; 
 	public static final String JSON_REST        = ".json";

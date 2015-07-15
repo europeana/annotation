@@ -608,4 +608,58 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 		
+	/**
+	 * Sample HTTP request:
+	 *     http://localhost:8081/annotation-web/admin/disable?query=407&europeana_id=%2Fwebanno%2F407&provider=webanno
+	 * @param provider
+	 * @param annotationNr
+	 * @return
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse disableAnnotation(String provider, Long annotationNr) throws IOException {
+		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations 
+		url += "/admin/disable/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (annotationNr != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr;
+
+		String json = getJSONResult(url);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("put:/admin/disable/object.json");
+		aor.setJson(json);
+		return aor;
+	}
+
+		
+	/**
+	 * Sample HTTP request:
+	 *     http://localhost:8081/annotation-web/annotations/check/visibility/{provider}/{annotationNr}/{user}.json?provider=webanno&annotationNr=407&
+	 * @param provider
+	 * @param annotationNr
+	 * @return
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse checkVisibility(Annotation annotation, String user) throws IOException {
+//		public AnnotationOperationResponse checkVisibility(String provider, Long annotationNr) throws IOException {
+		String url = getAnnotationServiceUri();
+		String provider = annotation.getAnnotationId().getProvider();
+		Long annotationNr = annotation.getAnnotationId().getAnnotationNr();
+		url += "/check/visibility/" + provider + "/" + annotationNr + "/" + user + ".json" + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (annotationNr != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER + WebAnnotationFields.EQUALS + user;
+
+		String json = getJSONResult(url);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("get:/annotations/check/visibility/object.json");
+		aor.setJson(json);
+		return aor;
+	}
+
+		
 }

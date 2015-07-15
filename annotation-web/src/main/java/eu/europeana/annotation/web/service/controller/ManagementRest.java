@@ -26,6 +26,7 @@ import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
+import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -348,5 +349,43 @@ public class ManagementRest extends BaseRest {
 		}
 	}
 
+	
+	@RequestMapping(value = "/annotations/check/visibility/{provider}/{annotationNr}/{user}.json"
+			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView checkVisibility (
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr,
+		@RequestParam(value = "user", required = false) String user
+		) {
+
+		String action = "get: /annotations/check/visibility/" + provider + WebAnnotationFields.SLASH + annotationNr + WebAnnotationFields.SLASH + user + ".json";
+		
+//		try {
+			Annotation annotation = getAnnotationService().getAnnotationById(
+//					Annotation annotationFromDb = getAnnotationService().getAnnotationById(
+					provider, annotationNr);
+	
+//			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, null);
+				
+			AnnotationOperationResponse response = new AnnotationOperationResponse(
+					"", action);
+	
+			if (annotation != null) {
+				return getReport(action, WebAnnotationFields.DISABLED + ":" + annotation.isDisabled() 
+						+ ", " + WebAnnotationFields.PROVIDER + ":" + provider 
+						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + annotationNr
+						+ ", " + WebAnnotationFields.USER + ":" + user, "");				
+			}else{
+				String errorMessage = AnnotationOperationResponse.ERROR_VISIBILITY_CHECK;			
+				response = buildErrorResponse(errorMessage, action, "");
+			}
+			return JsonWebUtils.toJson(response, null);
+//		} catch (AnnotationStatusException e) {
+//			getLogger().error("An error occured during the invocation of :" + action, e);
+//			return getValidationReport(null, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);	
+//		}
+	}
+	
 	
 }
