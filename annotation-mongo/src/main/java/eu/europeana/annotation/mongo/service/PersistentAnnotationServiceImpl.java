@@ -355,6 +355,7 @@ public class PersistentAnnotationServiceImpl extends
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
 
 		return getAnnotationDao().findOne(query);
 	}
@@ -366,6 +367,7 @@ public class PersistentAnnotationServiceImpl extends
 //		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
 
 		return getAnnotationDao().findOne(query);
 	}

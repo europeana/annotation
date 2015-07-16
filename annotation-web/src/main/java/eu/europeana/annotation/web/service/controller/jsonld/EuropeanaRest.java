@@ -136,6 +136,7 @@ public class EuropeanaRest extends BaseRest{
 	
 	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@ApiOperation(notes=WebAnnotationFields.SEARCH_NOTES, value="")
 	public ModelAndView searchLd(
 		@RequestParam(value = "wsKey", required = false) String wsKey,
 		@RequestParam(value = "target", required = false) String target,
