@@ -20,24 +20,18 @@ import org.springframework.web.servlet.ModelAndView;
 import com.wordnik.swagger.annotations.Api;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
-import eu.europeana.annotation.definitions.model.impl.BaseProvider;
-import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
-import eu.europeana.annotation.web.model.ProviderOperationResponse;
-import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 
 @Controller
-@Api(value = "admin", description = "Annotation Management Rest Service")
+@Api(value = "admin-annotation", description = "Annotation Management Rest Service")
 public class ManagementRest extends BaseRest {
 
 	@GET
@@ -202,7 +196,7 @@ public class ManagementRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 	
-	@RequestMapping(value = "/providers/{idGeneration}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	/*@RequestMapping(value = "/providers/{idGeneration}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ModelAndView getProviderList (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -258,7 +252,7 @@ public class ManagementRest extends BaseRest {
 		response.setProvider(storedProvider);
 
 		return JsonWebUtils.toJson(response, null);
-	}
+	}*/
 
 	
 	@RequestMapping(value = "/annotations/get/status/{provider}/{annotationNr}.json"

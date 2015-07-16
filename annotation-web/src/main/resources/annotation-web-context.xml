@@ -61,4 +61,9 @@
 		<beans:property name="configuration" ref="configuration"/>
     </beans:bean>	
    
+	<beans:bean id="providerManagementRest" class="eu.europeana.annotation.web.service.controller.ProviderManagementRest">
+		<beans:property name="annotationService" ref="annotationService"/>
+		<beans:property name="configuration" ref="configuration"/>
+    </beans:bean>	
+   
 </beans:beans>
