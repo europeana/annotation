@@ -47,6 +47,7 @@
 		<version.springCore>4.0.9.RELEASE</version.springCore>
 		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
 		<version.spring>4.0.9.RELEASE</version.spring>
+		<version.corelib>2.1-SNAPSHOT</version.corelib>
 	</properties>	 
 	<groupId>eu.europeana</groupId>
 	<version>2.1</version>
