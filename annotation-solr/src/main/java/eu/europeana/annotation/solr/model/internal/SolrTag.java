@@ -1,9 +1,6 @@
 package eu.europeana.annotation.solr.model.internal;
 
-import java.util.Map;
-
 import eu.europeana.annotation.definitions.model.resource.TagResource;
-import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 
 public interface SolrTag extends TagResource {
 

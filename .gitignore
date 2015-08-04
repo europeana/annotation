@@ -1,2 +1,4 @@
 /.project
-/annotation-utils/.classpath
+**/.classpath
+/.settings/
+.classpath

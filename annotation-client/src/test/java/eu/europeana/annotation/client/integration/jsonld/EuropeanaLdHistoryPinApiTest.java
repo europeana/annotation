@@ -1,7 +1,7 @@
 package eu.europeana.annotation.client.integration.jsonld;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.stanbol.commons.exception.JsonParseException;

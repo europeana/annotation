@@ -74,7 +74,7 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 				   throws JsonParseException {
 //				ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 //				ObjectNode root = (ObjectNode) mapper.readTree(jp);
-				Class<? extends Agent> realClass = null;
+				//Class<? extends Agent> realClass = null;
 				
 //				Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 //				while (elementsIterator.hasNext()) {
@@ -88,10 +88,10 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 //					}
 //				}
 				
-				if (realClass == null)
-					return null;
+//				if (realClass == null)
+//					return null;
 				
-				return null; //mapper.readValue(root, realClass);
+					return null; //mapper.readValue(root, realClass);
 		   } 
 	}
 

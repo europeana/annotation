@@ -2,13 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.europeana</groupId>
-		<artifactId>api2</artifactId>
-		<version>2.1</version>
+		<groupId>eu.europeana.annotation</groupId>
+		<artifactId>annotation-api</artifactId>
+		<version>${version.annotationApiSnapshot}</version>
 	</parent>
-	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-utils</artifactId>
-	<version>${version.annotationApiSnapshot}</version>
 	<name>Annotation utils package</name>
 	<description>Comprises common definitions for Annotation</description>
 

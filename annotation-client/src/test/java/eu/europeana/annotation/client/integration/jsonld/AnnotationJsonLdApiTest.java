@@ -1,19 +1,12 @@
 package eu.europeana.annotation.client.integration.jsonld;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
 
-import eu.europeana.annotation.client.AnnotationJsonLdApiImpl;
-import eu.europeana.annotation.client.EuropeanaLdApiImpl;
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
-import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
-import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 
 public class AnnotationJsonLdApiTest  extends BaseJsonLdApiTest {//extends AnnotationTestObjectBuilder {

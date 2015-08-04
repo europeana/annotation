@@ -6,7 +6,6 @@ import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.client.model.result.ConceptOperationResponse;
-import eu.europeana.annotation.definitions.model.concept.Concept;
 
 public class ConceptJsonApiImpl extends BaseAnnotationApi implements ConceptJsonApi {
 

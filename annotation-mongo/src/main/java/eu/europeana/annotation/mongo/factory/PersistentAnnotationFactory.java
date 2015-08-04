@@ -7,6 +7,7 @@ import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectLinkingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 
+@SuppressWarnings("deprecation")
 public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 
 	private static PersistentAnnotationFactory singleton;

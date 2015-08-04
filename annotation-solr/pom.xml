@@ -14,13 +14,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>api2</artifactId>
-		<groupId>eu.europeana</groupId>
-		<version>2.1</version>
-		<relativePath>../api2/pom.xml</relativePath>
+		<artifactId>annotation-api</artifactId>
+		<groupId>eu.europeana.annotation</groupId>
+		<version>${version.annotationApiSnapshot}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-solr</artifactId>
 	<name>Europeana Annotation - Solr index management </name>
 	<url>http://www.europeanalabs.eu</url>
@@ -102,7 +101,13 @@
                 <groupId>org.apache.solr</groupId>
                 <artifactId>solr-core</artifactId>
                 <version>${version.apacheSolr}</version>
-        </dependency>
+                <exclusions>
+                	<exclusion>
+                		<artifactId>jdk.tools</artifactId>
+                		<groupId>jdk.tools</groupId>
+                	</exclusion>
+                </exclusions>
+		</dependency>
 	    <dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-test-framework</artifactId>
@@ -120,23 +125,9 @@
 		    <version>${version.apacheSolr}</version>
         </dependency>			
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</build>
+	
 	<organization>
 		<name>Europeana Foundation</name>
 	</organization>
 	
-	<version>${version.annotationApiSnapshot}</version>
 </project>

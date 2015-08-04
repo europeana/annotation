@@ -15,7 +15,6 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidConceptException;
 import eu.europeana.annotation.mongo.model.PersistentConceptImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentConcept;
-import eu.europeana.annotation.mongo.model.internal.PersistentProvider;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
 public class PersistentConceptServiceImpl extends
@@ -71,6 +70,7 @@ public class PersistentConceptServiceImpl extends
 		validateDeleteResult(res);
 	}
 
+	@SuppressWarnings("deprecation")
 	protected void validateDeleteResult(WriteResult res)
 			throws AnnotationMongoException {
 		int affected = res.getN();
@@ -118,7 +118,7 @@ public class PersistentConceptServiceImpl extends
 		return store(concept);
 	}
 
-	private void validateConcept(PersistentConcept concept) throws InvalidConceptException {
+	void validateConcept(PersistentConcept concept) throws InvalidConceptException {
 //		if (concept.getCreator() == null)
 //			throw new InvalidConceptException(
 //					InvalidConceptException.MESSAGE_NULL_ATTRIBUTE + "creator");

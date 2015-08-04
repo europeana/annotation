@@ -14,13 +14,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>api2</artifactId>
-		<groupId>eu.europeana</groupId>
-		<version>2.1</version>
-		<relativePath>../api2/pom.xml</relativePath>
+		<artifactId>annotation-api</artifactId>
+		<groupId>eu.europeana.annotation</groupId>
+		<version>${version.annotationApiSnapshot}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-mongo</artifactId>
 	<name>Europeana Annotation - Mongo based persistance </name>
 	<url>http://www.europeanalabs.eu</url>
@@ -58,6 +57,7 @@
 
 		
 		<!-- TESTING PURPOSES -->
+		<!-- 
 		<dependency>
 			<groupId>eu.europeana.corelib</groupId>
 			<artifactId>corelib-db</artifactId>
@@ -65,7 +65,7 @@
 			<classifier>test</classifier>
 			<scope>test</scope>
 		</dependency>
-		
+		 -->
 		<dependency>
 			<scope>test</scope>
 			<groupId>org.springframework</groupId>
@@ -75,42 +75,8 @@
 		
 	</dependencies>
 	
-	<build>
-		<!--  configure source and output locations -->
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
-
-		<!--  plugins -->
-		<plugins>
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</build>
 	<organization>
 		<name>Europeana Foundation</name>
 	</organization>
 	
-	<version>${version.annotationApiSnapshot}</version>
 </project>

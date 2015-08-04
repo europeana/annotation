@@ -15,7 +15,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.factory.impl.ConceptObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
 public class ConceptDeserializer extends StdDeserializer<Concept> {
 	

@@ -68,7 +68,8 @@ public class HttpConnection {
     }
 
     
-    public String getURLContentWithBody(String url, String jsonParamValue) throws IOException {
+    @SuppressWarnings("deprecation")
+	public String getURLContentWithBody(String url, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
         post.setRequestBody(jsonParamValue);

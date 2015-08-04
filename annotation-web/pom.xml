@@ -2,15 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>api2</artifactId>
-		<groupId>eu.europeana</groupId>
-		<version>2.1</version>
-		<relativePath>../api2/pom.xml</relativePath>
+		<artifactId>annotation-api</artifactId>
+		<groupId>eu.europeana.annotation</groupId>
+		<version>${version.annotationApiSnapshot}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>eu.europeana.creative</groupId>
 	<artifactId>annotation-web</artifactId>
-	<version>2.1-SNAPSHOT</version>
 	<name>annotation</name>
 	<packaging>war</packaging>
 	<description>The implementation of the &quot;annotation&quot; service</description>
@@ -64,9 +62,9 @@
 
 		<!-- annotation projects -->
 		<dependency>
-			<groupId>eu.europeana</groupId>
+			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>api2-common</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${version.annotationApiSnapshot}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2007-2013 The Europeana Foundation Licenced under the EUPL, 
+	Version 1.1 (the "Licence") and subsequent versions as approved by the European 
+	Commission; You may not use this work except in compliance with the Licence. 
+	You may obtain a copy of the Licence at: http://joinup.ec.europa.eu/software/page/eupl 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the Licence is distributed on an "AS IS" basis, without warranties 
+	or conditions of any kind, either express or implied. See the Licence for 
+	the specific language governing permissions and limitations under the Licence. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>eu.europeana.annotation</groupId>
+	<artifactId>annotation-api</artifactId>
+	<version>0.2.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Annotation API parent</name>
+	<!--
+	<url>http://www.europeana.eu</url>
+	-->
+	<parent>
+		<artifactId>api2</artifactId>
+		<groupId>eu.europeana</groupId>
+		<version>2.1-SNAPSHOT</version>
+		<relativePath>./api2/pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<version.europeanaCorelib>2.1-SNAPSHOT</version.europeanaCorelib>
+		<version.annotationApi>0.2.1</version.annotationApi>
+		<version.annotationApiSnapshot>${version.annotationApi}-SNAPSHOT</version.annotationApiSnapshot>
+		<version.java>1.7</version.java>
+		
+	</properties>
+	<modules>
+		<module>api2-common</module>
+		<module>annotation-definitions</module>
+		<module>annotation-utils</module>
+		<!--
+		<module>annotation-dereferenciation</module>
+		-->
+		<module>annotation-mongo</module>
+		<module>annotation-solr</module>
+		<module>annotation-web</module>
+		
+	</modules>
+	<build>
+		<!--  configure source and output locations -->
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${artifactId}-${version}</finalName>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<!-- 
+		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
+		 -->
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+
+		<!--  plugins -->
+		<plugins>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

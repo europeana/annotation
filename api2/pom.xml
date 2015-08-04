@@ -21,6 +21,7 @@
 	<packaging>pom</packaging>
 	<name>Europeana API2 parent</name>
 	<url>http://www.europeanalabs.eu</url>
+	
 	<parent>
 		<artifactId>corelib</artifactId>
 		<groupId>eu.europeana</groupId>
@@ -40,8 +41,6 @@
 	</properties>
 	 -->	
 	<properties>
-		<version.annotationApi>2.1</version.annotationApi>
-		<version.annotationApiSnapshot>${version.annotationApi}-SNAPSHOT</version.annotationApiSnapshot>
 		<version.junit>4.11</version.junit>
 		<version.springAop>4.0.9.RELEASE</version.springAop>
 		<version.springCore>4.0.9.RELEASE</version.springCore>
@@ -49,6 +48,5 @@
 		<version.spring>4.0.9.RELEASE</version.spring>
 		<version.corelib>2.1-SNAPSHOT</version.corelib>
 	</properties>	 
-	<groupId>eu.europeana</groupId>
-	<version>2.1</version>
+	
 </project>

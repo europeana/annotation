@@ -39,6 +39,7 @@ public class SolrStarter {
 		this(new ClassPathXmlApplicationContext(new String[] { "annotation-solr-context.xml"}));
 	}
 
+	@SuppressWarnings("resource")
 	public SolrStarter(ApplicationContext context) {
 		context = new ClassPathXmlApplicationContext(
 				new String[] {"annotation-solr-context.xml"});
