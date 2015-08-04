@@ -25,6 +25,14 @@
 		<version>2.1-SNAPSHOT</version>
 		<relativePath>./api2/pom.xml</relativePath>
 	</parent>
+	
+	<repositories>
+		<repository>
+			<id>libs-snapshots-local</id>
+			<name>europeana-snapshots</name>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
