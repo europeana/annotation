@@ -19,12 +19,21 @@
 	<!--
 	<url>http://www.europeana.eu</url>
 	-->
+	
 	<parent>
-		<artifactId>api2</artifactId>
+		<artifactId>corelib</artifactId>
 		<groupId>eu.europeana</groupId>
 		<version>2.1-SNAPSHOT</version>
-		<relativePath>./api2/pom.xml</relativePath>
 	</parent>
+	
+	<repositories>
+		<repository>
+			<id>libs-snapshots-local</id>
+			<name>europeana-snapshots</name>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
+		</repository>
+	</repositories>
+	
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,6 +42,12 @@
 		<version.annotationApi>0.2.1</version.annotationApi>
 		<version.annotationApiSnapshot>0.2.1-SNAPSHOT</version.annotationApiSnapshot>
 		<version.java>1.7</version.java>
+		<version.junit>4.11</version.junit>
+		<version.springAop>4.0.9.RELEASE</version.springAop>
+		<version.springCore>4.0.9.RELEASE</version.springCore>
+		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
+		<version.spring>4.0.9.RELEASE</version.spring>
+		<version.corelib>2.1-SNAPSHOT</version.corelib>
 		
 	</properties>
 	<modules>
