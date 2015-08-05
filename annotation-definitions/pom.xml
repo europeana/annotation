@@ -16,9 +16,7 @@
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
-		<!-- 
-		<version>${version.annotationApiSnapshot}</version>
-		 -->
+		<!-- <version>${version.annotationApiSnapshot}</version> -->
 		<version>0.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
@@ -29,7 +27,7 @@
 		<name>Europeana Foundation + AIT</name>
 	</organization>
 	<url>http://www.europeanalabs.eu</url>
-	
+
 	<dependencies>
 		<!-- Corelib -->
 		<!-- <dependency> <groupId>eu.europeana.corelib</groupId> <artifactId>corelib-utils</artifactId> 
@@ -44,10 +42,25 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0</version>
-		</dependency>		
-			
+		</dependency>
+
 	</dependencies>
-	
-	
-	
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

@@ -177,6 +177,9 @@
 			<version>${version.annotationApiSnapshot}</version>
 			<classifier>test</classifier>
 			<scope>test</scope>
+			<!--  -->
+			<type>test-jar</type>
+
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
