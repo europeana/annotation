@@ -26,20 +26,12 @@
 		<relativePath>./api2/pom.xml</relativePath>
 	</parent>
 	
-	<repositories>
-		<repository>
-			<id>libs-snapshots-local</id>
-			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
-		</repository>
-	</repositories>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.europeanaCorelib>2.1-SNAPSHOT</version.europeanaCorelib>
 		<version.annotationApi>0.2.1</version.annotationApi>
-		<version.annotationApiSnapshot>${version.annotationApi}-SNAPSHOT</version.annotationApiSnapshot>
+		<version.annotationApiSnapshot>0.2.1-SNAPSHOT</version.annotationApiSnapshot>
 		<version.java>1.7</version.java>
 		
 	</properties>
