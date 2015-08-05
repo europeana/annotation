@@ -8,7 +8,10 @@
 	<parent>
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-api</artifactId>
+		<!-- 
 		<version>${version.annotationApiSnapshot}</version>
+		 -->
+		<version>0.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
