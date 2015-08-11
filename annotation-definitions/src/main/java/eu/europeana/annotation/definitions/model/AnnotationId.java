@@ -12,9 +12,9 @@ public interface AnnotationId extends Serializable {
 //	
 //	public void setResourceId(String resourceId);
 
-	public void setAnnotationNr(Long nr);
+	public void setIdentifier(String identifier);
 
-	public Long getAnnotationNr();
+	public String getIdentifier();
 
 	/**
 	 * Provider name e.g. 'webanno' or 'historypin'

@@ -60,11 +60,11 @@ public class WebAnnotationProtocolRest extends BaseRest{
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true) Long annotationNr
+		@RequestParam(value = "identifier", required = true) String identifier
 		) {
 		
 		String action = "get:/annotation.jsonld";
-		return getAnnotation(apiKey, provider, annotationNr, action);	
+		return getAnnotation(apiKey, provider, identifier, action);	
 	}
 
 	private ModelAndView getAnnotation(String apiKey, String provider,
@@ -98,7 +98,7 @@ public class WebAnnotationProtocolRest extends BaseRest{
 			@RequestParam(value = "wskey", required = false) String wskey,
 			@PathVariable(value = "motivation") String motivation,
 			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
-			@RequestParam(value = "annotationNr", required = false) Long annotationNr,
+			@RequestParam(value = "identifier", required = false) String identifier,
 			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 			@RequestBody String annotation) {
 
@@ -112,7 +112,7 @@ public class WebAnnotationProtocolRest extends BaseRest{
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotationStr);
 	
-			AnnotationId annoId = buildAnnotationId(provider, annotationNr);
+			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// check whether annotation vor given provider and annotationNr already exist in database
 			if (getAnnotationService().existsInDb(annoId)) 

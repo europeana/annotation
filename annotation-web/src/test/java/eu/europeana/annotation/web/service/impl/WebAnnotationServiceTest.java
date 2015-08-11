@@ -184,7 +184,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 //						AnnotationTestObjectBuilder.TEST_COLLECTION
 //						, AnnotationTestObjectBuilder.TEST_OBJECT
 						WebAnnotationFields.PROVIDER_HISTORY_PIN
-						, 1L);
+						, "1");
 //		, testAnnotation.getSameAs());
 				
 		testAnnotation.setAnnotationId(annoId);		
@@ -279,9 +279,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Delete Annotation.
 		 */
 		webAnnotationService.deleteAnnotation(
-//				storedAnnotation.getAnnotationId().getResourceId()
 				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getAnnotationNr());
+				, storedAnnotation.getAnnotationId().getIdentifier());
 		
 		/**
 		 * Search Annotation.
@@ -314,7 +313,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		webAnnotationService.indexAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
 				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getAnnotationNr());
+				, storedAnnotation.getAnnotationId().getIdentifier());
 		
 		/**
 		 * Search Annotation.
@@ -341,7 +340,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation disabledAnnotation = webAnnotationService.disableAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
 				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getAnnotationNr());
+				, storedAnnotation.getAnnotationId().getIdentifier());
 		
 		/**
 		 * Search Annotation.
@@ -366,7 +365,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		webAnnotationService.deleteAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
 				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getAnnotationNr());
+				, storedAnnotation.getAnnotationId().getIdentifier());
 		
 		/**
 		 * Delete Annotation.

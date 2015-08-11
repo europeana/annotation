@@ -150,17 +150,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 	
 	@Override
-	public Annotation getAnnotationById(String provider, Long annotationNr) {
-		return getMongoPersistence().find(provider, annotationNr);
+	public Annotation getAnnotationById(String provider, String identifier) {
+		return getMongoPersistence().find(provider, identifier);
 		
 	}
 
-	@Override
-	public Annotation getAnnotationById(String resourceId, String provider,
-			Long annotationNr) {
-		return getMongoPersistence().find(resourceId, provider, annotationNr);
-		
-	}
+//	@Override
+//	public Annotation getAnnotationById(String provider,
+//			String identifier) {
+//		return getMongoPersistence().find(provider, identifier);
+//		
+//	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
@@ -574,26 +574,26 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 //	public void deleteAnnotation(String resourceId, String provider, Long annotationNr) {
-	public void deleteAnnotation(String provider, Long annotationNr) {
+	public void deleteAnnotation(String provider, String identifier) {
         try {
 //    		Annotation res =  getMongoPersistance().findByID(String.valueOf(annotationNr));
 //    		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
-    		Annotation res =  getMongoPersistence().find(provider, annotationNr);
+    		Annotation res =  getMongoPersistence().find(provider, identifier);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
     	    getSolrService().delete(indexedAnnotation);
         } catch (Exception e) {
         	throw new RuntimeException(e);
         }
 //		getMongoPersistence().remove(resourceId, provider, annotationNr);
-		getMongoPersistence().remove(provider, annotationNr);
+		getMongoPersistence().remove(provider, identifier);
 	}
 
 	@Override
 //	public void indexAnnotation(String resourceId, String provider, Long annotationNr) {
-	public void indexAnnotation(String provider, Long annotationNr) {
+	public void indexAnnotation(String provider, String identifier) {
         try {
 //    		Annotation res =  getMongoPersistence().find(resourceId, provider, annotationNr);
-    		Annotation res =  getMongoPersistence().find(provider, annotationNr);
+    		Annotation res =  getMongoPersistence().find(provider, identifier);
        	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
     	    getSolrService().delete(indexedAnnotation);
     	    getSolrService().store(indexedAnnotation);
@@ -604,10 +604,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 //	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr) {
-	public Annotation disableAnnotation(String provider, Long annotationNr) {
+	public Annotation disableAnnotation(String provider, String identifier) {
         try {
 //    		Annotation res = getMongoPersistence().find(resourceId, provider, annotationNr);
-    		Annotation res = getMongoPersistence().find(provider, annotationNr);
+    		Annotation res = getMongoPersistence().find(provider, identifier);
     	    SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
     	    indexedAnnotation.setAnnotationId(res.getAnnotationId());
     	    getSolrService().delete(indexedAnnotation);
@@ -678,7 +678,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public boolean existsInDb(AnnotationId annoId) {
 		boolean res = false;
         try {
-    		Annotation dbRes =  getMongoPersistence().find(annoId.getProvider(), annoId.getAnnotationNr());
+    		Annotation dbRes =  getMongoPersistence().find(annoId.getProvider(), annoId.getIdentifier());
     		if (dbRes != null)
     			res = true;
         } catch (Exception e) {
@@ -754,7 +754,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		Annotation res = null;
 		res = getMongoPersistence().find(
 				  annotation.getAnnotationId().getProvider()
-				  , annotation.getAnnotationId().getAnnotationNr());
+				  , annotation.getAnnotationId().getIdentifier());
 		if (res.isDisabled())
 			throw new AnnotationStatusException("Annotation is not accessible.");
 		 

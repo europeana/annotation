@@ -37,7 +37,7 @@ public class AnnotationTestDataBuilder {
 //		assertEquals(persistantObject.getAnnotationId().getResourceId(),
 //				storedAnnotation.getAnnotationId().getResourceId());
 	
-		assertNotNull(storedAnnotation.getAnnotationId().getAnnotationNr());
+		assertNotNull(storedAnnotation.getAnnotationId().getIdentifier());
 		assertNotNull(((PersistentAnnotation) storedAnnotation)
 				.getAnnotatedAt());
 		assertEquals(

@@ -51,10 +51,10 @@ public abstract class AbstractAnnotation implements Annotation {
 	     * equality check for all relevant fields.
 	     */
 	    if ((this.getAnnotationId() != null) && (that.getAnnotationId() != null) &&
-	    		(this.getAnnotationId().getAnnotationNr() != null) && (that.getAnnotationId().getAnnotationNr() != null) &&
+	    		(this.getAnnotationId().getIdentifier() != null) && (that.getAnnotationId().getIdentifier() != null) &&
 //	    		(this.getAnnotationId().getResourceId() != null) && (that.getAnnotationId().getResourceId() != null) &&
 	    		(this.getAnnotationId().getProvider() != null) && (that.getAnnotationId().getProvider() != null) &&
-	    		(!this.getAnnotationId().getAnnotationNr().equals(that.getAnnotationId().getAnnotationNr())
+	    		(!this.getAnnotationId().getIdentifier().equals(that.getAnnotationId().getIdentifier())
 //	    		|| !this.getAnnotationId().getResourceId().equals(that.getAnnotationId().getResourceId())
 	    		)) {
 	    	System.out.println("Annotation objects have different 'annotationId' objects.");
@@ -209,7 +209,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	        	//computed from the end of the url
 	        	int providerPosition = arrValue.length - 2;
 	        	//computed from the end of the url
-	        	int annotationNrPosition = arrValue.length - 1;
+	        	int identifierPosition = arrValue.length - 1;
 					        	
 				//String collection = arrValue[collectionPosition];
 	        	//String object     = arrValue[objectPosition];
@@ -221,9 +221,9 @@ public abstract class AbstractAnnotation implements Annotation {
 				String provider = arrValue[providerPosition];
 				if (StringUtils.isNotEmpty(provider))
 					annoId.setProvider(provider);
-				String annotationNrStr = arrValue[annotationNrPosition];
-				if (StringUtils.isNotEmpty(annotationNrStr))
-					annoId.setAnnotationNr(Long.parseLong(annotationNrStr));
+				String identifier = arrValue[identifierPosition];
+				if (StringUtils.isNotEmpty(identifier))
+					annoId.setIdentifier(identifier);
 	        }
 		}
 		return annoId;

@@ -180,9 +180,9 @@ public class BaseJsonLdApiTest {
 		
 		assertEquals(provider, annotation.getAnnotationId().getProvider());
 		if (provider.equals(WebAnnotationFields.PROVIDER_WEBANNO))
-			assertTrue(annotation.getAnnotationId().getAnnotationNr() != null);
+			assertTrue(annotation.getAnnotationId().getIdentifier() != null);
 		else
-			assertEquals((Long)annotationNr, annotation.getAnnotationId().getAnnotationNr());
+			assertEquals((Long)annotationNr, annotation.getAnnotationId().getIdentifier());
 		
 	}
 	

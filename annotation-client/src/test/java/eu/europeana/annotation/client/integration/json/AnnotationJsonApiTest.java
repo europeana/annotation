@@ -152,7 +152,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String updatedAnnotation = annotationJsonApi.setAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr()
+				, annotationObject.getAnnotationId().getIdentifier()
 				, TEST_STATUS);
 		assertNotNull(updatedAnnotation);
 		
@@ -161,7 +161,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String retrievedAnnotationStatusResponse = annotationJsonApi.getAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr());
+				, annotationObject.getAnnotationId().getIdentifier());
 //		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(retrievedAnnotation);
 //		Annotation updatedAnnotationObject = JsonUtils.toAnnotationObject(annotationJsonString);
 //		Annotation retrievedAnnotationObject = JsonUtils.toAnnotationObject(retrievedAnnotation);
@@ -179,7 +179,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String updatedAnnotation = annotationJsonApi.setAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr()
+				, annotationObject.getAnnotationId().getIdentifier()
 				, TEST_STATUS);
 		assertNotNull(updatedAnnotation);
 		
@@ -188,7 +188,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String retrievedAnnotationStatusResponse = annotationJsonApi.getAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr());
+				, annotationObject.getAnnotationId().getIdentifier());
 		assertTrue(retrievedAnnotationStatusResponse.contains(TEST_STATUS));
 		/*String retrievedAnnotation = annotationJsonApi.getAnnotationStatus(
 				annotationObject.getAnnotationId().getProvider()
@@ -220,7 +220,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		 */
 		String updatedAnnotation = annotationJsonApi.disableAnnotation(
 				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr());
+				, annotationObject.getAnnotationId().getIdentifier());
 		assertNotNull(updatedAnnotation);
 		annotationObject.setDisabled(true);
 		

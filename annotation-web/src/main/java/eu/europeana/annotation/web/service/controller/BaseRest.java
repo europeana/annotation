@@ -191,7 +191,7 @@ public class BaseRest {
 	}
 
 	//
-	protected AnnotationId buildAnnotationId(String provider, Long annotationNr) throws ParamValidationException {
+	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
 		// validate input parameters
 //		if (!getAnnotationIdHelper().validateEuropeanaProvider(webAnnotation, provider)) 
 //			
@@ -204,21 +204,22 @@ public class BaseRest {
 //		collection = getAnnotationIdHelper().extractCollectionFromResourceId(resourceId);
 //		object = getAnnotationIdHelper().extractObjectFromResourceId(resourceId);
 
-		validateProviderAndAnnotationNr(provider, annotationNr);
+		validateProviderAndAnnotationNr(provider, identifier);
 		
 		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(provider, annotationNr);
+				.initializeAnnotationId(provider, identifier);
 		return annoId;
 	}
 	
 	
-	private void validateProviderAndAnnotationNr(String provider, Long annotationNr) throws ParamValidationException {
+	private void validateProviderAndAnnotationNr(String provider, String identifier) throws ParamValidationException {
 		if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider)){
-			if(annotationNr== null ||  annotationNr<1)
-				throw new ParamValidationException(WebAnnotationFields.INVALID_ANNOTATION_NR + " " + provider + ":" + annotationNr);
+			//TODO: check if nummeric condition still required
+			if(identifier== null ||  Long.parseLong(identifier)<1)
+				throw new ParamValidationException(WebAnnotationFields.INVALID_ANNOTATION_NR + " " + provider + ":" + identifier);
 		}else if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
-			if(annotationNr!= null)
-				throw new ParamValidationException(WebAnnotationFields.UNNECESSARY_ANNOTATION_NR + " " + provider + ":" + annotationNr);
+			if(identifier!= null)
+				throw new ParamValidationException(WebAnnotationFields.UNNECESSARY_ANNOTATION_NR + " " + provider + ":" + identifier);
 		}else{
 			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER + " " + provider);
 		}

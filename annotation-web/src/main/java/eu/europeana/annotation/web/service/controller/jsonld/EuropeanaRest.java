@@ -46,11 +46,11 @@ public class EuropeanaRest extends BaseRest{
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 //		@RequestParam(value = "profile", required = false) String profile,
 		@PathVariable(value = "provider") String provider,
-		@PathVariable(value = "annotationNr") Long annotationNr
+		@PathVariable(value = "identifier") String identifier
 		) {
 		
 		String action = "get:/annotationld/{provider}/{annotationNr}.jsonld";
-		return getAnnotation(apiKey, provider, annotationNr, action);	
+		return getAnnotation(apiKey, provider, identifier, action);	
 	}
 
 //	@RequestMapping(value = "/annotation.jsonld?provider=&annotationNr=", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,18 +59,18 @@ public class EuropeanaRest extends BaseRest{
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true) Long annotationNr
+		@RequestParam(value = "identifier", required = true) String identifier
 		) {
 		
 		String action = "get:/annotation.jsonld";
-		return getAnnotation(apiKey, provider, annotationNr, action);	
+		return getAnnotation(apiKey, provider, identifier, action);	
 	}
 
 	private ModelAndView getAnnotation(String apiKey, String provider,
-			Long annotationNr, String action) {
+			String identifier, String action) {
 		
 		try {
-			Annotation annotationFromDb = getAnnotationService().getAnnotationById(provider, annotationNr);
+			Annotation annotationFromDb = getAnnotationService().getAnnotationById(provider, identifier);
 			
 			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, null);
 			
@@ -97,7 +97,7 @@ public class EuropeanaRest extends BaseRest{
 			@RequestParam(value = "wskey", required = false) String wskey,
 			@PathVariable(value = "motivation") String motivation,
 			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
-			@RequestParam(value = "annotationNr", required = false) Long annotationNr,
+			@RequestParam(value = "identifier", required = false) String identifier,
 			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 			@RequestBody String annotation) {
 
@@ -111,7 +111,7 @@ public class EuropeanaRest extends BaseRest{
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotationStr);
 	
-			AnnotationId annoId = buildAnnotationId(provider, annotationNr);
+			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// check whether annotation vor given provider and annotationNr already exist in database
 			if (getAnnotationService().existsInDb(annoId)) 

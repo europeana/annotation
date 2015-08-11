@@ -133,9 +133,9 @@ public interface AnnotationService {
 	 * This method deletes annotation by annotationId values.
 	 * @param resourceId
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 */
-	public void deleteAnnotation(String provider, Long annotationNr);
+	public void deleteAnnotation(String provider, String identifier);
 //	public void deleteAnnotation(String resourceId, String provider, Long annotationNr);
 
 	/**
@@ -144,9 +144,9 @@ public interface AnnotationService {
 	 * in solr/annotation.
 	 * @param resourceId
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 */
-	public void indexAnnotation(String provider, Long annotationNr);
+	public void indexAnnotation(String provider, String identifier);
 //	public void indexAnnotation(String resourceId, String provider, Long annotationNr);
 	
 	/**
@@ -169,15 +169,15 @@ public interface AnnotationService {
 	 */
 	public Annotation getAnnotationById(String provider, String annotationNr);
 	
-	/**
-	 * This method returns annotation object for given annotationId that
-	 * comprises europeanaId, provider and annotationNr.
-	 * @param europeanaId
-	 * @param provider
-	 * @param annotationNr
-	 * @return annotation object
-	 */
-	public Annotation getAnnotationById(String europeanaId, String provider, Long annotationNr);
+//	/**
+//	 * This method returns annotation object for given annotationId that
+//	 * comprises europeanaId, provider and annotationNr.
+//	 * @param europeanaId
+//	 * @param provider
+//	 * @param annotationNr
+//	 * @return annotation object
+//	 */
+//	public Annotation getAnnotationById(String europeanaId, String provider, Long annotationNr);
 	
 	/**
 	 * Search for annotations by the given text query.
@@ -195,6 +195,7 @@ public interface AnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException 
 	 */
+	//TODO: change parameters to integers
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit) 
 			throws AnnotationServiceException;
 	

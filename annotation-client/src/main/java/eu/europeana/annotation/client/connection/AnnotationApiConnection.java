@@ -529,22 +529,22 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 *     //http://localhost:8081/annotation-web/annotations/set/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214&status=public
 	 *     http://localhost:8081/annotation-web/admin/set/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=294&status=public
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 * @param status
 	 * @return
 	 * @throws IOException
 	 */
-	public AnnotationOperationResponse setAnnotationStatus(String provider, Long annotationNr, String status) throws IOException {
+	public AnnotationOperationResponse setAnnotationStatus(String provider, String identifier, String status) throws IOException {
 		String url = getAnnotationServiceUri().replace("annotations","admin"); // current annotation service uri is .../annotation-web/annotations
 //		String url = getAnnotationServiceUri(); 
 //		url += "/set/status/{provider}/{annotationNr}.json" + WebAnnotationFields.PAR_CHAR;
 //		url += "/set/status/provider/annotationNr.json" + WebAnnotationFields.PAR_CHAR;
-		url += "/set/status/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
+		url += "/set/status/" + provider + "/" + identifier + ".json" + WebAnnotationFields.PAR_CHAR;
 //		url += "/set/status.json" + WebAnnotationFields.PAR_CHAR;
 //		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
-		if (annotationNr != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+		if (identifier != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
 		url += WebAnnotationFields.STATUS + WebAnnotationFields.EQUALS + status;
 
 //		String json = getJSONResult(url);
@@ -586,17 +586,17 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * Sample HTTP request:
 	 *     http://localhost:8081/annotation-web/annotations/get/status/{provider}/{annotationNr}.json?provider=webanno&annotationNr=214
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 * @param status
 	 * @return
 	 * @throws IOException
 	 */
-	public AnnotationOperationResponse getAnnotationStatus(String provider, Long annotationNr) throws IOException {
+	public AnnotationOperationResponse getAnnotationStatus(String provider, String identifier) throws IOException {
 		String url = getAnnotationServiceUri(); 
-		url += "/get/status/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
+		url += "/get/status/" + provider + "/" + identifier + ".json" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
-		if (annotationNr != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr;
+		if (identifier != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + identifier;
 
 		String json = getJSONResult(url);
 		
@@ -612,13 +612,13 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * Sample HTTP request:
 	 *     http://localhost:8081/annotation-web/admin/annotation/disable/webanno/441.json
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 * @return
 	 * @throws IOException
 	 */
-	public AnnotationOperationResponse disableAnnotation(String provider, Long annotationNr) throws IOException {
+	public AnnotationOperationResponse disableAnnotation(String provider, String identifier) throws IOException {
 		String url = getAnnotationServiceUri().replace("/annotations",""); // current annotation service uri is .../annotation-web/annotations 
-		url += "/admin/annotation/disable/" + provider + "/" + annotationNr + ".json";
+		url += "/admin/annotation/disable/" + provider + "/" + identifier + ".json";
 //		url += "/admin/annotation/disable/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
 //		url += "/admin/annotation/disable" + WebAnnotationFields.PAR_CHAR;
 //		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
@@ -649,11 +649,11 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		public AnnotationOperationResponse checkVisibility(String provider, Long annotationNr) throws IOException {
 		String url = getAnnotationServiceUri();
 		String provider = annotation.getAnnotationId().getProvider();
-		Long annotationNr = annotation.getAnnotationId().getAnnotationNr();
-		url += "/check/visibility/" + provider + "/" + annotationNr + "/" + user + ".json" + WebAnnotationFields.PAR_CHAR;
+		String identifier = annotation.getAnnotationId().getIdentifier();
+		url += "/check/visibility/" + provider + "/" + identifier + "/" + user + ".json" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
-		if (annotationNr != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+		if (identifier != null)
+			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
 		url += WebAnnotationFields.USER + WebAnnotationFields.EQUALS + user;
 
 		String json = getJSONResult(url);

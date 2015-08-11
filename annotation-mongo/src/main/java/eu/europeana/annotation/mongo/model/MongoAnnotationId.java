@@ -25,7 +25,7 @@ public class MongoAnnotationId extends BaseAnnotationId implements PersistentObj
 		if(volatileObject instanceof AnnotationId){
 //			this.setResourceId(((AnnotationId) volatileObject).getResourceId());
 			this.setProvider(((AnnotationId) volatileObject).getProvider());
-			this.setAnnotationNr(((AnnotationId) volatileObject).getAnnotationNr());
+			this.setIdentifier(((AnnotationId) volatileObject).getIdentifier());
 			
 		} else
 			throw new AnnotationMongoRuntimeException( volatileObject.getClass().getCanonicalName() + " does not implement the interface " + AnnotationId.class.getCanonicalName());

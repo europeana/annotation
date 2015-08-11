@@ -44,13 +44,13 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier
 		) {
 
-		String resourceId = toResourceId(collection, object);
+		//String resourceId = toResourceId(collection, object);
 		
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				resourceId, provider, annotationNr);
+				provider, identifier);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/collection/object/provider/annotationNr.json");
@@ -68,7 +68,7 @@ public class AnnotationRest extends BaseRest {
 		}else{
 			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
 			String action = "get: /annotations/"+collection + WebAnnotationFields.SLASH
-					+ object + WebAnnotationFields.SLASH + annotationNr+WebAnnotationFields.SLASH + provider + ".json";
+					+ object + WebAnnotationFields.SLASH + identifier+WebAnnotationFields.SLASH + provider + ".json";
 			
 			response = buildErrorResponse(errorMessage, action, apiKey);
 		}
@@ -83,11 +83,11 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier
 		) {
 
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, annotationNr);
+				provider, identifier);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/provider/annotationNr.json");
@@ -103,7 +103,7 @@ public class AnnotationRest extends BaseRest {
 					annotation));
 		}else{
 			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
-			String action = "get: /annotations/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+			String action = "get: /annotations/"+ provider + WebAnnotationFields.SLASH + identifier + ".json";
 			
 			response = buildErrorResponse(errorMessage, action, apiKey);
 		}
@@ -166,7 +166,7 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
-		@RequestParam(value = "annotationNr", required = false) Long annotationNr,
+		@RequestParam(value = "identifier", required = false) String identifier,
 		@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 		@RequestBody String annotation) {
 //		@RequestBody @RequestParam(value = "annotation", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_JSON) String jsonAnno) {
@@ -184,7 +184,7 @@ public class AnnotationRest extends BaseRest {
 
 		//initialize
 		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(provider, annotationNr);
+				.initializeAnnotationId(provider, identifier);
 //		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 				
 		webAnnotation.setAnnotationId(annoId);		
@@ -221,7 +221,7 @@ public class AnnotationRest extends BaseRest {
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
-		@RequestParam(value = "annotationNr", required = false) Long annotationNr,
+		@RequestParam(value = "identifier", required = false) String identifier,
 		@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 		@RequestBody String annotation) {
 
@@ -232,7 +232,7 @@ public class AnnotationRest extends BaseRest {
 			Annotation webAnnotation = JsonUtils.toAnnotationObject(annotation);
 	
 			//validate input params
-			AnnotationId annoId = buildAnnotationId(provider, annotationNr);
+			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// check whether annotation vor given provider and annotationNr already exist in database
 			if (getAnnotationService().existsInDb(annoId)) 

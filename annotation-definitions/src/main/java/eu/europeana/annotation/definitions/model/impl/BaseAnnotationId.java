@@ -11,7 +11,7 @@ public class BaseAnnotationId implements AnnotationId{
 	private static final long serialVersionUID = -5342617580049965304L;
 
 //	private String resourceId;
-	private Long annotationNr = null;
+	private String identifier = null;
 	private String provider;
 
 	public BaseAnnotationId(){
@@ -22,16 +22,16 @@ public class BaseAnnotationId implements AnnotationId{
 //	}
 	
 //	public BaseAnnotationId(String europeanaId, Long annotationNr){
-	public BaseAnnotationId(Long annotationNr){
+	public BaseAnnotationId(String identifier){
 //		this.resourceId = europeanaId;
-		this.annotationNr = annotationNr;
+		this.identifier = identifier;
 	}
 	
 //	public BaseAnnotationId(String europeanaId, String provider, Long annotationNr){
-	public BaseAnnotationId(String provider, Long annotationNr){
+	public BaseAnnotationId(String provider, String identifier){
 //		this.resourceId = europeanaId;
 		this.provider = provider;
-		this.annotationNr = annotationNr;
+		this.identifier = identifier;
 	}
 	
 //	public void setResourceId(String resourceId) {
@@ -44,14 +44,14 @@ public class BaseAnnotationId implements AnnotationId{
 //	}
 
 	@Override
-	public void setAnnotationNr(Long annotationNr) {
-		this.annotationNr = annotationNr;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 
 	}
 
 	@Override
-	public Long getAnnotationNr() {
-		return annotationNr;
+	public String getIdentifier() {
+		return identifier;
 	}
 
 	@Override
@@ -69,10 +69,10 @@ public class BaseAnnotationId implements AnnotationId{
 		//europeana id and annotation number must not be null
 		if(obj instanceof AnnotationId 
 //				&& this.getResourceId() != null 
-				&& this.getAnnotationNr() != null
+				&& this.getIdentifier() != null
 //				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
 				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
-				&& this.getAnnotationNr().equals(((AnnotationId)obj).getAnnotationNr()))
+				&& this.getIdentifier().equals(((AnnotationId)obj).getIdentifier()))
 			return true;
 				
 		return false;
@@ -85,11 +85,7 @@ public class BaseAnnotationId implements AnnotationId{
 	
 	@Override
 	public String toString() {
-		return WebAnnotationFields.ANNOTATION_ID_PREFIX 
-//				+ getResourceId() 
-				+ WebAnnotationFields.SLASH
-				+ getProvider() + WebAnnotationFields.SLASH
-				+ getAnnotationNr();
+		return toUri();
 	}
 
 	@Override
@@ -98,7 +94,7 @@ public class BaseAnnotationId implements AnnotationId{
 				//+ getResourceId() 
 				+ WebAnnotationFields.SLASH
 				+ getProvider() + WebAnnotationFields.SLASH
-				+ getAnnotationNr();
+				+ getIdentifier();
 	}
 	
 }

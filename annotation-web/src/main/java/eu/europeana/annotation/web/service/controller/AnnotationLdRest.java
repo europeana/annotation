@@ -38,13 +38,13 @@ public class AnnotationLdRest extends BaseJsonldRest {
 //		@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 //		@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier
 		) {
 
 //		String resourceId = toResourceId(collection, object);
 		
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, annotationNr);
+				provider, identifier);
 //		resourceId, provider, annotationNr);
 		
 		AnnotationLd annotationLd = new AnnotationLd(annotation);
@@ -63,7 +63,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 //			@RequestParam(value = "collection", required = true, defaultValue = WebAnnotationFields.REST_COLLECTION) String collection,
 //			@RequestParam(value = "object", required = true, defaultValue = WebAnnotationFields.REST_OBJECT) String object,
 			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
-			@RequestParam(value = "annotationNr", required = false) Long annotationNr,
+			@RequestParam(value = "identifier", required = false) String identifier,
 			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
 //			@RequestBody @RequestParam(value = "annotation", required = true) String annotation) {
 			@RequestBody String annotation) {
@@ -81,7 +81,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 		
 		//initialize
 		AnnotationId annoId = annotationIdHelper
-				.initializeAnnotationId(provider, annotationNr);
+				.initializeAnnotationId(provider, identifier);
 //		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 		
 		webAnnotation.setAnnotationId(annoId);		

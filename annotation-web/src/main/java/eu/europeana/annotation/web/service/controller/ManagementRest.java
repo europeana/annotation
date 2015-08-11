@@ -47,7 +47,7 @@ public class ManagementRest extends BaseRest {
 	public AnnotationOperationResponse deleteAnnotationById(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "annotationNr", required = true) String annotationNr,
+		@RequestParam(value = "identifier", required = true) String identifier,
 //		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
 
@@ -57,7 +57,7 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/admin/annotation/delete");
 			
 		try{
-			getAnnotationService().deleteAnnotation(provider, Long.valueOf(annotationNr));
+			getAnnotationService().deleteAnnotation(provider, identifier);
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -74,16 +74,16 @@ public class ManagementRest extends BaseRest {
 	public AnnotationOperationResponse indexAnnotationById(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "query", required = true) String query,
 //		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
-		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "identifier", required = true) String identifier) {
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(
 				apiKey, "/annotations/admin/index");
 			
 		try{
-			getAnnotationService().indexAnnotation(provider, Long.valueOf(query));
+			getAnnotationService().indexAnnotation(provider, identifier);
 //			getAnnotationService().indexAnnotation(resourceId, provider, Long.valueOf(query));
 			response.success = true;
 		} catch (Exception e){
@@ -132,7 +132,7 @@ public class ManagementRest extends BaseRest {
 //		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 //		@RequestParam(value = "annotationNr", required = true) String annotationNr) {
 		@PathVariable(value = "provider") String provider,
-		@PathVariable(value = "annotationNr") String annotationNr) {
+		@PathVariable(value = "identifier") String identifier) {
 
 
 		AnnotationOperationResponse response;
@@ -140,7 +140,7 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/admin/annotation/disable");
 			
 		try{
-			getAnnotationService().disableAnnotation(provider, Long.valueOf(annotationNr));
+			getAnnotationService().disableAnnotation(provider, identifier);
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -260,13 +260,13 @@ public class ManagementRest extends BaseRest {
 	@ResponseBody
 	public ModelAndView getAnnotationStatus (
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr
+		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier
 		) {
 
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, annotationNr);
+				provider, identifier);
 
-		String action = "get: /annotations/get/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+		String action = "get: /annotations/get/status/"+ provider + WebAnnotationFields.SLASH + identifier + ".json";
 		
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				"", action);
@@ -274,7 +274,7 @@ public class ManagementRest extends BaseRest {
 		if (annotation != null) {
 			return getReport(action, WebAnnotationFields.STATUS + ":" + annotation.getStatus() 
 					+ ", " + WebAnnotationFields.PROVIDER + ":" + provider 
-					+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + annotationNr, "");			
+					+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + identifier, "");			
 
 //			response = new AnnotationOperationResponse(
 //					"", "/annotations/get/status/provider/annotationNr.json");
@@ -300,15 +300,15 @@ public class ManagementRest extends BaseRest {
 	@ResponseBody
 	public ModelAndView setAnnotationStatus(
 		@RequestParam(value = "provider", required = true) String provider, // this is an ID provider
-		@RequestParam(value = "annotationNr", required = true) Long annotationNr,
+		@RequestParam(value = "identifier", required = true) String identifier,
 		@RequestParam(value = "status", defaultValue = "public") String status) {
 
 //		String action = "set: /annotations/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
-		String action = "set: /admin/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
+		String action = "set: /admin/set/status/"+ provider + WebAnnotationFields.SLASH + identifier + ".json";
 		
 		try {
 			Annotation annotation = getAnnotationService().getAnnotationById(
-					provider, annotationNr);
+					provider, identifier);
 	
 			if (annotation != null) { 
 				//validate input status
@@ -335,10 +335,10 @@ public class ManagementRest extends BaseRest {
 //				return JsonWebUtils.toJson(response, null);
 				return getReport(action, WebAnnotationFields.STATUS + ":" + updatedAnnotation.getStatus() 
 						+ ", " + WebAnnotationFields.PROVIDER + ":" + updatedAnnotation.getAnnotationId().getProvider() 
-						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + updatedAnnotation.getAnnotationId().getAnnotationNr(), "");			
+						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + updatedAnnotation.getAnnotationId().getIdentifier(), "");			
 			} else {
 				return getValidationReport("", action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND 
-						+ " provider: " + provider + ", annotationNr: " + annotationNr, null);			
+						+ " provider: " + provider + ", annotationNr: " + identifier, null);			
 			}
 		} catch (Exception e) {
 			return getValidationReport("", action, e.getMessage(), e);		
@@ -351,16 +351,16 @@ public class ManagementRest extends BaseRest {
 	@ResponseBody
 	public ModelAndView checkVisibility (
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-		@RequestParam(value = "annotationNr", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) Long annotationNr,
+		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
 		@RequestParam(value = "user", required = false) String user
 		) {
 
-		String action = "get: /annotations/check/visibility/" + provider + WebAnnotationFields.SLASH + annotationNr + WebAnnotationFields.SLASH + user + ".json";
+		String action = "get: /annotations/check/visibility/" + provider + WebAnnotationFields.SLASH + identifier + WebAnnotationFields.SLASH + user + ".json";
 		
 		try {
 //			Annotation annotation = getAnnotationService().getAnnotationById(
 			Annotation annotationFromDb = getAnnotationService().getAnnotationById(
-					provider, annotationNr);
+					provider, identifier);
 	
 			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, user);
 				
@@ -370,7 +370,7 @@ public class ManagementRest extends BaseRest {
 			if (annotation != null) {
 				return getReport(action, WebAnnotationFields.DISABLED + ":" + annotation.isDisabled() 
 						+ ", " + WebAnnotationFields.PROVIDER + ":" + provider 
-						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + annotationNr
+						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + identifier
 						+ ", " + WebAnnotationFields.USER + ":" + user, "");				
 			}else{
 				String errorMessage = AnnotationOperationResponse.ERROR_VISIBILITY_CHECK;			

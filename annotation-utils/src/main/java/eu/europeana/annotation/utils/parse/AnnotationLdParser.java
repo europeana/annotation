@@ -460,11 +460,11 @@ public class AnnotationLdParser extends JsonLdParser {
 		// TODO: check if already implemented or if can be moved in
 		// AnnotationIdDeserializer
 		String parts[] = valueObject.split("/");
-		Long annotationNr = Long.valueOf(parts[parts.length - 1]);
+		String identifier = parts[parts.length - 1];
 		String provider = parts[parts.length - 2];
 		BaseAnnotationId annoId = new BaseAnnotationId();
 		annoId.setProvider(provider);
-		annoId.setAnnotationNr(annotationNr);
+		annoId.setIdentifier(identifier);
 
 		return annoId;
 	}

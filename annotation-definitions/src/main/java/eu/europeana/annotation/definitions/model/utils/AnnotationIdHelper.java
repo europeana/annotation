@@ -218,11 +218,11 @@ public class AnnotationIdHelper {
 	 * @return AnnotationId object
 	 */
 	public AnnotationId initializeAnnotationId(
-			String provider, Long annotationNr) {
+			String provider, String identifier) {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
 		annotationId.setProvider(provider);
-		annotationId.setAnnotationNr(annotationNr);
+		annotationId.setIdentifier(identifier);
 		
 		//		annotationId.setResourceId(createResourceId(collection, object));
 		

@@ -47,10 +47,10 @@ public class PersistentAnnotationDaoTest {
 	public void testGenerateAnnotationId(){
 		String testEuropeanaId = "/test_europeanaId/generate_annotationId";
 		AnnotationId id1 = annotationDao.generateNextAnnotationId(testEuropeanaId);
-		assertTrue(id1.getAnnotationNr() > 0);
+		assertTrue(Long.parseLong(id1.getIdentifier()) > 0);
 		
 		AnnotationId id2 = annotationDao.generateNextAnnotationId(testEuropeanaId);
-		assertTrue(id1.getAnnotationNr() +1 == id2.getAnnotationNr());
+		assertTrue(Long.parseLong(id1.getIdentifier()) +1 == Long.parseLong(id2.getIdentifier()));
 		
 	}
 

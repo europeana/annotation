@@ -122,8 +122,9 @@ public class PersistentAnnotationServiceImpl extends
 		object.setAnnotationId(embeddedId);
 		
 		//validate annotation NR
-		if(object.getAnnotationId().getAnnotationNr() < 1)
-			throw new AnnotationValidationException("Annotaion.AnnotationId.annotaionNr must be a positive number!");
+		//TODO: update this condition when specification is available
+		if(Long.parseLong(object.getAnnotationId().getIdentifier()) < 1)
+			throw new AnnotationValidationException("Annotaion.AnnotationId.identifier must be a positive number!");
 	}
 
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
@@ -351,10 +352,10 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
-	public PersistentAnnotation find(String provider, Long annotationNr) {
+	public PersistentAnnotation find(String provider, String identifier) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, identifier);
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
 
 		return getAnnotationDao().findOne(query);
@@ -362,11 +363,11 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public PersistentAnnotation find(String europeanaId, String provider,
-			Long annotationNr) {
+			String identifier) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 //		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, identifier);
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
 
 		return getAnnotationDao().findOne(query);
@@ -376,7 +377,7 @@ public class PersistentAnnotationServiceImpl extends
 	public PersistentAnnotation find(AnnotationId annoId) {
 //		return find(annoId.getResourceId(), annoId.getProvider(),
 //				annoId.getAnnotationNr());
-		return find(annoId.getProvider(), annoId.getAnnotationNr());
+		return find(annoId.getProvider(), annoId.getIdentifier());
 	}
 
 	@Override
@@ -401,12 +402,12 @@ public class PersistentAnnotationServiceImpl extends
 	 * (java.lang.String, java.lang.Integer)
 	 */
 //	public void remove(String resourceId, String provider, Long annotationNr) {
-	public void remove(String provider, Long annotationNr) {
+	public void remove(String provider, String identifier) {
 		// String objectId = findObjectId(resourceId, annotationNr);
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 //		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
+		query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, identifier);
 
 		getDao().deleteByQuery(query);
 	}
@@ -430,7 +431,7 @@ public class PersistentAnnotationServiceImpl extends
 	public void remove(AnnotationId annoId) {
 //		remove(annoId.getResourceId(), annoId.getProvider(),
 //				annoId.getAnnotationNr());
-		remove(annoId.getProvider(), annoId.getAnnotationNr());
+		remove(annoId.getProvider(), annoId.getIdentifier());
 	}
 
 	@Override
@@ -444,7 +445,7 @@ public class PersistentAnnotationServiceImpl extends
 				&& persistentAnnotation.getAnnotationId() != null) {
 			remove(//persistentAnnotation.getAnnotationId().getResourceId(),
 					persistentAnnotation.getAnnotationId().getProvider(),
-					persistentAnnotation.getAnnotationId().getAnnotationNr());
+					persistentAnnotation.getAnnotationId().getIdentifier());
 			//MongoDB object id - not annotation id
 			persistentAnnotation.setId(null);
 			if (persistentAnnotation.getBody() != null) {

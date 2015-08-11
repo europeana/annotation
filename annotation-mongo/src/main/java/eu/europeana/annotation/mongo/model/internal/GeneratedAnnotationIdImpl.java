@@ -15,6 +15,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
  * @author Sergiu Gordea 
  *
  */
+//TODO: check if possible to extend the BaseAnnotationId class
 @Entity(value="annotationNrGenerator", noClassnameStored=true)
 public class GeneratedAnnotationIdImpl implements AnnotationId {
 
@@ -25,8 +26,18 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	@Id
 //	private String resourceId;
 	private String provider;
+	//private String identifier;
 	private Long annotationNr;
 	
+	
+	public Long getAnnotationNr() {
+		return annotationNr;
+	}
+
+	public void setAnnotationNr(Long annotationNr) {
+		this.annotationNr = annotationNr;
+	}
+
 	public static final String SEQUENCE_COLUMN_NAME = "annotationNr";
 	
 	/**
@@ -41,21 +52,27 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		this.provider = provider;
 	}
 	
+	public GeneratedAnnotationIdImpl(String provider, String identifier){
+//		this.resourceId = provider;
+		this.provider = provider;
+		this.annotationNr = Long.parseLong(identifier);
+	}
+	
 	public GeneratedAnnotationIdImpl(String provider, Long annotationNr){
 //		this.resourceId = provider;
 		this.provider = provider;
 		this.annotationNr = annotationNr;
 	}
 	
-	
 	@Override
-	public Long getAnnotationNr() {
-		return annotationNr;
+	public String getIdentifier() {
+		return ""+getAnnotationNr();
 	}
 
 	@Override
-	public void setAnnotationNr(Long annotationNr) {
-		this.annotationNr = annotationNr;
+	public void setIdentifier(String identifier) {
+		//this.identifier = identifier;
+		throw new RuntimeException("not supported", new IllegalAccessError());
 	}
 
 //	@Override
@@ -70,10 +87,10 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		//provider and annotation number must not be null
 		if(obj instanceof AnnotationId 
 //				&& this.getResourceId() != null && StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
-				&& StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
+				&& StringUtils.isNotEmpty(this.getProvider()) && this.getIdentifier() != null
 //				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
 				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
-				&& this.getAnnotationNr().equals(((AnnotationId)obj).getAnnotationNr()))
+				&& this.getIdentifier().equals(((AnnotationId)obj).getIdentifier()))
 			return true;
 				
 		return false;
@@ -86,13 +103,13 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	
 	@Override
 	public String toString() {
-		return //getResourceId() + WebAnnotationFields.SLASH + 
-				getProvider() + WebAnnotationFields.SLASH + getAnnotationNr();
+		return toUri();
 	}
 	
 	@Override
 	public String toUri() {
-		return getProvider() + WebAnnotationFields.SLASH + getAnnotationNr();
+		//TODO: this is different from BaseAnnotationId.toUri()
+		return getProvider() + WebAnnotationFields.SLASH + getIdentifier();
 	}
 	
 //	@Override

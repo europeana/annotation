@@ -118,10 +118,10 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		return res.getAnnotation();
 	}
 	
-	public String setAnnotationStatus(String provider, Long annotationNr, String status) {
+	public String setAnnotationStatus(String provider, String identifier, String status) {
 		AnnotationOperationResponse res;
 		try {
-			res = apiConnection.setAnnotationStatus(provider, annotationNr, status);
+			res = apiConnection.setAnnotationStatus(provider, identifier, status);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
 		}
@@ -140,10 +140,10 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		return res.getJson();		
 	}
 	
-	public String getAnnotationStatus(String provider, Long annotationNr) {
+	public String getAnnotationStatus(String provider, String identifier) {
 		AnnotationOperationResponse res;
 		try {
-			res = apiConnection.getAnnotationStatus(provider, annotationNr);
+			res = apiConnection.getAnnotationStatus(provider, identifier);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
 		}
@@ -152,11 +152,11 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 	}
 	
 
-	public String disableAnnotation(String provider, Long annotationNr){
+	public String disableAnnotation(String provider, String identifier){
 		
 		AnnotationOperationResponse res;
 		try {
-			res = apiConnection.disableAnnotation(provider, annotationNr);
+			res = apiConnection.disableAnnotation(provider, identifier);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
 		}
