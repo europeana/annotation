@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wordnik.swagger.annotations.Api;
@@ -36,21 +37,21 @@ GET /<annotation-web>/annotation/provider/identifier.jsonld
 GET /<annotation-web>/search.jsonld
 */
 
-//@Controller
-//@Api(value = "europeanald", description = "Europeana Annotation-Ld Rest Service")
-public class EuropeanaRest extends BaseRest{
+@Controller
+@Api(value = "web-annotation", description = "Web Annotation - Rest Service(json-ld)")
+public class WebAnnotationProtocolRest extends BaseRest{
 
-	@RequestMapping(value = "/annotationld/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/annotation/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getAnnotationLdByPath (
-		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "wskey", required = false) String wskey,
 //		@RequestParam(value = "profile", required = false) String profile,
 		@PathVariable(value = "provider") String provider,
-		@PathVariable(value = "annotationNr") Long annotationNr
+		@PathVariable(value = "identifier") String identifier
 		) {
 		
 		String action = "get:/annotationld/{provider}/{annotationNr}.jsonld";
-		return getAnnotation(apiKey, provider, annotationNr, action);	
+		return getAnnotation(wskey, provider, identifier, action);	
 	}
 
 //	@RequestMapping(value = "/annotation.jsonld?provider=&annotationNr=", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,10 +68,10 @@ public class EuropeanaRest extends BaseRest{
 	}
 
 	private ModelAndView getAnnotation(String apiKey, String provider,
-			Long annotationNr, String action) {
+			String identifier, String action) {
 		
 		try {
-			Annotation annotationFromDb = getAnnotationService().getAnnotationById(provider, annotationNr);
+			Annotation annotationFromDb = getAnnotationService().getAnnotationById(provider, identifier);
 			
 			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, null);
 			

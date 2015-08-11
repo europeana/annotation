@@ -29,7 +29,7 @@ import eu.europeana.api2.utils.JsonWebUtils;
 
 
 @Controller
-@Api(value = "admin-provider", description = "Provider Management Rest Service")
+@Api(value = "admin-api", description = "Provider Management Rest Service")
 public class ProviderManagementRest extends BaseRest {
 
 	@GET

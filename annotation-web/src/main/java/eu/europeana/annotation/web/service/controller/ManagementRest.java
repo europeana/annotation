@@ -30,8 +30,8 @@ import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 
-@Controller
-@Api(value = "admin-annotation", description = "Annotation Management Rest Service")
+//@Controller
+//@Api(value = "Web Annotation Administration API", description = "Annotation Management Rest Service")
 public class ManagementRest extends BaseRest {
 
 	@GET

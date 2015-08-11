@@ -26,8 +26,8 @@ import eu.europeana.annotation.web.model.StatusLogSearchResults;
 import eu.europeana.annotation.web.model.TagSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
-@Controller
-@Api(value = "search", description = "Annotation Search Rest Service")
+//@Controller
+//@Api(value = "search", description = "Annotation Search Rest Service")
 public class SearchRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

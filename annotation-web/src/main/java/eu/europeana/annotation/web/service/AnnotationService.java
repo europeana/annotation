@@ -157,7 +157,7 @@ public interface AnnotationService {
 	 * @param annotationNr
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(String provider, Long annotationNr);
+	public Annotation disableAnnotation(String provider, String annotationNr);
 //	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr);
 	
 	/**
@@ -167,7 +167,7 @@ public interface AnnotationService {
 	 * @param annotationNr
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(String provider, Long annotationNr);
+	public Annotation getAnnotationById(String provider, String annotationNr);
 	
 	/**
 	 * This method returns annotation object for given annotationId that

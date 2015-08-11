@@ -23,8 +23,8 @@ import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
-@Controller
-@Api(value = "annotations", description = "Annotation JSON Rest Service")
+//@Controller
+//@Api(value = "annotations", description = "Annotation JSON Rest Service")
 public class AnnotationRest extends BaseRest {
 
 

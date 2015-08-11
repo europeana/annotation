@@ -24,9 +24,10 @@
 	
 	<import resource="./annotation-web-context.xml"/>
 	
-	<context:component-scan base-package="eu.europeana.annotation.web.service.controller" />
+	<context:component-scan base-package="eu.europeana.annotation.web.service.controller">
+	</context:component-scan>
+	
 	<bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig">
-		
 	</bean>
 
 	<!--Basic application beans. -->
