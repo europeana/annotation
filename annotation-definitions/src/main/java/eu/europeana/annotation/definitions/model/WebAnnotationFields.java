@@ -3,10 +3,12 @@ package eu.europeana.annotation.definitions.model;
 
 /**
  * @author GrafR
- *
+ * 
  */
+//TODO: move the field values to other interfaces/enumerations
 public interface WebAnnotationFields {
 
+	
 	/**
 	 * Helping constants for Annotation mapping to the JSON-LD format 
 	 */
@@ -101,6 +103,7 @@ public interface WebAnnotationFields {
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4; 
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3; 
 	public static final String PROVIDER_HISTORY_PIN = "historypin"; 
+	public static final String PROVIDER_BASE = "base"; 
 	public static final String PROVIDER_WRONG = "wrong"; 
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
 	public static final String HTTP = "http://"; 
@@ -122,6 +125,8 @@ public interface WebAnnotationFields {
 	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>";
 	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>. " +
 			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
+	public static final String SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"europeana-ld-api.jsp\" target=\"_blank\">templates</a>. " +
+			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
 	public static final String SEARCH_FIELDS_LINK = "Valid fields are 'all', 'label', 'body_value', 'tag_id', 'multilingual'.";
 	public static final String SEARCH_STATUS_FIELDS_LINK = "Valid status fields are 'public', 'private', 'disabled'.";
 	public static final String SEARCH_NOTES = "Please fill in either 'resourceId' or 'target' field. One of this fields is mandatory for search." 
@@ -142,9 +147,11 @@ public interface WebAnnotationFields {
 	public static final String EQUALS           = "="; 
 	public static final String WSKEY            = "wskey"; 
 	public static final String INDEXING         = "indexing"; 
+	public static final String INDEX_ON_CREATE  = "indexOnCreate"; 
 	public static final String PROVIDER         = "provider"; 
 	public static final String USER             = "user"; 
-	public static final String ANNOTATION_NR    = "annotationNr"; 
+	public static final String USER_TOKEN       = "userToken"; 
+	public static final String IDENTIFIER    	= "identifier"; 
 	public static final String RESOURCE_ID      = "resourceId"; 
 	public static final String JSON_REST        = ".json";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
@@ -161,7 +168,6 @@ public interface WebAnnotationFields {
 	public static final String SUCCESS_TRUE = "\"success\":true";
 	public static final String SUCCESS_FALSE = "\"success\":false";
 	public static final String INVALID_PROVIDER = "Invalid provider!";
-	public static final String INVALID_ANNOTATION_NR = "Invalid annotationNr for provider!";
 	public static final String UNNECESSARY_ANNOTATION_NR = "AnnotationNr must not be set for provider!";
 	
 	/**

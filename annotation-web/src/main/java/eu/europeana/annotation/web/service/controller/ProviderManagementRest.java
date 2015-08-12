@@ -104,7 +104,7 @@ public class ProviderManagementRest extends BaseRest {
 		//validate input params
 //		AnnotationId annoId = buildAnnotationId(provider, annotationNr);
 		if (!IdGenerationTypes.isRegistered(idGeneration)) {
-			return getValidationReport(apiKey, action, ProviderOperationResponse.ERROR_ID_GENERATION_TYPE_DOES_NOT_MATCH + IdGenerationTypes.printTypes());
+			return getValidationReport(apiKey, action, ProviderOperationResponse.ERROR_ID_GENERATION_TYPE_DOES_NOT_MATCH + IdGenerationTypes.printTypes(), null);
 		}
 		
 		// check whether annotation vor given provider and annotationNr already exist in database

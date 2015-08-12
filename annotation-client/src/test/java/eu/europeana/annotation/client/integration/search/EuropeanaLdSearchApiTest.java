@@ -123,7 +123,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 //				idList.add(anno.getAnnotationId().getAnnotationNr());
 //			}
 		}
-		assertTrue(resJson.contains("\"" + WebAnnotationFields.ANNOTATION_NR + "\":" + annotationNr));
+		assertTrue(resJson.contains("\"" + WebAnnotationFields.IDENTIFIER + "\":" + annotationNr));
 //		assertTrue(idList.contains(annotationNr));
 	}
 	

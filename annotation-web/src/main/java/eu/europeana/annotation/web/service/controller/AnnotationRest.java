@@ -178,9 +178,9 @@ public class AnnotationRest extends BaseRest {
 
 		//validate input params
 		if (!getAnnotationIdHelper().validateResouceId(webAnnotation, collection, object))
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH, null);
 		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
 
 		//initialize
 		AnnotationId annoId = getAnnotationIdHelper()

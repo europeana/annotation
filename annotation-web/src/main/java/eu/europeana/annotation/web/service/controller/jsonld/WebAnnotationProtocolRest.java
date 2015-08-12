@@ -1,13 +1,21 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +32,11 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
+import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -41,8 +54,8 @@ GET /<annotation-web>/search.jsonld
 @Api(value = "web-annotation", description = "Web Annotation - Rest Service(json-ld)")
 public class WebAnnotationProtocolRest extends BaseRest{
 
-	@RequestMapping(value = "/annotation/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+//	@RequestMapping(value = "/annotation/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
 	public ModelAndView getAnnotationLdByPath (
 		@RequestParam(value = "wskey", required = false) String wskey,
 //		@RequestParam(value = "profile", required = false) String profile,
@@ -55,8 +68,8 @@ public class WebAnnotationProtocolRest extends BaseRest{
 	}
 
 //	@RequestMapping(value = "/annotation.jsonld?provider=&annotationNr=", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+//	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
@@ -91,9 +104,9 @@ public class WebAnnotationProtocolRest extends BaseRest{
 		}
 	}
 	
-	@RequestMapping(value = "/annotation/{motivation}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
+//	@RequestMapping(value = "/annotation/{motivation}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "wskey", required = false) String wskey,
 			@PathVariable(value = "motivation") String motivation,
@@ -135,9 +148,9 @@ public class WebAnnotationProtocolRest extends BaseRest{
 		}
 	}
 	
-	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SEARCH_NOTES, value="")
+//	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	@ApiOperation(notes=WebAnnotationFields.SEARCH_NOTES, value="")
 	public ModelAndView searchLd(
 		@RequestParam(value = "wsKey", required = false) String wsKey,
 		@RequestParam(value = "target", required = false) String target,
@@ -174,5 +187,76 @@ public class WebAnnotationProtocolRest extends BaseRest{
 //		
 //		return targetUri;
 //	}
+	
+	@RequestMapping(value = "/annotation", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE, "application/ld+json"})
+	@ResponseBody
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD, value="")
+	public ModelAndView createAnnotation (
+			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PROVIDER, defaultValue = WebAnnotationFields.PROVIDER_WEBANNO) String provider, // this is an ID provider
+			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
+			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "false") boolean indexOnCreate,
+			@RequestBody String annotation,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required=false, defaultValue = "annonymous") String userToken) throws ParamValidationException, UserAuthorizationException, RequestBodyValidationException, InternalServerException{
 
+		String action = "create:/annotation/";
+		
+		try {
+			
+			//0. annotation id
+			AnnotationId annoId = buildAnnotationId(provider, identifier);
+			
+			//1. authorize user
+			authorizeUser(userToken, annoId);
+			
+			//parse
+			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotation);
+			
+			//2. validate
+			// check whether annotation with the given provider and identifier already exist in the database
+			if (annoId.getIdentifier()!= null && getAnnotationService().existsInDb(annoId)) 
+				return getValidationReport(wskey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toUri(), null);			
+			
+			//3-6 create ID and annotation + backend validation
+			webAnnotation.setAnnotationId(annoId);		
+			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
+	
+			//Convert PersistentAnnotation in Annotation.
+			//TODO: check if correct. Disabled now as this was needed for JSON
+//			Annotation resAnnotation = annotationBuilder
+//					.copyIntoWebAnnotation(storedAnnotation);
+	
+			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation);
+	        String jsonLd = annotationLd.toString(4);
+	        return JsonWebUtils.toJson(jsonLd, null);			
+		} catch (JsonParseException e) {
+			throw new RequestBodyValidationException(annotation, e);
+		}
+		catch (Exception e) {
+			throw new InternalServerException(e);
+		}
+	}
+
+	//@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(HttpException.class)
+	@ResponseBody
+	public ModelAndView handleBadRequestException(HttpException ex, HttpServletRequest req, HttpServletResponse response) throws IOException {
+	
+		ModelAndView res= getValidationReport(req.getParameter("wskey"), req.getServletPath(), null, ex);
+		response.sendError(ex.getStatus().value());
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		return res;		
+	} 
+	
+	//@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//		@ExceptionHandler(Exception.class)
+//		@ResponseBody
+//		public ModelAndView handleException(Exception ex, HttpServletRequest req, HttpServletResponse response) throws IOException {
+//		
+//			ModelAndView res= getValidationReport(req.getParameter("wskey"), req.getServletPath(), null, ex);
+//			response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//			return res;		
+//		} 
 }

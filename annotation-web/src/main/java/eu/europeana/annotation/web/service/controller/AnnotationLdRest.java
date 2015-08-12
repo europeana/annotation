@@ -76,8 +76,9 @@ public class AnnotationLdRest extends BaseJsonldRest {
 		// validate input parameters
 //		if (!annotationIdHelper.validateResouceId(webAnnotation, collection, object))
 //			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
+		//TODO: change to ParamValidationException 
 		if (!annotationIdHelper.validateProvider(webAnnotation, provider)) 
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
 		
 		//initialize
 		AnnotationId annoId = annotationIdHelper

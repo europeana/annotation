@@ -15,6 +15,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.web.exception.request.ParamValidationException;
 
 public interface AnnotationService {
 
@@ -298,6 +299,13 @@ public interface AnnotationService {
 	 * @throws AnnotationStatusException
 	 */
 	public Annotation checkVisibility(Annotation annotation, String user) throws AnnotationStatusException;
+
+	/**
+	 * this method validates the correctness of the provided annotation id (provider and identifier) 
+	 * @param annoId
+	 * @throws ParamValidationException 
+	 */
+	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
 
 
 }

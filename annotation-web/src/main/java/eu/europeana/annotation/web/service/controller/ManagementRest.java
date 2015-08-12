@@ -274,7 +274,7 @@ public class ManagementRest extends BaseRest {
 		if (annotation != null) {
 			return getReport(action, WebAnnotationFields.STATUS + ":" + annotation.getStatus() 
 					+ ", " + WebAnnotationFields.PROVIDER + ":" + provider 
-					+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + identifier, "");			
+					+ ", " + WebAnnotationFields.IDENTIFIER + ":" + identifier, "");			
 
 //			response = new AnnotationOperationResponse(
 //					"", "/annotations/get/status/provider/annotationNr.json");
@@ -335,7 +335,7 @@ public class ManagementRest extends BaseRest {
 //				return JsonWebUtils.toJson(response, null);
 				return getReport(action, WebAnnotationFields.STATUS + ":" + updatedAnnotation.getStatus() 
 						+ ", " + WebAnnotationFields.PROVIDER + ":" + updatedAnnotation.getAnnotationId().getProvider() 
-						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + updatedAnnotation.getAnnotationId().getIdentifier(), "");			
+						+ ", " + WebAnnotationFields.IDENTIFIER + ":" + updatedAnnotation.getAnnotationId().getIdentifier(), "");			
 			} else {
 				return getValidationReport("", action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND 
 						+ " provider: " + provider + ", annotationNr: " + identifier, null);			
@@ -370,7 +370,7 @@ public class ManagementRest extends BaseRest {
 			if (annotation != null) {
 				return getReport(action, WebAnnotationFields.DISABLED + ":" + annotation.isDisabled() 
 						+ ", " + WebAnnotationFields.PROVIDER + ":" + provider 
-						+ ", " + WebAnnotationFields.ANNOTATION_NR + ":" + identifier
+						+ ", " + WebAnnotationFields.IDENTIFIER + ":" + identifier
 						+ ", " + WebAnnotationFields.USER + ":" + user, "");				
 			}else{
 				String errorMessage = AnnotationOperationResponse.ERROR_VISIBILITY_CHECK;			

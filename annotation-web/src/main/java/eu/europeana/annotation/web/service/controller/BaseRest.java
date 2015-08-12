@@ -6,13 +6,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
@@ -20,7 +18,8 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
-import eu.europeana.annotation.web.exception.ParamValidationException;
+import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
@@ -159,15 +158,19 @@ public class BaseRest {
 	 * @return
 	 */
 	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th) {
+		
+		
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
-		if (StringUtils.isEmpty(errorMessage))
-			errorMessage = th.toString();
+		if (th !=null)
+			errorMessage = th.toString() + ". " + errorMessage;
 		response = buildErrorResponse(errorMessage, response.action, response.apikey);
 		//logg error message
 		logger.debug("Error when invoking action: " + action + " with wskey: " + apiKey);
 		logger.error(errorMessage, th);
 		ModelAndView ret = JsonWebUtils.toJson(response, null);
+		
+		
 		return ret;
 	}
 
@@ -186,44 +189,20 @@ public class BaseRest {
 		return ret;
 	}
 
-	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage) {
-		return getValidationReport(apiKey, action, errorMessage, null);
-	}
-
-	//
 	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
-		// validate input parameters
-//		if (!getAnnotationIdHelper().validateEuropeanaProvider(webAnnotation, provider)) 
-//			
-//			
-		//initialize
-//		String targetUri = null;
-//		targetUri = getTargetUri(webAnnotation);
-//
-//		String[] resourceId = getAnnotationIdHelper().extractResoureIdPartsFromHttpUri(targetUri);
-//		collection = getAnnotationIdHelper().extractCollectionFromResourceId(resourceId);
-//		object = getAnnotationIdHelper().extractObjectFromResourceId(resourceId);
-
-		validateProviderAndAnnotationNr(provider, identifier);
 		
 		AnnotationId annoId = getAnnotationIdHelper()
 				.initializeAnnotationId(provider, identifier);
+		
+		annotationService.validateAnnotationId(annoId);
+		
 		return annoId;
 	}
-	
-	
-	private void validateProviderAndAnnotationNr(String provider, String identifier) throws ParamValidationException {
-		if(WebAnnotationFields.PROVIDER_HISTORY_PIN.equals(provider)){
-			//TODO: check if nummeric condition still required
-			if(identifier== null ||  Long.parseLong(identifier)<1)
-				throw new ParamValidationException(WebAnnotationFields.INVALID_ANNOTATION_NR + " " + provider + ":" + identifier);
-		}else if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
-			if(identifier!= null)
-				throw new ParamValidationException(WebAnnotationFields.UNNECESSARY_ANNOTATION_NR + " " + provider + ":" + identifier);
-		}else{
-			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER + " " + provider);
-		}
-		
+
+	protected void authorizeUser(String userToken, AnnotationId annoId) throws UserAuthorizationException {
+		// TODO Auto-generated method stub
+		//implement when authentication/authorization is available
 	}
+	
 	
 }

@@ -116,7 +116,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		if (StringUtils.isNotEmpty(provider))
 			url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr;
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr;
 
 		/**
 		 * Execute Europeana API request
@@ -236,7 +236,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
 		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
 
 		/**
@@ -272,7 +272,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
 		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
 
 		/**
@@ -544,7 +544,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (identifier != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
 		url += WebAnnotationFields.STATUS + WebAnnotationFields.EQUALS + status;
 
 //		String json = getJSONResult(url);
@@ -596,7 +596,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += "/get/status/" + provider + "/" + identifier + ".json" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (identifier != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + identifier;
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier;
 
 		String json = getJSONResult(url);
 		
@@ -653,7 +653,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += "/check/visibility/" + provider + "/" + identifier + "/" + user + ".json" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (identifier != null)
-			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
 		url += WebAnnotationFields.USER + WebAnnotationFields.EQUALS + user;
 
 		String json = getJSONResult(url);
