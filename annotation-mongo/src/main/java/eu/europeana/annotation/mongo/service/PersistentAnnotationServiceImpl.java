@@ -60,17 +60,20 @@ public class PersistentAnnotationServiceImpl extends
 	 */
 	@Override
 	public PersistentAnnotation store(PersistentAnnotation object) {
-		validatePersistentAnnotation(object);		
+		Date now = new Date();
+		validatePersistentAnnotation(object, now);
+		object.setLastUpdate(now);
 		return super.store(object);
 	}
 
-	private void validatePersistentAnnotation(PersistentAnnotation object) {
-		if (object.getAnnotatedAt() == null) {
-			object.setAnnotatedAt(new Date());
-			object.setSerializedAt(object.getAnnotatedAt());
-
-		}
-
+	private void validatePersistentAnnotation(PersistentAnnotation object, Date now) {
+		
+		if (object.getAnnotatedAt() == null)
+			object.setAnnotatedAt(now);
+		
+		if(object.getSerializedAt() == null)
+			object.setSerializedAt(now);
+		
 		// check Europeana ID
 		if (object.getId() != null)
 			throw new AnnotationValidationException(

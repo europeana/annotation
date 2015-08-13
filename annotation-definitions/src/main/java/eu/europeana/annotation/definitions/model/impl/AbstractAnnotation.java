@@ -31,6 +31,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	private String sameAs;
 	private String equivalentTo;
 	private String status;
+	private Date lastUpdate;
 	
 	
 	public AbstractAnnotation(){
@@ -384,6 +385,14 @@ public abstract class AbstractAnnotation implements Annotation {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public Date getLastUpdate(){
+		return this.lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdateTimestamp){
+		this.lastUpdate = lastUpdateTimestamp;
 	}
 
 	@Override

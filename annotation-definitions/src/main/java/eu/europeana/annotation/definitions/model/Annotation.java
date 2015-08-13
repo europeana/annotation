@@ -72,4 +72,8 @@ public interface Annotation {
 	
 	public void setStatus(String status);
 	
+	public abstract Date getLastUpdate();
+
+	public abstract void setLastUpdate(Date lastUpdateTimestamp);
+	
 }

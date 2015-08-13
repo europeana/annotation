@@ -56,6 +56,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private String equivalentTo;
 	
 	private String status;
+	private Date lastUpdate;
 
 	
 	@Override
@@ -244,4 +245,13 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.status = status;
 	}
 			
+	@Override
+	public Date getLastUpdate(){
+		return this.lastUpdate;
+	}
+
+	@Override
+	public void setLastUpdate(Date lastUpdateTimestamp){
+		this.lastUpdate = lastUpdateTimestamp;
+	}
 }

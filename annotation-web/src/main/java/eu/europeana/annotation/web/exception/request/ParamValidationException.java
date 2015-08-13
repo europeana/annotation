@@ -13,6 +13,7 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_EUROPEANAID_NO_MATCH = "Europeana ID doesn't match the RESTFull url!";
 	public static final String MESSAGE_IDENTIFIER_NOT_NULL = "Identifier must not be set when creating a new Annotation for the given provider!";
 	public static final String MESSAGE_IDENTIFIER_NULL = "Identifier must not be null for the given provider!";
+	public static final String MESSAGE_ANNOTATION_ID_EXISTS = "An annotation with hte given identifier already exists in database! Overwrite not allowed in this method!";
 	
 	String parameterName;
 	String parameterValue;
