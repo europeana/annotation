@@ -96,6 +96,14 @@ public interface WebAnnotationFields {
 	public static final String UNDERSCORE = "_";
 
 	/**
+	 * Path Params
+	 */
+	public static final String PATH_PARAM_ANNO_TYPE = "annoType";
+	public static final String PATH_PARAM_FORMAT = "format";
+	
+	public static final String FORMAT_JSONLD = "jsonld";
+	
+	/**
 	 * AnnotationId
 	 */
 	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotation"; 

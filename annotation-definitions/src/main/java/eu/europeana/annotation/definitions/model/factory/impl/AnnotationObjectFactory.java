@@ -43,6 +43,10 @@ public class AnnotationObjectFactory
 	public Annotation createAnnotationInstance(String motivation) {
 		MotivationTypes motivationType = MotivationTypes
 				.getType(motivation);
+		return createAnnotationInstance(motivationType);
+	}
+
+	public Annotation createAnnotationInstance(MotivationTypes motivationType) {
 		AnnotationTypes annoType = null;
 		switch (motivationType) {
 		case TAGGING:
@@ -64,7 +68,7 @@ public class AnnotationObjectFactory
 
 		if (annoType == null)
 			throw new AnnotationInstantiationException(
-					"Unsupported Annotation/Motivation Type:" + motivation);
+					"Unsupported Annotation/Motivation Type:" + motivationType);
 
 		return createObjectInstance(
 				annoType);

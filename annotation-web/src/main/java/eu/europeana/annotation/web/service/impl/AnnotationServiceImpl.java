@@ -27,6 +27,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
@@ -227,14 +228,14 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation parseAnnotationLd(String annotationJsonLdStr) throws JsonParseException {
+	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException {
 
 		/**
 		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
 		 * -> JsonLd object
 		 */
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();
-		return europeanaParser.parseAnnotation(annotationJsonLdStr);
+		return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
 
 		// AnnotationLd parsedAnnotationLd = null;
 		// JsonLd parsedJsonLd = null;

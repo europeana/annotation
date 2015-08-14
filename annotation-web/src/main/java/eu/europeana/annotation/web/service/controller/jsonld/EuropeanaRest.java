@@ -90,49 +90,49 @@ public class EuropeanaRest extends BaseRest{
 		}
 	}
 	
-	@RequestMapping(value = "/annotation/{motivation}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
-	public ModelAndView createAnnotationLd (
-			@RequestParam(value = "wskey", required = false) String wskey,
-			@PathVariable(value = "motivation") String motivation,
-			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
-			@RequestParam(value = "identifier", required = false) String identifier,
-			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
-			@RequestBody String annotation) {
-
-		String action = "create:/annotation/{motivation}.jsonld";
-		
-		try {
-			// injest motivation
-			String motivationStr = "\"" + WebAnnotationFields.MOTIVATION + "\": \"" + motivation + "\",";
-			String annotationStr = annotation.substring(0, 1) + motivationStr + annotation.substring(1);
-
-			// parse
-			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(annotationStr);
-	
-			AnnotationId annoId = buildAnnotationId(provider, identifier);
-			
-			// check whether annotation vor given provider and annotationNr already exist in database
-			if (getAnnotationService().existsInDb(annoId)) 
-				return getValidationReport(wskey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toUri(), null);			
-			
-			webAnnotation.setAnnotationId(annoId);		
-			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);
-	
-			/**
-			 * Convert PersistentAnnotation in Annotation.
-			 */
-			Annotation resAnnotation = annotationBuilder
-					.copyIntoWebAnnotation(storedAnnotation);
-	
-			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
-	        String jsonLd = annotationLd.toString(4);
-	        return JsonWebUtils.toJson(jsonLd, null);			
-		} catch (Exception e) {
-			return getValidationReport(wskey, action, e.toString(), e);		
-		}
-	}
+//	@RequestMapping(value = "/annotation/{motivation}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
+//	public ModelAndView createAnnotationLd (
+//			@RequestParam(value = "wskey", required = false) String wskey,
+//			@PathVariable(value = "motivation") String motivation,
+//			@RequestParam(value = "provider", required = false) String provider, // this is an ID provider
+//			@RequestParam(value = "identifier", required = false) String identifier,
+//			@RequestParam(value = "indexing", defaultValue = "true") boolean indexing,
+//			@RequestBody String annotation) {
+//
+//		String action = "create:/annotation/{motivation}.jsonld";
+//		
+//		try {
+//			// injest motivation
+//			String motivationStr = "\"" + WebAnnotationFields.MOTIVATION + "\": \"" + motivation + "\",";
+//			String annotationStr = annotation.substring(0, 1) + motivationStr + annotation.substring(1);
+//
+//			// parse
+//			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(null, annotationStr);
+//	
+//			AnnotationId annoId = buildAnnotationId(provider, identifier);
+//			
+//			// check whether annotation vor given provider and annotationNr already exist in database
+//			if (getAnnotationService().existsInDb(annoId)) 
+//				return getValidationReport(wskey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toUri(), null);			
+//			
+//			webAnnotation.setAnnotationId(annoId);		
+//			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);
+//	
+//			/**
+//			 * Convert PersistentAnnotation in Annotation.
+//			 */
+//			Annotation resAnnotation = annotationBuilder
+//					.copyIntoWebAnnotation(storedAnnotation);
+//	
+//			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
+//	        String jsonLd = annotationLd.toString(4);
+//	        return JsonWebUtils.toJson(jsonLd, null);			
+//		} catch (Exception e) {
+//			return getValidationReport(wskey, action, e.toString(), e);		
+//		}
+//	}
 	
 	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody

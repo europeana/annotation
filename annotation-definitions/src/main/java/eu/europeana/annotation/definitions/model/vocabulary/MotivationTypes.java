@@ -2,25 +2,27 @@ package eu.europeana.annotation.definitions.model.vocabulary;
 
 public enum MotivationTypes {
 
-	  BOOKMARKING("oa:bookmarking")
-	, CLASSIFYING("oa:classifying")
-	, COMMENTING("oa:commenting")
-	, DESCRIBING("oa:describing")
-	, EDITING("oa:editing")
-	, HIGHLIGHTING("oa:highlighting")
-	, IDENTIFYING("oa:identifying")
-	, LINKING("oa:linking")
-	, MODERATING("oa:moderating")
-	, QUESTIONING("oa:questioning")
-	, REPLYING("oa:replying")
-	, TAGGING("oa:tagging"),
-	UNKNOWN("oa:unknown"); 
+	  BOOKMARKING("oa:bookmarking", null)
+	, CLASSIFYING("oa:classifying", null)
+	, COMMENTING("oa:commenting", null)
+	, DESCRIBING("oa:describing", null)
+	, EDITING("oa:editing", null)
+	, HIGHLIGHTING("oa:highlighting", null)
+	, IDENTIFYING("oa:identifying", null)
+	, LINKING("oa:linking", "link")
+	, MODERATING("oa:moderating", null)
+	, QUESTIONING("oa:questioning", null)
+	, REPLYING("oa:replying", null)
+	, TAGGING("oa:tagging", "tag"),
+	UNKNOWN("oa:unknown", "unknown"); 
 
 	
 	private String oaType;
+	private String annoType;
 	
-	MotivationTypes(String oaType){
+	MotivationTypes(String oaType, String annoType){
 		this.oaType = oaType;
+		this.annoType = annoType;
 	}
 	
 	public String getOaType(){
@@ -32,6 +34,28 @@ public enum MotivationTypes {
 		//last token
 		String value = values[values.length -1];
 		return valueOf(value.toUpperCase());
+	}
+
+	public String getAnnoType() {
+		return annoType;
+	}
+
+	public static MotivationTypes getTypeForAnnoType(String annoType){
+		
+		if(annoType == null)
+			return null;
+		
+		for (int i = 0; i < MotivationTypes.values().length; i++) {
+			if(annoType.equals(MotivationTypes.values()[i].getAnnoType()))
+				return MotivationTypes.values()[i];
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + ":" + getOaType() + ":" + getAnnoType();
 	}
 	
 }

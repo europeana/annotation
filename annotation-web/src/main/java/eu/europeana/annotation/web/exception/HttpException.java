@@ -18,6 +18,7 @@ public class HttpException extends Exception{
 	
 	public HttpException(String message, HttpStatus status, Throwable th){
 		super(message, th);
+		this.status = status;
 	}
 
 	public HttpStatus getStatus() {

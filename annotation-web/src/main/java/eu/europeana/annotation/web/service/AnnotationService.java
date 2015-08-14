@@ -11,6 +11,7 @@ import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
@@ -70,11 +71,12 @@ public interface AnnotationService {
 
 	/**
 	 * This method creates Europeana Annotation object from a JsonLd string.
+	 * @param motivationType 
 	 * @param annotationJsonLdStr
 	 * @return Annotation object
 	 * @throws JsonParseException 
 	 */
-	public Annotation parseAnnotationLd(String annotationJsonLdStr) throws JsonParseException;
+	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException;
 
 	/**
 	 * This method creates Provider object in database.

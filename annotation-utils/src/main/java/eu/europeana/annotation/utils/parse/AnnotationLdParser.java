@@ -12,6 +12,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -27,6 +28,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
 public class AnnotationLdParser extends JsonLdParser {
@@ -43,7 +45,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 */
 	protected Map<String, String> usedNamespaces = new HashMap<String, String>();
 
-	public Annotation parseAnnotation(String jsonLdString)
+	public Annotation parseAnnotation(MotivationTypes motivationType, String jsonLdString)
 			throws JsonParseException {
 		Annotation annotaion = null;
 
@@ -53,30 +55,56 @@ public class AnnotationLdParser extends JsonLdParser {
 		} catch (JSONException e) {
 			throw new JsonParseException("Cannot parse json string: " + jsonLdString, e);
 		}
-		
-		if (jo != null) {
-			annotaion = createAnnotationInstance(jo);
-			parseJsonObject(jo, annotaion, 1, null);
+		try{
+			annotaion = createAnnotationInstance(motivationType, jo);
+		}catch(RuntimeException e){
+			throw new AnnotationValidationException("cannot instantiate Annotation!", e);
 		}
-
+		parseJsonObject(jo, annotaion, 1, null);
+		
 		return annotaion;
 	}
 
-	protected Annotation createAnnotationInstance(JSONObject jo)
+	protected Annotation createAnnotationInstance(MotivationTypes motivationType, JSONObject jo)
 			throws JsonParseException {
 
+		MotivationTypes verifiedMotivationType = null;
 		String motivation;
 		
+		//search motivation in json
 		try {
-			
 			motivation = jo.getString(WebAnnotationFields.MOTIVATION)
 				.trim();
 		} catch (JSONException e) {
-			throw new JsonParseException("motivation not found in json object!"
-					+ jo, e);
+			//if not found use provided motivation type 
+			motivation = null;
+			verifiedMotivationType = motivationType;
 		}
-			
-		return AnnotationObjectFactory.getInstance().createAnnotationInstance(motivation);
+		
+		
+		//motivation is mandatory
+		boolean invalidMotivation = false;
+		
+		if(motivationType==null && motivation==null)
+			invalidMotivation = true;
+		
+		//validate json motivation
+		if(motivation != null){
+			verifiedMotivationType = MotivationTypes.getType(motivation);
+			//incorrect motivation value
+			if(verifiedMotivationType == null || MotivationTypes.UNKNOWN.equals(verifiedMotivationType))
+				invalidMotivation = true;
+			//motivation doesn't match
+			else if(motivationType != null && !motivationType.equals(verifiedMotivationType))
+				invalidMotivation = true;
+		}
+		
+		if(invalidMotivation)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_INVALID_MOTIVATION 
+				+ "\nmotivation type:" + motivationType + "\nparsed object: " + jo.toString());
+
+		//by now the verified annotation was set with the valid 
+		return AnnotationObjectFactory.getInstance().createAnnotationInstance(verifiedMotivationType);
 	}
 
 	
