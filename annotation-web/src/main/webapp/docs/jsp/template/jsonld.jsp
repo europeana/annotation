@@ -4,8 +4,9 @@
 String pageDescription="JSONLD templates for creation of annotation objects";
 String withType = request.getParameter("withType");
 boolean hasType = withType != null;		
-%>	
-<jsp:include page="description.jspf" />
+%>
+	
+<%@ include file="description.jspf" %>
 
 					<ul id="toc">
 						<li><a href="#tag">Create (Object) Tag</a></li>
@@ -14,7 +15,7 @@ boolean hasType = withType != null;
 
 					<h3 id="tag">Create (Object) Tag <a href="#top">top</a></h3>
 
-<textarea rows="20" cols="60" name="jsonldtag" >
+<textarea rows="20" cols="120" name="jsonldtag" >
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
@@ -40,7 +41,7 @@ if(hasType){
 
 					<h3 id="objectlink">Create Object Link <a href="#top">top</a></h3>
 
-<textarea rows="20" cols="60" name="jsonldobjectlink" >
+<textarea rows="22" cols="120" name="jsonldobjectlink" >
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",

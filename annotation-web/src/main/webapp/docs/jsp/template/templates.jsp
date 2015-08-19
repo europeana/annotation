@@ -2,9 +2,8 @@
 <jsp:include page="header.jspf" />
 <% 
 String pageDescription="Annotation component is a service that implements the management and indexing of Web Annotations";
-%>	
-<jsp:include page="description.jspf" />
-						
+%>
+<%@ include file="description.jspf" %>							
 
 					<ul id="toc">
 						<li><a href="#json-api">JSON API</a></li>
