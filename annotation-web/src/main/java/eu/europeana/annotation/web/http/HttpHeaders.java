@@ -7,6 +7,7 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 	 * 
 	 */
 	public static final String LINK = "Link";
+	public static final String ALLOW = "Allow";
 	
 	public static final String VALUE_LD_RESOURCE = "<http://www.w3.org/ns/ldp#Resource>; rel=\"type\"";
 	

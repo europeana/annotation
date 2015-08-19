@@ -102,7 +102,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 				, annotationNr
 				, simpleLinkAnnotation
 				);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		String resJson = "";
 //		List<Long> idList = new ArrayList<Long>();
 		Iterator<String> itr = annotation.getTarget().getValues().iterator();
@@ -137,7 +137,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 				, annotationNr
 				, simpleLinkAnnotation
 				);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();
 		while (itr.hasNext()) {
 			String resourceId = itr.next();

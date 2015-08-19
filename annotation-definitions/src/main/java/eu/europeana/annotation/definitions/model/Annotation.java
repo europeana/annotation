@@ -75,5 +75,7 @@ public interface Annotation {
 	public abstract Date getLastUpdate();
 
 	public abstract void setLastUpdate(Date lastUpdateTimestamp);
+
+	public boolean isPrivate();
 	
 }

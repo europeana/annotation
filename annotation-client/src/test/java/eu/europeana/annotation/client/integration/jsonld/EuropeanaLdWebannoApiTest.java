@@ -24,7 +24,7 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 				);
 		System.out.println("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, -1, annotation);
 	}
 	

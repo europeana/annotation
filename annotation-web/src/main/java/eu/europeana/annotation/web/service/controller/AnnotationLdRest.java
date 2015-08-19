@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.service.controller;
 
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -18,10 +16,12 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
+import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 //@Controller
 //@Api(value = "annotationld", description = "Annotation-Ld Rest Service")
+@Deprecated
 public class AnnotationLdRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotationld/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)

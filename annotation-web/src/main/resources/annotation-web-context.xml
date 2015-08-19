@@ -56,12 +56,12 @@
 		<beans:property name="configuration" ref="configuration"/>
     </beans:bean>	
     
-	<beans:bean id="managementRest" class="eu.europeana.annotation.web.service.controller.ManagementRest">
+	<beans:bean id="managementRest" class="eu.europeana.annotation.web.service.controller.admin.ManagementRest">
 		<beans:property name="annotationService" ref="annotationService"/>
 		<beans:property name="configuration" ref="configuration"/>
     </beans:bean>	
    
-	<beans:bean id="providerManagementRest" class="eu.europeana.annotation.web.service.controller.ProviderManagementRest">
+	<beans:bean id="providerManagementRest" class="eu.europeana.annotation.web.service.controller.admin.ProviderManagementRest">
 		<beans:property name="annotationService" ref="annotationService"/>
 		<beans:property name="configuration" ref="configuration"/>
     </beans:bean>	

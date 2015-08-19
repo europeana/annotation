@@ -30,7 +30,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, simpleTagAnnotation
 				);
 		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
@@ -48,7 +48,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, multipleSimpleTagAnnotation
 				);
 		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
@@ -66,7 +66,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, semanticTagAnnotation
 				);
 		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
@@ -84,7 +84,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, simpleLinkAnnotation
 				);
 		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
 		assertEquals(AnnotationTypes.OBJECT_LINKING.name(),  annotation.getInternalType());
 		assertTrue(2 == annotation.getTarget().getValues().size());
@@ -105,7 +105,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, annotationNr
 				);
 		System.out.println("historypin get annotation test: " + annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
 		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
@@ -125,7 +125,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, annotationNr
 				);
 		System.out.println("historypin get annotation test: " + annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(annotationStr);
+		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
 	}
 	

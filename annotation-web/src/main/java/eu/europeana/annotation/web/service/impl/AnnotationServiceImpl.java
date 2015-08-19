@@ -25,6 +25,7 @@ import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -35,7 +36,7 @@ import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
+import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
@@ -780,17 +781,21 @@ public class AnnotationServiceImpl implements AnnotationService {
 	 * eu.europeana.annotation.web.service.AnnotationService#checkVisibility(eu.
 	 * europeana.annotation.definitions.model.Annotation, java.lang.String)
 	 */
-	public Annotation checkVisibility(Annotation annotation, String user) throws AnnotationStatusException {
-		Annotation res = null;
-		res = getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
-				annotation.getAnnotationId().getIdentifier());
-		if (res.isDisabled())
-			throw new AnnotationStatusException("Annotation is not accessible.");
+	public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException {
+//		Annotation res = null;
+//		res = getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
+//				annotation.getAnnotationId().getIdentifier());
+		if (annotation.isDisabled())
+			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE, AnnotationStates.DISABLED);
 
-		if (StringUtils.isNotEmpty(user) && !user.equals("null") && !res.getAnnotatedBy().getName().equals(user))
-			throw new AnnotationStatusException("Given user (" + user + ") does not match to the 'annotatedBy' user ("
-					+ res.getAnnotatedBy().getName() + ").");
-		return res;
+//		if (annotation.
+//				StringUtils.isNotEmpty(user) && !user.equals("null") && !res.getAnnotatedBy().getName().equals(user))
+//			throw new AnnotationStateException("Given user (" + user + ") does not match to the 'annotatedBy' user ("
+//					+ res.getAnnotatedBy().getName() + ").");
+		//TODO update when the authorization concept is specified
+		if(annotation.isPrivate() && !annotation.getAnnotatedBy().getOpenId().equals(user))
+			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE, AnnotationStates.PRIVATE);
+
 	}
 
 	@Override
@@ -817,6 +822,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER, annoId.getProvider());
 		}
 
+	}
+
+	@Override
+	public Annotation getAnnotationById(AnnotationId annoId) {
+		
+		return getAnnotationById(annoId.getProvider(), annoId.getIdentifier());
 	}
 
 }

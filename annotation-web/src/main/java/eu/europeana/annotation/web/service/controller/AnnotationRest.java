@@ -3,7 +3,6 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -63,7 +61,7 @@ public class AnnotationRest extends BaseRest {
 			response.success = true;
 //			response.requestNumber = 0L;
 
-			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+			response.setAnnotation(getAnnotationBuilder().copyIntoWebAnnotation(
 					annotation));
 		}else{
 			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
@@ -99,7 +97,7 @@ public class AnnotationRest extends BaseRest {
 			
 			response.success = true;
 
-			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+			response.setAnnotation(getAnnotationBuilder().copyIntoWebAnnotation(
 					annotation));
 		}else{
 			String errorMessage = AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND;
@@ -208,7 +206,7 @@ public class AnnotationRest extends BaseRest {
 		response.success = true;
 //		response.requestNumber = 0L;
 
-		response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+		response.setAnnotation(getAnnotationBuilder().copyIntoWebAnnotation(
 				storedAnnotation));
 
 		return JsonWebUtils.toJson(response, null);
@@ -266,7 +264,7 @@ public class AnnotationRest extends BaseRest {
 					apiKey, action);
 			response.success = true;
 	
-			response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+			response.setAnnotation(getAnnotationBuilder().copyIntoWebAnnotation(
 					storedAnnotation));
 	
 			return JsonWebUtils.toJson(response, null);

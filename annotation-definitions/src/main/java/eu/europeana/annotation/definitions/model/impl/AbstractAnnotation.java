@@ -11,6 +11,7 @@ import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public abstract class AbstractAnnotation implements Annotation {
@@ -425,4 +426,9 @@ public abstract class AbstractAnnotation implements Annotation {
 		return res;
 	}	
 	
+	@Override
+	public boolean isPrivate() {
+		//TODO: change the usage of status to the usage of visibility when the specification is complete
+		return AnnotationStates.PRIVATE.equals(getStatus());
+	}
 }

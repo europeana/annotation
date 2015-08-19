@@ -5,24 +5,20 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
-import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
+import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -70,9 +66,9 @@ public class EuropeanaRest extends BaseRest{
 			String identifier, String action) {
 		
 		try {
-			Annotation annotationFromDb = getAnnotationService().getAnnotationById(provider, identifier);
+			Annotation annotation = getAnnotationService().getAnnotationById(provider, identifier);
 			
-			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, null);
+			getAnnotationService().checkVisibility(annotation, null);
 			
 			Annotation resAnnotation = annotationBuilder
 					.copyIntoWebAnnotation(annotation);
@@ -81,7 +77,7 @@ public class EuropeanaRest extends BaseRest{
 			String jsonLd = annotationLd.toString(4);
 	       	
 			return JsonWebUtils.toJson(jsonLd, null);
-		} catch (AnnotationStatusException e) {
+		} catch (AnnotationStateException e) {
 			getLogger().error("An error occured during the invocation of :" + action, e);
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);		
 		} catch (Exception e) {

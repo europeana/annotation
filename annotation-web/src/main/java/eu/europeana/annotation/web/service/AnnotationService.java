@@ -13,7 +13,7 @@ import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
+import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -139,7 +139,7 @@ public interface AnnotationService {
 	 * @param identifier
 	 */
 	public void deleteAnnotation(String provider, String identifier);
-//	public void deleteAnnotation(String resourceId, String provider, Long annotationNr);
+//	public void deleteAnnotation(String resourceId, String provider, Long identifier);
 
 	/**
 	 * This method forces reindexing of the annotation, which means 
@@ -150,37 +150,45 @@ public interface AnnotationService {
 	 * @param identifier
 	 */
 	public void indexAnnotation(String provider, String identifier);
-//	public void indexAnnotation(String resourceId, String provider, Long annotationNr);
+//	public void indexAnnotation(String resourceId, String provider, Long identifier);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
 	 * @param resourceId
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(String provider, String annotationNr);
-//	public Annotation disableAnnotation(String resourceId, String provider, Long annotationNr);
+	public Annotation disableAnnotation(String provider, String identifier);
+//	public Annotation disableAnnotation(String resourceId, String provider, Long identifier);
 	
 	/**
 	 * This method returns annotation object for given annotationId that
-	 * comprises provider and annotationNr.
+	 * comprises provider and identifier.
 	 * @param provider
-	 * @param annotationNr
+	 * @param identifier
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(String provider, String annotationNr);
+	public Annotation getAnnotationById(String provider, String identifier);
+	
+	/**
+	 * This method returns annotation object for given annotationId that
+	 * comprises provider and identifier.
+	 * @param
+	 * @return annotation object
+	 */
+	public Annotation getAnnotationById(AnnotationId annoId);
 	
 //	/**
 //	 * This method returns annotation object for given annotationId that
-//	 * comprises europeanaId, provider and annotationNr.
+//	 * comprises europeanaId, provider and identifier.
 //	 * @param europeanaId
 //	 * @param provider
-//	 * @param annotationNr
+//	 * @param identifier
 //	 * @return annotation object
 //	 */
-//	public Annotation getAnnotationById(String europeanaId, String provider, Long annotationNr);
+//	public Annotation getAnnotationById(String europeanaId, String provider, Long identifier);
 	
 	/**
 	 * Search for annotations by the given text query.
@@ -246,7 +254,7 @@ public interface AnnotationService {
 	public void deleteTag(String tagId);
 	
 	/**
-	 * Check whether annotation for given provider and annotationNr already exist in database.
+	 * Check whether annotation for given provider and identifier already exist in database.
 	 */
 	public boolean existsInDb(AnnotationId annoId); 
 	
@@ -298,9 +306,9 @@ public interface AnnotationService {
 	 * @param annotation The stored annotation object
 	 * @param user The name of the current user
 	 * @return annotation object if check was successful, exception otherwise
-	 * @throws AnnotationStatusException
+	 * @throws AnnotationStateException
 	 */
-	public Annotation checkVisibility(Annotation annotation, String user) throws AnnotationStatusException;
+	public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException;
 
 	/**
 	 * this method validates the correctness of the provided annotation id (provider and identifier) 

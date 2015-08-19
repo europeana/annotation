@@ -100,6 +100,8 @@ public interface WebAnnotationFields {
 	 */
 	public static final String PATH_PARAM_ANNO_TYPE = "annoType";
 	public static final String PATH_PARAM_FORMAT = "format";
+	public static final String PATH_PARAM_PROVIDER = "provider";
+	public static final String PATH_PARAM_IDENTIFIER = "identifier";
 	
 	public static final String FORMAT_JSONLD = "jsonld";
 	
@@ -130,10 +132,13 @@ public interface WebAnnotationFields {
 	/**
 	 * Notes
 	 */
-	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>";
-	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"templates.jsp\" target=\"_blank\">templates</a>. " +
+	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"./jsp/template/templates.jsp\" target=\"_blank\">templates</a>";
+	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/templates.jsp\" target=\"_blank\">templates</a>. " +
 			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
-	public static final String SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"europeana-ld-api.jsp\" target=\"_blank\">templates</a>. " +
+	@Deprecated
+	public static final String SAMPLES_EUROPEANA_API = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/europeana-ld-api.jsp\" target=\"_blank\">templates</a>. " +
+			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
+	public static final String SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp\" target=\"_blank\">templates</a>. " +
 			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
 	public static final String SEARCH_FIELDS_LINK = "Valid fields are 'all', 'label', 'body_value', 'tag_id', 'multilingual'.";
 	public static final String SEARCH_STATUS_FIELDS_LINK = "Valid status fields are 'public', 'private', 'disabled'.";

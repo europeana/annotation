@@ -16,13 +16,25 @@ public class UserAuthorizationException extends HttpException{
 	public static final String MESSAGE_USER_NOT_LOGGED_IN = "The user must be logged in to performed the given action!";
 	public static final String MESSAGE_INVALID_TOKEN = "The provided authentication token is invalid!";
 	public static final String MESSAGE_USER_NOT_AUTHORIZED = "The user is not authorized to perform the given action!";
+	public static final String MESSAGE_ANNOTATION_STATE_NOT_ACCESSIBLE = "The user is not allowed to access the annotation in the current state!";
 	
+	private String paramValue; 
 	
-	public UserAuthorizationException(String message){
-		this(message, null);
+	public UserAuthorizationException(String message, String paramValue){
+		this(message, paramValue, null);
 	}
 	
-	public UserAuthorizationException(String message, Throwable th){
-		super(message, HttpStatus.UNAUTHORIZED, th);
+	public UserAuthorizationException(String message, String paramValue, Throwable th){
+		this(message, paramValue, HttpStatus.UNAUTHORIZED, th);
 	}
+
+	public UserAuthorizationException(String message, String paramValue, HttpStatus status, Throwable th){
+		super(message + " " + paramValue, status, th);
+		this.paramValue = paramValue;
+	}
+	
+	public String getParamValue() {
+		return paramValue;
+	}
+
 }
