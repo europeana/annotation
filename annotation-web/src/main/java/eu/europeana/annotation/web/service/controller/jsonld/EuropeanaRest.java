@@ -34,6 +34,7 @@ GET /<annotation-web>/search.jsonld
 
 //@Controller
 //@Api(value = "europeanald", description = "Europeana Annotation-Ld Rest Service")
+@Deprecated
 public class EuropeanaRest extends BaseRest{
 
 	@RequestMapping(value = "/annotationld/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

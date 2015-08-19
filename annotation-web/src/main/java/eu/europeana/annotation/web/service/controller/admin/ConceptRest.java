@@ -20,7 +20,7 @@ import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
-@Api(value = "concepts", description = "Concept JSON Rest Service")
+//@Api(value = "concepts", description = "Concept JSON Rest Service")
 public class ConceptRest extends BaseRest {
 
 
