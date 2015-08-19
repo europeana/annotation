@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -47,9 +49,13 @@ import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.corelib.db.exception.DatabaseException;
+import eu.europeana.corelib.db.service.ApiKeyService;
+import eu.europeana.corelib.definitions.db.entity.relational.ApiKey;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -76,6 +82,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Autowired
 	SolrTagService solrTagService;
+	
+	@Resource
+	ApiKeyService apiKeyService;
+
+	public ApiKeyService getApiKeyService() {
+		return apiKeyService;
+	}
+
+	public void setApiKeyService(ApiKeyService apiKeyService) {
+		this.apiKeyService = apiKeyService;
+	}
 
 	AnnotationBuilder controllerHelper;
 
@@ -828,6 +845,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public Annotation getAnnotationById(AnnotationId annoId) {
 		
 		return getAnnotationById(annoId.getProvider(), annoId.getIdentifier());
+	}
+
+	@Override
+	public void validateApiKey(String wskey) throws UserAuthorizationException {
+		try {
+			ApiKey apiKey = apiKeyService.findByID(wskey);
+			if(apiKey == null)
+				throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wskey);
+		} catch (DatabaseException e) {
+			throw new RuntimeException("Unexpected error occured!", e);
+		}	
 	}
 
 }

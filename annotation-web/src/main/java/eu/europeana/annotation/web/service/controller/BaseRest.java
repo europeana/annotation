@@ -22,6 +22,7 @@ import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.corelib.db.service.ApiKeyService;
 
 public class BaseRest extends ApiResponseBuilder{
 
@@ -29,6 +30,7 @@ public class BaseRest extends ApiResponseBuilder{
 	AnnotationConfiguration configuration;
 	@Autowired
 	private AnnotationService annotationService;
+	
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 	protected AnnotationIdHelper annotationIdHelper;
 	

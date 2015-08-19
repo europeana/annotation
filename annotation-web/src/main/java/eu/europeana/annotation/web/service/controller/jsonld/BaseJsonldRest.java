@@ -84,9 +84,7 @@ public class BaseJsonldRest extends BaseRest{
 	}
 	
 	void validateApiKey(String wsKey) throws UserAuthorizationException {
-		if(!"apidemo".equals(wsKey))
-			throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wsKey);
-		
+		getAnnotationService().validateApiKey(wsKey);
 	}
 
 	protected ResponseEntity<String> getAnnotationById(String wsKey, String provider, String identifier, String action) throws HttpException {

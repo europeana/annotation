@@ -16,6 +16,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 
 public interface AnnotationService {
@@ -316,6 +317,8 @@ public interface AnnotationService {
 	 * @throws ParamValidationException 
 	 */
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
+
+	public void validateApiKey(String wskey) throws UserAuthorizationException;
 
 
 }

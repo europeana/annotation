@@ -44,12 +44,16 @@
     <!--  configuration bean -->
 	<beans:bean id="configuration" class="eu.europeana.annotation.web.service.impl.AnnotationConfigurationImpl"/>
    
+   	<!--  ApiKeyService -->
+   	<beans:bean name="annotation_apiKeyService" class="eu.europeana.corelib.db.service.mock.impl.MockApiKeyServiceImpl"/>
+			
     <!--  java api bean -->
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
     	<beans:property name="configuration" ref="configuration"/>
-    	
+    	<beans:property name="apiKeyService" ref="annotation_apiKeyService"/> 	
     </beans:bean>
     
+    <!--  TODO: this is not needed anymore as the controllers are automatically discovered -->
     <!--  rest api bean -->
 	<beans:bean id="annotationRest" class="eu.europeana.annotation.web.service.controller.AnnotationRest">
 		<beans:property name="annotationService" ref="annotationService"/>
