@@ -50,7 +50,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/{annoType}.jsonld", method = RequestMethod.POST, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = WebAnnotationFields.SAMPLES_JSONLD, value = "")
+	@ApiOperation(notes = WebAnnotationFields.SAMPLES_JSONLD_WITH_TYPE, value = "")
 	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, defaultValue = WebAnnotationFields.PROVIDER_WEBANNO) String provider, 
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,

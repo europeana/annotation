@@ -58,7 +58,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		try{
 			annotaion = createAnnotationInstance(motivationType, jo);
 		}catch(RuntimeException e){
-			throw new AnnotationValidationException("cannot instantiate Annotation!", e);
+			throw new AnnotationValidationException("cannot instantiate Annotation! " + e.getMessage(), e);
 		}
 		parseJsonObject(jo, annotaion, 1, null);
 		

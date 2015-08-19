@@ -29,7 +29,7 @@ import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 
-@Controller
+//@Controller
 //@Api(value = "admin-api", description = "Provider Management Rest Service")
 public class ProviderManagementRest extends BaseRest {
 
