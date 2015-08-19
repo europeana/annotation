@@ -1,4 +1,4 @@
-package eu.europeana.annotation.web.service.controller;
+package eu.europeana.annotation.web.service.controller.admin;
 
 import java.util.List;
 
@@ -25,6 +25,7 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.ProviderOperationResponse;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
+import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 

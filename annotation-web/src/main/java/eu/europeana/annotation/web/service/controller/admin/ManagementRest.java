@@ -1,4 +1,4 @@
-package eu.europeana.annotation.web.service.controller;
+package eu.europeana.annotation.web.service.controller.admin;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import javax.ws.rs.PUT;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,16 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
-import eu.europeana.annotation.solr.exceptions.AnnotationStatusException;
+import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
+import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 
@@ -359,10 +357,10 @@ public class ManagementRest extends BaseRest {
 		
 		try {
 //			Annotation annotation = getAnnotationService().getAnnotationById(
-			Annotation annotationFromDb = getAnnotationService().getAnnotationById(
+			Annotation annotation = getAnnotationService().getAnnotationById(
 					provider, identifier);
 	
-			Annotation annotation = getAnnotationService().checkVisibility(annotationFromDb, user);
+			getAnnotationService().checkVisibility(annotation, user);
 				
 			AnnotationOperationResponse response = new AnnotationOperationResponse(
 					"", action);
@@ -377,7 +375,7 @@ public class ManagementRest extends BaseRest {
 				response = buildErrorResponse(errorMessage, action, "");
 			}
 			return JsonWebUtils.toJson(response, null);
-		} catch (AnnotationStatusException e) {
+		} catch (AnnotationStateException e) {
 			getLogger().error("An error occured during the invocation of :" + action, e);
 			return getValidationReport(null, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);	
 		} catch (Exception e) {
