@@ -170,26 +170,11 @@ public class BaseJsonldRest extends BaseRest{
 
 			// 4. authorize user
 			authorizeUser(userToken, annoId);
-
-			// 4. find current annotation
-//			ResponseEntity<String> annotationById = getAnnotationById(
-//					wsKey, annoId.getProvider(), annoId.getIdentifier(), action);
-//			String currentAnnotation = annotationById.getBody();
-			
+		
 			// 5. extract and check current annotation type and motivation
 			MotivationTypes currentMotivation = null;
 			currentMotivation = MotivationTypes.getType(currentWebAnnotation.getMotivation());
 			
-//			String currentAnnotationType = JsonUtils.extractValueFromJsonString(
-//					WebAnnotationFields.AT_TYPE, currentAnnotation);
-//			String currentMotivationStr = JsonUtils.extractValueFromJsonString(
-//					WebAnnotationFields.MOTIVATION, currentAnnotation);
-//			if(currentMotivationStr == null)
-//				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE, 
-//						WebAnnotationFields.PATH_PARAM_ANNO_TYPE, currentAnnotationType, HttpStatus.NOT_ACCEPTABLE, null);
-//			else
-//				currentMotivation = MotivationTypes.getType(currentMotivationStr.toLowerCase());
-
 			// 6. extract and check updated annotation type and motivation
 			String updatedAnnotationType = JsonUtils.extractValueFromJsonString(
 					WebAnnotationFields.AT_TYPE, annotation);
@@ -205,8 +190,6 @@ public class BaseJsonldRest extends BaseRest{
 			}
 			
 			// 7. parse updated annotation
-//			Annotation currentWebAnnotation = getAnnotationService().parseAnnotationLd(
-//					currentMotivation, currentAnnotation);
 			if (updatedMotivation != null)
 				currentMotivation = updatedMotivation;
 			Annotation updatedWebAnnotation = getAnnotationService().parseAnnotationLd(
@@ -312,13 +295,13 @@ public class BaseJsonldRest extends BaseRest{
 			// 1. build annotation id object
 			AnnotationId annoId = buildAnnotationId(identifier);
 			
-			//2. Check client access (a valid “wskey” must be provided)
+			// 2. Check client access (a valid “wskey” must be provided)
 			validateApiKey(wsKey);
 			
-			//3. Retrieve an annotation based on its identifier;
+			// 3. Retrieve an annotation based on its identifier;
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);		
 			
-			//4. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
+			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
 			if(annotation == null)
 				throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toUri());
 			
