@@ -140,7 +140,6 @@ public interface AnnotationService {
 	 * @param identifier
 	 */
 	public void deleteAnnotation(String provider, String identifier);
-//	public void deleteAnnotation(String resourceId, String provider, Long identifier);
 
 	/**
 	 * This method forces reindexing of the annotation, which means 
@@ -151,18 +150,23 @@ public interface AnnotationService {
 	 * @param identifier
 	 */
 	public void indexAnnotation(String provider, String identifier);
-//	public void indexAnnotation(String resourceId, String provider, Long identifier);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
-	 * @param resourceId
 	 * @param provider
 	 * @param identifier
 	 * @return disabled Annotation
 	 */
 	public Annotation disableAnnotation(String provider, String identifier);
-//	public Annotation disableAnnotation(String resourceId, String provider, Long identifier);
+	
+	/**
+	 * This method sets 'disable' field to true in database and removes the annotation 
+	 * from the solr/annotation.
+	 * @param annotation The annotation object
+	 * @return disabled Annotation
+	 */
+	public Annotation disableAnnotation(Annotation annotation);
 	
 	/**
 	 * This method returns annotation object for given annotationId that

@@ -19,7 +19,7 @@ boolean hasType = withType != null;
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-<%if(!hasType){%>"motivation": "oa:Tagging",<%}%>	
+<%if(!hasType){%>    "motivation": "oa:Tagging",<%}%>	
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -41,7 +41,7 @@ boolean hasType = withType != null;
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-<%if(!hasType){%>"motivation": "oa:Linking",<%}%>	
+<%if(!hasType){%>    "motivation": "oa:Linking",<%}%>	
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -55,7 +55,6 @@ boolean hasType = withType != null;
         "http://www.europeana.eu/portal/record/333/xxx.html"
     ],
     "oa:equivalentTo": "https://www.historypin.org/en/item/789"
-}
 }
 </textarea>
 <br>			

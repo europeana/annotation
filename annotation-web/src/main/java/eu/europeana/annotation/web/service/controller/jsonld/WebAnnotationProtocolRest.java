@@ -96,6 +96,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 
+	
 	@RequestMapping(value = "/annotation/{identifier}.jsonld", method = RequestMethod.PUT, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
@@ -109,5 +110,16 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return updateAnnotation(wskey, identifier, annotation, userToken, action);
 	}
 	
+
+	@RequestMapping(value = "/annotation/{identifier}.jsonld", method = RequestMethod.DELETE, produces = { "application/ld+json",
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> deleteAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken//,
+			) throws HttpException {
+
+		String action = "delete:/annotation/{identifier}.jsonld";
+		return deleteAnnotation(wskey, identifier, userToken, action);
+	}
 	
 }

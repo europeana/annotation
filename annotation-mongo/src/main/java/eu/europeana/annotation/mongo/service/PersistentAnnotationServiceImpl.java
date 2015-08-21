@@ -123,7 +123,7 @@ public class PersistentAnnotationServiceImpl extends
 						AnnotationValidationException.ERROR_NULL_EUROPEANA_ID);
 	
 			// check if TAG
-			if (hasTagBody(object)) {
+			if (generateId && hasTagBody(object)) {
 	
 				TagBody body = (TagBody) object.getBody();
 				PersistentTag tag = findOrCreateTag(object, body);
