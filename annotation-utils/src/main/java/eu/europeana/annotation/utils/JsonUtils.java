@@ -256,7 +256,7 @@ public class JsonUtils {
 	public static String extractValueFromJsonString(String valueName, String jsonString) {
 		String res = "";
 		if (StringUtils.isNotEmpty(jsonString)) {
-			Pattern pattern = Pattern.compile(valueName + "\":\"(.*?)\"");
+			Pattern pattern = Pattern.compile(valueName + "\": *\"(.*?)\",");
 			Matcher matcher = pattern.matcher(jsonString);
 			if (matcher.find())
 			{

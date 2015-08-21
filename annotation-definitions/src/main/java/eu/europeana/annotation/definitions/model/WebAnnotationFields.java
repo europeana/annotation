@@ -52,6 +52,7 @@ public interface WebAnnotationFields {
 	public static final String ANNOTATION_ID        = "annotationId";
 	public static final String DATE_FORMAT          = "yyyy-MM-dd'T'HH:mm:ss";
 	public static final String LAST_INDEXED_TIMESTAMP = "lastIndexedTimestamp";
+	public static final String LAST_UPDATE          = "lastUpdate";
 	public static final String MULTILINGUAL         = "multilingual";
 	public static final String PREF_LABEL           = "prefLabel";
 	public static final String ALT_LABEL            = "altLabel";
@@ -140,6 +141,8 @@ public interface WebAnnotationFields {
 			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
 	public static final String SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp\" target=\"_blank\">templates</a>. " +
 			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
+	public static final String UPDATE_SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp\" target=\"_blank\">templates</a>. " +
+			"Please create your JSON update request using selected fields you are going to update. E.g. 'body' and 'target' example:   { \"body\": \"Buccin Trombone\",\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\" }";
 	public static final String SAMPLES_JSONLD_WITH_TYPE = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp?withType=yes\" target=\"_blank\">templates</a>. " +
 			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
 	public static final String SEARCH_FIELDS_LINK = "Valid fields are 'all', 'label', 'body_value', 'tag_id', 'multilingual'.";
@@ -191,6 +194,11 @@ public interface WebAnnotationFields {
 	public static final String ADD                  = "add"; 	
 	public static final String GET                  = "get"; 	
 	public static final String IN_MAPPING           = "InMapping"; 	
+	
+	/**
+	 * Mongo 
+	 */
+	public static final String MONGO_ID            = "_id";
 	
 	/**
 	 * Default values for the Rest API services

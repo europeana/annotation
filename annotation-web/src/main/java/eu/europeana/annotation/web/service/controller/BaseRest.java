@@ -22,7 +22,6 @@ import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.corelib.db.service.ApiKeyService;
 
 public class BaseRest extends ApiResponseBuilder{
 
@@ -136,9 +135,40 @@ public class BaseRest extends ApiResponseBuilder{
 		return annoId;
 	}
 
+	/**
+	 * This method is employed when identifier is an URL and contains provider.
+	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'
+	 * @param identifier
+	 * @return AnnotationId
+	 * @throws ParamValidationException
+	 */
+	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
+		
+		AnnotationId annoId = getAnnotationIdHelper()
+				.initializeAnnotationId(identifier);
+		
+//		annotationService.validateAnnotationId(annoId);
+		
+		return annoId;
+	}
+
 	protected void authorizeUser(String userToken, AnnotationId annoId) throws UserAuthorizationException {
 		// TODO Auto-generated method stub
 		//implement when authentication/authorization is available
+	}
+	
+	
+	/**
+	 * This method extracts provider name from an identifier URL
+	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'
+	 * comprises provider 'base'.
+	 * @param identifier
+	 * @return provider name
+	 */
+	protected String extractProviderFromIdentifier(String identifier) {
+		
+		return getAnnotationIdHelper()
+				.extractProviderFromIdentifier(identifier);
 	}
 
 }

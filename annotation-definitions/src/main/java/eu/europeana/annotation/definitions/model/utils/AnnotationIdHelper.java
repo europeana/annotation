@@ -90,6 +90,41 @@ public class AnnotationIdHelper {
 	}
 		
 	/**
+     * Extracts provider name from the given identifier URL.
+	 * @param identifier The URL
+	 * @return provider
+	 */
+	public String extractProviderFromIdentifier(String identifier) {
+		int PROVIDER_TOKEN_POS = 2;
+		return extractTokenFromUrl(identifier, PROVIDER_TOKEN_POS);
+	}
+		
+	/**
+     * Extracts id from the given identifier URL.
+	 * @param identifier The URL
+	 * @return id
+	 */
+	public String extractIdFromIdentifier(String identifier) {
+		int ID_TOKEN_POS = 1;
+		return extractTokenFromUrl(identifier, ID_TOKEN_POS);
+	}
+		
+	/**
+     * Extracts token from the given URL.
+	 * @param url The input URL
+	 * @param pos The position of the token from the end
+	 * @return token
+	 */
+	public String extractTokenFromUrl(String url, int tokenPos) {
+		String res = "";
+		if (StringUtils.isNotEmpty(url)) {
+			String[] arr = url.split("/");
+			res = arr[arr.length - tokenPos];
+		}
+		return res;
+	}
+		
+	/**
      * Extract collection from resourceId.
 	 * @param resourceId
 	 * @return collection
@@ -232,6 +267,26 @@ public class AnnotationIdHelper {
 //		}else if (!StringUtils.isEmpty(sameAs)){
 //			processExternalId(annotationId, provider, sameAs);
 //		}
+		
+		return annotationId;
+		
+	}
+	
+	/**
+	 * This method initializes AnnotationId object by passed identifier 
+	 * when identifier is an URL and contains provider.
+	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'
+	 * @param identifier
+	 * @return AnnotationId object
+	 */
+	public AnnotationId initializeAnnotationId(
+			String identifier) {
+		
+		AnnotationId annotationId = new BaseAnnotationId();
+		String provider = extractProviderFromIdentifier(identifier);
+		String id = extractIdFromIdentifier(identifier);
+		annotationId.setProvider(provider);
+		annotationId.setIdentifier(id);
 		
 		return annotationId;
 		

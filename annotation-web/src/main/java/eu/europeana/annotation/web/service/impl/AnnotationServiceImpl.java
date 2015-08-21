@@ -401,12 +401,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 			}
 
 			// save the time of the last SOLR indexing
-			try {
-				getMongoPersistence().updateIndexingTime(res.getAnnotationId());
-			} catch (Exception e) {
-				Logger.getLogger(getClass().getName())
-						.warn("The time of the last SOLR indexing could not be saved. " + e);
-			}
+			updateLastSolrIndexingTime(res);
 		}
 
 		return res;
@@ -580,8 +575,30 @@ public class AnnotationServiceImpl implements AnnotationService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		// check if the tag is already indexed
+		try {
+			SolrTag indexedTag = copyIntoSolrTag(res.getBody());
+			getSolrTagService().update(indexedTag);
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName())
+					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
+							+ e);
+		}
 
+		// save the time of the last SOLR indexing
+		updateLastSolrIndexingTime(res);
+		
 		return res;
+	}
+
+	private void updateLastSolrIndexingTime(Annotation res) {
+		try {
+			getMongoPersistence().updateIndexingTime(res.getAnnotationId());
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName())
+					.warn("The time of the last SOLR indexing could not be saved. " + e);
+		}
 	}
 
 	@Override

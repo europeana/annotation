@@ -17,8 +17,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.web.exception.HttpException;
-import eu.europeana.annotation.web.exception.InternalServerException;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 
 /**
@@ -98,4 +96,18 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 
+	@RequestMapping(value = "/annotation/{identifier}.jsonld", method = RequestMethod.PUT, produces = { "application/ld+json",
+			MediaType.APPLICATION_JSON_VALUE })
+	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
+	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
+			@RequestBody String annotation,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken//,
+			) throws HttpException {
+		
+		String action = "put:/annotation/{identifier}.jsonld";
+		return updateAnnotation(wskey, identifier, annotation, userToken, action);
+	}
+	
+	
 }
