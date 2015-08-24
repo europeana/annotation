@@ -28,12 +28,12 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 	@Override
 	public ResponseEntity<String> createAnnotation(
 			String wskey, String provider, String identifier, boolean indexOnCreate, 
-			String annotation, String userToken) {
+			String annotation, String userToken, String annoType) {
 		
 		ResponseEntity<String> res;
 		try {
 			res = apiConnection.createAnnotation(
-					wskey, provider, identifier, indexOnCreate, annotation, userToken);
+					wskey, provider, identifier, indexOnCreate, annotation, userToken, annoType);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
 		}

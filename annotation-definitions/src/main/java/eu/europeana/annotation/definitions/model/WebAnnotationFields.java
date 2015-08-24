@@ -92,6 +92,8 @@ public interface WebAnnotationFields {
 	public static final String LANGUAGE             = "language";
 	public static final String VALUE                = "value";
 	public static final String TAG_TYPE             = "tagType";
+	public static final String TAG                  = "tag";
+	public static final String LINK                 = "link";
 	
 	public static final String DEFAULT_LANGUAGE = "EN";
 	public static final String UNDERSCORE = "_";
@@ -172,6 +174,7 @@ public interface WebAnnotationFields {
 	public static final String IDENTIFIER    	= "identifier"; 
 	public static final String RESOURCE_ID      = "resourceId"; 
 	public static final String JSON_REST        = ".json";
+	public static final String JSON_LD_REST     = ".jsonld";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
 	public static final String ANNOTATION_LD_JSON_LD_REST = "annotationld.jsonld";
 	public static final String CONCEPT_JSON_REST = "uri.json";

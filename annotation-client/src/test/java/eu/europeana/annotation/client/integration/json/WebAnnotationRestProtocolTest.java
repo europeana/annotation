@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.AnnotationJsonApi;
 import eu.europeana.annotation.client.AnnotationJsonApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -81,9 +82,9 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	
     public String TEST_WSKEY = "apidemo";
     
-    public String TEST_WEBANNO_PROVIDER = "webanno";
+    public String TEST_USER_TOKEN = "anonymous";
     
-    /*createAnnotation: -tag  -link -historypin
+    /*
     identifier is null
     type wrong
     type null
@@ -108,15 +109,87 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		
 		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
 				TEST_WSKEY
-				, TEST_WEBANNO_PROVIDER
+				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
 				, TAG_JSON
-				, "anonymous");
+				, TEST_USER_TOKEN
+				, null
+				);
 		
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
+	
+	@Test
+	public void createWebannoAnnotationLink() {
+		
+		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, null
+				, false
+				, LINK_JSON
+				, TEST_USER_TOKEN
+				, null
+				);
+		
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	}
+	
+	@Test
+	public void createWebannoAnnotationTagByTypeJsonld() {
+		
+		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, null
+				, false
+				, TAG_JSON_BY_TYPE_JSONLD
+				, TEST_USER_TOKEN
+				, WebAnnotationFields.TAG
+				);
+		
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	}
+	
+	@Test
+	public void createWebannoAnnotationLinkByTypeJsonld() {
+		
+		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, null
+				, false
+				, LINK_JSON_BY_TYPE_JSONLD
+				, TEST_USER_TOKEN
+				, WebAnnotationFields.LINK
+				);
+		
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	}
+	
+	/*
+	@Test
+	public void createHistorypinAnnotationTag() {
+		
+		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_HISTORY_PIN
+				, "500"
+				, false
+				, TAG_JSON
+				, TEST_USER_TOKEN
+				, null
+				);
+		
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	}
+	*/
 	
 //	@Test
 	public void getAnnotations() {

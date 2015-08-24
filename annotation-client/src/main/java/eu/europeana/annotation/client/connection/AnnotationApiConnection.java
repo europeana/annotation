@@ -302,18 +302,22 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 	/**
 	 * This method creates Annotation object from JsonLd string.
-	 * Example HTTP request: 
+	 * Example HTTP request for tag object: 
 	 *      http://localhost:8080/annotation/?wskey=apidemo&provider=webanno&&indexOnCreate=false
+	 * and for tag object with type jsonld
+	 *     http://localhost:8080/annotation/tag.jsonld?wskey=apidemo&provider=webanno&&indexOnCreate=false
 	 * @param annotation The Annotation body
 	 * @return annotation operation response
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> createAnnotation(
 			String wskey, String provider, String identifier, boolean indexOnCreate, 
-			String annotation, String userToken) throws IOException {
+			String annotation, String userToken, String annoType) throws IOException {
 		
-		String url = getAnnotationServiceUri(); 
-		url += "/" + WebAnnotationFields.PAR_CHAR;
+		String url = getAnnotationServiceUri() + "/";
+		if (annoType != null)
+			url += annoType + WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (identifier != null)
