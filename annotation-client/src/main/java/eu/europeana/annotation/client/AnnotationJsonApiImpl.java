@@ -3,6 +3,8 @@ package eu.europeana.annotation.client;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
@@ -23,6 +25,22 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		super();
 	}
 
+	@Override
+	public ResponseEntity<String> createAnnotation(
+			String wskey, String provider, String identifier, boolean indexOnCreate, 
+			String annotation, String userToken) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.createAnnotation(
+					wskey, provider, identifier, indexOnCreate, annotation, userToken);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
+		}
+
+		return res;
+	}
+	
 	@Override
 //	public String createAnnotation(String annotation){
 	public String createAnnotation(Annotation annotation){

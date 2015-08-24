@@ -3,6 +3,7 @@ package eu.europeana.annotation.client.connection;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.springframework.http.ResponseEntity;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,11 +94,25 @@ public class BaseApiConnection {
 	
 	String getJSONResult(String url, String paramName, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST): " + url);
-		return getHttpConnection(). getURLContent(url, paramName, jsonPost);
+		return getHttpConnection().getURLContent(url, paramName, jsonPost);
 	}
 	
 	String getJSONResultWithBody(String url, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST) with body: " + url);
-		return getHttpConnection(). getURLContentWithBody(url, jsonPost);
+		return getHttpConnection().getURLContentWithBody(url, jsonPost);
+	}
+	
+	/**
+	 * This method makes POST request for given URL and JSON body parameter that returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param jsonPost
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	ResponseEntity<String> postURL(String url, String jsonPost) throws IOException {
+		logger.trace("Call to Annotation API (POST) with body: " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().postURL(url, jsonPost);
 	}
 }

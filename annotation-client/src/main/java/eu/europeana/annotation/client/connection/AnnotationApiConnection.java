@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
+import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
@@ -298,6 +299,35 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		return null;
 	}
 
+	
+	/**
+	 * This method creates Annotation object from JsonLd string.
+	 * Example HTTP request: 
+	 *      http://localhost:8080/annotation/?wskey=apidemo&provider=webanno&&indexOnCreate=false
+	 * @param annotation The Annotation body
+	 * @return annotation operation response
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> createAnnotation(
+			String wskey, String provider, String identifier, boolean indexOnCreate, 
+			String annotation, String userToken) throws IOException {
+		
+		String url = getAnnotationServiceUri(); 
+		url += "/" + WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		if (identifier != null)
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
+		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;		
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return postURL(url, annotation);		
+	}
+
+	
 	/**
 	 * This method creates Annotation object from JsonLd string.
 	 * @param annotationJsonLdStr The Annotation

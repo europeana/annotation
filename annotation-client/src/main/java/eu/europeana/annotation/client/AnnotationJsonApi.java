@@ -2,11 +2,28 @@ package eu.europeana.annotation.client;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 
 public interface AnnotationJsonApi {
 
+	/**
+	 * This method creates annotation describing it in body JSON string and
+	 * providing it with associated wskey, provider name and identifier.
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param indexOnCreate
+	 * @param annotation Contains the body JSON string
+	 * @param userToken
+	 * @return response entity containing body, headers and status code.
+	 */
+	public ResponseEntity<String> createAnnotation(
+			String wskey, String provider, String identifier, boolean indexOnCreate, 
+			String annotation, String userToken);
+	
 //	public Annotation createAnnotation(Annotation annotation);
 	public String createAnnotation(Annotation annotation);
 //	public String createAnnotation(String annotation);

@@ -7,10 +7,15 @@ package eu.europeana.annotation.client.http;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * The class encapsulating simple HTTP access.
@@ -68,7 +73,44 @@ public class HttpConnection {
     }
 
     
-    @SuppressWarnings("deprecation")
+	/**
+	 * This method makes POST request for given URL and JSON body parameter.
+	 * @param url
+	 * @param jsonParamValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> postURL(String url, String jsonParamValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PostMethod post = new PostMethod(url);
+        post.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(post);
+
+            if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = post.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+    			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(15);
+                for (Header header : post.getResponseHeaders())
+                	  headers.add(header.getName(), header.getValue());
+                ResponseEntity<String> responseEntity = new ResponseEntity<String>(
+                		res
+                		, headers
+//                		, new HttpStatus(post.getStatusCode(), post.getStatusText())
+                		, HttpStatus.valueOf(post.getStatusCode())
+                		);
+                return responseEntity;
+            } else {
+                return null;
+            }
+
+        } finally {
+        	post.releaseConnection();
+        }
+    }
+    
+    
 	public String getURLContentWithBody(String url, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);

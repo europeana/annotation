@@ -166,7 +166,7 @@ public class BaseJsonldRest extends BaseRest{
 			// already exist in the database
 			if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-						"/provider/identifier", annoId.toUri());
+						"/provider/identifier", annoId.toUri(), HttpStatus.NOT_FOUND, null);
 
 			// 4. authorize user
 			authorizeUser(userToken, annoId);
