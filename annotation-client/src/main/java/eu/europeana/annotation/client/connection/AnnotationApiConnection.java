@@ -313,7 +313,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param annotation The Annotation body
 	 * @param userToken
 	 * @param annoType
-	 * @return annotation operation response that comprises response body, headers and status code.
+	 * @return response entity that comprises response body, headers and status code.
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> createAnnotation(
@@ -347,7 +347,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param wskey
 	 * @param provider
 	 * @param identifier
-	 * @return annotation operation response that comprises response body, headers and status code.
+	 * @return response entity that comprises response body, headers and status code.
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> getAnnotation(
@@ -368,6 +368,39 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 
+	/**
+	 * This method updates Annotation object by the passed JsonLd update string.
+	 * Example HTTP request: 
+	 *      http://localhost:8080/annotation/{identifier}.jsonld?wskey=apidemo&identifier=http%3A%2F%2Fdata.europeana.eu%2Fannotation%2Fwebanno%2F496
+	 * where identifier is:
+	 *     http://data.europeana.eu/annotation/webanno/496
+	 * and the update JSON string is:
+	 *     { "body": "Buccin Trombone","target": "http://data.europeana.eu/item/09102/_UEDIN_2214" }
+	 * @param wskey
+	 * @param identifier The identifier URL that comprise annotation provider and ID
+	 * @param updateAnnotation The update Annotation body in JSON format
+	 * @param userToken
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> updateAnnotation(
+			String wskey, String identifier, String updateAnnotation, String userToken) throws IOException {
+		
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		if (identifier != null)
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return putURL(url, updateAnnotation);		
+	}
+
+	
 	/**
 	 * This method creates Annotation object from JsonLd string.
 	 * @param annotationJsonLdStr The Annotation

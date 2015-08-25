@@ -1,6 +1,8 @@
 package eu.europeana.annotation.client.connection;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +104,7 @@ public class BaseApiConnection {
 		return getHttpConnection().getURLContentWithBody(url, jsonPost);
 	}
 	
+	
 	/**
 	 * This method makes POST request for given URL and JSON body parameter that returns
 	 * response body, response headers and status code.
@@ -116,6 +119,22 @@ public class BaseApiConnection {
 		return getHttpConnection().postURL(url, jsonPost);
 	}
 	
+	
+	/**
+	 * This method makes PUT request for given URL and JSON body parameter that returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param jsonPost
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	ResponseEntity<String> putURL(String url, String jsonPut) throws IOException {
+		logger.trace("Call to Annotation API (PUT) with body: " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().putURL(url, jsonPut);
+	}
+	
+
 	/**
 	 * This method makes GET request for given URL and returns
 	 * response body, response headers and status code.
@@ -127,5 +146,16 @@ public class BaseApiConnection {
 		logger.trace("Call to Annotation API (GET): " + url + 
 				". Returns body, headers and status code.");
 		return getHttpConnection().getURL(url);
+	}
+	
+	
+	/**
+	 * This method encodes URLs for HTTP connection
+	 * @param url The input URL
+	 * @return encoded URL
+	 * @throws UnsupportedEncodingException
+	 */
+	String encodeUrl(String url) throws UnsupportedEncodingException {
+		return URLEncoder.encode(url,"UTF-8");
 	}
 }

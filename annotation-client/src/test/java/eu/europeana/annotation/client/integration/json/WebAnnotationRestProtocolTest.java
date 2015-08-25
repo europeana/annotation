@@ -2,6 +2,7 @@ package eu.europeana.annotation.client.integration.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,6 +76,18 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		    "\"motivation\": \"oa:Linking\"," +	
 		    END;
 	
+    public String UPDATE_BODY =
+    		"\"body\": \"Buccin Trombone\"";
+    
+    public String UPDATE_TARGET =
+    		"\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\"";
+    
+    public String UPDATE_JSON =
+    		START +
+    		UPDATE_BODY + "," + 
+    		UPDATE_TARGET +
+    		END;
+    
     public String TEST_WSKEY = "apidemo";
     
     public String TEST_USER_TOKEN = "anonymous";
@@ -86,13 +99,6 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
     not existing a
     format, descr fields or body corrupted
 
-
-    createAnnotationByTypeJsonld: -tag  -link
-    
-    getA
-    
-    getAJsonld
-
     updateA
     exeptions
     
@@ -102,15 +108,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	@Test
 	public void createWebannoAnnotationTag() {
 		
-		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
-				TEST_WSKEY
-				, WebAnnotationFields.PROVIDER_WEBANNO
-				, null
-				, false
-				, TAG_JSON
-				, TEST_USER_TOKEN
-				, null
-				);
+		ResponseEntity<String> response = storeTestAnnotation();
 		
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
@@ -201,30 +199,8 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	 */
 	private void getAnnotationWorkflow(boolean isJsonld) {
 		
-		/**
-		 * store annotation
-		 */
-		ResponseEntity<String> storedResponse = annotationJsonApi.createAnnotation(
-				TEST_WSKEY
-				, WebAnnotationFields.PROVIDER_WEBANNO
-				, null
-				, false
-				, TAG_JSON
-				, TEST_USER_TOKEN
-				, null
-				);
-		String storedAnnotation = storedResponse.getBody();
-		
-		/**
-		/* extract stored annotation ID
-		 */
-		String annotationId = JsonUtils.extractValueFromJsonString(
-				WebAnnotationFields.AT_ID, storedAnnotation);
-		
-		/**
-		 * retrieve identifier
-		 */
-		String identifier = JsonUtils.extractIdentifierFromAnnotationIdString(annotationId);
+		ResponseEntity<String> storedResponse = storeTestAnnotation();
+		String identifier = extractIdentifierFromAnnotationJson(storedResponse);
 
 		/**
 		 * get annotation by provider and identifier
@@ -240,12 +216,108 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		assertEquals(response.getBody(), storedResponse.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
+
+	
+	/**
+	 * This method extracts identifier number in string format from the stored annotation. 
+	 * @param storedResponse
+	 * @return identifier number in string format
+	 */
+	private String extractIdentifierFromAnnotationJson(ResponseEntity<String> storedResponse) {
+		
+		String annotationId = extractAnnotationIdFromAnnotationJson(storedResponse);
+		
+		/**
+		 * retrieve identifier
+		 */
+		String identifier = JsonUtils.extractIdentifierFromAnnotationIdString(annotationId);
+		return identifier;
+	}
+
+	
+	/**
+	 * This method extracts annotationId URL from the stored annotation. 
+	 * @param storedResponse
+	 * @return annotationId in string format
+	 */
+	private String extractAnnotationIdFromAnnotationJson(ResponseEntity<String> storedResponse) {
+		
+		String storedAnnotation = storedResponse.getBody();
+		
+		/**
+		/* extract stored annotation ID
+		 */
+		String annotationId = JsonUtils.extractValueFromJsonString(
+				WebAnnotationFields.AT_ID, storedAnnotation);
+		return annotationId;
+	}
+
+	
+	/**
+	 * This method creates test annotation object
+	 * @return response entity that contains response body, headers and status code.
+	 */
+	private ResponseEntity<String> storeTestAnnotation() {
+		
+		/**
+		 * store annotation
+		 */
+		ResponseEntity<String> storedResponse = annotationJsonApi.createAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, null
+				, false
+				, TAG_JSON
+				, TEST_USER_TOKEN
+				, null
+				);
+		return storedResponse;
+	}
 			
 				
 	@Test
 	public void getAnnotationJsonLd() {
 		
 		getAnnotationWorkflow(true);
+	}
+			
+	
+	/**
+	 * This method is employed for annotation creation for testing.
+	 * @return identifier of the created annotation
+	 */
+//	private String storeAnnotationForTesting() {
+//		
+//		ResponseEntity<String> storedResponse = storeTestAnnotation();
+//		String identifier = extractIdentifierFromAnnotationJson(storedResponse);
+//		
+//		return identifier;
+//	}
+
+	
+	@Test
+	public void updateAnnotation() {
+				
+		/**
+		 * store annotation and retrieve its identifier URL
+		 */
+		ResponseEntity<String> storedResponse = storeTestAnnotation();
+		String identifier = extractAnnotationIdFromAnnotationJson(storedResponse);
+
+		/**
+		 * get annotation by provider and identifier
+		 */
+		ResponseEntity<String> response = annotationJsonApi.updateAnnotation(
+				TEST_WSKEY
+				, identifier
+				, UPDATE_JSON
+				, TEST_USER_TOKEN
+				);
+		
+		assertNotNull(response.getBody());
+		assertTrue(response.getBody().contains(UPDATE_BODY));
+		assertTrue(response.getBody().contains(UPDATE_TARGET));
+		assertEquals(response.getStatusCode(), HttpStatus.OK);
 	}
 			
 				

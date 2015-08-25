@@ -38,6 +38,18 @@ public interface AnnotationJsonApi {
 			String wskey, String provider, String identifier, boolean byTypeJsonld);
 
 		
+	/**
+	 * This method updates annotation by the given update string in JSON format
+	 * @param wskey
+	 * @param identifier The identifier URL that comprises annotation provider and ID
+	 * @param updateAnnotation
+	 * @param userToken
+	 * @return response entity containing body, headers and status code.
+	 */
+	public ResponseEntity<String> updateAnnotation(
+			String wskey, String identifier, String updateAnnotation, String userToken);
+
+		
 	public String createAnnotation(Annotation annotation);
 
 	public ImageAnnotation createImageAnnotation(ImageAnnotation annotation);

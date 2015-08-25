@@ -12,6 +12,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,6 +100,35 @@ public class HttpConnection {
 
         } finally {
         	post.releaseConnection();
+        }
+    }
+
+	
+	/**
+	 * This method makes PUT request for given URL and JSON body parameter.
+	 * @param url
+	 * @param jsonParamValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> putURL(String url, String jsonParamValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PutMethod put = new PutMethod(url);
+        put.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(put);
+
+            if (put.getStatusCode() >= STATUS_OK_START && put.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = put.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+    			return buildResponseEntity(put, res);
+            } else {
+                return null;
+            }
+
+        } finally {
+        	put.releaseConnection();
         }
     }
 

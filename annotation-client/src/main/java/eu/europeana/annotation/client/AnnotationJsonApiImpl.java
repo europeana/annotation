@@ -65,6 +65,26 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.client.AnnotationJsonApi#updateAnnotation(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResponseEntity<String> updateAnnotation(
+			String wskey, String identifier, String updateAnnotation, String userToken) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.updateAnnotation(
+					wskey, identifier, updateAnnotation, userToken);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
+		}
+
+		return res;
+	}
+	
+
 	@Override
 //	public String createAnnotation(String annotation){
 	public String createAnnotation(Annotation annotation){
