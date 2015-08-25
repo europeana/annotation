@@ -26,9 +26,19 @@ public interface AnnotationJsonApi {
 			String wskey, String provider, String identifier, boolean indexOnCreate, 
 			String annotation, String userToken, String annoType);
 	
-//	public Annotation createAnnotation(Annotation annotation);
+	/**
+	 * This method retrieves annotation by the given provider and identifier.
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param byTypeJsonld This flag is true when jsonld type is required, false otherwise
+	 * @return response entity containing body, headers and status code.
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String wskey, String provider, String identifier, boolean byTypeJsonld);
+
+		
 	public String createAnnotation(Annotation annotation);
-//	public String createAnnotation(String annotation);
 
 	public ImageAnnotation createImageAnnotation(ImageAnnotation annotation);
 

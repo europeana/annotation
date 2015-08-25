@@ -25,6 +25,9 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		super();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.client.AnnotationJsonApi#createAnnotation(java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ResponseEntity<String> createAnnotation(
 			String wskey, String provider, String identifier, boolean indexOnCreate, 
@@ -35,12 +38,33 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 			res = apiConnection.createAnnotation(
 					wskey, provider, identifier, indexOnCreate, annotation, userToken, annoType);
 		} catch (IOException e) {
-			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationJsonApi", e);
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
 		}
 
 		return res;
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.client.AnnotationJsonApi#getAnnotation(java.lang.String, java.lang.String, java.lang.String, boolean)
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String wskey, String provider, String identifier, boolean byTypeJsonld) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.getAnnotation(
+					wskey, provider, identifier, byTypeJsonld);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi getAnnotation method", e);
+		}
+
+		return res;
+	}
+	
+
 	@Override
 //	public String createAnnotation(String annotation){
 	public String createAnnotation(Annotation annotation){

@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -91,22 +92,61 @@ public class HttpConnection {
             if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
                 byte[] byteResponse = post.getResponseBody();
                 String res = new String(byteResponse, ENCODING);
-    			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(15);
-                for (Header header : post.getResponseHeaders())
-                	  headers.add(header.getName(), header.getValue());
-                ResponseEntity<String> responseEntity = new ResponseEntity<String>(
-                		res
-                		, headers
-//                		, new HttpStatus(post.getStatusCode(), post.getStatusText())
-                		, HttpStatus.valueOf(post.getStatusCode())
-                		);
-                return responseEntity;
+    			return buildResponseEntity(post, res);
             } else {
                 return null;
             }
 
         } finally {
         	post.releaseConnection();
+        }
+    }
+
+	
+	/**
+	 * This method builds a response entity that comprises 
+	 * response body, headers and status code for the passed
+	 * HTTP method
+	 * @param method The HTTP method (e.g. post or get)
+	 * @param res
+	 * @return response entity
+	 */
+	private ResponseEntity<String> buildResponseEntity(HttpMethod method, String res) {
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(15);
+		for (Header header : method.getResponseHeaders())
+			  headers.add(header.getName(), header.getValue());
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(
+				res
+				, headers
+				, HttpStatus.valueOf(method.getStatusCode())
+				);
+		return responseEntity;
+	}
+    
+    
+	/**
+	 * This method makes GET request for given URL.
+	 * @param url
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String>  getURL(String url) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        GetMethod get = new GetMethod(url);
+
+        try {
+            client.executeMethod(get);
+
+            if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = get.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+    			return buildResponseEntity(get, res);
+            } else {
+                return null;
+            }
+
+        } finally {
+            get.releaseConnection();
         }
     }
     

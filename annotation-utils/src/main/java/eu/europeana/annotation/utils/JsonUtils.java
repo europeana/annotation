@@ -320,5 +320,17 @@ public class JsonUtils {
         }
         return res;
     }
+    
+    
+    /**
+     * This method extracts identifier from the AnnotationId string. 
+     * It is the last token in array.
+     * @param annotationId
+     * @return identifier
+     */
+    public static String extractIdentifierFromAnnotationIdString(String annotationId) {
+        String[] arrValue = annotationId.split(WebAnnotationFields.SLASH);
+        return arrValue[arrValue.length - 1];
+    }
 	
 }

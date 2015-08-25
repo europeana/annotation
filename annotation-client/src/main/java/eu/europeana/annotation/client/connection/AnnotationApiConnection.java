@@ -306,15 +306,21 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 *      http://localhost:8080/annotation/?wskey=apidemo&provider=webanno&&indexOnCreate=false
 	 * and for tag object with type jsonld
 	 *     http://localhost:8080/annotation/tag.jsonld?wskey=apidemo&provider=webanno&&indexOnCreate=false
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param indexOnCreate
 	 * @param annotation The Annotation body
-	 * @return annotation operation response
+	 * @param userToken
+	 * @param annoType
+	 * @return annotation operation response that comprises response body, headers and status code.
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> createAnnotation(
 			String wskey, String provider, String identifier, boolean indexOnCreate, 
 			String annotation, String userToken, String annoType) throws IOException {
 		
-		String url = getAnnotationServiceUri() + "/";
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
 		if (annoType != null)
 			url += annoType + WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
@@ -332,6 +338,36 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 	
+	/**
+	 * This method retrieves Annotation object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/497?wskey=apidemo
+	 * and for tag object with type jsonld
+	 *     http://localhost:8080/annotation/webanno/497.jsonld?wskey=apidemo
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @return annotation operation response that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String wskey, String provider, String identifier, boolean isTypeJsonld) throws IOException {
+		
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+		url += provider + WebAnnotationFields.SLASH;
+    	url += identifier;
+		if (isTypeJsonld)
+			url += WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURL(url);		
+	}
+
+
 	/**
 	 * This method creates Annotation object from JsonLd string.
 	 * @param annotationJsonLdStr The Annotation
@@ -516,8 +552,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 	public TagSearchResults searchTags(String query) throws IOException {
 	    return searchTags(query, null, null);
-	}
-
+	}	
+		
 	public AnnotationOperationResponse getAnnotation(
 			String europeanaId, String provider, Integer annotationNr) throws IOException {
 		

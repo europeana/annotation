@@ -2,18 +2,13 @@ package eu.europeana.annotation.client.integration.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import eu.europeana.annotation.client.AnnotationJsonApi;
 import eu.europeana.annotation.client.AnnotationJsonApiImpl;
-import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
@@ -191,180 +186,86 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	}
 	*/
 	
-//	@Test
-	public void getAnnotations() {
-		
-//		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
-		
-		/**
-		 * Create object within the test and do not rely on the objects stored in the database.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstance();	
-		annotationJsonApi.createAnnotation(testAnnotation);
-		
-		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
-//		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject", "webanno");
-		String results = retrievalApi.getAnnotations("testCollection", "testObject", "webanno");
-		assertNotNull(results);
-//		assertTrue(results.size() > 0);
-//		Gson gson = new Gson();
-//		
-//		for (Annotation annotation : results) {
-//			System.out.println(gson.toJson(annotation));			
-//		}
-		
-	}
-	
-//	@Test(expected = TechnicalRuntimeException.class)
-//	public void getAnnotationError() {
-//		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
-//		retrievalApi.getAnnotation("testCollection", "testObject", -1);		
-//	}
-	
-//	@Test
+
+	@Test
 	public void getAnnotation() {
 		
-//		AnnotationJsonApiImpl annotationJsonApi = new AnnotationJsonApiImpl();
-		
-		/**
-		 * Create object within the test and do not rely on the objects stored in the database.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstance();	
-		annotationJsonApi.createAnnotation(testAnnotation);
-		
-		List<Annotation> results = annotationJsonApi.getAnnotations("testCollection", "testObject");
-		
-		if(results.isEmpty()){
-			System.out.println("No objects found in the database, test skipped");
-			return;
-		}
-		
-		Annotation anno = results.get(0);
-		
-		assertNotNull(anno);
-		assertEquals(anno.getType(), testAnnotation.getType());			
-	}
-	
-//	@Test
-	public void setAnnotationStatus() {
-		
-		Annotation annotationObject = createTestAnnotationObject();
-		
-		/**
-		 * set annotation status
-		 */
-		String updatedAnnotation = annotationJsonApi.setAnnotationStatus(
-				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getIdentifier()
-				, TEST_STATUS);
-		assertNotNull(updatedAnnotation);
-		
-		/**
-		 * retrieve updated annotation
-		 */
-		String retrievedAnnotationStatusResponse = annotationJsonApi.getAnnotationStatus(
-				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getIdentifier());
-//		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(retrievedAnnotation);
-//		Annotation updatedAnnotationObject = JsonUtils.toAnnotationObject(annotationJsonString);
-//		Annotation retrievedAnnotationObject = JsonUtils.toAnnotationObject(retrievedAnnotation);
-//		assertEquals(updatedAnnotationObject.getStatus(), TEST_STATUS);
-		assertTrue(retrievedAnnotationStatusResponse.contains(TEST_STATUS));
-	}
-	
-//	@Test
-	public void searchAnnotationStatusLogs() {
-		
-		Annotation annotationObject = createTestAnnotationObject();
-		
-		/**
-		 * set annotation status
-		 */
-		String updatedAnnotation = annotationJsonApi.setAnnotationStatus(
-				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getIdentifier()
-				, TEST_STATUS);
-		assertNotNull(updatedAnnotation);
-		
-		/**
-		 * retrieve updated annotation
-		 */
-		String retrievedAnnotationStatusResponse = annotationJsonApi.getAnnotationStatus(
-				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getIdentifier());
-		assertTrue(retrievedAnnotationStatusResponse.contains(TEST_STATUS));
-		/*String retrievedAnnotation = annotationJsonApi.getAnnotationStatus(
-				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getAnnotationNr() + 1);
-		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(retrievedAnnotation);
-		Annotation updatedAnnotationObject = JsonUtils.toAnnotationObject(annotationJsonString);
-//		Annotation retrievedAnnotationObject = JsonUtils.toAnnotationObject(retrievedAnnotation);
-		assertEquals(updatedAnnotationObject.getStatus(), TEST_STATUS);*/
-
-		String statusLogsStr = annotationJsonApi.searchAnnotationStatusLogs(
-				TEST_STATUS, "0", "10");
-		assertNotNull(statusLogsStr);
-	}
-
-	
-//	@Test
-	public void checkAnnotationVisibility() {
-		
-		Annotation annotationObject = createTestAnnotationObject();
-		
-		/**
-		 * check original annotation visibility
-		 */
-		String enabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
-		assertNotNull(enabledAnnotation);
-		
-		/**
-		 * disable annotation
-		 */
-		String updatedAnnotation = annotationJsonApi.disableAnnotation(
-				annotationObject.getAnnotationId().getProvider()
-				, annotationObject.getAnnotationId().getIdentifier());
-		assertNotNull(updatedAnnotation);
-		annotationObject.setDisabled(true);
-		
-		/**
-		 * check visibility of the disabled annotation
-		 */
-		String disabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
-		assertNotNull(disabledAnnotation);
-	}
-
-	
-//	@Test(expected=Exception.class)
-	public void checkAnnotationVisibilityWithDifferentUser() {
-		
-		Annotation annotationObject = createTestAnnotationObject();
-		
-		/**
-		 * check original annotation visibility
-		 */
-		String enabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
-		assertNotNull(enabledAnnotation);
-		
-		/**
-		 * checking visibility with wrong user should throw an exception 
-		 */
-		annotationJsonApi.checkVisibility(annotationObject, "guest");
-		
+		getAnnotationWorkflow(false);
 	}
 
 	
 	/**
-	 * Create a test annotation object.
-	 * @return annotation object
+	 * Parameter isJsonld makes a difference between the two 
+	 * getAnnotation and getAnnotationJsonld methods.
+	 * @param isJsonld
 	 */
-	private Annotation createTestAnnotationObject() {
-		Annotation testAnnotation = createBaseObjectTagInstance();	
-		String annotation = annotationJsonApi.createAnnotation(testAnnotation);
-		Annotation annotationObject = JsonUtils.toAnnotationObject(annotation);
-		assertNotNull(annotation);
-		return annotationObject;
+	private void getAnnotationWorkflow(boolean isJsonld) {
+		
+		/**
+		 * store annotation
+		 */
+		ResponseEntity<String> storedResponse = annotationJsonApi.createAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, null
+				, false
+				, TAG_JSON
+				, TEST_USER_TOKEN
+				, null
+				);
+		String storedAnnotation = storedResponse.getBody();
+		
+		/**
+		/* extract stored annotation ID
+		 */
+		String annotationId = JsonUtils.extractValueFromJsonString(
+				WebAnnotationFields.AT_ID, storedAnnotation);
+		
+		/**
+		 * retrieve identifier
+		 */
+		String identifier = JsonUtils.extractIdentifierFromAnnotationIdString(annotationId);
+
+		/**
+		 * get annotation by provider and identifier
+		 */
+		ResponseEntity<String> response = annotationJsonApi.getAnnotation(
+				TEST_WSKEY
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, identifier
+				, isJsonld
+				);
+		
+		assertNotNull(response.getBody());
+		assertEquals(response.getBody(), storedResponse.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
+			
+				
+	@Test
+	public void getAnnotationJsonLd() {
+		
+		getAnnotationWorkflow(true);
+	}
+			
+				
+//	@Test(expected=Exception.class)
+//	public void checkAnnotationVisibilityWithDifferentUser() {
+//		
+//		Annotation annotationObject = createTestAnnotationObject();
+//		
+//		/**
+//		 * check original annotation visibility
+//		 */
+//		String enabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
+//		assertNotNull(enabledAnnotation);
+//		
+//		/**
+//		 * checking visibility with wrong user should throw an exception 
+//		 */
+//		annotationJsonApi.checkVisibility(annotationObject, "guest");
+//		
+//	}
 	
 	
 }

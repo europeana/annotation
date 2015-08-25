@@ -115,4 +115,17 @@ public class BaseApiConnection {
 				". Returns body, headers and status code.");
 		return getHttpConnection().postURL(url, jsonPost);
 	}
+	
+	/**
+	 * This method makes GET request for given URL and returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	ResponseEntity<String> getURL(String url) throws IOException {
+		logger.trace("Call to Annotation API (GET): " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().getURL(url);
+	}
 }
