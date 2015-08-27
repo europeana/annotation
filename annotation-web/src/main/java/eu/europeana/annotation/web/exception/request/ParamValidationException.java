@@ -13,11 +13,13 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_EUROPEANAID_NO_MATCH = "Europeana ID doesn't match the RESTFull url!";
 	public static final String MESSAGE_IDENTIFIER_NOT_NULL = "Identifier must not be set when creating a new Annotation for the given provider!";
 	public static final String MESSAGE_IDENTIFIER_NULL = "Identifier must not be null for the given provider!";
+	public static final String MESSAGE_IDENTIFIER_WRONG = "Identifier must have at least a provider and an identifier number! E.g. 'http://data.europeana.eu/annotation/webanno/494'";
 	public static final String MESSAGE_ANNOTATION_ID_EXISTS = "An annotation with hte given identifier already exists in database! Overwrite not allowed in this method!";
 	public static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "An annotation with hte given identifier is not yet existing in database!";
 	public static final String MESSAGE_FORMAT_NOT_SUPPORTED = "The requested format is not supported!";
 	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported!";
 	
+	public static final int MIN_IDENTIFIER_LEN = 2;
 	
 	String parameterName;
 	String parameterValue;

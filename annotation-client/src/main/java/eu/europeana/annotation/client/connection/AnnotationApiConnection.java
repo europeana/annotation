@@ -402,6 +402,36 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 	
 	/**
+	 * This method deletes Annotation object by the passed identifier.
+	 * Example HTTP request: 
+	 *      http://localhost:8080/annotation/{identifier}.jsonld?wskey=apidemo&identifier=http%3A%2F%2Fdata.europeana.eu%2Fannotation%2Fwebanno%2F494
+	 * where identifier is:
+	 *     http://data.europeana.eu/annotation/webanno/494
+	 * @param wskey
+	 * @param identifier The identifier URL that comprise annotation provider and ID
+	 * @param userToken
+	 * @return response entity that comprises response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteAnnotation(
+			String wskey, String identifier, String userToken) throws IOException {
+		
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		if (identifier != null)
+			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return deleteURL(url);		
+	}
+
+	
+	/**
 	 * This method creates Annotation object from JsonLd string.
 	 * @param annotationJsonLdStr The Annotation
 	 * @return annotation operation response

@@ -150,6 +150,20 @@ public class BaseApiConnection {
 	
 	
 	/**
+	 * This method makes DELETE request for given URL that returns
+	 * response headers and status code.
+	 * @param url
+	 * @return The response headers and status code.
+	 * @throws IOException
+	 */
+	ResponseEntity<String> deleteURL(String url) throws IOException {
+		logger.trace("Call to Annotation API (DELETE): " + url + 
+				". Returns headers and status code.");
+		return getHttpConnection().deleteURL(url);
+	}
+	
+
+	/**
 	 * This method encodes URLs for HTTP connection
 	 * @param url The input URL
 	 * @return encoded URL

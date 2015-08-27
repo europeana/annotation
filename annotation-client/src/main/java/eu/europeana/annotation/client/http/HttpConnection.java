@@ -10,6 +10,7 @@ import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
@@ -89,15 +90,7 @@ public class HttpConnection {
 
         try {
             client.executeMethod(post);
-
-            if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
-                byte[] byteResponse = post.getResponseBody();
-                String res = new String(byteResponse, ENCODING);
-    			return buildResponseEntity(post, res);
-            } else {
-                return null;
-            }
-
+   			return buildResponseEntity(post);
         } finally {
         	post.releaseConnection();
         }
@@ -118,17 +111,28 @@ public class HttpConnection {
 
         try {
             client.executeMethod(put);
-
-            if (put.getStatusCode() >= STATUS_OK_START && put.getStatusCode() <= STATUS_OK_END) {
-                byte[] byteResponse = put.getResponseBody();
-                String res = new String(byteResponse, ENCODING);
-    			return buildResponseEntity(put, res);
-            } else {
-                return null;
-            }
-
+   			return buildResponseEntity(put);
         } finally {
         	put.releaseConnection();
+        }
+    }
+
+	
+	/**
+	 * This method makes DELETE request for given identifier URL.
+	 * @param url The identifier URL
+	 * @return ResponseEntity that comprises response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteURL(String url) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        DeleteMethod delete = new DeleteMethod(url);
+
+        try {
+            client.executeMethod(delete);
+   			return buildResponseEntity(delete);
+        } finally {
+        	delete.releaseConnection();
         }
     }
 
@@ -137,20 +141,31 @@ public class HttpConnection {
 	 * This method builds a response entity that comprises 
 	 * response body, headers and status code for the passed
 	 * HTTP method
-	 * @param method The HTTP method (e.g. post or get)
-	 * @param res
+	 * @param method The HTTP method (e.g. post, put, delete or get)
 	 * @return response entity
+	 * @throws IOException 
 	 */
-	private ResponseEntity<String> buildResponseEntity(HttpMethod method, String res) {
+	private ResponseEntity<String> buildResponseEntity(HttpMethod method) throws IOException {
+		
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(15);
 		for (Header header : method.getResponseHeaders())
 			  headers.add(header.getName(), header.getValue());
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(
-				res
-				, headers
-				, HttpStatus.valueOf(method.getStatusCode())
-				);
-		return responseEntity;
+
+		if (method.getStatusCode() >= STATUS_OK_START && method.getStatusCode() <= STATUS_OK_END) {
+			String res = "";
+			if (method.getResponseBody() != null && method.getResponseBody().length > 0) {
+	            byte[] byteResponse = method.getResponseBody();
+	            res = new String(byteResponse, ENCODING);
+			}
+    		ResponseEntity<String> responseEntity = new ResponseEntity<String>(
+    				res
+    				, headers
+    				, HttpStatus.valueOf(method.getStatusCode())
+    				);
+    		return responseEntity;
+        } else {
+            return new ResponseEntity<String>(headers, HttpStatus.valueOf(method.getStatusCode()));
+        }		
 	}
     
     
@@ -166,15 +181,7 @@ public class HttpConnection {
 
         try {
             client.executeMethod(get);
-
-            if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
-                byte[] byteResponse = get.getResponseBody();
-                String res = new String(byteResponse, ENCODING);
-    			return buildResponseEntity(get, res);
-            } else {
-                return null;
-            }
-
+   			return buildResponseEntity(get);
         } finally {
             get.releaseConnection();
         }

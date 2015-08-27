@@ -115,7 +115,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> deleteAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken//,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken
 			) throws HttpException {
 
 		String action = "delete:/annotation/{identifier}.jsonld";

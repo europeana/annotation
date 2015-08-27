@@ -90,7 +90,8 @@ public class BaseJsonldRest extends BaseRest{
 		getAnnotationService().validateApiKey(wsKey);
 	}
 
-	protected ResponseEntity<String> getAnnotationById(String wsKey, String provider, String identifier, String action) throws HttpException {
+	protected ResponseEntity<String> getAnnotationById(
+			String wsKey, String provider, String identifier, String action) throws HttpException {
 
 		try {
 			
@@ -148,34 +149,78 @@ public class BaseJsonldRest extends BaseRest{
 	}
 	
 	
+	/**
+	 * This method validates input values wsKey, identifier and userToken.
+	 * @param wsKey
+	 * @param identifier
+	 * @param userToken
+	 * @return annotation object
+	 * @throws HttpException
+	 */
+	private Annotation validateInputs(
+			String wsKey, String identifier, String userToken) throws HttpException {
+		
+		// check identifier
+		if (identifier == null)
+			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
+					"/provider/identifier", identifier, HttpStatus.NOT_FOUND, null);
+
+		// 1. build annotation id object
+		AnnotationId annoId = buildAnnotationId(identifier);
+		if (annoId == null)
+			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
+					"/provider/identifier", identifier, HttpStatus.NOT_FOUND, null);
+
+		// 2. Check client access (a valid “wskey” must be provided)
+		validateApiKey(wsKey);
+		
+		// 3. Retrieve an annotation based on its identifier;
+		Annotation annotation = getAnnotationService().getAnnotationById(annoId);		
+		
+		// 4. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
+		if(annotation == null)
+			throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toUri());
+		
+		// check whether annotation with the given provider and identifier
+		// already exist in the database
+		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
+					"/provider/identifier", annoId.toUri());
+	
+		// 5. authorize user
+		authorizeUser(userToken, annoId);
+	
+		// validate api key ... and request limit only if the request is correct (avoid useless DB requests)
+		validateApiKey(wsKey);
+		
+		return annotation;
+	}
+
+	
+	/**
+	 * This method validates input values, retrieves annotation object and
+	 * updates it.
+	 * @param wsKey
+	 * @param identifier
+	 * @param annotation
+	 * @param userToken
+	 * @param action
+	 * @return response entity that comprises response body, headers and status code
+	 * @throws HttpException
+	 */
 	protected ResponseEntity<String> updateAnnotation(String wsKey, String identifier, 
 			String annotation, String userToken, String action) throws HttpException {
+
 		try {
 			
-			// 1. build annotation id object
-			AnnotationId annoId = buildAnnotationId(identifier);
-			
-			// 2. Retrieve an annotation based on its identifier;
-			Annotation currentWebAnnotation = getAnnotationService().getAnnotationById(annoId);		
-			
-			// 3. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
-			if (currentWebAnnotation == null)
-				throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toUri());
-						
-			// check whether annotation with the given provider and identifier
-			// already exist in the database
-			if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
-				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-						"/provider/identifier", annoId.toUri(), HttpStatus.NOT_FOUND, null);
+			Annotation currentWebAnnotation = validateInputs(wsKey, identifier, userToken);
 
-			// 4. authorize user
-			authorizeUser(userToken, annoId);
-		
-			// 5. extract and check current annotation type and motivation
+			// 6. extract and check current annotation type and motivation
 			MotivationTypes currentMotivation = null;
-			currentMotivation = MotivationTypes.getType(currentWebAnnotation.getMotivation());
+			if (currentWebAnnotation.getMotivation() != null)
+				currentMotivation = MotivationTypes.getType(currentWebAnnotation.getMotivation());
 			
-			// 6. extract and check updated annotation type and motivation
+			// extract and check updated annotation type and motivation
 			String updatedAnnotationType = JsonUtils.extractValueFromJsonString(
 					WebAnnotationFields.AT_TYPE, annotation);
 			MotivationTypes updatedMotivation = null;
@@ -198,9 +243,6 @@ public class BaseJsonldRest extends BaseRest{
 			// 8. apply updates - merge current and updated annotation
 			updateValues(currentWebAnnotation, updatedWebAnnotation);
 						
-			// validate api key ... and request limit only if the request is correct (avoid useless DB requests)
-			validateApiKey(wsKey);
-
 			// 9. call database update method
 			Annotation updatedAnnotation = getAnnotationService().updateAnnotation(currentWebAnnotation);
 
@@ -241,85 +283,59 @@ public class BaseJsonldRest extends BaseRest{
 	 * @param updatedWebAnnotation
 	 */
 	private void updateValues(Annotation currentWebAnnotation, Annotation updatedWebAnnotation) {
-		if (updatedWebAnnotation.getType() != null &&
-				!currentWebAnnotation.getType().equals(updatedWebAnnotation.getType())) 
+		
+		if (updatedWebAnnotation.getType() != null) 
 			currentWebAnnotation.setType(updatedWebAnnotation.getType());
-		if (updatedWebAnnotation.getMotivation() != null &&
-				!currentWebAnnotation.getMotivation().equals(updatedWebAnnotation.getMotivation())) 
+		if (updatedWebAnnotation.getMotivation() != null) 
 			currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-		if (updatedWebAnnotation.getAnnotatedAt() != null &&
-				!currentWebAnnotation.getAnnotatedAt().equals(updatedWebAnnotation.getAnnotatedAt())) 
+		if (updatedWebAnnotation.getAnnotatedAt() != null) 
 			currentWebAnnotation.setAnnotatedAt(updatedWebAnnotation.getAnnotatedAt());
-		if (updatedWebAnnotation.getAnnotatedBy() != null &&
-				!currentWebAnnotation.getAnnotatedBy().equals(updatedWebAnnotation.getAnnotatedBy())) 
+		if (updatedWebAnnotation.getAnnotatedBy() != null) 
 			currentWebAnnotation.setAnnotatedBy(updatedWebAnnotation.getAnnotatedBy());
-		if (updatedWebAnnotation.getSerializedAt() != null &&
-				!currentWebAnnotation.getSerializedAt().equals(updatedWebAnnotation.getSerializedAt())) 
+		if (updatedWebAnnotation.getSerializedAt() != null) 
 			currentWebAnnotation.setSerializedAt(updatedWebAnnotation.getSerializedAt());
-		if (updatedWebAnnotation.getSerializedBy() != null &&
-				!currentWebAnnotation.getSerializedBy().equals(updatedWebAnnotation.getSerializedBy())) 
+		if (updatedWebAnnotation.getSerializedBy() != null) 
 			currentWebAnnotation.setSerializedBy(updatedWebAnnotation.getAnnotatedBy());
-		if (updatedWebAnnotation.getBody() != null &&
-				!currentWebAnnotation.getBody().equals(updatedWebAnnotation.getBody())) 
+		if (updatedWebAnnotation.getBody() != null) 
 			currentWebAnnotation.setBody(updatedWebAnnotation.getBody());
-		if (updatedWebAnnotation.getTarget() != null &&
-				!currentWebAnnotation.getTarget().equals(updatedWebAnnotation.getTarget())) 
+		if (updatedWebAnnotation.getTarget() != null) 
 			currentWebAnnotation.setTarget(updatedWebAnnotation.getTarget());
 		if (currentWebAnnotation.isDisabled() != updatedWebAnnotation.isDisabled()) 
 			currentWebAnnotation.setDisabled(updatedWebAnnotation.isDisabled());
-		if (updatedWebAnnotation.getEquivalentTo() != null &&
-				!currentWebAnnotation.getEquivalentTo().equals(updatedWebAnnotation.getEquivalentTo())) 
+		if (updatedWebAnnotation.getEquivalentTo() != null) 
 			currentWebAnnotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
-		if (updatedWebAnnotation.getInternalType() != null &&
-				!currentWebAnnotation.getInternalType().equals(updatedWebAnnotation.getInternalType())) 
+		if (updatedWebAnnotation.getInternalType() != null) 
 			currentWebAnnotation.setInternalType(updatedWebAnnotation.getInternalType());
-		if (updatedWebAnnotation.getLastUpdate() != null &&
-				!currentWebAnnotation.getLastUpdate().equals(updatedWebAnnotation.getLastUpdate())) 
+		if (updatedWebAnnotation.getLastUpdate() != null) 
 			currentWebAnnotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
-		if (updatedWebAnnotation.getSameAs() != null &&
-				!currentWebAnnotation.getSameAs().equals(updatedWebAnnotation.getSameAs())) 
+		if (updatedWebAnnotation.getSameAs() != null) 
 			currentWebAnnotation.setSameAs(updatedWebAnnotation.getSameAs());
-		if (updatedWebAnnotation.getStatus() != null &&
-				!currentWebAnnotation.getStatus().equals(updatedWebAnnotation.getStatus())) 
+		if (updatedWebAnnotation.getStatus() != null) 
 			currentWebAnnotation.setStatus(updatedWebAnnotation.getStatus());
-		if (updatedWebAnnotation.getStyledBy() != null &&
-				!currentWebAnnotation.getStyledBy().equals(updatedWebAnnotation.getStyledBy())) 
+		if (updatedWebAnnotation.getStyledBy() != null) 
 			currentWebAnnotation.setStyledBy(updatedWebAnnotation.getStyledBy());
 	}
 	
 	
+	/**
+	 * This method validates input values, retrieves annotation object and
+	 * deletes it.
+	 * @param wsKey
+	 * @param identifier
+	 * @param userToken
+	 * @param action
+	 * @return response entity that comprises response body, headers and status code
+	 * @throws HttpException
+	 */
 	protected ResponseEntity<String> deleteAnnotation(String wsKey, String identifier, 
 			String userToken, String action) throws HttpException {
+		
 		try {
 			
-			// 1. build annotation id object
-			AnnotationId annoId = buildAnnotationId(identifier);
-			
-			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
-			
-			// 3. Retrieve an annotation based on its identifier;
-			Annotation annotation = getAnnotationService().getAnnotationById(annoId);		
-			
-			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
-			if(annotation == null)
-				throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toUri());
-			
-			// check whether annotation with the given provider and identifier
-			// already exist in the database
-			if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
-				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-						"/provider/identifier", annoId.toUri());
+			Annotation annotation = validateInputs(wsKey, identifier, userToken);
 
-			// 5. authorize user
-			authorizeUser(userToken, annoId);
-	
-			// validate api key ... and request limit only if the request is correct (avoid useless DB requests)
-			validateApiKey(wsKey);
-
-			// 6. call database delete method that deactivates existing Annotation in Mongo
+			// call database delete method that deactivates existing Annotation in Mongo
 			getAnnotationService().disableAnnotation(annotation);
-//					annoId.getProvider(), annoId.getIdentifier());
 
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);

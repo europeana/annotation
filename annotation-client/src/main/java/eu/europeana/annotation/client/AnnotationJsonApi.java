@@ -50,6 +50,17 @@ public interface AnnotationJsonApi {
 			String wskey, String identifier, String updateAnnotation, String userToken);
 
 		
+	/**
+	 * This method deletes annotation by the given identifier
+	 * @param wskey
+	 * @param identifier The identifier URL that comprises annotation provider and ID
+	 * @param userToken
+	 * @return response entity containing headers and status code.
+	 */
+	public ResponseEntity<String> deleteAnnotation(
+			String wskey, String identifier, String userToken);
+
+		
 	public String createAnnotation(Annotation annotation);
 
 	public ImageAnnotation createImageAnnotation(ImageAnnotation annotation);

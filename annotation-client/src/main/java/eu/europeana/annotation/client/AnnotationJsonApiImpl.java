@@ -78,7 +78,27 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 					wskey, identifier, updateAnnotation, userToken);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
-					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
+					"Exception occured when invoking the AnnotationJsonApi updateAnnotation method", e);
+		}
+
+		return res;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.europeana.annotation.client.AnnotationJsonApi#deleteAnnotation(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResponseEntity<String> deleteAnnotation(
+			String wskey, String identifier, String userToken) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.deleteAnnotation(
+					wskey, identifier, userToken);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi deleteAnnotation method", e);
 		}
 
 		return res;

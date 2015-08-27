@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
@@ -144,6 +145,9 @@ public class BaseRest extends ApiResponseBuilder{
 	 */
 	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
 		
+		if (identifier.split(WebAnnotationFields.SLASH).length < ParamValidationException.MIN_IDENTIFIER_LEN)
+			return null;
+
 		AnnotationId annoId = getAnnotationIdHelper()
 				.initializeAnnotationId(identifier);
 		

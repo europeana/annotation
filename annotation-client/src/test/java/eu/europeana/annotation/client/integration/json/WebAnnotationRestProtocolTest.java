@@ -11,12 +11,16 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.AnnotationJsonApiImpl;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.utils.JsonUtils;
 
 
-public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
+/**
+ * This class aims at testing of the annotation methods.
+ * @author GrafR
+ */
+public class WebAnnotationRestProtocolTest { 
+
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 	
@@ -91,20 +95,18 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
     public String TEST_WSKEY = "apidemo";
     
     public String TEST_USER_TOKEN = "anonymous";
-    
-    /*
-    identifier is null
-    type wrong
-    type null
-    not existing a
-    format, descr fields or body corrupted
+        
+  
 
-    updateA
-    exeptions
-    
-    deleteA*/
-    
+	public AnnotationJsonApiImpl getAnnotationJsonApi() {
+		return annotationJsonApi;
+	}
 
+	public void setAnnotationJsonApi(AnnotationJsonApiImpl annotationJsonApi) {
+		this.annotationJsonApi = annotationJsonApi;
+	}
+
+	
 	@Test
 	public void createWebannoAnnotationTag() {
 		
@@ -113,6 +115,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
+	
 	
 	@Test
 	public void createWebannoAnnotationLink() {
@@ -130,7 +133,8 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
-	
+		
+
 	@Test
 	public void createWebannoAnnotationTagByTypeJsonld() {
 		
@@ -148,6 +152,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
 	
+	
 	@Test
 	public void createWebannoAnnotationLinkByTypeJsonld() {
 		
@@ -164,26 +169,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 	}
-	
-	/*
-	@Test
-	public void createHistorypinAnnotationTag() {
 		
-		ResponseEntity<String> response = annotationJsonApi.createAnnotation(
-				TEST_WSKEY
-				, WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, "500"
-				, false
-				, TAG_JSON
-				, TEST_USER_TOKEN
-				, null
-				);
-		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-	}
-	*/
-	
 
 	@Test
 	public void getAnnotation() {
@@ -228,7 +214,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		String annotationId = extractAnnotationIdFromAnnotationJson(storedResponse);
 		
 		/**
-		 * retrieve identifier
+		 * retrieve identifier 
 		 */
 		String identifier = JsonUtils.extractIdentifierFromAnnotationIdString(annotationId);
 		return identifier;
@@ -240,7 +226,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	 * @param storedResponse
 	 * @return annotationId in string format
 	 */
-	private String extractAnnotationIdFromAnnotationJson(ResponseEntity<String> storedResponse) {
+	protected String extractAnnotationIdFromAnnotationJson(ResponseEntity<String> storedResponse) {
 		
 		String storedAnnotation = storedResponse.getBody();
 		
@@ -257,7 +243,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	 * This method creates test annotation object
 	 * @return response entity that contains response body, headers and status code.
 	 */
-	private ResponseEntity<String> storeTestAnnotation() {
+	protected ResponseEntity<String> storeTestAnnotation() {
 		
 		/**
 		 * store annotation
@@ -282,19 +268,6 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	}
 			
 	
-	/**
-	 * This method is employed for annotation creation for testing.
-	 * @return identifier of the created annotation
-	 */
-//	private String storeAnnotationForTesting() {
-//		
-//		ResponseEntity<String> storedResponse = storeTestAnnotation();
-//		String identifier = extractIdentifierFromAnnotationJson(storedResponse);
-//		
-//		return identifier;
-//	}
-
-	
 	@Test
 	public void updateAnnotation() {
 				
@@ -305,7 +278,7 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 		String identifier = extractAnnotationIdFromAnnotationJson(storedResponse);
 
 		/**
-		 * get annotation by provider and identifier
+		 * update annotation by identifier URL
 		 */
 		ResponseEntity<String> response = annotationJsonApi.updateAnnotation(
 				TEST_WSKEY
@@ -321,23 +294,27 @@ public class WebAnnotationRestProtocolTest extends AnnotationTestObjectBuilder{
 	}
 			
 				
-//	@Test(expected=Exception.class)
-//	public void checkAnnotationVisibilityWithDifferentUser() {
-//		
-//		Annotation annotationObject = createTestAnnotationObject();
-//		
-//		/**
-//		 * check original annotation visibility
-//		 */
-//		String enabledAnnotation = annotationJsonApi.checkVisibility(annotationObject, null);
-//		assertNotNull(enabledAnnotation);
-//		
-//		/**
-//		 * checking visibility with wrong user should throw an exception 
-//		 */
-//		annotationJsonApi.checkVisibility(annotationObject, "guest");
-//		
-//	}
-	
-	
+	@Test
+	public void deleteAnnotation() {
+				
+		/**
+		 * store annotation and retrieve its identifier URL
+		 */
+		ResponseEntity<String> storedResponse = storeTestAnnotation();
+		String identifier = extractAnnotationIdFromAnnotationJson(storedResponse);
+
+		/**
+		 * delete annotation by identifier URL
+		 */
+		ResponseEntity<String> response = annotationJsonApi.deleteAnnotation(
+				TEST_WSKEY
+				, identifier
+				, TEST_USER_TOKEN
+				);
+		
+		assertTrue(response.getBody().equals(""));
+		assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
+	}
+			
+				
 }
