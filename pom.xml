@@ -38,7 +38,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.europeanaCorelib>2.1-SNAPSHOT</version.europeanaCorelib>
 		<version.annotationApi>0.2.1</version.annotationApi>
 		<version.annotationApiSnapshot>0.2.1-SNAPSHOT</version.annotationApiSnapshot>
 		<version.java>1.7</version.java>
@@ -47,7 +46,7 @@
 		<version.springCore>4.0.9.RELEASE</version.springCore>
 		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
 		<version.spring>4.0.9.RELEASE</version.spring>
-		<version.corelib>2.1-SNAPSHOT</version.corelib>
+		<version.corelib>2.1</version.corelib>
 		<version.log4j>1.2.12</version.log4j>
 		
 	</properties>
