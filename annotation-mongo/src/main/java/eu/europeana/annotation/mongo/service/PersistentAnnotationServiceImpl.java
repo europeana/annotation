@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
+import com.google.code.morphia.query.UpdateResults;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationUpdateException;
@@ -480,10 +481,7 @@ public class PersistentAnnotationServiceImpl extends
 			}
 			res = store(persistentAnnotation);
 */			
-			PersistentAnnotation dbAnnotation = find(
-					persistentAnnotation.getAnnotationId().getProvider()
-					, persistentAnnotation.getAnnotationId().getIdentifier());
-			
+			PersistentAnnotation dbAnnotation = find(persistentAnnotation.getAnnotationId());
 			persistentAnnotation.setId(dbAnnotation.getId());
 			
 			// generate new and replace existing timestamp for the Annotation
@@ -491,50 +489,67 @@ public class PersistentAnnotationServiceImpl extends
 			// validate mandatory fields
 			validatePersistentAnnotationExt(persistentAnnotation, now, false);
 			persistentAnnotation.setLastUpdate(now);
-
-			Query<PersistentAnnotation> updateQuery = super.getDao().createQuery();
-			updateQuery.field(WebAnnotationFields.MONGO_ID).equal(persistentAnnotation.getId());
 			
-			UpdateOperations<PersistentAnnotation> updateOperations = super.getDao().createUpdateOperations();
-			if (persistentAnnotation.getBody() != null)
-				updateOperations.set(WebAnnotationFields.BODY, persistentAnnotation.getBody());
-			if (persistentAnnotation.getTarget() != null)
-				updateOperations.set(WebAnnotationFields.TARGET, persistentAnnotation.getTarget());
-			updateOperations.set(WebAnnotationFields.ANNOTATED_AT, persistentAnnotation.getAnnotatedAt());
-			updateOperations.set(WebAnnotationFields.ANNOTATED_BY, persistentAnnotation.getAnnotatedBy());
-			updateOperations.set(WebAnnotationFields.SERIALIZED_AT, persistentAnnotation.getSerializedAt());
-			updateOperations.set(WebAnnotationFields.SERIALIZED_BY, persistentAnnotation.getSerializedBy());
-			updateOperations.set(WebAnnotationFields.MOTIVATION, persistentAnnotation.getMotivation());
-			updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());
-			updateOperations.set(WebAnnotationFields.DISABLED, persistentAnnotation.isDisabled());
-			if (persistentAnnotation.getEquivalentTo() != null)
-				updateOperations.set(WebAnnotationFields.EQUIVALENT_TO, persistentAnnotation.getEquivalentTo());
-//			if (persistentAnnotation.getInternalType() != null)
-//				updateOperations.set(WebAnnotationFields.INTERNAL_TYPE, persistentAnnotation.getInternalType());
-			if (persistentAnnotation.getLastIndexedTimestamp() != null)
-				updateOperations.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, persistentAnnotation.getLastIndexedTimestamp());
-			if (persistentAnnotation.getLastUpdate() != null)
-				updateOperations.set(WebAnnotationFields.LAST_UPDATE, persistentAnnotation.getLastUpdate());
-			if (persistentAnnotation.getSameAs() != null)
-				updateOperations.set(WebAnnotationFields.SAME_AS, persistentAnnotation.getSameAs());
-			if (persistentAnnotation.getStatus() != null)
-				updateOperations.set(WebAnnotationFields.STATUS, persistentAnnotation.getStatus());
-			if (persistentAnnotation.getStyledBy() != null)
-				updateOperations.set(WebAnnotationFields.STYLED_BY, persistentAnnotation.getStyledBy());
-
-			int numOfUpdatedEntries = super.update(updateQuery, updateOperations);
-			if (numOfUpdatedEntries != 1)
-				throw new AnnotationUpdateException(
-						persistentAnnotation.getAnnotationId().toString());
-			res = find(
-					persistentAnnotation.getAnnotationId().getProvider()
-					, persistentAnnotation.getAnnotationId().getIdentifier());
+			res = updateAnnotation(persistentAnnotation);
 		} else {
 			throw new AnnotationValidationException(
 					AnnotationValidationException.ERROR_NULL_ANNOTATION_ID);
 		}
 
 		return res;
+	}
+
+	protected PersistentAnnotation updateAnnotation(PersistentAnnotation persistentAnnotation) {
+		PersistentAnnotation res;
+		Query<PersistentAnnotation> findByIdQuery = buildFindByIdQuery(persistentAnnotation);
+		UpdateOperations<PersistentAnnotation> updateOperations = buildUpdateOperations(persistentAnnotation);
+
+		UpdateResults<PersistentAnnotation> key = getAnnotationDao().update(findByIdQuery, updateOperations);
+		int numOfUpdatedEntries = key.getWriteResult().getN(); 
+		
+		if (numOfUpdatedEntries != 1)
+			throw new AnnotationUpdateException(
+					persistentAnnotation.getAnnotationId().toString());
+		res = find(
+				persistentAnnotation.getAnnotationId().getProvider()
+				, persistentAnnotation.getAnnotationId().getIdentifier());
+		return res;
+	}
+
+	protected Query<PersistentAnnotation> buildFindByIdQuery(PersistentAnnotation persistentAnnotation) {
+		Query<PersistentAnnotation> findByIdQuery = super.getDao().createQuery();
+		findByIdQuery.field(WebAnnotationFields.MONGO_ID).equal(persistentAnnotation.getId());
+		return findByIdQuery;
+	}
+
+	protected UpdateOperations<PersistentAnnotation> buildUpdateOperations(PersistentAnnotation persistentAnnotation) {
+		UpdateOperations<PersistentAnnotation> updateOperations = super.getDao().createUpdateOperations();
+		if (persistentAnnotation.getBody() != null)
+			updateOperations.set(WebAnnotationFields.BODY, persistentAnnotation.getBody());
+		if (persistentAnnotation.getTarget() != null)
+			updateOperations.set(WebAnnotationFields.TARGET, persistentAnnotation.getTarget());
+		updateOperations.set(WebAnnotationFields.ANNOTATED_AT, persistentAnnotation.getAnnotatedAt());
+		updateOperations.set(WebAnnotationFields.ANNOTATED_BY, persistentAnnotation.getAnnotatedBy());
+		updateOperations.set(WebAnnotationFields.SERIALIZED_AT, persistentAnnotation.getSerializedAt());
+		updateOperations.set(WebAnnotationFields.SERIALIZED_BY, persistentAnnotation.getSerializedBy());
+		updateOperations.set(WebAnnotationFields.MOTIVATION, persistentAnnotation.getMotivation());
+		updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());
+		updateOperations.set(WebAnnotationFields.DISABLED, persistentAnnotation.isDisabled());
+		if (persistentAnnotation.getEquivalentTo() != null)
+			updateOperations.set(WebAnnotationFields.EQUIVALENT_TO, persistentAnnotation.getEquivalentTo());
+//			if (persistentAnnotation.getInternalType() != null)
+//				updateOperations.set(WebAnnotationFields.INTERNAL_TYPE, persistentAnnotation.getInternalType());
+		if (persistentAnnotation.getLastIndexedTimestamp() != null)
+			updateOperations.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, persistentAnnotation.getLastIndexedTimestamp());
+		if (persistentAnnotation.getLastUpdate() != null)
+			updateOperations.set(WebAnnotationFields.LAST_UPDATE, persistentAnnotation.getLastUpdate());
+		if (persistentAnnotation.getSameAs() != null)
+			updateOperations.set(WebAnnotationFields.SAME_AS, persistentAnnotation.getSameAs());
+		if (persistentAnnotation.getStatus() != null)
+			updateOperations.set(WebAnnotationFields.STATUS, persistentAnnotation.getStatus());
+		if (persistentAnnotation.getStyledBy() != null)
+			updateOperations.set(WebAnnotationFields.STYLED_BY, persistentAnnotation.getStyledBy());
+		return updateOperations;
 	}
 
 	@Override
