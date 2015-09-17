@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 //import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -14,20 +15,20 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.corelib.logging.Logger;
 
 
 public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 
 	SolrServer solrServer;
 
-//	private static final Logger log = Logger.getLogger(SolrAnnotationServiceImpl.class);
-	private static final Logger log = Logger.getLogger(SolrAnnotationConst.ROOT);
+	private static final Logger log = Logger.getLogger(SolrAnnotationServiceImpl.class);
+//	private static final Logger log = Logger.getLogger(SolrAnnotationConst.ROOT);
 	
 	public void setSolrServer(SolrServer solrServer) {
 		this.solrServer = solrServer;
@@ -425,28 +426,22 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 
 	@Override
 	public void delete(SolrAnnotation solrAnnotation) throws AnnotationServiceException {
-	    try {
-	    	log.info("delete: " + solrAnnotation.toString());
-//	        UpdateResponse rsp = solrServer.deleteByQuery(SolrAnnotationConst.ANNOTATION_ID_STR + ":" + solrAnnotation.getAnnotationIdString());
-//	        UpdateResponse rsp = solrServer.deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
-	        UpdateResponse rsp = solrServer.deleteById(solrAnnotation.getAnnotationIdString());
-//	        UpdateResponse rsp = solrServer.deleteByQuery(solrAnnotation.getAnnotationIdString());
-//	        UpdateResponse rsp = solrServer.deleteByQuery(solrAnnotation.getResourceId());
-//	        UpdateResponse rsp = solrServer.deleteByQuery(SolrAnnotationConst.ANNOTATION_ID_STR + ":" + solrAnnotation.getAnnotationIdString());
+	    delete(solrAnnotation.getAnnotationId());		
+	}
+
+	public void delete(AnnotationId annotationId) throws AnnotationServiceException {
+		try {
+	    	log.info("delete annotation with ID: " + annotationId.toUri());
+	        UpdateResponse rsp = solrServer.deleteById(annotationId.toUri());
 	        log.info("delete response: " + rsp.toString());
-//	        solrServer.commit(true, true);
 	        solrServer.commit();
-//	        UpdateRequest req = new UpdateRequest();
-//	        req.setAction( UpdateRequest.ACTION.COMMIT, false, false );
-//	        req.add( docs );
-//	        UpdateResponse rsp2 = req.process( solrServer );
 	    } catch (SolrServerException ex) {
 			throw new AnnotationServiceException("Unexpected solr server exception occured when deleting annotations for: " + 
-					solrAnnotation.getAnnotationIdString(), ex);
+					annotationId.toUri(), ex);
 	    } catch (IOException ex) {
 			throw new AnnotationServiceException("Unexpected IO exception occured when deleting annotations for: " + 
-					solrAnnotation.getAnnotationIdString(), ex);
-	    }		
+					annotationId.toUri(), ex);
+	    }
 	}
 	
 

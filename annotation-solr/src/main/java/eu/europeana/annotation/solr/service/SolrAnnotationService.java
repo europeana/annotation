@@ -3,6 +3,7 @@ package eu.europeana.annotation.solr.service;
 import java.util.List;
 import java.util.Map;
 
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 
@@ -28,6 +29,12 @@ public interface SolrAnnotationService {
 	 * @param solrAnnotation
 	 */
 	public void delete(SolrAnnotation solrAnnotation) throws AnnotationServiceException;
+	
+	/**
+	 * This method removes a SolrAnnotation object from SOLR.
+	 * @param solrAnnotation
+	 */
+	public void delete(AnnotationId annoId) throws AnnotationServiceException;
 	
 	
 	/**
