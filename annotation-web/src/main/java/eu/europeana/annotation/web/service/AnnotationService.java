@@ -260,6 +260,7 @@ public interface AnnotationService {
 	
 	/**
 	 * Check whether annotation for given provider and identifier already exist in database.
+	 * @deprecated the method should return the annotation for the given id and throw an exception
 	 */
 	public boolean existsInDb(AnnotationId annoId); 
 	

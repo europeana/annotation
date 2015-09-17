@@ -568,9 +568,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public Annotation updateAnnotation(Annotation annotation) {
 
 		Annotation res = getMongoPersistence().update(annotation);
+	
+		if(getConfiguration().isIndexingEnabled())
+			reindexAnnotation(res);
+		
+		return res;
+	}
 
+	protected void reindexAnnotation(Annotation res) {
 		try {
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
+			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
 			getSolrService().update(indexedAnnotation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -588,8 +595,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 		// save the time of the last SOLR indexing
 		updateLastSolrIndexingTime(res);
-		
-		return res;
 	}
 
 	private void updateLastSolrIndexingTime(Annotation res) {
@@ -668,15 +673,28 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public Annotation disableAnnotation(Annotation annotation) {
+		Annotation res;
 		try {
 			annotation.setDisabled(true);
-			Annotation res = getMongoPersistence().update(annotation);
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
-			indexedAnnotation.setAnnotationId(annotation.getAnnotationId());
-			getSolrService().delete(indexedAnnotation);
-            return res;
+			res = getMongoPersistence().update(annotation);
+	//		SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+
+		if(getConfiguration().isIndexingEnabled())
+			removeFromIndex(annotation);
+		
+		return res;
+	}
+
+	protected void removeFromIndex(Annotation annotation) {
+		try{
+			SolrAnnotation indexedAnnotation = new SolrAnnotationImpl();
+			indexedAnnotation.setAnnotationId(annotation.getAnnotationId());
+			getSolrService().delete(indexedAnnotation);
+		}catch(Exception e){
+			logger.error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toUri(), e);
 		}
 	}
 

@@ -15,6 +15,10 @@
 #  the Licence.
 #
 
+#common settings
+annotation.indexing.enabled = false
+
+
 # mongoDB settings
 ### annotation database ###
 mongodb.annotation.dbname=annotation_test
@@ -24,7 +28,6 @@ mongodb.annotation.username=europeana
 mongodb.annotation.password=culture
 
 # solr connection settings
-# core search (default) 
 solr.annotation.url = http://localhost:8282/solr/annotation
 solr.tag.url = http://localhost:8282/solr/tag
 solr.annotation.timeout = 60000

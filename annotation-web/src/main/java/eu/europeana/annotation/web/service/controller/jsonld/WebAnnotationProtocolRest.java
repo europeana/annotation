@@ -97,29 +97,56 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	}
 
 	
-	@RequestMapping(value = "/annotation/{identifier}.jsonld", method = RequestMethod.PUT, produces = { "application/ld+json",
+	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.PUT, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
 	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
-			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 		
-		String action = "put:/annotation/{identifier}.jsonld";
-		return updateAnnotation(wskey, identifier, annotation, userToken, action);
+		String action = "put:/annotation/{provider}/{identifier}";
+		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
 	}
 	
-
-	@RequestMapping(value = "/annotation/{identifier}.jsonld", method = RequestMethod.DELETE, produces = { "application/ld+json",
+	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.PUT, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<String> deleteAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
-			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
+	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
+	public ResponseEntity<String> updateAnnotationJsonld(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			@RequestBody String annotation,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken//,
+			) throws HttpException {
+		
+		String action = "put:/annotation/{provider}/{identifier}.jsonld";
+		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
+	}
+	
+	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.DELETE, produces = { "application/ld+json",
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> deleteAnnotationJsonld(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken
 			) throws HttpException {
 
-		String action = "delete:/annotation/{identifier}.jsonld";
-		return deleteAnnotation(wskey, identifier, userToken, action);
+		String action = "delete:/annotation/{provider}/{identifier}.jsonld";
+		return deleteAnnotation(wskey, provider, identifier, userToken, action);
 	}
 	
+	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.DELETE, produces = { "application/ld+json",
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<String> deleteAnnotation(
+			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = USER_ANONYMOUNS) String userToken
+			) throws HttpException {
+
+		String action = "delete:/annotation/{provider}/{identifier}";
+		return deleteAnnotation(wskey, provider, identifier, userToken, action);
+	}
 }
