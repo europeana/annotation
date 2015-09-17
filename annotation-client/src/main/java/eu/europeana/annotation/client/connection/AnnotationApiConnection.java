@@ -400,8 +400,41 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return putURL(url, updateAnnotation);		
 	}
 
-	
 	/**
+	 * This method updates Annotation object by the passed JsonLd update string.
+	 * Example HTTP request: 
+	 *      http://localhost:8080/annotation/{provider}/{identifier}?wskey=apidemo
+	 * where identifier is:
+	 *     http://data.europeana.eu/annotation/webanno/496
+	 * and the update JSON string is:
+	 *     { "body": "Buccin Trombone","target": "http://data.europeana.eu/item/09102/_UEDIN_2214" }
+	 * @param wskey
+	 * @param provider
+	 * @param identifier The identifier URL that comprise annotation provider and ID
+	 * @param updateAnnotation The update Annotation body in JSON format
+	 * @param userToken
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> updateAnnotation(
+			String wskey, String provider, String identifier, String updateAnnotation, String userToken, String format) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		url += WebAnnotationFields.SLASH + provider;
+		url += WebAnnotationFields.SLASH + identifier;
+		if(format != null)
+			url+="."+format;	
+		
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey;
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return putURL(url, updateAnnotation);		
+	}
+	/**
+	 * @Deprecated see new specifications for WebAnnotationProtocol
 	 * This method deletes Annotation object by the passed identifier.
 	 * Example HTTP request: 
 	 *      http://localhost:8080/annotation/{identifier}.jsonld?wskey=apidemo&identifier=http%3A%2F%2Fdata.europeana.eu%2Fannotation%2Fwebanno%2F494
@@ -410,8 +443,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param wskey
 	 * @param identifier The identifier URL that comprise annotation provider and ID
 	 * @param userToken
+	 * @param format 
 	 * @return response entity that comprises response headers and status code.
 	 * @throws IOException
+	 * @deprecated TODO: remove deprecation or method when the json API will be enabled
 	 */
 	public ResponseEntity<String> deleteAnnotation(
 			String wskey, String identifier, String userToken) throws IOException {
@@ -422,7 +457,43 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		if (identifier != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;	
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return deleteURL(url);		
+	}
+
+	/**
+	 * This method deletes Annotation object by the passed identifier.
+	 * Example HTTP request: 
+	 *      http://localhost:8080/annotation/provider/identifier{.jsonld}?wskey=apidemo
+	 * where identifier is:
+	 *     http://data.europeana.eu/annotation/webanno/494
+	 * @param wskey
+	 * @param identifier The identifier URL that comprise annotation provider and ID
+	 * @param userToken
+	 * @param format 
+	 * @return response entity that comprises response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteAnnotation(
+			String wskey, String provider, String identifier, String userToken, String format) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		url += WebAnnotationFields.SLASH + provider;
+		url += WebAnnotationFields.SLASH + identifier;
+		if(format != null)
+			url+="."+format;	
+		
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey;
+//		if (identifier != null)
+//			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier);
+		
+		//if(userToken != null)
+		//url +=  + WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
 		
 		/**
 		 * Execute Europeana API request
@@ -618,7 +689,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}	
 		
 	public AnnotationOperationResponse getAnnotation(
-			String europeanaId, String provider, Integer annotationNr) throws IOException {
+			String europeanaId, String provider, String identifier) throws IOException {
 		
 		String url = getAnnotationServiceUri();
 		if(!europeanaId.startsWith(WebAnnotationFields.SLASH))
@@ -626,7 +697,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		url += europeanaId;
 		url += WebAnnotationFields.SLASH + provider;
-		url += WebAnnotationFields.SLASH + annotationNr;
+		url += WebAnnotationFields.SLASH + identifier;
 		
 		url += "?wsKey=" + getApiKey() + "&profile=annotation";
 

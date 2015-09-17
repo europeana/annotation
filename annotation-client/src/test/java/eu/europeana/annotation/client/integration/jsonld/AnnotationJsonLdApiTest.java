@@ -3,12 +3,16 @@ package eu.europeana.annotation.client.integration.jsonld;
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
-
+/**
+* @Deprecated replaced by WebAnnotationProtocol
+*/
+@Ignore
 public class AnnotationJsonLdApiTest  extends BaseJsonLdApiTest {//extends AnnotationTestObjectBuilder {
 	
 	@Test

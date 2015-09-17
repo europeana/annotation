@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
@@ -12,6 +13,12 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 
 
+/**
+ * TODO: enable when the search functionality will be enabled
+ * 
+ * @author Sergiu Gordea @ait
+ */
+@Ignore
 public class AnnotationSearchApiTest {
 
 	public static String VALUE     = "Vlad";

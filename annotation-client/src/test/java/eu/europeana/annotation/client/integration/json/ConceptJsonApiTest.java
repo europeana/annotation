@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.ConceptJsonApiImpl;
@@ -11,6 +12,8 @@ import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilde
 import eu.europeana.annotation.utils.JsonUtils;
 
 
+//TODO: enabled when concept API is enabled
+@Ignore 
 public class ConceptJsonApiTest extends AnnotationTestObjectBuilder{
 
 	private static String TEST_URI = "concept.eu/new";

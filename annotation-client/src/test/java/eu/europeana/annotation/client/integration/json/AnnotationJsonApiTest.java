@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.AnnotationJsonApi;
@@ -17,6 +18,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.utils.JsonUtils;
 
 
+//TODO: enable when the JSON API will be enabled again
+@Ignore 
 public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
@@ -101,7 +104,7 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		
 		AnnotationJsonApi retrievalApi = new AnnotationJsonApiImpl();
 //		List<Annotation> results = retrievalApi.getAnnotations("testCollection", "testObject", "webanno");
-		String results = retrievalApi.getAnnotations("testCollection", "testObject", "webanno");
+		String results = retrievalApi.getAnnotations( "testCollection", "testObject", "webanno");
 		assertNotNull(results);
 //		assertTrue(results.size() > 0);
 //		Gson gson = new Gson();
@@ -169,7 +172,8 @@ public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 		assertTrue(retrievedAnnotationStatusResponse.contains(TEST_STATUS));
 	}
 	
-	@Test
+	//TODO: enable test when admin api is enabled
+	//@Test
 	public void searchAnnotationStatusLogs() {
 		
 		Annotation annotationObject = createTestAnnotationObject();

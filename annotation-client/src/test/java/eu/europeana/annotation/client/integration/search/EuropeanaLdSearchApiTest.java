@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
@@ -13,7 +14,12 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-
+/**
+ * TODO: migrate when the search functionality is enabled 
+ * @Deprecated
+ * @author Sergiu Gordea @ait
+ */
+@Ignore
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	
 	@Test

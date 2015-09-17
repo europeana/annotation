@@ -142,7 +142,7 @@ public class BaseApiConnection {
 	 * @return The response body, response headers and status code.
 	 * @throws IOException
 	 */
-	ResponseEntity<String> getURL(String url) throws IOException {
+	public ResponseEntity<String> getURL(String url) throws IOException {
 		logger.trace("Call to Annotation API (GET): " + url + 
 				". Returns body, headers and status code.");
 		return getHttpConnection().getURL(url);

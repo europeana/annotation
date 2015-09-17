@@ -188,7 +188,7 @@ public class AnnotationJsonApiImpl extends BaseAnnotationApi implements Annotati
 		AnnotationOperationResponse res;
 		
 		try {
-			res = apiConnection.getAnnotation(europeanaId, provider, annotationNr);
+			res = apiConnection.getAnnotation(europeanaId, provider, ""+annotationNr);
 			
 			if(!Boolean.valueOf(res.getSuccess()))
 				throw new TechnicalRuntimeException(res.getError() + " " + res.getAction());

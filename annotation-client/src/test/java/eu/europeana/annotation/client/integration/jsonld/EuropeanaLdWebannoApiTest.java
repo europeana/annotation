@@ -10,7 +10,12 @@ import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
-
+/**
+ * TODO: move relevant tests to WebAnnotationProtocol classes.
+ * @Deprecated
+ * @author GordeaS
+ *
+ */
 public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	
 	@Test
