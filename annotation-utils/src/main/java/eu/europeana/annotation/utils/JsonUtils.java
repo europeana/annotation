@@ -52,6 +52,10 @@ import eu.europeana.annotation.utils.serialization.MapDeserializer;
 import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
 import eu.europeana.annotation.utils.serialization.TargetDeserializer;
 
+/**
+ * @Deprecated the provided methods must be replaced by proper usage of the json to annotation parser 
+ *
+ */
 public class JsonUtils {
 	
 //	private static Logger log = Logger.getRootLogger();
