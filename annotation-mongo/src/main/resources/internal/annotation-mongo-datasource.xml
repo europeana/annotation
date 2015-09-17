@@ -29,7 +29,7 @@
 	">
 
 	
-	<bean id="annotation_db_mongoProvider" class="eu.europeana.corelib.MongoProvider">
+	<bean id="annotation_db_mongoProvider" class="eu.europeana.corelib.storage.impl.MongoProviderImpl">
 		<constructor-arg value="#{annotationProperties['mongodb.annotation.host']}" type="java.lang.String"/>
 		<constructor-arg value="#{annotationProperties['mongodb.annotation.port']}" type="java.lang.String"/>
 	</bean>

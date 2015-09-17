@@ -128,7 +128,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	@Override
 	public MotivationTypes getMotivationType() {
-		return MotivationTypes.valueOf(getMotivation());
+		return MotivationTypes.getType(getMotivation());
 	}
 
 	public void setMotivation(String motivation) {
