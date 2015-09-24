@@ -30,7 +30,7 @@
 		<repository>
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
 		</repository>
 	</repositories>
 	
