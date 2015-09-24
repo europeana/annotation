@@ -21,22 +21,22 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtocolTest {
 
 	
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
+//	@Rule
+//	public ExpectedException exception = ExpectedException.none();
 	
     public String LINK_JSON_WITHOUT_BLANK = 
     		START + LINK_CORE +
-		    "\"motivation\":\"oa:Linking\"," +	
+		    "\"motivation\":\"oa:linking\"," +	
 		    END;
 	
     public String CORRUPTED_JSON = 
     		START + LINK_CORE +
-		    "\"motivation\",=\"oa:Linking\"," +	
+		    "\"motivation\",=\"oa:linking\"," +	
 		    END;
 	
     public String LINK_JSON_WITH_WRONG_MOTIVATION = 
     		START + LINK_CORE +
-		    "\"motiv\":\"oa:Wrong\"," +	
+		    "\"motiv\":\"oa:wrong\"," +	
 		    END;
 	
     public String CORRUPTED_UPDATE_BODY =
@@ -48,31 +48,30 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
     		UPDATE_TARGET +
     		END;
     
-    public String WRONG_IDENTIFIER_NUMBER = "-1";
+    public String WRONG_GENERATED_IDENTIFIER = "-1";
     
-    public String WRONG_IDENTIFIER_NUMBER_URL = "http://data.europeana.eu/annotation/webanno/-1";
     
-    public String WRONG_IDENTIFIER_PROVIDER_URL = "http://data.europeana.eu/annotation/wrong/496";
     
-    public String WRONG_IDENTIFIER_URL = "http://annotation/wrong";
+//    public String WRONG_IDENTIFIER_URL = "http://annotation/wrong";
     
-    public String WRONG_WSKEY = "wskey";
+    public String UNKNOWN_WSKEY = "invalid_wskey";
     
-    public String WRONG_ANNOTATION_TAG = "taglink";
+    public String INVALID_ANNO_TYPE = "taglink";
     
-    public String WRONG_USER_TOKEN = "guest";
+    public String INVALID_USER_TOKEN = "invalid_user_token";
 
-    public String INVALID_PROVIDER = "provider";
+    public String UNKNOWN_PROVIDER = "unknown_provider";
 
-    
+    public String UNKNOWN_PROVIDED_IDENTIFIER = "unknown_provided_identifier";
+       
 	@Test
-	public void createWebannoAnnotationWithoutWrongWskey() {
+	public void createWebAnnotationWithWrongWskey() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("The user is not authorized to perform the given action!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("The user is not authorized to perform the given action!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				WRONG_WSKEY
+				UNKNOWN_WSKEY
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -88,8 +87,8 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	@Test
 	public void createWebannoAnnotationWithoutBody() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("Cannot parse body to annotation!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Cannot parse body to annotation!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				TEST_WSKEY
@@ -106,10 +105,10 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	
 
 	@Test
-	public void createWebannoAnnotationWithoutCorruptedBody() {
+	public void createWebAnnotationWithCorruptedBody() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("Cannot parse body to annotation!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Cannot parse body to annotation!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				TEST_WSKEY
@@ -146,8 +145,8 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	@Test
 	public void createWebannoAnnotationLinkWithWrongMotivation() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("Cannot parse body to annotation!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Cannot parse body to annotation!");
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				TEST_WSKEY
@@ -163,14 +162,14 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	
 
 	@Test
-	public void createWebannoAnnotationWithInvalidProvider() {
+	public void createWebAnnotationForUnknownProvider() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("Invalid provider!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Invalid provider!");
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				TEST_WSKEY
-				, INVALID_PROVIDER
+				, UNKNOWN_PROVIDER
 				, null
 				, false
 				, TAG_JSON
@@ -182,29 +181,29 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	
 		
 	@Test
-	public void getWebannoAnnotationWithWrongIdentifier() {
+	public void getWebAnnotationWithWrongIdentifier() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("No annotation found with the given identifier!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().getAnnotation(
 				TEST_WSKEY
 				, WebAnnotationFields.PROVIDER_WEBANNO
-				, WRONG_IDENTIFIER_NUMBER);
+				, WRONG_GENERATED_IDENTIFIER);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}
 	
-		
-	@Test
-	public void createHistorypinAnnotationTagWithWrongIdentifierNumber() {
+//TODO: correct or remove invalid usecase as we cannot/don't verify historypin identifiers		
+//	@Test
+	public void createHistorypinTagWithWrongIdentifierNumber() {
 				
-		exception.expect(Exception.class);
-		exception.expectMessage("Identifier must not be null for the given provider!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Identifier must not be null for the given provider!");
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				TEST_WSKEY
 				, WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, WRONG_IDENTIFIER_NUMBER
+				, UNKNOWN_PROVIDED_IDENTIFIER
 				, false
 				, TAG_JSON
 				, TEST_USER_TOKEN
@@ -216,10 +215,10 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	
 	
 	@Test
-	public void createWebannoAnnotationTagByWrongTypeJsonld() {
+	public void createWebannoAnnotationByWrongAnnoTypeJsonld() {
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("Invalid request. Parameter value not supported!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Invalid request. Parameter value not supported!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				TEST_WSKEY
@@ -228,23 +227,24 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				, false
 				, TAG_JSON_BY_TYPE_JSONLD
 				, TEST_USER_TOKEN
-				, WRONG_ANNOTATION_TAG
+				, INVALID_ANNO_TYPE
 				);
 		
 		assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
 	}
 	
+
 	
 	@Test
 	public void updateWebannoAnnotationWithWrongIdentifierNumber() { 
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("No annotation found with the given identifier!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
 				TEST_WSKEY
 				, WebAnnotationFields.PROVIDER_WEBANNO
-				, WRONG_IDENTIFIER_NUMBER_URL
+				, WRONG_GENERATED_IDENTIFIER
 				, UPDATE_JSON
 				, TEST_USER_TOKEN
 				);
@@ -252,16 +252,16 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	}
 	
 		
-	@Test
-	public void updateWebannoAnnotationWithWrongProvider() { 
+//	@Test
+	public void updateWebAnnotationWithWrongProvider() { 
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("No annotation found with the given identifier!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
 				TEST_WSKEY
-				, WebAnnotationFields.PROVIDER_WEBANNO
-				, WRONG_IDENTIFIER_PROVIDER_URL
+				, UNKNOWN_PROVIDER
+				, UNKNOWN_PROVIDED_IDENTIFIER
 				, UPDATE_JSON
 				, TEST_USER_TOKEN
 				);
@@ -272,42 +272,42 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	@Test
 	public void updateWebannoAnnotationWithWrongIdentifier() { 
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("No annotation found with the given identifier!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
 				TEST_WSKEY
 				, WebAnnotationFields.PROVIDER_WEBANNO
-				, WRONG_IDENTIFIER_URL
+				, WRONG_GENERATED_IDENTIFIER
 				, UPDATE_JSON
 				, TEST_USER_TOKEN
 				);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}
 	
-		
-	@Test
-	public void updateWebannoAnnotationWithWrongIdentifierUrl() { 
-		
-		exception.expect(Exception.class);
-		exception.expectMessage("Identifier must have at least a provider and an identifier number!");
-		
-		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
-				, WebAnnotationFields.PROVIDER_WEBANNO
-				, WRONG_IDENTIFIER_NUMBER
-				, UPDATE_JSON
-				, TEST_USER_TOKEN
-				);
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-	}
+//TODO: invalid testcase, check if can be converted to a valid one		
+//	@Test
+//	public void updateWebannoAnnotationWithWrongIdentifierUrl() { 
+//		
+////		exception.expect(Exception.class);
+////		exception.expectMessage("Identifier must have at least a provider and an identifier number!");
+//		
+//		ResponseEntity<String> response = getApiClient().updateAnnotation(
+//				TEST_WSKEY
+//				, WebAnnotationFields.PROVIDER_WEBANNO
+//				, WRONG_IDENTIFIER_NUMBER
+//				, UPDATE_JSON
+//				, TEST_USER_TOKEN
+//				);
+//		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+//	}
 	
 		
 	@Test
 	public void updateWebannoAnnotationWithCorruptedUpdateBody() throws JsonParseException { 
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("Cannot parse body to annotation!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("Cannot parse body to annotation!");
 		
 		/**
 		 * store annotation and retrieve its identifier URL
@@ -325,10 +325,10 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	
 		
 //	@Test
-	public void updateWebannoAnnotationWithWrongUser() throws JsonParseException { 
+	public void updateWebAnnotationWithWrongUserToken() throws JsonParseException { 
 		
-		exception.expect(Exception.class);
-		exception.expectMessage("The user is not authorized to perform the given action!");
+//		exception.expect(Exception.class);
+//		exception.expectMessage("The user is not authorized to perform the given action!");
 		
 		//implement when authentication/authorization is available
 
@@ -342,14 +342,14 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				, anno.getAnnotationId().getProvider()
 				, anno.getAnnotationId().getIdentifier()
 				, UPDATE_JSON
-				, WRONG_USER_TOKEN
+				, INVALID_USER_TOKEN
 				);
 		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 		
 	@Test()
-	public void updateWebannoAnnotationWithWrongWskey() throws JsonParseException { 
+	public void updateWebannoAnnotationWithUnknownWskey() throws JsonParseException { 
 		
 //		exception.expect(Exception.class);
 //		exception.expectMessage("The user is not authorized to perform the given action!");
@@ -360,7 +360,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		Annotation anno = createTestAnnotation();
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				WRONG_WSKEY
+				UNKNOWN_WSKEY
 				, anno.getAnnotationId().getProvider()
 				, anno.getAnnotationId().getIdentifier()
 				, UPDATE_JSON

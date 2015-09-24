@@ -19,7 +19,7 @@ boolean hasType = withType != null;
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-<%if(!hasType){%>    "motivation": "oa:Tagging",<%}%>	
+<%if(!hasType){%>    "motivation": "oa:tagging",<%}%>	
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -41,7 +41,7 @@ boolean hasType = withType != null;
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-<%if(!hasType){%>    "motivation": "oa:Linking",<%}%>	
+<%if(!hasType){%>    "motivation": "oa:linking",<%}%>	
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",

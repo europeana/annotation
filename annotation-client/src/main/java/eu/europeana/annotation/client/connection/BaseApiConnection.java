@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 
@@ -131,7 +132,12 @@ public class BaseApiConnection {
 	ResponseEntity<String> putURL(String url, String jsonPut) throws IOException {
 		logger.trace("Call to Annotation API (PUT) with body: " + url + 
 				". Returns body, headers and status code.");
-		return getHttpConnection().putURL(url, jsonPut);
+		
+		ResponseEntity<String> response = getHttpConnection().putURL(url, jsonPut);
+		
+		response.getStatusCode();
+		
+		return response;
 	}
 	
 
