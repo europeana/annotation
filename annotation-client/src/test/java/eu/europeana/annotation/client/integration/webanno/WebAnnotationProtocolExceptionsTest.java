@@ -91,7 +91,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("Cannot parse body to annotation!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -111,7 +111,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("Cannot parse body to annotation!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -128,7 +128,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	public void createWebannoAnnotationLinkWithoutBlanksInMotivation() {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -149,7 +149,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("Cannot parse body to annotation!");
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -168,7 +168,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("Invalid provider!");
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, UNKNOWN_PROVIDER
 				, null
 				, false
@@ -187,7 +187,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().getAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, WRONG_GENERATED_IDENTIFIER);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -201,7 +201,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("Identifier must not be null for the given provider!");
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, UNKNOWN_PROVIDED_IDENTIFIER
 				, false
@@ -221,7 +221,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("Invalid request. Parameter value not supported!");
 
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -242,7 +242,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, WRONG_GENERATED_IDENTIFIER
 				, UPDATE_JSON
@@ -259,7 +259,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, UNKNOWN_PROVIDER
 				, UNKNOWN_PROVIDED_IDENTIFIER
 				, UPDATE_JSON
@@ -276,7 +276,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 //		exception.expectMessage("No annotation found with the given identifier!");
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, WRONG_GENERATED_IDENTIFIER
 				, UPDATE_JSON
@@ -314,7 +314,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		 */
 		Annotation anno = createTestAnnotation();
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, anno.getAnnotationId().getProvider()
 				, anno.getAnnotationId().getIdentifier()
 				, CORRUPTED_UPDATE_JSON
@@ -338,7 +338,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		Annotation anno = createTestAnnotation();
 		
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, anno.getAnnotationId().getProvider()
 				, anno.getAnnotationId().getIdentifier()
 				, UPDATE_JSON

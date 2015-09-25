@@ -331,6 +331,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
 		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;		
 		
+		//logger.debug("Ivoking remote api: " + url);
 		/**
 		 * Execute Europeana API request
 		 */

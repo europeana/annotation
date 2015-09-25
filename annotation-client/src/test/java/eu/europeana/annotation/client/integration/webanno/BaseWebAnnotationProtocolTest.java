@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -81,7 +82,7 @@ public class BaseWebAnnotationProtocolTest {
     		UPDATE_TARGET +
     		END;
     
-    public String TEST_WSKEY = "apidemo";
+    //public String TEST_WSKEY = "apidemo";
     
     public String TEST_USER_TOKEN = "anonymous";
    
@@ -106,7 +107,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -141,4 +142,9 @@ public class BaseWebAnnotationProtocolTest {
 		return annotation;
 	}
 
+	 public String getApiKey() {
+			
+		 return ClientConfiguration.getInstance().getApiKey();
+		 //return TEST_WSKEY;
+	}
 }

@@ -34,7 +34,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	public void createWebannoAnnotationLink() {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -52,7 +52,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	public void createWebannoAnnotationTagByTypeJsonld() {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -70,7 +70,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	public void createWebannoAnnotationLinkByTypeJsonld() {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
@@ -105,7 +105,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 		 * get annotation by provider and identifier
 		 */
 		ResponseEntity<String> response = getApiClient().getAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, annotation.getAnnotationId().getIdentifier()
 				);
@@ -129,7 +129,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 		 * update annotation by identifier URL
 		 */
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				TEST_WSKEY
+				getApiKey()
 				, anno.getAnnotationId().getProvider()
 				, anno.getAnnotationId().getIdentifier()
 				, UPDATE_JSON
@@ -155,7 +155,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 		 * delete annotation by identifier URL
 		 */
 		ResponseEntity<String> response = getApiClient().deleteAnnotation(
-				TEST_WSKEY, anno.getAnnotationId().getProvider(),
+				getApiKey(), anno.getAnnotationId().getProvider(),
 				anno.getAnnotationId().getIdentifier(), TEST_USER_TOKEN, null
 				);
 		
