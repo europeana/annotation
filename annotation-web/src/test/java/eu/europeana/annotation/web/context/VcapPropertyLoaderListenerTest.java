@@ -22,18 +22,25 @@ public class VcapPropertyLoaderListenerTest {
 		
 		// Properties europeanaProperties =
 		// loadProperties("/generate-config/europeana-test.properties");
-		String outFile = getClass().getResource(
-				"/generate-config/annotation-test.properties").getFile();
-
-		VcapAnnotationPropertyLoaderListener propertiesLoader = new VcapAnnotationPropertyLoaderListener(
-				getMockServletEnvironment(), new File(outFile));
+		String infilepath = getClass().getResource(
+				"/generate-config/annotation-test.properties.template").getFile();
 		
-		System.out.println("Update properties in file:"	+	propertiesLoader.propertiesFile);
+		File infile = new File(infilepath);
+		File outFile = new File(infile.getParentFile(),  "annotation-test.properties");
+
+		//make sure the last generated file is deleted
+		if(outFile.exists())
+			outFile.delete();
+		
+		VcapAnnotationPropertyLoaderListener propertiesLoader = new VcapAnnotationPropertyLoaderListener(
+				getMockServletEnvironment(), outFile, infile);
+		
+		System.out.println("Update properties in file:"	+	propertiesLoader.getPropertiesFile());
 		Properties props = new Properties();
-		props.load(new FileInputStream(propertiesLoader.propertiesFile));
+		props.load(new FileInputStream(propertiesLoader.getPropertiesFile()));
 		System.out.println(props);
 		String timestamp = props.getProperty("annotation.properties.timestamp");
-		assertTrue(Long.parseLong(timestamp) > startTime);
+		assertTrue(Long.parseLong(timestamp) >= startTime);
 		
 
 	}

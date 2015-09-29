@@ -23,6 +23,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	public final static String PASSWORD = ".credentials.password";
 
 	private final static String MONGO_SERVICE = "mongo_service";
+	File propertiesFileTemplate = null;
 	File propertiesFile = null;
 
 	private StandardServletEnvironment env;
@@ -30,50 +31,73 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	Logger logger = Logger.getLogger(getClass()); 
 
 	public VcapAnnotationPropertyLoaderListener() {
-		this(new StandardServletEnvironment(), null);
+		this(new StandardServletEnvironment(), null, null);
 	}
 	
-	public VcapAnnotationPropertyLoaderListener(StandardServletEnvironment servletEnv, File propertiesFile) {
+	public VcapAnnotationPropertyLoaderListener(StandardServletEnvironment servletEnv, File propertiesFile, File propertiesFileTemplate) {
 		super();
+		this.propertiesFileTemplate = propertiesFileTemplate;
 		this.propertiesFile = propertiesFile;
 		env=servletEnv;
 		this.onApplicationEvent(new ApplicationEnvironmentPreparedEvent(
 				new SpringApplication(), new String[0], env));
 	}
 	
+	
+	
 	@Override
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 		super.onApplicationEvent(event);
 
 		if(env != null && env.getSystemEnvironment() != null && env.getSystemEnvironment().get(MONGO_SERVICE) != null)
-			updateProperties(getPropertiesFile());
+			updateProperties();
 	}
 
-	private File getPropertiesFile() {
+	protected File getPropertiesFileTemplate() {
+		String templateFileName = "annotation.properties.template";
+		
+		if(propertiesFileTemplate == null){
+			getConfigFile(templateFileName);
+		}
+		return propertiesFileTemplate;
+	}
+
+	protected File getPropertiesFile() {
+		String fileName = "annotation.properties";
+		
 		if(propertiesFile == null){
-			ClassLoader c = getClass().getClassLoader();
-			@SuppressWarnings("resource")
-			URLClassLoader urlC = (URLClassLoader) c;
-			URL[] urls = urlC.getURLs();
-			String path = urls[0].getPath();
-			propertiesFile = new File(path + "/config"
-					+ "/annotation.properties");
+			getConfigFile(fileName);
 		}
 		return propertiesFile;
 	}
 
-	public void updateProperties(File annotationPropertiesFile) {
+	
+	protected void getConfigFile(String filename) {
+		ClassLoader c = getClass().getClassLoader();
+		@SuppressWarnings("resource")
+		URLClassLoader urlC = (URLClassLoader) c;
+		URL[] urls = urlC.getURLs();
+		String path = urls[0].getPath();
+		propertiesFileTemplate = new File(path + "/config/"
+				+ filename);
+	}
+
+	
+	
+	public void updateProperties() {
 	
 		
+		File annotationPropertiesFile = getPropertiesFile();
+		File propertiesTemplate = getPropertiesFileTemplate();
 		Properties props = new Properties();
 
 		try {
-			if(!annotationPropertiesFile.exists()){
-				logger.error("Cannot find the annotation.properties at location: " + annotationPropertiesFile.getAbsolutePath());;
+			if(annotationPropertiesFile.exists()){
+				logger.warn("The configuration file already exists. Skipping generation of the configuration file: " + annotationPropertiesFile.getAbsolutePath());
 				return;
 			}
 		
-			props.load(new FileInputStream(annotationPropertiesFile));
+			props.load(new FileInputStream(propertiesTemplate));
 			String key_timestamp = "annotation.properties.timestamp";
 			String timestamp = (String)props.get(key_timestamp);
 			
@@ -123,4 +147,20 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 			logger.error("Cannot update annotation properties! ", e1) ;
 		}
 	}
+	
+	 /**
+	   * Checks if a user-defined variable exists, and adds it to the properties file if it does
+	   * 
+	   * @param props
+	   * @param key
+	   * @throws IOException
+	   */
+	  protected void setHTTPProperty(Properties props, String key) throws IOException {
+	    String HTTP = "http://";
+
+	    if (env.containsProperty(key)) {
+	      props.setProperty(StringUtils.replaceChars(key, "_", "."), HTTP
+	          + env.getSystemEnvironment().get(key));
+	    }
+	  }
 }
