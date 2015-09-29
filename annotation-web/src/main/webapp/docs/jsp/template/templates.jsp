@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<jsp:include page="header.jspf" />
+<jsp:include page="header.html"/>
 <% 
 String pageDescription="Annotation component is a service that implements the management and indexing of Web Annotations";
 %>
@@ -24,5 +24,4 @@ String pageDescription="Annotation component is a service that implements the ma
 					<h3 id="concept-api">CONCEPT  API  <a href="#top">top</a></h3>
 					<jsp:include page="concept-api.jsp" />											
 
-<jsp:include page="footer.jspf" />
-			
+<jsp:include page="footer.html" />

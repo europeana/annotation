@@ -1,25 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<jsp:include page="header.jspf" />
+
+<%@include file="header.html"%>
 <% 
 String pageDescription="JSONLD templates for creation of annotation objects";
 String withType = request.getParameter("withType");
+//String motivation = request.getParameter("motivation");
 boolean hasType = withType != null;		
-%>
-	
-<%@ include file="description.jspf" %>
+%>	
+<%@include file="description.jspf"%>
 
 					<ul id="toc">
 						<li><a href="#tag">Create (Object) Tag</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 					</ul>
 
-					<h3 id="tag">Create (Object) Tag <a href="#top">top</a></h3>
-
-<textarea rows="20" cols="120" name="jsonldtag" >
+					<h3 id="tag">Create (Object) Tag</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of (simple) <b>tags</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:tagging)
+<textarea rows="20" cols="120" name="jsonldtag">
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-<%if(!hasType){%>    "motivation": "oa:tagging",<%}%>	
+<% if(!hasType){ %>    "motivation": "oa:tagging",<% }//endif%>	
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -35,13 +39,18 @@ boolean hasType = withType != null;
 </textarea>
 <br>
 
-					<h3 id="objectlink">Create Object Link <a href="#top">top</a></h3>
 
-<textarea rows="22" cols="120" name="jsonldobjectlink" >
+<h3 id="objectlink">Create Object Link </h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Object Links</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+
+<br>
+(motivation:linking)  
+<textarea rows="22" cols="120" name="jsonldobjectlink">
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "@type": "oa:Annotation",
-<%if(!hasType){%>    "motivation": "oa:linking",<%}%>	
+<% if(!hasType){ %>    "motivation": "oa:linking",<% }//endif %>	
     "annotatedBy": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
@@ -57,7 +66,6 @@ boolean hasType = withType != null;
     "oa:equivalentTo": "https://www.historypin.org/en/item/789"
 }
 </textarea>
+
 <br>			
-					
-<jsp:include page="footer.jspf" />
-			
+<%@include file="footer.html"%>
