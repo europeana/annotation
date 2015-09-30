@@ -59,7 +59,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		String templateFileName = "annotation.properties.template";
 		
 		if(propertiesFileTemplate == null){
-			getConfigFile(templateFileName);
+			propertiesFileTemplate = getConfigFile(templateFileName);
 		}
 		return propertiesFileTemplate;
 	}
@@ -68,19 +68,19 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		String fileName = "annotation.properties";
 		
 		if(propertiesFile == null){
-			getConfigFile(fileName);
+			propertiesFile = getConfigFile(fileName);
 		}
 		return propertiesFile;
 	}
 
 	
-	protected void getConfigFile(String filename) {
+	protected File getConfigFile(String filename) {
 		ClassLoader c = getClass().getClassLoader();
 		@SuppressWarnings("resource")
 		URLClassLoader urlC = (URLClassLoader) c;
 		URL[] urls = urlC.getURLs();
 		String path = urls[0].getPath();
-		propertiesFileTemplate = new File(path + "/config/"
+		return new File(path + "/config/"
 				+ filename);
 	}
 
