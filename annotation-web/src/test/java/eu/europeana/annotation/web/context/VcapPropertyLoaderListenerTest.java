@@ -27,10 +27,6 @@ public class VcapPropertyLoaderListenerTest {
 		
 		File infile = new File(infilepath);
 		File outFile = new File(infile.getParentFile(),  "annotation-test.properties");
-
-		//make sure the last generated file is deleted
-		if(outFile.exists())
-			outFile.delete();
 		
 		VcapAnnotationPropertyLoaderListener propertiesLoader = new VcapAnnotationPropertyLoaderListener(
 				getMockServletEnvironment(), outFile, infile);

@@ -95,11 +95,13 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 
 		try {
 			if(annotationPropertiesFile.exists()){
-				logger.warn("The configuration file already exists. Skipping generation of the configuration file: " + annotationPropertiesFile.getAbsolutePath());
-				return;
+				logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
+				props.load(new FileInputStream(annotationPropertiesFile));
+				annotationPropertiesFile.delete();
+			}else{
+				props.load(new FileInputStream(propertiesTemplate));
 			}
 		
-			props.load(new FileInputStream(propertiesTemplate));
 			
 			updateProps(props);
 				
