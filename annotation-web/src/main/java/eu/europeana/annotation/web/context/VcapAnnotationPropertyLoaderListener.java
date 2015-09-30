@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -21,6 +22,8 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	public final static String USERNAME = ".credentials.username";
 	public final static String HOSTS = ".credentials.hosts";
 	public final static String PASSWORD = ".credentials.password";
+	public final static String PROP_TIMESTAMP = "annotation.properties.timestamp";
+	
 
 	private final static String MONGO_SERVICE = "mongo_service";
 	File propertiesFileTemplate = null;
@@ -50,7 +53,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		super.onApplicationEvent(event);
 
 		if(env != null && env.getSystemEnvironment() != null && env.getSystemEnvironment().get(MONGO_SERVICE) != null)
-			updateProperties();
+			updateAnnotationProperties();
 	}
 
 	protected File getPropertiesFileTemplate() {
@@ -84,7 +87,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 
 	
 	
-	public void updateProperties() {
+	public void updateAnnotationProperties() {
 	
 		
 		File annotationPropertiesFile = getPropertiesFile();
@@ -98,69 +101,96 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 			}
 		
 			props.load(new FileInputStream(propertiesTemplate));
-			String key_timestamp = "annotation.properties.timestamp";
-			String timestamp = (String)props.get(key_timestamp);
+			String timestamp = (String)props.get(PROP_TIMESTAMP);
 			
 			if (StringUtils.isEmpty(timestamp) || Long.parseLong(timestamp) < 0 ) {
 				
-				String mongoDb = env.getSystemEnvironment().get(MONGO_SERVICE)
-						.toString();
-				String mongoUserName = VCAP + mongoDb + USERNAME;
-				String mongoPassword = VCAP + mongoDb + PASSWORD;
-				String mongoHosts = VCAP + mongoDb + HOSTS;
-				FileUtils.writeStringToFile(
-						annotationPropertiesFile,
-						"\n### generated configurations ###\n", true);
-				FileUtils.writeStringToFile(
-						annotationPropertiesFile,
-						"mongodb.annotation.username" + "="
-								+ env.getProperty(mongoUserName) + "\n", true);
-				FileUtils.writeStringToFile(
-						annotationPropertiesFile,
-						"mongodb.annotation.password" + "="
-								+ env.getProperty(mongoPassword) + "\n", true);
+				updateProps(props);
 				
-				logger.info(env.getProperty(mongoHosts));
-				String[] hosts = env.getProperty(mongoHosts).replace('[', ' ')
-						.replace("]", " ").split(",");
-				String mongoHost = "mongodb.annotation.host=";
-				String mongoPort = "mongodb.annotation.port=";
-				for (String host : hosts) {
-					mongoHost = mongoHost + host.split(":")[0].trim() + ",";
-					mongoPort = mongoPort + host.split(":")[1].trim() + ",";
-				}
-				FileUtils.writeStringToFile(annotationPropertiesFile,
-						mongoHost.substring(0, mongoHost.length() - 1) + "\n",
-						true);
-				FileUtils.writeStringToFile(annotationPropertiesFile,
-						mongoPort.substring(0, mongoPort.length() - 1) + "\n",
-						true);
-				
-				//update timestamp
-				FileUtils.writeStringToFile(annotationPropertiesFile,
-						key_timestamp + "=" + System.currentTimeMillis() + "\n",
-						true);
-				
+				writePropsToFile(props, annotationPropertiesFile);			
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			logger.error("Cannot update annotation properties! ", e1) ;
 		}
 	}
-	
-	 /**
-	   * Checks if a user-defined variable exists, and adds it to the properties file if it does
-	   * 
-	   * @param props
-	   * @param key
-	   * @throws IOException
-	   */
-	  protected void setHTTPProperty(Properties props, String key) throws IOException {
-	    String HTTP = "http://";
 
-	    if (env.containsProperty(key)) {
-	      props.setProperty(StringUtils.replaceChars(key, "_", "."), HTTP
-	          + env.getSystemEnvironment().get(key));
-	    }
-	  }
+	protected void updateProps(Properties props) {
+		String mongoDb = env.getSystemEnvironment().get(MONGO_SERVICE)
+				.toString();
+		String mongoUserName = VCAP + mongoDb + USERNAME;
+		String mongoPassword = VCAP + mongoDb + PASSWORD;
+		String mongoHosts = VCAP + mongoDb + HOSTS;
+
+//				FileUtils.writeStringToFile(
+//						annotationPropertiesFile,
+//						"mongodb.annotation.username" + "="
+//								+ env.getProperty(mongoUserName) + "\n", true);
+		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
+//				FileUtils.writeStringToFile(
+//						annotationPropertiesFile,
+//						"mongodb.annotation.password" + "="
+//								+ env.getProperty(mongoPassword) + "\n", true);
+		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
+		
+		logger.info(env.getProperty(mongoHosts));
+		String[] hosts = env.getProperty(mongoHosts).replace('[', ' ')
+				.replace("]", " ").split(",");
+		//String mongoHost = "mongodb.annotation.host=";
+		//String mongoPort = "mongodb.annotation.port=";
+		String mongoHost = "";
+		String mongoPort = "";
+		
+		for (String host : hosts) {
+			mongoHost = mongoHost + host.split(":")[0].trim() + ",";
+			mongoPort = mongoPort + host.split(":")[1].trim() + ",";
+		}
+//				FileUtils.writeStringToFile(annotationPropertiesFile,
+//						mongoHost.substring(0, mongoHost.length() - 1) + "\n",
+//						true);
+//		FileUtils.writeStringToFile(annotationPropertiesFile,
+//		mongoPort.substring(0, mongoPort.length() - 1) + "\n",
+//		true);
+
+		
+		mongoHost = mongoHost.substring(0, mongoHost.length() - 1);
+		mongoPort = mongoPort.substring(0, mongoPort.length() - 1);
+		
+		props.put("mongodb.annotation.host", mongoHost);
+		props.put("mongodb.annotation.port", mongoPort);
+	}
+
+	protected void writePropsToFile(Properties props, File annotationPropertiesFile) throws IOException {
+		FileUtils.writeStringToFile(
+				annotationPropertiesFile,
+				"\n### generated configurations ###\n", true);
+		
+		for (Entry<Object, Object> entry : props.entrySet()) {
+			FileUtils.writeStringToFile(
+					annotationPropertiesFile,
+					entry.getKey().toString() + "=" + entry.getValue().toString() + "\n", true);
+		}
+		
+		
+		//update timestamp
+		FileUtils.writeStringToFile(annotationPropertiesFile,
+				PROP_TIMESTAMP + "=" + System.currentTimeMillis() + "\n",
+				true);
+	}
+	
+//	 /**
+//	   * Checks if a user-defined variable exists, and adds it to the properties file if it does
+//	   * 
+//	   * @param props
+//	   * @param key
+//	   * @throws IOException
+//	   */
+//	  protected void setHTTPProperty(Properties props, String key) throws IOException {
+//	    String HTTP = "http://";
+//
+//	    if (env.containsProperty(key)) {
+//	      props.setProperty(StringUtils.replaceChars(key, "_", "."), HTTP
+//	          + env.getSystemEnvironment().get(key));
+//	    }
+//	  }
 }
