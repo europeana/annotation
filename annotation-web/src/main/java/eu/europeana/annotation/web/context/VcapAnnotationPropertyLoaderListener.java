@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.cloudfoundry.VcapApplicationListener;
@@ -101,14 +100,11 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 			}
 		
 			props.load(new FileInputStream(propertiesTemplate));
-			String timestamp = (String)props.get(PROP_TIMESTAMP);
 			
-			if (StringUtils.isEmpty(timestamp) || Long.parseLong(timestamp) < 0 ) {
+			updateProps(props);
 				
-				updateProps(props);
-				
-				writePropsToFile(props, annotationPropertiesFile);			
-			}
+			writePropsToFile(props, annotationPropertiesFile);			
+			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			logger.error("Cannot update annotation properties! ", e1) ;
