@@ -320,7 +320,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			String wskey, String provider, String identifier, boolean indexOnCreate, 
 			String annotation, String userToken, String annoType) throws IOException {
 		
-		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+		String url = getAnnotationServiceUri();
+		if(!url.endsWith(WebAnnotationFields.SLASH))
+			url +=  WebAnnotationFields.SLASH;
 		if (annoType != null)
 			url += annoType + WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;

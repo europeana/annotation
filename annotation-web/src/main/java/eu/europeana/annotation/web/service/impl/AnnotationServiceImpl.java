@@ -254,26 +254,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		 */
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();
 		return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
-
-		// AnnotationLd parsedAnnotationLd = null;
-		// JsonLd parsedJsonLd = null;
-		// try {
-		// parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
-		//
-		// /**
-		// * convert JsonLd to AnnotationLd.
-		// * JsonLd object -> AnnotationLd object
-		// */
-		// parsedAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
-		// } catch (Exception e) {
-		// String errorMessage = "Cannot Parse JSON-LD input! ";
-		// Logger.getLogger(getClass().getName()).error(errorMessage, e);
-		// }
-		//
-		// /**
-		// * AnnotationLd object -> Annotation object.
-		// */
-		// return parsedAnnotationLd.getAnnotation();
 	}
 
 	@Override

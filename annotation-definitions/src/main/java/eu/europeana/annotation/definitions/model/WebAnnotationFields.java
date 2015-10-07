@@ -6,7 +6,7 @@ package eu.europeana.annotation.definitions.model;
  * 
  */
 //TODO: move the field values to other interfaces/enumerations
-public interface WebAnnotationFields {
+public interface WebAnnotationFields extends SwaggerConstants {
 
 	
 	/**
@@ -81,8 +81,8 @@ public interface WebAnnotationFields {
 	public static final String VOCABULARY           = "vocabulary";
 	public static final String ANCESTORS            = "ancestors";
 
-	public static final String DEFAULT_MEDIA_TYPE   = "[oa:SemanticTag]";
-	public static final String DEFAULT_ANNOTATION_TYPE = "[oa:annotation,euType:OBJECT_TAG]";
+//	public static final String DEFAULT_MEDIA_TYPE   = "oa:SemanticTag";
+	public static final String DEFAULT_ANNOTATION_TYPE = "oa:Annotation";
 	public static final String OA                   = "oa";
 	public static final String OA_CONTEXT            = "http://www.w3.org/ns/oa-context-20130208.json";
 	public static final String SEPARATOR_SEMICOLON  = ":";
@@ -132,26 +132,7 @@ public interface WebAnnotationFields {
 	public static final String RELATED   = "related";
 	public static final String SKOS      = "skos";
 	
-	/**
-	 * Notes
-	 */
-	public static final String SAMPLES_JSON_LINK = "Please find JSON samples for annotation in <a href=\"./jsp/template/templates.jsp\" target=\"_blank\">templates</a>";
-	public static final String SAMPLES_JSONLD_LINK = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/templates.jsp\" target=\"_blank\">templates</a>. " +
-			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
-	@Deprecated
-	public static final String SAMPLES_EUROPEANA_API = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/europeana-ld-api.jsp\" target=\"_blank\">templates</a>. " +
-			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
-	public static final String SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp\" target=\"_blank\">templates</a>. " +
-			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
-	public static final String UPDATE_SAMPLES_JSONLD = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp\" target=\"_blank\">templates</a>. " +
-			"Please create your JSON update request using selected fields you are going to update. E.g. 'body' and 'target' example:   { \"body\": \"Buccin Trombone\",\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\" }";
-	public static final String SAMPLES_JSONLD_WITH_TYPE = "Please find JSON-LD samples for annotation in <a href=\"./jsp/template/jsonld.jsp?withType=yes\" target=\"_blank\">templates</a>. " +
-			"Provider parameter is optional but checked if provided. For now historypin is the only accepted provider. AnnotationNr is optional, but if provided a valid provider must be submitted";
-	public static final String SEARCH_FIELDS_LINK = "Valid fields are 'all', 'label', 'body_value', 'tag_id', 'multilingual'.";
-	public static final String SEARCH_STATUS_FIELDS_LINK = "Valid status fields are 'public', 'private', 'disabled'.";
-	public static final String SEARCH_NOTES = "Please fill in either 'resourceId' or 'target' field. One of this fields is mandatory for search." 
-			+ " Sample 'resourceId'='/webanno/234'. Sample 'target'='http://data.europeana.eu/item/123/xyz'.";
-
+	
 	/**
 	 * Solr query
 	 */
@@ -218,65 +199,65 @@ public interface WebAnnotationFields {
 	public static final String REST_DEFAULT_PROVIDER_ID_GENERATION_TYPE = "provided";
 	public static final String ITEMS_COUNT          = "itemsCount";
 	public static final String URI                  = "uri";
-	public static final String REST_ANNOTATION_JSON = 
-		"{\"annotatedAt\": 1403852113248,"
-		+ "\"type\": \"OBJECT_TAG\","
-		+ "\"annotatedBy\": {"
-		+ "\"agentType\": \"[foaf:Person, euType:PERSON]\","
-		+ "\"name\": \"annonymous web user\","
-		+ "\"homepage\": null,"
-		+ "\"mbox\": null,"
-		+ "\"openId\": null},"
-		+ "\"body\": {"
-		+ "\"contentType\": \"Link\","
-		+ "\"mediaType\": null,"
-		+ "\"httpUri\": \"https://www.freebase.com/m/035br4\","
-		+ "\"language\": \"ro\","
-		+ "\"value\": \"Vlad Tepes\","
-		+ "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\","
-		+ "\"bodyType\": \"[oa:Tag,euType:SEMANTIC_TAG]\"},"
-		+ "\"target\": {"
-		+ "\"contentType\": \"text-html\","
-		+ "\"mediaType\": \"image\","
-		+ "\"language\": \"en\","
-		+ "\"value\": \"Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)\","
-		+ "\"httpUri\": \"http://europeana.eu/portal/record/15502/GG_8285.html\","
-		+ "\"targetType\": \"[euType:WEB_PAGE]\"},"
-		+ "\"serializedAt\": \"\","
-		+ "\"serializedBy\": {"
-		+ "\"agentType\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
-		+ "\"name\": \"annonymous web user\","
-		+ "\"homepage\": null,"
-		+ "\"mbox\": null,"
-		+ "\"openId\": null},"
-		+ "\"styledBy\":{"
-		+ "\"contentType\": \"style\","
-		+ "\"mediaType\": \"text/css\","
-		+ "\"httpUri\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\","
-		+ "\"value\": null,"
-		+ "\"annotationClass\": \".annotorious-popup\"}}";
-	
-	public static final String REST_ANNOTATION_JSON_LD = 
-        "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},"
-        + "\"@type\":\"[oa:annotation,euType:OBJECT_TAG]\",\"annotatedAt\":\"2012-11-10T09:08:07\","
-        + "\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[foaf:Person, euType:PERSON]\","
-        + "\"name\":\"annonymous web user\"},\"body\":{\"@type\":"
-        + "\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\","
-        + "\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\","
-        + "\"language\":\"ro\",\"multilingual\":\"[ro:Vlad Tepes,en:Vlad the Impaler]\"},"
-        + "\"motivation\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
-        + "\"serializedBy\":{\"@id\": \"open_id_2\",\"@type\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
-        + "\"foaf:homepage\": \"http://annotorious.github.io/\",\"name\": \"Annotorious\"},"
-        + "\"styledBy\": {\"@type\": \"[oa:CssStyle,euType:CSS]\","
-        + "\"source\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\","
-        + "\"styleClass\": \"annotorious-popup\"},"
-        + "\"target\": {\"@type\": \"[oa:SpecificResource,euType:IMAGE]\",\"contentType\": \"image/jpeg\","
-        + "\"httpUri\": \"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\","
-        + "\"selector\": {\"@type\": \"[oa:SvgRectangle,euType:SVG_RECTANGLE_SELECTOR]\","
-        + "\"dimensionMap\": \"[left:5,right:3]\"},\"source\": {\"@id\": \"/15502/GG_8285\","
-        + "\"contentType\": \"text/html\",\"format\": \"dctypes:Text\"},"
-        + "\"targetType\": \"[oa:SpecificResource,euType:IMAGE]\"},"
-        + "\"type\": \"OBJECT_TAG\"}";
+//	public static final String REST_ANNOTATION_JSON = 
+//		"{\"annotatedAt\": 1403852113248,"
+//		+ "\"type\": \"OBJECT_TAG\","
+//		+ "\"annotatedBy\": {"
+//		+ "\"agentType\": \"[foaf:Person, euType:PERSON]\","
+//		+ "\"name\": \"annonymous web user\","
+//		+ "\"homepage\": null,"
+//		+ "\"mbox\": null,"
+//		+ "\"openId\": null},"
+//		+ "\"body\": {"
+//		+ "\"contentType\": \"Link\","
+//		+ "\"mediaType\": null,"
+//		+ "\"httpUri\": \"https://www.freebase.com/m/035br4\","
+//		+ "\"language\": \"ro\","
+//		+ "\"value\": \"Vlad Tepes\","
+//		+ "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\","
+//		+ "\"bodyType\": \"[oa:Tag,euType:SEMANTIC_TAG]\"},"
+//		+ "\"target\": {"
+//		+ "\"contentType\": \"text-html\","
+//		+ "\"mediaType\": \"image\","
+//		+ "\"language\": \"en\","
+//		+ "\"value\": \"Vlad IV. Tzepesch, der Pfähler, Woywode der Walachei 1456-1462 (gestorben 1477)\","
+//		+ "\"httpUri\": \"http://europeana.eu/portal/record/15502/GG_8285.html\","
+//		+ "\"targetType\": \"[euType:WEB_PAGE]\"},"
+//		+ "\"serializedAt\": \"\","
+//		+ "\"serializedBy\": {"
+//		+ "\"agentType\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
+//		+ "\"name\": \"annonymous web user\","
+//		+ "\"homepage\": null,"
+//		+ "\"mbox\": null,"
+//		+ "\"openId\": null},"
+//		+ "\"styledBy\":{"
+//		+ "\"contentType\": \"style\","
+//		+ "\"mediaType\": \"text/css\","
+//		+ "\"httpUri\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\","
+//		+ "\"value\": null,"
+//		+ "\"annotationClass\": \".annotorious-popup\"}}";
+//	
+//	public static final String REST_ANNOTATION_JSON_LD = 
+//        "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},"
+//        + "\"@type\":\"[oa:annotation,euType:OBJECT_TAG]\",\"annotatedAt\":\"2012-11-10T09:08:07\","
+//        + "\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"[foaf:Person, euType:PERSON]\","
+//        + "\"name\":\"annonymous web user\"},\"body\":{\"@type\":"
+//        + "\"[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:SEMANTIC_TAG]\",\"chars\":\"Vlad Tepes\","
+//        + "\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\","
+//        + "\"language\":\"ro\",\"multilingual\":\"[ro:Vlad Tepes,en:Vlad the Impaler]\"},"
+//        + "\"motivation\":\"oa:tagging\",\"serializedAt\":\"2012-11-10T09:08:07\","
+//        + "\"serializedBy\":{\"@id\": \"open_id_2\",\"@type\": \"[prov:SoftwareAgent,euType:SOFTWARE_AGENT]\","
+//        + "\"foaf:homepage\": \"http://annotorious.github.io/\",\"name\": \"Annotorious\"},"
+//        + "\"styledBy\": {\"@type\": \"[oa:CssStyle,euType:CSS]\","
+//        + "\"source\": \"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\","
+//        + "\"styleClass\": \"annotorious-popup\"},"
+//        + "\"target\": {\"@type\": \"[oa:SpecificResource,euType:IMAGE]\",\"contentType\": \"image/jpeg\","
+//        + "\"httpUri\": \"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\","
+//        + "\"selector\": {\"@type\": \"[oa:SvgRectangle,euType:SVG_RECTANGLE_SELECTOR]\","
+//        + "\"dimensionMap\": \"[left:5,right:3]\"},\"source\": {\"@id\": \"/15502/GG_8285\","
+//        + "\"contentType\": \"text/html\",\"format\": \"dctypes:Text\"},"
+//        + "\"targetType\": \"[oa:SpecificResource,euType:IMAGE]\"},"
+//        + "\"type\": \"OBJECT_TAG\"}";
 	
 	/**
 	 * These namespace prefixes are employed for evaluation of the internal type of the objects in Annotation.

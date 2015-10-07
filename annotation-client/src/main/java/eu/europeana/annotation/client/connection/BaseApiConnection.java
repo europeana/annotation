@@ -117,7 +117,7 @@ public class BaseApiConnection {
 	ResponseEntity<String> postURL(String url, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST) with body: " + url + 
 				". Returns body, headers and status code.");
-		System.out.println("post: " + url);
+		//System.out.println("post: " + url);
 		return getHttpConnection().postURL(url, jsonPost);
 	}
 	

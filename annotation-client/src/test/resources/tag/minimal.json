@@ -1,0 +1,10 @@
+{
+"annotatedBy": {
+"@id": "http://www.remy.tv",
+"@type": "foaf:Person",
+"name": "Remy"
+},
+"body": "trombone",
+"serializedBy": "http://www.remy.tv",
+"target": "http://data.europeana.eu/item/000002/_UEDIN_214"
+}

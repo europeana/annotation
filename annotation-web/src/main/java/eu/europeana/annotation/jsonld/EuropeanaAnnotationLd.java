@@ -36,6 +36,7 @@ import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
@@ -95,6 +96,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 //        if (!StringUtils.isBlank(annotation.getType())) 
 //        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
         if (isJsonObjectInput(annotation.getSerializedBy().getInputString())){
+        	//TODO: why reset?
         	annotation.getSerializedBy().setInputString(null);
             JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
             if (serializedByProperty != null)
@@ -169,8 +171,9 @@ public class EuropeanaAnnotationLd extends JsonLd {
      * @return Annotation object
      */
     @SuppressWarnings("rawtypes")
+    @Deprecated
 	public Annotation getAnnotation() {
-		
+		//TODO: must instantiate the correct class
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
     	
@@ -264,23 +267,22 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 */
 	private Agent getSerializedBy(Object mapValue) {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
-		Agent agent = getAgentByProperty(property);
-		return agent;
+		return getAgentByProperty(property, AgentTypes.SOFTWARE);
 	}
 
-	private Agent getAgentByProperty(JsonLdProperty property) {
+	private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgentType) {
 		
 		Agent agent = null;  
 		
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			String euType = extractEuType(propertyValue);
-			//if not set 
-			if (StringUtils.isBlank(euType))
-				throw new AnnotationAttributeInstantiationException(euType);
+			String objectType = extractObjectType(propertyValue);
+			//if not available in the input string use the default one
+			if(objectType == null)
+				objectType = defaultAgentType.name();
 			
-			agent = AgentObjectFactory.getInstance().createModelObjectInstance(euType);
+			agent = AgentObjectFactory.getInstance().createModelObjectInstance(objectType);
 			if (hasValue(propertyValue, WebAnnotationFields.INPUT_STRING)) 
 				agent.setInputString(propertyValue.getValues().get(WebAnnotationFields.INPUT_STRING));
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
@@ -299,14 +301,18 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		return !StringUtils.isBlank(propertyValue.getValues().get(fieldName));
 	}
 
-	private String extractEuType(JsonLdPropertyValue propertyValue) {
-		return extractEuType(propertyValue, WebAnnotationFields.AT_TYPE);
+	/**
+	 * 	 
+	 * @param propertyValue
+	 * @return
+	 */
+	private String extractObjectType(JsonLdPropertyValue propertyValue) {
+		return extractObjectType(propertyValue, WebAnnotationFields.AT_TYPE);
 	}
 
-	private String extractEuType(JsonLdPropertyValue propertyValue, String fieldName) {
+	private String extractObjectType(JsonLdPropertyValue propertyValue, String fieldName) {
 		String typeArray = propertyValue.getValues().get(fieldName);
-		String euType = getTypeHelper().getInternalTypeFromTypeArray(typeArray);
-		return euType;
+		return getTypeHelper().getInternalTypeFromTypeArray(typeArray);
 	}
 
 	/**
@@ -316,7 +322,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 */
 	private Agent getAnnotatedBy(Object mapValue) {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
-		return getAgentByProperty(property);
+		return getAgentByProperty(property, AgentTypes.PERSON);
 	}
 
 	/**
@@ -330,16 +336,16 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			String euType = "";
+			String objectType = "";
 			if (!StringUtils.isBlank(propertyValue.getType())) 
-				euType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getType());
-			if (StringUtils.isBlank(euType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-				euType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+				objectType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getType());
+			if (StringUtils.isBlank(objectType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
+				objectType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
 			//if not set 
-			if (StringUtils.isBlank(euType))
-				throw new AnnotationAttributeInstantiationException(euType);
+			if (StringUtils.isBlank(objectType))
+				throw new AnnotationAttributeInstantiationException(objectType);
 			
-			style = StyleObjectFactory.getInstance().createModelObjectInstance(euType);
+			style = StyleObjectFactory.getInstance().createModelObjectInstance(objectType);
 			
 			if (!StringUtils.isBlank(propertyValue.getType())) 
 				style.setHttpUri(propertyValue.getType());
@@ -364,7 +370,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			if (hasValue(propertyValue, WebAnnotationFields.TYPE)) {
-				String euType = extractEuType(propertyValue, WebAnnotationFields.TYPE);			
+				String euType = extractObjectType(propertyValue, WebAnnotationFields.TYPE);			
 				//if not set 
 				if (StringUtils.isBlank(euType))
 					throw new AnnotationAttributeInstantiationException(euType);
@@ -419,13 +425,13 @@ public class EuropeanaAnnotationLd extends JsonLd {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) {
-				String euType = extractEuType(propertyValue);
+				String objectType = extractObjectType(propertyValue);
 
 				//if not set 
-				if (StringUtils.isBlank(euType))
-					throw new AnnotationAttributeInstantiationException(euType);
+				if (StringUtils.isBlank(objectType))
+					throw new AnnotationAttributeInstantiationException(objectType);
 				
-				body = BodyObjectFactory.getInstance().createModelObjectInstance(euType);
+				body = BodyObjectFactory.getInstance().createModelObjectInstance(objectType);
 				
 				if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
 					body.setType(TypeUtils.convertStringToList(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE)));			
@@ -799,13 +805,14 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		return styledByProperty;
 	}
     
-    public static void toConsole(String description, String actual) {
-    	logger.info(description);
-    	logger.info(actual);
-        String s = actual;
-        s = s.replaceAll("\\\\", "\\\\\\\\");
-        s = s.replace("\"", "\\\"");
-        s = s.replace("\n", "\\n");
-        logger.info(s);
-    }
+//TODO: remove dead code	
+//    public static void toConsole(String description, String actual) {
+//    	logger.info(description);
+//    	logger.info(actual);
+//        String s = actual;
+//        s = s.replaceAll("\\\\", "\\\\\\\\");
+//        s = s.replace("\"", "\\\"");
+//        s = s.replace("\n", "\\n");
+//        logger.info(s);
+//    }
 }

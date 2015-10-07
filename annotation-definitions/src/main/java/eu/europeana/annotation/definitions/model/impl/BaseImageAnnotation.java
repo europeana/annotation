@@ -13,6 +13,11 @@ public class BaseImageAnnotation extends AbstractAnnotation implements ImageAnno
 		
 		return getTarget().getHttpUri();
 	}
+	
+	@Override
+	public void setDefaultMotivation() {
+		throw new RuntimeException("method not implemented yet!");
+	}
 
 	
 

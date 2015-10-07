@@ -36,6 +36,7 @@ public class AnnotationObjectFactory
 	@Override
 	public Annotation createObjectInstance(Enum<AnnotationTypes> modelObjectType) {
 		Annotation res = super.createObjectInstance(modelObjectType);
+		res.setDefaultMotivation();
 		res.setInternalType(modelObjectType.name());
 		return res;
 	}
@@ -53,6 +54,7 @@ public class AnnotationObjectFactory
 			// TODO when needed make differentiation between simple tagging
 			// and semantic tagging
 			// i.e. body is a string literal or an object
+			//TODO: consider adding AnnotationTypes to MotivationTypes
 			annoType = AnnotationTypes.OBJECT_TAG;
 			break;
 		case LINKING:
@@ -70,8 +72,10 @@ public class AnnotationObjectFactory
 			throw new AnnotationInstantiationException(
 					"Unsupported Annotation/Motivation Type:" + motivationType);
 
-		return createObjectInstance(
+		Annotation anno = createObjectInstance(
 				annoType);
+		anno.setMotivation(motivationType.getOaType());
+		return anno;
 	}
 
 	

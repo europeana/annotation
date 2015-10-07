@@ -17,6 +17,7 @@ import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation {
 
@@ -248,4 +249,11 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		return "SolrAnnotation [solrAnnotationId_string:" + getAnnotationId() + ", annotatedAt:" + getAnnotatedAt() + 
 				", resourceId:" + getResourceId() + ", language:" + getLanguage() + ", label:" + getLabel() + "]";
 	}
+	
+	@Override
+	public void setDefaultMotivation() {
+		//setMotivation(MotivationTypes.TAGGING.getOaType());
+		throw new RuntimeException("method not supported yet");
+	}
+
 }

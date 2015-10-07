@@ -1,6 +1,5 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -11,12 +10,10 @@ import org.springframework.util.MultiValueMap;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
-import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;

@@ -261,4 +261,10 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		//TODO: change the usage of status to the usage of visibility when the specification is complete
 		return AnnotationStates.PRIVATE.equals(getStatus());
 	}
+
+	@Override
+	public void setDefaultMotivation() {
+		//do nothing, must be implemented in subclasses
+		
+	}
 }

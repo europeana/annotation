@@ -77,5 +77,7 @@ public interface Annotation {
 	public abstract void setLastUpdate(Date lastUpdateTimestamp);
 
 	public boolean isPrivate();
+
+	public void setDefaultMotivation();
 	
 }
