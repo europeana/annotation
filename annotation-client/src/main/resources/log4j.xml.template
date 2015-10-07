@@ -47,13 +47,18 @@
 
 	<!--  We redirect everything to console in development environment -->
 	<!--  Please change appender and Debug levels in production environments -->
-	<logger name="eu.europeana.api.client">
-		<level value="DEBUG" />
-		<!-- 
-		<appender-ref ref="console" />
-		 -->
+	<logger name="eu.europeana.annotation.client">
+		<level value="TRACE" />
+		<appender-ref ref="console" />		
 	</logger>
 	 
+	<!--  We redirect everything to console in development environment -->
+	<!--  Please change appender and Debug levels in production environments -->
+	<logger name="org.apache.commons.httpclient">
+		<level value="INFO" />
+		<appender-ref ref="console" />		
+	</logger>
+	
 	<root>
 		<level value="INFO" />
 		<appender-ref ref="console" />
