@@ -41,10 +41,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.service.impl.AnnotationConfigurationImpl;
 
 public class EuropeanaAnnotationLd extends JsonLd {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnnotationLd.class);
+  //  private static final Logger logger = LoggerFactory.getLogger(AnnotationLd.class);
     
     TypeUtils typeHelper = new TypeUtils();
 			
@@ -55,8 +56,8 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	/**
      * @param annotation
      */
-    public EuropeanaAnnotationLd(Annotation annotation) {
-    	setAnnotation(annotation);
+    public EuropeanaAnnotationLd(Annotation annotation, String annoIdBaseUrl) {
+    	setAnnotation(annotation, annoIdBaseUrl);
     }
     
     /**
@@ -73,7 +74,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
      * 
      * @param annotation
      */
-    public void setAnnotation(Annotation annotation) {
+    public void setAnnotation(Annotation annotation, String annoIdBaseUrl) {
                 
     	setUseTypeCoercion(false);
         setUseCuries(true);
@@ -91,8 +92,9 @@ public class EuropeanaAnnotationLd extends JsonLd {
         	jsonLdResource.addType(WebAnnotationFields.DEFAULT_ANNOTATION_TYPE);
         }
         
-        if (annotation.getAnnotationId() != null && !StringUtils.isBlank(annotation.getAnnotationId().toUri())) 
-        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUri());   
+        if (annotation.getAnnotationId() != null){ 
+        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUrl(annoIdBaseUrl)); 
+        }
 //        if (!StringUtils.isBlank(annotation.getType())) 
 //        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
         if (isJsonObjectInput(annotation.getSerializedBy().getInputString())){

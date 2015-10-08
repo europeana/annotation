@@ -27,4 +27,21 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 		this.annotationProperties = annotationProperties;
 	}
 
+	@Override
+	public boolean isProductionEnvironment() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getEnvironment() {
+		return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
+	}
+
+	@Override
+	public String getAnnotationBaseUrl() {
+		String key = ANNOTATION_ENVIRONMENT + "." + getEnvironment() + "." + SUFFIX_BASEURL; 
+		return getAnnotationProperties().getProperty(key);
+	}
+
 }

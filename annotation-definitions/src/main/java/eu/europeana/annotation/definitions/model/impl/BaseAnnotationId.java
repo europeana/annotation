@@ -90,11 +90,13 @@ public class BaseAnnotationId implements AnnotationId{
 
 	@Override
 	public String toUri() {
-		return WebAnnotationFields.ANNOTATION_ID_PREFIX 
-				//+ getResourceId() 
-				+ WebAnnotationFields.SLASH
+		return WebAnnotationFields.SLASH
 				+ getProvider() + WebAnnotationFields.SLASH
 				+ getIdentifier();
 	}
 	
+	@Override
+	public String toUrl(String baseUrl) {
+		return baseUrl + toUri(); 
+	}
 }

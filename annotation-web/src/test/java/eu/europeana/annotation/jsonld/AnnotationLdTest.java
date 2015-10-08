@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Properties;
 
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
@@ -34,6 +35,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.web.service.impl.AnnotationConfigurationImpl;
 //import eu.europeana.annotation.definitions.model.utils.JsonUtils;
 
 
@@ -43,6 +45,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
+	
 	public static String TEST_RO_VALUE = "Vlad Tepes";
 	public static String TEST_EN_VALUE = "Vlad the Impaler";
 	
@@ -80,7 +83,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testCreateEmptyAnnotationLd() {
     	
         Annotation baseObjectTag = createEmptyBaseObjectTagInstance();        
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);
@@ -95,7 +98,8 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         assertEquals(expectedIndent, actualIndent);
     }
             
-    /**
+
+	/**
      * This test converts Annotation object to AnnotationLd
      * object that implements JsonLd format.
      */
@@ -103,7 +107,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testAnnotationToAnnotationLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);
@@ -127,7 +131,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.setTarget(null);
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);       
@@ -153,7 +157,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         baseObjectTag.getTarget().setStyleClass(null);
         baseObjectTag.getTarget().setType(null);
         baseObjectTag.getTarget().setValue(null);
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);       
@@ -169,7 +173,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.setBody(null);
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);       
@@ -180,7 +184,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testGsonSerializationForAnnotationLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String annotationLdOriginal = annotationLd.toString();
         AnnotationLd.toConsole("### annotationLd original ###", annotationLdOriginal);
@@ -200,7 +204,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testAnnotationLdToJsonLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String annotationLdStr = annotationLd.toString();
         AnnotationLd.toConsole("### annotationLd original ###", annotationLdStr);
@@ -241,7 +245,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testParseAnnotationLdStringToJsonLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag);
+        AnnotationLd annotationLd = new AnnotationLd(baseObjectTag, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);
@@ -293,7 +297,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         /**
          * convert Annotation object to AnnotationLd object.
          */
-        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation);
+        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation, ANNOTATION_BASEURL);
         String initialAnnotationIndent = annotationLd.toString(4);
         AnnotationLd.toConsole("### initialAnnotation ###", initialAnnotationIndent);
 
@@ -302,7 +306,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromAnnotationLd = annotationLd.getAnnotation();
 
-        AnnotationLd convertedAnnotationLd = new AnnotationLd(annotationFromAnnotationLd);
+        AnnotationLd convertedAnnotationLd = new AnnotationLd(annotationFromAnnotationLd, ANNOTATION_BASEURL);
         String convertedAnnotationIndent = convertedAnnotationLd.toString(4);
         AnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
@@ -357,7 +361,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
          * convert Annotation object to AnnotationLd object.
          * 1. Annotation object -> AnnotationLd object
          */
-        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation);
+        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation, ANNOTATION_BASEURL);
         
         /**
          * get JsonLd string
@@ -418,7 +422,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
         /**
          * convert Annotation object to AnnotationLd object.
          */
-        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation);
+        AnnotationLd annotationLd = new AnnotationLd(originalAnnotation, ANNOTATION_BASEURL);
         String initialAnnotationIndent = annotationLd.toString(4);
         AnnotationLd.toConsole("### initialAnnotation ###", initialAnnotationIndent);
 
@@ -427,7 +431,7 @@ public class AnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromAnnotationLd = annotationLd.getAnnotation();
 
-        AnnotationLd convertedAnnotationLd = new AnnotationLd(annotationFromAnnotationLd);
+        AnnotationLd convertedAnnotationLd = new AnnotationLd(annotationFromAnnotationLd, ANNOTATION_BASEURL);
         String convertedAnnotationIndent = convertedAnnotationLd.toString(4);
         AnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 

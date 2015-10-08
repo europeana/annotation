@@ -15,8 +15,22 @@
 #  the Licence.
 #
 
-#common settings
-annotation.indexing.enabled = false
+##common settings
+#boolean value indicating if the indexing of annotations in solr should be performed. required valid solr configurations
+annotation.indexing.enabled=false
+
+#string value indicating if the application runs in "production", "test", "development" environment 
+annotation.environment=development
+
+#used only in production environment
+annotation.environment.production.baseUrl=http://data.europeana.eu/annotation
+
+#used only in production environment
+annotation.environment.test.baseUrl=http://http://test-annotations.europeana.eu/annotation
+
+#used only in production environment
+annotation.environment.development.baseUrl=http://localhost:8080/annotation
+
 
 
 # mongoDB settings

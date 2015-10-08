@@ -80,10 +80,11 @@ public class AnnotationLd extends JsonLd {
 	}
 
 	/**
+	 * @Deprecated move annoIdBaseUrl into the AnnotationId object 
      * @param annotation
      */
-    public AnnotationLd(Annotation annotation) {
-    	setAnnotation(annotation);
+    public AnnotationLd(Annotation annotation, String annoIdBaseUrl) {
+    	setAnnotation(annotation, annoIdBaseUrl);
     }
     
     /**
@@ -100,7 +101,7 @@ public class AnnotationLd extends JsonLd {
      * 
      * @param annotation
      */
-    public void setAnnotation(Annotation annotation) {
+    public void setAnnotation(Annotation annotation, String annoIdBaseUrl) {
                 
     	setUseTypeCoercion(false);
         setUseCuries(true);
@@ -117,8 +118,8 @@ public class AnnotationLd extends JsonLd {
         	jsonLdResource.addType(WebAnnotationFields.DEFAULT_ANNOTATION_TYPE);
         }
         
-        if (annotation.getAnnotationId() != null && !StringUtils.isBlank(annotation.getAnnotationId().toUri())) 
-        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUri());   
+        if (annotation.getAnnotationId() != null) 
+        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUrl(annoIdBaseUrl));   
         if (!StringUtils.isBlank(annotation.getType())) 
         	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
        	JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);

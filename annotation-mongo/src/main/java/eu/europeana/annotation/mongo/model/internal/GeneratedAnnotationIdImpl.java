@@ -108,19 +108,12 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	
 	@Override
 	public String toUri() {
-		//TODO: this is different from BaseAnnotationId.toUri()
-		return getProvider() + WebAnnotationFields.SLASH + getIdentifier();
+		return WebAnnotationFields.SLASH  + getProvider() + WebAnnotationFields.SLASH + getIdentifier();
 	}
 	
-//	@Override
-//	public void setResourceId(String resourceId) {
-////		this.resourceId = resourceId;
-//		
-//	}
 
 	@Override
 	public String getProvider() {
-//		return null;
 		return provider;
 	}
 
@@ -130,5 +123,11 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 	 */
 	public void setProvider(String provider) {
 		this.provider = provider;		
+	}
+
+	@Override
+	public String toUrl(String baseUrl) {
+		
+		return baseUrl + toUri();
 	} 
 }

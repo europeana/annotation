@@ -24,6 +24,19 @@ public interface AnnotationId extends Serializable {
 
 	public void setProvider(String provider);
 	
+	/**
+	 * returns the URI of the annotation (/provider/identifier)
+	 * @see also {@link AnnotationId#toUrl(String)}
+	 * 
+	 */
 	public String toUri();
+	
+	/**
+	 * returns the HTTP URL where the annotation can be accessed  ({baseUrl}/toUri())
+	 * @see also {@link AnnotationId#toUri()}
+	 * @param baseUrl -
+	 * 
+	 */
+	public String toUrl(String baseUrl);
 	
 }

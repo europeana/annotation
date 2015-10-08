@@ -47,7 +47,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 				provider, identifier);
 //		resourceId, provider, annotationNr);
 		
-		AnnotationLd annotationLd = new AnnotationLd(annotation);
+		AnnotationLd annotationLd = new AnnotationLd(annotation, getConfiguration().getAnnotationBaseUrl());
         String jsonLd = annotationLd.toString(4);
        	
 		return JsonWebUtils.toJson(jsonLd, null);
@@ -94,7 +94,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 		Annotation resAnnotation = annotationBuilder
 				.copyIntoWebAnnotation(storedAnnotation);
 
-		AnnotationLd annotationLd = new AnnotationLd(resAnnotation);
+		AnnotationLd annotationLd = new AnnotationLd(resAnnotation, getConfiguration().getAnnotationBaseUrl());
         String jsonLd = annotationLd.toString(4);
 	
 		return JsonWebUtils.toJson(jsonLd, null);

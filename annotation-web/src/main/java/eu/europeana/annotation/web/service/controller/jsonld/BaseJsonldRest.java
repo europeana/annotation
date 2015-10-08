@@ -57,7 +57,7 @@ public class BaseJsonldRest extends BaseRest{
 				System.out.println("Must implement annotation indexing here");
 
 			// serialize to jsonld
-			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation);
+			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation, getConfiguration().getAnnotationBaseUrl());
 			String jsonLd = annotationLd.toString(4);
 			// return JsonWebUtils.toJson(jsonLd, null);
 
@@ -117,7 +117,7 @@ public class BaseJsonldRest extends BaseRest{
 					throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wsKey, e);
 			} 
 
-			JsonLd annotationLd = new EuropeanaAnnotationLd(annotation);
+			JsonLd annotationLd = new EuropeanaAnnotationLd(annotation, getConfiguration().getAnnotationBaseUrl());
 			String jsonLd = annotationLd.toString(4);
 
 			int etag;
@@ -249,7 +249,7 @@ public class BaseJsonldRest extends BaseRest{
 			Annotation updatedAnnotation = getAnnotationService().updateAnnotation(storedAnnotation);
 
 			// serialize to jsonld
-			JsonLd annotationLd = new EuropeanaAnnotationLd(updatedAnnotation);
+			JsonLd annotationLd = new EuropeanaAnnotationLd(updatedAnnotation, getConfiguration().getAnnotationBaseUrl());
 			String jsonLd = annotationLd.toString(4);
 
 			// build response entity with headers

@@ -73,7 +73,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize an original Annotation test object.
 		 */
-        AnnotationLd origAnnotationLd = new AnnotationLd(testAnnotation);
+        AnnotationLd origAnnotationLd = new AnnotationLd(testAnnotation, ANNOTATION_BASEURL);
         
         String original = origAnnotationLd.toString();
         AnnotationLd.toConsole("", original);
@@ -103,7 +103,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize Annotation object that was retrieved from a database.
 		 */
-        AnnotationLd annotationLd = new AnnotationLd(webAnnotation);
+        AnnotationLd annotationLd = new AnnotationLd(webAnnotation, ANNOTATION_BASEURL);
         
         String actual = annotationLd.toString();
         AnnotationLd.toConsole("", actual);
