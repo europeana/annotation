@@ -55,7 +55,8 @@ import eu.europeana.annotation.web.service.AnnotationService;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml", "/annotation-solr-test.xml" })
+@ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
+	})
 public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	@Resource 
@@ -371,5 +372,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 				((PersistentAnnotation) storedAnnotation).getId().toString());
 		assertTrue(resList.size() == 0);
 	}
+	
+	
 		
 }
