@@ -15,6 +15,8 @@ import org.springframework.boot.cloudfoundry.VcapApplicationListener;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
+import eu.europeana.annotation.web.service.AnnotationConfiguration;
+
 public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListener {
 
 	public final static String VCAP = "vcap.services.";
@@ -156,6 +158,8 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		
 		props.put("mongodb.annotation.host", mongoHost);
 		props.put("mongodb.annotation.port", mongoPort);
+		
+		props.put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, AnnotationConfiguration.VALUE_ENVIRONMENT_TEST);
 	}
 
 	protected void writePropsToFile(Properties props, File annotationPropertiesFile) throws IOException {

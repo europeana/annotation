@@ -7,6 +7,8 @@ public interface AnnotationConfiguration {
 	
 	public static final String SUFFIX_BASEURL = "baseUrl";
 	public static final String VALUE_ENVIRONMENT_PRODUCTION = "production";
+	public static final String VALUE_ENVIRONMENT_TEST = "test";
+	public static final String VALUE_ENVIRONMENT_DEVELOPMENT = "development";
 	
 	
 	public String getComponentName();
