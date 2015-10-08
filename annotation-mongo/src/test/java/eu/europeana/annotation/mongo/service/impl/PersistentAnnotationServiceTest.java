@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
@@ -53,9 +54,16 @@ import eu.europeana.corelib.db.dao.NosqlDao;
 public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 	
+	
+	public PersistentAnnotationServiceTest() {
+		super(null);
+	}
+
 	@Resource PersistentAnnotationService annotationService;
 
 	@Resource PersistentTagService tagService;
+
+	@Resource AnnotationConfiguration configuration;
 
 	@Resource(name = "annotation_db_annotationDao")
 	NosqlDao<PersistentAnnotation, AnnotationId> annotationDao;
@@ -68,6 +76,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	@Before
 	public void setup() throws IOException {
 		annotationDao.getCollection().drop();
+		setBaseAnnotationUrl(configuration.getAnnotationBaseUrl());
+		
 	}
 
 	/**
@@ -300,7 +310,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(configuration.getAnnotationBaseUrl(), "webanno", null));
 		return persistentObject;
 	}
 	 

@@ -6,12 +6,14 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
@@ -21,7 +23,6 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
-import eu.europeana.annotation.web.service.AnnotationConfiguration;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 public class BaseRest extends ApiResponseBuilder{
@@ -128,8 +129,7 @@ public class BaseRest extends ApiResponseBuilder{
 	
 	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
 		
-		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(null, provider, identifier);
 		
 		annotationService.validateAnnotationId(annoId);
 		

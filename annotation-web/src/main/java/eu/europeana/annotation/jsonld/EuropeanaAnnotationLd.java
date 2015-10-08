@@ -11,8 +11,6 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -41,7 +39,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.utils.JsonUtils;
-import eu.europeana.annotation.web.service.impl.AnnotationConfigurationImpl;
 
 public class EuropeanaAnnotationLd extends JsonLd {
 
@@ -56,8 +53,8 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	/**
      * @param annotation
      */
-    public EuropeanaAnnotationLd(Annotation annotation, String annoIdBaseUrl) {
-    	setAnnotation(annotation, annoIdBaseUrl);
+    public EuropeanaAnnotationLd(Annotation annotation) {
+    	setAnnotation(annotation);
     }
     
     /**
@@ -74,7 +71,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
      * 
      * @param annotation
      */
-    public void setAnnotation(Annotation annotation, String annoIdBaseUrl) {
+    public void setAnnotation(Annotation annotation) {
                 
     	setUseTypeCoercion(false);
         setUseCuries(true);
@@ -93,7 +90,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
         }
         
         if (annotation.getAnnotationId() != null){ 
-        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUrl(annoIdBaseUrl)); 
+        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toHttpUrl()); 
         }
 //        if (!StringUtils.isBlank(annotation.getType())) 
 //        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   

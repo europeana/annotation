@@ -68,7 +68,17 @@
 			<artifactId>spring-test</artifactId>
 			<version>${version.springCore}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-utils</artifactId>
+			<version>${version.annotationApiSnapshot}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>api2-common</artifactId>
+			<version>0.2.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	
 	<organization>

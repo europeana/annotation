@@ -119,7 +119,7 @@ public class AnnotationLd extends JsonLd {
         }
         
         if (annotation.getAnnotationId() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toUrl(annoIdBaseUrl));   
+        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toHttpUrl());   
         if (!StringUtils.isBlank(annotation.getType())) 
         	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
        	JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);

@@ -32,17 +32,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
         ">
-     
-     <util:properties id="annotationProperties" 
-		location="classpath:config/annotation.properties" />
-		
-    <!--  configuration bean -->
-	<beans:bean id="configuration" class="eu.europeana.annotation.web.service.impl.AnnotationConfigurationImpl">
-		<beans:property name="annotationProperties" ref="annotationProperties"/> 	
-    </beans:bean>
-   
+    
     <!-- USING OTHER MODULES -->
 	<beans:import resource="annotation-definitions-context.xml"/>
+<!-- will be already imported by annotation-mongo	
+	<beans:import resource="api2-common-context.xml"/>
+ -->	
 	<beans:import resource="annotation-mongo-context.xml"/>
 	<beans:import resource="annotation-solr-context.xml"/>
 	

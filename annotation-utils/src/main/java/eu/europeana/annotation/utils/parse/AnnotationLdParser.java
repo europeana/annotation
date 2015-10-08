@@ -490,7 +490,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		String parts[] = valueObject.split("/");
 		String identifier = parts[parts.length - 1];
 		String provider = parts[parts.length - 2];
-		BaseAnnotationId annoId = new BaseAnnotationId();
+		AnnotationId annoId = new BaseAnnotationId();
 		annoId.setProvider(provider);
 		annoId.setIdentifier(identifier);
 

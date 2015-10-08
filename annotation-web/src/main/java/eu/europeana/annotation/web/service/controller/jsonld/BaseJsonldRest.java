@@ -57,7 +57,7 @@ public class BaseJsonldRest extends BaseRest{
 				System.out.println("Must implement annotation indexing here");
 
 			// serialize to jsonld
-			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation, getConfiguration().getAnnotationBaseUrl());
+			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation);
 			String jsonLd = annotationLd.toString(4);
 			// return JsonWebUtils.toJson(jsonLd, null);
 
@@ -99,7 +99,7 @@ public class BaseJsonldRest extends BaseRest{
 			validateApiKey(wsKey);
 			
 			//3. Retrieve an annotation based on its identifier;
-			AnnotationId annoId = new BaseAnnotationId(provider, identifier);
+			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
 			
 			
@@ -117,7 +117,7 @@ public class BaseJsonldRest extends BaseRest{
 					throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wsKey, e);
 			} 
 
-			JsonLd annotationLd = new EuropeanaAnnotationLd(annotation, getConfiguration().getAnnotationBaseUrl());
+			JsonLd annotationLd = new EuropeanaAnnotationLd(annotation);
 			String jsonLd = annotationLd.toString(4);
 
 			int etag;
@@ -166,7 +166,7 @@ public class BaseJsonldRest extends BaseRest{
 					"/provider/identifier", identifier, HttpStatus.NOT_FOUND, null);
 
 		// 1. build annotation id object
-		AnnotationId annoId = new BaseAnnotationId(provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 		
 //		if (annoId == null)
 //			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
@@ -249,7 +249,7 @@ public class BaseJsonldRest extends BaseRest{
 			Annotation updatedAnnotation = getAnnotationService().updateAnnotation(storedAnnotation);
 
 			// serialize to jsonld
-			JsonLd annotationLd = new EuropeanaAnnotationLd(updatedAnnotation, getConfiguration().getAnnotationBaseUrl());
+			JsonLd annotationLd = new EuropeanaAnnotationLd(updatedAnnotation);
 			String jsonLd = annotationLd.toString(4);
 
 			// build response entity with headers
@@ -366,7 +366,7 @@ public class BaseJsonldRest extends BaseRest{
 
 	protected Annotation getAnnotationForUpdate(String provider, String identifier)
 			throws ParamValidationException, AnnotationNotFoundException {
-		AnnotationId annoId = new BaseAnnotationId(provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 		Annotation annotation = getAnnotationService().getAnnotationById(annoId);
 		if(annotation == null) 
 			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,

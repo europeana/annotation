@@ -89,10 +89,6 @@ public class PersistentConceptImpl implements PersistentConcept, PersistentObjec
 		this.type = type;
 	}
 	
-	@Override
-	public void copyFrom(Object volatileObject) {
-		// TODO Auto-generated method stub
-	}
 
 	//getters and setters
 	

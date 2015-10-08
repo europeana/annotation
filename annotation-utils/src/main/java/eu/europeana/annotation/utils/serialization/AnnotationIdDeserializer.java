@@ -56,7 +56,7 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 //			}
 		}
 		
-		BaseAnnotationId annotationId = new BaseAnnotationId();
+		AnnotationId annotationId = new BaseAnnotationId();
 		annotationId.setIdentifier(identifier);
 		annotationId.setProvider(provider);
 //		annotationId.setResourceId(resourceId);

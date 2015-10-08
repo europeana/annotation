@@ -1,8 +1,6 @@
-package eu.europeana.annotation.web.service.impl;
+package eu.europeana.annotation.config;
 
 import java.util.Properties;
-
-import eu.europeana.annotation.web.service.AnnotationConfiguration;
 
 public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 

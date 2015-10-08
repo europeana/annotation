@@ -1,4 +1,4 @@
-package eu.europeana.annotation.web.service;
+package eu.europeana.annotation.config;
 
 public interface AnnotationConfiguration {
 

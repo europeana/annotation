@@ -59,12 +59,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private String status;
 	private Date lastUpdate;
 
-	
-	@Override
-	public void copyFrom(Object volatileObject) {
-		// TODO Auto-generated method stub
-	}
-
 	//getters and setters
 	
 	public ObjectId getId() {

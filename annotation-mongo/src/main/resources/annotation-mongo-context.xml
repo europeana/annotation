@@ -28,6 +28,9 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 	">
+	
+	<!-- utils (configuration) -->
+	<import resource="api2-common-context.xml"/>
 		
 	<!-- INTERNAL DEFINITIONS -->
 	<import resource="internal/annotation-mongo-datasource.xml"/>
@@ -37,7 +40,8 @@
 	<context:annotation-config/>
 	
 	<bean name="annotation_db_annotationService" class="eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl"
-		p:dao-ref="annotation_db_annotationDao"/>
+		p:dao-ref="annotation_db_annotationDao">
+	</bean>
 		
 	<bean name="annotation_db_tagService" class="eu.europeana.annotation.mongo.service.PersistentTagServiceImpl"
 		p:dao-ref="annotation_db_tagDao"/>

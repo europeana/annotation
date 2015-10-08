@@ -10,10 +10,14 @@ public class BaseAnnotationId implements AnnotationId{
 	 */
 	private static final long serialVersionUID = -5342617580049965304L;
 
-//	private String resourceId;
+	private String baseUrl;
 	private String identifier = null;
 	private String provider;
 
+	/**
+	 * this constructor is used by factory methods and automatic instantiation of this class
+	 * for other purposes is recommended to use the explicit constructor {@link #BaseAnnotationId(String, String, String)}
+	 */
 	public BaseAnnotationId(){
 	}
 	
@@ -21,27 +25,12 @@ public class BaseAnnotationId implements AnnotationId{
 //		this.resourceId = europeanaId;
 //	}
 	
-//	public BaseAnnotationId(String europeanaId, Long annotationNr){
-	public BaseAnnotationId(String identifier){
-//		this.resourceId = europeanaId;
-		this.identifier = identifier;
-	}
-	
-//	public BaseAnnotationId(String europeanaId, String provider, Long annotationNr){
-	public BaseAnnotationId(String provider, String identifier){
-//		this.resourceId = europeanaId;
+	public BaseAnnotationId(String baseUrl, String provider, String identifier){
+		this.baseUrl = baseUrl;
 		this.provider = provider;
 		this.identifier = identifier;
 	}
 	
-//	public void setResourceId(String resourceId) {
-//		this.resourceId = resourceId;
-//	}
-//	
-//	@Override
-//	public String getResourceId() {
-//		return resourceId;
-//	}
 
 	@Override
 	public void setIdentifier(String identifier) {
@@ -66,13 +55,8 @@ public class BaseAnnotationId implements AnnotationId{
 
 	@Override
 	public boolean equals(Object obj) {
-		//europeana id and annotation number must not be null
 		if(obj instanceof AnnotationId 
-//				&& this.getResourceId() != null 
-				&& this.getIdentifier() != null
-//				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
-				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
-				&& this.getIdentifier().equals(((AnnotationId)obj).getIdentifier()))
+				&& this.toHttpUrl().equals(((AnnotationId) obj).toHttpUrl()))
 			return true;
 				
 		return false;
@@ -80,7 +64,7 @@ public class BaseAnnotationId implements AnnotationId{
 	
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return toHttpUrl().hashCode();
 	}
 	
 	@Override
@@ -96,7 +80,24 @@ public class BaseAnnotationId implements AnnotationId{
 	}
 	
 	@Override
-	public String toUrl(String baseUrl) {
-		return baseUrl + toUri(); 
+	public String toHttpUrl() {
+		return getBaseUrl() + toUri(); 
+	}
+
+	@Override
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	@Override
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
+	
+	@Override
+	public void copyFrom(AnnotationId volatileObject) {
+		this.setBaseUrl(((AnnotationId) volatileObject).getBaseUrl());
+		this.setProvider(((AnnotationId) volatileObject).getProvider());
+		this.setIdentifier(((AnnotationId) volatileObject).getIdentifier());			
 	}
 }

@@ -13,6 +13,7 @@ import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
 import com.google.code.morphia.query.UpdateResults;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationUpdateException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -42,6 +43,10 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Resource
 	private PersistentTagService tagService;
+	
+	@Resource
+	private AnnotationConfiguration configuration;
+	
 	
 	AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 
@@ -146,35 +151,23 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
-		MongoAnnotationId embeddedId;
+//		MongoAnnotationId embeddedId;
 		String provider = object.getAnnotationId().getProvider(); 
 
 		if(StringUtils.isEmpty(provider) || WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
-//			embeddedId = generateAnnotationId(object.getAnnotationId().getResourceId());		
-			embeddedId = generateAnnotationId(object.getAnnotationId().getProvider());		
-			embeddedId.setProvider(provider);
+			return generateAnnotationId(object.getAnnotationId().getProvider());	
 		}else{
-			embeddedId = copyInto(object.getAnnotationId());
+			return new MongoAnnotationId(object.getAnnotationId());
 		}
-		return embeddedId;
 	}
 
 	@Override
-//	public MongoAnnotationId generateAnnotationId(String resourceId) {
-//		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(
-//				resourceId);
 	public MongoAnnotationId generateAnnotationId(String provider) {
 		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(
 				provider);
+		annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 		
-		MongoAnnotationId embeddedId = copyInto(annoId);
-		return embeddedId;
-	}
-
-	MongoAnnotationId copyInto(AnnotationId annoId) {
-		MongoAnnotationId embeddedId = new MongoAnnotationId();
-		embeddedId.copyFrom(annoId);
-		return embeddedId;
+		return new MongoAnnotationId(annoId);
 	}
 
 	public static String extractResoureIdFromHttpUri(String httpUri) {
@@ -615,6 +608,14 @@ public class PersistentAnnotationServiceImpl extends
 	@Override
 	public Annotation findByTagId(String tagId) {
 		throw new RuntimeException("This method is not supported yet!");
+	}
+
+	public AnnotationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(AnnotationConfiguration configuration) {
+		this.configuration = configuration;
 	}
 
 }

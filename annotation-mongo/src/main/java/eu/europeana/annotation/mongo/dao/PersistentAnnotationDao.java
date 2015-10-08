@@ -7,7 +7,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.corelib.db.dao.NosqlDao;
 
 /**
- * Not sure if this DAO is needed. It will be marked as deprecated until the first mehtod is defined here
+ * This dao is used for generating AnnotationIds automatically
  * @author Sergiu Gordea 
  *
  * @param <E>
@@ -19,9 +19,9 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	 * This method sets default provider. Currently there are two providers:
 	 *    1. 'webanno' e.g. "http://data.europeana.eu/annotations/15502/GG_8285/webanno/1"
 	 *    2. 'historypin' e.g. "http://historypin.com/annotation/1234"
-	 * @param europeanaId
+	 * @param provider
 	 * @return AnnotationId object
 	 */
-	AnnotationId generateNextAnnotationId(String europeanaId);
+	AnnotationId generateNextAnnotationId(String provider);
 	
 }

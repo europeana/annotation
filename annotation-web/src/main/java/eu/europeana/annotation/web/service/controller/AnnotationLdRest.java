@@ -13,6 +13,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
@@ -81,8 +82,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
 		
 		//initialize
-		AnnotationId annoId = annotationIdHelper
-				.initializeAnnotationId(provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(null, provider, identifier);
 //		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 		
 		webAnnotation.setAnnotationId(annoId);		

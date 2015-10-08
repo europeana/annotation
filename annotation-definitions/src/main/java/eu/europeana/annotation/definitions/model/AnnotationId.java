@@ -5,13 +5,9 @@ import java.io.Serializable;
 public interface AnnotationId extends Serializable {
 
 	/**
-	 * unanbiguous identifier of the resource (e.g. europeanaId)
+	 * unanbiguous identifier of the resource for a given provider
 	 * @return
 	 */
-//	public String getResourceId();
-//	
-//	public void setResourceId(String resourceId);
-
 	public void setIdentifier(String identifier);
 
 	public String getIdentifier();
@@ -26,7 +22,7 @@ public interface AnnotationId extends Serializable {
 	
 	/**
 	 * returns the URI of the annotation (/provider/identifier)
-	 * @see also {@link AnnotationId#toUrl(String)}
+	 * @see also {@link AnnotationId#toHttpUrl(String)}
 	 * 
 	 */
 	public String toUri();
@@ -34,9 +30,14 @@ public interface AnnotationId extends Serializable {
 	/**
 	 * returns the HTTP URL where the annotation can be accessed  ({baseUrl}/toUri())
 	 * @see also {@link AnnotationId#toUri()}
-	 * @param baseUrl -
 	 * 
 	 */
-	public String toUrl(String baseUrl);
+	public String toHttpUrl();
+
+	void setBaseUrl(String baseUrl);
+
+	String getBaseUrl();
+
+	void copyFrom(AnnotationId volatileObject);
 	
 }

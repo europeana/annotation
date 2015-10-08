@@ -4,7 +4,6 @@ import com.google.code.morphia.annotations.Embedded;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
 @Embedded
@@ -19,18 +18,13 @@ public class MongoAnnotationId extends BaseAnnotationId implements PersistentObj
 	 * 
 	 */
 	private static final long serialVersionUID = -145869923290638714L;
-
-	@Override
-	public void copyFrom(Object volatileObject) {
-		if(volatileObject instanceof AnnotationId){
-//			this.setResourceId(((AnnotationId) volatileObject).getResourceId());
-			this.setProvider(((AnnotationId) volatileObject).getProvider());
-			this.setIdentifier(((AnnotationId) volatileObject).getIdentifier());
-			
-		} else
-			throw new AnnotationMongoRuntimeException( volatileObject.getClass().getCanonicalName() + " does not implement the interface " + AnnotationId.class.getCanonicalName());
+	
+	public MongoAnnotationId(){
+		super();
 	}
-
 	
-	
+	public MongoAnnotationId(AnnotationId volatileObject){
+		super();
+		copyFrom(volatileObject);
+	}
 }

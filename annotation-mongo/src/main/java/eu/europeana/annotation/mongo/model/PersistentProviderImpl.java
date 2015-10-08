@@ -23,11 +23,6 @@ public class PersistentProviderImpl implements PersistentProvider, PersistentObj
 	private Long lastIndexedTimestamp;
 
 	
-	@Override
-	public void copyFrom(Object volatileObject) {
-		// TODO Auto-generated method stub
-	}
-
 	//getters and setters
 	
 	public ObjectId getId() {

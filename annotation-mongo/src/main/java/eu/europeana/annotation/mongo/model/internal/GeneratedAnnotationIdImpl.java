@@ -1,12 +1,10 @@
 package eu.europeana.annotation.mongo.model.internal;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 
 /**
  * This class is used to generate the Annotation IDs in form of europeanaId/annotationNr, where the 
@@ -17,18 +15,19 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
  */
 //TODO: check if possible to extend the BaseAnnotationId class
 @Entity(value="annotationNrGenerator", noClassnameStored=true)
-public class GeneratedAnnotationIdImpl implements AnnotationId {
+public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements AnnotationId {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4554805997975526594L;
-	@Id
-//	private String resourceId;
-	private String provider;
-	//private String identifier;
-	private Long annotationNr;
 	
+//	private String resourceId;
+//	private String identifier;
+	@Id
+	private String id;
+	private Long annotationNr;
+	//not used, just marked as transient for morphia, the field in the upper class will be used to store information
 	
 	public Long getAnnotationNr() {
 		return annotationNr;
@@ -47,20 +46,19 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 		
 	}
 	
-	public GeneratedAnnotationIdImpl(String provider){
-//		this.resourceId = provider;
-		this.provider = provider;
+	/**
+	 * 
+	 * @param baseUrl
+	 * @param provider
+	 * @param identifier - must be a long number
+	 */
+	public GeneratedAnnotationIdImpl(String baseUrl, String provider, String identifier){
+		this(baseUrl, provider, Long.parseLong(identifier));
 	}
 	
-	public GeneratedAnnotationIdImpl(String provider, String identifier){
-//		this.resourceId = provider;
-		this.provider = provider;
-		this.annotationNr = Long.parseLong(identifier);
-	}
-	
-	public GeneratedAnnotationIdImpl(String provider, Long annotationNr){
-//		this.resourceId = provider;
-		this.provider = provider;
+	public GeneratedAnnotationIdImpl(String baseUrl, String provider, Long annotationNr){
+		super(null, provider, null);
+		this.id=provider;
 		this.annotationNr = annotationNr;
 	}
 	
@@ -71,63 +69,8 @@ public class GeneratedAnnotationIdImpl implements AnnotationId {
 
 	@Override
 	public void setIdentifier(String identifier) {
-		//this.identifier = identifier;
-		throw new RuntimeException("not supported", new IllegalAccessError());
+		setAnnotationNr(Long.parseLong(identifier));
 	}
 
-//	@Override
-//	public String getResourceId() {
-//		return null;
-////		return resourceId;
-//	}
-
-	@Override
-	public boolean equals(Object obj) {
-		////europeana id and annotation number must not be null
-		//provider and annotation number must not be null
-		if(obj instanceof AnnotationId 
-//				&& this.getResourceId() != null && StringUtils.isNotEmpty(this.getProvider()) && this.getAnnotationNr() != null
-				&& StringUtils.isNotEmpty(this.getProvider()) && this.getIdentifier() != null
-//				&& this.getResourceId().equals(((AnnotationId)obj).getResourceId())
-				&& this.getProvider().equals(((AnnotationId)obj).getProvider())
-				&& this.getIdentifier().equals(((AnnotationId)obj).getIdentifier()))
-			return true;
-				
-		return false;
-	}
 	
-	@Override
-	public int hashCode() {
-		return toString().hashCode();
-	}
-	
-	@Override
-	public String toString() {
-		return toUri();
-	}
-	
-	@Override
-	public String toUri() {
-		return WebAnnotationFields.SLASH  + getProvider() + WebAnnotationFields.SLASH + getIdentifier();
-	}
-	
-
-	@Override
-	public String getProvider() {
-		return provider;
-	}
-
-	@Override
-	/**
-	 * not used as ids are generated only for own annotations (webanno as provider)  
-	 */
-	public void setProvider(String provider) {
-		this.provider = provider;		
-	}
-
-	@Override
-	public String toUrl(String baseUrl) {
-		
-		return baseUrl + toUri();
-	} 
 }

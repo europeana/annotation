@@ -30,7 +30,23 @@ public class AnnotationTestDataBuilder {
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
 	public final static String TEST_DRACULA_ID = "/15502/GG_8285";
+	String baseAnnotationUrl = null;
+	
+	public void setBaseAnnotationUrl(String baseAnnotationUrl) {
+		this.baseAnnotationUrl = baseAnnotationUrl;
+	}
 
+
+	public String getBaseAnnotationUrl() {
+		return baseAnnotationUrl;
+	}
+
+
+	public AnnotationTestDataBuilder(String baseAnnotationUrl){
+		this.baseAnnotationUrl = baseAnnotationUrl;
+	}
+	
+	
 	protected void checkAnnotation(Annotation persistantObject, Annotation storedAnnotation) {
 	
 		// persistantObject.setAnnotatedBy(new PersistantAgent);
@@ -59,7 +75,7 @@ public class AnnotationTestDataBuilder {
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
 		persistentObject.setAnnotatedBy(creator);
-		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
 		return persistentObject;
 	}
 
@@ -118,7 +134,7 @@ public class AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId("webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
 		return persistentObject;
 	}
 

@@ -245,34 +245,6 @@ public class AnnotationIdHelper {
 //	}
 
 	/**
-	 * This method initializes AnnotationId object by passed
-	 * collection, object and provider.
-	 * @param collection
-	 * @param object
-	 * @param provider
-	 * @return AnnotationId object
-	 */
-	public AnnotationId initializeAnnotationId(
-			String provider, String identifier) {
-		
-		AnnotationId annotationId = new BaseAnnotationId();
-		annotationId.setProvider(provider);
-		annotationId.setIdentifier(identifier);
-		
-		//		annotationId.setResourceId(createResourceId(collection, object));
-		
-//		if (StringUtils.isEmpty(sameAs)
-//				|| StringUtils.isEmpty(provider)) { 
-//			annotationId.setProvider(WebAnnotationFields.PROVIDER_WEBANNO);
-//		}else if (!StringUtils.isEmpty(sameAs)){
-//			processExternalId(annotationId, provider, sameAs);
-//		}
-		
-		return annotationId;
-		
-	}
-	
-	/**
 	 * This method initializes AnnotationId object by passed identifier 
 	 * when identifier is an URL and contains provider.
 	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'

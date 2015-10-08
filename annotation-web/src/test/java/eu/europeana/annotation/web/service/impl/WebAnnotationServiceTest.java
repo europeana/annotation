@@ -37,6 +37,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
@@ -158,12 +159,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	 */
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
-		AnnotationId annoId = annotationIdHelper
-				.initializeAnnotationId(
-//						AnnotationTestObjectBuilder.TEST_COLLECTION
-//						, AnnotationTestObjectBuilder.TEST_OBJECT
-						WebAnnotationFields.PROVIDER_WEBANNO
-						, null);
+		AnnotationId annoId = new BaseAnnotationId(null, WebAnnotationFields.PROVIDER_WEBANNO, null);
 				
 		testAnnotation.setAnnotationId(annoId);					
 		return testAnnotation;
@@ -179,12 +175,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
 				WebAnnotationFields.TEST_HISTORYPIN_URL);
 
-		AnnotationId annoId = annotationIdHelper
-				.initializeAnnotationId(
-//						AnnotationTestObjectBuilder.TEST_COLLECTION
-//						, AnnotationTestObjectBuilder.TEST_OBJECT
-						WebAnnotationFields.PROVIDER_HISTORY_PIN
-						, "1");
+		AnnotationId annoId = new BaseAnnotationId(null, WebAnnotationFields.PROVIDER_HISTORY_PIN, "1");
 //		, testAnnotation.getSameAs());
 				
 		testAnnotation.setAnnotationId(annoId);		

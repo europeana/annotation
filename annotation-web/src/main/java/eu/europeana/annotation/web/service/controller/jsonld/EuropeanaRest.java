@@ -74,7 +74,7 @@ public class EuropeanaRest extends BaseRest{
 			Annotation resAnnotation = annotationBuilder
 					.copyIntoWebAnnotation(annotation);
 	
-			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation, getConfiguration().getAnnotationBaseUrl());
+			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
 			String jsonLd = annotationLd.toString(4);
 	       	
 			return JsonWebUtils.toJson(jsonLd, null);

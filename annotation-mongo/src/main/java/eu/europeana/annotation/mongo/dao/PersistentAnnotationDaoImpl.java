@@ -2,10 +2,13 @@ package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
 
+import javax.annotation.Resource;
+
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.UpdateOperations;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -13,6 +16,17 @@ import eu.europeana.corelib.db.dao.impl.NosqlDaoImpl;
 
 public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
 		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {
+
+	@Resource
+	private AnnotationConfiguration configuration;
+	
+	public AnnotationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(AnnotationConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
 	public PersistentAnnotationDaoImpl(Class<E> clazz, Datastore datastore) {
 		super(datastore, clazz);
@@ -30,13 +44,15 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
 					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
 					.inc(GeneratedAnnotationIdImpl.SEQUENCE_COLUMN_NAME);
-			// search annotationId and increment
+			// search annotationId and get incremented annotation number 
 			nextAnnotationId = getDatastore().findAndModify(q, uOps);
-
-			// if first annotationId
+			
 			if (nextAnnotationId == null) {
-				nextAnnotationId = new GeneratedAnnotationIdImpl(provider, ""+1L);
+				// if first annotationId
+				nextAnnotationId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+1L);
 				ds.save(nextAnnotationId);
+			}else{
+				nextAnnotationId.setProvider(provider);
 			}
 		}
 

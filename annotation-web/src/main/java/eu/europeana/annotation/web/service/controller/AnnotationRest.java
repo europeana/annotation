@@ -16,6 +16,8 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -179,10 +181,10 @@ public class AnnotationRest extends BaseRest {
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH, null);
 		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
+		AnnotationIdHelper r = getAnnotationIdHelper();
 
 		//initialize
-		AnnotationId annoId = getAnnotationIdHelper()
-				.initializeAnnotationId(provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(null, provider, identifier);
 //		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 				
 		webAnnotation.setAnnotationId(annoId);		

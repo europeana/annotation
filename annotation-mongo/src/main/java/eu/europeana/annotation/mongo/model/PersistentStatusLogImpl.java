@@ -22,11 +22,6 @@ public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentO
 	private AnnotationId annotationId;
 	private long date;
 
-	@Override
-	public void copyFrom(Object volatileObject) {
-		// TODO Auto-generated method stub
-	}
-
 	//getters and setters
 	
 	public ObjectId getId() {

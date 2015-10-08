@@ -15,7 +15,7 @@ import org.springframework.boot.cloudfoundry.VcapApplicationListener;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
-import eu.europeana.annotation.web.service.AnnotationConfiguration;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 
 public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListener {
 
