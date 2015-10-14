@@ -151,7 +151,7 @@ public class BaseJsonldRest extends BaseRest{
 			
 			//4. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
 			if(annotation == null)
-				throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toUri());
+				throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toHttpUrl());
 			//4.or 410 (if the user is not allowed to access the annotation);
 			try{
 				//check visibility

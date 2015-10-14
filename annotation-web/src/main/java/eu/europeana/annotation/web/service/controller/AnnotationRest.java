@@ -235,7 +235,7 @@ public class AnnotationRest extends BaseRest {
 			
 			// check whether annotation vor given provider and annotationNr already exist in database
 			if (getAnnotationService().existsInDb(annoId)) 
-				return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toUri(), null);			
+				return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toHttpUrl(), null);			
 			
 			
 	//		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 

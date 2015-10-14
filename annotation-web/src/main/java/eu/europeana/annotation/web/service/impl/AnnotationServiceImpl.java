@@ -440,6 +440,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
 		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
 		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
+		//TODO: verify if URI or HttpUrl is needed here
 		solrAnnotationImpl.setAnnotationIdString(annotation.getAnnotationId().toUri());
 
 		solrAnnotationImpl.setTagId(solrAnnotationImpl.getTagId());

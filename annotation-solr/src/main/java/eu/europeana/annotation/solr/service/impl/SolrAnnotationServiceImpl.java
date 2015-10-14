@@ -431,8 +431,8 @@ public class SolrAnnotationServiceImpl implements SolrAnnotationService {
 
 	public void delete(AnnotationId annotationId) throws AnnotationServiceException {
 		try {
-	    	log.info("delete annotation with ID: " + annotationId.toUri());
-	        UpdateResponse rsp = solrServer.deleteById(annotationId.toUri());
+	    	log.info("delete annotation with ID: " + annotationId.toHttpUrl());
+	        UpdateResponse rsp = solrServer.deleteById(annotationId.toHttpUrl());
 	        log.info("delete response: " + rsp.toString());
 	        solrServer.commit();
 	    } catch (SolrServerException ex) {
