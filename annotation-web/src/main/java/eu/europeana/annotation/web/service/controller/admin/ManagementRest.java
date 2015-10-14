@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
@@ -55,7 +56,7 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/admin/annotation/delete");
 			
 		try{
-			getAnnotationService().deleteAnnotation(provider, identifier);
+			getAnnotationService().deleteAnnotation(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -81,7 +82,7 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/annotations/admin/index");
 			
 		try{
-			getAnnotationService().indexAnnotation(provider, identifier);
+			getAnnotationService().indexAnnotation(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 //			getAnnotationService().indexAnnotation(resourceId, provider, Long.valueOf(query));
 			response.success = true;
 		} catch (Exception e){
@@ -138,7 +139,7 @@ public class ManagementRest extends BaseRest {
 				apiKey, "/admin/annotation/disable");
 			
 		try{
-			getAnnotationService().disableAnnotation(provider, identifier);
+			getAnnotationService().disableAnnotation(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -262,7 +263,7 @@ public class ManagementRest extends BaseRest {
 		) {
 
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, identifier);
+				new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 
 		String action = "get: /annotations/get/status/"+ provider + WebAnnotationFields.SLASH + identifier + ".json";
 		
@@ -306,7 +307,7 @@ public class ManagementRest extends BaseRest {
 		
 		try {
 			Annotation annotation = getAnnotationService().getAnnotationById(
-					provider, identifier);
+					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 	
 			if (annotation != null) { 
 				//validate input status
@@ -358,7 +359,7 @@ public class ManagementRest extends BaseRest {
 		try {
 //			Annotation annotation = getAnnotationService().getAnnotationById(
 			Annotation annotation = getAnnotationService().getAnnotationById(
-					provider, identifier);
+					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 	
 			getAnnotationService().checkVisibility(annotation, user);
 				

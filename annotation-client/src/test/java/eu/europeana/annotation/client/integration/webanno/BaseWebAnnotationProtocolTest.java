@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -111,7 +113,12 @@ public class BaseWebAnnotationProtocolTest {
 	}
 
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response) throws JsonParseException {
-		assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value());
+		
+		return parseAndVerifyTestAnnotation(response, HttpStatus.CREATED);
+	}
+	
+	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+		assertEquals(status.value(), response.getStatusCode().value());
 
 		Annotation annotation = getApiClient().parseResponseBody(response);
 
@@ -137,4 +144,27 @@ public class BaseWebAnnotationProtocolTest {
 		return out.toString();
 		
 	}
+
+	protected void validateOutputAgainstInput(Annotation storedAnno, Annotation inputAnno)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+				
+				Method[] methods = inputAnno.getClass().getMethods();
+				Method currentMethod;
+				Object inputProp;
+				Object storedProp;
+				
+				for (int i = 0; i < methods.length; i++) {
+					currentMethod = methods[i];
+					if(currentMethod.getName().startsWith("get")){
+						inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
+						
+						//compare non null fields only
+						if(inputProp != null){
+							storedProp = currentMethod.invoke(storedAnno, (Object[])null);
+							assertEquals(inputProp, storedProp);
+						}			
+					}			
+				}
+				
+			}
 }

@@ -50,12 +50,9 @@ import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.corelib.db.exception.DatabaseException;
-import eu.europeana.corelib.db.service.ApiKeyService;
-import eu.europeana.corelib.definitions.db.entity.relational.ApiKey;
+import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
@@ -84,14 +81,26 @@ public class AnnotationServiceImpl implements AnnotationService {
 	SolrTagService solrTagService;
 	
 	@Resource
-	ApiKeyService apiKeyService;
+	AuthenticationService authenticationService;
 
-	public ApiKeyService getApiKeyService() {
-		return apiKeyService;
+	
+//	@Resource
+//	ApiKeyService apiKeyService;
+//
+//	public ApiKeyService getApiKeyService() {
+//		return apiKeyService;
+//	}
+//
+//	public void setApiKeyService(ApiKeyService apiKeyService) {
+//		this.apiKeyService = apiKeyService;
+//	}
+
+	public AuthenticationService getAuthenticationService() {
+		return authenticationService;
 	}
 
-	public void setApiKeyService(ApiKeyService apiKeyService) {
-		this.apiKeyService = apiKeyService;
+	public void setAuthenticationService(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
 	}
 
 	AnnotationBuilder controllerHelper;
@@ -168,11 +177,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
 	}
 
-	@Override
-	public Annotation getAnnotationById(String provider, String identifier) {
-		return getMongoPersistence().find(provider, identifier);
-
-	}
 
 	// @Override
 	// public Annotation getAnnotationById(String provider,
@@ -604,30 +608,30 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Override
 	// public void deleteAnnotation(String resourceId, String provider, Long
 	// annotationNr) {
-	public void deleteAnnotation(String provider, String identifier) {
+	public void deleteAnnotation(AnnotationId annoId) {
 		try {
 			// Annotation res =
 			// getMongoPersistance().findByID(String.valueOf(annotationNr));
 			// Annotation res = getMongoPersistence().find(resourceId, provider,
 			// annotationNr);
-			Annotation res = getMongoPersistence().find(provider, identifier);
+			Annotation res = getMongoPersistence().find(annoId);
 			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
 			getSolrService().delete(indexedAnnotation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		// getMongoPersistence().remove(resourceId, provider, annotationNr);
-		getMongoPersistence().remove(provider, identifier);
+		getMongoPersistence().remove(annoId);
 	}
 
 	@Override
 	// public void indexAnnotation(String resourceId, String provider, Long
 	// annotationNr) {
-	public void indexAnnotation(String provider, String identifier) {
+	public void indexAnnotation(AnnotationId annoId) {
 		try {
 			// Annotation res = getMongoPersistence().find(resourceId, provider,
 			// annotationNr);
-			Annotation res = getMongoPersistence().find(provider, identifier);
+			Annotation res = getMongoPersistence().find(annoId);
 			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
 			getSolrService().delete(indexedAnnotation);
 			getSolrService().store(indexedAnnotation);
@@ -637,9 +641,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public Annotation disableAnnotation(String provider, String identifier) {
+	public Annotation disableAnnotation(AnnotationId annoId) {
 		try {
-			Annotation res = getMongoPersistence().find(provider, identifier);
+			Annotation res = getMongoPersistence().find(annoId);
 			res.setDisabled(true);
 			Annotation updateRes = getMongoPersistence().update(res);
 			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
@@ -740,7 +744,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public boolean existsInDb(AnnotationId annoId) {
 		boolean res = false;
 		try {
-			Annotation dbRes = getMongoPersistence().find(annoId.getProvider(), annoId.getIdentifier());
+			Annotation dbRes = getMongoPersistence().find(annoId);
 			if (dbRes != null)
 				res = true;
 		} catch (Exception e) {
@@ -849,6 +853,11 @@ public class AnnotationServiceImpl implements AnnotationService {
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL, 
 						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
+		case WebAnnotationFields.PROVIDER_PUNDIT:
+			if (annoId.getIdentifier() == null || Long.parseLong(annoId.getIdentifier()) < 1)
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL, 
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER, annoId.toUri());
+			break;
 		case WebAnnotationFields.PROVIDER_BASE:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(
@@ -869,19 +878,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public Annotation getAnnotationById(AnnotationId annoId) {
-		
-		return getAnnotationById(annoId.getProvider(), annoId.getIdentifier());
-	}
-
-	@Override
-	public void validateApiKey(String wskey) throws UserAuthorizationException {
-		try {
-			ApiKey apiKey = apiKeyService.findByID(wskey);
-			if(apiKey == null)
-				throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wskey);
-		} catch (DatabaseException e) {
-			throw new RuntimeException("Unexpected error occured!", e);
-		}	
+		return getMongoPersistence().find(annoId);
+		//return getAnnotationById(annoId.getBaseUrl(), annoId.getProvider(), annoId.getIdentifier());
 	}
 
 }

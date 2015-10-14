@@ -490,9 +490,14 @@ public class AnnotationLdParser extends JsonLdParser {
 		String parts[] = valueObject.split("/");
 		String identifier = parts[parts.length - 1];
 		String provider = parts[parts.length - 2];
+		final int SLASHES = 2; 
+		int baseUrlLength = valueObject.length() - provider.length() - identifier.length() - SLASHES;
+		String baseUrl = valueObject.substring(0, baseUrlLength);
+		
 		AnnotationId annoId = new BaseAnnotationId();
 		annoId.setProvider(provider);
 		annoId.setIdentifier(identifier);
+		annoId.setBaseUrl(baseUrl);
 
 		return annoId;
 	}
@@ -517,11 +522,12 @@ public class AnnotationLdParser extends JsonLdParser {
 					.createModelObjectInstance(agentType);
 //			agent.addType(webType);
 			agent.setType(webType);
-
-			agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
+			if(valueObject.has(WebAnnotationFields.AT_ID))
+				agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
 
 			// agent.setHomepage(valueObject);
-			agent.setName(valueObject.getString(WebAnnotationFields.NAME));
+			if(valueObject.has(WebAnnotationFields.NAME))
+				agent.setName(valueObject.getString(WebAnnotationFields.NAME));
 
 			// agent.setName((String) valueObject);
 			return agent;

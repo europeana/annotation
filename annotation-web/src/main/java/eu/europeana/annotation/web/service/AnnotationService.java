@@ -18,6 +18,7 @@ import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.service.authentication.model.Application;
 
 public interface AnnotationService {
 
@@ -134,31 +135,12 @@ public interface AnnotationService {
 	public Annotation updateAnnotation(Annotation newAnnotation);
 	
 	/**
-	 * This method deletes annotation by annotationId values.
-	 * @param resourceId
-	 * @param provider
-	 * @param identifier
-	 */
-	public void deleteAnnotation(String provider, String identifier);
-
-	/**
-	 * This method forces reindexing of the annotation, which means 
-	 * deletion in solr/annotation if exists and creation of new entry 
-	 * in solr/annotation.
-	 * @param resourceId
-	 * @param provider
-	 * @param identifier
-	 */
-	public void indexAnnotation(String provider, String identifier);
-	
-	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
-	 * @param provider
-	 * @param identifier
+	 * @param annoId
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(String provider, String identifier);
+	public Annotation disableAnnotation(AnnotationId annoId);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -168,15 +150,15 @@ public interface AnnotationService {
 	 */
 	public Annotation disableAnnotation(Annotation annotation);
 	
-	/**
-	 * This method returns annotation object for given annotationId that
-	 * comprises provider and identifier.
-	 * @param provider
-	 * @param identifier
-	 * @return annotation object
-	 */
-	public Annotation getAnnotationById(String provider, String identifier);
-	
+//	/**
+//	 * This method returns annotation object for given annotationId that
+//	 * comprises provider and identifier.
+//	 * @param provider
+//	 * @param identifier
+//	 * @return annotation object
+//	 */
+//	public Annotation getAnnotationById(String provider, String identifier);
+//	
 	/**
 	 * This method returns annotation object for given annotationId that
 	 * comprises provider and identifier.
@@ -323,7 +305,12 @@ public interface AnnotationService {
 	 */
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
 
-	public void validateApiKey(String wskey) throws UserAuthorizationException;
+	/**
+	 * This method deletes annotation by annotationId values.
+	 * @param annoId
+	 */
+	void deleteAnnotation(AnnotationId annoId);
 
+	void indexAnnotation(AnnotationId annoId);
 
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
@@ -33,33 +32,15 @@ public class TaggingTest extends BaseWebAnnotationProtocolTest {
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 		
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getAnnotatedBy());
+		assertNotNull(storedAnno.getSerializedBy());
+		
+		
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();
 		Annotation inputAnno = europeanaParser.parseAnnotation(MotivationTypes.TAGGING, requestBody);
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
 
-	}
-
-	private void validateOutputAgainstInput(Annotation storedAnno, Annotation inputAnno) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		Method[] methods = inputAnno.getClass().getMethods();
-		Method currentMethod;
-		Object inputProp;
-		Object storedProp;
-		
-		for (int i = 0; i < methods.length; i++) {
-			currentMethod = methods[i];
-			if(currentMethod.getName().startsWith("get")){
-				inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
-				
-				//compare non null fields only
-				if(inputProp != null){
-					storedProp = currentMethod.invoke(storedAnno, (Object[])null);
-					assertEquals(inputProp, storedProp);
-				}			
-			}			
-		}
-		
 	}
 
 	

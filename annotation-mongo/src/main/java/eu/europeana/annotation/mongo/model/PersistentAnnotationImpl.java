@@ -7,9 +7,10 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.Polymorphic;
 //import com.google.code.morphia.annotations.Reference;
-
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -21,9 +22,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
-@Entity("annotation")
 @Polymorphic
-//@Indexes( @Index("europeanaId, annotationNr"))
+@Entity("annotation")
+
+@Indexes({@Index(PersistentAnnotation.FIELD_BASEURL + ", "+ PersistentAnnotation.FIELD_PROVIDER + ", " + PersistentAnnotation.FIELD_IDENTIFIER), 
+	@Index("provider, identifier")})
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id

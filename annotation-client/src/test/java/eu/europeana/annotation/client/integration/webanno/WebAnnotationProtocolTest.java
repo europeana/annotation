@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -21,17 +23,30 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 
 		
 	@Test
-	public void createWebannoAnnotationTag() {
+	public void createWebannoAnnotationTag() throws JsonParseException {
 		
 		ResponseEntity<String> response = storeTestAnnotation();
+
+		validateResponse(response);
 		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	}
+
+
+	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
+		validateResponse(response, HttpStatus.CREATED);
 	}
 	
+	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), status);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getAnnotationId());
+		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+	}
 	
 	@Test
-	public void createWebannoAnnotationLink() {
+	public void createWebannoAnnotationLink() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				getApiKey()
@@ -43,13 +58,12 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				, null
 				);
 		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		validateResponse(response);
 	}
 		
 
 	@Test
-	public void createWebannoAnnotationTagByTypeJsonld() {
+	public void createWebannoAnnotationTagByTypeJsonld() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				getApiKey()
@@ -61,13 +75,12 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				, WebAnnotationFields.TAG
 				);
 		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		validateResponse(response);
 	}
 	
 	
 	@Test
-	public void createWebannoAnnotationLinkByTypeJsonld() {
+	public void createWebannoAnnotationLinkByTypeJsonld() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				getApiKey()
@@ -79,25 +92,12 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				, WebAnnotationFields.LINK
 				);
 		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		validateResponse(response);
 	}
 		
 
 	@Test
-	public void getAnnotation() throws JsonParseException {
-		
-		getAnnotationWorkflow();
-	}
-
-	
-	/**
-	 * Parameter isJsonld makes a difference between the two 
-	 * getAnnotation and getAnnotationJsonld methods.
-	 * @param isJsonld
-	 * @throws JsonParseException 
-	 */
-	protected void getAnnotationWorkflow() throws JsonParseException {
+	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		ResponseEntity<String> createResponse = storeTestAnnotation(); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
@@ -110,12 +110,10 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				, annotation.getAnnotationId().getIdentifier()
 				);
 		
-		assertNotNull(response.getBody());
-		//TODO: Quick sting based check, still not reliable implementation. Needs to implement equalsContent in Annotation objects. 
-		assertEquals(createResponse.getBody(), response.getBody());
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		//validateResponse(response, HttpStatus.OK);
+		Annotation storedAnno = parseAndVerifyTestAnnotation(response, HttpStatus.OK);
+		validateOutputAgainstInput(storedAnno, annotation);
 	}
-
 	
 					
 	@Test

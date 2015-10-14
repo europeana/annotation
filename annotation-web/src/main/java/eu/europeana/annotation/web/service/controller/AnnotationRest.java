@@ -49,8 +49,7 @@ public class AnnotationRest extends BaseRest {
 
 		//String resourceId = toResourceId(collection, object);
 		
-		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, identifier);
+		Annotation annotation = getAnnotationService().getAnnotationById(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/collection/object/provider/annotationNr.json");
@@ -87,7 +86,7 @@ public class AnnotationRest extends BaseRest {
 		) {
 
 		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, identifier);
+				new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/annotations/provider/annotationNr.json");
@@ -184,7 +183,7 @@ public class AnnotationRest extends BaseRest {
 		AnnotationIdHelper r = getAnnotationIdHelper();
 
 		//initialize
-		AnnotationId annoId = new BaseAnnotationId(null, provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 //		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 				
 		webAnnotation.setAnnotationId(annoId);		

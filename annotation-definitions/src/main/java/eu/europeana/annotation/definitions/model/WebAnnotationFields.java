@@ -116,11 +116,19 @@ public interface WebAnnotationFields extends SwaggerConstants {
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4; 
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3; 
 	public static final String PROVIDER_HISTORY_PIN = "historypin"; 
+	public static final String PROVIDER_PUNDIT = "pundit"; 
 	public static final String PROVIDER_BASE = "base"; 
 	public static final String PROVIDER_WRONG = "wrong"; 
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
 	public static final String HTTP = "http://"; 
 	
+	/**
+	 * 
+	 */
+	// TODO: move to constant to authentication interfaces/classes
+	public static final String USER_ANONYMOUNS = "anonymous";
+	public static final String USER_ADMIN = "admin";
+
 	/**
 	 * SKOS concept
 	 */

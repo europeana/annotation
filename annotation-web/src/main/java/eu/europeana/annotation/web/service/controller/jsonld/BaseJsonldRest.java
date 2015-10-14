@@ -10,17 +10,22 @@ import org.springframework.util.MultiValueMap;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 
 public class BaseJsonldRest extends BaseRest{
@@ -29,14 +34,28 @@ public class BaseJsonldRest extends BaseRest{
 			String annotation, String userToken) throws HttpException {
 		try {
 
+			//SET DEFAULTS 
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			if(provider == null)
+				provider = app.getProvider();
+			
 			// 0. annotation id
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// 1. authorize user
-			authorizeUser(userToken, annoId);
+			authorizeUser(userToken, wsKey, annoId);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
+			
+			//SET DEFAULTS 
+			if(webAnnotation.getSerializedBy() == null)
+				webAnnotation.setSerializedBy(buildDefaultSerializedBy(app));
+			
+			if(webAnnotation.getAnnotatedBy() == null)
+				webAnnotation.setAnnotatedBy(buildDefaultAnnotatedBy(app));
+			
 
 			// 2. validate
 			// check whether annotation with the given provider and identifier
@@ -86,8 +105,28 @@ public class BaseJsonldRest extends BaseRest{
 		}
 	}
 	
-	void validateApiKey(String wsKey) throws UserAuthorizationException {
-		getAnnotationService().validateApiKey(wsKey);
+	Agent buildDefaultSerializedBy(Application app) {
+		Agent serializer = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.SOFTWARE);
+		serializer.setName(app.getName());
+		serializer.setHomepage(app.getHomepage());
+		serializer.setOpenId(app.getOpenId());
+		
+		return serializer;
+	}
+
+	Agent buildDefaultAnnotatedBy(Application app) {
+		Agent annotator = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		
+		annotator.setName(app.getAnonymousUser().getName());
+		annotator.setHomepage(app.getAnonymousUser().getHomepage());
+		annotator.setOpenId(app.getAnonymousUser().getOpenId());
+		
+		return annotator;
+	}
+	
+	void validateApiKey(String wsKey) throws ApplicationAuthenticationException {
+		//throws exception if the wskey is not found
+		getAuthenticationService().getByApiKey(wsKey);
 	}
 
 	protected ResponseEntity<String> getAnnotationById(
@@ -97,6 +136,13 @@ public class BaseJsonldRest extends BaseRest{
 			
 			//2. Check client access (a valid “wskey” must be provided)
 			validateApiKey(wsKey);
+			
+			//SET DEFAULTS 
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			if(provider == null)
+				provider = app.getProvider();
+			
 			
 			//3. Retrieve an annotation based on its identifier;
 			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -188,7 +234,7 @@ public class BaseJsonldRest extends BaseRest{
 //					"/provider/identifier", annoId.toUri());
 	
 		// 5. authorize user
-		authorizeUser(userToken, annoId);
+		authorizeUser(userToken, wsKey, annoId);
 	
 		//return annotation;
 	}
@@ -210,29 +256,16 @@ public class BaseJsonldRest extends BaseRest{
 
 		try {
 			
+			//SET DEFAULTS 
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+						
 			validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 			
 			// Retrieve an annotation based on its identifier;
-			Annotation storedAnnotation = getAnnotationForUpdate(provider, identifier);
+			Annotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 						
-
 			// 6. extract and check current annotation type and motivation
 			MotivationTypes currentMotivation = storedAnnotation.getMotivationType();
-			
-			// extract and check updated annotation type and motivation
-//			String updatedAnnotationType = JsonUtils.extractValueFromJsonString(
-//					WebAnnotationFields.AT_TYPE, annotation);
-//			MotivationTypes updatedMotivation = null;
-			//TODO: remove dead code .... attributes need to be checked on the parsed annotation object
-//			if (StringUtils.isNotEmpty(updatedAnnotationType)) {
-//				String updatedMotivationStr = JsonUtils.extractValueFromJsonString(
-//						WebAnnotationFields.MOTIVATION, annotation);
-//				if(updatedMotivationStr == null)
-//					throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE, 
-//							WebAnnotationFields.PATH_PARAM_ANNO_TYPE, updatedAnnotationType, HttpStatus.NOT_ACCEPTABLE, null);
-//				else
-//					updatedMotivation = MotivationTypes.getType(updatedMotivationStr);
-//			}
 			
 			//TODO: the motivation should be verified during parsing. If motivation is provided within the annotation object it must match the provided one
 			Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(
@@ -253,8 +286,6 @@ public class BaseJsonldRest extends BaseRest{
 			String jsonLd = annotationLd.toString(4);
 
 			// build response entity with headers
-			// TODO: clarify Allow: 
-
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + updatedAnnotation.getLastUpdate().hashCode());
@@ -338,11 +369,16 @@ public class BaseJsonldRest extends BaseRest{
 			String userToken, String action) throws HttpException {
 		
 		try {
+			//SET DEFAULTS 
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			if(provider == null)
+				provider = app.getProvider();
 			
 			validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 			
 			// Retrieve an annotation based on its id;
-			Annotation annotation = getAnnotationForUpdate(provider, identifier);
+			Annotation annotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 				
 			//TODO: Verify if user is allowed to perform the deletion.
 			
@@ -364,7 +400,7 @@ public class BaseJsonldRest extends BaseRest{
 		}
 	}
 
-	protected Annotation getAnnotationForUpdate(String provider, String identifier)
+	protected Annotation getAnnotationForUpdate(String baseUrl, String provider, String identifier)
 			throws ParamValidationException, AnnotationNotFoundException {
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 		Annotation annotation = getAnnotationService().getAnnotationById(annoId);

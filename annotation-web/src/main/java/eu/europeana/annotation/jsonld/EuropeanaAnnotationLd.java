@@ -94,19 +94,26 @@ public class EuropeanaAnnotationLd extends JsonLd {
         }
 //        if (!StringUtils.isBlank(annotation.getType())) 
 //        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
-        if (isJsonObjectInput(annotation.getSerializedBy().getInputString())){
+        
+        if(annotation.getSerializedBy().getInputString() == null || isJsonObjectInput(annotation.getSerializedBy().getInputString())){
+        	//user input string provided
         	//TODO: why reset?
         	annotation.getSerializedBy().setInputString(null);
             JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
             if (serializedByProperty != null)
             	jsonLdResource.putProperty(serializedByProperty);                
         } else {
+        	//input string is a single value
         	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_BY, annotation.getSerializedBy().getInputString());
         }
+        
+        
+        
         if (annotation.getAnnotatedAt() != null) 
         	jsonLdResource.putProperty(WebAnnotationFields.ANNOTATED_AT, TypeUtils.convertDateToStr(annotation.getAnnotatedAt()));
 
-        if (isJsonObjectInput(annotation.getAnnotatedBy().getInputString())){
+        if (annotation.getAnnotatedBy().getInputString() == null  || isJsonObjectInput(annotation.getAnnotatedBy().getInputString())){
+        	//TODO: why reset?
         	annotation.getAnnotatedBy().setInputString(null);
             JsonLdProperty annotatedByProperty = addAnnotatedByProperty(annotation);
             if (annotatedByProperty != null)
@@ -764,12 +771,13 @@ public class EuropeanaAnnotationLd extends JsonLd {
 
 	private void addAgentByProperty(JsonLdPropertyValue propertyValue,
 			Agent agent) {
-       	propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
-        if (agent != null && !StringUtils.isBlank(agent.getType())) 
+       	if(agent.getOpenId() != null)
+       		propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
+        if (!StringUtils.isBlank(agent.getType())) 
         	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getType());
-        if (agent != null && !StringUtils.isBlank(agent.getName())) 
+        if (!StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
-        if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 
+        if (!StringUtils.isBlank(agent.getHomepage())) 
         	propertyValue.getValues().put(WebAnnotationFields.FOAF_HOMEPAGE, agent.getHomepage());
 	}
 

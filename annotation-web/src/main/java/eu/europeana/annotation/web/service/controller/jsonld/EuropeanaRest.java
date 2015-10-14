@@ -17,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
@@ -67,7 +68,7 @@ public class EuropeanaRest extends BaseRest{
 			String identifier, String action) {
 		
 		try {
-			Annotation annotation = getAnnotationService().getAnnotationById(provider, identifier);
+			Annotation annotation = getAnnotationService().getAnnotationById(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 			
 			getAnnotationService().checkVisibility(annotation, null);
 			

@@ -43,12 +43,18 @@
 	
     
    	<!--  ApiKeyService -->
+   	<!-- 
    	<beans:bean name="annotation_apiKeyService" class="eu.europeana.corelib.db.service.mock.impl.MockApiKeyServiceImpl"/>
-			
+	 -->
+	 		
+    <!--  AuthenticationService -->
+   	<beans:bean name="annotation_authenticationService" class="eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl"/>
+	
+    
     <!--  java api bean -->
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
     	<beans:property name="configuration" ref="configuration"/>
-    	<beans:property name="apiKeyService" ref="annotation_apiKeyService"/> 	
+    	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
     </beans:bean>
     
     <!--  TODO: this is not needed anymore as the controllers are automatically discovered -->
@@ -56,6 +62,7 @@
 	<beans:bean id="annotationRest" class="eu.europeana.annotation.web.service.controller.AnnotationRest">
 		<beans:property name="annotationService" ref="annotationService"/>
 		<beans:property name="configuration" ref="configuration"/>
+    	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
     </beans:bean>	
     
 	<beans:bean id="managementRest" class="eu.europeana.annotation.web.service.controller.admin.ManagementRest">

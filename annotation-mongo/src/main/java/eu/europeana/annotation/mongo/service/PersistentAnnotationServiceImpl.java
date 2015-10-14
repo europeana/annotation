@@ -373,33 +373,41 @@ public class PersistentAnnotationServiceImpl extends
 		return results.asList();
 	}
 
-	@Override
-	public PersistentAnnotation find(String provider, String identifier) {
-		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+//	@Override
+//	public PersistentAnnotation find(String provider, String identifier) {
+//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+//		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
+//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
+//		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+//
+//		return getAnnotationDao().findOne(query);
+//	}
 
-		return getAnnotationDao().findOne(query);
-	}
-
-	@Override
-	public PersistentAnnotation find(String europeanaId, String provider,
-			String identifier) {
-		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
-		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-
-		return getAnnotationDao().findOne(query);
-	}
+//	@Override
+//	public PersistentAnnotation find(String europeanaId, String provider,
+//			String identifier) {
+//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+////		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+//		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
+//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
+//		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+//
+//		return getAnnotationDao().findOne(query);
+//	}
 
 	@Override
 	public PersistentAnnotation find(AnnotationId annoId) {
 //		return find(annoId.getResourceId(), annoId.getProvider(),
 //				annoId.getAnnotationNr());
-		return find(annoId.getProvider(), annoId.getIdentifier());
+		
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
+		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
+		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
+		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+
+		return getAnnotationDao().findOne(query);
 	}
 
 	@Override
@@ -415,24 +423,25 @@ public class PersistentAnnotationServiceImpl extends
 
 	}
 
-	@Override
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
-	 * (java.lang.String, java.lang.Integer)
-	 */
-//	public void remove(String resourceId, String provider, Long annotationNr) {
-	public void remove(String provider, String identifier) {
-		// String objectId = findObjectId(resourceId, annotationNr);
-		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
-		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-
-		getDao().deleteByQuery(query);
-	}
+//	@Override
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
+//	 * (java.lang.String, java.lang.Integer)
+//	 */
+////	public void remove(String resourceId, String provider, Long annotationNr) {
+//	public void remove(String baseUrl, String provider, String identifier) {
+//		// String objectId = findObjectId(resourceId, annotationNr);
+//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+////		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
+//		query.filter(PersistentAnnotation.FIELD_BASEURL, baseUrl);
+//		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
+//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
+//
+//		getDao().deleteByQuery(query);
+//	}
 
 	// private String findObjectId(String resourceId, Integer annotationNr) {
 	// Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
@@ -451,9 +460,13 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public void remove(AnnotationId annoId) {
-//		remove(annoId.getResourceId(), annoId.getProvider(),
-//				annoId.getAnnotationNr());
-		remove(annoId.getProvider(), annoId.getIdentifier());
+		
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
+		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
+		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
+
+		getDao().deleteByQuery(query);
 	}
 
 	public PersistentAnnotation update(PersistentAnnotation object) { 
@@ -503,9 +516,7 @@ public class PersistentAnnotationServiceImpl extends
 		if (numOfUpdatedEntries != 1)
 			throw new AnnotationUpdateException(
 					persistentAnnotation.getAnnotationId().toString());
-		res = find(
-				persistentAnnotation.getAnnotationId().getProvider()
-				, persistentAnnotation.getAnnotationId().getIdentifier());
+		res = find(persistentAnnotation.getAnnotationId());
 		return res;
 	}
 

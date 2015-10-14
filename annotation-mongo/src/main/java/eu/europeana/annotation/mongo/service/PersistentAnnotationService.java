@@ -41,19 +41,19 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public List<? extends Annotation> getFilteredAnnotationList (
 			String europeanaId, String provider, String startOn, String limit, boolean isDisabled);
 
-	public PersistentAnnotation find(String provider, String identifier);
+	//public PersistentAnnotation find(String provider, String identifier);
 	
-	public PersistentAnnotation find(String europeanaId, String provider, String identifier);
+	//public PersistentAnnotation find(String europeanaId, String provider, String identifier);
 	
 	public PersistentAnnotation find(AnnotationId annoId);
 	
-	/**
-	 * 
-	 * @param resourceId
-	 * @param annotationNr
-	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
-	 */
-	public void remove(String provider, String identifier);
+//	/**
+//	 * @param baseUrl
+//	 * @param resourceId
+//	 * @param annotationNr
+//	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
+//	 */
+//	public void remove(String baseUrl, String provider, String identifier);
 //	public void remove(String resourceId, String provider, Long annotationNr);
 	
 	/**

@@ -44,8 +44,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 
 //		String resourceId = toResourceId(collection, object);
 		
-		Annotation annotation = getAnnotationService().getAnnotationById(
-				provider, identifier);
+		Annotation annotation = getAnnotationService().getAnnotationById(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 //		resourceId, provider, annotationNr);
 		
 		AnnotationLd annotationLd = new AnnotationLd(annotation, getConfiguration().getAnnotationBaseUrl());
@@ -82,7 +81,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
 		
 		//initialize
-		AnnotationId annoId = new BaseAnnotationId(null, provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 //		.initializeAnnotationId(collection, object, provider, webAnnotation.getSameAs());
 		
 		webAnnotation.setAnnotationId(annoId);		

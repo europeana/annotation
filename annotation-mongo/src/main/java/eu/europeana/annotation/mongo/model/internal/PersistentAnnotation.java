@@ -14,9 +14,8 @@ import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
  */
 public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 
-	public final static String FIELD_EUROPEANA_ID = "annotationId.resourceId";
+	public final static String FIELD_BASEURL = "annotationId.baseUrl";
 	public final static String FIELD_PROVIDER = "annotationId.provider";
-	//public final static String FIELD_ANNOTATION_NR = "annotationId.annotationNr";
 	public final static String FIELD_IDENTIFIER = "annotationId.identifier";
 	public final static String FIELD_DISABLED = "disabled";
 	public final static String FIELD_VALUE = "value";

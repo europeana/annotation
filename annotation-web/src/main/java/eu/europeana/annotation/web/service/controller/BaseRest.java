@@ -3,6 +3,8 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,6 +13,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
@@ -24,6 +27,7 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 
 public class BaseRest extends ApiResponseBuilder{
 
@@ -32,6 +36,17 @@ public class BaseRest extends ApiResponseBuilder{
 	@Autowired
 	private AnnotationService annotationService;
 	
+	@Resource
+	AuthenticationService authenticationService;
+	
+	public AuthenticationService getAuthenticationService() {
+		return authenticationService;
+	}
+
+	public void setAuthenticationService(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
+
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 	protected AnnotationIdHelper annotationIdHelper;
 	
@@ -129,7 +144,7 @@ public class BaseRest extends ApiResponseBuilder{
 	
 	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
 		
-		AnnotationId annoId = new BaseAnnotationId(null, provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 		
 		annotationService.validateAnnotationId(annoId);
 		
@@ -156,7 +171,12 @@ public class BaseRest extends ApiResponseBuilder{
 		return annoId;
 	}
 
-	protected void authorizeUser(String userToken, AnnotationId annoId) throws UserAuthorizationException {
+	protected void authorizeUser(String userToken, String apiKey, AnnotationId annoId) throws UserAuthorizationException {
+		//throws exception if user is not found
+		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
+		
+		if(user.getName() == null)
+			throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName());
 		// TODO Auto-generated method stub
 		//implement when authentication/authorization is available
 	}

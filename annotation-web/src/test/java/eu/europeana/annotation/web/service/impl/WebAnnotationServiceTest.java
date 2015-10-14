@@ -271,8 +271,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Delete Annotation.
 		 */
 		webAnnotationService.deleteAnnotation(
-				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getIdentifier());
+				storedAnnotation.getAnnotationId());
 		
 		/**
 		 * Search Annotation.
@@ -303,9 +302,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Reindex Annotation.
 		 */
 		webAnnotationService.indexAnnotation(
-//				storedAnnotation.getAnnotationId().getResourceId()
-				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getIdentifier());
+				storedAnnotation.getAnnotationId());
 		
 		/**
 		 * Search Annotation.
@@ -331,8 +328,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 */
 		Annotation disabledAnnotation = webAnnotationService.disableAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
-				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getIdentifier());
+				storedAnnotation.getAnnotationId());
 		
 		/**
 		 * Search Annotation.
@@ -356,8 +352,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 */
 		webAnnotationService.deleteAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
-				storedAnnotation.getAnnotationId().getProvider()
-				, storedAnnotation.getAnnotationId().getIdentifier());
+				storedAnnotation.getAnnotationId());
 		
 		/**
 		 * Delete Annotation.
