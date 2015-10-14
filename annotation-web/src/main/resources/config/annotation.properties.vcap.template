@@ -1,0 +1,53 @@
+# 
+#  Copyright 2007-2012 The Europeana Foundation
+#
+#  Licenced under the EUPL, Version 1.1 (the "Licence") and subsequent versions as approved 
+#  by the European Commission;
+#  You may not use this work except in compliance with the Licence.
+#  
+#  You may obtain a copy of the Licence at:
+#  http://joinup.ec.europa.eu/software/page/eupl
+#
+#  Unless required by applicable law or agreed to in writing, software distributed under 
+#  the Licence is distributed on an "AS IS" basis, without warranties or conditions of 
+#  any kind, either express or implied.
+#  See the Licence for the specific language governing permissions and limitations under 
+#  the Licence.
+#
+
+##common settings
+#boolean value indicating if the indexing of annotations in solr should be performed. required valid solr configurations
+annotation.indexing.enabled=false
+
+#string value indicating if the application runs in "production", "test", "development" environment 
+annotation.environment=development
+
+#used only in production environment
+annotation.environment.production.baseUrl=http://data.europeana.eu/annotation
+
+#used only in production environment
+annotation.environment.test.baseUrl=http://http://test-annotations.europeana.eu/annotation
+
+#used only in production environment
+annotation.environment.development.baseUrl=http://localhost:8080/annotation
+
+# mongoDB settings
+### annotation database ###
+mongodb.annotation.dbname=annotation_test
+mongodb.annotation.host=127.0.0.1
+mongodb.annotation.port=27017
+mongodb.annotation.username=europeana
+mongodb.annotation.password=culture
+
+# solr connection settings
+solr.annotation.url = http://localhost:8282/solr/annotation
+solr.tag.url = http://localhost:8282/solr/tag
+solr.annotation.timeout = 60000
+solr.tag.timeout = 60000
+
+solr.facetLimit=750
+#solr.username=europeana
+#solr.rowLimit=12
+
+#placeholder to store generation timestamp
+annotation.properties.timestamp=-1

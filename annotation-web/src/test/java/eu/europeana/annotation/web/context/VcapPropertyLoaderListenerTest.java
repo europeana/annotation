@@ -20,12 +20,28 @@ public class VcapPropertyLoaderListenerTest {
 		Long startTime = System.currentTimeMillis();
 		System.out.println(startTime);
 		
+		String originalTemplate = getClass().getResource(
+				"/config/annotation.properties.template").getFile();
+		System.out.println("Original_template location: " + originalTemplate);
+		
+		String originalConfigFolder = getClass().getResource(
+				"/config").getFile();
+		
+		System.out.println("Original config folder: " + originalConfigFolder);
+		
 		// Properties europeanaProperties =
 		// loadProperties("/generate-config/europeana-test.properties");
-		String infilepath = getClass().getResource(
+		String testTemplate = getClass().getResource(
 				"/generate-config/annotation-test.properties.template").getFile();
+		System.out.println("Test_template location: " + testTemplate);
 		
-		File infile = new File(infilepath);
+		String testGenerateConfigFolder = getClass().getResource(
+				"/generate-config").getFile();
+		
+		System.out.println("Test generate config folder: " + testGenerateConfigFolder);
+		
+		
+		File infile = new File(testTemplate);
 		File outFile = new File(infile.getParentFile(),  "annotation-test.properties");
 		
 		VcapAnnotationPropertyLoaderListener propertiesLoader = new VcapAnnotationPropertyLoaderListener(

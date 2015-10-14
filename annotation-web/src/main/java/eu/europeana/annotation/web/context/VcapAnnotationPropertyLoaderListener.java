@@ -58,7 +58,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	}
 
 	protected File getPropertiesFileTemplate() {
-		String templateFileName = "annotation.properties.template";
+		String templateFileName = "annotation.properties.vcap.template";
 		
 		if(propertiesFileTemplate == null){
 			propertiesFileTemplate = getConfigFile(templateFileName);
