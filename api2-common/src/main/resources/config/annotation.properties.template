@@ -26,7 +26,7 @@ annotation.environment=development
 annotation.environment.production.baseUrl=http://data.europeana.eu/annotation
 
 #used only in production environment
-annotation.environment.test.baseUrl=http://http://test-annotations.europeana.eu/annotation
+annotation.environment.test.baseUrl=http://test-annotations.europeana.eu/annotation
 
 #used only in production environment
 annotation.environment.development.baseUrl=http://localhost:8080/annotation
