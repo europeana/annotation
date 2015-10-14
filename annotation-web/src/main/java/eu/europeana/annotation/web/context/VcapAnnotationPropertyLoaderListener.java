@@ -99,7 +99,6 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 			if(annotationPropertiesFile.exists()){
 				logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
 				props.load(new FileInputStream(annotationPropertiesFile));
-				annotationPropertiesFile.delete();
 			}else{
 				props.load(new FileInputStream(propertiesTemplate));
 			}
@@ -163,9 +162,10 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	}
 
 	protected void writePropsToFile(Properties props, File annotationPropertiesFile) throws IOException {
+		//overwrite existing file by setting append to false
 		FileUtils.writeStringToFile(
 				annotationPropertiesFile,
-				"\n### generated configurations ###\n", true);
+				"\n### generated configurations ###\n", false);
 		
 		for (Entry<Object, Object> entry : props.entrySet()) {
 			FileUtils.writeStringToFile(
