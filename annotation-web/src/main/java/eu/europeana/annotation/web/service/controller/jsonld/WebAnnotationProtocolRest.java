@@ -72,7 +72,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.GET, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> getAnnotation(
-			@RequestParam(value = "wskey", required = false) String wskey,
+			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
 			) throws HttpException {
@@ -84,16 +84,16 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.GET, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> getAnnotationJsonld(
-			@RequestParam(value = "wskey", required = false) String wskey,
+			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
 			) throws HttpException {
 
 			String action = "get:/annotationld/{provider}/{identifier}.jsonld";
+			
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 
-	
 	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.PUT, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
