@@ -60,8 +60,8 @@ The json-ld serialization available in the following box is a valid input to be 
     "serializedAt": "2015-02-28T13:00:34Z",
     "serializedBy": "http://www.historypin.org",
     "target": [
-        "http://www.europeana.eu/portal/record/123/xyz.html", 
-        "http://www.europeana.eu/portal/record/333/xxx.html"
+        "http://www.europeana.eu/portal/record/123/xyz", 
+        "http://www.europeana.eu/portal/record/333/xxx"
     ],
     "oa:equivalentTo": "https://www.historypin.org/en/item/789"
 }
