@@ -14,7 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.jsonldjava.utils.JSONUtils;
 
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 
 public class JsonWebUtils {
 	
@@ -59,6 +60,7 @@ public class JsonWebUtils {
 	
 	/**
 	 * This method extends SOLR query by field and language if given.
+	 * @deprecated needs to be re-implemented according to new schema and 
 	 * @param query
 	 * @param field
 	 * @param language
@@ -66,18 +68,18 @@ public class JsonWebUtils {
 	 */
 	public static String addFieldToQuery(String query, String field, String language) {
 		if (StringUtils.isNotEmpty(field)) {
-			if (SolrAnnotationConst.SolrAnnotationFields.contains(field)) {
-				String prefix = SolrAnnotationConst.DEFAULT_LANGUAGE + SolrAnnotationConst.UNDERSCORE;
-				if (field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-					if (StringUtils.isNotEmpty(language) 
-							&& field.equals(SolrAnnotationConst.SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
-						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
-					}
-				} else {
+//			if (SolrAnnotationFields.contains(field)) {
+				String prefix = WebAnnotationFields.DEFAULT_LANGUAGE + WebAnnotationFields.UNDERSCORE;
+//				if (field.equals(SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+//					if (StringUtils.isNotEmpty(language) 
+//							&& field.equals(SolrAnnotationFields.MULTILINGUAL.getSolrAnnotationField())) {
+//						prefix = language.toUpperCase() + SolrAnnotationConst.UNDERSCORE;
+//					}
+//				} else {
 					prefix = "";
-				}
+				//}
 				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
-			}
+//			}
 		} else {
 			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
 		}

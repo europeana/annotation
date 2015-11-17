@@ -31,7 +31,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder{
 
 		getLogger().error("An error occured during the invocation of :" + req.getServletPath(), ex);
 		
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.WSKEY), req.getServletPath(), null, ex);
+		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(), null, ex);
 //		response.sendError(ex.getStatus().value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		//return res;
@@ -55,7 +55,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder{
 		getLogger().error("An unexpected runtime error occured during the invocation of :" + req.getServletPath(), ex);
 
 		//TODO: add AccessController to handle default spring exceptions: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#mvc-ann-rest-spring-mvc-exceptions  
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.WSKEY), req.getServletPath(), null, ex);
+		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(), null, ex);
 		//response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		//return res;

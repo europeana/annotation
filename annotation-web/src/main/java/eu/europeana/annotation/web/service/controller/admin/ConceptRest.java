@@ -15,6 +15,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.ConceptOperationResponse;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
@@ -62,7 +63,7 @@ public class ConceptRest extends BaseRest {
 	
 	@RequestMapping(value = "/concepts/{uri}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSON_LINK, value="")
+	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
 	public ModelAndView createConcept (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,

@@ -16,6 +16,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 import eu.europeana.api2.utils.JsonWebUtils;
@@ -56,7 +57,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 	
 	@RequestMapping(value = "/annotationld.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSONLD_LINK, value="")
+	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSONLD_LINK, value="")
 	public ModelAndView createAnnotationLd (
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,

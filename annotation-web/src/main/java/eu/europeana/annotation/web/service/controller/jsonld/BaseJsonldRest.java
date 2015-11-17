@@ -19,7 +19,6 @@ import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -88,6 +87,7 @@ public class BaseJsonldRest extends BaseRest{
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
 
@@ -122,11 +122,6 @@ public class BaseJsonldRest extends BaseRest{
 		annotator.setOpenId(app.getAnonymousUser().getOpenId());
 		
 		return annotator;
-	}
-	
-	void validateApiKey(String wsKey) throws ApplicationAuthenticationException {
-		//throws exception if the wskey is not found
-		getAuthenticationService().getByApiKey(wsKey);
 	}
 
 	protected ResponseEntity<String> getAnnotationById(
@@ -176,8 +171,7 @@ public class BaseJsonldRest extends BaseRest{
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + etag);
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
-			//headers.add(HttpHeaders.ALLOW, "PUT,GET,DELETE,OPTIONS,HEAD,PATCH");
-			headers.add(HttpHeaders.ALLOW, "PUT,GET,DELETE,OPTIONS,HEAD,PATCH");
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
@@ -290,7 +284,7 @@ public class BaseJsonldRest extends BaseRest{
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + updatedAnnotation.getLastUpdate().hashCode());
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
-			headers.add(HttpHeaders.ALLOW, "PUT,GET,DELETE,OPTIONS,HEAD,PATCH");
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 

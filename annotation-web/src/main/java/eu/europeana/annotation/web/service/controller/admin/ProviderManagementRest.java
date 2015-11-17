@@ -21,7 +21,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.ProviderOperationResponse;
 import eu.europeana.annotation.web.model.ProviderSearchResults;

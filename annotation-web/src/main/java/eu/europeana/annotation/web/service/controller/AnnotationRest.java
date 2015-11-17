@@ -19,6 +19,7 @@ import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
@@ -158,7 +159,7 @@ public class AnnotationRest extends BaseRest {
 //	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/annotations/col/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSON_LINK, value="")
+	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
 	public ModelAndView createAnnotation (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -215,7 +216,7 @@ public class AnnotationRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SAMPLES_JSON_LINK, value="")
+	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
 	public ModelAndView createAnnotationByProvider (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,

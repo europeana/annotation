@@ -20,6 +20,7 @@ import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -134,7 +135,7 @@ public class EuropeanaRest extends BaseRest{
 	
 	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=WebAnnotationFields.SEARCH_NOTES, value="")
+	@ApiOperation(notes=SwaggerConstants.SEARCH_NOTES, value="")
 	public ModelAndView searchLd(
 		@RequestParam(value = "wsKey", required = false) String wsKey,
 		@RequestParam(value = "target", required = false) String target,
