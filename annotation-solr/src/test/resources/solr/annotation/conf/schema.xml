@@ -67,103 +67,82 @@
 					protected="protwords.txt" />
 			</analyzer>
 		</fieldType>
+		<fieldType name="keyword" class="solr.TextField">
+			<analyzer>
+				<tokenizer class="solr.KeywordTokenizerFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+				<!--  
+				<filter class="solr.PatternReplaceFilterFactory" pattern="([.^:;()\\[\\],])"
+					replacement="" replace="all" />
+				<filter class="solr.PatternReplaceFilterFactory" pattern="([-+])"
+					replacement=" " replace="all" />
+				-->
+			</analyzer>
+		</fieldType>
 	</types>
 	
 	<fields>
-		<!--  @Field("body.internalType") -->	
-		<field name="body_internaltype" type="string" indexed="true"
-			stored="true" multiValued="false" />
-		<!-- @Field("annotationId_string")  -->
-		<field name="annotationId_string" type="string"  indexed="true"
+		<!-- @Field("annotationIdUrl")  -->
+		<field name="annotation_id_url" type="keyword"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
-		<!-- @Field("resourceId")  -->
-		<field name="resourceId" type="string" indexed="true"
-			required="true" multiValued="false" stored="true" />
-		<!--  @Field("bodyValue") -->	
-		<field name="body_value" type="text" indexed="true"
-			stored="true" multiValued="false" />
-		<!--  @Field("bodyType") -->	
-		<field name="body_type" type="string" indexed="true"
-			stored="true" multiValued="true" />
-		<!--  @Field("annotation_type") - change to keyword -->	
-		<field name="annotation_type" type="string" indexed="true"
-			stored="true" multiValued="false" />
-		<!--  @Field("http_uri") - change to keyword -->	
-		<field name="http_uri" type="string" indexed="true"
-			stored="true" multiValued="false" />
-		<!--  @Field("language") - change to keyword -->	
-		<field name="language" type="string" indexed="true"
-			stored="true" multiValued="false"/>
-		<!--  @Field("annotatedBy") -->	
-		<field name="annotatedBy_string" type="text" indexed="true"
-			stored="true" multiValued="false" />
-		<!--  @Field("annotatedAt") -->	
-		<field name="annotatedAt" type="date" indexed="true" stored="true" multiValued="false" />
-		<!--  @Field("label") -->	
-		<field name="label" type="text" indexed="true"
-			stored="true" multiValued="false" />
-		<field name="tag_id" type="text" indexed="true"
-			required="false" multiValued="false" stored="true" />
-		<!--  @Field("internalType") -->	
-		<field name="internal_type" type="text" indexed="true"
-			stored="true" multiValued="false" />
-		<!--  @Field("equivalentTo") -->	
-		<field name="equivalent_to" type="text" indexed="true"
-			stored="true" multiValued="false" />
-
-		<!--  @Field("value") -->	
-		<!-- 
-		<field name="text" type="text" indexed="true"
-			stored="true" multiValued="false" />
-		-->
-		<field name="timestamp" type="date" indexed="true" stored="true"
-			default="NOW" multiValued="false" />
 		
-		<dynamicField name="*_multilingual" type="text" indexed="true" stored="true" multiValued="false" /> 
+		<!-- @Field("internalTypeKey")  -->
+		<field name="internal_type_key" type="keyword"  indexed="false"
+			required="true" multiValued="false" stored="true"/>
 		
-		<!-- facets -->
-		<dynamicField name="annotationId_string.*" type="string"
-			indexed="true" stored="false" multiValued="true" />
-		<dynamicField name="language.*" type="string"
-			indexed="true" stored="false" multiValued="true" />
-		<dynamicField name="body_type.*" type="string"
-			indexed="true" stored="false" multiValued="true" />
+		<!-- @Field("bodyInternalTypeKey")  -->
+		<field name="body_internal_type_key" type="keyword"  indexed="false"
+			required="false" multiValued="false" stored="true"/>
 		
-<!-- 		
-		<field name="tag_id" type="string" indexed="true"
-			required="true" multiValued="false" stored="true" />
-		<field name="value" type="text" indexed="true" stored="true"
-			multiValued="false" termVectors="true" />
-		<field name="creator" type="text" indexed="true" stored="true"
-			multiValued="true" termVectors="true" />
-		<field name="language" type="text" indexed="true" stored="true"
+		<!-- @Field("targetInternalTypeKey")  -->
+		<field name="target_internal_type_key" type="keyword"  indexed="false"
+			required="false" multiValued="false" stored="true"/>
+		
+		<!-- @Field("targetUrls")  -->
+		<field name="target_urls" type="keyword"  indexed="true"
+			required="true" multiValued="true" stored="true"/>
+		
+		<!-- @Field("targetRecordIds")  -->
+		<field name="target_record_ids" type="keyword"  indexed="true"
+			required="true" multiValued="true" stored="false"/>
+		
+		
+		<!-- @Field("motivationKey")  -->
+		<field name="motivation_key" type="keyword"  indexed="true"
+			required="true" multiValued="false" stored="true"/>
+		
+		
+		<!-- @Field("body_tag_id")  -->
+		<field name="body_tag_id" type="keyword"  indexed="false"
+			required="false" multiValued="false" stored="true"/>
+		
+		<!-- @Field("bodyValue")  -->
+		<field name="body_value" type="string"  indexed="true"
+			required="false" multiValued="false" stored="true"/>
+		
+		<!-- @Field("updatedTimestamp")  -->
+		<field name="updated_timestamp" type="long"  indexed="true"
+			required="true" multiValued="false" stored="true"/>
+				
+		<!-- Body Text Search Field, generated -->
+		<field name="body_text" type="text" indexed="true" stored="false"
 			multiValued="false" />
-			 -->
-			
+				
+				
 		<!-- Diego Ceccarelli <diego.ceccarelli@isti.cnr.it> 17-11-2012 -->
 		<!-- SEVERE: Unable to use updateLog: _version_ field must exist in schema -->
 		<field name="_version_" type="long" indexed="true" stored="true"
 			multiValued="false" />
 			 
 		<!-- / - -->
-
-		<!-- Full Text Search Field -->
-		<field name="text" type="text" indexed="true" stored="false"
-			multiValued="true" />
-		
 	</fields>
-	<uniqueKey>annotationId_string</uniqueKey>
-	<!-- defaultSearchField>hasBody</defaultSearchField-->
+
+	<!--  default properties -->
+	<uniqueKey>annotation_id_url</uniqueKey>
 	<solrQueryParser defaultOperator="AND" />
+	<defaultSearchField>body_text</defaultSearchField>
 	
-	<!-- copying to full text search field  -->
-	<defaultSearchField>text</defaultSearchField>
-	<copyField source="body_value" dest="text" />
-	<copyField source="label" dest="text" />
-	<copyField source="tag_id" dest="text" />
-	<copyField source="*_multilingual" dest="text" />
-	<copyField source="annotationId_string.*" dest="text" />
-	<copyField source="language.*" dest="text" />
-	<copyField source="body_type.*" dest="text" />		
+	<!--  Generated Fields -->
+	<copyField source="body_value" dest="body_text" />
 	
 </schema>
