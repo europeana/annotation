@@ -18,6 +18,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 
 /**
  * <CURRENT SPECIFICATION> POST /<annotation-web>/annotation.jsonLd GET /
@@ -26,16 +27,16 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
  */
 
 @Controller
-@Api(value = "web-annotation", description = "Web Annotation - Rest Service(json-ld)")
+@Api(value = "web-annotation-protocol", description = "Web Annotation Protocol API")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = WebAnnotationFields.SAMPLES_JSONLD, value = "")
-	public ResponseEntity<String> createAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "")
+	public ResponseEntity<String> createAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
-			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "false") boolean indexOnCreate,
+			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
 					throws HttpException {
@@ -45,11 +46,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/{annoType}.jsonld", method = RequestMethod.POST, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = WebAnnotationFields.SAMPLES_JSONLD_WITH_TYPE, value = "")
-	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD_WITH_TYPE, value = "")
+	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
-			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "false") boolean indexOnCreate,
+			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType
@@ -72,32 +73,32 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.GET, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> getAnnotation(
-			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
 			) throws HttpException {
 
-			String action = "get:/annotationld/{provider}/{identifier}";
+			String action = "get:/annotation/{provider}/{identifier}";
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 	
 	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.GET, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> getAnnotationJsonld(
-			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
 			) throws HttpException {
 
-			String action = "get:/annotationld/{provider}/{identifier}.jsonld";
+			String action = "get:/annotation/{provider}/{identifier}.jsonld";
 			
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 
 	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.PUT, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
-	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "")
+	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
@@ -110,8 +111,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	
 	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.PUT, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = WebAnnotationFields.UPDATE_SAMPLES_JSONLD, value = "")
-	public ResponseEntity<String> updateAnnotationJsonld(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "")
+	public ResponseEntity<String> updateAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
@@ -124,7 +125,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	
 	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.DELETE, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<String> deleteAnnotationJsonld(@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+	public ResponseEntity<String> deleteAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
@@ -137,7 +138,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.DELETE, produces = { "application/ld+json",
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> deleteAnnotation(
-			@RequestParam(value = WebAnnotationFields.WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
