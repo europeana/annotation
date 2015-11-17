@@ -84,5 +84,29 @@ public class AnnotationSetSerializer extends JsonLd {
 
 		return items;
 	}
+	
+	
+	 /**
+	  * TODO: move this to base class
+     * build appropriate property representation for string arrays 
+     * @param propertyName
+     * @param valueList
+     * @return
+     */
+	protected JsonLdProperty buildArrayProperty(String propertyName, String[] values) {
+
+		if (values == null)
+			return null;
+
+		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
+		JsonLdPropertyValue propertyValue;
+		for (int i = 0; i < values.length; i++) {
+			propertyValue = new JsonLdPropertyValue();
+			propertyValue.setValue(values[i]);
+			arrProperty.addValue(propertyValue);
+		}
+
+		return arrProperty;
+	}
 
 }
