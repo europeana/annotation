@@ -137,6 +137,14 @@ public interface WebAnnotationFields {
 	public static final String HTTP = "http://";
 
 	/**
+	 * Markup
+	 */
+	public static final String MARKUP_ITEM = "/item";
+	public static final String MARKUP_RECORD = "/record";
+	
+	
+	
+	/**
 	 * 
 	 */
 	// TODO: move to constant to authentication interfaces/classes

@@ -40,19 +40,19 @@ public class SolrAnnotationUtils {
 	protected SolrQuery toSolrQuery(Query searchQuery) {
 
 		SolrQuery solrQuery = new SolrQuery();
-		
+
 		solrQuery.setQuery(searchQuery.getQuery());
-		
+
 		solrQuery.setRows(searchQuery.getRows());
-        solrQuery.setStart(searchQuery.getStart());
-		
+		solrQuery.setStart(searchQuery.getStart());
+
 		if (searchQuery.getFilters() != null)
-            solrQuery.addFilterQuery(searchQuery.getFilters());
-        
-		if (searchQuery.getFacetFields() != null) 
-				solrQuery.addFacetField(searchQuery.getFacetFields());
-			
-        return solrQuery;
+			solrQuery.addFilterQuery(searchQuery.getFilters());
+
+		if (searchQuery.getFacetFields() != null)
+			solrQuery.addFacetField(searchQuery.getFacetFields());
+
+		return solrQuery;
 	}
 
 	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation) {
@@ -72,14 +72,21 @@ public class SolrAnnotationUtils {
 		// solrAnnotationImpl.setInternalType(annotation.getInternalType());
 		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
 		Body body = annotation.getBody();
-		if (withMultilingual)
-			body = convertToSolrMultilingual(body);
-		solrAnnotationImpl.setBody(body);
+
+		if (body != null) {
+			solrAnnotationImpl.setBody(body);
+			solrAnnotationImpl.setBodyValue(body.getValue());
+			solrAnnotationImpl.setBodyTagId(solrAnnotationImpl.getBodyTagId());
+			solrAnnotationImpl.setBodyInternalTypeKey(body.getInternalType());
+			if (withMultilingual)
+				body = convertToSolrMultilingual(body);
+		}
+
 		solrAnnotationImpl.setAnnotatedAt(annotation.getAnnotatedAt());
 		solrAnnotationImpl.setAnnotatedByString(annotation.getAnnotatedBy().getName());
 		solrAnnotationImpl.setTarget(annotation.getTarget());
 		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
-		solrAnnotationImpl.setBodyValue(body.getValue());
+
 		// solrAnnotationImpl.setLanguage(body.getLanguage());
 		solrAnnotationImpl.setMotivation(annotation.getMotivation());
 		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
@@ -87,7 +94,6 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
 		solrAnnotationImpl.setAnnotationIdUrl(annotation.getAnnotationId().toHttpUrl());
 
-		solrAnnotationImpl.setBodyTagId(solrAnnotationImpl.getBodyTagId());
 		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
 		// TODO: add the equivalent to solr configs
 		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
@@ -169,29 +175,27 @@ public class SolrAnnotationUtils {
 
 		return res;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T extends AnnotationView> ResultSet<T> buildResultSet(QueryResponse rsp) {
-		
+
 		ResultSet<T> resultSet = new ResultSet<>();
-		List<T> beans = (List<T>) rsp
-                .getBeans(AnnotationViewAdapter.class);
+		List<T> beans = (List<T>) rsp.getBeans(AnnotationViewAdapter.class);
 		resultSet.setResults(beans);
-		
-		resultSet.setResultSize(rsp.getResults()
-                .getNumFound());
-		
-		if(rsp.getFacetFields() != null){
+
+		resultSet.setResultSize(rsp.getResults().getNumFound());
+
+		if (rsp.getFacetFields() != null) {
 			List<FacetFieldView> facetFields = new ArrayList<>(rsp.getFacetFields().size());
 			for (FacetField solrFacetField : rsp.getFacetFields())
 				facetFields.add(new FacetFieldAdapter(solrFacetField));
-			
+
 			resultSet.setFacetFields(facetFields);
 		}
-		
+
 		if (rsp.getFacetQuery() != null)
-            resultSet.setQueryFacets(rsp.getFacetQuery());
-        
+			resultSet.setQueryFacets(rsp.getFacetQuery());
+
 		return resultSet;
 	}
 }

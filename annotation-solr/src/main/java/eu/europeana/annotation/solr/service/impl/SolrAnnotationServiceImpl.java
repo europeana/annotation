@@ -16,6 +16,7 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
@@ -42,7 +43,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 			if(anno instanceof SolrAnnotation) 
 				indexedAnno = (SolrAnnotation) anno;
 			else{
-				indexedAnno = copyIntoSolrAnnotation(anno, true);
+				boolean withMultilingual = false;
+				indexedAnno = copyIntoSolrAnnotation(anno, withMultilingual);
 			}
 			
 			processSolrBeanProperties(indexedAnno);
@@ -69,8 +71,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		// solrAnnotation.setInternalTypeKey(solrAnnotation.getInternalType());
 
 		// <!-- @Field("bodyInternalTypeKey") -->
-		solrAnnotation.setBodyInternalTypeKey(solrAnnotation.getBody().getInternalType());
-
+		
 		// <!-- @Field("targetInternalTypeKey") -->
 		solrAnnotation.setTargetInternalTypeKey(solrAnnotation.getTarget().getInternalType());
 
@@ -98,24 +99,42 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		// solrAnnotation.setBodyTagId(solrAnnotation.getBody().get);
 
 		// <!-- @Field("bodyValue") -->
-		if (solrAnnotation.getBody() != null)
+		if (solrAnnotation.getBody() != null){
 			solrAnnotation.setBodyValue(solrAnnotation.getBody().getValue());
+			
+			//TODO: solved in copy annotation
+			//solrAnnotation.setBodyInternalTypeKey(solrAnnotation.getBody().getInternalType());
+
+		}
 
 	}
 
 	private List<String> extractRecordIds(List<String> targetUrls) {
 
 		List<String> recordIds = new ArrayList<String>(targetUrls.size());
-		int pos;
 		String target;
 		for (int i = 0; i < targetUrls.size(); i++) {
 			target = targetUrls.get(i);
-			pos = target.indexOf("/item");
-			if (pos > 0)
-				recordIds.add(target.substring(pos + "/item".length()));
+			
+			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_ITEM);	
+			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_RECORD);	
 		}
 
 		return recordIds;
+	}
+
+	protected void addToRecordIds(List<String> recordIds, String target, String markup) {
+		String recordId = extractRecordId(target, markup); 
+		if (recordId != null)
+			recordIds.add(recordId);
+	}
+
+	protected String extractRecordId(String target, String markup) {
+		int pos;
+		pos = target.indexOf(markup);
+		if (pos > 0) 
+			return target.substring(pos + markup.length());
+		return null;
 	}
 
 	@Override

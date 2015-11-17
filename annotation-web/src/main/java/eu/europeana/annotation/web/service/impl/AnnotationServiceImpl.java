@@ -21,9 +21,7 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
-import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -352,7 +350,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 				getSolrService().store(res);
 			} catch (Exception e) {
 				Logger.getLogger(getClass().getName())
-						.warn("The annotation was stored correctly into the Mongo, but it was not indexed yet. " + e);
+						.warn("The annotation was stored correctly into the Mongo, but it was not indexed yet. ", e);
 				// throw new RuntimeException(e);
 			}
 
@@ -363,8 +361,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 //				getSolrTagService().findOrStore(indexedTag);
 			} catch (Exception e) {
 				Logger.getLogger(getClass().getName())
-						.warn("The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. "
-								+ e);
+						.warn("The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. ", e);
 			}
 
 			// save the time of the last SOLR indexing
@@ -448,7 +445,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName())
 					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
-							+ e);
+							, e);
 		}
 
 		// save the time of the last SOLR indexing
@@ -460,7 +457,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 			getMongoPersistence().updateIndexingTime(res.getAnnotationId());
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName())
-					.warn("The time of the last SOLR indexing could not be saved. " + e);
+					.warn("The time of the last SOLR indexing could not be saved. " , e);
 		}
 	}
 
