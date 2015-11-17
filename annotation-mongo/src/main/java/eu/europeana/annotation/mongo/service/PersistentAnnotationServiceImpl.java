@@ -249,6 +249,10 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public Annotation update(Annotation object) {
+		
+		//reset last update timestamp
+		object.setLastUpdate(new Date());
+		
 		if(object instanceof PersistentAnnotation)
 			return this.update((PersistentAnnotation) object);
 		else{

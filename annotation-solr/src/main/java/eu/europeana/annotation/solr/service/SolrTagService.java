@@ -2,6 +2,7 @@ package eu.europeana.annotation.solr.service;
 
 import java.util.List;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 
@@ -20,6 +21,13 @@ public interface SolrTagService {
 	 * @param solrTag
 	 */
 	public void update(SolrTag solrTag) throws TagServiceException ;
+	
+	/**
+	 * This method updates a SolrTag object in SOLR.
+	 * @param solrTag
+	 */
+	public void update(Annotation anno) throws TagServiceException ;
+	
 	
 	
 	/**

@@ -78,6 +78,5 @@ public interface Annotation {
 
 	public boolean isPrivate();
 
-	public void setDefaultMotivation();
 	
 }

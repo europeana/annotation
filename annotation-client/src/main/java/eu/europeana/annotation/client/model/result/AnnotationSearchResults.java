@@ -3,6 +3,7 @@ package eu.europeana.annotation.client.model.result;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.view.AnnotationView;
 
 public class AnnotationSearchResults extends AbstractAnnotationApiResponse{
 

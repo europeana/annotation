@@ -7,253 +7,202 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
-import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
-import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
 
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation {
 
-	private String annotationId_string;
-	private String resourceId;
-	private String label;
-	private String annotation_type;
-	private String http_uri;
-	private String language;
-	
-	@Override
-	@Field("tag_id")
-	public void setTagId(String id) {
-		if (super.getBody() == null) {
-			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-					BodyTypes.SEMANTIC_TAG.name());
-			((PlainTagBody) body).setTagId(id);
-			super.setBody(body);
-		} else {
-			((PlainTagBody) super.getBody()).setTagId(id);
-		}
-//		super.setId(id);
-	}
-
-	public String getTagId() {
-		String res = "";
-		if (getBody() != null && ((PlainTagBody) super.getBody()).getTagId() != null) 
-			res = ((PlainTagBody) super.getBody()).getTagId();
-		return res;
-	}
-
-	public List<String> getBodyType() {
-//		public String getBodyType() {
-//		String res = "";
-		
-//		if (getBody() != null && getBody().getType() != null) 
-//			res = getBody().getType();
-//		return res;
-		return getBody().getType();
-	}
-
-	@Field("body_internaltype")
-	public void setBodyInternalType(String bodyInternalType) {
-		
-		if (super.getBody() == null) {
-			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-					bodyInternalType);
-			super.setBody(body);
-		}
-		
-		super.getBody().setInternalType(bodyInternalType);
-	}
-
-	public String getBodyInternalType() {	
-		return super.getBody().getInternalType();
-	}
-
-	@Field("body_type")
-	public void setBodyType(List<String> bodyType) {
-		if (super.getBody() != null)
-			super.getBody().setType(bodyType);
-		//this.bodyType = bodyType;
-	}
+	private String annotationIdUrl;
+	private List<String> targetUrls;
+	private List<String> targetRecordIds;
+	private String motivationKey;
+	private String bodyValue;
+	private String bodyInternalTypeKey;
+	private String targetInternalTypeKey;
+	private String annotatedByString;
+	private String internalTypeKey;
+	private String bodyTagId;
+	private Long updatedTimestamp;
 	
 	public String getBodyValue() {
-		String res = "";
-		if (getBody() != null && getBody().getValue() != null) 
-			res = getBody().getValue();
-		return res;
-//		return super.getBody().getValue();
+		return bodyValue;
 	}
 
+	@Override
+	public List<String> getTargetUrls() {
+		return targetUrls;
+	}
+
+	@Override
+	@Field("target_urls")
+	public void setTargetUrls(List<String> targetUrls) {
+		this.targetUrls = targetUrls;
+	}
+
+	@Override
+	public List<String> getTargetRecordIds() {
+		return targetRecordIds;
+	}
+
+	@Override
+	@Field("target_record_ids")
+	public void setTargetRecordIds(List<String> recordIds) {
+		this.targetRecordIds = recordIds;
+	}
+
+	@Override
+	public String getMotivationKey() {
+		return motivationKey;
+	}
+
+	@Override
+	@Field("motivation_key")
+	public void setMotivationKey(String motivationKey) {
+		this.motivationKey = motivationKey;
+	}
+
+	@Override
+	public String getBodyInternalTypeKey() {
+		return bodyInternalTypeKey;
+	}
+
+	@Override
+	@Field("body_internal_type_key")
+	public void setBodyInternalTypeKey(String bodyInternalTypeKey) {
+		this.bodyInternalTypeKey = bodyInternalTypeKey;
+	}
+
+	@Override
+	public String getTargetInternalTypeKey() {
+		return targetInternalTypeKey;
+	}
+
+	@Override
+	@Field("target_internal_type_key")
+	public void setTargetInternalTypeKey(String targetInternalTypeKey) {
+		this.targetInternalTypeKey = targetInternalTypeKey;
+	}
+
+	@Override
+	public String getAnnotationIdUrl() {
+		return annotationIdUrl;
+	}
+
+	
+	@Override
+	@Field("body_tag_id")
+	public void setBodyTagId(String id) {
+		this.bodyTagId = id;
+	}
+
+	@Override
+	public String getBodyTagId() {
+		return bodyTagId;
+	}
+
+	
+	@Override
 	@Field("body_value")
 	public void setBodyValue(String bodyValue) {
-//		if (super.getBody() == null) {
-//			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-//					BodyTypes.SEMANTIC_TAG.name());
-//			body.setValue(bodyValue);
-//			super.setBody(body);
-//		} else {
-		if (super.getBody() != null)
-			super.getBody().setValue(bodyValue);
-		//}
-//		this.bodyValue = bodyValue;
+
+		this.bodyValue = bodyValue;
 	}
 
-//	@Field("*_multilingual")
-//	protected Map<String, String> multiLingual;
+	// @Field("*_multilingual")
+	// protected Map<String, String> multiLingual;
 
 	public Map<String, String> getMultilingual() {
 		Map<String, String> res = new HashMap<String, String>();
-		if (getBody() != null && getBody().getMultilingual() != null) 
+		if (getBody() != null && getBody().getMultilingual() != null)
 			res = getBody().getMultilingual();
 		return res;
-//		return multiLingual;
+		// return multiLingual;
 	}
 
-	@Field("*_multilingual")
+//	@Field("*_multilingual")
 	public void setMultilingual(Map<String, String> multilingual) {
-//		if (super.getBody() == null) {
-//			Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-//					BodyTypes.SEMANTIC_TAG.name());
-//			body.setMultilingual(multilingual);
-//			super.setBody(body);
-//		} else {
-		if (super.getBody() != null) 
+		// if (super.getBody() == null) {
+		// Body body =
+		// BodyObjectFactory.getInstance().createModelObjectInstance(
+		// BodyTypes.SEMANTIC_TAG.name());
+		// body.setMultilingual(multilingual);
+		// super.setBody(body);
+		// } else {
+		if (super.getBody() != null)
 			super.getBody().setMultilingual(multilingual);
-//		}
-//		this.multiLingual = multiLingual;
+		// }
+		// this.multiLingual = multiLingual;
 	}
-	
+
 	/**
-	 * This method adds a new language/label association to the 
-	 * multilingual map.
+	 * This method adds a new language/label association to the multilingual
+	 * map.
+	 * 
 	 * @param language
 	 * @param label
 	 */
 	public void addLabelInMapping(String language, String label) {
 		getMultilingual().put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
-//	    if(this.multiLingual == null) {
-//	        this.multiLingual = new HashMap<String, String>();
-//	    }
-//	    this.multiLingual.put(language + "_multilingual", label);
+		// if(this.multiLingual == null) {
+		// this.multiLingual = new HashMap<String, String>();
+		// }
+		// this.multiLingual.put(language + "_multilingual", label);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.europeana.annotation.solr.model.internal.SolrAnnotation#setAnnotationIdString(java.lang.String)
-	 */
 	@Override
-	@Field("annotationId_string")
-	public void setAnnotationIdString(String annotationId){
-		int pos = annotationId.lastIndexOf("/");
-		AnnotationId annoId = parse(annotationId);
-		setAnnotationId(annoId);
-		this.annotationId_string = annotationId;
-		this.resourceId = annotationId.substring(1, pos);
+	@Field("annotation_id_url")
+	public void setAnnotationIdUrl(String annotationIdUrl) {
+		this.annotationIdUrl = annotationIdUrl;
 	}
-	
+
 	@Override
-	public String getAnnotationIdString() {
-		return annotationId_string;
-	}
-	
-	@Override
-	@Field("annotatedBy_string")
+	//@Field("annotatedBy_string")
 	public void setAnnotatedByString(String annotatedBy) {
-		Agent creator = AgentObjectFactory.getInstance().createModelObjectInstance(
-				AgentTypes.SOFTWARE.name());
-		creator.setName(annotatedBy);
-		super.setAnnotatedBy(creator);
+		this.annotatedByString = annotatedBy;
 	}
-	
+
 	@Override
 	public String getAnnotatedByString() {
-		String res = "";
-		if (getAnnotatedBy() != null) {
-			res = getAnnotatedBy().getName();
-		}
-		return res;
+		return annotatedByString;
 	}
-	
+
 	@Override
-	@Field("resourceId")
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
+	@Field(SolrAnnotationFields.INTERNAL_TYPE_KEY)
+	public void setInternalTypeKey(String internalTypeKey) {
+		this.internalTypeKey = internalTypeKey;
 	}
-	
+
 	@Override
-	public String getResourceId() {
-		return resourceId;
+	public String getInternalTypeKey() {
+		return internalTypeKey;
 	}
-	
+
 	@Override
-	@Field("label")
-	public void setLabel(String label) {
-		this.label = label;
-	}
-	
-	@Override
-	public String getLabel() {
-		return label;
-	}
-	
-	@Override
-	@Field("annotation_type")
-	public void setAnnotationType(String annotation_type) {
-		this.annotation_type = annotation_type;
-	}
-	
-	@Override
-	public String getAnnotationType() {
-		return annotation_type;
-	}
-	
-	@Override
-	@Field("http_uri")
-	public void setHttpUri(String http_uri) {
-		this.http_uri = http_uri;
-	}
-	
-	@Override
-	public String getHttpUri() {
-		return http_uri;
-	}
-	
-	@Override
-	@Field("language")
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	
-	@Override
-	public String getLanguage() {
-		return language;
-	}
-	
-	@Override
-	@Field("annotatedAt")
+//	@Field("annotatedAt")
 	public void setAnnotatedAt(Date annotatedAt) {
-	    super.setAnnotatedAt(annotatedAt);
+		super.setAnnotatedAt(annotatedAt);
 	}
 
 	@Override
 	public Date getAnnotatedAt() {
-	    return super.getAnnotatedAt();
-	}
-	
-	public String toString() {
-		return "SolrAnnotation [solrAnnotationId_string:" + getAnnotationId() + ", annotatedAt:" + getAnnotatedAt() + 
-				", resourceId:" + getResourceId() + ", language:" + getLanguage() + ", label:" + getLabel() + "]";
+		return super.getAnnotatedAt();
 	}
 	
 	@Override
-	public void setDefaultMotivation() {
-		//setMotivation(MotivationTypes.TAGGING.getOaType());
-		throw new RuntimeException("method not supported yet");
+	public Long getUpdatedTimestamp() {
+		return updatedTimestamp;
+	}
+
+	@Override
+	@Field("updated_timestamp")
+	public void setUpdatedTimestamp(Long updatedTimestamp) {
+		this.updatedTimestamp = updatedTimestamp;
+	}
+
+	public String toString() {
+		return "SolrAnnotation [annotationIdUrl:" + getAnnotationIdUrl() + ", annotationIdUrl:" + getAnnotationIdUrl()
+				+ ", annotatedAt:" + getAnnotatedAt() + ", bodyValue:" + getBodyValue() + "]";
 	}
 
 }

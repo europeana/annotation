@@ -1,43 +1,72 @@
 package eu.europeana.annotation.solr.model.internal;
 
+import java.util.Date;
+import java.util.List;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
 public interface SolrAnnotation extends Annotation {
 
-	void setAnnotatedByString(String annotatedBy);
+	
 
-	/**
-	 * The syntax for an annotationId string is '\resourceId\annotationId'
-	 * @param annotationId
-	 */
-	void setAnnotationIdString(String annotationId);
+//	void setResourceId(String resourceId);
+//	
+//	String getResourceId();
+
+//	public void setLanguage(String language);
+//
+//	public String getLanguage();
+//
+//	public void setHttpUri(String httpUri);
+//
+//	public String getHttpUri();
+	
+	public void setInternalTypeKey(String annotation_type);
+	
+	public String getInternalTypeKey();
+	
+	Date getAnnotatedAt();
+
+	void setAnnotatedAt(Date annotatedAt);
 
 	String getAnnotatedByString();
 
-	String getAnnotationIdString();
-	
-	void setResourceId(String resourceId);
-	
-	String getResourceId();
-	
-	public void setLabel(String label);
-	
-	public String getLabel();
-	
-	public void setLanguage(String language);
+	void setAnnotatedByString(String annotatedBy);
 
-	public String getLanguage();
+	void setAnnotationIdUrl(String annotationIdUrl);
 
-	public void setHttpUri(String httpUri);
+	void setBodyValue(String bodyValue);
 
-	public String getHttpUri();
-	
-	public void setAnnotationType(String annotation_type);
-	
-	public String getAnnotationType();
-	
-	public void setTagId(String id);
+	String getBodyValue();
 
-	public String getTagId();
+	String getBodyTagId();
+
+	void setBodyTagId(String id);
+
+	String getAnnotationIdUrl();
+
+	void setTargetInternalTypeKey(String targetInternalTypeKey);
+
+	String getTargetInternalTypeKey();
+
+	void setBodyInternalTypeKey(String bodyInternalTypeKey);
+
+	String getBodyInternalTypeKey();
+
+	void setMotivationKey(String motivationKey);
+
+	String getMotivationKey();
+
+	void setTargetRecordIds(List<String> recordIds);
+
+	List<String> getTargetRecordIds();
+
+	void setTargetUrls(List<String> targetUrls);
+
+	List<String> getTargetUrls();
+
+	void setUpdatedTimestamp(Long updatedTimestamp);
+
+	Long getUpdatedTimestamp();
 }

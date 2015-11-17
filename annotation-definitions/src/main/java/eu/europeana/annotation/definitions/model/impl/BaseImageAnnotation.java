@@ -1,11 +1,14 @@
 package eu.europeana.annotation.definitions.model.impl;
 
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class BaseImageAnnotation extends AbstractAnnotation implements ImageAnnotation {
 
 	public BaseImageAnnotation(){
 		super();
+		setMotivation(MotivationTypes.COMMENTING.getOaType());
+
 	} 
 	
 	@Override
@@ -14,11 +17,7 @@ public class BaseImageAnnotation extends AbstractAnnotation implements ImageAnno
 		return getTarget().getHttpUri();
 	}
 	
-	@Override
-	public void setDefaultMotivation() {
-		throw new RuntimeException("method not implemented yet!");
-	}
-
+	
 	
 
 	

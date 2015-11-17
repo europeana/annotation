@@ -7,13 +7,8 @@ public class BaseObjectTag extends AbstractAnnotation implements ObjectTag {
 
 	public BaseObjectTag() {
 		super();
-	}
-
-	@Override
-	public void setDefaultMotivation() {
 		setMotivation(MotivationTypes.TAGGING.getOaType());
 	}
-
 	
 	
 }

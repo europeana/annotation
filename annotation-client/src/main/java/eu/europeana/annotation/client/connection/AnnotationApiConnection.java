@@ -113,7 +113,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationSearchResults getAnnotationLd(String provider, Long annotationNr) throws IOException {
 		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		if (StringUtils.isNotEmpty(provider))
 			url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
@@ -141,7 +141,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationSearchResults searchAnnotationLd(String target, String resourceId) throws IOException {
 		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH; 
 		url += WebAnnotationFields.SEARCH_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		if (StringUtils.isNotEmpty(target))
 			url += WebAnnotationFields.TARGET + WebAnnotationFields.EQUALS + target;
 		if (StringUtils.isNotEmpty(resourceId))
@@ -234,7 +234,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.ANNOTATION_LD_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
@@ -270,7 +270,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
 //		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
 		url += "annotation/" + motivation + ".jsonld" + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
@@ -326,7 +326,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		if (annoType != null)
 			url += annoType + WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (identifier != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
@@ -362,7 +362,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		if (isTypeJsonld)
 			url += WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		
 		/**
 		 * Execute Europeana API request
@@ -392,7 +392,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
 		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		if (identifier != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
 		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
@@ -429,7 +429,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url+="."+format;	
 		
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey;
 		
 		/**
 		 * Execute Europeana API request
@@ -457,7 +457,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
 		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		if (identifier != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
 		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;	
@@ -491,7 +491,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url+="."+format;	
 		
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + wskey;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey;
 //		if (identifier != null)
 //			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier);
 		
@@ -518,7 +518,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 //		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 //		if (annotationNr != null)
 //			url += WebAnnotationFields.ANNOTATION_NR + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;

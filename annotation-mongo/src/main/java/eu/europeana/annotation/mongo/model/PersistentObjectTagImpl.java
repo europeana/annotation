@@ -10,11 +10,6 @@ public class PersistentObjectTagImpl extends PersistentAnnotationImpl implements
 	public PersistentObjectTagImpl(){
 		super();
 		setInternalType(AnnotationTypes.OBJECT_TAG.name());
-		setDefaultMotivation();
-	}
-
-	@Override
-	public void setDefaultMotivation() {
 		setMotivation(MotivationTypes.TAGGING.getOaType());
 	}
 

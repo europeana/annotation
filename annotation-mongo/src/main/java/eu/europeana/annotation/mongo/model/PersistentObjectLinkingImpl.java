@@ -10,12 +10,9 @@ public class PersistentObjectLinkingImpl extends PersistentAnnotationImpl implem
 	public PersistentObjectLinkingImpl(){
 		super();
 		setInternalType(AnnotationTypes.OBJECT_LINKING.name());
-		setDefaultMotivation();
-	}
-
-	@Override
-	public void setDefaultMotivation() {
 		setMotivation(MotivationTypes.LINKING.getOaType());
+
 	}
+	
 
 }

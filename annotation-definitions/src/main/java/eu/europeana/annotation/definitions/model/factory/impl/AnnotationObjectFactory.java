@@ -36,7 +36,6 @@ public class AnnotationObjectFactory
 	@Override
 	public Annotation createObjectInstance(Enum<AnnotationTypes> modelObjectType) {
 		Annotation res = super.createObjectInstance(modelObjectType);
-		res.setDefaultMotivation();
 		res.setInternalType(modelObjectType.name());
 		return res;
 	}

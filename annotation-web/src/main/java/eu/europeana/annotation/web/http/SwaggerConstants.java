@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model;
+package eu.europeana.annotation.web.http;
 
 public interface SwaggerConstants {
 

@@ -102,10 +102,10 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 				} else {
 					prefix = "";
 				}
-				query = prefix + field + WebAnnotationFields.DELIMETER + query;
+				query = prefix + field + "*:*" + query;
 //			}
 		} else {
-			query = WebAnnotationFields.ALL_SOLR_ENTRIES;
+			query = "*:*";
 		}
 		return query;
 	}

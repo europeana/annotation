@@ -7,12 +7,7 @@ public class BaseObjectLinking extends AbstractAnnotation implements ObjectTag {
 
 	public BaseObjectLinking() {
 		super();
-	}
-
-	@Override
-	public void setDefaultMotivation() {
 		setMotivation(MotivationTypes.LINKING.getOaType());
 	}
-	
 	
 }

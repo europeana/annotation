@@ -1,6 +1,5 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -21,15 +19,12 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.concept.Concept;
-import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
+import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
@@ -42,13 +37,10 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationConst;
-import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
-import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -56,44 +48,37 @@ import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 
 public class AnnotationServiceImpl implements AnnotationService {
 
-	@Autowired
+	@Resource
 	AnnotationConfiguration configuration;
 
-	@Autowired
+	@Resource
 	PersistentAnnotationService mongoPersistance;
 
-	@Autowired
+	@Resource
 	PersistentTagService mongoTagPersistence;
 
-	@Autowired
+	@Resource
 	PersistentProviderService mongoProviderPersistance;
 
-	@Autowired
+	@Resource
 	PersistentConceptService mongoConceptPersistence;
 
-	@Autowired
+	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
 
-	@Autowired
+	@Resource
 	SolrAnnotationService solrService;
 
-	@Autowired
+	@Resource
 	SolrTagService solrTagService;
 	
 	@Resource
 	AuthenticationService authenticationService;
 
-	
-//	@Resource
-//	ApiKeyService apiKeyService;
-//
-//	public ApiKeyService getApiKeyService() {
-//		return apiKeyService;
-//	}
-//
-//	public void setApiKeyService(ApiKeyService apiKeyService) {
-//		this.apiKeyService = apiKeyService;
-//	}
+	AnnotationBuilder annotationBuilder;
+
+	Logger logger = Logger.getLogger(getClass());
+
 
 	public AuthenticationService getAuthenticationService() {
 		return authenticationService;
@@ -103,14 +88,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 		this.authenticationService = authenticationService;
 	}
 
-	AnnotationBuilder controllerHelper;
-
-	Logger logger = Logger.getLogger(getClass());
-
-	public AnnotationBuilder getControllerHelper() {
-		if (controllerHelper == null)
-			controllerHelper = new AnnotationBuilder();
-		return controllerHelper;
+	public AnnotationBuilder getAnnotationHelper() {
+		if (annotationBuilder == null)
+			annotationBuilder = new AnnotationBuilder();
+		return annotationBuilder;
 	}
 
 	@Override
@@ -186,14 +167,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 	// }
 
 	@Override
-	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
-		return getSolrService().search(query);
+	public  List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
+		return null;
+		//return getSolrService().search(query);
 	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
 			throws AnnotationServiceException {
-		return getSolrService().search(query, startOn, limit);
+		return null;
+		//return getSolrService().search(query, startOn, limit);
 	}
 
 	@Override
@@ -366,8 +349,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		if (indexing) {
 			// add solr indexing here
 			try {
-				SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
-				getSolrService().store(indexedAnnotation);
+				getSolrService().store(res);
 			} catch (Exception e) {
 				Logger.getLogger(getClass().getName())
 						.warn("The annotation was stored correctly into the Mongo, but it was not indexed yet. " + e);
@@ -376,8 +358,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 			// check if the tag is already indexed
 			try {
-				SolrTag indexedTag = copyIntoSolrTag(res.getBody());
-				getSolrTagService().findOrStore(indexedTag);
+				//TODO : enable+ refactor when semantic tagging is in place 
+//				SolrTag indexedTag = copyIntoSolrTag(res.getBody());
+//				getSolrTagService().findOrStore(indexedTag);
 			} catch (Exception e) {
 				Logger.getLogger(getClass().getName())
 						.warn("The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. "
@@ -409,118 +392,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 			throw new AnnotationValidationException("Annotaion.AnnotationId.provider must not be null!");
 	}
 
-	private SolrAnnotation copyIntoSolrAnnotation(Annotation annotation) {
+	
+	
 
-		return copyIntoSolrAnnotation(annotation, false);
-	}
-
-	private SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual) {
-
-		SolrAnnotation res = null;
-
-		SolrAnnotationImpl solrAnnotationImpl = new SolrAnnotationImpl();
-		// solrAnnotationImpl.setType(annotation.getType());
-		// TODO: update this to store the internal type instead of the oa type
-		// in the index
-		// TODO: add the internal type solr configs
-		solrAnnotationImpl.setAnnotationType(annotation.getInternalType());
-		// solrAnnotationImpl.setInternalType(annotation.getInternalType());
-		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
-		Body body = annotation.getBody();
-		if (withMultilingual)
-			body = convertToSolrMultilingual(body);
-		solrAnnotationImpl.setBody(body);
-		solrAnnotationImpl.setAnnotatedAt(annotation.getAnnotatedAt());
-		solrAnnotationImpl.setAnnotatedByString(annotation.getAnnotatedBy().getName());
-		solrAnnotationImpl.setTarget(annotation.getTarget());
-		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
-		solrAnnotationImpl.setLabel(body.getValue());
-		solrAnnotationImpl.setLanguage(body.getLanguage());
-		solrAnnotationImpl.setMotivation(annotation.getMotivation());
-		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
-		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
-		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
-		//TODO: verify if URI or HttpUrl is needed here
-		solrAnnotationImpl.setAnnotationIdString(annotation.getAnnotationId().toUri());
-
-		solrAnnotationImpl.setTagId(solrAnnotationImpl.getTagId());
-		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
-		// TODO: add the equivalent to solr configs
-		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
-
-		res = solrAnnotationImpl;
-
-		return res;
-	}
-
-	/**
-	 * This method converts a multilingual part of the Annotation Body in a
-	 * multilingual value that is conform for Solr. E.g. 'en' in
-	 * 'EN_multilingual'
-	 * 
-	 * @param body
-	 * @return converted body
-	 */
-	private Body convertToSolrMultilingual(Body body) {
-		Body bodyRes = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.SEMANTIC_TAG.name());
-		Map<String, String> multilingualMap = body.getMultilingual();
-		Map<String, String> solrMultilingualMap = new HashMap<String, String>();
-		for (Map.Entry<String, String> entry : multilingualMap.entrySet()) {
-			String key = entry.getKey();
-			if (!key.contains(SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL)) {
-				key = key.toUpperCase() + SolrAnnotationConst.UNDERSCORE + SolrAnnotationConst.MULTILINGUAL;
-			}
-			solrMultilingualMap.put(key, entry.getValue());
-		}
-		if (solrMultilingualMap.size() > 0)
-			bodyRes.setMultilingual(solrMultilingualMap);
-		// if (StringUtils.isNotEmpty(body.getType()))
-		if (body.getType() != null)
-			bodyRes.setType(body.getType());
-		if (StringUtils.isNotEmpty(body.getContentType()))
-			bodyRes.setContentType(body.getContentType());
-		if (StringUtils.isNotEmpty(body.getHttpUri()))
-			bodyRes.setHttpUri(body.getHttpUri());
-		if (StringUtils.isNotEmpty(body.getLanguage()))
-			bodyRes.setLanguage(body.getLanguage());
-		if (StringUtils.isNotEmpty(body.getMediaType()))
-			bodyRes.setMediaType(body.getMediaType());
-		if (StringUtils.isNotEmpty(body.getValue()))
-			bodyRes.setValue(body.getValue());
-		if (StringUtils.isNotBlank(((PlainTagBody) body).getTagId())) {
-			((PlainTagBody) bodyRes).setTagId(((PlainTagBody) body).getTagId());
-		}
-		return bodyRes;
-	}
-
-	/**
-	 * This method converts Body object in SolrTag object.
-	 * 
-	 * @param tag
-	 *            The body object
-	 * @return the SolrTag object
-	 */
-	private SolrTag copyIntoSolrTag(Body tag) {
-
-		SolrTag res = null;
-
-		tag = convertToSolrMultilingual(tag);
-		SolrTagImpl solrTagImpl = new SolrTagImpl();
-		if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
-			solrTagImpl.setId(((PlainTagBody) tag).getTagId());
-		}
-		// solrTagImpl.setTagType(tag.getType());
-		solrTagImpl.setTagType(TypeUtils.getTypeListAsStr(tag.getType()));
-		solrTagImpl.setValue(tag.getValue());
-		solrTagImpl.setLanguage(tag.getLanguage());
-		solrTagImpl.setContentType(tag.getContentType());
-		solrTagImpl.setHttpUri(tag.getHttpUri());
-		solrTagImpl.setMultilingual(tag.getMultilingual());
-
-		res = solrTagImpl;
-
-		return res;
-	}
+	
 
 	/**
 	 * This method converts Body object in SolrTag object.
@@ -551,7 +426,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
-
+		
 		Annotation res = getMongoPersistence().update(annotation);
 	
 		if(getConfiguration().isIndexingEnabled())
@@ -562,16 +437,14 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	protected void reindexAnnotation(Annotation res) {
 		try {
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
-			getSolrService().update(indexedAnnotation);
+			getSolrService().update(res);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
 		// check if the tag is already indexed
 		try {
-			SolrTag indexedTag = copyIntoSolrTag(res.getBody());
-			getSolrTagService().update(indexedTag);
+			getSolrTagService().update(res);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName())
 					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
@@ -596,12 +469,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 		Annotation res = getMongoPersistence().updateStatus(annotation);
 
-		try {
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
-			getSolrService().update(indexedAnnotation);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+//		try {
+//			//TODO: status is not in the index now. Enable when available
+//			//getSolrService().update(res);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
 
 		return res;
 	}
@@ -611,13 +484,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	// annotationNr) {
 	public void deleteAnnotation(AnnotationId annoId) {
 		try {
-			// Annotation res =
-			// getMongoPersistance().findByID(String.valueOf(annotationNr));
-			// Annotation res = getMongoPersistence().find(resourceId, provider,
-			// annotationNr);
-			Annotation res = getMongoPersistence().find(annoId);
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
-			getSolrService().delete(indexedAnnotation);
+			//TODO: completely delete from mongo and solr
+			//getMongoPersistence().delete(annoId);
+			getSolrService().delete(annoId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -633,9 +502,8 @@ public class AnnotationServiceImpl implements AnnotationService {
 			// Annotation res = getMongoPersistence().find(resourceId, provider,
 			// annotationNr);
 			Annotation res = getMongoPersistence().find(annoId);
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res, true);
-			getSolrService().delete(indexedAnnotation);
-			getSolrService().store(indexedAnnotation);
+			getSolrService().delete(res.getAnnotationId());
+			getSolrService().store(res);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -644,13 +512,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Override
 	public Annotation disableAnnotation(AnnotationId annoId) {
 		try {
+			//disable annotation
 			Annotation res = getMongoPersistence().find(annoId);
-			res.setDisabled(true);
-			Annotation updateRes = getMongoPersistence().update(res);
-			SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(res);
-			indexedAnnotation.setAnnotationId(res.getAnnotationId());
-			getSolrService().delete(indexedAnnotation);
-            return updateRes;
+			return disableAnnotation(res);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -662,7 +526,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		try {
 			annotation.setDisabled(true);
 			res = getMongoPersistence().update(annotation);
-	//		SolrAnnotation indexedAnnotation = copyIntoSolrAnnotation(annotation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -675,9 +538,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	protected void removeFromIndex(Annotation annotation) {
 		try{
-			SolrAnnotation indexedAnnotation = new SolrAnnotationImpl();
-			indexedAnnotation.setAnnotationId(annotation.getAnnotationId());
-			getSolrService().delete(indexedAnnotation);
+			getSolrService().delete(annotation.getAnnotationId());
 		}catch(Exception e){
 			logger.error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toUri(), e);
 		}
