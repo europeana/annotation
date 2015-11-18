@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -25,6 +26,7 @@ import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationProfiles;
 import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.corelib.utils.StringArrayUtils;
 
@@ -37,8 +39,9 @@ import eu.europeana.corelib.utils.StringArrayUtils;
 public class WebAnnotationSearchRest extends BaseRest {
 
 	@RequestMapping(value = { "/annotation/search",
-			"/annotation/search.jsonld" }, method = RequestMethod.GET, produces = { "application/ld+json",
+			"/annotation/search.jsonld" }, method = {RequestMethod.GET,RequestMethod.POST}, produces = { "application/ld+json",
 					MediaType.APPLICATION_JSON_VALUE })
+	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "search")
 	public ResponseEntity<String> search(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,
@@ -74,10 +77,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 	        String jsonLd = serializer.serialize(searchProfile);
 
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-			//headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-			//headers.add(HttpHeaders.ETAG, "" + etag);
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
-			//headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_CONTAINER);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET+"," +  HttpHeaders.ALLOW_POST);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 

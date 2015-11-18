@@ -21,5 +21,10 @@ public interface SwaggerConstants {
 	public static final String SEARCH_STATUS_FIELDS_LINK = "Valid status fields are 'public', 'private', 'disabled'.";
 	public static final String SEARCH_NOTES = "Please fill in either 'resourceId' or 'target' field. One of this fields is mandatory for search." 
 			+ " Sample 'resourceId'='/webanno/234'. Sample 'target'='http://data.europeana.eu/item/123/xyz'.";
-
+	
+	public static final String SEARCH_SOLR_FIELDS = "motivation_key, target_urls, body_value, body_text, annotation_id_url, target_record_ids";
+	
+	public static final String SEARCH_HELP_NOTE = "The following fields are available for search: "+ SEARCH_SOLR_FIELDS +". Default is body_text (i.e. no field specified in search query), urls and ids are keywords and need to be submitted in quotes (e.g. target_record_ids:\"/123/xyz\")";
+	
+			
 }

@@ -86,7 +86,7 @@ public class BaseJsonldRest extends BaseRest{
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
@@ -170,7 +170,7 @@ public class BaseJsonldRest extends BaseRest{
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + etag);
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
@@ -283,7 +283,7 @@ public class BaseJsonldRest extends BaseRest{
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + updatedAnnotation.getLastUpdate().hashCode());
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);

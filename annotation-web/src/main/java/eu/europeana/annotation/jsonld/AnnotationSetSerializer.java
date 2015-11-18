@@ -67,7 +67,8 @@ public class AnnotationSetSerializer extends JsonLd {
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL_ITEMS, getAnnotationSet().getResultSize());
 		
 		String[] contains = serializeItems(profile);
-		jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.CONTAINS, contains));
+		if(contains != null && contains.length > 0)
+			jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.CONTAINS, contains));
 
 		put(jsonLdResource);
 
