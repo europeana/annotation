@@ -268,7 +268,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			target.setInputString(valueObject.toString());
 			anno.setTarget(target);
 			break;
-		case (WebAnnotationFields.OA + ":" + WebAnnotationFields.EQUIVALENT_TO):
+		case (WebAnnotationFields.EQUIVALENT_TO):
 			anno.setEquivalentTo((String) valueObject);
 			break;
 		default:
