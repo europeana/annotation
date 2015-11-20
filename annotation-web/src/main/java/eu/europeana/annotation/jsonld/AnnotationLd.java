@@ -225,7 +225,7 @@ public class AnnotationLd extends JsonLd {
 					annotation.setEquivalentTo(equivalentToValue);
 		    	break;
 		    default:
-		    	break;
+		    	throw new AnnotationAttributeInstantiationException(key, AnnotationAttributeInstantiationException.MESSAGE_UNKNOWN_TYPE);
 		    }		    
 		}	
 
