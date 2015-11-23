@@ -2,7 +2,7 @@ package eu.europeana.annotation.definitions.model.search;
 
 public enum SearchProfiles {
 	
-	FACET, MINIMAL, STANDARD;
+	FACET, STANDARD;
 
 	public static boolean contains(String value) {
 
