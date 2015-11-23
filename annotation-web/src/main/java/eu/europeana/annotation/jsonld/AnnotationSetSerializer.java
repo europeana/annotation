@@ -1,8 +1,5 @@
 package eu.europeana.annotation.jsonld;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
@@ -13,6 +10,7 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
+import eu.europeana.annotation.web.exception.FunctionalRuntimeException;
 
 public class AnnotationSetSerializer extends JsonLd {
 
@@ -65,9 +63,9 @@ public class AnnotationSetSerializer extends JsonLd {
 		String[] oaType = new String[] { "BasicContainer", "Collection" };
 		jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.AT_TYPE, oaType));
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL_ITEMS, getAnnotationSet().getResultSize());
-		
+
 		String[] contains = serializeItems(profile);
-		if(contains != null && contains.length > 0)
+		if (contains != null && contains.length > 0)
 			jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.CONTAINS, contains));
 
 		put(jsonLdResource);
@@ -76,24 +74,32 @@ public class AnnotationSetSerializer extends JsonLd {
 	}
 
 	protected String[] serializeItems(SearchProfiles profile) {
-		// switch(profile)
-		String[] items = new String[(int) getAnnotationSet().getResults().size()];
-		int i = 0;
-		for (AnnotationView anno : getAnnotationSet().getResults()) {
-			items[i++] = anno.getId();
-		}
 
-		return items;
+		if (SearchProfiles.FACET.equals(profile))
+			return null;
+
+		// switch(profile)
+		if (SearchProfiles.STANDARD.equals(profile)) {
+
+			String[] items = new String[(int) getAnnotationSet().getResults().size()];
+			int i = 0;
+			for (AnnotationView anno : getAnnotationSet().getResults()) {
+				items[i++] = anno.getId();
+			}
+			return items;
+		}
+		
+		throw new FunctionalRuntimeException("Unsupported search profile: " + profile);
 	}
-	
-	
-	 /**
-	  * TODO: move this to base class
-     * build appropriate property representation for string arrays 
-     * @param propertyName
-     * @param valueList
-     * @return
-     */
+
+	/**
+	 * TODO: move this to base class build appropriate property representation
+	 * for string arrays
+	 * 
+	 * @param propertyName
+	 * @param valueList
+	 * @return
+	 */
 	protected JsonLdProperty buildArrayProperty(String propertyName, String[] values) {
 
 		if (values == null)

@@ -112,7 +112,28 @@ public class WebAnnotationSearchRest extends BaseRest {
 		
 		searchQuery.setFilters(filters);
 		
+		setSearchFields(searchQuery, profile);
+		
 		return searchQuery;
+	}
+
+	private void setSearchFields(Query searchQuery, SearchProfiles profile) {
+		switch (profile) {
+		case FACET:
+			//only facets, no search fields
+			searchQuery.setRows(0);
+			break;
+
+		case STANDARD:
+			//only facets, no search fields
+			//TODO: set annotationIdUrl only
+			break;
+
+		default:
+			//TODO: consider throwing an exception
+			break;
+		}
+		
 	}
 
 	protected boolean isFacetsRequest(String[] facets) {
