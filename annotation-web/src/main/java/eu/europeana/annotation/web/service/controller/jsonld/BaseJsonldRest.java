@@ -327,7 +327,7 @@ public class BaseJsonldRest extends BaseRest{
 		if (updatedWebAnnotation.getSerializedAt() != null) 
 			storedAnnotation.setSerializedAt(updatedWebAnnotation.getSerializedAt());
 		if (updatedWebAnnotation.getSerializedBy() != null) 
-			storedAnnotation.setSerializedBy(updatedWebAnnotation.getAnnotatedBy());
+			storedAnnotation.setSerializedBy(updatedWebAnnotation.getSerializedBy());
 		if (updatedWebAnnotation.getBody() != null) 
 			storedAnnotation.setBody(updatedWebAnnotation.getBody());
 		if (updatedWebAnnotation.getTarget() != null) 
