@@ -12,13 +12,12 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 
 public interface AnnotationService {
 
@@ -52,6 +51,12 @@ public interface AnnotationService {
 	 * @return the list of not disabled annotations
 	 */
 	public List<? extends Annotation> getAnnotationListByResourceId (String resourceId);
+	
+	/**
+	 * This method returns all Whitelist entries.
+	 * @return Whitelist entries
+	 */
+	public List<? extends Whitelist> loadWhitelistFromResources();
 	
 	/**
 	 * This method retrieves annotations applying filters.
@@ -313,4 +318,28 @@ public interface AnnotationService {
 
 	void indexAnnotation(AnnotationId annoId);
 
+	/**
+	 * @param newWhitelist
+	 * @return
+	 */
+	public Whitelist storeWhitelist(Whitelist newWhitelist);
+		
+	/**
+	 * @param whitelist
+	 * @return
+	 */
+	public Whitelist updateWhitelist(Whitelist whitelist);
+	
+	/**
+	 * @param url
+	 */
+	public void deleteWhitelist(String url);
+	
+	/**
+	 * @param url
+	 * @return
+	 */
+	public Whitelist getWhitelistByUrl(String url);
+	
+	
 }
