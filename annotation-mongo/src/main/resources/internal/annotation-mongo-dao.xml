@@ -60,4 +60,9 @@
 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentStatusLogImpl" />
 	</bean>
 	
+	<!-- annotation dao bean (concrete instance) -->
+	<bean id="annotation_db_whitelistDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentWhitelistDaoImpl">
+		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentWhitelistImpl" />
+	</bean>
+	
 </beans>

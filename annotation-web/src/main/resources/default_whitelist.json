@@ -1,0 +1,34 @@
+{
+    "whitelist-entries": [
+		{
+			"id": "1",
+			"name": "data.europeana",
+			"httpUrl": "http://data.europeana.eu",
+			"creationDate": "2015-11-25",
+			"lastUpdate": "2015-11-25",
+			"status": "enabled",
+			"enableFrom": "2015-11-25",
+			"disableTo": "2016-11-25"
+		}, 	
+		{
+			"id": "2",
+			"name": "wikidata",
+			"httpUrl": "http://wikidata.org",
+			"creationDate": "2015-11-25",
+			"lastUpdate": "2015-11-25",
+			"status": "enabled",
+			"enableFrom": "2015-11-25",
+			"disableTo": "2016-11-25"
+		}, 	
+		{
+			"id": "3",
+			"name": "dbpedia",
+			"httpUrl": "http://dbpedia.org",
+			"creationDate": "2015-11-25",
+			"lastUpdate": "2015-11-25",
+			"status": "enabled",
+			"enableFrom": "2015-11-25",
+			"disableTo": "2016-11-25"
+		}
+    ]
+}

@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +27,15 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.mongo.model.internal.PersistentWhitelist;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
+import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
@@ -39,6 +44,7 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
+import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -60,6 +66,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	@Resource
 	PersistentConceptService mongoConceptPersistence;
+
+	@Resource
+	PersistentWhitelistService mongoWhitelistPersistence;
 
 	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
@@ -135,6 +144,14 @@ public class AnnotationServiceImpl implements AnnotationService {
 
 	public void setMongoConceptPersistance(PersistentConceptService mongoConceptPersistence) {
 		this.mongoConceptPersistence = mongoConceptPersistence;
+	}
+
+	public PersistentWhitelistService getMongoWhitelistPersistence() {
+		return mongoWhitelistPersistence;
+	}
+
+	public void setMongoWhitelistPersistance(PersistentWhitelistService mongoWhitelistPersistence) {
+		this.mongoWhitelistPersistence = mongoWhitelistPersistence;
 	}
 
 	public PersistentStatusLogService getMongoStatusLogPersistence() {
@@ -316,6 +333,90 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoConceptPersistence().findByUrl(url);
 	}
 
+    
+    /**
+     * Whitelist methods
+     */
+
+	@Override
+	public Whitelist storeWhitelist(Whitelist newWhitelist) {
+
+		// must have registered id generation type.
+		// validateWhitelist(newWhitelist);
+
+		// store in mongo database
+		Whitelist res = getMongoWhitelistPersistence().store(newWhitelist);
+
+		return res;
+	}
+
+	@Override
+	public Whitelist updateWhitelist(Whitelist whitelist) {
+		Whitelist res = getMongoWhitelistPersistence().update(whitelist);
+		return res;
+	}
+
+	@Override
+	public void deleteWhitelist(String url) {
+		getMongoWhitelistPersistence().remove(url);
+	}
+
+	@Override
+	public Whitelist getWhitelistByUrl(String url) {
+		return getMongoWhitelistPersistence().findByUrl(url);
+	}
+
+	public List<? extends Whitelist> retrieveWhitelist() {
+		List<Whitelist> res = new ArrayList<Whitelist>();
+		
+		/**
+		 *  retrieve whitelist objects
+		 */
+		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
+		while (itr.hasNext()) {
+			Whitelist whitelistObj = itr.next();
+			res.add(whitelistObj);
+		}
+		
+		return res;
+	}
+	
+	public List<? extends Whitelist> loadWhitelistFromResources() {
+		List<Whitelist> res = new ArrayList<Whitelist>();
+		
+		/**
+		 * load whitelist from resources in JSON format
+		 */
+		List<Whitelist> defaultWhitelist = new ArrayList<Whitelist>();
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+		defaultWhitelist = JsonUtils.toWhitelistObjectList(
+				System.getProperty("user.dir") + "/src/main/resources/default_whitelist.json");
+		
+		/**
+		 * clean up existing whitelist
+		 */
+		getMongoWhitelistPersistence().removeAll();
+		
+		/**
+		 *  store whitelist objects in database
+		 */
+		Iterator<Whitelist> itrDefault = defaultWhitelist.iterator();
+		while (itrDefault.hasNext()) {
+			storeWhitelist(itrDefault.next());
+		}
+		
+		/**
+		 *  retrieve whitelist objects
+		 */
+		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
+		while (itr.hasNext()) {
+			Whitelist whitelistObj = itr.next();
+			res.add(whitelistObj);
+		}
+		
+		return res;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
