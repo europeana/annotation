@@ -22,8 +22,8 @@ import eu.europeana.annotation.web.model.WhitelistOperationResponse;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
-@Controller
-@Api(value = "whitelist", description = "Whitelist JSON Rest Service")
+//@Controller
+//@Api(value = "whitelist", description = "Whitelist JSON Rest Service")
 public class WhitelistRest extends BaseRest {
 
 
