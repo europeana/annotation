@@ -28,6 +28,7 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.model.view.AnnotationViewAdapter;
 import eu.europeana.annotation.solr.model.view.FacetFieldAdapter;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
 
 public class SolrAnnotationUtils {
 
@@ -49,9 +50,14 @@ public class SolrAnnotationUtils {
 		if (searchQuery.getFilters() != null)
 			solrQuery.addFilterQuery(searchQuery.getFilters());
 
-		if (searchQuery.getFacetFields() != null)
+		if (searchQuery.getFacetFields() != null){
+			solrQuery.setFacet(true);
 			solrQuery.addFacetField(searchQuery.getFacetFields());
-
+			solrQuery.setFacetLimit(SolrAnnotationFields.DEFAULT_FACET_LIMIT);
+		}
+		
+		solrQuery.setFields(searchQuery.getViewFields());
+		
 		return solrQuery;
 	}
 

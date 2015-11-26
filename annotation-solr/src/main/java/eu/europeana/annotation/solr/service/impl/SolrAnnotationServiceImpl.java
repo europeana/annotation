@@ -298,22 +298,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	}
 
-	protected void setFieldList(SolrQuery query) {
-		System.out.println("Warn no fieldlist set");
-		// if(SearchProfiles.)
-
-		// String fields = get(CommonParams.FL,"*");
-
-		// query.setFields(
-		// SolrAnnotationFields.LABEL.getSolrAnnotationField(),
-		// SolrAnnotationFields.LANGUAGE.getSolrAnnotationField(),
-		// SolrAnnotationFields.RESOURCE_ID.getSolrAnnotationField(),
-		// SolrAnnotationFields.ANNOTATION_ID_STR.getSolrAnnotationField(),
-		// SolrAnnotationFields.ANNOTATED_BY.getSolrAnnotationField(),
-		// SolrAnnotationFields.ANNOTATION_TYPE.getSolrAnnotationField()
-		// );
-	}
-
 	@Override
 	public ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException {
 

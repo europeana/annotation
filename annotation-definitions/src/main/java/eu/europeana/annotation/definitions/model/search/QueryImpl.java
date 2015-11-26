@@ -1,6 +1,7 @@
 package eu.europeana.annotation.definitions.model.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +21,10 @@ public class QueryImpl implements Cloneable, Query{
 	private int rows;
 	//private String sort;
 	private String query;
+	private String[] filters;
+	private String[] facetFields;
+	private String[] viewFields;
+
 	@Override
 	public int getStart() {
 		return start;
@@ -70,33 +75,16 @@ public class QueryImpl implements Cloneable, Query{
 		this.facetFields = facetFields;
 	}
 
-	private String[] filters;
-	private String[] facetFields;
-//	private Map<String, String> parameters = new HashMap<>();
-//
-//	public Map<String, String> getParameters() {
-//		return parameters;
-//	}
-//
-//	public boolean hasParameter(String key) {
-//		return parameters.containsKey(key);
-//	}
+	@Override
+	public String[] getViewFields() {
+		return viewFields;
+	}
 
-	/**
-	 * Adds Solr parameters to the Query object
-	 *
-	 * @param key
-	 *   The parameter name
-	 * @param value
-	 *   The value of the parameter
-	 * @return 
-	 *   The Query object
-	 */
-//	public Query setParameter(String key, String value) {
-//		parameters.put(key, value);
-//		return this;
-//	}
-
+	@Override
+	public void setViewFields(String[] viewFields) {
+		this.viewFields = viewFields;
+	}
+	
 	@Override
 	public Query clone() throws CloneNotSupportedException {
 		return (Query) super.clone();
@@ -125,18 +113,9 @@ public class QueryImpl implements Cloneable, Query{
 			}
 		}
 
-//		if (parameters != null) {
-//			for (Entry<String, String> parameter : parameters.entrySet()) {
-//				params.add(parameter.getKey() + "=" + parameter.getValue());
-//			}
-//		}
-
-//		if (getFacetQueries() != null) {
-//			for (String query : getFacetQueries()) {
-//				params.add("facet.query=" + query);
-//			}
-//		}
-
+		if (getFacetFields() != null) 
+			params.add("facet.fields=" + Arrays.toString(getFacetFields()));
+		
 		return StringUtils.join(params, "&");
 	}
 	

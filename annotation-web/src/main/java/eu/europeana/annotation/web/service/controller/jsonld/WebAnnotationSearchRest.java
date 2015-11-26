@@ -21,6 +21,7 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.jsonld.AnnotationSetSerializer;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -120,13 +121,13 @@ public class WebAnnotationSearchRest extends BaseRest {
 	private void setSearchFields(Query searchQuery, SearchProfiles profile) {
 		switch (profile) {
 		case FACET:
-			//only facets, no search fields
+			//only facets, do not return results  
+			//searchQuery.setViewFields(new String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
 			searchQuery.setRows(0);
 			break;
 
 		case STANDARD:
-			//only facets, no search fields
-			//TODO: set annotationIdUrl only
+			searchQuery.setViewFields(new String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
 			break;
 
 		default:

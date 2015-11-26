@@ -123,6 +123,16 @@ public interface WebAnnotationFields {
 	public static final String PARAM_ROWS = "rows";
 
 	/**
+	 * Search API response
+	 */
+	public static final String SEARCH_RESP_FACETS = "facets";
+	public static final String SEARCH_RESP_FACETS_FIELD = "field";
+	public static final String SEARCH_RESP_FACETS_VALUES = "values";
+	public static final String SEARCH_RESP_FACETS_LABEL = "label";
+	public static final String SEARCH_RESP_FACETS_COUNT = "count";
+	
+	
+	/**
 	 * AnnotationId
 	 */
 	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotation";

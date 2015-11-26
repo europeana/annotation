@@ -22,6 +22,10 @@ public interface Query {
 
 	int getStart();
 
+	void setViewFields(String[] viewFields);
+
+	String[] getViewFields();
+
 	/**
 	 * Default start parameter for Solr
 	 */
