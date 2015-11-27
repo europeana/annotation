@@ -21,11 +21,13 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
+import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
+import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -121,6 +123,23 @@ public class BaseRest extends ApiResponseBuilder {
 		}
 		response.itemsCount = response.items.size();
 		response.totalResults = annotations.size();
+		return response;
+	}
+
+	public WhitelsitSearchResults<Whitelist> buildSearchWhitelistResponse(List<? extends Whitelist> entries,
+			String apiKey, String action) {
+		WhitelsitSearchResults<Whitelist> response = new WhitelsitSearchResults<Whitelist>(apiKey,
+				action);
+//		response.items = new ArrayList<BaseWhitelist>(entries.size());
+		response.items = (List<Whitelist>) entries;
+
+//		BaseWhitelist webWhitelist;
+//		for (Whitelist annotation : annotations) {
+//			webWhitelist = getWhitelistBuilder().copyIntoWebAnnotation(annotation);
+//			response.items.add(webAnnotation);
+//		}
+		response.itemsCount = response.items.size();
+		response.totalResults = entries.size();
 		return response;
 	}
 

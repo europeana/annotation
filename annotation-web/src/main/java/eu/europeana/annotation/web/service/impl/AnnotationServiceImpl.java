@@ -382,7 +382,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 	
 	public List<? extends Whitelist> loadWhitelistFromResources() {
-		List<Whitelist> res = new ArrayList<Whitelist>();
+		List<? extends Whitelist> res = new ArrayList<Whitelist>();
 		
 		/**
 		 * load whitelist from resources in JSON format
@@ -404,6 +404,22 @@ public class AnnotationServiceImpl implements AnnotationService {
 		while (itrDefault.hasNext()) {
 			storeWhitelist(itrDefault.next());
 		}
+		
+		/**
+		 *  retrieve whitelist objects
+		 */
+		res = getAllWhitelistEntries();
+//		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
+//		while (itr.hasNext()) {
+//			Whitelist whitelistObj = itr.next();
+//			res.add(whitelistObj);
+//		}
+//		
+		return res;
+	}
+	
+	public List<? extends Whitelist> getAllWhitelistEntries() {
+		List<Whitelist> res = new ArrayList<Whitelist>();
 		
 		/**
 		 *  retrieve whitelist objects

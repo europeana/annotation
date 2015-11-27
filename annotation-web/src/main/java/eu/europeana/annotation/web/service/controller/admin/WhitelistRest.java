@@ -15,10 +15,13 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
+import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
@@ -59,6 +62,41 @@ public class WhitelistRest extends BaseRest {
 			response.success = false;
 			response.error = errorMessage;
 		}
+		
+		return JsonWebUtils.toJson(response, null);
+	}
+	
+	@RequestMapping(value = "/whitelist/all.json"
+			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAllWhitelist (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile
+		) {
+
+		List<? extends Whitelist> whitelist = getAnnotationService().getAllWhitelistEntries();
+
+//		WhitelistOperationResponse response = new WhitelistOperationResponse(
+//				apiKey, "/whitelist/all.json");
+
+		String action = "/whitelist/all.json";
+		
+		WhitelsitSearchResults<Whitelist> response = buildSearchWhitelistResponse(
+				whitelist, apiKey, action);
+
+		
+//		if (whitelist != null) {
+//			response = new WhitelistOperationResponse(
+//					apiKey, "/whitelist/all.json");			
+//			response.success = true;
+//			response.
+//			response.setWhitelistEntries(whitelist);
+//		} else {
+//			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
+//			response.action = "get: /whitelist/all.json";
+//			response.success = false;
+//			response.error = errorMessage;
+//		}
 		
 		return JsonWebUtils.toJson(response, null);
 	}

@@ -341,5 +341,9 @@ public interface AnnotationService {
 	 */
 	public Whitelist getWhitelistByUrl(String url);
 	
+	/**
+	 * @return
+	 */
+	public List<? extends Whitelist> getAllWhitelistEntries();
 	
 }
