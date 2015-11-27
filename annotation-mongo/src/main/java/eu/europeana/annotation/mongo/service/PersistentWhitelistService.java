@@ -33,5 +33,7 @@ public interface PersistentWhitelistService  extends AbstractNoSqlService<Persis
 //	public List<? extends PersistentWhitelist> findAll();
 	public Whitelist update(Whitelist object);
 	public void removeAll();
+	public void removeByUrl(String url);
+
 	
 }

@@ -64,6 +64,15 @@ public class PersistentWhitelistServiceImpl extends
 	}
 	
 	@Override
+	public void removeByUrl(String url) {
+		Query<PersistentWhitelist> query = getDao().createQuery();
+		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
+
+		WriteResult results = getDao()
+				.deleteByQuery(query);
+	}
+	
+	@Override
 	public void removeAll() {
 		try{
 			getDao().deleteAll();

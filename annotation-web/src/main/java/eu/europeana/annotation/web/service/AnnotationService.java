@@ -346,4 +346,10 @@ public interface AnnotationService {
 	 */
 	public List<? extends Whitelist> getAllWhitelistEntries();
 	
+	/**
+	 * This method removes all whitelist entries.
+	 */
+	public void deleteAllWhitelistEntries();
+
+	
 }
