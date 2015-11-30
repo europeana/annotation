@@ -1,6 +1,8 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
@@ -30,10 +32,11 @@ public interface PersistentWhitelistService  extends AbstractNoSqlService<Persis
 	
 	public abstract Whitelist store(Whitelist object) throws WhitelistValidationException;
 	public PersistentWhitelist findByUrl(String url);
-//	public List<? extends PersistentWhitelist> findAll();
+	public List<? extends PersistentWhitelist> getAll();
 	public Whitelist update(Whitelist object);
 	public void removeAll();
 	public void removeByUrl(String url);
-
+	public Set<String> getWhitelistDomains();
+	public String getDomainName(String url) throws URISyntaxException;
 	
 }
