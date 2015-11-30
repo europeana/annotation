@@ -344,13 +344,14 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Override
 	public Whitelist storeWhitelist(Whitelist newWhitelist) {
 
-		// must have registered id generation type.
-		// validateWhitelist(newWhitelist);
+		// must have registered in whitelist domain type.
+		validateResource(newWhitelist.getHttpUrl());
 
 		// store in mongo database
-		Whitelist res = getMongoWhitelistPersistence().store(newWhitelist);
+		//Whitelist res = getMongoWhitelistPersistence().store(newWhitelist);
 
-		return res;
+		//return res;
+		return null;
 	}
 
 	@Override
@@ -431,18 +432,19 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 	
 	public List<? extends Whitelist> getAllWhitelistEntries() {
-		List<Whitelist> res = new ArrayList<Whitelist>();
+//		List<Whitelist> res = new ArrayList<Whitelist>();
 		
 		/**
-		 *  retrieve whitelist objects
+		 *  retrieve all whitelist objects
 		 */
-		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
-		while (itr.hasNext()) {
-			Whitelist whitelistObj = itr.next();
-			res.add(whitelistObj);
-		}
-		
-		return res;
+		return getMongoWhitelistPersistence().getAll();
+//		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
+//		while (itr.hasNext()) {
+//			Whitelist whitelistObj = itr.next();
+//			res.add(whitelistObj);
+//		}
+//		
+//		return res;
 	}
 	
 	/*
@@ -870,4 +872,23 @@ public class AnnotationServiceImpl implements AnnotationService {
 		//return getAnnotationById(annoId.getBaseUrl(), annoId.getProvider(), annoId.getIdentifier());
 	}
 
+	public boolean validateResource(String url) {
+		boolean res = true;
+
+		String domainName;
+		try {
+			domainName = getMongoWhitelistPersistence().getDomainName(url);
+			Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
+			if (!domains.contains(domainName))
+				res = false;
+			if (!res) 
+				throw new AnnotationValidationException("Annotaion domain name: " 
+						+ domainName + " is not in the whitelist!");
+		} catch (URISyntaxException e) {
+			throw new AnnotationValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID +
+				WebAnnotationFields.WHITELIST +"/"+ WebAnnotationFields.ADD + ". URL: " + url);
+		}
+		
+		return res;
+	}
 }
