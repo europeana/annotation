@@ -1,7 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -339,25 +339,19 @@ public class AnnotationServiceImpl implements AnnotationService {
     
     /**
      * Whitelist methods
+     * @throws ParamValidationException 
      */
-
+//TODO: move the administration methods to own service class
 	@Override
-	public Whitelist storeWhitelist(Whitelist newWhitelist) {
-
-		// must have registered in whitelist domain type.
-		validateResource(newWhitelist.getHttpUrl());
+	public Whitelist storeWhitelist(Whitelist newWhitelist) throws ParamValidationException {
 
 		// store in mongo database
-		//Whitelist res = getMongoWhitelistPersistence().store(newWhitelist);
-
-		//return res;
-		return null;
+		return getMongoWhitelistPersistence().store(newWhitelist);
 	}
 
 	@Override
 	public Whitelist updateWhitelist(Whitelist whitelist) {
-		Whitelist res = getMongoWhitelistPersistence().update(whitelist);
-		return res;
+		return getMongoWhitelistPersistence().update(whitelist);
 	}
 
 	@Override
@@ -394,16 +388,17 @@ public class AnnotationServiceImpl implements AnnotationService {
 		}
 	}
 	
-	public List<? extends Whitelist> loadWhitelistFromResources() {
+	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException{
 		List<? extends Whitelist> res = new ArrayList<Whitelist>();
 		
 		/**
 		 * load whitelist from resources in JSON format
 		 */
 		List<Whitelist> defaultWhitelist = new ArrayList<Whitelist>();
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+		URL whiteListFile = getClass().getResource("/default_whitelist.json");
+		
 		defaultWhitelist = JsonUtils.toWhitelistObjectList(
-				System.getProperty("user.dir") + "/src/main/resources/default_whitelist.json");
+				whiteListFile.toExternalForm());
 		
 		/**
 		 * clean up existing whitelist
@@ -872,23 +867,34 @@ public class AnnotationServiceImpl implements AnnotationService {
 		//return getAnnotationById(annoId.getBaseUrl(), annoId.getProvider(), annoId.getIdentifier());
 	}
 
-	public boolean validateResource(String url) {
-		boolean res = true;
-
+	protected boolean validateResource(String url) throws ParamValidationException {
+		
 		String domainName;
 		try {
 			domainName = getMongoWhitelistPersistence().getDomainName(url);
 			Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
 			if (!domains.contains(domainName))
-				res = false;
-			if (!res) 
-				throw new AnnotationValidationException("Annotaion domain name: " 
-						+ domainName + " is not in the whitelist!");
+				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE, "target.value", url);
 		} catch (URISyntaxException e) {
-			throw new AnnotationValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID +
-				WebAnnotationFields.WHITELIST +"/"+ WebAnnotationFields.ADD + ". URL: " + url);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID, "target.value", url);
 		}
 		
-		return res;
+		return true;
+	}
+
+	@Override
+	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
+		//TODO: change to switch
+		if(MotivationTypes.LINKING.equals(webAnnotation.getMotivationType())){
+			//validate target URLs against whitelist 
+			if(webAnnotation.getTarget().getValue() != null)
+				validateResource(webAnnotation.getTarget().getValue());
+				
+			if(webAnnotation.getTarget().getValues()!= null)
+			for(String url : webAnnotation.getTarget().getValues()){
+				validateResource(url);
+			}
+		}
+			
 	}
 }

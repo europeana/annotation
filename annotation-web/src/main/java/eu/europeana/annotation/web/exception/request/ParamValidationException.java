@@ -17,7 +17,7 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_ANNOTATION_ID_EXISTS = "An annotation with hte given identifier already exists in database! Overwrite not allowed in this method!";
 	public static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "An annotation with hte given identifier is not yet existing in database!";
 	public static final String MESSAGE_FORMAT_NOT_SUPPORTED = "The requested format is not supported!";
-	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported!";
+	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported or not allowed!";
 	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
 	public static final String MESSAGE_URL_NOT_VALID = "Given URL is not valid!";
 	

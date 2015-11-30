@@ -1,7 +1,9 @@
 package eu.europeana.annotation.web.service;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
@@ -55,8 +57,9 @@ public interface AnnotationService {
 	/**
 	 * This method returns all Whitelist entries.
 	 * @return Whitelist entries
+	 * @throws ParamValidationException 
 	 */
-	public List<? extends Whitelist> loadWhitelistFromResources();
+	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException;
 	
 	/**
 	 * This method retrieves annotations applying filters.
@@ -321,8 +324,9 @@ public interface AnnotationService {
 	/**
 	 * @param newWhitelist
 	 * @return
+	 * @throws ParamValidationException 
 	 */
-	public Whitelist storeWhitelist(Whitelist newWhitelist);
+	public Whitelist storeWhitelist(Whitelist newWhitelist) throws ParamValidationException;
 		
 	/**
 	 * @param whitelist
@@ -350,6 +354,8 @@ public interface AnnotationService {
 	 * This method removes all whitelist entries.
 	 */
 	public void deleteAllWhitelistEntries();
+
+	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
 
 	
 }

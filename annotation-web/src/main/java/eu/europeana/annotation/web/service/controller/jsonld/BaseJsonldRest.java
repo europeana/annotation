@@ -62,7 +62,10 @@ public class BaseJsonldRest extends BaseRest{
 			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
 						"/provider/identifier", annoId.toUri());
-
+			//2.1 validate annotation properties
+			getAnnotationService().validateWebAnnotation(webAnnotation);
+			
+			
 			// 3-6 create ID and annotation + backend validation
 			webAnnotation.setAnnotationId(annoId);
 			
@@ -105,6 +108,7 @@ public class BaseJsonldRest extends BaseRest{
 		}
 	}
 	
+
 	Agent buildDefaultSerializedBy(Application app) {
 		Agent serializer = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.SOFTWARE);
 		serializer.setName(app.getName());

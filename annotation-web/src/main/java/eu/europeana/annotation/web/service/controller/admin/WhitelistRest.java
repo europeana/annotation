@@ -21,6 +21,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -90,7 +91,7 @@ public class WhitelistRest extends BaseRest {
 	public ModelAndView createWhitelist (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "uri", required = true) String uri,
-		@RequestBody String whitelist) {
+		@RequestBody String whitelist) throws ParamValidationException {
 
 		String action = "create:/whitelist/uri.json";
 		
@@ -115,7 +116,7 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="loadDefaultWhitelist", value="", hidden=true)
 	public ModelAndView loadDefaultWhitelist (
-		@RequestParam(value = "apiKey", required = false) String apiKey) {
+		@RequestParam(value = "apiKey", required = false) String apiKey) throws ParamValidationException{
 
 		List<? extends Whitelist> whitelist = getAnnotationService().loadWhitelistFromResources();
 
@@ -141,10 +142,9 @@ public class WhitelistRest extends BaseRest {
 	@DELETE
 	@RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes="deleteWhitelist", value="", hidden=true)
+	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
 	public WhitelistOperationResponse deleteAllWhitelistEntries(
 		@RequestParam(value = "apiKey", required = false) String apiKey) {
-
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(

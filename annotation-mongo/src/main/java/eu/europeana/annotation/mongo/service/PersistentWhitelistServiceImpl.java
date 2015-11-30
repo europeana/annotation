@@ -107,45 +107,11 @@ public class PersistentWhitelistServiceImpl extends
 		if(affected != 1 )
 			throw new AnnotationMongoException("Delete operation Failed!" + res.getError(), res.getLastError().getException());
 	}
-
-	/*
-	@Override
-	public PersistentWhitelist update(PersistentWhitelist whitelist, String agent) throws InvalidWhitelistException {
-		if (whitelist.getId() == null)
-			throw new InvalidWhitelistException(InvalidWhitelistException.MESSAGE_NULL_ATTRIBUTE + "id");
-		
-//		whitelist.setLastUpdateTimestamp(System.currentTimeMillis());
-		
-//		validateWhitelist(whitelist);
-		return store(whitelist);
-	}
-	*/
-
-//	public boolean isSemanticWhitelist(PersistentWhitelist whitelist){
-//		return WhitelistTypes.isSemanticWhitelist(whitelist.getWhitelistType());
-//	}
-//	
-//	public boolean isSimpleWhitelist(PersistentWhitelist whitelist){
-//		return WhitelistTypes.isSimpleWhitelist(whitelist.getWhitelistType());
-//	}
 	
 	
 	@Override
 	public PersistentWhitelist create(PersistentWhitelist whitelist)
 			throws AnnotationMongoException {
-		
-//		if (whitelist.getLastUpdatedBy() == null)
-//			whitelist.setLastUpdatedBy(whitelist.getCreator());
-//		
-//		if (whitelist.getCreationTimestamp() == null)
-//			whitelist.setCreationTimestamp(System.currentTimeMillis());
-//		if (whitelist.getLastUpdateTimestamp() == null)
-//			whitelist.setLastUpdateTimestamp(whitelist.getCreationTimestamp());
-//		
-//		if (whitelist.getWhitelistType() == null)
-//			whitelist.setWhitelistTypeEnum(WhitelistTypes.SIMPLE_TAG);
-//
-//		validateWhitelist(whitelist);
 
 		return store(whitelist);
 	}
