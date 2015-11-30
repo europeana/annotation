@@ -26,4 +26,14 @@
 
 	<bean name="annotation_mongo_contextcontainer" class="eu.europeana.annotation.mongo.ApplicationContextContainer"/>
 
+	<!-- simple cache manager -->
+	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+	    <property name="caches">
+	        <set>
+	            <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="domains"/>
+	            <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="whitelist"/>
+	        </set>
+	    </property>
+	</bean>
+
 </beans>

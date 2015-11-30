@@ -42,6 +42,7 @@ public class WhitelistDeserializer extends StdDeserializer<Whitelist> {
 			}
 		}
 		
+		realClass = BaseWhitelist.class;
 		if (realClass == null)
 			return null;
 		

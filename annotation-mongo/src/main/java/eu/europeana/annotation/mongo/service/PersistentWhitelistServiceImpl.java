@@ -17,6 +17,8 @@ import eu.europeana.annotation.mongo.model.PersistentWhitelistImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelist;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
+@Configuration
+@EnableCaching
 public class PersistentWhitelistServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentWhitelist, String> implements
 		PersistentWhitelistService {
