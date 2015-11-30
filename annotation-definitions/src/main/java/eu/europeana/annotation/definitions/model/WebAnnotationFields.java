@@ -108,7 +108,8 @@ public interface WebAnnotationFields {
 	public static final String PATH_PARAM_FORMAT = "format";
 	public static final String PATH_PARAM_PROVIDER = "provider";
 	public static final String PATH_PARAM_IDENTIFIER = "identifier";
-	public static final String WHITELIST = "whitelist";
+	//Not needed yet
+	//public static final String WHITELIST = "whitelist";
 
 	public static final String FORMAT_JSONLD = "jsonld";
 

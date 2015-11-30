@@ -2,6 +2,9 @@ package eu.europeana.annotation.web.service.controller.admin;
 
 import java.util.List;
 
+import javax.ws.rs.DELETE;
+
+import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +18,16 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.annotation.web.model.AnnotationOperationResponse;
+import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
+import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
@@ -31,7 +40,8 @@ public class WhitelistRest extends BaseRest {
 			, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
-		return WebAnnotationFields.WHITELIST;
+		//return WebAnnotationFields.WHITELIST;
+		return "whitelist";
 	}
 
 	@RequestMapping(value = "/whitelist/{uri}.json"
@@ -60,6 +70,24 @@ public class WhitelistRest extends BaseRest {
 			response.error = errorMessage;
 		}
 		
+		return JsonWebUtils.toJson(response, null);
+	}
+	
+	@RequestMapping(value = "/whitelist/all.json"
+			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ModelAndView getAllWhitelist (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile
+		) {
+
+		List<? extends Whitelist> whitelist = getAnnotationService().getAllWhitelistEntries();
+
+		String action = "/whitelist/all.json";
+		
+		WhitelsitSearchResults<Whitelist> response = buildSearchWhitelistResponse(
+				whitelist, apiKey, action);
+
 		return JsonWebUtils.toJson(response, null);
 	}
 	
@@ -118,5 +146,32 @@ public class WhitelistRest extends BaseRest {
 		
 		return JsonWebUtils.toJson(response, null);
 	}
+
+	
+	@DELETE
+	@RequestMapping(value = "/whitelist/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public WhitelistOperationResponse deleteAllWhitelistEntries(
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "profile", required = false) String profile
+		) {
+
+
+		WhitelistOperationResponse response;
+		response = new WhitelistOperationResponse(
+				apiKey, "/whitelist/delete");
+			
+		try{
+			getAnnotationService().deleteAllWhitelistEntries();
+			response.success = true;
+		} catch (Exception e){
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			response.success = false;
+			response.error = e.getMessage();
+		}
+
+		return response;
+	}
+
 	
 }

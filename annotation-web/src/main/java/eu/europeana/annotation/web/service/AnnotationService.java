@@ -341,5 +341,15 @@ public interface AnnotationService {
 	 */
 	public Whitelist getWhitelistByUrl(String url);
 	
+	/**
+	 * @return
+	 */
+	public List<? extends Whitelist> getAllWhitelistEntries();
+	
+	/**
+	 * This method removes all whitelist entries.
+	 */
+	public void deleteAllWhitelistEntries();
+
 	
 }
