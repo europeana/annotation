@@ -1,14 +1,24 @@
 package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Configuration;
 
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
 
+import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -17,6 +27,8 @@ import eu.europeana.annotation.mongo.model.PersistentWhitelistImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelist;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
+@Configuration
+@EnableCaching
 public class PersistentWhitelistServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentWhitelist, String> implements
 		PersistentWhitelistService {
@@ -221,8 +233,9 @@ public class PersistentWhitelistServiceImpl extends
 	@Override
 	public PersistentWhitelist findByUrl(String url) {
 		Query<PersistentWhitelist> query = getDao().createQuery();
-//		query.filter(PersistentWhitelist.FIELD_URI, url);
 		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
+//		query.filter(PersistentWhitelist.FIELD_URI, url);
+//		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
 
 //		return getDao().findOne(query);
 		QueryResults<? extends PersistentWhitelist> results = getDao()
@@ -242,4 +255,38 @@ public class PersistentWhitelistServiceImpl extends
 //		List<? extends PersistentWhitelist> whitelistList = results.asList();
 //		return whitelistList;
 //	}	
+	
+	public String getDomainName(String url) throws URISyntaxException {
+	    URI uri = new URI(url);
+	    String domain = uri.getHost();
+	    return domain.startsWith("www.") ? domain.substring(4) : domain;
+	}
+	
+	@Cacheable("domains")
+	@Override
+	public Set<String> getWhitelistDomains() {
+		Set<String> domains = new HashSet<String>();
+		/**
+		 *  retrieve whitelist objects
+		 */
+		Iterator<PersistentWhitelist> itr = findAll().iterator();
+		while (itr.hasNext()) {
+			Whitelist whitelistObj = itr.next();
+			String domainName;
+			try {
+				domainName = getDomainName(whitelistObj.getHttpUrl());
+				domains.add(domainName);
+			} catch (URISyntaxException e) {
+				throw new AnnotationValidationException("URL is not valid. " +
+					WebAnnotationFields.WHITELIST +"/"+ WebAnnotationFields.ADD + ". URL: " + whitelistObj.getHttpUrl());
+			}
+		}
+		return domains;
+	}
+
+	@Cacheable("whitelist")
+	@Override
+	public List<? extends PersistentWhitelist> getAll() {
+		return (List<? extends PersistentWhitelist>) findAll();
+	}
 }
