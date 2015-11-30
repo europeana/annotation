@@ -222,6 +222,8 @@ public class PersistentWhitelistServiceImpl extends
 	public PersistentWhitelist findByUrl(String url) {
 		Query<PersistentWhitelist> query = getDao().createQuery();
 		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
+//		query.filter(PersistentWhitelist.FIELD_URI, url);
+//		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
 
 //		return getDao().findOne(query);
 		QueryResults<? extends PersistentWhitelist> results = getDao()
