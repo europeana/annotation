@@ -233,6 +233,7 @@ public interface WebAnnotationFields {
 	public static final String REST_DEFAULT_PROVIDER_ID_GENERATION_TYPE = "provided";
 	public static final String ITEMS_COUNT = "itemsCount";
 	public static final String URI = "uri";
+	public static final String WHITELIST = "whitelist";
 
 	/**
 	 * These namespace prefixes are employed for evaluation of the internal type

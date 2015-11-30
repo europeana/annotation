@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -26,19 +27,19 @@ import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
-@Api( value = "whitelist", description = "Whitelist JSON Rest Service", hidden=true)
+@Api( basePath= "/"+WebAnnotationFields.WHITELIST,  value = WebAnnotationFields.WHITELIST, description = "Whitelist JSON Rest Service", hidden=true)
+@RequestMapping(value = "/"+WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {
 
 
-	@RequestMapping(value = "/whitelist/component", method = RequestMethod.GET
+	@RequestMapping(value = "/component", method = RequestMethod.GET
 			, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
-		//return WebAnnotationFields.WHITELIST;
-		return "whitelist";
+		return WebAnnotationFields.WHITELIST;
 	}
 
-	@RequestMapping(value = "/whitelist/{uri}.json"
+	@RequestMapping(value = "/{uri}.json"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getWhitelist (
@@ -66,7 +67,7 @@ public class WhitelistRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 	
-	@RequestMapping(value = "/whitelist/all.json"
+	@RequestMapping(value = "/all.json"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getAllWhitelist (
@@ -74,7 +75,7 @@ public class WhitelistRest extends BaseRest {
 
 		List<? extends Whitelist> whitelist = getAnnotationService().getAllWhitelistEntries();
 
-		String action = "/whitelist/all.json";
+		String action = "/all.json";
 		
 		WhitelsitSearchResults<Whitelist> response = buildSearchWhitelistResponse(
 				whitelist, apiKey, action);
@@ -82,7 +83,7 @@ public class WhitelistRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 	
-	@RequestMapping(value = "/whitelist/{uri}.json", method = RequestMethod.POST
+	@RequestMapping(value = "/{uri}.json", method = RequestMethod.POST
 			, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="createWhitelistEntry", value="", hidden=true)
@@ -109,7 +110,7 @@ public class WhitelistRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/whitelist/load"
+	@RequestMapping(value = "/load"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="loadDefaultWhitelist", value="", hidden=true)
@@ -119,11 +120,11 @@ public class WhitelistRest extends BaseRest {
 		List<? extends Whitelist> whitelist = getAnnotationService().loadWhitelistFromResources();
 
 		WhitelistOperationResponse response = new WhitelistOperationResponse(
-				apiKey, "/whitelist/load");
+				apiKey, "/load");
 
 		if (whitelist != null) {
 			response = new WhitelistOperationResponse(
-					apiKey, "/whitelist/load");			
+					apiKey, "/load");			
 			response.success = true;
 			response.setWhitelistEntries(whitelist);
 		} else {
@@ -138,7 +139,7 @@ public class WhitelistRest extends BaseRest {
 
 	
 	@DELETE
-	@RequestMapping(value = "/whitelist/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=true)
 	public WhitelistOperationResponse deleteAllWhitelistEntries(
