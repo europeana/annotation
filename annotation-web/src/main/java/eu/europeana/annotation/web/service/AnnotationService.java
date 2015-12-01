@@ -1,9 +1,7 @@
 package eu.europeana.annotation.web.service;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
@@ -337,7 +335,7 @@ public interface AnnotationService {
 	/**
 	 * @param url
 	 */
-	public void deleteWhitelist(String url);
+	public void deleteWhitelistEntry(String url);
 	
 	/**
 	 * @param url

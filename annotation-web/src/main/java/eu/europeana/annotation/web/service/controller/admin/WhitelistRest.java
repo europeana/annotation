@@ -162,5 +162,31 @@ public class WhitelistRest extends BaseRest {
 		return response;
 	}
 
+	@DELETE
+	@RequestMapping(value = "/delete/{uri}.json", method = RequestMethod.DELETE
+					, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
+	public WhitelistOperationResponse deleteAllWhitelistEntries(
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "uri", required = true) String uri
+		) {
+
+		WhitelistOperationResponse response;
+		response = new WhitelistOperationResponse(
+				apiKey, "/whitelist/delete/{uri}.json");
+			
+		try{
+			getAnnotationService().deleteWhitelistEntry(uri);
+			response.success = true;
+		} catch (Exception e){
+			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			response.success = false;
+			response.error = e.getMessage();
+		}
+
+		return response;
+	}
+
 	
 }

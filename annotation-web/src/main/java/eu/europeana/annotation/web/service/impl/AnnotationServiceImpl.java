@@ -355,7 +355,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	@Override
-	public void deleteWhitelist(String url) {
+	public void deleteWhitelistEntry(String url) {
 		getMongoWhitelistPersistence().removeByUrl(url);
 	}
 
@@ -384,7 +384,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
 		while (itr.hasNext()) {
 			Whitelist whitelistObj = itr.next();
-			deleteWhitelist(whitelistObj.getHttpUrl());
+			deleteWhitelistEntry(whitelistObj.getHttpUrl());
 		}
 	}
 	
