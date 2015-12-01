@@ -114,7 +114,7 @@ public class WhitelistRest extends BaseRest {
 	@RequestMapping(value = "/load"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes="loadDefaultWhitelist", value="", hidden=true)
+	@ApiOperation(notes="loadDefaultWhitelist", value="")//, hidden=true)
 	public ModelAndView loadDefaultWhitelist (
 		@RequestParam(value = "apiKey", required = false) String apiKey) throws ParamValidationException{
 
@@ -167,7 +167,7 @@ public class WhitelistRest extends BaseRest {
 					, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
-	public WhitelistOperationResponse deleteAllWhitelistEntries(
+	public WhitelistOperationResponse deleteWhitelistEntry(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "uri", required = true) String uri
 		) {

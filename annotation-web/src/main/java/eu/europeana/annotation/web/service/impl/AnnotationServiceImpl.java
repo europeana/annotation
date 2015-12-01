@@ -380,12 +380,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 	
 	public void deleteAllWhitelistEntries() {
-//		getMongoWhitelistPersistence().removeAll();
-		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
-		while (itr.hasNext()) {
-			Whitelist whitelistObj = itr.next();
-			deleteWhitelistEntry(whitelistObj.getHttpUrl());
-		}
+		getMongoWhitelistPersistence().removeAll();
+//		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
+//		while (itr.hasNext()) {
+//			Whitelist whitelistObj = itr.next();
+//			deleteWhitelistEntry(whitelistObj.getHttpUrl());
+//		}
 	}
 	
 	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException{
@@ -398,7 +398,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		URL whiteListFile = getClass().getResource("/default_whitelist.json");
 		
 		defaultWhitelist = JsonUtils.toWhitelistObjectList(
-				whiteListFile.toExternalForm());
+				whiteListFile.toExternalForm().replace("file:/", ""));
 		
 		/**
 		 * clean up existing whitelist
