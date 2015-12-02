@@ -13,6 +13,7 @@ public class WhitelistValidationException extends RuntimeException{
 	public static final String ERROR_NOT_NULL_NAME = "Whitelist name must not be null";
 	public static final String ERROR_NOT_NULL_STATUS = "Whitelist status must not be null";
 	public static final String ERROR_MISSING_ID = "Whitelist ID must not be null";
+	public static final String ERROR_HTTP_URL_EXISTS = "Whitelist entry for the given URL already exists. ";
 	
 	public static final String HTTP = "http";
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

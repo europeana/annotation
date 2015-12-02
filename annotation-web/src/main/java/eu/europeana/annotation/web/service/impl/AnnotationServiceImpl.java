@@ -436,6 +436,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 			Whitelist whitelistEntry = itrDefault.next();
 			validateMandatoryFields(whitelistEntry);
 			enrichWhitelistEntry(whitelistEntry);
+			if (getWhitelistByUrl(whitelistEntry.getHttpUrl()) != null)
+				throw new WhitelistValidationException(WhitelistValidationException.ERROR_HTTP_URL_EXISTS 
+						+ whitelistEntry.getHttpUrl());
 			storeWhitelist(whitelistEntry);
 		}
 		

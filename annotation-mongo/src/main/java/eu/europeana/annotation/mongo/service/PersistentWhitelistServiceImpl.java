@@ -210,6 +210,8 @@ public class PersistentWhitelistServiceImpl extends
 		QueryResults<? extends PersistentWhitelist> results = getDao()
 				.find(query);
 		List<? extends PersistentWhitelist> whitelistList = results.asList();
+		if (whitelistList.size() == 0)
+			return null;
 		return whitelistList.get(whitelistList.size() - 1);
 	}
 
