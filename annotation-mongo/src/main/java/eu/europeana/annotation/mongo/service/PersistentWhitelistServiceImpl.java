@@ -10,7 +10,6 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 
@@ -77,9 +76,6 @@ public class PersistentWhitelistServiceImpl extends
 		getDao().deleteByQuery(query);
 	}
 	
-//	@CacheEvict(value = { "whitelist" }, key="url")
-//	@CachePut(value = { "whitelist" }, key="#httpUrl")
-//	@CachePut(value="whitelist", key="#url")
 	@Override
 	public void removeByUrl(String url) {
 		/**
@@ -87,23 +83,9 @@ public class PersistentWhitelistServiceImpl extends
 		 */
 		List<? extends PersistentWhitelist> tmpList = getAll();
 		
-//		Query<PersistentWhitelist> query = getDao().createQuery();
-//		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
-//		getDao().deleteByQuery(query);
-		
 		/**
 		 * actually remove entries
 		 */
-//		Iterator<? extends PersistentWhitelist> itrEntryRemove = tmpList.iterator();
-//		while (itrEntryRemove.hasNext()) {
-//			Whitelist whitelistObj = itrEntryRemove.next();
-//			if (whitelistObj.getHttpUrl().equals(url)) {
-//				Query<PersistentWhitelist> query = getDao().createQuery();
-//				query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
-//				getDao().deleteByQuery(query);
-//				break;
-//			}
-//		}
 		removeAll();
 		
 		/**
@@ -139,7 +121,6 @@ public class PersistentWhitelistServiceImpl extends
 		getAll(); 
 	}
 	
-//	@CacheEvict(allEntries=true, value = { "whitelist" })	
 	@CacheEvict("whitelist")	
 	@Override
 	public void removeAll() {
@@ -148,11 +129,6 @@ public class PersistentWhitelistServiceImpl extends
 			Whitelist whitelistObj = itr.next();
 			removeByUrlWithoutCache(whitelistObj.getHttpUrl());
 		}
-//		try{
-//			getDao().deleteAll();
-//		}catch(Exception e){
-//			throw new AnnotationMongoRuntimeException(e);
-//		}
 	}
 	
 	@Override
@@ -243,14 +219,12 @@ public class PersistentWhitelistServiceImpl extends
 	    return domain.startsWith("www.") ? domain.substring(4) : domain;
 	}
 	
-//	@Cacheable("domains")
 	@Override
 	public Set<String> getWhitelistDomains() {
 		Set<String> domains = new HashSet<String>();
 		/**
 		 *  retrieve whitelist objects
 		 */
-//		Iterator<PersistentWhitelist> itr = findAll().iterator();
 		Iterator<? extends PersistentWhitelist> itr = getAll().iterator();
 		while (itr.hasNext()) {
 			Whitelist whitelistObj = itr.next();
@@ -266,9 +240,6 @@ public class PersistentWhitelistServiceImpl extends
 		return domains;
 	}
 
-//	@Cacheable(value={"whitelist"}, key="#httpUri")
-//	@Cacheable(value="whitelist", key="#url")
-//	@Cacheable("whitelist")
 	@CachePut("whitelist")
 	@Override
 	public List<? extends PersistentWhitelist> getAll() {

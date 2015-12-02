@@ -10,6 +10,8 @@ public interface AnnotationConfiguration {
 	public static final String VALUE_ENVIRONMENT_TEST = "test";
 	public static final String VALUE_ENVIRONMENT_DEVELOPMENT = "development";
 	
+	public static final String DEFAULT_WHITELIST_RESOURCE_PATH = "annotation.whitelist.default";
+	
 	
 	public String getComponentName();
 	
@@ -34,5 +36,9 @@ public interface AnnotationConfiguration {
 	 */
 	public String getAnnotationBaseUrl();
 	
+	/**
+	 * uses annotation.whitelist.default property
+	 */
+	public String getDefaultWhitelistResourcePath();
 	
 }

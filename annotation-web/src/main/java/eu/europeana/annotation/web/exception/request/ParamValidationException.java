@@ -20,6 +20,7 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported or not allowed!";
 	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
 	public static final String MESSAGE_URL_NOT_VALID = "Given URL is not valid!";
+	public static final String MESSAGE_MISSING_PROPERTY_FILE = "The property file was not found!";
 	
 	public static final int MIN_IDENTIFIER_LEN = 2;
 	

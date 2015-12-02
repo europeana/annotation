@@ -42,4 +42,8 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 		return getAnnotationProperties().getProperty(key);
 	}
 
+	public String getDefaultWhitelistResourcePath() {
+		return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
+	}
+
 }

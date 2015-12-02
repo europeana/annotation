@@ -1,11 +1,16 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -364,46 +369,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoWhitelistPersistence().findByUrl(url);
 	}
 
-	public List<? extends Whitelist> retrieveWhitelist() {
-		List<Whitelist> res = new ArrayList<Whitelist>();
-		
-		/**
-		 *  retrieve whitelist objects
-		 */
-		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
-		while (itr.hasNext()) {
-			Whitelist whitelistObj = itr.next();
-			res.add(whitelistObj);
-		}
-		
-		return res;
-	}
-	
 	public void deleteAllWhitelistEntries() {
 		getMongoWhitelistPersistence().removeAll();
-//		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
-//		while (itr.hasNext()) {
-//			Whitelist whitelistObj = itr.next();
-//			deleteWhitelistEntry(whitelistObj.getHttpUrl());
-//		}
 	}
 	
+
 	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException{
 		List<? extends Whitelist> res = new ArrayList<Whitelist>();
+		
+		/**
+		 * load property with the path to the default whitelist JSON file
+		 */
+		String whitelistPath = getConfiguration().getDefaultWhitelistResourcePath();
 		
 		/**
 		 * load whitelist from resources in JSON format
 		 */
 		List<Whitelist> defaultWhitelist = new ArrayList<Whitelist>();
-		URL whiteListFile = getClass().getResource("/default_whitelist.json");
+		URL whiteListFile = getClass().getResource(whitelistPath);
 		
 		defaultWhitelist = JsonUtils.toWhitelistObjectList(
-				whiteListFile.toExternalForm().replace("file:/", ""));
-		
-		/**
-		 * clean up existing whitelist
-		 */
-		//getMongoWhitelistPersistence().removeAll();
+				whiteListFile.getPath().substring(1));
 		
 		/**
 		 *  store whitelist objects in database
@@ -417,29 +403,16 @@ public class AnnotationServiceImpl implements AnnotationService {
 		 *  retrieve whitelist objects
 		 */
 		res = getAllWhitelistEntries();
-//		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
-//		while (itr.hasNext()) {
-//			Whitelist whitelistObj = itr.next();
-//			res.add(whitelistObj);
-//		}
-//		
+
 		return res;
 	}
 	
 	public List<? extends Whitelist> getAllWhitelistEntries() {
-//		List<Whitelist> res = new ArrayList<Whitelist>();
 		
 		/**
 		 *  retrieve all whitelist objects
 		 */
 		return getMongoWhitelistPersistence().getAll();
-//		Iterator<PersistentWhitelist> itr = getMongoWhitelistPersistence().findAll().iterator();
-//		while (itr.hasNext()) {
-//			Whitelist whitelistObj = itr.next();
-//			res.add(whitelistObj);
-//		}
-//		
-//		return res;
 	}
 	
 	/*

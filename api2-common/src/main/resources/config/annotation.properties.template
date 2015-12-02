@@ -31,7 +31,8 @@ annotation.environment.test.baseUrl=http://test-annotations.europeana.eu/annotat
 #used only in production environment
 annotation.environment.development.baseUrl=http://localhost:8080/annotation
 
-
+#default whitelist resource name
+annotation.whitelist.default=/config/default_whitelist.json
 
 # mongoDB settings
 ### annotation database ###
@@ -50,6 +51,7 @@ solr.tag.timeout = 60000
 solr.facetLimit=750
 #solr.username=europeana
 #solr.rowLimit=12
+
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
