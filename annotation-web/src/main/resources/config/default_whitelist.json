@@ -1,5 +1,5 @@
 {
-    "whitelist-entries": [
+    "whitelist": [
 		{
 			"name": "data.europeana",
 			"httpUrl": "http://data.europeana.eu",

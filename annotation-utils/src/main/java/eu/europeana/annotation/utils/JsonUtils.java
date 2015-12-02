@@ -107,7 +107,7 @@ public class JsonUtils {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			JsonNode rootNode = mapper.readTree(new File(pathToJson));
-			List<JsonNode> rootList = rootNode.findValues("whitelist-entries");
+			List<JsonNode> rootList = rootNode.findValues("whitelist");
 			JsonNode entriesJsonNode = rootList.get(0);
 			for (JsonNode jsonNode : entriesJsonNode) {
 				WhitelistEntry whitelistEntry = mapper.readValue(jsonNode, BaseWhitelistEntry.class);
