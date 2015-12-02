@@ -28,7 +28,8 @@ import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 @Controller
-@Api( basePath= "/"+WebAnnotationFields.WHITELIST,  value = WebAnnotationFields.WHITELIST, description = "Whitelist JSON Rest Service", hidden=true)
+@Api( basePath= "/"+WebAnnotationFields.WHITELIST,  value = WebAnnotationFields.WHITELIST
+	, description = "Whitelist JSON Rest Service", hidden=true)
 @RequestMapping(value = "/"+WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {
 
@@ -126,24 +127,6 @@ public class WhitelistRest extends BaseRest {
 				whitelist, apiKey, action);
 
 		return JsonWebUtils.toJson(response, null);
-		
-		
-//		WhitelistOperationResponse response = new WhitelistOperationResponse(
-//				apiKey, "/load");
-//
-//		if (whitelist != null) {
-//			response = new WhitelistOperationResponse(
-//					apiKey, "/load");			
-//			response.success = true;
-//			response.setWhitelistEntries(whitelist);
-//		} else {
-//			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
-//			response.action = "get: /whitelist/load";
-//			response.success = false;
-//			response.error = errorMessage;
-//		}
-//		
-//		return JsonWebUtils.toJson(response, null);
 	}
 
 	

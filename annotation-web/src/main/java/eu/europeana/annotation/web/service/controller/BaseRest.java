@@ -22,6 +22,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.mongo.model.internal.PersistentWhitelist;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -130,14 +131,16 @@ public class BaseRest extends ApiResponseBuilder {
 			String apiKey, String action) {
 		WhitelsitSearchResults<Whitelist> response = new WhitelsitSearchResults<Whitelist>(apiKey,
 				action);
-//		response.items = new ArrayList<BaseWhitelist>(entries.size());
-		response.items = (List<Whitelist>) entries;
-
-//		BaseWhitelist webWhitelist;
-//		for (Whitelist annotation : annotations) {
-//			webWhitelist = getWhitelistBuilder().copyIntoWebAnnotation(annotation);
-//			response.items.add(webAnnotation);
-//		}
+		List<Whitelist> webWhitelist = new ArrayList<Whitelist>();
+		for (Whitelist entry : entries) {
+			entry.setCreationDate(null);
+			entry.setLastUpdate(null);
+			entry.setEnableFrom(null);
+			entry.setDisableTo(null);
+			((PersistentWhitelist) entry).setId(null);
+			webWhitelist.add(entry);
+		}
+		response.items = webWhitelist;
 		response.itemsCount = response.items.size();
 		response.totalResults = entries.size();
 		return response;
