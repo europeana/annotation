@@ -9,11 +9,11 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
-import eu.europeana.annotation.mongo.model.internal.PersistentWhitelist;
+import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 
 @Entity("whitelist")
 @Polymorphic
-public class PersistentWhitelistImpl implements PersistentWhitelist, PersistentObject {
+public class PersistentWhitelistImpl implements PersistentWhitelistEntry, PersistentObject {
 
 	@Id
 	private ObjectId id;

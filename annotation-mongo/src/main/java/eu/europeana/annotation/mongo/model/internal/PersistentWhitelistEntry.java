@@ -2,7 +2,7 @@ package eu.europeana.annotation.mongo.model.internal;
 
 import org.bson.types.ObjectId;
 
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
 
 /**
@@ -10,7 +10,7 @@ import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
  * with the NoSql based implementation (NoSqlEntity) and provides additional methods used internally by 
  * the service implementation
  */
-public interface PersistentWhitelist extends Whitelist, NoSqlEntity {
+public interface PersistentWhitelistEntry extends WhitelistEntry, NoSqlEntity {
 
 //	public final static String FIELD_URI = "uri";
 	public final static String FIELD_HTTP_URL = "httpUrl";

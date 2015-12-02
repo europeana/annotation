@@ -3,13 +3,17 @@ package eu.europeana.annotation.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
 
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class WhitelistOperationResponse extends ApiResponse {
 	
-	Whitelist whitelist;
-	List<? extends Whitelist> whitelistEntries = new ArrayList<Whitelist>();
+	WhitelistEntry whitelistEntry;
+	List<? extends WhitelistEntry> whitelist = new ArrayList<WhitelistEntry>();
 
 	public static String ERROR_NO_OBJECT_FOUND = "No Object Found!";
 	
@@ -20,16 +24,16 @@ public class WhitelistOperationResponse extends ApiResponse {
 		super(apiKey, action);
 	}
 	
-	public Whitelist getWhitelist() {
-		return whitelist;
+	public WhitelistEntry getWhitelistEntry() {
+		return whitelistEntry;
 	}
 
-	public void setWhitelist(Whitelist whitelist) {
+	public void setWhitelistEntry(WhitelistEntry whitelistEntry) {
+		this.whitelistEntry = whitelistEntry;
+	}
+
+	public void setWhitelist(List<? extends WhitelistEntry> whitelist) {
 		this.whitelist = whitelist;
-	}
-
-	public void setWhitelistEntries(List<? extends Whitelist> whitelist2) {
-		this.whitelistEntries = whitelist2;
 	}
 
 }

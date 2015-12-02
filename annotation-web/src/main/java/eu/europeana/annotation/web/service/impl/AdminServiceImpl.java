@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -71,14 +71,14 @@ public class AdminServiceImpl implements AdminService {
      * @throws ParamValidationException 
      */
 	@Override
-	public Whitelist storeWhitelist(Whitelist newWhitelist) throws ParamValidationException {
+	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelist) throws ParamValidationException {
 
 		// store in mongo database
 		return getMongoWhitelistPersistence().store(newWhitelist);
 	}
 
 	@Override
-	public Whitelist updateWhitelist(Whitelist whitelist) {
+	public WhitelistEntry updateWhitelistEntry(WhitelistEntry whitelist) {
 		return getMongoWhitelistPersistence().update(whitelist);
 	}
 
@@ -88,16 +88,16 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public Whitelist getWhitelistByUrl(String url) {
+	public WhitelistEntry getWhitelistEntryByUrl(String url) {
 		return getMongoWhitelistPersistence().findByUrl(url);
 	}
 
-	public void deleteAllWhitelistEntries() {
+	public void deleteWholeWhitelist() {
 		getMongoWhitelistPersistence().removeAll();
 	}
 
 	
-	private void validateMandatoryFields(Whitelist whitelistEntry) {
+	private void validateMandatoryFields(WhitelistEntry whitelistEntry) {
 
 		if (whitelistEntry.getName() == null)
 			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_NAME);
@@ -113,7 +113,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 
-	private void enrichWhitelistEntry(Whitelist whitelistEntry) {
+	private void enrichWhitelistEntry(WhitelistEntry whitelistEntry) {
 
 		DateFormat df = new SimpleDateFormat(WhitelistValidationException.DATE_FORMAT);
 		Date dateobj = new Date();
@@ -129,8 +129,8 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 
-	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException{
-		List<? extends Whitelist> res = new ArrayList<Whitelist>();
+	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws ParamValidationException{
+		List<? extends WhitelistEntry> res = new ArrayList<WhitelistEntry>();
 		
 		/**
 		 * load property with the path to the default whitelist JSON file
@@ -140,35 +140,35 @@ public class AdminServiceImpl implements AdminService {
 		/**
 		 * load whitelist from resources in JSON format
 		 */
-		List<Whitelist> defaultWhitelist = new ArrayList<Whitelist>();
+		List<WhitelistEntry> defaultWhitelist = new ArrayList<WhitelistEntry>();
 		URL whiteListFile = getClass().getResource(whitelistPath);
 		
-		defaultWhitelist = JsonUtils.toWhitelistObjectList(
+		defaultWhitelist = JsonUtils.toWhitelist(
 				whiteListFile.getPath().substring(1));
 		
 		/**
 		 *  store whitelist objects in database
 		 */
-		Iterator<Whitelist> itrDefault = defaultWhitelist.iterator();
+		Iterator<WhitelistEntry> itrDefault = defaultWhitelist.iterator();
 		while (itrDefault.hasNext()) {
-			Whitelist whitelistEntry = itrDefault.next();
+			WhitelistEntry whitelistEntry = itrDefault.next();
 			validateMandatoryFields(whitelistEntry);
 			enrichWhitelistEntry(whitelistEntry);
-			if (getWhitelistByUrl(whitelistEntry.getHttpUrl()) != null)
+			if (getWhitelistEntryByUrl(whitelistEntry.getHttpUrl()) != null)
 				throw new WhitelistValidationException(WhitelistValidationException.ERROR_HTTP_URL_EXISTS 
 						+ whitelistEntry.getHttpUrl());
-			storeWhitelist(whitelistEntry);
+			storeWhitelistEntry(whitelistEntry);
 		}
 		
 		/**
 		 *  retrieve whitelist objects
 		 */
-		res = getAllWhitelistEntries();
+		res = getWhitelist();
 
 		return res;
 	}
 	
-	public List<? extends Whitelist> getAllWhitelistEntries() {
+	public List<? extends WhitelistEntry> getWhitelist() {
 		
 		/**
 		 *  retrieve all whitelist objects

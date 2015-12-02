@@ -21,8 +21,8 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
-import eu.europeana.annotation.mongo.model.internal.PersistentWhitelist;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
+import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -140,17 +140,17 @@ public class BaseRest extends ApiResponseBuilder {
 		return response;
 	}
 
-	public WhitelsitSearchResults<Whitelist> buildSearchWhitelistResponse(List<? extends Whitelist> entries,
+	public WhitelsitSearchResults<WhitelistEntry> buildSearchWhitelistResponse(List<? extends WhitelistEntry> entries,
 			String apiKey, String action) {
-		WhitelsitSearchResults<Whitelist> response = new WhitelsitSearchResults<Whitelist>(apiKey,
+		WhitelsitSearchResults<WhitelistEntry> response = new WhitelsitSearchResults<WhitelistEntry>(apiKey,
 				action);
-		List<Whitelist> webWhitelist = new ArrayList<Whitelist>();
-		for (Whitelist entry : entries) {
+		List<WhitelistEntry> webWhitelist = new ArrayList<WhitelistEntry>();
+		for (WhitelistEntry entry : entries) {
 			entry.setCreationDate(null);
 			entry.setLastUpdate(null);
 			entry.setEnableFrom(null);
 			entry.setDisableTo(null);
-			((PersistentWhitelist) entry).setId(null);
+			((PersistentWhitelistEntry) entry).setId(null);
 			webWhitelist.add(entry);
 		}
 		response.items = webWhitelist;

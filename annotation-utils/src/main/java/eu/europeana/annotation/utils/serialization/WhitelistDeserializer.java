@@ -9,23 +9,23 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.codehaus.jackson.node.ObjectNode;
 
-import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelist;
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelistEntry;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 
-public class WhitelistDeserializer extends StdDeserializer<Whitelist> {
+public class WhitelistDeserializer extends StdDeserializer<WhitelistEntry> {
 	
 	public WhitelistDeserializer() {
-		super(Whitelist.class);
+		super(WhitelistEntry.class);
 		
 	}
 
 	@Override
-	public Whitelist deserialize(JsonParser jp, DeserializationContext ctxt)
+	public WhitelistEntry deserialize(JsonParser jp, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
 		
 		ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 		ObjectNode root = (ObjectNode) mapper.readTree(jp);
-		Class<? extends Whitelist> realClass = null;
+		Class<? extends WhitelistEntry> realClass = null;
 		
 //		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 //		while (elementsIterator.hasNext()) {
@@ -38,7 +38,7 @@ public class WhitelistDeserializer extends StdDeserializer<Whitelist> {
 //			}
 //		}
 		
-		realClass = BaseWhitelist.class;
+		realClass = BaseWhitelistEntry.class;
 		if (realClass == null)
 			return null;
 		

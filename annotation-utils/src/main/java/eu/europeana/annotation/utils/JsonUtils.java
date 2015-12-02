@@ -48,8 +48,8 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelist;
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelistEntry;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
@@ -101,8 +101,8 @@ public class JsonUtils {
 	}
 	
 	
-	public static List<Whitelist> toWhitelistObjectList(String pathToJson) {
-		List<Whitelist> res = new ArrayList<Whitelist>();
+	public static List<WhitelistEntry> toWhitelist(String pathToJson) {
+		List<WhitelistEntry> res = new ArrayList<WhitelistEntry>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -110,7 +110,7 @@ public class JsonUtils {
 			List<JsonNode> rootList = rootNode.findValues("whitelist-entries");
 			JsonNode entriesJsonNode = rootList.get(0);
 			for (JsonNode jsonNode : entriesJsonNode) {
-				Whitelist whitelistEntry = mapper.readValue(jsonNode, BaseWhitelist.class);
+				WhitelistEntry whitelistEntry = mapper.readValue(jsonNode, BaseWhitelistEntry.class);
 				res.add(whitelistEntry);
 			}
 		} catch (JsonProcessingException e) {
@@ -124,23 +124,23 @@ public class JsonUtils {
 	}
 	
 	
-	public static Whitelist toWhitelistObject(String json) {
+	public static WhitelistEntry toWhitelistEntry(String json) {
 		JsonParser parser;
-		Whitelist whitelist = null;
+		WhitelistEntry whitelist = null;
 		try {
 			parser = jsonFactory.createJsonParser(json);
 			SimpleModule module =  
 			      new SimpleModule("WhitelistDeserializerModule",  
 			          new Version(1, 0, 0, null));  
 			    
-			module.addDeserializer(Whitelist.class, new WhitelistDeserializer());  
+			module.addDeserializer(WhitelistEntry.class, new WhitelistDeserializer());  
 //			module.addDeserializer(Map.class, new MapDeserializer());
 			module.addDeserializer(List.class, new ListDeserializer());
 			
 			objectMapper.registerModule(module); 
 			
 			parser.setCodec(objectMapper);
-			whitelist = objectMapper.readValue(parser, Whitelist.class);
+			whitelist = objectMapper.readValue(parser, WhitelistEntry.class);
 		} catch (JsonParseException e) {
 			throw new AnnotationInstantiationException("Json formating exception!", e);
 		} catch (IOException e) {

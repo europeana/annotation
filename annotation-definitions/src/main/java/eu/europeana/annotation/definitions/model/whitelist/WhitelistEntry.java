@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * This interface defines method for the Whitelist objects.
  */
-public interface Whitelist {
+public interface WhitelistEntry {
 
 	public String getHttpUrl();
 	

@@ -20,7 +20,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
  *		} 	
  *
  */
-public class BaseWhitelist implements Whitelist {
+public class BaseWhitelistEntry implements WhitelistEntry {
 
 	private int id;
 	private String name;
@@ -97,11 +97,11 @@ public class BaseWhitelist implements Whitelist {
 	}
 
 	public boolean equals(Object other) {
-	    if (!(other instanceof Whitelist)) {
+	    if (!(other instanceof WhitelistEntry)) {
 	        return false;
 	    }
 
-	    Whitelist that = (Whitelist) other;
+	    WhitelistEntry that = (WhitelistEntry) other;
 
 	    boolean res = true;
 	    

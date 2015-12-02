@@ -2,7 +2,7 @@ package eu.europeana.annotation.web.service;
 
 import java.util.List;
 
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 
 public interface AdminService {
@@ -14,20 +14,20 @@ public interface AdminService {
 	 * @return Whitelist entries
 	 * @throws ParamValidationException 
 	 */
-	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException;
+	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws ParamValidationException;
 	
 	/**
 	 * @param newWhitelist
 	 * @return
 	 * @throws ParamValidationException 
 	 */
-	public Whitelist storeWhitelist(Whitelist newWhitelist) throws ParamValidationException;
+	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelist) throws ParamValidationException;
 		
 	/**
 	 * @param whitelist
 	 * @return
 	 */
-	public Whitelist updateWhitelist(Whitelist whitelist);
+	public WhitelistEntry updateWhitelistEntry(WhitelistEntry whitelist);
 	
 	/**
 	 * @param url
@@ -38,17 +38,17 @@ public interface AdminService {
 	 * @param url
 	 * @return
 	 */
-	public Whitelist getWhitelistByUrl(String url);
+	public WhitelistEntry getWhitelistEntryByUrl(String url);
 	
 	/**
 	 * @return
 	 */
-	public List<? extends Whitelist> getAllWhitelistEntries();
+	public List<? extends WhitelistEntry> getWhitelist();
 	
 	/**
 	 * This method removes all whitelist entries.
 	 */
-	public void deleteAllWhitelistEntries();
+	public void deleteWholeWhitelist();
 
 	
 }

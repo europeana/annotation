@@ -18,7 +18,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
@@ -42,29 +42,29 @@ public class WhitelistRest extends BaseRest {
 		return WebAnnotationFields.WHITELIST;
 	}
 
-	@RequestMapping(value = "/{uri}.json"
+	@RequestMapping(value = "/search"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView getWhitelist (
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "uri", required = true) String uri
+	public ModelAndView getWhitelistEntry (
+		@RequestParam(value = "apiKey", required = true) String apiKey,
+		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException {
 		
 		validateApiKey(apiKey);
 
-		Whitelist whitelist = getAdminService().getWhitelistByUrl(uri);
+		WhitelistEntry whitelist = getAdminService().getWhitelistEntryByUrl(url);
 
 		WhitelistOperationResponse response = new WhitelistOperationResponse(
-				apiKey, "/whitelist/uri.json");
+				apiKey, "/whitelist/search");
 
 		if (whitelist != null) {
 			response = new WhitelistOperationResponse(
-					apiKey, "/whitelist/uri.json");			
+					apiKey, "/whitelist/search");			
 			response.success = true;
-			response.setWhitelist(whitelist);
+			response.setWhitelistEntry(whitelist);
 		} else {
 			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
-			response.action = "get: /whitelist/"+ uri + ".json";
+			response.action = "get: /whitelist/search";
 			response.success = false;
 			response.error = errorMessage;
 		}
@@ -72,49 +72,48 @@ public class WhitelistRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 
-	@RequestMapping(value = "/all.json"
+	@RequestMapping(value = "/view"
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView getAllWhitelist (
-		@RequestParam(value = "apiKey", required = false) String apiKey) throws ApplicationAuthenticationException {
+	public ModelAndView getFullWhitelist(
+		@RequestParam(value = "apiKey", required = true) String apiKey) throws ApplicationAuthenticationException {
 
 		validateApiKey(apiKey);
 
-		List<? extends Whitelist> whitelist = getAdminService().getAllWhitelistEntries();
+		List<? extends WhitelistEntry> whitelist = getAdminService().getWhitelist();
 
-		String action = "/all.json";
+		String action = "get:/whitelist/view";
 		
-		WhitelsitSearchResults<Whitelist> response = buildSearchWhitelistResponse(
+		WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(
 				whitelist, apiKey, action);
 
 		return JsonWebUtils.toJson(response, null);
 	}
 	
-	@RequestMapping(value = "/{uri}.json", method = RequestMethod.POST
+	@RequestMapping(value = "/create", method = RequestMethod.POST
 			, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes="createWhitelistEntry", value="", hidden=true)
-	public ModelAndView createWhitelist (
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "uri", required = true) String uri,
+	@ApiOperation(notes="createWhitelistEntry", value="", hidden=false)
+	public ModelAndView createWhitelistEntry (
+		@RequestParam(value = "apiKey", required = true) String apiKey,
 		@RequestBody String whitelist) throws ParamValidationException, ApplicationAuthenticationException {
 
 		validateApiKey(apiKey);
 
-		String action = "create:/whitelist/uri.json";
+		String action = "post:/whitelist/create";
 		
 		//parse
-		Whitelist webWhitelist = JsonUtils.toWhitelistObject(whitelist);
+		WhitelistEntry webWhitelist = JsonUtils.toWhitelistEntry(whitelist);
 	
 		//store				
-		Whitelist storedWhitelist = getAdminService().storeWhitelist(webWhitelist);
+		WhitelistEntry storedWhitelist = getAdminService().storeWhitelistEntry(webWhitelist);
 
 		//build response
 		WhitelistOperationResponse response = new WhitelistOperationResponse(
 				apiKey, action);
 		response.success = true;
 
-		response.setWhitelist(storedWhitelist);
+		response.setWhitelistEntry(storedWhitelist);
 
 		return JsonWebUtils.toJson(response, null);
 	}
@@ -124,16 +123,16 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="loadDefaultWhitelist", value="")//, hidden=true)
 	public ModelAndView loadDefaultWhitelist (
-		@RequestParam(value = "apiKey", required = false) String apiKey) 
+		@RequestParam(value = "apiKey", required = true) String apiKey) 
 				throws ParamValidationException, ApplicationAuthenticationException{
 
 		validateApiKey(apiKey);
 
-		List<? extends Whitelist> whitelist = getAdminService().loadWhitelistFromResources();
+		List<? extends WhitelistEntry> whitelist = getAdminService().loadWhitelistFromResources();
 
 		String action = "/load";
 		
-		WhitelsitSearchResults<Whitelist> response = buildSearchWhitelistResponse(
+		WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(
 				whitelist, apiKey, action);
 
 		return JsonWebUtils.toJson(response, null);
@@ -145,16 +144,16 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
 	public WhitelistOperationResponse deleteAllWhitelistEntries(
-		@RequestParam(value = "apiKey", required = false) String apiKey) throws ApplicationAuthenticationException {
+		@RequestParam(value = "apiKey", required = true) String apiKey) throws ApplicationAuthenticationException {
 
 		validateApiKey(apiKey);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
-				apiKey, "/whitelist/delete");
+				apiKey, "/whitelist/deleteall");
 			
 		try{
-			getAdminService().deleteAllWhitelistEntries();
+			getAdminService().deleteWholeWhitelist();
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
@@ -166,23 +165,23 @@ public class WhitelistRest extends BaseRest {
 	}
 
 	@DELETE
-	@RequestMapping(value = "/delete/{uri}.json", method = RequestMethod.DELETE
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE
 					, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
 	public WhitelistOperationResponse deleteWhitelistEntry(
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "uri", required = true) String uri
+		@RequestParam(value = "apiKey", required = true) String apiKey,
+		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException {
 
 		validateApiKey(apiKey);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
-				apiKey, "/whitelist/delete/{uri}.json");
+				apiKey, "delete/whitelist/delete");
 			
 		try{
-			getAdminService().deleteWhitelistEntry(uri);
+			getAdminService().deleteWhitelistEntry(url);
 			response.success = true;
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
