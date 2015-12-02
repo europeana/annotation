@@ -100,6 +100,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 				logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
 				props.load(new FileInputStream(annotationPropertiesFile));
 			}else{
+				logger.info("Load configuration properties from template: " + propertiesTemplate.getAbsolutePath());
 				props.load(new FileInputStream(propertiesTemplate));
 			}
 		
@@ -121,22 +122,12 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		String mongoPassword = VCAP + mongoDb + PASSWORD;
 		String mongoHosts = VCAP + mongoDb + HOSTS;
 
-//				FileUtils.writeStringToFile(
-//						annotationPropertiesFile,
-//						"mongodb.annotation.username" + "="
-//								+ env.getProperty(mongoUserName) + "\n", true);
 		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
-//				FileUtils.writeStringToFile(
-//						annotationPropertiesFile,
-//						"mongodb.annotation.password" + "="
-//								+ env.getProperty(mongoPassword) + "\n", true);
 		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
 		
 		logger.info(env.getProperty(mongoHosts));
 		String[] hosts = env.getProperty(mongoHosts).replace('[', ' ')
 				.replace("]", " ").split(",");
-		//String mongoHost = "mongodb.annotation.host=";
-		//String mongoPort = "mongodb.annotation.port=";
 		String mongoHost = "";
 		String mongoPort = "";
 		
@@ -144,13 +135,6 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 			mongoHost = mongoHost + host.split(":")[0].trim() + ",";
 			mongoPort = mongoPort + host.split(":")[1].trim() + ",";
 		}
-//				FileUtils.writeStringToFile(annotationPropertiesFile,
-//						mongoHost.substring(0, mongoHost.length() - 1) + "\n",
-//						true);
-//		FileUtils.writeStringToFile(annotationPropertiesFile,
-//		mongoPort.substring(0, mongoPort.length() - 1) + "\n",
-//		true);
-
 		
 		mongoHost = mongoHost.substring(0, mongoHost.length() - 1);
 		mongoPort = mongoPort.substring(0, mongoPort.length() - 1);
@@ -179,20 +163,4 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 				PROP_TIMESTAMP + "=" + System.currentTimeMillis() + "\n",
 				true);
 	}
-	
-//	 /**
-//	   * Checks if a user-defined variable exists, and adds it to the properties file if it does
-//	   * 
-//	   * @param props
-//	   * @param key
-//	   * @throws IOException
-//	   */
-//	  protected void setHTTPProperty(Properties props, String key) throws IOException {
-//	    String HTTP = "http://";
-//
-//	    if (env.containsProperty(key)) {
-//	      props.setProperty(StringUtils.replaceChars(key, "_", "."), HTTP
-//	          + env.getSystemEnvironment().get(key));
-//	    }
-//	  }
 }
