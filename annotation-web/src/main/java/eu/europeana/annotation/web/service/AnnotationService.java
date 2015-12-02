@@ -53,13 +53,6 @@ public interface AnnotationService {
 	public List<? extends Annotation> getAnnotationListByResourceId (String resourceId);
 	
 	/**
-	 * This method returns all Whitelist entries.
-	 * @return Whitelist entries
-	 * @throws ParamValidationException 
-	 */
-	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException;
-	
-	/**
 	 * This method retrieves annotations applying filters.
 	 * @param resourceId
 	 * @param startOn
@@ -156,15 +149,6 @@ public interface AnnotationService {
 	 */
 	public Annotation disableAnnotation(Annotation annotation);
 	
-//	/**
-//	 * This method returns annotation object for given annotationId that
-//	 * comprises provider and identifier.
-//	 * @param provider
-//	 * @param identifier
-//	 * @return annotation object
-//	 */
-//	public Annotation getAnnotationById(String provider, String identifier);
-//	
 	/**
 	 * This method returns annotation object for given annotationId that
 	 * comprises provider and identifier.
@@ -172,17 +156,7 @@ public interface AnnotationService {
 	 * @return annotation object
 	 */
 	public Annotation getAnnotationById(AnnotationId annoId);
-	
-//	/**
-//	 * This method returns annotation object for given annotationId that
-//	 * comprises europeanaId, provider and identifier.
-//	 * @param europeanaId
-//	 * @param provider
-//	 * @param identifier
-//	 * @return annotation object
-//	 */
-//	public Annotation getAnnotationById(String europeanaId, String provider, Long identifier);
-	
+		
 	/**
 	 * Search for annotations by the given text query.
 	 * @param query
@@ -318,40 +292,6 @@ public interface AnnotationService {
 	void deleteAnnotation(AnnotationId annoId);
 
 	void indexAnnotation(AnnotationId annoId);
-
-	/**
-	 * @param newWhitelist
-	 * @return
-	 * @throws ParamValidationException 
-	 */
-	public Whitelist storeWhitelist(Whitelist newWhitelist) throws ParamValidationException;
-		
-	/**
-	 * @param whitelist
-	 * @return
-	 */
-	public Whitelist updateWhitelist(Whitelist whitelist);
-	
-	/**
-	 * @param url
-	 */
-	public void deleteWhitelistEntry(String url);
-	
-	/**
-	 * @param url
-	 * @return
-	 */
-	public Whitelist getWhitelistByUrl(String url);
-	
-	/**
-	 * @return
-	 */
-	public List<? extends Whitelist> getAllWhitelistEntries();
-	
-	/**
-	 * This method removes all whitelist entries.
-	 */
-	public void deleteAllWhitelistEntries();
 
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
 

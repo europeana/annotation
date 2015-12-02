@@ -29,6 +29,7 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
+import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -37,8 +38,12 @@ public class BaseRest extends ApiResponseBuilder {
 
 	@Resource
 	AnnotationConfiguration configuration;
+
 	@Resource
 	private AnnotationService annotationService;
+
+	@Resource
+	private AdminService adminService;
 
 	@Resource
 	AuthenticationService authenticationService;
@@ -64,6 +69,14 @@ public class BaseRest extends ApiResponseBuilder {
 		return authenticationService;
 	}
 
+	public AdminService getAdminService() {
+		return adminService;
+	}
+
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+	}
+	
 	public void setAuthenticationService(AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
 	}

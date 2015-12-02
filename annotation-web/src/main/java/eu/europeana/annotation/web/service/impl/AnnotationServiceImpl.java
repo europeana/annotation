@@ -1,13 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +16,6 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
-import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
@@ -35,7 +27,6 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.whitelist.Whitelist;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
@@ -51,7 +42,6 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
-import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -180,13 +170,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
 	}
 
-
-	// @Override
-	// public Annotation getAnnotationById(String provider,
-	// String identifier) {
-	// return getMongoPersistence().find(provider, identifier);
-	//
-	// }
 
 	@Override
 	public  List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
@@ -341,117 +324,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
     
-    /**
-     * Whitelist methods
-     * @throws ParamValidationException 
-     */
-//TODO: move the administration methods to own service class
-	@Override
-	public Whitelist storeWhitelist(Whitelist newWhitelist) throws ParamValidationException {
-
-		// store in mongo database
-		return getMongoWhitelistPersistence().store(newWhitelist);
-	}
-
-	@Override
-	public Whitelist updateWhitelist(Whitelist whitelist) {
-		return getMongoWhitelistPersistence().update(whitelist);
-	}
-
-	@Override
-	public void deleteWhitelistEntry(String url) {
-		getMongoWhitelistPersistence().removeByUrl(url);
-	}
-
-	@Override
-	public Whitelist getWhitelistByUrl(String url) {
-		return getMongoWhitelistPersistence().findByUrl(url);
-	}
-
-	public void deleteAllWhitelistEntries() {
-		getMongoWhitelistPersistence().removeAll();
-	}
-
-	
-	private void validateMandatoryFields(Whitelist whitelistEntry) {
-
-		if (whitelistEntry.getName() == null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_NAME);
-
-		if (whitelistEntry.getHttpUrl() == null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_URI);
-
-		if (whitelistEntry.getStatus() == null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_STATUS);
-
-		if (!whitelistEntry.getHttpUrl().startsWith(WhitelistValidationException.HTTP))
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_HTTP_URI);
-	}
-
-
-	private void enrichWhitelistEntry(Whitelist whitelistEntry) {
-
-		DateFormat df = new SimpleDateFormat(WhitelistValidationException.DATE_FORMAT);
-		Date dateobj = new Date();
-		String currentDateStr = df.format(dateobj);
-		try {
-			Date currentDate = df.parse(currentDateStr);
-			whitelistEntry.setCreationDate(currentDate);
-			whitelistEntry.setLastUpdate(currentDate);
-			whitelistEntry.setEnableFrom(currentDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException{
-		List<? extends Whitelist> res = new ArrayList<Whitelist>();
-		
-		/**
-		 * load property with the path to the default whitelist JSON file
-		 */
-		String whitelistPath = getConfiguration().getDefaultWhitelistResourcePath();
-		
-		/**
-		 * load whitelist from resources in JSON format
-		 */
-		List<Whitelist> defaultWhitelist = new ArrayList<Whitelist>();
-		URL whiteListFile = getClass().getResource(whitelistPath);
-		
-		defaultWhitelist = JsonUtils.toWhitelistObjectList(
-				whiteListFile.getPath().substring(1));
-		
-		/**
-		 *  store whitelist objects in database
-		 */
-		Iterator<Whitelist> itrDefault = defaultWhitelist.iterator();
-		while (itrDefault.hasNext()) {
-			Whitelist whitelistEntry = itrDefault.next();
-			validateMandatoryFields(whitelistEntry);
-			enrichWhitelistEntry(whitelistEntry);
-			if (getWhitelistByUrl(whitelistEntry.getHttpUrl()) != null)
-				throw new WhitelistValidationException(WhitelistValidationException.ERROR_HTTP_URL_EXISTS 
-						+ whitelistEntry.getHttpUrl());
-			storeWhitelist(whitelistEntry);
-		}
-		
-		/**
-		 *  retrieve whitelist objects
-		 */
-		res = getAllWhitelistEntries();
-
-		return res;
-	}
-	
-	public List<? extends Whitelist> getAllWhitelistEntries() {
-		
-		/**
-		 *  retrieve all whitelist objects
-		 */
-		return getMongoWhitelistPersistence().getAll();
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -525,37 +397,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 			throw new AnnotationValidationException("Annotaion.AnnotationId.provider must not be null!");
 	}
 
-	
-	
-
-	
-
-	/**
-	 * This method converts Body object in SolrTag object.
-	 * 
-	 * @param tag
-	 *            The body object
-	 * @return the SolrTag object
-	 */
-	// private SolrTag copyPersistentTagIntoSolrTag(PersistentTag tag) {
-	//
-	// SolrTag res = null;
-	//
-	// SolrTagImpl solrTagImpl = new SolrTagImpl();
-	// if (StringUtils.isNotBlank(((PlainTagBody) tag).getTagId())) {
-	// solrTagImpl.setId(((PlainTagBody) tag).getTagId());
-	// }
-	// solrTagImpl.setTagType(tag.getTagType());
-	// solrTagImpl.setValue(tag.getValue());
-	// solrTagImpl.setLanguage(tag.getLanguage());
-	// solrTagImpl.setContentType(tag.getContentType());
-	// solrTagImpl.setHttpUri(tag.getHttpUri());
-	// solrTagImpl.setMultilingual(tag.getMultilingual());
-	//
-	// res = solrTagImpl;
-	//
-	// return res;
-	// }
 
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
@@ -601,13 +442,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public Annotation updateAnnotationStatus(Annotation annotation) {
 
 		Annotation res = getMongoPersistence().updateStatus(annotation);
-
-//		try {
-//			//TODO: status is not in the index now. Enable when available
-//			//getSolrService().update(res);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
 
 		return res;
 	}
@@ -766,44 +600,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 		}
 		return res;
 	}
-
-	/**
-	 * This method initializes AnnotationId dependent on provider.
-	 * 
-	 * @param newAnnotation
-	 * @return Annotation object initialized with AnnotationId
-	 */
-	// public AnnotationId initializeAnnotationId(Annotation newAnnotation) {
-	// if (StringUtils.isNotEmpty(newAnnotation.getSameAs())
-	// && newAnnotation.getSameAs().contains(WebAnnotationFields.HISTORY_PIN)) {
-	// MongoAnnotationId annotationId = new MongoAnnotationId();
-	// String[] arrValue =
-	// newAnnotation.getSameAs().split(WebAnnotationFields.SLASH);
-	// if (arrValue.length >=
-	// WebAnnotationFields.MIN_HISTORY_PIN_COMPONENT_COUNT) {
-	// String resourceId = new
-	// AnnotationControllerHelper().extractResourceId(newAnnotation);
-	// if (StringUtils.isNotEmpty(resourceId))
-	// annotationId.setResourceId(resourceId);
-	// annotationId.setProvider(WebAnnotationFields.HISTORY_PIN);
-	// //the external id of the annotation is found in the last element of the
-	// url
-	// String annotationNrStr = arrValue[arrValue.length - 1];
-	// if (StringUtils.isNotEmpty(annotationNrStr))
-	// annotationId.setAnnotationNr(Integer.parseInt(annotationNrStr));
-	// }
-	// }
-	//
-	// // set default provider if sameAs field is empty
-	// if (StringUtils.isEmpty(newAnnotation.getSameAs())
-	// || StringUtils.isEmpty(res.getAnnotationId().getProvider())) {
-	// String provider = WebAnnotationFields.WEB_ANNO;
-	// res.getAnnotationId().setProvider(provider);
-	// }
-	//
-	//
-	// return newAnnotation;
-	// }
 
 	public void logAnnotationStatusUpdate(String user, Annotation annotation) {
 		// store in mongo database
