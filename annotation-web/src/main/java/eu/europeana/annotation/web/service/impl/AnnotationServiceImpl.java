@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +28,7 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
+import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
@@ -372,7 +377,39 @@ public class AnnotationServiceImpl implements AnnotationService {
 	public void deleteAllWhitelistEntries() {
 		getMongoWhitelistPersistence().removeAll();
 	}
+
 	
+	private void validateMandatoryFields(Whitelist whitelistEntry) {
+
+		if (whitelistEntry.getName() == null)
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_NAME);
+
+		if (whitelistEntry.getHttpUrl() == null)
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_URI);
+
+		if (whitelistEntry.getStatus() == null)
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_STATUS);
+
+		if (!whitelistEntry.getHttpUrl().startsWith(WhitelistValidationException.HTTP))
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_HTTP_URI);
+	}
+
+
+	private void enrichWhitelistEntry(Whitelist whitelistEntry) {
+
+		DateFormat df = new SimpleDateFormat(WhitelistValidationException.DATE_FORMAT);
+		Date dateobj = new Date();
+		String currentDateStr = df.format(dateobj);
+		try {
+			Date currentDate = df.parse(currentDateStr);
+			whitelistEntry.setCreationDate(currentDate);
+			whitelistEntry.setLastUpdate(currentDate);
+			whitelistEntry.setEnableFrom(currentDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public List<? extends Whitelist> loadWhitelistFromResources() throws ParamValidationException{
 		List<? extends Whitelist> res = new ArrayList<Whitelist>();
@@ -396,7 +433,10 @@ public class AnnotationServiceImpl implements AnnotationService {
 		 */
 		Iterator<Whitelist> itrDefault = defaultWhitelist.iterator();
 		while (itrDefault.hasNext()) {
-			storeWhitelist(itrDefault.next());
+			Whitelist whitelistEntry = itrDefault.next();
+			validateMandatoryFields(whitelistEntry);
+			enrichWhitelistEntry(whitelistEntry);
+			storeWhitelist(whitelistEntry);
 		}
 		
 		/**
