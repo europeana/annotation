@@ -107,8 +107,9 @@ public class PersistentWhitelistImpl implements PersistentWhitelist, PersistentO
 
 	public String toString() {
 		return "PersistentWhitelist [" 
-				+ "Id:" + getId() 
-	            + "name:" + getName() 
+				+ "Id:" + getId() + ", " 
+	            + "name:" + getName() + ", " 
+	            + "url:" + getHttpUrl() + ", " 
 				+ ", last update: " + getLastUpdate() + "]";
 	}
 

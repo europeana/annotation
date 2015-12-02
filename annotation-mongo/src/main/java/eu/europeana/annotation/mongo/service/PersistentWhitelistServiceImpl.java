@@ -70,15 +70,73 @@ public class PersistentWhitelistServiceImpl extends
 			throw new AnnotationMongoRuntimeException(e);
 		}
 	}
+
+	public void removeByUrlWithoutCache(String url) {		
+		Query<PersistentWhitelist> query = getDao().createQuery();
+		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
+		getDao().deleteByQuery(query);
+	}
 	
 //	@CacheEvict(value = { "whitelist" }, key="url")
 //	@CachePut(value = { "whitelist" }, key="#httpUrl")
 //	@CachePut(value="whitelist", key="#url")
 	@Override
 	public void removeByUrl(String url) {
-		Query<PersistentWhitelist> query = getDao().createQuery();
-		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
-		getDao().deleteByQuery(query);
+		/**
+		 * store current cache state in temporary list
+		 */
+		List<? extends PersistentWhitelist> tmpList = getAll();
+		
+//		Query<PersistentWhitelist> query = getDao().createQuery();
+//		query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
+//		getDao().deleteByQuery(query);
+		
+		/**
+		 * actually remove entries
+		 */
+//		Iterator<? extends PersistentWhitelist> itrEntryRemove = tmpList.iterator();
+//		while (itrEntryRemove.hasNext()) {
+//			Whitelist whitelistObj = itrEntryRemove.next();
+//			if (whitelistObj.getHttpUrl().equals(url)) {
+//				Query<PersistentWhitelist> query = getDao().createQuery();
+//				query.filter(PersistentWhitelist.FIELD_HTTP_URL, url);
+//				getDao().deleteByQuery(query);
+//				break;
+//			}
+//		}
+		removeAll();
+		
+		/**
+		 * mark entry to remove from temporary list
+		 */
+		Whitelist entry = null;
+		Iterator<? extends PersistentWhitelist> itr = tmpList.iterator();
+		while (itr.hasNext()) {
+			Whitelist whitelistObj = itr.next();
+			if (whitelistObj.getHttpUrl().equals(url)) {
+				entry = whitelistObj;
+			    break;
+			}
+		}
+		
+		/**
+		 * remove whitelist entry from temporary list
+		 */
+		tmpList.remove(entry);
+		
+		/**
+		 * store temporary list
+		 */
+		Iterator<? extends PersistentWhitelist> itrStore = tmpList.iterator();
+		while (itrStore.hasNext()) {
+			Whitelist whitelistObj = itrStore.next();
+			store(whitelistObj);
+		}
+		
+		/**
+		 * refresh cache
+		 */
+		getAll(); 
 	}
 	
 //	@CacheEvict(allEntries=true, value = { "whitelist" })	
@@ -88,7 +146,7 @@ public class PersistentWhitelistServiceImpl extends
 		Iterator<PersistentWhitelist> itr = findAll().iterator();
 		while (itr.hasNext()) {
 			Whitelist whitelistObj = itr.next();
-			removeByUrl(whitelistObj.getHttpUrl());
+			removeByUrlWithoutCache(whitelistObj.getHttpUrl());
 		}
 //		try{
 //			getDao().deleteAll();
@@ -210,7 +268,8 @@ public class PersistentWhitelistServiceImpl extends
 
 //	@Cacheable(value={"whitelist"}, key="#httpUri")
 //	@Cacheable(value="whitelist", key="#url")
-	@Cacheable("whitelist")
+//	@Cacheable("whitelist")
+	@CachePut("whitelist")
 	@Override
 	public List<? extends PersistentWhitelist> getAll() {
 		return (List<? extends PersistentWhitelist>) findAll();

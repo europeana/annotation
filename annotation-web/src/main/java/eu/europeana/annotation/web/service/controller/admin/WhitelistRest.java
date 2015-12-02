@@ -120,22 +120,30 @@ public class WhitelistRest extends BaseRest {
 
 		List<? extends Whitelist> whitelist = getAnnotationService().loadWhitelistFromResources();
 
-		WhitelistOperationResponse response = new WhitelistOperationResponse(
-				apiKey, "/load");
-
-		if (whitelist != null) {
-			response = new WhitelistOperationResponse(
-					apiKey, "/load");			
-			response.success = true;
-			response.setWhitelistEntries(whitelist);
-		} else {
-			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
-			response.action = "get: /whitelist/load";
-			response.success = false;
-			response.error = errorMessage;
-		}
+		String action = "/load";
 		
+		WhitelsitSearchResults<Whitelist> response = buildSearchWhitelistResponse(
+				whitelist, apiKey, action);
+
 		return JsonWebUtils.toJson(response, null);
+		
+		
+//		WhitelistOperationResponse response = new WhitelistOperationResponse(
+//				apiKey, "/load");
+//
+//		if (whitelist != null) {
+//			response = new WhitelistOperationResponse(
+//					apiKey, "/load");			
+//			response.success = true;
+//			response.setWhitelistEntries(whitelist);
+//		} else {
+//			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
+//			response.action = "get: /whitelist/load";
+//			response.success = false;
+//			response.error = errorMessage;
+//		}
+//		
+//		return JsonWebUtils.toJson(response, null);
 	}
 
 	
