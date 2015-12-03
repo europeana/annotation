@@ -34,8 +34,8 @@ public interface PersistentWhitelistService  extends AbstractNoSqlService<Persis
 	public PersistentWhitelistEntry findByUrl(String url);
 	public List<? extends PersistentWhitelistEntry> getAll();
 	public WhitelistEntry update(WhitelistEntry object);
-	public void removeAll();
-	public void removeByUrl(String url);
+	public int removeAll();
+	public int removeByUrl(String url);
 	public Set<String> getWhitelistDomains();
 	public String getDomainName(String url) throws URISyntaxException;
 	

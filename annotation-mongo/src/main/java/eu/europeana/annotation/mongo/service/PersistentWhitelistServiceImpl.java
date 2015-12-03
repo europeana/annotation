@@ -70,18 +70,20 @@ public class PersistentWhitelistServiceImpl extends
 		}
 	}
 
-	public void removeByUrlWithoutCache(String url) {		
+	public int removeByUrlWithoutCache(String url) {		
 		Query<PersistentWhitelistEntry> query = getDao().createQuery();
 		query.filter(PersistentWhitelistEntry.FIELD_HTTP_URL, url);
-		getDao().deleteByQuery(query);
+		WriteResult writeResult = getDao().deleteByQuery(query);
+		return writeResult.getN();
 	}
 	
 	@Override
-	public void removeByUrl(String url) {
+	public int removeByUrl(String url) {
 		/**
 		 * store current cache state in temporary list
 		 */
 		List<? extends PersistentWhitelistEntry> tmpList = getAll();
+		int initWhitelistSize = tmpList.size();
 		
 		/**
 		 * actually remove entries
@@ -118,17 +120,20 @@ public class PersistentWhitelistServiceImpl extends
 		/**
 		 * refresh cache
 		 */
-		getAll(); 
+		return initWhitelistSize - getAll().size(); 
 	}
 	
 	@CacheEvict("whitelist")	
 	@Override
-	public void removeAll() {
+	public int removeAll() {
+		int totalNumDeletedWhitelistEntries = 0;
 		Iterator<PersistentWhitelistEntry> itr = findAll().iterator();
 		while (itr.hasNext()) {
 			WhitelistEntry whitelistObj = itr.next();
-			removeByUrlWithoutCache(whitelistObj.getHttpUrl());
+			int numDeletedWhitelistEntries = removeByUrlWithoutCache(whitelistObj.getHttpUrl());
+			totalNumDeletedWhitelistEntries = totalNumDeletedWhitelistEntries + numDeletedWhitelistEntries;
 		}
+		return totalNumDeletedWhitelistEntries;
 	}
 	
 	@Override

@@ -153,8 +153,9 @@ public class WhitelistRest extends BaseRest {
 				apiKey, "/whitelist/deleteall");
 			
 		try{
-			getAdminService().deleteWholeWhitelist();
+			int numDeletedWhitelistEntries = getAdminService().deleteWholeWhitelist();
 			response.success = true;
+			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
 			response.success = false;
@@ -181,8 +182,9 @@ public class WhitelistRest extends BaseRest {
 				apiKey, "delete/whitelist/delete");
 			
 		try{
-			getAdminService().deleteWhitelistEntry(url);
+			int numDeletedWhitelistEntries = getAdminService().deleteWhitelistEntry(url);
 			response.success = true;
+			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
 			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
 			response.success = false;

@@ -32,7 +32,7 @@ public interface AdminService {
 	/**
 	 * @param url
 	 */
-	public void deleteWhitelistEntry(String url);
+	public int deleteWhitelistEntry(String url);
 	
 	/**
 	 * @param url
@@ -46,9 +46,9 @@ public interface AdminService {
 	public List<? extends WhitelistEntry> getWhitelist();
 	
 	/**
-	 * This method removes all whitelist entries.
+	 * This method removes all whitelist entries and returns the number of deleted entries.
 	 */
-	public void deleteWholeWhitelist();
+	public int deleteWholeWhitelist();
 
 	
 }

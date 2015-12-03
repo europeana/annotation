@@ -83,8 +83,11 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void deleteWhitelistEntry(String url) {
-		getMongoWhitelistPersistence().removeByUrl(url);
+	public int deleteWhitelistEntry(String url) {
+		int res = getMongoWhitelistPersistence().removeByUrl(url);
+		if (res == 0) 
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NO_ENTRIES_FOUND_TO_DELETE);
+		return res;
 	}
 
 	@Override
@@ -92,8 +95,11 @@ public class AdminServiceImpl implements AdminService {
 		return getMongoWhitelistPersistence().findByUrl(url);
 	}
 
-	public void deleteWholeWhitelist() {
-		getMongoWhitelistPersistence().removeAll();
+	public int deleteWholeWhitelist() {
+		int numDeletedWhitelistEntries = getMongoWhitelistPersistence().removeAll();
+		if (numDeletedWhitelistEntries == 0) 
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NO_ENTRIES_FOUND_TO_DELETE);
+        return numDeletedWhitelistEntries;
 	}
 
 	
