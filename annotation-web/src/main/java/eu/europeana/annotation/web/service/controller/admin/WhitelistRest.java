@@ -143,7 +143,7 @@ public class WhitelistRest extends BaseRest {
 	@RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
-	public WhitelistOperationResponse deleteAllWhitelistEntries(
+	public ModelAndView deleteAllWhitelistEntries(
 		@RequestParam(value = "apiKey", required = true) String apiKey) throws ApplicationAuthenticationException {
 
 		validateApiKey(apiKey);
@@ -162,7 +162,7 @@ public class WhitelistRest extends BaseRest {
 			response.error = e.getMessage();
 		}
 
-		return response;
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	@DELETE
@@ -170,7 +170,7 @@ public class WhitelistRest extends BaseRest {
 					, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
-	public WhitelistOperationResponse deleteWhitelistEntry(
+	public ModelAndView deleteWhitelistEntry(
 		@RequestParam(value = "apiKey", required = true) String apiKey,
 		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException {
@@ -191,7 +191,7 @@ public class WhitelistRest extends BaseRest {
 			response.error = e.getMessage();
 		}
 
-		return response;
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	
