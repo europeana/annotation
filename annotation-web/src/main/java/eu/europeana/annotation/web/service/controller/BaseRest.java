@@ -140,6 +140,11 @@ public class BaseRest extends ApiResponseBuilder {
 		return response;
 	}
 
+	public WhitelistEntry serializeWhitelist(WhitelistEntry entry) {
+		((PersistentWhitelistEntry) entry).setId(null);
+		return entry;
+	}
+	
 	public WhitelsitSearchResults<WhitelistEntry> buildSearchWhitelistResponse(List<? extends WhitelistEntry> entries,
 			String apiKey, String action) {
 		WhitelsitSearchResults<WhitelistEntry> response = new WhitelsitSearchResults<WhitelistEntry>(apiKey,

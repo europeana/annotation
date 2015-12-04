@@ -12,7 +12,7 @@ import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
  */
 public interface PersistentWhitelistEntry extends WhitelistEntry, NoSqlEntity {
 
-//	public final static String FIELD_URI = "uri";
+	public final static String FIELD_NAME = "name";
 	public final static String FIELD_HTTP_URL = "httpUrl";
 	
 	/**

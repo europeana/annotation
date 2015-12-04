@@ -32,6 +32,7 @@ public interface PersistentWhitelistService  extends AbstractNoSqlService<Persis
 	
 	public abstract WhitelistEntry store(WhitelistEntry object) throws WhitelistValidationException;
 	public PersistentWhitelistEntry findByUrl(String url);
+	public PersistentWhitelistEntry findByName(String name);
 	public List<? extends PersistentWhitelistEntry> getAll();
 	public WhitelistEntry update(WhitelistEntry object);
 	public int removeAll();

@@ -220,6 +220,18 @@ public class PersistentWhitelistServiceImpl extends
 		return whitelistList.get(whitelistList.size() - 1);
 	}
 
+	@Override
+	public PersistentWhitelistEntry findByName(String name) {
+		Query<PersistentWhitelistEntry> query = getDao().createQuery();
+		query.filter(PersistentWhitelistEntry.FIELD_NAME, name);
+		QueryResults<? extends PersistentWhitelistEntry> results = getDao()
+				.find(query);
+		List<? extends PersistentWhitelistEntry> whitelistList = results.asList();
+		if (whitelistList.size() == 0)
+			return null;
+		return whitelistList.get(whitelistList.size() - 1);
+	}
+
 	public String getDomainName(String url) throws URISyntaxException {
 	    URI uri = new URI(url);
 	    return uri.getHost();

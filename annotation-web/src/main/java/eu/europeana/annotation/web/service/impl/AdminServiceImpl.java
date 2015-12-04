@@ -71,10 +71,11 @@ public class AdminServiceImpl implements AdminService {
      * @throws ParamValidationException 
      */
 	@Override
-	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelist) throws ParamValidationException {
+	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelistEntry) throws ParamValidationException {
 
+		validateWhitelistEntry(newWhitelistEntry);
 		// store in mongo database
-		return getMongoWhitelistPersistence().store(newWhitelist);
+		return getMongoWhitelistPersistence().store(newWhitelistEntry);
 	}
 
 	@Override
@@ -93,6 +94,11 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public WhitelistEntry getWhitelistEntryByUrl(String url) {
 		return getMongoWhitelistPersistence().findByUrl(url);
+	}
+
+	@Override
+	public WhitelistEntry getWhitelistEntryByName(String name) {
+		return getMongoWhitelistPersistence().findByName(name);
 	}
 
 	public int deleteWholeWhitelist() {
@@ -158,11 +164,6 @@ public class AdminServiceImpl implements AdminService {
 		Iterator<WhitelistEntry> itrDefault = defaultWhitelist.iterator();
 		while (itrDefault.hasNext()) {
 			WhitelistEntry whitelistEntry = itrDefault.next();
-			validateMandatoryFields(whitelistEntry);
-			enrichWhitelistEntry(whitelistEntry);
-			if (getWhitelistEntryByUrl(whitelistEntry.getHttpUrl()) != null)
-				throw new WhitelistValidationException(WhitelistValidationException.ERROR_HTTP_URL_EXISTS 
-						+ whitelistEntry.getHttpUrl());
 			storeWhitelistEntry(whitelistEntry);
 		}
 		
@@ -172,6 +173,17 @@ public class AdminServiceImpl implements AdminService {
 		res = getWhitelist();
 
 		return res;
+	}
+
+	private void validateWhitelistEntry(WhitelistEntry whitelistEntry) {
+		validateMandatoryFields(whitelistEntry);
+		enrichWhitelistEntry(whitelistEntry);
+		if (getWhitelistEntryByUrl(whitelistEntry.getHttpUrl()) != null)
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_HTTP_URL_EXISTS 
+					+ whitelistEntry.getHttpUrl());
+		if (getWhitelistEntryByName(whitelistEntry.getName()) != null)
+			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NAME_EXISTS
+					+ whitelistEntry.getHttpUrl());
 	}
 	
 	public List<? extends WhitelistEntry> getWhitelist() {

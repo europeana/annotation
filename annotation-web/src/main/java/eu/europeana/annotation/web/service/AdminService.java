@@ -41,6 +41,12 @@ public interface AdminService {
 	public WhitelistEntry getWhitelistEntryByUrl(String url);
 	
 	/**
+	 * @param name
+	 * @return
+	 */
+	public WhitelistEntry getWhitelistEntryByName(String name);
+	
+	/**
 	 * @return
 	 */
 	public List<? extends WhitelistEntry> getWhitelist();

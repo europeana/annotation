@@ -61,7 +61,7 @@ public class WhitelistRest extends BaseRest {
 			response = new WhitelistOperationResponse(
 					apiKey, "/whitelist/search");			
 			response.success = true;
-			response.setWhitelistEntry(whitelist);
+			response.setWhitelistEntry(serializeWhitelist(whitelist));
 		} else {
 			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
 			response.action = "get: /whitelist/search";
@@ -113,7 +113,7 @@ public class WhitelistRest extends BaseRest {
 				apiKey, action);
 		response.success = true;
 
-		response.setWhitelistEntry(storedWhitelist);
+		response.setWhitelistEntry(serializeWhitelist(storedWhitelist));
 
 		return JsonWebUtils.toJson(response, null);
 	}
