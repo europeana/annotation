@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.config.ClientConfiguration;
@@ -13,6 +15,7 @@ import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.ConceptOperationResponse;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
+import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
@@ -873,4 +876,36 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 		
+	/**
+	 * Sample HTTP request
+	 *     http://localhost:8080/whitelist/create?apiKey=apidemo
+	 * 	   http://localhost:8081/annotation-web/concepts/{uri}.json?uri=myuri.com
+	 * 	   http://localhost:8080/whitelist/delete?apiKey=apidemo&url=http%3A%2F%2Ftest.data.europeana.eu
+	 * @param whitelistEntryJson
+	 * @return
+	 * @throws IOException
+	 */
+	public WhitelistOperationResponse createWhitelistEntry(String whitelistEntryJson) throws IOException {
+		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
+				+ "create"; 
+		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();		
+		// Execute Whitelist API request
+		String json = getJSONResultWithBody(url, whitelistEntryJson);
+		
+		WhitelistOperationResponse aor = new WhitelistOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("create:/whitelist");
+		String whitelistJsonString = "";
+		try {
+			JSONObject mainObject = new JSONObject(json);
+			JSONObject whitelistEntry = mainObject.getJSONObject("whitelistEntry");
+			whitelistJsonString = whitelistEntry.toString();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		aor.setWhitelistEntry(JsonUtils.toWhitelistEntry(whitelistJsonString));
+		aor.setJson(json);
+		return aor;
+	}
+
 }
