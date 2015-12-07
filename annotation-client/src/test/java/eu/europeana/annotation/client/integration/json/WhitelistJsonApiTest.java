@@ -3,8 +3,11 @@ package eu.europeana.annotation.client.integration.json;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
@@ -40,12 +43,31 @@ public class WhitelistJsonApiTest {
 		WhitelistEntry whitelistEntry = whitelistJsonApi.storeWhitelistEntry(whitelistEntryJson);
 		assertNotNull(whitelistEntry);
 		
+		/**
+		 * Retrieve created whitelistEntry object by the given HTTP URL
+		 */
 		WhitelistEntry resultWhitelistEntry = whitelistJsonApi.getWhitelistEntryByUrl(TEST_HTTP_URI);
 		assertNotNull(resultWhitelistEntry);
 		
-		int numDeletedWhitelistEntries = whitelistJsonApi.deleteWhitelistEntry(TEST_HTTP_URI);
-		assertTrue(numDeletedWhitelistEntries == 1);
-		
+		/**
+		 * Delete created whitelistEntry object by the given HTTP URL
+		 */
+		ResponseEntity<String> res = whitelistJsonApi.deleteWhitelistEntry(TEST_HTTP_URI);
+		String jsonRes = res.getBody();
+		int numDeletedWhitelistEntries = 0;
+		try {
+			JSONObject mainObject = new JSONObject(jsonRes);
+			String numEntriesStr = mainObject.getString("error");
+			int len = numEntriesStr.length();
+			if (len > 0) {
+				String numStr = numEntriesStr.substring(len - 1);
+				numDeletedWhitelistEntries = Integer.valueOf(numStr);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		assertTrue(numDeletedWhitelistEntries == 1);		
 	}
 	
 }

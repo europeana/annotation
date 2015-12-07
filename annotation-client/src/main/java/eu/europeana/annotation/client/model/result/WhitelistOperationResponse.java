@@ -8,6 +8,14 @@ public class WhitelistOperationResponse extends AbstractAnnotationApiResponse{
 	
 	private String json;
 	
+	private int num;
+	
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
 	public WhitelistEntry getWhitelistEntry() {
 		return whitelistEntry;
 	}

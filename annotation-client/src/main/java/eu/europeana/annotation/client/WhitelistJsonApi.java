@@ -2,6 +2,8 @@ package eu.europeana.annotation.client;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 
 public interface WhitelistJsonApi {
@@ -27,7 +29,7 @@ public interface WhitelistJsonApi {
 	/**
 	 * @param url
 	 */
-	public int deleteWhitelistEntry(String url);
+	public ResponseEntity<String> deleteWhitelistEntry(String url);
 	
 	/**
 	 * @param url
@@ -49,6 +51,6 @@ public interface WhitelistJsonApi {
 	/**
 	 * This method removes all whitelist entries and returns the number of deleted entries.
 	 */
-	public int deleteWholeWhitelist();
+	public ResponseEntity<String> deleteWholeWhitelist();
 
 }

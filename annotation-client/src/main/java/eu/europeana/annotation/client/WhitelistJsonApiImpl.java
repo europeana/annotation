@@ -3,6 +3,8 @@ package eu.europeana.annotation.client;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
@@ -45,27 +47,32 @@ public class WhitelistJsonApiImpl extends BaseAnnotationApi implements Whitelist
 	}
 
 	@Override
-	public int deleteWhitelistEntry(String url) {
-		// TODO Auto-generated method stub
-		return 0;
+	public ResponseEntity<String> deleteWhitelistEntry(String url) {
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.deleteWhitelistEntry(url);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryJsonApi", e);
+		}
+
+		return res;
 	}
 
 	@Override
 	public WhitelistEntry getWhitelistEntryByUrl(String url) {
-//		WhitelistOperationResponse res;
-//		
-//		try {
-//			res = apiConnection.getWhitelistEntry(url);
-//			
-//			if(!Boolean.valueOf(res.getSuccess()))
-//				throw new TechnicalRuntimeException(res.getError() + " " + res.getAction());
-//		
-//		} catch (IOException e) {
-//				throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryApi", e);
-//		}
-//
-//		return res.getWhitelistEntry();
-		return null;
+		WhitelistOperationResponse res;
+		
+		try {
+			res = apiConnection.getWhitelistEntry(url);
+			
+			if(!Boolean.valueOf(res.getSuccess()))
+				throw new TechnicalRuntimeException(res.getError() + " " + res.getAction());
+		
+		} catch (IOException e) {
+				throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryApi", e);
+		}
+
+		return res.getWhitelistEntry();
 	}
 
 	@Override
@@ -81,9 +88,9 @@ public class WhitelistJsonApiImpl extends BaseAnnotationApi implements Whitelist
 	}
 
 	@Override
-	public int deleteWholeWhitelist() {
+	public ResponseEntity<String> deleteWholeWhitelist() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 	
 }
