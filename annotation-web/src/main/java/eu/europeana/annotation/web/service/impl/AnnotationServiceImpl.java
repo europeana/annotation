@@ -21,6 +21,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
@@ -688,10 +689,41 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return true;
 	}
 
+	
+	/**
+	 * Validation of simple tags.
+	 * 
+	 * Pre-processing:
+	 *     Trim spaces.
+	 *     If the tag is encapsulated by double or single quotes, remove these.
+     *
+	 * Validation rules:
+     *     A maximum of 64 characters is allowed for the tag.
+	 *     Tags cannot be URIs, tags which start with http://, ftp:// or https:// are not allowed.
+	 *
+	 * Examples of allowed tags: black, white, "black and white" (will become tag: black and white)
+	 *
+	 * @param webAnnotation
+	 */
+	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
+		Body body = webAnnotation.getBody();
+		String value = body.getValue();
+		value = value.replace(" ", "").replace("\"", "").replace("'", "");
+		int MAX_TAG_LENGTH = 64;
+		if (value.length() > MAX_TAG_LENGTH) {
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", value);
+		}
+		if (value.contains("http://") || value.contains("ftp://") || value.contains("https://")) {
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_FORMAT, "tag.format", value);
+		}
+	}
+	
+	
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
-		//TODO: change to switch
-		if(MotivationTypes.LINKING.equals(webAnnotation.getMotivationType())){
+		
+		switch (webAnnotation.getMotivationType()) {
+		case LINKING:
 			//validate target URLs against whitelist 
 			if(webAnnotation.getTarget().getValue() != null)
 				validateResource(webAnnotation.getTarget().getValue());
@@ -700,7 +732,13 @@ public class AnnotationServiceImpl implements AnnotationService {
 			for(String url : webAnnotation.getTarget().getValues()){
 				validateResource(url);
 			}
-		}
-			
+			break;
+		case TAGGING:
+			validateTag(webAnnotation);
+			break;
+		default:
+			break;
+		}				
 	}
+	
 }
