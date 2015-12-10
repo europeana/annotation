@@ -3,6 +3,8 @@ package eu.europeana.annotation.client.integration.json;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
@@ -69,5 +71,50 @@ public class WhitelistJsonApiTest {
 
 		assertTrue(numDeletedWhitelistEntries == 1);		
 	}
+
+	/**
+	 * Since this test method impacts all whitelist entries in the database for regular testing it should
+	 * be commented out.
+	 */
+//	@Test
+	public void crudWhitelist() {
+		
+		/**
+		 * Load a whitelistEntry objects within the test and do not rely on the objects stored in the database.
+		 */
+		List<? extends WhitelistEntry> whitelistEntries = whitelistJsonApi.loadWhitelistFromResources();
+		assertNotNull(whitelistEntries);
+		int loadedSize = whitelistEntries.size();
+		
+		/**
+		 * Retrieve created whitelistEntry objects
+		 */
+		List<? extends WhitelistEntry> retrievedWhitelistEntries = whitelistJsonApi.getWhitelist();
+		assertNotNull(retrievedWhitelistEntries);
+		int retrievedSize = retrievedWhitelistEntries.size();
+		assertTrue(loadedSize == retrievedSize);
+
+		
+		/**
+		 * Delete created whitelistEntry objects
+		 */
+		ResponseEntity<String> res = whitelistJsonApi.deleteWholeWhitelist();
+		String jsonRes = res.getBody();
+		int numDeletedWhitelistEntries = 0;
+		try {
+			JSONObject mainObject = new JSONObject(jsonRes);
+			String numEntriesStr = mainObject.getString("error");
+			int len = numEntriesStr.length();
+			if (len > 0) {
+				String numStr = numEntriesStr.substring(len - 1);
+				numDeletedWhitelistEntries = Integer.valueOf(numStr);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		assertTrue(numDeletedWhitelistEntries == loadedSize);		
+	}
+	
 	
 }

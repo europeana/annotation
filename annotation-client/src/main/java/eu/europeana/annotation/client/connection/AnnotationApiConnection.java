@@ -2,10 +2,14 @@ package eu.europeana.annotation.client.connection;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
+import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,7 @@ import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
+import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.JsonUtils;
 
 /**
@@ -884,7 +889,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * Sample HTTP request
 	 *     http://localhost:8080/whitelist/create?apiKey=apidemo
 	 * @param whitelistEntryJson
-	 * @return
+	 * @return WhitelistOperationResponse
 	 * @throws IOException
 	 */
 	public WhitelistOperationResponse createWhitelistEntry(String whitelistEntryJson) throws IOException {
@@ -913,9 +918,44 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 	/**
 	 * Sample HTTP request
+	 *     http://localhost:8080/whitelist/load?apiKey=apidemo
+	 * @return WhitelistOperationResponse
+	 * @throws IOException
+	 */
+	public WhitelistOperationResponse loadWhitelist() throws IOException {
+		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
+				+ "load"; 
+		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();		
+		// Execute Whitelist API request
+		String json = getJSONResult(url);
+		
+		WhitelistOperationResponse aor = new WhitelistOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("load:/whitelist");
+		List<WhitelistEntry> resList = new ArrayList<WhitelistEntry>();
+		try {
+			JSONObject mainObject = new JSONObject(json);
+			JSONArray whitelistEntries = mainObject.getJSONArray("items");
+			for (int i=0; i < whitelistEntries.length(); i++) {
+			    JSONObject entry = (JSONObject) whitelistEntries.get(0);
+			    WhitelistEntry whitelistEntry = JsonUtils.toWhitelistEntry(entry.toString());
+			    resList.add(whitelistEntry);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		aor.setWhitelistEntries(resList);
+		aor.setJson(json);
+		return aor;
+	}
+
+	
+	/**
+	 * Sample HTTP request
 	 *     http://localhost:8080/whitelist/search?apiKey=apidemo&url=http%3A%2F%2Ftest.data.europeana.eu
 	 * @param httpUrl
-	 * @return
+	 * @return WhitelistOperationResponse
 	 * @throws IOException
 	 */
 	public WhitelistOperationResponse getWhitelistEntry(
@@ -947,9 +987,45 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 	/**
 	 * Sample HTTP request
+	 *     http://localhost:8080/whitelist/view?apiKey=apidemo
+	 * @return WhitelistOperationResponse
+	 * @throws IOException
+	 */
+	public WhitelistOperationResponse getWhitelist() throws IOException {
+		
+		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
+				+ "view"; 
+		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
+		// Execute Whitelist API request
+		String json = getJSONResult(url);
+		
+		WhitelistOperationResponse aor = new WhitelistOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("view:/whitelist");
+		List<WhitelistEntry> resList = new ArrayList<WhitelistEntry>();
+		try {
+			JSONObject mainObject = new JSONObject(json);
+			JSONArray whitelistEntries = mainObject.getJSONArray("items");
+			for (int i=0; i < whitelistEntries.length(); i++) {
+			    JSONObject entry = (JSONObject) whitelistEntries.get(0);
+			    WhitelistEntry whitelistEntry = JsonUtils.toWhitelistEntry(entry.toString());
+			    resList.add(whitelistEntry);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		aor.setWhitelistEntries(resList);
+		aor.setJson(json);
+		return aor;
+	}
+
+	
+	/**
+	 * Sample HTTP request
 	 * 	   http://localhost:8080/whitelist/delete?apiKey=apidemo&url=http%3A%2F%2Ftest.data.europeana.eu
 	 * @param httpUrl
-	 * @return
+	 * @return ResponseEntity<String>
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> deleteWhitelistEntry(
@@ -959,6 +1035,22 @@ public class AnnotationApiConnection extends BaseApiConnection {
 				+ "delete"; 
 		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
 		url += WebAnnotationFields.AND + "url=" + httpUrl;
+		// Execute Whitelist API request
+		return deleteURL(url);
+	}
+
+	
+	/**
+	 * Sample HTTP request
+	 * 	   http://localhost:8080/whitelist/deleteall?apiKey=apidemo
+	 * @return ResponseEntity<String>
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteWholeWhitelist() throws IOException {
+		
+		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
+				+ "deleteall"; 
+		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
 		// Execute Whitelist API request
 		return deleteURL(url);
 	}

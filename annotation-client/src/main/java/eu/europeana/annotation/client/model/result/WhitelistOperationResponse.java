@@ -1,10 +1,14 @@
 package eu.europeana.annotation.client.model.result;
 
+import java.util.List;
+
 import eu.europeana.annotation.definitions.model.whitelist.*;
 
 public class WhitelistOperationResponse extends AbstractAnnotationApiResponse{
 
 	private WhitelistEntry whitelistEntry;
+	
+	private List<? extends WhitelistEntry> whitelistEntries;
 	
 	private String json;
 	
@@ -21,6 +25,12 @@ public class WhitelistOperationResponse extends AbstractAnnotationApiResponse{
 	}
 	public void setWhitelistEntry(WhitelistEntry whitelistEntry) {
 		this.whitelistEntry = whitelistEntry;
+	}
+	public List<? extends WhitelistEntry> getWhitelistEntries() {
+		return whitelistEntries;
+	}
+	public void setWhitelistEntries(List<? extends WhitelistEntry> whitelistEntries) {
+		this.whitelistEntries = whitelistEntries;
 	}
 	public String getJson() {
 		return json;

@@ -24,8 +24,14 @@ public class WhitelistJsonApiImpl extends BaseAnnotationApi implements Whitelist
 
 	@Override
 	public List<? extends WhitelistEntry> loadWhitelistFromResources() {
-		// TODO Auto-generated method stub
-		return null;
+		WhitelistOperationResponse res;
+		try {
+			res = apiConnection.loadWhitelist();
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryJsonApi", e);
+		}
+
+		return res.getWhitelistEntries();
 	}
 
 	@Override
@@ -77,20 +83,35 @@ public class WhitelistJsonApiImpl extends BaseAnnotationApi implements Whitelist
 
 	@Override
 	public WhitelistEntry getWhitelistEntryByName(String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<? extends WhitelistEntry> getWhitelist() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		WhitelistOperationResponse res;
+		
+		try {
+			res = apiConnection.getWhitelist();
+			
+			if(!Boolean.valueOf(res.getSuccess()))
+				throw new TechnicalRuntimeException(res.getError() + " " + res.getAction());
+		
+		} catch (IOException e) {
+				throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryApi", e);
+		}
+
+		return res.getWhitelistEntries();	}
 
 	@Override
 	public ResponseEntity<String> deleteWholeWhitelist() {
-		// TODO Auto-generated method stub
-		return null;
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.deleteWholeWhitelist();
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryJsonApi", e);
+		}
+
+		return res;
 	}
 	
 }
