@@ -1,6 +1,8 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -708,17 +710,41 @@ public class AnnotationServiceImpl implements AnnotationService {
 	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
 		Body body = webAnnotation.getBody();
 		String value = body.getValue();
-		value = value.replace(" ", "").replace("\"", "").replace("'", "");
+		
+		value = value.trim();
+		//remove leading and end quotes
+		if(value.startsWith("\"")){
+			value = value.substring(1);
+			value = value.trim();
+		}
+		
+		if(value.endsWith("\"")){
+			value = value.substring(0, value.length() -1);
+			value = value.trim();
+		}
+
+		
 		int MAX_TAG_LENGTH = 64;
-		if (value.length() > MAX_TAG_LENGTH) {
+		if (value.length() > MAX_TAG_LENGTH)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", ""+value.length());
-		}
-		if (value.contains("http://") || value.contains("ftp://") || value.contains("https://")) {
+		
+		if(isUrl(value))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_FORMAT, "tag.format", value);
-		}
+		
 	}
 	
 	
+	private boolean isUrl(String value) {
+		
+		//if (value.startsWith("http://") || value.startsWith("ftp://") || value.startsWith("https://")) {
+		try {
+			new URL(value);
+		} catch (MalformedURLException e) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
 		
