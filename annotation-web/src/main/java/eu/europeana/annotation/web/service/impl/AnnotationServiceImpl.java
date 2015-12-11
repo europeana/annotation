@@ -711,7 +711,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 		value = value.replace(" ", "").replace("\"", "").replace("'", "");
 		int MAX_TAG_LENGTH = 64;
 		if (value.length() > MAX_TAG_LENGTH) {
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", value);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", ""+value.length());
 		}
 		if (value.contains("http://") || value.contains("ftp://") || value.contains("https://")) {
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_FORMAT, "tag.format", value);
