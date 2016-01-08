@@ -45,6 +45,15 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
 	}
 	
+	protected void validateResponseForTrimming(ResponseEntity<String> response) throws JsonParseException {
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getBody());
+		assertTrue(storedAnno.getBody().getValue().length() == BODY_VALUE_AFTER_TRIMMING.length());
+	}
+	
 	@Test
 	public void createWebannoAnnotationLink() throws JsonParseException {
 		
@@ -76,6 +85,42 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				);
 		
 		validateResponse(response);
+	}
+	
+	
+	/**
+	 * {
+     *     "@context": "http://www.europeana.eu/annotation/context.jsonld",
+     *     "@type": "oa:Annotation",
+     *     "motivation": "oa:tagging",
+     *     "annotatedBy": {
+     *         "@id": "https://www.historypin.org/en/person/55376/",
+     *         "@type": "foaf:Person",
+     *         "name": "John Smith"
+     *     },
+     *     "annotatedAt": "2015-02-27T12:00:43Z",
+     *     "serializedAt": "2015-02-28T13:00:34Z",
+     *     "serializedBy": "http://www.historypin.org",
+     *     "body": " überhaupt ",
+     *     "target": "http://data.europeana.eu/item/123/xyz",
+     *     "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+     * }
+	 * @throws JsonParseException
+	 */
+	@Test
+	public void createWebannoAnnotationTagForValidation() throws JsonParseException {
+		
+		ResponseEntity<String> response = getApiClient().createAnnotation(
+				getApiKey()
+				, WebAnnotationFields.PROVIDER_WEBANNO
+				, null
+				, false
+				, TAG_JSON_VALIDATION
+				, TEST_USER_TOKEN
+				, WebAnnotationFields.TAG
+				);
+		
+		validateResponseForTrimming(response);
 	}
 	
 	

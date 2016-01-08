@@ -714,15 +714,19 @@ public class AnnotationServiceImpl implements AnnotationService {
 		value = value.trim();
 		//remove leading and end quotes
 		if(value.startsWith("\"")){
-			value = value.substring(1);
+			int secondPosition = 1;
+			value = value.substring(secondPosition);
 			value = value.trim();
 		}
 		
 		if(value.endsWith("\"")){
-			value = value.substring(0, value.length() -1);
+			int secondLastPosition = value.length() - 1;
+			value = value.substring(0, secondLastPosition);
 			value = value.trim();
 		}
-
+		
+		webAnnotation.getBody().setValue(value);
+		webAnnotation.getBody().setInputString(value);
 		
 		int MAX_TAG_LENGTH = 64;
 		if (value.length() > MAX_TAG_LENGTH)

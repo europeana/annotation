@@ -45,8 +45,26 @@ public class BaseWebAnnotationProtocolTest {
 	public String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"body\": \"church\","
 			+ "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
 
-	public String TAG_JSON_BY_TYPE_JSONLD = START + TAG_CORE + END;
+	public String BODY_VALUE_TO_TRIM = " überhaupt ";
+	public String BODY_VALUE_AFTER_TRIMMING = "überhaupt";
 
+	public String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
+			 "\"motivation\": \"oa:tagging\"," +
+		     "\"annotatedBy\": {" +
+		     "\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
+		     "\"@type\": \"foaf:Person\"," +
+		     "\"name\": \"John Smith\"" +
+		     "}," +
+		     "\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
+		     "\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
+		     "\"serializedBy\": \"http://www.historypin.org\"," +
+		     "\"body\": \"" + BODY_VALUE_TO_TRIM + "\"," +
+			 "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
+
+	public String TAG_JSON_BY_TYPE_JSONLD = START + TAG_CORE + END;
+	
+	public String TAG_JSON_VALIDATION = START + TAG_CORE_VALIDATION + END;
+	
 	public String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
 			+ "\"http://www.europeana.eu/portal/record/123/xyz.html\","
 			+ "\"http://www.europeana.eu/portal/record/333/xyz.html\"" + "]," + EQUIVALENT_TO;
