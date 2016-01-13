@@ -34,7 +34,14 @@
 			<artifactId>annotation-definitions</artifactId>
 			<version>${version.annotationApiSnapshot}</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>eu.europeana.corelib</groupId>
 			<artifactId>corelib-db</artifactId>

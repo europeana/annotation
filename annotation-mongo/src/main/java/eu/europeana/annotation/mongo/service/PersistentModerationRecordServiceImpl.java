@@ -1,0 +1,156 @@
+package eu.europeana.annotation.mongo.service;
+
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
+
+import com.google.code.morphia.query.Query;
+import com.google.code.morphia.query.QueryResults;
+import com.mongodb.WriteResult;
+
+import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
+import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
+import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
+import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
+import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
+import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+
+public class PersistentModerationRecordServiceImpl extends
+		AbstractNoSqlServiceImpl<PersistentModerationRecord, String> implements
+		PersistentModerationRecordService {
+
+	@Override
+	public PersistentModerationRecord find(PersistentModerationRecord moderationRecord) {
+		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
+
+		return getDao().findOne(query);
+	}
+	
+	@Override
+	public List<PersistentModerationRecord> findAll(PersistentModerationRecord moderationRecord)
+			throws AnnotationMongoException {
+		
+		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
+		return getDao().find(query).asList();
+
+	}
+	
+	@Override
+	public PersistentModerationRecord findByID(String id) {
+		return  getDao().findOne("_id", new ObjectId(id));
+	}
+
+	@Override
+	public List<? extends ModerationRecord> getFilteredModerationRecordList(
+			String status, String startOn, String limit
+			) {
+		Query<PersistentModerationRecord> query = getDao().createQuery();
+		try {
+			if (StringUtils.isNotEmpty(startOn))
+				query.offset(Integer.parseInt(startOn));
+			if (StringUtils.isNotEmpty(limit))
+				query.limit(Integer.parseInt(limit));
+		} catch (Exception e) {
+			throw new ProviderAttributeInstantiationException(
+					"Unexpected exception occured when searching annotation moderation records. "
+							+ ProviderAttributeInstantiationException.BASE_MESSAGE,
+					"startOn: " + startOn + ", limit: " + limit + ". ", e);
+		}
+
+		QueryResults<? extends PersistentModerationRecord> results = getDao()
+				.find(query);
+		return results.asList();
+	}
+	
+	protected Query<PersistentModerationRecord> createQuery(PersistentModerationRecord moderationRecord) {
+		Query<PersistentModerationRecord> query = getDao().createQuery();
+		return query;
+	}
+
+	@Override
+	public void remove(String id) {
+		try{
+			PersistentModerationRecord moderationRecord = findByID(id);
+			getDao().delete(moderationRecord);
+			//make one of the following to work
+			//getDao().deleteById(id);
+			//super.remove(id);
+		}catch(Exception e){
+			throw new AnnotationMongoRuntimeException(e);
+		}
+	}
+	
+	@Override
+	public void remove(PersistentModerationRecord queryModerationRecord) throws AnnotationMongoException {
+		Query<PersistentModerationRecord> createQuery = createQuery(queryModerationRecord);
+		WriteResult res = getDao().deleteByQuery(createQuery);
+		validateDeleteResult(res);
+	}
+
+	@SuppressWarnings("deprecation")
+	protected void validateDeleteResult(WriteResult res)
+			throws AnnotationMongoException {
+		int affected = res.getN();
+		if(affected != 1 )
+			throw new AnnotationMongoException("Delete operation Failed!" + res.getError(), res.getLastError().getException());
+	}
+
+	
+	@Override
+	public PersistentModerationRecord create(PersistentModerationRecord moderationRecord)
+			throws AnnotationMongoException {
+
+		return store(moderationRecord);
+	}
+
+
+	@Override
+	public ModerationRecord store(ModerationRecord object) {
+		ModerationRecord res = null;
+		if(object instanceof PersistentModerationRecord)
+			res = this.store((PersistentModerationRecord) object);
+		else{
+			PersistentModerationRecord persistentObject = copyIntoPersistentModerationRecord(object);
+			return this.store(persistentObject); 
+		}
+		return res;
+	}
+	
+	public PersistentModerationRecord copyIntoPersistentModerationRecord(ModerationRecord moderationRecord) {
+
+		PersistentModerationRecordImpl persistentModerationRecord = new PersistentModerationRecordImpl();
+		persistentModerationRecord.setAnnotationId(moderationRecord.getAnnotationId());
+		persistentModerationRecord.setEndorseList(moderationRecord.getEndorseList());
+		persistentModerationRecord.setReportList(moderationRecord.getReportList());
+		persistentModerationRecord.setSummary(moderationRecord.getSummary());
+		persistentModerationRecord.setCreated(moderationRecord.getCreated());
+		persistentModerationRecord.setLastUpdated(moderationRecord.getLastUpdated());
+		return persistentModerationRecord;
+	}				
+	
+	@Override
+	public ModerationRecord update(ModerationRecord object) {
+
+		ModerationRecord res = null;
+
+		PersistentModerationRecord persistentModerationRecord = (PersistentModerationRecord) object;
+
+		if (persistentModerationRecord != null 
+				&& persistentModerationRecord.getId() != null 
+				) {
+			remove(persistentModerationRecord.getId().toString());
+			persistentModerationRecord.setId(null);
+			res = store(persistentModerationRecord);
+		} else {
+			throw new ModerationRecordValidationException(
+					ModerationRecordValidationException.ERROR_MISSING_ID);
+		}
+
+		return res;
+	}
+
+	
+}

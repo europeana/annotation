@@ -55,6 +55,9 @@
 	<bean name="annotation_db_statusLogService" class="eu.europeana.annotation.mongo.service.PersistentStatusLogServiceImpl"
 		p:dao-ref="annotation_db_statusLogDao"/>
 		
+	<bean name="annotation_db_moderationRecordService" class="eu.europeana.annotation.mongo.service.PersistentModerationRecordServiceImpl"
+		p:dao-ref="annotation_db_moderationRecordDao"/>
+		
 	<bean name="annotation_db_whitelistService" class="eu.europeana.annotation.mongo.service.PersistentWhitelistServiceImpl"
 		p:dao-ref="annotation_db_whitelistDao"/>
 		
