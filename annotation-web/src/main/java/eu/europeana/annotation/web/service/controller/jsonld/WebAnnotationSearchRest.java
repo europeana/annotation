@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.common.base.Strings;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -20,6 +21,8 @@ import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
+import eu.europeana.annotation.definitions.model.vocabulary.search.SortFields;
+import eu.europeana.annotation.definitions.model.vocabulary.search.SortOrder;
 import eu.europeana.annotation.jsonld.AnnotationSetSerializer;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
@@ -50,14 +53,19 @@ public class WebAnnotationSearchRest extends BaseRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_FACET, required = false) String[] facets,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false, defaultValue = AnnotationProfiles.STANDARD) String profile,
 			@RequestParam(value = WebAnnotationFields.PARAM_START, required = false, defaultValue = Query.DEFAULT_START) int start,
-			@RequestParam(value = WebAnnotationFields.PARAM_ROWS, required = false, defaultValue = Query.DEFAULT_PAGE_SIZE) int rows) throws HttpException {
+			@RequestParam(value = WebAnnotationFields.PARAM_ROWS, required = false, defaultValue = Query.DEFAULT_PAGE_SIZE) int rows,
+			@RequestParam(value = WebAnnotationFields.PARAM_SORT, required = false) SortFields sort,
+			@RequestParam(value = WebAnnotationFields.PARAM_SORT_ORDER, required = false) SortOrder sortOrder
+			) throws HttpException {
 
-		String action = "get:/annotation/search{.format}";
-		return searchAnnotation(wskey, query, filters, facets, profile, start, rows, action);
+		String action = "get:/annotation/search{.format}";		
+
+		return searchAnnotation(wskey, query, filters, facets, profile, start, rows, action, sort, sortOrder);
 	}
-
+	
 	private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets, String profile,
-			int start, int rows, String action) throws HttpException {
+			int start, int rows, String action, SortFields sortField, SortOrder sortOrder
+			) throws HttpException {
 
 		
 		try {
@@ -71,8 +79,17 @@ public class WebAnnotationSearchRest extends BaseRest {
 	        			WebAnnotationFields.PARAM_QUERY, queryString);
 	        
 	        SearchProfiles searchProfile = SearchProfiles.valueOf(profile.toUpperCase());
-			
-	        Query searchQuery = buildSearchQuery(queryString, filters, facets, start, rows, searchProfile);
+
+	        String sortFieldStr = null;
+			if (sortField != null)
+				sortFieldStr = sortField.getSolrType();				
+			//set default value
+			String sortOrderField = SortOrder.desc.name();
+			if (sortOrder != null)
+				sortOrderField = sortOrder.toString();				
+
+	        Query searchQuery = buildSearchQuery(
+	        		queryString, filters, facets, start, rows, searchProfile, sortFieldStr, sortOrderField);
 	        ResultSet<? extends AnnotationView> results = getAnnotationSearchService().search(searchQuery);
 	        AnnotationSetSerializer serializer = new AnnotationSetSerializer(results);
 	        String jsonLd = serializer.serialize(searchProfile);
@@ -97,7 +114,8 @@ public class WebAnnotationSearchRest extends BaseRest {
 		}
 	}
 
-	protected Query buildSearchQuery(String queryString, String[] filters, String[] facets, int start, int rows, SearchProfiles profile) {
+	protected Query buildSearchQuery(String queryString, String[] filters, String[] facets, int start, int rows
+			, SearchProfiles profile, String sort, String sortOrder) {
 		
 		//TODO: check if needed
         String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
@@ -114,6 +132,11 @@ public class WebAnnotationSearchRest extends BaseRest {
 		searchQuery.setFilters(filters);
 		
 		setSearchFields(searchQuery, profile);
+		
+		if (!Strings.isNullOrEmpty(sort)) {
+			searchQuery.setSort(sort);
+			searchQuery.setSortOrder(sortOrder);
+		}
 		
 		return searchQuery;
 	}

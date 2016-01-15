@@ -24,10 +24,13 @@ public interface SwaggerConstants {
 	
 	public static final String SEARCH_SOLR_FIELDS = "motivation_key, target_urls, body_value, body_text, annotation_id_url, target_record_ids";
 	public static final String SEARCH_PROFILES_LIST = "facet, standard.";
+	public static final String SEARCH_SORT_FIELD_LIST = "annotatedAt, serializedAt and modified.";
 	
 	
 	public static final String SEARCH_HELP_NOTE = "The following fields are available for search: "+ SEARCH_SOLR_FIELDS 
-			+". Default is body_text (i.e. no field specified in search query), urls and ids are keywords and need to be submitted in quotes (e.g. target_record_ids:\"/123/xyz\"). The following profiles are available for search: "+ SEARCH_PROFILES_LIST;
+			+". Default is body_text (i.e. no field specified in search query), urls and ids are keywords and need to be submitted in quotes (e.g. target_record_ids:\"/123/xyz\"). "
+			+ "The following profiles are available for search: "+ SEARCH_PROFILES_LIST 
+			+ " Sorting is available for fields: " + SEARCH_SORT_FIELD_LIST;
 	
 			
 }

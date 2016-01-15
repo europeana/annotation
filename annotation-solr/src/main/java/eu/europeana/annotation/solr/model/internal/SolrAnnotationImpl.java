@@ -1,6 +1,5 @@
 package eu.europeana.annotation.solr.model.internal;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,32 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String internalTypeKey;
 	private String bodyTagId;
 	private Long updatedTimestamp;
+	private Long annotatedAtTimestamp;
+	private Long serializedAtTimestamp;
 	
+	
+	@Override
+	public Long getAnnotatedAtTimestamp() {
+		return annotatedAtTimestamp;
+	}
+
+	@Override
+	@Field("annotatedAt_timestamp")
+	public void setAnnotatedAtTimestamp(Long annotatedAtTimestamp) {
+		this.annotatedAtTimestamp = annotatedAtTimestamp;
+	}
+
+	@Override
+	public Long getSerializedAtTimestamp() {
+		return serializedAtTimestamp;
+	}
+
+	@Override
+	@Field("serializedAt_timestamp")
+	public void setSerializedAtTimestamp(Long serializedAtTimestamp) {
+		this.serializedAtTimestamp = serializedAtTimestamp;
+	}
+
 	public String getBodyValue() {
 		return bodyValue;
 	}
@@ -179,17 +203,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-//	@Field("annotatedAt")
-	public void setAnnotatedAt(Date annotatedAt) {
-		super.setAnnotatedAt(annotatedAt);
-	}
-
-	@Override
-	public Date getAnnotatedAt() {
-		return super.getAnnotatedAt();
-	}
-	
-	@Override
 	public Long getUpdatedTimestamp() {
 		return updatedTimestamp;
 	}
@@ -200,6 +213,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.updatedTimestamp = updatedTimestamp;
 	}
 
+		
 	public String toString() {
 		return "SolrAnnotation [annotationIdUrl:" + getAnnotationIdUrl() + ", annotationIdUrl:" + getAnnotationIdUrl()
 				+ ", annotatedAt:" + getAnnotatedAt() + ", bodyValue:" + getBodyValue() + "]";

@@ -3,6 +3,8 @@ package eu.europeana.annotation.solr.model.internal;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.solr.client.solrj.beans.Field;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
@@ -69,4 +71,12 @@ public interface SolrAnnotation extends Annotation {
 	void setUpdatedTimestamp(Long updatedTimestamp);
 
 	Long getUpdatedTimestamp();
+
+	void setSerializedAtTimestamp(Long serializedAtTimestamp);
+
+	Long getSerializedAtTimestamp();
+
+	void setAnnotatedAtTimestamp(Long annotatedAtTimestamp);
+
+	Long getAnnotatedAtTimestamp();
 }

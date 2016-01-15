@@ -123,6 +123,15 @@ public interface WebAnnotationFields {
 	public static final String PARAM_PROFILE = "profile";
 	public static final String PARAM_START = "start";
 	public static final String PARAM_ROWS = "rows";
+	public static final String PARAM_SORT = "sort";
+	public static final String PARAM_SORT_ORDER = "sortOrder";
+	
+	
+	/**
+	 * Query Fields
+	 */
+	public static final String FIELD_MODIFIED = "modified";
+	public static final String FIELD_UPDATED_TIMESTAMP = "updated_timestamp";
 
 	/**
 	 * Search API response

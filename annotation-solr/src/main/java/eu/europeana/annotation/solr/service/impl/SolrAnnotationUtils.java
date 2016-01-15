@@ -56,6 +56,10 @@ public class SolrAnnotationUtils {
 			solrQuery.setFacetLimit(SolrAnnotationFields.DEFAULT_FACET_LIMIT);
 		}
 		
+		if (searchQuery.getSort() != null) {
+			solrQuery.setSort(searchQuery.getSort(), SolrQuery.ORDER.valueOf(searchQuery.getSortOrder()));
+		}
+
 		solrQuery.setFields(searchQuery.getViewFields());
 		
 		return solrQuery;
@@ -104,7 +108,9 @@ public class SolrAnnotationUtils {
 		// TODO: add the equivalent to solr configs
 		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
 		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
-
+		solrAnnotationImpl.setAnnotatedAtTimestamp(annotation.getAnnotatedAt().getTime());
+		solrAnnotationImpl.setSerializedAtTimestamp(annotation.getSerializedAt().getTime());
+		
 		return solrAnnotationImpl;
 
 	}

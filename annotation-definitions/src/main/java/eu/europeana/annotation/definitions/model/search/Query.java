@@ -26,6 +26,14 @@ public interface Query {
 
 	String[] getViewFields();
 
+	public String getSort();
+
+	public void setSort(String sort);
+	
+	public String getSortOrder();
+
+	public void setSortOrder(String sortOrder);
+
 	/**
 	 * Default start parameter for Solr
 	 */

@@ -19,7 +19,8 @@ public class QueryImpl implements Cloneable, Query{
 	
 	private int start;
 	private int rows;
-	//private String sort;
+	private String sort;
+	private String sortOrder;
 	private String query;
 	private String[] filters;
 	private String[] facetFields;
@@ -90,17 +91,38 @@ public class QueryImpl implements Cloneable, Query{
 		return (Query) super.clone();
 	}
 
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
 	@Override
 	public String toString() {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + query);
 		params.add("start=" + start);
 		params.add("rows=" + rows);
-//
-//		if (sort != null && sort.length() > 0){
-//			params.add("sort=" + sort + " " + (sortOrder == ORDER_DESC ? "desc" : "asc"));
-//		}
-//
+
+		if (sort != null){
+			String sortParam = "sort=" + sort;
+			if(sortOrder != null)
+				sortParam += (" " + sortOrder);
+		
+			params.add(sortParam);
+			
+		}
+
 		if (filters != null) {
 			for (String filter : filters) {
 				params.add("qf=" + filter);

@@ -128,6 +128,13 @@
 		<field name="body_text" type="text" indexed="true" stored="false"
 			multiValued="false" />
 				
+		<!-- @Field("annotatedAt")  -->
+		<field name="annotatedAt_timestamp" type="long"  indexed="true"
+			required="true" multiValued="false" stored="true"/>
+				
+		<!-- @Field("serializedAt")  -->
+		<field name="serializedAt_timestamp" type="long"  indexed="true"
+			required="true" multiValued="false" stored="true"/>
 				
 		<!-- Diego Ceccarelli <diego.ceccarelli@isti.cnr.it> 17-11-2012 -->
 		<!-- SEVERE: Unable to use updateLog: _version_ field must exist in schema -->
