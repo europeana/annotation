@@ -2,12 +2,30 @@ package eu.europeana.annotation.web.service;
 
 import java.util.List;
 
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 
 public interface AdminService {
 
 	public String getComponentName();
+	
+	/**
+	 * This method finds annotation object in database by annotation ID 
+	 * and reindexes it in Solr.
+	 * @param annoId
+	 */
+	public void reindexAnnotationById(AnnotationId annoId);
+
+	/**
+	 * This method performs Solr reindexing for all annotation objects stored in database between 
+	 * start and end date or timestamp. 
+	 * @param startDate
+	 * @param endDate
+	 * @param startTimestamp
+	 * @param endTimestamp
+	 */
+	public void reindexAnnotationSet(String startDate, String endDate, String startTimestamp, String endTimestamp);
 	
 	/**
 	 * This method returns all Whitelist entries.

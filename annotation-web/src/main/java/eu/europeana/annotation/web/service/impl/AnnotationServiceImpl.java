@@ -15,7 +15,6 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -31,7 +30,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
-import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
@@ -42,22 +40,19 @@ import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
-import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 
-public class AnnotationServiceImpl implements AnnotationService {
+public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-	@Resource
-	AnnotationConfiguration configuration;
+//	@Resource
+//	AnnotationConfiguration configuration;
 
-	@Resource
-	PersistentAnnotationService mongoPersistance;
-
+//	@Resource
+//	PersistentAnnotationService mongoPersistance;
+//
 	@Resource
 	PersistentTagService mongoTagPersistence;
 
@@ -73,27 +68,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
 
-	@Resource
-	SolrAnnotationService solrService;
-
-	@Resource
-	SolrTagService solrTagService;
-	
-	@Resource
-	AuthenticationService authenticationService;
+//	@Resource
+//	SolrAnnotationService solrService;
+//
+//	@Resource
+//	SolrTagService solrTagService;
+//	
+//	@Resource
+//	AuthenticationService authenticationService;
 
 	AnnotationBuilder annotationBuilder;
 
-	Logger logger = Logger.getLogger(getClass());
+//	Logger logger = Logger.getLogger(getClass());
 
 
-	public AuthenticationService getAuthenticationService() {
-		return authenticationService;
-	}
-
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
+//	public AuthenticationService getAuthenticationService() {
+//		return authenticationService;
+//	}
+//
+//	public void setAuthenticationService(AuthenticationService authenticationService) {
+//		this.authenticationService = authenticationService;
+//	}
 
 	public AnnotationBuilder getAnnotationHelper() {
 		if (annotationBuilder == null)
@@ -101,27 +96,27 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return annotationBuilder;
 	}
 
-	@Override
-	public String getComponentName() {
-		return configuration.getComponentName();
-	}
+//	@Override
+//	public String getComponentName() {
+//		return configuration.getComponentName();
+//	}
+//
+//	protected AnnotationConfiguration getConfiguration() {
+//		return configuration;
+//	}
+//
+//	public void setConfiguration(AnnotationConfiguration configuration) {
+//		this.configuration = configuration;
+//	}
 
-	protected AnnotationConfiguration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
-	}
-
-	protected PersistentAnnotationService getMongoPersistence() {
-		return mongoPersistance;
-	}
-
-	public void setMongoPersistance(PersistentAnnotationService mongoPersistance) {
-		this.mongoPersistance = mongoPersistance;
-	}
-
+//	protected PersistentAnnotationService getMongoPersistence() {
+//		return mongoPersistance;
+//	}
+//
+//	public void setMongoPersistance(PersistentAnnotationService mongoPersistance) {
+//		this.mongoPersistance = mongoPersistance;
+//	}
+//
 	public PersistentTagService getMongoTagPersistence() {
 		return mongoTagPersistence;
 	}
@@ -236,9 +231,9 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return parsedAnnotationLd.getAnnotation();
 	}
 
-	private Logger getLogger() {
-		return logger;
-	}
+//	private Logger getLogger() {
+//		return logger;
+//	}
 
 	@Override
 	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException {
@@ -412,34 +407,34 @@ public class AnnotationServiceImpl implements AnnotationService {
 		return res;
 	}
 
-	protected void reindexAnnotation(Annotation res) {
-		try {
-			getSolrService().update(res);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
-		// check if the tag is already indexed
-		try {
-			getSolrTagService().update(res);
-		} catch (Exception e) {
-			Logger.getLogger(getClass().getName())
-					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
-							, e);
-		}
-
-		// save the time of the last SOLR indexing
-		updateLastSolrIndexingTime(res);
-	}
-
-	private void updateLastSolrIndexingTime(Annotation res) {
-		try {
-			getMongoPersistence().updateIndexingTime(res.getAnnotationId());
-		} catch (Exception e) {
-			Logger.getLogger(getClass().getName())
-					.warn("The time of the last SOLR indexing could not be saved. " , e);
-		}
-	}
+//	protected void reindexAnnotation(Annotation res) {
+//		try {
+//			getSolrService().update(res);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//		
+//		// check if the tag is already indexed
+//		try {
+//			getSolrTagService().update(res);
+//		} catch (Exception e) {
+//			Logger.getLogger(getClass().getName())
+//					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
+//							, e);
+//		}
+//
+//		// save the time of the last SOLR indexing
+//		updateLastSolrIndexingTime(res);
+//	}
+//
+//	private void updateLastSolrIndexingTime(Annotation res) {
+//		try {
+//			getMongoPersistence().updateIndexingTime(res.getAnnotationId());
+//		} catch (Exception e) {
+//			Logger.getLogger(getClass().getName())
+//					.warn("The time of the last SOLR indexing could not be saved. " , e);
+//		}
+//	}
 
 	@Override
 	public Annotation updateAnnotationStatus(Annotation annotation) {
@@ -464,20 +459,18 @@ public class AnnotationServiceImpl implements AnnotationService {
 		getMongoPersistence().remove(annoId);
 	}
 
-	@Override
-	// public void indexAnnotation(String resourceId, String provider, Long
-	// annotationNr) {
-	public void indexAnnotation(AnnotationId annoId) {
-		try {
-			// Annotation res = getMongoPersistence().find(resourceId, provider,
-			// annotationNr);
-			Annotation res = getMongoPersistence().find(annoId);
-			getSolrService().delete(res.getAnnotationId());
-			getSolrService().store(res);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	@Override
+//	public void indexAnnotation(AnnotationId annoId) {
+//		try {
+//			// Annotation res = getMongoPersistence().find(resourceId, provider,
+//			// annotationNr);
+//			Annotation res = getMongoPersistence().find(annoId);
+//			getSolrService().delete(res.getAnnotationId());
+//			getSolrService().store(res);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	@Override
 	public Annotation disableAnnotation(AnnotationId annoId) {
@@ -514,21 +507,21 @@ public class AnnotationServiceImpl implements AnnotationService {
 		}
 	}
 
-	public SolrAnnotationService getSolrService() {
-		return solrService;
-	}
-
-	public void setSolrService(SolrAnnotationService solrService) {
-		this.solrService = solrService;
-	}
-
-	public SolrTagService getSolrTagService() {
-		return solrTagService;
-	}
-
-	public void setSolrTagService(SolrTagService solrTagService) {
-		this.solrTagService = solrTagService;
-	}
+//	public SolrAnnotationService getSolrService() {
+//		return solrService;
+//	}
+//
+//	public void setSolrService(SolrAnnotationService solrService) {
+//		this.solrService = solrService;
+//	}
+//
+//	public SolrTagService getSolrTagService() {
+//		return solrTagService;
+//	}
+//
+//	public void setSolrTagService(SolrTagService solrTagService) {
+//		this.solrTagService = solrTagService;
+//	}
 
 	@Override
 	public void deleteTag(String tagId) {
@@ -668,12 +661,6 @@ public class AnnotationServiceImpl implements AnnotationService {
 			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER, annoId.getProvider());
 		}
 
-	}
-
-	@Override
-	public Annotation getAnnotationById(AnnotationId annoId) {
-		return getMongoPersistence().find(annoId);
-		//return getAnnotationById(annoId.getBaseUrl(), annoId.getProvider(), annoId.getIdentifier());
 	}
 
 	protected boolean validateResource(String url) throws ParamValidationException {

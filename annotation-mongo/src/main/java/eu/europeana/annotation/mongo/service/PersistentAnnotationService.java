@@ -87,6 +87,15 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public abstract Annotation findByTagId(String tagId);
 	
+	/**
+	 * This method filters annotations by start and end timestamps.
+	 * @param startTimestamp
+	 * @param endTimestamp
+	 * @return list of annotation IDs
+	 */
+//	public List<? extends Annotation> filterByTimestamp(String startTimestamp, String endTimestamp);
+//	public List<AnnotationId> filterByTimestamp(String startTimestamp, String endTimestamp);
+	public List<String> filterByTimestamp(String startTimestamp, String endTimestamp);
 
 }
 

@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.http;
 
+import eu.europeana.annotation.definitions.model.utils.ModelConst;
+
 public interface SwaggerConstants {
 
 	/**
@@ -32,5 +34,6 @@ public interface SwaggerConstants {
 			+ "The following profiles are available for search: "+ SEARCH_PROFILES_LIST 
 			+ " Sorting is available for fields: " + SEARCH_SORT_FIELD_LIST;
 	
+	public static final String REINDEX_HELP_NOTE = "Valid date format is: " + ModelConst.DATE_FORMAT;
 			
 }

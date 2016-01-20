@@ -6,8 +6,8 @@ package eu.europeana.annotation.definitions.model.vocabulary.search;
  */
 public enum SortFields {
 
-	  annotatedAt("annotatedAt", "annotatedAt_timestamp")
-	, serializedAt("serializedAt", "serializedAt_timestamp")
+	  annotatedAt("annotatedAt", "annotated_at_timestamp")
+	, serializedAt("serializedAt", "serialized_at_timestamp")
 	, modified("modified", "updated_timestamp"); 
 
 	

@@ -9,12 +9,17 @@ import javax.ws.rs.PUT;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -23,31 +28,32 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
+import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
+import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 
-//@Controller
-//@Api(value = "Web Annotation Administration API", description = "Annotation Management Rest Service")
+@Controller
+@Api(value = "Web Annotation Admin", description = "Annotation Management Rest Service")
 public class ManagementRest extends BaseRest {
 
-	@GET
-	@RequestMapping(value = "/admin/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-	@ResponseBody
+//	@GET
+//	@RequestMapping(value = "/admin/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+//	@ResponseBody
 	public String getComponentName() {
 		return getConfiguration().getComponentName() + "-admin";
 	}
 
-	@DELETE
-	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+//	@DELETE
+//	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
 	public AnnotationOperationResponse deleteAnnotationById(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "identifier", required = true) String identifier,
-//		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider) {
 
 
@@ -67,13 +73,12 @@ public class ManagementRest extends BaseRest {
 		return response;
 	}
 
-	@PUT
-	@RequestMapping(value = "/admin/index", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+//	@PUT
+//	@RequestMapping(value = "/admin/index", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
 	public AnnotationOperationResponse indexAnnotationById(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
-//		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 		@RequestParam(value = "identifier", required = true) String identifier) {
 
@@ -120,61 +125,58 @@ public class ManagementRest extends BaseRest {
 //		return response;
 //	}
 
-	@PUT
+//	@PUT
 //	@RequestMapping(value = "/admin/annotation/disable", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@RequestMapping(value = "/admin/annotation/disable/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public AnnotationOperationResponse disableAnnotationById(
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "profile", required = false) String profile,
-//		@RequestParam(value = "europeana_id", required = true, defaultValue = WebAnnotationFields.REST_RESOURCE_ID) String resourceId,
-//		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
-//		@RequestParam(value = "annotationNr", required = true) String annotationNr) {
-		@PathVariable(value = "provider") String provider,
-		@PathVariable(value = "identifier") String identifier) {
+//	@RequestMapping(value = "/admin/annotation/disable/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	public AnnotationOperationResponse disableAnnotationById(
+//		@RequestParam(value = "apiKey", required = false) String apiKey,
+//		@RequestParam(value = "profile", required = false) String profile,
+//		@PathVariable(value = "provider") String provider,
+//		@PathVariable(value = "identifier") String identifier) {
+//
+//
+//		AnnotationOperationResponse response;
+//		response = new AnnotationOperationResponse(
+//				apiKey, "/admin/annotation/disable");
+//			
+//		try{
+//			getAnnotationService().disableAnnotation(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+//			response.success = true;
+//		} catch (Exception e){
+//			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+//			response.success = false;
+//			response.error = e.getMessage();
+//		}
+//
+//		return response;
+//	}
 
+//	@DELETE
+//	@RequestMapping(value = "/admin/tag/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	public AnnotationOperationResponse deleteTagById(
+//		@RequestParam(value = "apiKey", required = false) String apiKey,
+//		@RequestParam(value = "profile", required = false) String profile,
+//		@RequestParam(value = "query", required = true, defaultValue = WebAnnotationFields.REST_TAG_ID) String query) {
+//
+//		AnnotationOperationResponse response;
+//		response = new AnnotationOperationResponse(
+//				apiKey, "/admin/tag/delete");
+//			
+//		try{
+//			getAnnotationService().deleteTag(query);
+//			response.success = true;
+//		} catch (Exception e){
+//			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+//			response.success = false;
+//			response.error = e.getMessage();
+//		}
+//
+//		return response;
+//	}
 
-		AnnotationOperationResponse response;
-		response = new AnnotationOperationResponse(
-				apiKey, "/admin/annotation/disable");
-			
-		try{
-			getAnnotationService().disableAnnotation(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
-			response.success = true;
-		} catch (Exception e){
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
-			response.success = false;
-			response.error = e.getMessage();
-		}
-
-		return response;
-	}
-
-	@DELETE
-	@RequestMapping(value = "/admin/tag/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public AnnotationOperationResponse deleteTagById(
-		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "profile", required = false) String profile,
-		@RequestParam(value = "query", required = true, defaultValue = WebAnnotationFields.REST_TAG_ID) String query) {
-
-		AnnotationOperationResponse response;
-		response = new AnnotationOperationResponse(
-				apiKey, "/admin/tag/delete");
-			
-		try{
-			getAnnotationService().deleteTag(query);
-			response.success = true;
-		} catch (Exception e){
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
-			response.success = false;
-			response.error = e.getMessage();
-		}
-
-		return response;
-	}
-
-	@RequestMapping(value = "/admin/disabled/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RequestMapping(value = "/admin/disabled/{collection}/{object}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ModelAndView getDisabledAnnotationList(
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -254,13 +256,13 @@ public class ManagementRest extends BaseRest {
 	}*/
 
 	
-	@RequestMapping(value = "/annotations/get/status/{provider}/{annotationNr}.json"
-			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+//	@RequestMapping(value = "/annotations/get/status/{provider}/{annotationNr}.json"
+//			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
 	public ModelAndView getAnnotationStatus (
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier
-		) {
+		) throws AnnotationNotFoundException {
 
 		Annotation annotation = getAnnotationService().getAnnotationById(
 				new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
@@ -291,63 +293,59 @@ public class ManagementRest extends BaseRest {
 	}
 	
 	
-	@PUT
-//	@RequestMapping(value = "/annotations/set/status/{provider}/{annotationNr}.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@RequestMapping(value = "/admin/set/status/{provider}/{annotationNr}.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@RequestMapping(value = "/admin/set/status/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@RequestMapping(value = "/admin/set/status.json", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public ModelAndView setAnnotationStatus(
-		@RequestParam(value = "provider", required = true) String provider, // this is an ID provider
-		@RequestParam(value = "identifier", required = true) String identifier,
-		@RequestParam(value = "status", defaultValue = "public") String status) {
-
-//		String action = "set: /annotations/set/status/"+ provider + WebAnnotationFields.SLASH + annotationNr + ".json";
-		String action = "set: /admin/set/status/"+ provider + WebAnnotationFields.SLASH + identifier + ".json";
-		
-		try {
-			Annotation annotation = getAnnotationService().getAnnotationById(
-					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
-	
-			if (annotation != null) { 
-				//validate input status
-				if (!(StringUtils.isNotEmpty(status) && StatusTypes.isRegistered(status)))
-					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_TYPE_NOT_REGISTERED + status, null);			
-				
-				//check if status already set
-				if (annotation.getStatus() != null && annotation.getStatus().equals(status))
-					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_ALREADY_SET + status, null);			
-
-				//set status
-				annotation.setStatus(status);
-				Annotation updatedAnnotation = getAnnotationService().updateAnnotationStatus(annotation);
-				getAnnotationService().logAnnotationStatusUpdate("", annotation);
-		
-				//build response
-//				AnnotationOperationResponse response = new AnnotationOperationResponse(
-//						"", action);
-//				response.success = true;
+//	@PUT
+//	@RequestMapping(value = "/admin/set/status/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	public ModelAndView setAnnotationStatus(
+//		@RequestParam(value = "provider", required = true) String provider, // this is an ID provider
+//		@RequestParam(value = "identifier", required = true) String identifier,
+//		@RequestParam(value = "status", defaultValue = "public") String status) {
+//
+//		String action = "set: /admin/set/status/"+ provider + WebAnnotationFields.SLASH + identifier + ".json";
 //		
-//				response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
-//						updatedAnnotation));
+//		try {
+//			Annotation annotation = getAnnotationService().getAnnotationById(
+//					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+//	
+//			if (annotation != null) { 
+//				//validate input status
+//				if (!(StringUtils.isNotEmpty(status) && StatusTypes.isRegistered(status)))
+//					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_TYPE_NOT_REGISTERED + status, null);			
+//				
+//				//check if status already set
+//				if (annotation.getStatus() != null && annotation.getStatus().equals(status))
+//					return getValidationReport("", action, AnnotationOperationResponse.ERROR_STATUS_ALREADY_SET + status, null);			
+//
+//				//set status
+//				annotation.setStatus(status);
+//				Annotation updatedAnnotation = getAnnotationService().updateAnnotationStatus(annotation);
+//				getAnnotationService().logAnnotationStatusUpdate("", annotation);
 //		
-//				return JsonWebUtils.toJson(response, null);
-				return getReport(action, WebAnnotationFields.STATUS + ":" + updatedAnnotation.getStatus() 
-						+ ", " + WebAnnotationFields.PROVIDER + ":" + updatedAnnotation.getAnnotationId().getProvider() 
-						+ ", " + WebAnnotationFields.IDENTIFIER + ":" + updatedAnnotation.getAnnotationId().getIdentifier(), "");			
-			} else {
-				return getValidationReport("", action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND 
-						+ " provider: " + provider + ", annotationNr: " + identifier, null);			
-			}
-		} catch (Exception e) {
-			return getValidationReport("", action, e.getMessage(), e);		
-		}
-	}
+//				//build response
+////				AnnotationOperationResponse response = new AnnotationOperationResponse(
+////						"", action);
+////				response.success = true;
+////		
+////				response.setAnnotation(getControllerHelper().copyIntoWebAnnotation(
+////						updatedAnnotation));
+////		
+////				return JsonWebUtils.toJson(response, null);
+//				return getReport(action, WebAnnotationFields.STATUS + ":" + updatedAnnotation.getStatus() 
+//						+ ", " + WebAnnotationFields.PROVIDER + ":" + updatedAnnotation.getAnnotationId().getProvider() 
+//						+ ", " + WebAnnotationFields.IDENTIFIER + ":" + updatedAnnotation.getAnnotationId().getIdentifier(), "");			
+//			} else {
+//				return getValidationReport("", action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND 
+//						+ " provider: " + provider + ", annotationNr: " + identifier, null);			
+//			}
+//		} catch (Exception e) {
+//			return getValidationReport("", action, e.getMessage(), e);		
+//		}
+//	}
 
 	
-	@RequestMapping(value = "/annotations/check/visibility/{provider}/{annotationNr}/{user}.json"
-			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+//	@RequestMapping(value = "/annotations/check/visibility/{provider}/{annotationNr}/{user}.json"
+//			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
 	public ModelAndView checkVisibility (
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
 		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
@@ -385,5 +383,43 @@ public class ManagementRest extends BaseRest {
 		}
 	}
 	
+	@RequestMapping(value = "/admin/reindex"
+			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(notes = "reindex by annotation id", value = "", hidden = false)
+	public ModelAndView reindexAnnotationByAnnotationId (
+		@RequestParam(value = "apiKey", required = false) String apiKey,
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
+		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+		) {
+
+		getAdminService().reindexAnnotationById(
+				new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/admin/reindex");
+
+		return JsonWebUtils.toJson(response, null);
+	}
+	
+	@RequestMapping(value = "/admin/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(notes = SwaggerConstants.REINDEX_HELP_NOTE, value = "", hidden=false)
+	public ModelAndView reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate,
+			@RequestParam(value = "startTimestamp", required = false) String startTimestamp,
+			@RequestParam(value = "endTimestamp", required = false) String endTimestamp,
+			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			) {
+
+		getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/admin/reindexset");
+
+		return JsonWebUtils.toJson(response, null);
+	}
 	
 }

@@ -18,6 +18,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 
 public interface AnnotationService {
 
@@ -155,7 +156,7 @@ public interface AnnotationService {
 	 * @param
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(AnnotationId annoId);
+	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException;
 		
 	/**
 	 * Search for annotations by the given text query.

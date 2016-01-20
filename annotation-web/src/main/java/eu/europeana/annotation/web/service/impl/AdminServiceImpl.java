@@ -11,51 +11,47 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
-
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AdminService;
-import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 
-public class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
-	@Resource
-	AnnotationConfiguration configuration;
+//	@Resource
+//	AnnotationConfiguration configuration;
 
 	@Resource
 	PersistentWhitelistService mongoWhitelistPersistence;
 
-	@Resource
-	AuthenticationService authenticationService;
+//	@Resource
+//	AuthenticationService authenticationService;
+//
+//	Logger logger = Logger.getLogger(getClass());
 
-	Logger logger = Logger.getLogger(getClass());
 
-
-	public AuthenticationService getAuthenticationService() {
-		return authenticationService;
-	}
-
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
-
-	@Override
-	public String getComponentName() {
-		return configuration.getComponentName();
-	}
-
-	protected AnnotationConfiguration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
-	}
+//	public AuthenticationService getAuthenticationService() {
+//		return authenticationService;
+//	}
+//
+//	public void setAuthenticationService(AuthenticationService authenticationService) {
+//		this.authenticationService = authenticationService;
+//	}
+//
+//	@Override
+//	public String getComponentName() {
+//		return configuration.getComponentName();
+//	}
+//
+//	protected AnnotationConfiguration getConfiguration() {
+//		return configuration;
+//	}
+//
+//	public void setConfiguration(AnnotationConfiguration configuration) {
+//		this.configuration = configuration;
+//	}
 
 	public PersistentWhitelistService getMongoWhitelistPersistence() {
 		return mongoWhitelistPersistence;

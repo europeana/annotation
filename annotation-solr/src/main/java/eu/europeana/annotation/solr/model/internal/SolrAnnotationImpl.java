@@ -33,7 +33,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("annotatedAt_timestamp")
+	@Field("annotated_at_timestamp")
 	public void setAnnotatedAtTimestamp(Long annotatedAtTimestamp) {
 		this.annotatedAtTimestamp = annotatedAtTimestamp;
 	}
@@ -44,7 +44,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("serializedAt_timestamp")
+	@Field("serialized_at_timestamp")
 	public void setSerializedAtTimestamp(Long serializedAtTimestamp) {
 		this.serializedAtTimestamp = serializedAtTimestamp;
 	}

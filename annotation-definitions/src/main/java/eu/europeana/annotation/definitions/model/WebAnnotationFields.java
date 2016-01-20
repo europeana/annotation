@@ -235,6 +235,7 @@ public interface WebAnnotationFields {
 	public static final String REST_PROVIDER = "webanno";
 	public static final String REST_RESOURCE_ID = SLASH + REST_COLLECTION + SLASH + REST_OBJECT;
 	public static final String REST_ANNOTATION_NR = "1";
+	public static final String REST_ANNOTATION_ID = REST_PROVIDER + SLASH + REST_ANNOTATION_NR;
 	public static final String REST_TAG_ID = "5506c37343247ba48753d1e5";
 	public static final String REST_LANGUAGE = "en";
 	public static final String REST_START_ON = "0";

@@ -129,11 +129,11 @@
 			multiValued="false" />
 				
 		<!-- @Field("annotatedAt")  -->
-		<field name="annotatedAt_timestamp" type="long"  indexed="true"
+		<field name="annotated_at_timestamp" type="long"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 				
 		<!-- @Field("serializedAt")  -->
-		<field name="serializedAt_timestamp" type="long"  indexed="true"
+		<field name="serialized_at_timestamp" type="long"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 				
 		<!-- Diego Ceccarelli <diego.ceccarelli@isti.cnr.it> 17-11-2012 -->

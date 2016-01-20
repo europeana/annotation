@@ -1,6 +1,9 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,6 +15,7 @@ import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
 import com.google.code.morphia.query.UpdateResults;
+import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
@@ -24,6 +28,7 @@ import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
@@ -581,6 +586,36 @@ public class PersistentAnnotationServiceImpl extends
 
 		return res;
 	}
+
+	/**
+	 * This method returns annotations by start- and end timestamps.
+	 * @param startTimestamp as long value in string format
+	 * @param endTimestamp as long value in string format
+	 * @return evaluated ID list
+	 */
+	public List<String> filterByTimestamp(
+//			public List<AnnotationId> filterByTimestamp(
+//			public List<? extends Annotation> filterByTimestamp(
+			String startTimestamp, String endTimestamp) {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		if (!Strings.isNullOrEmpty(startTimestamp)) {
+			Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(start);
+		}
+		if (!Strings.isNullOrEmpty(endTimestamp)) {
+			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
+			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
+		}
+//		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
+//				.find(query);
+		List<String> results = getAnnotationDao().findIds(query);
+		String resultsArrString = results.toString();
+		resultsArrString = resultsArrString.substring(1, resultsArrString.length() - 1);
+		results = new ArrayList<String>(Arrays.asList(resultsArrString.split(",")));
+//		return results.asList();
+		return results;
+	}
+
 
 	
 	@Override
