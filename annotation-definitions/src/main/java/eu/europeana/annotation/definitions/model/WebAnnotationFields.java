@@ -152,8 +152,11 @@ public interface WebAnnotationFields {
 	public static final String SLASH = "/";
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4;
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3;
+	public static final String PROVIDER_WEBANNO = "webanno";
+	public static final String PROVIDER_EUROPEANA = "europeana";
 	public static final String PROVIDER_HISTORY_PIN = "historypin";
 	public static final String PROVIDER_PUNDIT = "pundit";
+	public static final String PROVIDER_WITH = "with";
 	public static final String PROVIDER_BASE = "base";
 	public static final String PROVIDER_WRONG = "wrong";
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
@@ -184,8 +187,6 @@ public interface WebAnnotationFields {
 	public static final String BROADER = "broader";
 	public static final String RELATED = "related";
 	public static final String SKOS = "skos";
-
-	public static final String PROVIDER_WEBANNO = "webanno";
 
 	/**
 	 * AnnotationLd

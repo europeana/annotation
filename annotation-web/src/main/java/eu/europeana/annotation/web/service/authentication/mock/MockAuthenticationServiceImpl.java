@@ -5,7 +5,6 @@ import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.agent.impl.Person;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
@@ -30,6 +29,9 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		Application app;
 		switch (apiKey) {
 
+		case "apiadmin":
+			app = createMockClientApplication(apiKey, "Europeana Foundation", WebAnnotationFields.PROVIDER_EUROPEANA);			
+			break;
 		case "apidemo":
 			app = createMockClientApplication(apiKey, "Europeana Foundation", WebAnnotationFields.PROVIDER_WEBANNO);			
 			break;
@@ -38,6 +40,9 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 			break;
 		case "punditdemo":
 			app = createMockClientApplication(apiKey, "Pundit", WebAnnotationFields.PROVIDER_PUNDIT);			
+			break;
+		case "withdemo":
+			app = createMockClientApplication(apiKey, "With", WebAnnotationFields.PROVIDER_WITH);			
 			break;
 		default:
 			throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
@@ -63,8 +68,25 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 		Agent admin = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		admin.setName(applicationName + "-" + WebAnnotationFields.USER_ADMIN);
+		
 		app.setAdminUser(admin);
 		
+		//authenticated users 
+		Agent tester1 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		tester1.setName(applicationName + "-" + "tester1");
+		tester1.setOpenId("tester1@" + applicationName);
+		app.addAuthenticatedUser("tester1", tester1);
+
+		Agent tester2 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		tester2.setName(applicationName + "-" + "tester2");
+		tester2.setOpenId("tester2@" + applicationName);
+		app.addAuthenticatedUser("tester2", tester2);
+
+		Agent tester3 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		tester3.setName(applicationName + "-" + "tester3");
+		tester3.setOpenId("tester3@" + applicationName);
+		app.addAuthenticatedUser("tester3", tester3);
+
 		return app;
 	}
 

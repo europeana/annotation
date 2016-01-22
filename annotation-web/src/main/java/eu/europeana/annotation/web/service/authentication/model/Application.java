@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.authentication.model;
 
+import java.util.Map;
+
 import eu.europeana.annotation.definitions.model.agent.Agent;
 
 public interface Application {
@@ -35,5 +37,10 @@ public interface Application {
 	void setHomepage(String homepage);
 
 	String getHomepage();
+	
+	Map<String, Agent> getAuthenticatedUsers();
+	
+	void addAuthenticatedUser(String key, Agent user);
+	
 
 }

@@ -1,5 +1,8 @@
 package eu.europeana.annotation.web.service.authentication.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.europeana.annotation.definitions.model.agent.Agent;
 
 public class ClientApplicationImpl implements Application{
@@ -13,6 +16,7 @@ public class ClientApplicationImpl implements Application{
 	private String openId;
 	private Agent anonymousUser;
 	private Agent adminUser;
+	private Map<String, Agent> authenticatedUsers = new HashMap<String, Agent>();
 	
 	@Override
 	public String getHomepage() {
@@ -93,5 +97,17 @@ public class ClientApplicationImpl implements Application{
 	public void setAdminUser(Agent adminUser) {
 		this.adminUser = adminUser;
 	}
+
+	@Override
+	public Map<String, Agent> getAuthenticatedUsers() {
+		return authenticatedUsers;
+	}
+
+	@Override
+	public void addAuthenticatedUser(String key, Agent user) {
+		getAuthenticatedUsers().put(key, user);
+	}
+	
+	
 
 }
