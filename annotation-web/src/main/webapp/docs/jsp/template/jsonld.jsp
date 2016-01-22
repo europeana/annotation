@@ -11,10 +11,11 @@ boolean hasType = withType != null;
 
 					<ul id="toc">
 						<li><a href="#tag">Create (Object) Tag</a></li>
+						<li><a href="#semantictag">Create (Semantic) Tag</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 					</ul>
 
-					<h3 id="tag">Create (Object) Tag</h3>
+<h3 id="tag">Create (Object) Tag</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (simple) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
@@ -35,6 +36,28 @@ The json-ld serialization available in the following box is a valid input to be 
     "body": "church",
     "target": "http://data.europeana.eu/item/123/xyz",
     "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+}
+</textarea>
+<br>
+
+<h3 id="tag">Create (Semantic) Tag</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:tagging)
+<textarea rows="20" cols="120" name="jsonldtag">
+{
+    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@type": "oa:Annotation",
+<% if(!hasType){ %>    "motivation": "oa:tagging",<% }//endif%>	
+    "body": {
+        "@type": "SpecificResource",
+        "@id": "http://sws.geonames.org/2988507",  
+        "source": "http://sws.geonames.org/2988507",
+        "role": "SEMANTIC_TAG",
+        "language": "en"
+    },
+    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
 </textarea>
 <br>

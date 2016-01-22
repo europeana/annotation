@@ -54,6 +54,7 @@ public interface WebAnnotationFields {
 	public static final String MULTILINGUAL = "multilingual";
 	public static final String TOTAL_ITEMS = "totalItems";
 	public static final String CONTAINS = "contains";
+	public static final String ROLE = "role";
 
 	// skos fields
 	public static final String PREF_LABEL = "prefLabel";
@@ -97,6 +98,7 @@ public interface WebAnnotationFields {
 	public static final String TAG_TYPE = "tagType";
 	public static final String TAG = "tag";
 	public static final String LINK = "link";
+	public static final String SPECIFIC_RESOURCE = "SpecificResource";
 
 	public static final String DEFAULT_LANGUAGE = "EN";
 	public static final String UNDERSCORE = "_";

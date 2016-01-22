@@ -587,6 +587,15 @@ public class AnnotationLdParser extends JsonLdParser {
 				case WebAnnotationFields.FORMAT:
 					body.setContentType(value.toString());
 					break;
+				case WebAnnotationFields.SOURCE:
+					body.setSource(value.toString());
+					break;
+				case WebAnnotationFields.AT_ID:
+					body.setInternalId(value.toString());
+					break;
+				case WebAnnotationFields.ROLE:
+					body.setRole(value.toString());
+					break;
 				default:
 					break;
 				}

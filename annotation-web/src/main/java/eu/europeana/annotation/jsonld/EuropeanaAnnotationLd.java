@@ -454,6 +454,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
 					body.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.FOAF_PAGE));
 				if (hasValue(propertyValue, WebAnnotationFields.MULTILINGUAL)) 
 					body.setMultilingual(JsonUtils.stringToMap(propertyValue.getValues().get(WebAnnotationFields.MULTILINGUAL)));
+				if (hasValue(propertyValue, WebAnnotationFields.AT_ID)) 
+					body.setInternalId(propertyValue.getValues().get(WebAnnotationFields.AT_ID));
+				if (hasValue(propertyValue, WebAnnotationFields.SOURCE)) 
+					body.setSource(propertyValue.getValues().get(WebAnnotationFields.SOURCE));
+				if (hasValue(propertyValue, WebAnnotationFields.ROLE)) 
+					body.setRole(propertyValue.getValues().get(WebAnnotationFields.ROLE));
 			}
 			
 			Concept concept = getConcept(propertyValue); 
@@ -749,6 +755,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
             	propertyValue.getValues().put(WebAnnotationFields.MULTILINGUAL, JsonUtils.mapToString(annotation.getBody().getMultilingual()));
             if (annotation.getBody().getConcept() != null)         	
             	propertyValue.putProperty(addConceptProperty(annotation.getBody().getConcept()));
+            if (!StringUtils.isBlank(annotation.getBody().getInternalId()))         	
+            	propertyValue.getValues().put(WebAnnotationFields.AT_ID, annotation.getBody().getInternalId());
+            if (!StringUtils.isBlank(annotation.getBody().getSource()))         	
+            	propertyValue.getValues().put(WebAnnotationFields.SOURCE, annotation.getBody().getSource());
+            if (!StringUtils.isBlank(annotation.getBody().getRole()))         	
+            	propertyValue.getValues().put(WebAnnotationFields.ROLE, annotation.getBody().getRole());
             if (propertyValue.getValues().size() == 0)
             	return null;
 	        bodyProperty.addValue(propertyValue);        

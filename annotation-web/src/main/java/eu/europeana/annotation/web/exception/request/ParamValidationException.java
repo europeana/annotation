@@ -22,7 +22,10 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_URL_NOT_VALID = "Given URL is not valid!";
 	public static final String MESSAGE_MISSING_PROPERTY_FILE = "The property file was not found!";
 	public static final String MESSAGE_INVALID_TAG_SIZE = "Invalid tag size. Must be shorter then 64 characters!";
-	public static final String MESSAGE_INVALID_TAG_FORMAT = "Invalid tag format. A tag can't contain URLs!";
+	public static final String MESSAGE_INVALID_TAG_FORMAT = "Invalid tag format.";
+	public static final String MESSAGE_INVALID_SIMPLE_TAG = MESSAGE_INVALID_TAG_FORMAT + " A tag can't contain URLs!";
+	public static final String MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE = MESSAGE_INVALID_TAG_FORMAT + " The source of a SpecificResource must be an URL!";
+	public static final String MESSAGE_MISSING_MANDATORY_FIELD = "Missing mandatory field!";
 	
 	public static final int MIN_IDENTIFIER_LEN = 2;
 	

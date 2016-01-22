@@ -45,4 +45,17 @@ public interface Body extends InternetResource{
 	public void setInternalType(String internalType);
 	
 	public boolean equalsContent(Object other);	
+
+	public String getInternalId();
+
+	public void setInternalId(String internalId);
+	
+	public abstract void setSource(String source);
+
+	public abstract String getSource();
+	
+	public abstract void setRole(String role);
+
+	public abstract String getRole();		
+	
 }

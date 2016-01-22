@@ -15,6 +15,8 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 
+import com.google.common.base.Strings;
+
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -696,6 +698,29 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	 */
 	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
 		Body body = webAnnotation.getBody();
+		if (!body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
+			validateTagWithValue(body);
+		}else{
+			validateTagWithSpecificResource(body);
+		}		
+	}
+
+	private void validateTagWithSpecificResource(Body body) throws ParamValidationException {
+		//check mandatory fields
+		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
+			throw new ParamValidationException(
+					ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.type", body.getType().toString());
+		if (Strings.isNullOrEmpty(body.getSource()))
+			throw new ParamValidationException(
+					ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.source", body.getSource());
+
+		//source must be an URL
+		if (!isUrl(body.getSource()))
+			throw new ParamValidationException(
+					ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE, "tag.format", body.getSource());
+	}
+
+	private void validateTagWithValue(Body body) throws ParamValidationException {
 		String value = body.getValue();
 		
 		value = value.trim();
@@ -712,16 +737,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			value = value.trim();
 		}
 		
-		webAnnotation.getBody().setValue(value);
-		webAnnotation.getBody().setInputString(value);
+		body.setValue(value);
+		body.setInputString(value);
 		
 		int MAX_TAG_LENGTH = 64;
 		if (value.length() > MAX_TAG_LENGTH)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", ""+value.length());
 		
 		if(isUrl(value))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_FORMAT, "tag.format", value);
-		
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format", value);
 	}
 	
 	

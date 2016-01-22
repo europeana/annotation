@@ -17,8 +17,36 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	private List<String> bodyType = new ArrayList<String>(2);
 	private String inputString;
 	private String internalType;
+	private String internalId;
+	private String source;
+	private String role;
 	
-//	@Override
+
+	public String getInternalId() {
+		return internalId;
+	}
+
+	public void setInternalId(String internalId) {
+		this.internalId = internalId;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	//	@Override
 //	public String getBodyType() {
 //		return bodyType;
 //	}
@@ -180,6 +208,24 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	    	res = false;
 	    }
 
+	    if ((this.getInternalId() != null) && (that.getInternalId() != null) &&
+	    		(!this.getInternalId().equals(that.getInternalId()))) {
+	    	System.out.println("Body objects have different body IDs.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getSource() != null) && (that.getSource() != null) &&
+	    		(!this.getSource().equals(that.getSource()))) {
+	    	System.out.println("Body objects have different body sources.");
+	    	res = false;
+	    }
+	    
+	    if ((this.getRole() != null) && (that.getRole() != null) &&
+	    		(!this.getRole().equals(that.getRole()))) {
+	    	System.out.println("Body objects have different body roles.");
+	    	res = false;
+	    }
+	    
 	    return res;
 	}
 		
@@ -207,6 +253,12 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 			res = res + "\t\t" + "multilingual:" + getMultilingual().toString() + "\n";
 		if (getConcept() != null) 
 			res = res + "\n\t\t" + "Concept:" + getConcept().toString() + "\n";
+		if (getInternalId() != null) 
+			res = res + "\t\t" + "bodyId:" + getInternalId().toString() + "\n";
+		if (getSource() != null) 
+			res = res + "\t\t" + "bodySource:" + getSource().toString() + "\n";
+		if (getRole() != null) 
+			res = res + "\t\t" + "bodyRole:" + getRole().toString() + "\n";
 		return res;
 	}	
 }
