@@ -55,5 +55,10 @@ public class BaseSummary implements Summary {
 		if (getTotal() > 0) 
 			res = res + "\t\t" + "Total:" + getTotal() + "\n";
 		return res;
+	}
+
+	@Override
+	public int getScore() {
+		return endorseSum - reportSum;
 	}	
 }

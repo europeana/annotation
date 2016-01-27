@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.Date;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -7,12 +9,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.mangofactory.swagger.models.dto.ApiKey;
+
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
+import eu.europeana.annotation.definitions.model.moderation.Vote;
+import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationRecord;
+import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
+import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
@@ -24,6 +34,7 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.annotation.web.model.ModerationOperationResponse;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 
@@ -176,6 +187,48 @@ public class BaseJsonldRest extends BaseRest{
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
+
+			return response;
+			
+		}catch (RuntimeException e) {
+			//not found .. 
+			throw new InternalServerException(e);
+		} catch (HttpException e) {
+			//avoid wrapping http exception
+			throw e;
+		} catch (Exception e) {
+			throw new InternalServerException(e);
+		}
+	}
+	
+	
+	protected ModerationOperationResponse getModerationById(
+			String wsKey, String provider, String identifier, String action) throws HttpException {
+
+		try {
+			
+			//2. Check client access (a valid “wskey” must be provided)
+			validateApiKey(wsKey);
+			
+			//SET DEFAULTS 
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			if(provider == null)
+				provider = app.getProvider();
+			
+			
+			//3. Retrieve an annotation based on its identifier;
+			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
+			
+			//4. If annotation doesn’t exist respond with HTTP 404 (if provided moderation id doesn’t exists ) 
+			ModerationRecord moderationRecord = getAnnotationService().getModerationRecordById(annoId);
+			
+			//build response
+			ModerationOperationResponse response = new ModerationOperationResponse(
+					wsKey, action);
+			response.success = true;
+
+			response.setModerationRecord(moderationRecord);
 
 			return response;
 			
@@ -410,4 +463,76 @@ public class BaseJsonldRest extends BaseRest{
 	}
 
 	
+	/**
+	 * @param wsKey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return
+	 * @throws HttpException
+	 */
+	protected ModerationOperationResponse storeModeration(
+				String wsKey, String provider, String identifier, String userToken, String action) 
+			throws HttpException {
+		try {
+
+			//SET DEFAULTS 
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			if(provider == null)
+				provider = app.getProvider();
+			
+			// 0. annotation id
+			AnnotationId annoId = buildAnnotationId(provider, identifier, false);
+			
+			// 1. authorize user
+			authorizeUser(userToken, wsKey, annoId);
+
+			// create moderation record
+			ModerationRecord moderationRecord = new BaseModerationRecord();
+			moderationRecord.setAnnotationId(annoId);
+			Vote vote = new BaseVote();
+			
+			//SET DEFAULTS 
+			moderationRecord.setCreated(new Date());
+
+			// add report
+			vote.setCreated(moderationRecord.getCreated());
+			vote.setUserId(userToken);
+			moderationRecord.addReport(vote);
+			Summary summary = new BaseSummary();
+			summary.setReportSum(moderationRecord.getReportList().size());
+			summary.setEndorseSum(0);
+			moderationRecord.setSummary(summary);
+			
+			// 2. validate
+			// check whether moderationRecord with the given provider and identifier
+			// already exist in the database
+			if (annoId.getIdentifier() != null && getAnnotationService().existsModerationInDb(annoId))
+				throw new ParamValidationException(ParamValidationException.MESSAGE_MODERATION_ID_EXISTS,
+						"/provider/identifier", annoId.toUri());		
+			
+			//validate api key ... and request limit only if the request is correct (avoid useless DB requests)
+			validateApiKey(wsKey);
+
+			ModerationRecord storedModerationRecord = getAnnotationService().storeModerationRecord(moderationRecord);
+			
+			//build response
+			ModerationOperationResponse response = new ModerationOperationResponse(
+					wsKey, action);
+			response.success = true;
+
+			response.setModerationRecord(storedModerationRecord);
+
+			return response;
+
+		} catch(HttpException e){
+			//avoid wrapping HttpExceptions
+			throw e;
+		} catch (Exception e) {
+			throw new InternalServerException(e);
+		}
+	}
+	
+
 }

@@ -195,13 +195,20 @@ public class BaseRest extends ApiResponseBuilder {
 
 	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
 
+		return buildAnnotationId(provider, identifier, true);
+	}
+
+	protected AnnotationId buildAnnotationId(String provider, String identifier, boolean validation) throws ParamValidationException {
+
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 
-		annotationService.validateAnnotationId(annoId);
+		if(validation)
+			annotationService.validateAnnotationId(annoId);
 
 		return annoId;
 	}
 
+	
 	/**
 	 * This method is employed when identifier is an URL and contains provider.
 	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'

@@ -11,6 +11,10 @@ import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
  */
 public interface PersistentModerationRecord extends ModerationRecord, NoSqlEntity {
 
+	public final static String FIELD_BASEURL = "annotationId.baseUrl";
+	public final static String FIELD_PROVIDER = "annotationId.provider";
+	public final static String FIELD_IDENTIFIER = "annotationId.identifier";
+	
 	/**
 	 * 
 	 * @return the generated mongo id

@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.moderation.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class BaseModerationRecord implements ModerationRecord {
 	private Date lastUpdated;
 
 	
-	protected BaseModerationRecord(){}
+	public BaseModerationRecord(){}
 	
 	
 	public AnnotationId getAnnotationId() {
@@ -72,6 +73,15 @@ public class BaseModerationRecord implements ModerationRecord {
 	public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
+	
+	public void addReport(Vote vote) {
+		if(reportList == null)
+			reportList = new ArrayList<Vote>();
+		
+		if(! reportList.contains(vote))
+			reportList.add(vote);
+	}
+	
 
 	@Override
 	public boolean equals(Object other) {

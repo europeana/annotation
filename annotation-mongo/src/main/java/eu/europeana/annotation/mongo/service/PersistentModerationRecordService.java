@@ -3,9 +3,11 @@ package eu.europeana.annotation.mongo.service;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
 
@@ -13,6 +15,7 @@ public interface PersistentModerationRecordService  extends AbstractNoSqlService
 
 	//find() methods 
 	public PersistentModerationRecord find(PersistentModerationRecord moderationRecord) throws AnnotationMongoException;
+	public PersistentModerationRecord find(AnnotationId annoId) throws ModerationMongoException;
 	public List<PersistentModerationRecord> findAll(PersistentModerationRecord moderationRecord) throws AnnotationMongoException;
 	
 	//delete methods

@@ -114,6 +114,8 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 				user = clientApp.getAnonymousUser();
 			else if (WebAnnotationFields.USER_ADMIN.equals(userToken))
 				user = clientApp.getAdminUser();
+			else
+				user = clientApp.getAuthenticatedUsers().get(userToken);
 			
 		} catch (ApplicationAuthenticationException e) {
 			throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_INVALID_TOKEN, userToken, e);

@@ -10,15 +10,17 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
+import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 
 public interface AnnotationService {
 
@@ -228,6 +230,13 @@ public interface AnnotationService {
 	public boolean existsInDb(AnnotationId annoId); 
 	
 	/**
+	 * Check whether moderation record for given provider and identifier already exist in database.
+	 * @param annoId
+	 * @return
+	 */
+	public boolean existsModerationInDb(AnnotationId annoId);
+	
+	/**
 	 * Check whether given provider already exists in database.
 	 */
 	public boolean existsProviderInDb(Provider provider); 
@@ -296,5 +305,19 @@ public interface AnnotationService {
 
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
 
+	/**
+	 * This method stores moderation record in database
+	 * @param newModerationRecord
+	 * @return
+	 */
+	public ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord);
 	
+	/**
+	 * @param annoId
+	 * @return
+	 * @throws ModerationNotFoundException
+	 * @throws ModerationMongoException
+	 */
+	public ModerationRecord getModerationRecordById(AnnotationId annoId) 
+			throws ModerationNotFoundException, ModerationMongoException;
 }

@@ -3,7 +3,6 @@ package eu.europeana.annotation.mongo.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -382,35 +381,10 @@ public class PersistentAnnotationServiceImpl extends
 		return results.asList();
 	}
 
-//	@Override
-//	public PersistentAnnotation find(String provider, String identifier) {
-//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-//		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-//		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-//
-//		return getAnnotationDao().findOne(query);
-//	}
-
-//	@Override
-//	public PersistentAnnotation find(String europeanaId, String provider,
-//			String identifier) {
-//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-////		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
-//		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-//		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-//
-//		return getAnnotationDao().findOne(query);
-//	}
-
 	@Override
 	public PersistentAnnotation find(AnnotationId annoId) {
-//		return find(annoId.getResourceId(), annoId.getProvider(),
-//				annoId.getAnnotationNr());
 		
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-//		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
 		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());

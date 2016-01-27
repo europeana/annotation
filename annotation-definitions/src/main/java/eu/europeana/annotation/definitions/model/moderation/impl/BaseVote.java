@@ -19,7 +19,7 @@ public class BaseVote implements Vote {
 	private Agent user;
 	
 	
-	protected BaseVote(){}
+	public BaseVote(){}
 	
 	
 	public String getType() {

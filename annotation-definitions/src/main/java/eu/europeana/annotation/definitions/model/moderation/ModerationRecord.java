@@ -30,5 +30,8 @@ public interface ModerationRecord {
 	public Date getLastUpdated();
 
 	public void setLastUpdated(Date lastUpdated);
+	
+	public void addReport(Vote vote);
+	
 
 }

@@ -11,6 +11,7 @@ import com.mongodb.WriteResult;
 
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -25,6 +26,16 @@ public class PersistentModerationRecordServiceImpl extends
 	@Override
 	public PersistentModerationRecord find(PersistentModerationRecord moderationRecord) {
 		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
+
+		return getDao().findOne(query);
+	}
+	
+	public PersistentModerationRecord find(AnnotationId annoId) {
+		
+		Query<PersistentModerationRecord> query = getDao().createQuery();
+		query.filter(PersistentModerationRecord.FIELD_BASEURL, annoId.getBaseUrl());
+		query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
+		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoId.getIdentifier());
 
 		return getDao().findOne(query);
 	}

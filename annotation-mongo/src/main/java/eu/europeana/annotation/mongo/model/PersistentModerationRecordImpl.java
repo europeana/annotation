@@ -1,28 +1,38 @@
 package eu.europeana.annotation.mongo.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 
+import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.Vote;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 
 @Entity("moderationRecord")
 @Polymorphic
+@Indexes({@Index(PersistentAnnotation.FIELD_BASEURL + ", "+ PersistentAnnotation.FIELD_PROVIDER + ", " + PersistentAnnotation.FIELD_IDENTIFIER), 
+	@Index("provider, identifier")})
 public class PersistentModerationRecordImpl implements PersistentModerationRecord, PersistentObject {
 
 	@Id
 	private ObjectId id;
 	
-	private AnnotationId annotationId;
+	@Embedded
+	private MongoAnnotationId annotationId;
+	
+//	private AnnotationId annotationId;
 	private List<Vote> endorseList;
 	private List<Vote> reportList;
 	private Summary summary;
@@ -53,7 +63,14 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 	}
 
 	public void setAnnotationId(AnnotationId annotationId) {
-		this.annotationId = annotationId;
+//		this.annotationId = annotationId;
+		if(annotationId instanceof MongoAnnotationId)
+			this.annotationId = (MongoAnnotationId) annotationId;
+		else{
+			MongoAnnotationId id = new MongoAnnotationId();
+			id.copyFrom(annotationId);
+			this.annotationId = id;
+		}
 	}
 
 	public List<Vote> getEndorseList() {
@@ -106,6 +123,15 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 	public Long getLastIndexedTimestamp() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addReport(Vote vote) {
+		if(reportList == null)
+			reportList = new ArrayList<Vote>();
+		
+		if(! reportList.contains(vote))
+			reportList.add(vote);
 	}
 
 }

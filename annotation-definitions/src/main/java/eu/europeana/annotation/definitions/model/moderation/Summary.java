@@ -5,6 +5,8 @@ public interface Summary {
 
 	public int getTotal();
 
+	public int getScore();
+
 	public int getEndorseSum();
 
 	public void setEndorseSum(int endorseSum);

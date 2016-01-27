@@ -18,6 +18,7 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
+import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -27,12 +28,15 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
+import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
+import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
@@ -45,21 +49,19 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-//	@Resource
-//	AnnotationConfiguration configuration;
-
-//	@Resource
-//	PersistentAnnotationService mongoPersistance;
-//
 	@Resource
 	PersistentTagService mongoTagPersistence;
 
 	@Resource
 	PersistentProviderService mongoProviderPersistance;
+
+	@Resource
+	PersistentModerationRecordService mongoModerationRecordPersistance;
 
 	@Resource
 	PersistentConceptService mongoConceptPersistence;
@@ -70,27 +72,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
 
-//	@Resource
-//	SolrAnnotationService solrService;
-//
-//	@Resource
-//	SolrTagService solrTagService;
-//	
-//	@Resource
-//	AuthenticationService authenticationService;
-
 	AnnotationBuilder annotationBuilder;
-
-//	Logger logger = Logger.getLogger(getClass());
-
-
-//	public AuthenticationService getAuthenticationService() {
-//		return authenticationService;
-//	}
-//
-//	public void setAuthenticationService(AuthenticationService authenticationService) {
-//		this.authenticationService = authenticationService;
-//	}
 
 	public AnnotationBuilder getAnnotationHelper() {
 		if (annotationBuilder == null)
@@ -98,27 +80,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return annotationBuilder;
 	}
 
-//	@Override
-//	public String getComponentName() {
-//		return configuration.getComponentName();
-//	}
-//
-//	protected AnnotationConfiguration getConfiguration() {
-//		return configuration;
-//	}
-//
-//	public void setConfiguration(AnnotationConfiguration configuration) {
-//		this.configuration = configuration;
-//	}
-
-//	protected PersistentAnnotationService getMongoPersistence() {
-//		return mongoPersistance;
-//	}
-//
-//	public void setMongoPersistance(PersistentAnnotationService mongoPersistance) {
-//		this.mongoPersistance = mongoPersistance;
-//	}
-//
 	public PersistentTagService getMongoTagPersistence() {
 		return mongoTagPersistence;
 	}
@@ -129,6 +90,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	public PersistentProviderService getMongoProviderPersistence() {
 		return mongoProviderPersistance;
+	}
+
+	public PersistentModerationRecordService getMongoModerationRecordPersistence() {
+		return mongoModerationRecordPersistance;
 	}
 
 	public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
@@ -232,10 +197,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		 */
 		return parsedAnnotationLd.getAnnotation();
 	}
-
-//	private Logger getLogger() {
-//		return logger;
-//	}
 
 	@Override
 	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException {
@@ -379,6 +340,27 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return res;
 	}
 
+	public ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord) {
+
+		// must have annotaionId with resourceId and provider.
+		validateAnnotationIdForModerationRecord(newModerationRecord);
+
+		// store in mongo database
+		ModerationRecord res = getMongoModerationRecordPersistence().store(newModerationRecord);
+
+		return res;
+	}
+
+	public ModerationRecord getModerationRecordById(AnnotationId annoId) 
+			throws ModerationNotFoundException, ModerationMongoException {
+		ModerationRecord moderationRecord = getMongoModerationRecordPersistence().find(annoId);
+		if(moderationRecord == null)
+			throw new ModerationNotFoundException(ModerationNotFoundException.MESSAGE_MODERATION_NO_FOUND, annoId.toHttpUrl());
+		
+		return moderationRecord;
+	}
+
+	
 	/**
 	 * This method validates AnnotationId object.
 	 * 
@@ -398,6 +380,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 
+	/**
+	 * This method validates AnnotationId object for moderation record.
+	 * 
+	 * @param newModerationRecord
+	 */
+	private void validateAnnotationIdForModerationRecord(ModerationRecord newModerationRecord) {
+
+		if (newModerationRecord.getAnnotationId() == null)
+			throw new ModerationRecordValidationException("ModerationRecord.AnnotationId must not be null!");
+
+		if (newModerationRecord.getAnnotationId().getProvider() == null)
+			throw new ModerationRecordValidationException("ModerationRecord.AnnotationId.provider must not be null!");
+	}
+
+
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
 		
@@ -408,35 +405,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		
 		return res;
 	}
-
-//	protected void reindexAnnotation(Annotation res) {
-//		try {
-//			getSolrService().update(res);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//		
-//		// check if the tag is already indexed
-//		try {
-//			getSolrTagService().update(res);
-//		} catch (Exception e) {
-//			Logger.getLogger(getClass().getName())
-//					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
-//							, e);
-//		}
-//
-//		// save the time of the last SOLR indexing
-//		updateLastSolrIndexingTime(res);
-//	}
-//
-//	private void updateLastSolrIndexingTime(Annotation res) {
-//		try {
-//			getMongoPersistence().updateIndexingTime(res.getAnnotationId());
-//		} catch (Exception e) {
-//			Logger.getLogger(getClass().getName())
-//					.warn("The time of the last SOLR indexing could not be saved. " , e);
-//		}
-//	}
 
 	@Override
 	public Annotation updateAnnotationStatus(Annotation annotation) {
@@ -457,22 +425,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		// getMongoPersistence().remove(resourceId, provider, annotationNr);
 		getMongoPersistence().remove(annoId);
 	}
-
-//	@Override
-//	public void indexAnnotation(AnnotationId annoId) {
-//		try {
-//			// Annotation res = getMongoPersistence().find(resourceId, provider,
-//			// annotationNr);
-//			Annotation res = getMongoPersistence().find(annoId);
-//			getSolrService().delete(res.getAnnotationId());
-//			getSolrService().store(res);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
 
 	@Override
 	public Annotation disableAnnotation(AnnotationId annoId) {
@@ -508,22 +462,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			logger.error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toUri(), e);
 		}
 	}
-
-//	public SolrAnnotationService getSolrService() {
-//		return solrService;
-//	}
-//
-//	public void setSolrService(SolrAnnotationService solrService) {
-//		this.solrService = solrService;
-//	}
-//
-//	public SolrTagService getSolrTagService() {
-//		return solrTagService;
-//	}
-//
-//	public void setSolrTagService(SolrTagService solrTagService) {
-//		this.solrTagService = solrTagService;
-//	}
 
 	@Override
 	public void deleteTag(String tagId) {
@@ -572,6 +510,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		boolean res = false;
 		try {
 			Annotation dbRes = getMongoPersistence().find(annoId);
+			if (dbRes != null)
+				res = true;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return res;
+	}
+
+	public boolean existsModerationInDb(AnnotationId annoId) {
+		boolean res = false;
+		try {
+			ModerationRecord dbRes = getMongoModerationRecordPersistence().find(annoId);
 			if (dbRes != null)
 				res = true;
 		} catch (Exception e) {
