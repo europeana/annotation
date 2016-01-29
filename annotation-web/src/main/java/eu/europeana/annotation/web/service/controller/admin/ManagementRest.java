@@ -414,7 +414,10 @@ public class ManagementRest extends BaseRest {
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
 			) {
 
-		String status = getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
+		String status = "Operation could not be executed due to missing access rights! Please check 'apiKey' and 'userToken'.";
+		if (apiKey.equals("apiadmin") && userToken.equals("admin")) {
+			status = getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
+		}
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/admin/reindexset");
