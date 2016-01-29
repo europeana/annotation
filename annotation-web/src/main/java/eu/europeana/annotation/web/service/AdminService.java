@@ -14,8 +14,9 @@ public interface AdminService {
 	 * This method finds annotation object in database by annotation ID 
 	 * and reindexes it in Solr.
 	 * @param annoId
+	 * @return success of reindexing operation
 	 */
-	public void reindexAnnotationById(AnnotationId annoId);
+	public boolean reindexAnnotationById(AnnotationId annoId);
 
 	/**
 	 * This method performs Solr reindexing for all annotation objects stored in database between 
@@ -24,8 +25,9 @@ public interface AdminService {
 	 * @param endDate
 	 * @param startTimestamp
 	 * @param endTimestamp
+	 * @return status of reindexing
 	 */
-	public void reindexAnnotationSet(String startDate, String endDate, String startTimestamp, String endTimestamp);
+	public String reindexAnnotationSet(String startDate, String endDate, String startTimestamp, String endTimestamp);
 	
 	/**
 	 * This method returns all Whitelist entries.

@@ -414,10 +414,11 @@ public class ManagementRest extends BaseRest {
 			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
 			) {
 
-		getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
+		String status = getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/admin/reindexset");
+		response.setStatus(status);
 
 		return JsonWebUtils.toJson(response, null);
 	}

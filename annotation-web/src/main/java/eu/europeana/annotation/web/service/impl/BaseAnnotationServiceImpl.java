@@ -102,10 +102,19 @@ public class BaseAnnotationServiceImpl {
 		}
 	}
 	
-	protected void reindexAnnotation(Annotation res) {
+	/**
+	 * Returns true by successful reindexing.
+	 * @param res
+	 * @return reindexing success status
+	 */
+	protected boolean reindexAnnotation(Annotation res) {
+		boolean success = false;
 		try {
 			getSolrService().update(res);
+			success = true;
 		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).error("Error by reindexing of annotation: "
+					+ res.getAnnotationId().toString() + ". " + e.getMessage());
 			throw new RuntimeException(e);
 		}
 		
@@ -120,9 +129,13 @@ public class BaseAnnotationServiceImpl {
 
 		// save the time of the last SOLR indexing
 		updateLastSolrIndexingTime(res);
+		return success;
 	}
 
-	public void reindexAnnotationSet(String startDate, String endDate, String startTimestamp, String endTimestamp) {
+	public String reindexAnnotationSet(String startDate, String endDate, String startTimestamp, String endTimestamp) {
+		String status = "";
+		int successCount = 0;
+		int failureCount = 0;
 		try {
 			if (!Strings.isNullOrEmpty(startDate)) {
 				startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
@@ -138,29 +151,53 @@ public class BaseAnnotationServiceImpl {
 			Iterator<String> iter = res.iterator();
 			while (iter.hasNext()) {
 				String id = iter.next();
-				Annotation annotation = getMongoPersistence().findByID(id);
-				if(annotation == null)
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-//				reindexAnnotationById(iter.next().getAnnotationId());
-				reindexAnnotationById(annotation.getAnnotationId());
+				try {
+					Annotation annotation = getMongoPersistence().findByID(id);
+					if(annotation == null)
+						throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+	//				reindexAnnotationById(iter.next().getAnnotationId());
+					boolean success = reindexAnnotationById(annotation.getAnnotationId());
+					if (success) {
+						successCount = successCount + 1;
+					} else {
+						failureCount = failureCount + 1;					
+					}
+				}
+				catch (IllegalArgumentException iae) {
+					String msg = "id: " + id + ". " + iae.getMessage();
+						Logger.getLogger(getClass().getName()).error(msg);
+//						throw new RuntimeException(iae);
+						failureCount = failureCount + 1;					
+				}
 			}
+			status = "success count: " + String.valueOf(successCount) + ", failure count: " + String.valueOf(failureCount);
 		} catch (Exception e) {
-			Logger.getLogger(getClass().getName()).error(
-					"Date error by reindexing of annotation set." +
-					" startDate: " + startDate + ", endDate: " + endDate 
-					+ ", startTimestamp: " + startTimestamp+ ", endTimestamp: " + endTimestamp 
-					+ ". " + e.getMessage());
+			String msg = "Date error by reindexing of annotation set." +
+				" startDate: " + startDate + ", endDate: " + endDate 
+				+ ", startTimestamp: " + startTimestamp+ ", endTimestamp: " + endTimestamp 
+				+ ". " + e.getMessage();
+			Logger.getLogger(getClass().getName()).error(msg);
+			status = msg;
 			throw new RuntimeException(e);
 		}
+		return status;
 	}
 
-	public void reindexAnnotationById(AnnotationId annoId) {
+	/**
+	 * Returns true by successful reindexing.
+	 * @param res
+	 * @return reindexing success status
+	 */
+	public boolean reindexAnnotationById(AnnotationId annoId) {
+		boolean success = false;
 		try {
 			Annotation res = getAnnotationById(annoId);
-			reindexAnnotation(res);
+			success = reindexAnnotation(res);
 		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).error(e.getMessage());
 			throw new RuntimeException(e);
 		}
+		return success;
 	}
 
 	protected void updateLastSolrIndexingTime(Annotation res) {
