@@ -387,8 +387,10 @@ public class ManagementRest extends BaseRest {
 		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
 		) {
 
-		getAdminService().reindexAnnotationById(
-				new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+		if (isAdmin(apiKey, userToken)) {
+			getAdminService().reindexAnnotationById(
+					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+		}
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/admin/reindex");
@@ -396,6 +398,21 @@ public class ManagementRest extends BaseRest {
 		return JsonWebUtils.toJson(response, null);
 	}
 	
+	
+	/**
+	 * This method validates whether user has admin rights to execute methods in management API.
+	 * @param apiKey
+	 * @param userToken
+	 * @return true if user has necessary permissions
+	 */
+	private boolean isAdmin(String apiKey, String userToken) {
+		boolean res = false;
+		if (apiKey.equals("apiadmin") && userToken.equals("admin")) 
+			res = true;
+        return res;
+	}
+		
+		
 	@RequestMapping(value = "/admin/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes = SwaggerConstants.REINDEX_HELP_NOTE, value = "", hidden=false)
@@ -408,7 +425,7 @@ public class ManagementRest extends BaseRest {
 			) {
 
 		String status = "Operation could not be executed due to missing access rights! Please check 'apiKey' and 'userToken'.";
-		if (apiKey.equals("apiadmin") && userToken.equals("admin")) {
+		if (isAdmin(apiKey, userToken)) {
 			status = getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
 		}
 
