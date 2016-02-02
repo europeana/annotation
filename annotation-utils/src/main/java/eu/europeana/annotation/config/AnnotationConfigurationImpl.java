@@ -28,7 +28,7 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 	@Override
 	public boolean isProductionEnvironment() {
 		// TODO Auto-generated method stub
-		return false;
+		return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
 	}
 
 	@Override
