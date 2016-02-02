@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -55,14 +56,16 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	}
 	
 	@Test
-	public void createWebannoAnnotationLink() throws JsonParseException {
+	public void createWebannoAnnotationLink() throws JsonParseException, IOException {
+		
+		String requestBody = getJsonStringInput(LINK_STANDARD);
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
 				, false
-				, LINK_JSON
+				, requestBody
 				, TEST_USER_TOKEN
 				, null
 				);

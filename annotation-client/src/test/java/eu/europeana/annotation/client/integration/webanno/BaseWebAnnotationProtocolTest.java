@@ -29,6 +29,9 @@ public class BaseWebAnnotationProtocolTest {
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 
 	public static final String TAG_MINIMAL = "/tag/minimal.json";
+	public static final String TAG_STANDARD = "/tag/standard.json";
+	public static final String LINK_MINIMAL = "/link/minimal.json";
+	public static final String LINK_STANDARD = "/link/standard.json";
 
 	String START = "{";
 	String END = "}";
@@ -66,8 +69,8 @@ public class BaseWebAnnotationProtocolTest {
 	public String TAG_JSON_VALIDATION = START + TAG_CORE_VALIDATION + END;
 	
 	public String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
-			+ "\"http://www.europeana.eu/portal/record/123/xyz.html\","
-			+ "\"http://www.europeana.eu/portal/record/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+			+ "\"http://data.europeana.eu/item/123/xyz.html\","
+			+ "\"http://data.europeana.eu/item/333/xyz.html\"" + "]," + EQUIVALENT_TO;
 
 	public String LINK_JSON_BY_TYPE_JSONLD = START + LINK_CORE + END;
 
@@ -83,7 +86,8 @@ public class BaseWebAnnotationProtocolTest {
 
 	// public String TEST_WSKEY = "apidemo";
 
-	public String TEST_USER_TOKEN = "anonymous";
+	public String TEST_USER_TOKEN = "tester1";
+	public String ANONYMOUS_USER_TOKEN = "anonymous";
 
 	private WebAnnotationProtocolApi apiClient;
 

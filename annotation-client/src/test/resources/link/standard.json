@@ -1,0 +1,18 @@
+{
+    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@type": "oa:Annotation",
+    "motivation": "oa:linking",	
+    "annotatedBy": {
+        "@id": "https://www.historypin.org/en/person/55376/",
+        "@type": "foaf:Person",
+        "name": "John Smith"
+    },
+    "annotatedAt": "2015-02-27T12:00:43Z",
+    "serializedAt": "2015-02-28T13:00:34Z",
+    "serializedBy": "http://www.historypin.org",
+    "target": [
+        "http://data.europeana.eu/item/123/xyz", 
+        "http://data.europeana.eu/item/333/xxx"
+    ],
+    "oa:equivalentTo": "https://www.historypin.org/en/item/789"
+}

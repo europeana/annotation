@@ -345,7 +345,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
 		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;		
 		
-		//logger.debug("Ivoking remote api: " + url);
+		logger.trace("Ivoking create annotation: " + url);
 		/**
 		 * Execute Europeana API request
 		 */
@@ -434,6 +434,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public ResponseEntity<String> updateAnnotation(
 			String wskey, String provider, String identifier, String updateAnnotation, String userToken, String format) throws IOException {
 		
+		//TODO:refactor to use an abstract implementation for building client urls 
 		String url = getAnnotationServiceUri();
 		url += WebAnnotationFields.SLASH + provider;
 		url += WebAnnotationFields.SLASH + identifier;
@@ -441,7 +442,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url+="."+format;	
 		
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		
 		
 		/**
 		 * Execute Europeana API request
@@ -507,8 +510,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		if (identifier != null)
 //			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier);
 		
-		//if(userToken != null)
-		//url +=  + WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		if(userToken != null)
+			url +=  WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
 		
 		/**
 		 * Execute Europeana API request

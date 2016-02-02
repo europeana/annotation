@@ -1,0 +1,7 @@
+{
+    "motivation": "oa:linking",	
+    "target": [
+        "http://data.europeana.eu/item/123/xyz", 
+        "http://data.europeana.eu/item/333/xxx"
+    ] 
+}
