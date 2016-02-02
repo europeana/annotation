@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -38,7 +39,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
 					throws HttpException {
 
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
@@ -52,7 +53,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType
 		
 			)
@@ -76,6 +77,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
+//			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 
 			String action = "get:/annotation/{provider}/{identifier}";
@@ -88,6 +90,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
+//			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 
 			String action = "get:/annotation/{provider}/{identifier}.jsonld";
@@ -102,7 +105,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 		
 		String action = "put:/annotation/{provider}/{identifier}";
@@ -116,7 +119,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 		
 		String action = "put:/annotation/{provider}/{identifier}.jsonld";
@@ -128,7 +131,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> deleteAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
 			) throws HttpException {
 
 		String action = "delete:/annotation/{provider}/{identifier}.jsonld";
@@ -141,7 +144,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
 			) throws HttpException {
 
 		String action = "delete:/annotation/{provider}/{identifier}";

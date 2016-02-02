@@ -14,6 +14,7 @@ public abstract class BaseAgent implements Agent {
 	private String openId;
 	private String homepage;
 	private String inputString;
+	private String userGroup;
 	
 //	public void addType(String newType) {
 //		if (!agentType.contains(newType)) {
@@ -29,6 +30,14 @@ public abstract class BaseAgent implements Agent {
 //		this.agentType = agentTypeList;
 //	}
 
+	@Override
+	public String getUserGroup() {
+		return userGroup;
+	}
+	@Override
+	public void setUserGroup(String userGroup) {
+		this.userGroup = userGroup;
+	}
 	@Override
 	public String getType() {
 		return agentType;

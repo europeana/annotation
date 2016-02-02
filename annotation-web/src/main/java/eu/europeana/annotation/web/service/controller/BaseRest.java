@@ -29,6 +29,7 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
+import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -229,17 +230,50 @@ public class BaseRest extends ApiResponseBuilder {
 		return annoId;
 	}
 
-	protected void authorizeUser(String userToken, String apiKey, AnnotationId annoId)
+	protected boolean authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
 			throws UserAuthorizationException {
 		// throws exception if user is not found
 		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
 
-		if (user.getName() == null)
-			throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName());
-		// TODO Auto-generated method stub
-		// implement when authentication/authorization is available
+		if (user== null || user.getName() == null || user.getUserGroup() == null)
+			throw new UserAuthorizationException("Invalid User (Token): ", userToken);
+		
+		//check permissions
+		if(isAdmin(user))//allow all
+			return true;
+		else if(isTester(user) && configuration.isProductionEnvironment()){
+			//#20 testers not allowed in production environment
+			throw new UserAuthorizationException("Test users are not authorized to perform operations in production environments", user.getName());
+		} else	if(hasPermission(user, operationName)){
+			//user is authorized
+			return true;
+		}
+
+		//user is not authorized to perform operation
+		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName());			
+
+		//return false;//uncatchable code
 	}
 
+	protected boolean hasPermission(Agent user, String operationName) {
+		UserGroups userGroup = UserGroups.valueOf(user.getUserGroup());
+		
+		for (String operation : userGroup.getOperations()) {
+			if(operation.equals(operationName))
+				return true;//users is authorized, everything ok
+		}
+		
+		return false;
+	}
+
+	protected boolean isAdmin(Agent user) {
+		return UserGroups.ADMIN.name().equals(user.getUserGroup());
+	}
+	
+	protected boolean isTester(Agent user) {
+		return UserGroups.TESTER.name().equals(user.getUserGroup());
+	}
+	
 	/**
 	 * This method extracts provider name from an identifier URL e.g. identifier
 	 * 'http://data.europeana.eu/annotaion/base/1' comprises provider 'base'.

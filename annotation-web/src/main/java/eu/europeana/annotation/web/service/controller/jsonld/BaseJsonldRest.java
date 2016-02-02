@@ -35,6 +35,7 @@ import eu.europeana.annotation.web.exception.request.RequestBodyValidationExcept
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.ModerationOperationResponse;
+import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 
@@ -54,7 +55,7 @@ public class BaseJsonldRest extends BaseRest{
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// 1. authorize user
-			authorizeUser(userToken, wsKey, annoId);
+			authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -157,6 +158,10 @@ public class BaseJsonldRest extends BaseRest{
 			//3. Retrieve an annotation based on its identifier;
 			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 			
+			//CHECK IF Required
+			//authorizeUser(userToken, wsKey, annoId, Operations.RETRIEVE);
+			
+			
 			//4. If annotation doesn’t exist respond with HTTP 404 (if provided annotation id doesn’t exists ) 
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
 			
@@ -249,10 +254,11 @@ public class BaseJsonldRest extends BaseRest{
 	 * @param wsKey
 	 * @param identifier
 	 * @param userToken
+	 * @return 
 	 * @return annotation object
 	 * @throws HttpException
 	 */
-	private void validateInputsForUpdateDelete(
+	private AnnotationId validateInputsForUpdateDelete(
 			String wsKey, String provider, String identifier, String userToken) throws HttpException {
 		
 		// check identifier
@@ -282,10 +288,7 @@ public class BaseJsonldRest extends BaseRest{
 //			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
 //					"/provider/identifier", annoId.toUri());
 	
-		// 5. authorize user
-		authorizeUser(userToken, wsKey, annoId);
-	
-		//return annotation;
+		return annoId;
 	}
 
 	
@@ -306,9 +309,12 @@ public class BaseJsonldRest extends BaseRest{
 		try {
 			
 			//SET DEFAULTS 
-			Application app = getAuthenticationService().getByApiKey(wsKey);
+			getAuthenticationService().getByApiKey(wsKey);
 						
-			validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			
+			// 5. authorize user
+			authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
 			
 			// Retrieve an annotation based on its identifier;
 			Annotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -424,7 +430,10 @@ public class BaseJsonldRest extends BaseRest{
 			if(provider == null)
 				provider = app.getProvider();
 			
-			validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			
+			// 5. authorize user
+			authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
 			
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -486,7 +495,7 @@ public class BaseJsonldRest extends BaseRest{
 			AnnotationId annoId = buildAnnotationId(provider, identifier, false);
 			
 			// 1. authorize user
-			authorizeUser(userToken, wsKey, annoId);
+			authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
 
 			// create moderation record
 			ModerationRecord moderationRecord = new BaseModerationRecord();

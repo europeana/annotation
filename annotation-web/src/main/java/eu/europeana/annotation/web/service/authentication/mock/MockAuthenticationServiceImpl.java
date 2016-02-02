@@ -9,6 +9,7 @@ import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
+import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
@@ -16,6 +17,9 @@ import eu.europeana.annotation.web.service.authentication.model.ClientApplicatio
 public class MockAuthenticationServiceImpl implements AuthenticationService
 // , ApiKeyService
 {
+	
+	public static final String EUROPEANA_FOUNDATION = "Europeana Foundation";
+	
 	private Map<String, Application> cachedClients = new HashMap<String, Application>();
 	
 	
@@ -30,10 +34,10 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		switch (apiKey) {
 
 		case "apiadmin":
-			app = createMockClientApplication(apiKey, "Europeana Foundation", WebAnnotationFields.PROVIDER_EUROPEANA);			
+			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_EUROPEANA);			
 			break;
 		case "apidemo":
-			app = createMockClientApplication(apiKey, "Europeana Foundation", WebAnnotationFields.PROVIDER_WEBANNO);			
+			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_WEBANNO);			
 			break;
 		case "hpdemo":
 			app = createMockClientApplication(apiKey, "HistoryPin", WebAnnotationFields.PROVIDER_HISTORY_PIN);			
@@ -64,30 +68,40 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		app.setOrganization(organization);
 		Agent annonymous = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		annonymous.setName(applicationName + "-" + WebAnnotationFields.USER_ANONYMOUNS);
+		annonymous.setUserGroup(UserGroups.ANONYMOUS.name());
 		app.setAnonymousUser(annonymous);
 
 		Agent admin = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		admin.setName(applicationName + "-" + WebAnnotationFields.USER_ADMIN);
-		
+		if(WebAnnotationFields.PROVIDER_EUROPEANA.equals(applicationName))
+			admin.setUserGroup(UserGroups.ADMIN.name());
+		else
+			admin.setUserGroup(UserGroups.USER.name());
+				
 		app.setAdminUser(admin);
 		
 		//authenticated users 
-		Agent tester1 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-		tester1.setName(applicationName + "-" + "tester1");
-		tester1.setOpenId("tester1@" + applicationName);
-		app.addAuthenticatedUser("tester1", tester1);
+		String username = "tester1";
+		Agent tester1 = createTesterUser(username, applicationName);
+		app.addAuthenticatedUser(username, tester1);
 
-		Agent tester2 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-		tester2.setName(applicationName + "-" + "tester2");
-		tester2.setOpenId("tester2@" + applicationName);
-		app.addAuthenticatedUser("tester2", tester2);
+		username = "tester2";
+		Agent tester2 = createTesterUser(username, applicationName);
+		app.addAuthenticatedUser(username, tester2);
 
-		Agent tester3 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-		tester3.setName(applicationName + "-" + "tester3");
-		tester3.setOpenId("tester3@" + applicationName);
-		app.addAuthenticatedUser("tester3", tester3);
+		username = "tester3";
+		Agent tester3 = createTesterUser(username, applicationName);
+		app.addAuthenticatedUser(username, tester3);
 
 		return app;
+	}
+
+	protected Agent createTesterUser(String username, String applicationName) {
+		Agent tester1 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		tester1.setName(applicationName + "-" + username);
+		tester1.setOpenId(username+"@" + applicationName);
+		tester1.setUserGroup(UserGroups.TESTER.name());
+		return tester1;
 	}
 
 	protected String buildHomePage(String provider) {
