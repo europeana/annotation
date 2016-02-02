@@ -38,11 +38,23 @@ public class JsonWebUtils {
 	}
 
 	public static ModelAndView toJson(Object object, String callback) {
+		return toJson(object, callback, false, -1);
+	}
 		
+	public static ModelAndView toJson(Object object, String callback, boolean shortObject, int objectId) {
+			
 		objectMapper.setSerializationInclusion(Inclusion.NON_NULL);
 		String errorMessage = null;
 		try {
-			return toJson(objectMapper.writeValueAsString(object), callback);
+			String jsonStr = objectMapper.writeValueAsString(object);	
+			if (shortObject) {
+				String idBeginStr = "id\":{";
+				int startIdPos = jsonStr.indexOf(idBeginStr);
+				int endIdPos = jsonStr.indexOf("}", startIdPos);
+				jsonStr = jsonStr.substring(0, startIdPos) + idBeginStr.substring(0, idBeginStr.length() - 1) 
+				    + Integer.valueOf(objectId) + jsonStr.substring(endIdPos + 1);
+			}
+			return toJson(jsonStr, callback);
 		} catch (JsonGenerationException e) {
 			log.error("Json Generation Exception: " + e.getMessage(),e);
 			errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";

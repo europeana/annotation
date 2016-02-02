@@ -134,4 +134,8 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 			reportList.add(vote);
 	}
 
+//	public Summary getModerationSummaryByAnnotationId(AnnotationId annotationId) {
+//		
+//	}
+//			
 }

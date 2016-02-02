@@ -16,6 +16,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
@@ -67,10 +68,15 @@ public class SolrAnnotationUtils {
 
 	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation) {
 
-		return copyIntoSolrAnnotation(annotation, false);
+		return copyIntoSolrAnnotation(annotation, false, null);
 	}
 
 	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual) {
+
+		return copyIntoSolrAnnotation(annotation, withMultilingual, null);
+	}
+
+	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual, Summary summary) {
 
 		SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl();
 		// solrAnnotationImpl.setType(annotation.getType());
@@ -110,6 +116,10 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
 		solrAnnotationImpl.setAnnotatedAtTimestamp(annotation.getAnnotatedAt().getTime());
 		solrAnnotationImpl.setSerializedAtTimestamp(annotation.getSerializedAt().getTime());
+		
+		if (summary != null) {
+			solrAnnotationImpl.setModerationScore((long) summary.getScore()); 
+		}
 		
 		return solrAnnotationImpl;
 

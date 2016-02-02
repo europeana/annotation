@@ -17,6 +17,8 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
@@ -501,9 +503,13 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	@Override
 	public void update(Annotation anno) throws AnnotationServiceException {
+		update(anno, null);
+	}
+
+	public void update(Annotation anno, Summary summary) throws AnnotationServiceException {
 		getLogger().info("update log: " + anno.toString());
 		delete(anno.getAnnotationId());
-		Annotation indexedAnnotation = copyIntoSolrAnnotation(anno);
+		Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
 		store(indexedAnnotation);
 	}
 
@@ -590,6 +596,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 					"Unexpected IO exception occured when deleting annotations for: " + annoUrl, ex);
 		}
 
+	}
+	
+	public void index(ModerationRecord moderationRecord) {
+		
 	}
 
 }

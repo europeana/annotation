@@ -12,5 +12,7 @@ public interface SolrAnnotationFields {
 	public static final String BODY_INTERNAL_TYPE_KEY = "body_internal_type";
 	public static final String INTERNAL_TYPE_KEY = "internal_type_key";
 	
+	public static final String MODERATION_SCORE = "moderation_score";
+
 	public static final int DEFAULT_FACET_LIMIT = 100;
 }
