@@ -27,6 +27,8 @@
 	">
 
 	<!-- INTERNAL DEFINITIONS -->
+	<!-- TODO do not import empty file. remove both files from repository 
 	<import resource="internal/annotation-definitions-beans.xml"/>
+	 -->
 
 </beans>
