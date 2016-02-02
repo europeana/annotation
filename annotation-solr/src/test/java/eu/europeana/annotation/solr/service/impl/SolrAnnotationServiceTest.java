@@ -22,13 +22,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 
-import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.junit.Before;
 //import org.easymock.EasyMock;
 import org.junit.Test;
@@ -36,7 +37,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -72,8 +72,13 @@ public class SolrAnnotationServiceTest {
 	@Resource 
 	SolrAnnotationService solrAnnotationService;
     
-	
-	@Test
+	/**
+	 * enable this method only in development environment when required
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws AnnotationServiceException
+	 */
+	//@Test
 	public void testCleanUpAllSolrAnnotations() throws MalformedURLException, IOException, AnnotationServiceException {
 		
 		cleanAllSolr();
@@ -85,12 +90,12 @@ public class SolrAnnotationServiceTest {
 		assertTrue(solrAnnotations.getResultSize() == 0);				
 	}
 
-	@Before
 	public void cleanAllSolr() throws AnnotationServiceException {
-		/**
-		 * clean up all SOLR Annotations
-		 */
-		((SolrAnnotationServiceImpl) solrAnnotationService).cleanUpAll();
+//		String baseUrl = ((HttpSolrServer) ((SolrAnnotationServiceImpl) solrAnnotationService).solrServer).getBaseURL();
+//		//call this only on development machines
+//		if(baseUrl.startsWith("http://127.0.1.1") || baseUrl.startsWith("http://localhost")){
+			((SolrAnnotationServiceImpl) solrAnnotationService).cleanUpAll();
+//		}
 	}
 	
 	@Test
