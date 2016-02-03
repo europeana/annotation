@@ -8,7 +8,7 @@ public class SemanticTagBody extends PlainTagBody{
 	
 	public SemanticTagBody(){
 		super();
-		setTypeEnum(BodyTypes.SEMANTIC_TAG);
+		setInternalType(BodyTypes.SEMANTIC_TAG.name());
 	}
 
 	public String getRelated() {

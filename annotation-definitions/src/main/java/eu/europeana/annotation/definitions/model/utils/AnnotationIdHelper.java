@@ -79,9 +79,9 @@ public class AnnotationIdHelper {
 	 */
 	public String extractResourceId(Annotation newAnnotation) {
 		String resourceId = "";
-		if (((BaseTarget) newAnnotation.getTarget()).getSource() != null) {
+		if (((BaseTarget) newAnnotation.getTarget()).getSourceResource() != null) {
 			resourceId = extractResoureIdFromHttpUri(
-					((BaseTarget) newAnnotation.getTarget()).getSource().getHttpUri());
+					((BaseTarget) newAnnotation.getTarget()).getSourceResource().getHttpUri());
 		} else {
 			resourceId = extractResoureIdFromHttpUri(
 					newAnnotation.getTarget().getHttpUri());

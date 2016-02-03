@@ -11,10 +11,6 @@ public interface Target extends SpecificResource{
 
 	public abstract String getType();
 	
-	public abstract void setInputString(String string);
-	
-	public abstract String getInputString();
-	
 	public String getInternalType();
 
 	public void setInternalType(String internalType);

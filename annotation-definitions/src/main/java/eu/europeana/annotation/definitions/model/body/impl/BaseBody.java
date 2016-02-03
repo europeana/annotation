@@ -8,34 +8,24 @@ import java.util.Map;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
-import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
+import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
-public abstract class BaseBody extends BaseInternetResource implements Body {
+public abstract class BaseBody extends BaseSpecificResource implements Body {
 	
 //	private String bodyType;
+// TODO : it seems to be an old OA specification forcing the type of the body to be a list. I believe that in WA is not the case anymore   	
 	private List<String> bodyType = new ArrayList<String>(2);
-	private String inputString;
-	private String internalType;
 	private String internalId;
-	private String source;
-	private String role;
 	
-
+	@Override
 	public String getInternalId() {
 		return internalId;
 	}
 
+	@Override
 	public void setInternalId(String internalId) {
 		this.internalId = internalId;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
 	}
 
 	public String getRole() {
@@ -50,10 +40,9 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 //	public String getBodyType() {
 //		return bodyType;
 //	}
-	public void setTypeEnum(BodyTypes curBodyType) {
+	public void setTypeEnum(BodyTypes bodyType) {
 //		this.bodyType = bodyType.name();
-		bodyType.clear();
-		bodyType.add(curBodyType.name());
+		setInternalType(bodyType.name());
 	}
 //	@Override
 //	public void setBodyType(String bodyTypeStr) {
@@ -91,15 +80,6 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 //		return listStr;
 //	}
 	
-	@Override
-	public String getInternalType() {
-		return internalType;
-	}
-	@Override
-	public void setInternalType(String internalType) {
-		this.internalType = internalType;
-	}
-	
 	private Concept concept;
 	
 	@Override
@@ -135,16 +115,6 @@ public abstract class BaseBody extends BaseInternetResource implements Body {
 	        this.multilingual = new HashMap<String, String>();
 	    }
 	    this.multilingual.put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
-	}
-
-	@Override
-	public String getInputString() {
-		return inputString;
-	}
-
-	@Override
-	public void setInputString(String inputString) {
-		this.inputString = inputString;
 	}
 
 	@Override

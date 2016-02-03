@@ -5,9 +5,10 @@ import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
-public interface Body extends InternetResource{
+public interface Body extends SpecificResource{
 
 //	public abstract String getBodyType();
 //
@@ -46,16 +47,12 @@ public interface Body extends InternetResource{
 	
 	public boolean equalsContent(Object other);	
 
-	public String getInternalId();
-
-	public void setInternalId(String internalId);
-	
-	public abstract void setSource(String source);
-
-	public abstract String getSource();
-	
 	public abstract void setRole(String role);
 
-	public abstract String getRole();		
+	public abstract String getRole();
+
+	void setInternalId(String internalId);
+
+	String getInternalId();		
 	
 }

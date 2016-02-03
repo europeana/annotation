@@ -130,8 +130,11 @@ public class EuropeanaAnnotationLd extends JsonLd {
         if (styledByProperty != null)
         	jsonLdResource.putProperty(styledByProperty);                
 
+        // TODO improve the following code 
+        
         if (!annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
-	        if (isJsonObjectInput(annotation.getBody().getInputString())){
+	        //tag or comment, not linking
+        	if (isJsonObjectInput(annotation.getBody().getInputString())){
 	        	annotation.getBody().setInputString(null);
 		        JsonLdProperty bodyProperty = addBodyProperty(annotation);
 		        if (bodyProperty != null)
@@ -400,7 +403,8 @@ public class EuropeanaAnnotationLd extends JsonLd {
 				}
 				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
 					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
-				target.setSource(source);
+				
+				target.setSourceResource(source);
 				
 				JsonLdProperty selectorProperty = propertyValue.getProperty(WebAnnotationFields.SELECTOR);
 				if (selectorProperty != null) {
@@ -613,13 +617,13 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	        JsonLdProperty sourceProperty = new JsonLdProperty(WebAnnotationFields.SOURCE);
 	        JsonLdPropertyValue propertyValue2 = new JsonLdPropertyValue();
 	        
-        	if (annotation.getTarget().getSource() != null) { 
-            	if (!StringUtils.isBlank(annotation.getTarget().getSource().getContentType())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getSource().getContentType());
-            	if (!StringUtils.isBlank(annotation.getTarget().getSource().getHttpUri())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.AT_ID, annotation.getTarget().getSource().getHttpUri());
-            	if (!StringUtils.isBlank(annotation.getTarget().getSource().getMediaType())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
+        	if (annotation.getTarget().getSourceResource() != null) { 
+            	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getContentType())) 
+            		propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getSourceResource().getContentType());
+            	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getHttpUri())) 
+            		propertyValue2.getValues().put(WebAnnotationFields.AT_ID, annotation.getTarget().getSourceResource().getHttpUri());
+            	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getMediaType())) 
+            		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSourceResource().getMediaType());
                 if (propertyValue2.getValues().size() != 0) {
 	            	sourceProperty.addValue(propertyValue2);        
 			        propertyValue.putProperty(sourceProperty);
@@ -750,15 +754,17 @@ public class EuropeanaAnnotationLd extends JsonLd {
             if (!StringUtils.isBlank(annotation.getBody().getContentType()))         	
             	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());	
             if (!StringUtils.isBlank(annotation.getBody().getHttpUri()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
+            	propertyValue.getValues().put(WebAnnotationFields.AT_ID, annotation.getBody().getHttpUri());
             if (annotation.getBody().getMultilingual() != null && !annotation.getBody().getMultilingual().isEmpty())         	
             	propertyValue.getValues().put(WebAnnotationFields.MULTILINGUAL, JsonUtils.mapToString(annotation.getBody().getMultilingual()));
             if (annotation.getBody().getConcept() != null)         	
             	propertyValue.putProperty(addConceptProperty(annotation.getBody().getConcept()));
-            if (!StringUtils.isBlank(annotation.getBody().getInternalId()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.AT_ID, annotation.getBody().getInternalId());
+//            if (!StringUtils.isBlank(annotation.getBody().getInternalId()))         	
+//            	propertyValue.getValues().put(WebAnnotationFields.AT_ID, annotation.getBody().getInternalId());
             if (!StringUtils.isBlank(annotation.getBody().getSource()))         	
             	propertyValue.getValues().put(WebAnnotationFields.SOURCE, annotation.getBody().getSource());
+            if (annotation.getBody().getSourceResource() != null)         	
+            	;//TODO add serialization of resource
             if (!StringUtils.isBlank(annotation.getBody().getRole()))         	
             	propertyValue.getValues().put(WebAnnotationFields.ROLE, annotation.getBody().getRole());
             if (propertyValue.getValues().size() == 0)

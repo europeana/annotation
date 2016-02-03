@@ -13,7 +13,7 @@ public class BaseInternetResource implements InternetResource{
 	private String httpUri;
 	private String language;
 	private String value;
-
+	
 	private List<String> values = new ArrayList<String>(2);
 
 	public void addValue(String value) {
@@ -43,7 +43,7 @@ public class BaseInternetResource implements InternetResource{
 	}
 	
 	private List<String> resourceIds = new ArrayList<String>(2);
-
+	
 	public void addResourceId(String resourceId) {
 		if (!resourceIds.contains(resourceId)) {
 			resourceIds.add(resourceId);
@@ -182,7 +182,7 @@ public class BaseInternetResource implements InternetResource{
 		if (getValue() != null) 
 			res = res + "\t\t" + "value:" + getValue().toString() + "\n";
 		return res;
-	}	
+	}
 	
 //	@Override
 //	public String toString() {

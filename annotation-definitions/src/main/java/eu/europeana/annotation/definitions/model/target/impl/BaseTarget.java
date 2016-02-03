@@ -1,15 +1,12 @@
 package eu.europeana.annotation.definitions.model.target.impl;
 
-import eu.europeana.annotation.definitions.model.resource.impl.OaSpecificResource;
+import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
-public class BaseTarget extends OaSpecificResource implements Target {
+public class BaseTarget extends BaseSpecificResource implements Target {
  
 	private String targetType;
-	private String inputString;
-	private String internalType;
-
 	@Override
 	public String getType() {
 		return targetType;
@@ -22,7 +19,7 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	
 	@Override
 	public void setTypeEnum(TargetTypes targetType) {
-		this.targetType = targetType.name();
+		setInternalType(targetType.name());
 	}
 	
 	public BaseTarget(){}
@@ -36,34 +33,6 @@ public class BaseTarget extends OaSpecificResource implements Target {
 		super();
 		setTypeEnum(targetType);
 	}
-
-	@Override
-	public String getInternalType() {
-		return internalType;
-	}
-	@Override
-	public void setInternalType(String internalType) {
-		this.internalType = internalType;
-	}
-	
-	@Override
-	public String getInputString() {
-		return inputString;
-	}
-	@Override
-	public void setInputString(String inputString) {
-		this.inputString = inputString;
-	}
-	
-//	@Override
-//	public String getEuropeanaId() {
-//		return europeanaId;
-//	}
-//
-//	@Override
-//	public void setEuropeanaId(String europeanaId) {
-//		this.europeanaId = europeanaId;
-//	};
 	
 	@Override
 	public boolean equals(Object other) {
@@ -117,32 +86,32 @@ public class BaseTarget extends OaSpecificResource implements Target {
 	    }
 
 	    if ((this.getSource() != null) && (that.getSource() != null)) {
-		    if ((this.getSource().getContentType() != null) && (that.getSource().getContentType() != null) &&
-		    		(!this.getSource().getContentType().equals(that.getSource().getContentType()))) {
+		    if ((this.getSourceResource().getContentType() != null) && (that.getSourceResource().getContentType() != null) &&
+		    		(!this.getSourceResource().getContentType().equals(that.getSourceResource().getContentType()))) {
 		    	System.out.println("Target objects have different content types.");
 		    	res = false;
 		    }
 	
-		    if ((this.getSource().getHttpUri() != null) && (that.getSource().getHttpUri() != null) &&
-		    		(!this.getSource().getHttpUri().equals(that.getSource().getHttpUri()))) {
+		    if ((this.getSourceResource().getHttpUri() != null) && (that.getSourceResource().getHttpUri() != null) &&
+		    		(!this.getSourceResource().getHttpUri().equals(that.getSourceResource().getHttpUri()))) {
 		    	System.out.println("Target objects have different source httpUris.");
 		    	res = false;
 		    }
 	
-		    if ((this.getSource().getLanguage() != null) && (that.getSource().getLanguage() != null) &&
-		    		(!this.getSource().getLanguage().equals(that.getSource().getLanguage()))) {
+		    if ((this.getSourceResource().getLanguage() != null) && (that.getSourceResource().getLanguage() != null) &&
+		    		(!this.getSourceResource().getLanguage().equals(that.getSourceResource().getLanguage()))) {
 		    	System.out.println("Target objects have different source languages.");
 		    	res = false;
 		    }
 	
-		    if ((this.getSource().getMediaType() != null) && (that.getSource().getMediaType() != null) &&
-		    		(!this.getSource().getMediaType().equals(that.getSource().getMediaType()))) {
+		    if ((this.getSourceResource().getMediaType() != null) && (that.getSourceResource().getMediaType() != null) &&
+		    		(!this.getSourceResource().getMediaType().equals(that.getSourceResource().getMediaType()))) {
 		    	System.out.println("Target objects have different source media types.");
 		    	res = false;
 		    }
 	
-		    if ((this.getSource().getValue() != null) && (that.getSource().getValue() != null) &&
-		    		(!this.getSource().getValue().equals(that.getSource().getValue()))) {
+		    if ((this.getSourceResource().getValue() != null) && (that.getSourceResource().getValue() != null) &&
+		    		(!this.getSourceResource().getValue().equals(that.getSourceResource().getValue()))) {
 		    	System.out.println("Target objects have different source values.");
 		    	res = false;
 		    }

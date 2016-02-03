@@ -12,7 +12,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -238,20 +238,17 @@ public class TypeUtils {
 	 * @return type list string
 	 */
 	public static String getTypeListAsStr(List<String> typeList) {
-		String listStr = "";
-		if (typeList.size() > 0) {
-			listStr = "[";
-			for (String s : typeList)
-			{
-				if (listStr.equals("[")) {
-				    listStr += s;
-				} else {
-					listStr += "," + s;
-				}
-			}
-			listStr += "]";
-		}
-		return listStr;
+		
+		if (typeList.size() == 0)
+			return null;
+			
+		if (typeList.size() == 1)
+			return typeList.get(0);
+		
+		if (typeList.size() > 1) 
+			return "[" + StringUtils.join(typeList, ", ") + "]";
+
+		return null;
 	}
 	
 	/**

@@ -45,8 +45,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 */
 	protected Map<String, String> usedNamespaces = new HashMap<String, String>();
 
-	public Annotation parseAnnotation(MotivationTypes motivationType, String jsonLdString)
-			throws JsonParseException {
+	public Annotation parseAnnotation(MotivationTypes motivationType, String jsonLdString) throws JsonParseException {
 		Annotation annotaion = null;
 
 		JSONObject jo;
@@ -55,13 +54,13 @@ public class AnnotationLdParser extends JsonLdParser {
 		} catch (JSONException e) {
 			throw new JsonParseException("Cannot parse json string: " + jsonLdString, e);
 		}
-		try{
+		try {
 			annotaion = createAnnotationInstance(motivationType, jo);
-		}catch(RuntimeException e){
+		} catch (RuntimeException e) {
 			throw new AnnotationValidationException("cannot instantiate Annotation! " + e.getMessage(), e);
 		}
 		parseJsonObject(jo, annotaion, 1, null);
-		
+
 		return annotaion;
 	}
 
@@ -70,44 +69,41 @@ public class AnnotationLdParser extends JsonLdParser {
 
 		MotivationTypes verifiedMotivationType = null;
 		String motivation;
-		
-		//search motivation in json
+
+		// search motivation in json
 		try {
-			motivation = jo.getString(WebAnnotationFields.MOTIVATION)
-				.trim();
+			motivation = jo.getString(WebAnnotationFields.MOTIVATION).trim();
 		} catch (JSONException e) {
-			//if not found use provided motivation type 
+			// if not found use provided motivation type
 			motivation = null;
 			verifiedMotivationType = motivationType;
 		}
-		
-		
-		//motivation is mandatory
+
+		// motivation is mandatory
 		boolean invalidMotivation = false;
-		
-		if(motivationType==null && motivation==null)
+
+		if (motivationType == null && motivation == null)
 			invalidMotivation = true;
-		
-		//validate json motivation
-		if(motivation != null){
+
+		// validate json motivation
+		if (motivation != null) {
 			verifiedMotivationType = MotivationTypes.getType(motivation);
-			//incorrect motivation value
-			if(verifiedMotivationType == null || MotivationTypes.UNKNOWN.equals(verifiedMotivationType))
+			// incorrect motivation value
+			if (verifiedMotivationType == null || MotivationTypes.UNKNOWN.equals(verifiedMotivationType))
 				invalidMotivation = true;
-			//motivation doesn't match
-			else if(motivationType != null && !motivationType.equals(verifiedMotivationType))
+			// motivation doesn't match
+			else if (motivationType != null && !motivationType.equals(verifiedMotivationType))
 				invalidMotivation = true;
 		}
-		
-		if(invalidMotivation)
-			throw new AnnotationValidationException(AnnotationValidationException.ERROR_INVALID_MOTIVATION 
-				+ "\nmotivation type:" + motivationType + "\nparsed object: " + jo.toString());
 
-		//by now the verified annotation was set with the valid 
+		if (invalidMotivation)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_INVALID_MOTIVATION
+					+ "\nmotivation type:" + motivationType + "\nparsed object: " + jo.toString());
+
+		// by now the verified annotation was set with the valid
 		return AnnotationObjectFactory.getInstance().createAnnotationInstance(verifiedMotivationType);
 	}
 
-	
 	/**
 	 * Parses a single subject.
 	 * 
@@ -118,8 +114,8 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @throws JsonParseException
 	 */
 	// @SuppressWarnings("deprecation")
-	private void parseJsonObject(JSONObject jo, Annotation annoLd,
-			int bnodeCount, String profile) throws JsonParseException {
+	private void parseJsonObject(JSONObject jo, Annotation annoLd, int bnodeCount, String profile)
+			throws JsonParseException {
 
 		// The root subject is used for cases where no explicit subject is
 		// specified. We need
@@ -139,8 +135,7 @@ public class AnnotationLdParser extends JsonLdParser {
 					JSONObject contextObject = (JSONObject) context;
 					// parse namespaces
 					for (int i = 0; i < contextObject.names().length(); i++) {
-						String name = contextObject.names().getString(i)
-								.toLowerCase();
+						String name = contextObject.names().getString(i).toLowerCase();
 						// if (name.equals(JsonLdCommon.COERCE)) {
 						// JSONObject typeObject = context.getJSONObject(name);
 						// for (int j = 0; j < typeObject.names().length(); j++)
@@ -177,9 +172,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			}
 
 		} catch (JSONException e) {
-			logger.error(
-					"There were JSON problems when parsing the JSON-LD String",
-					e);
+			logger.error("There were JSON problems when parsing the JSON-LD String", e);
 			e.printStackTrace();
 		}
 	}
@@ -212,11 +205,9 @@ public class AnnotationLdParser extends JsonLdParser {
 		namespacePrefixMap = new HashMap<String, String>();
 		String key;
 		for (@SuppressWarnings("rawtypes")
-		Iterator iterator = ((JSONObject) valueObject).keys(); iterator
-				.hasNext();) {
+		Iterator iterator = ((JSONObject) valueObject).keys(); iterator.hasNext();) {
 			key = (String) iterator.next();
-			namespacePrefixMap.put(key,
-					((JSONObject) valueObject).getString(key));
+			namespacePrefixMap.put(key, ((JSONObject) valueObject).getString(key));
 		}
 		// jld.setNamespacePrefixMap(namespaces);
 	}
@@ -229,15 +220,14 @@ public class AnnotationLdParser extends JsonLdParser {
 		switch (property) {
 		case WebAnnotationFields.AT_TYPE:
 			anno.setType((String) valueObject);
-			//anno.setInternalType(anno.getType());
+			// anno.setInternalType(anno.getType());
 			break;
 		case WebAnnotationFields.AT_ID:
 			AnnotationId annotationId = parseId(valueObject, jo);
 			anno.setAnnotationId(annotationId);
 			break;
 		case WebAnnotationFields.ANNOTATED_AT:
-			anno.setAnnotatedAt(TypeUtils
-					.convertStrToDate((String) valueObject));
+			anno.setAnnotatedAt(TypeUtils.convertStrToDate((String) valueObject));
 			break;
 		case WebAnnotationFields.ANNOTATED_BY:
 			Agent annotator = parseAnnotator(valueObject);
@@ -245,8 +235,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setAnnotatedBy(annotator);
 			break;
 		case WebAnnotationFields.SERIALIZED_AT:
-			anno.setSerializedAt(TypeUtils
-					.convertStrToDate((String) valueObject));
+			anno.setSerializedAt(TypeUtils.convertStrToDate((String) valueObject));
 			break;
 		case WebAnnotationFields.SERIALIZED_BY:
 			Agent serializer = parseSerializer(valueObject);
@@ -400,12 +389,11 @@ public class AnnotationLdParser extends JsonLdParser {
 		return parseAgent(AgentTypes.SOFTWARE, valueObject);
 	}
 
-	private Agent parseAgent(AgentTypes defaultAgentType, Object valueObject)
-			throws JsonParseException {
-		if(valueObject instanceof String)
+	private Agent parseAgent(AgentTypes defaultAgentType, Object valueObject) throws JsonParseException {
+		if (valueObject instanceof String)
 			return parseAgent(defaultAgentType, (String) valueObject);
 		else if (valueObject instanceof JSONObject)
-			return parseAgent((JSONObject)valueObject);
+			return parseAgent((JSONObject) valueObject);
 		else
 			throw new JsonParseException("unsupported agent deserialization for: " + valueObject);
 	}
@@ -415,47 +403,46 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	private Target parseTarget(Object valueObject) throws JsonParseException {
-		if(valueObject instanceof String)
+		if (valueObject instanceof String)
 			return parseTarget(TargetTypes.WEB_PAGE.name(), (String) valueObject);
 		else if (valueObject instanceof JSONObject)
-			return parseTarget((JSONObject)valueObject);
+			return parseTarget((JSONObject) valueObject);
 		else if (valueObject instanceof JSONArray)
-			return parseTarget((JSONArray)valueObject);
+			return parseTarget((JSONArray) valueObject);
 		else
 			throw new JsonParseException("unsupported target+- deserialization for: " + valueObject);
 	}
 
 	private Target parseTarget(String defaultType, String valueObject) {
-		Target target = TargetObjectFactory.getInstance()
-				.createModelObjectInstance(defaultType);
-		//already done through constructor 
-		//target.setTargetType(TargetTypes.TEXT.name());
+		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(defaultType);
+		// already done through constructor
+		// target.setTargetType(TargetTypes.TEXT.name());
 		target.setValue((String) valueObject);
-		target.setResourceId(getIdHelper().buildResourseId(
-				getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
+		target.setResourceId(
+				getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
 		target.setHttpUri(valueObject);
 		return target;
-		
+
 	}
 
 	private Target parseTarget(JSONArray valueObject) throws JsonParseException {
-		Target target = TargetObjectFactory.getInstance()
-				.createModelObjectInstance(TargetTypes.WEB_PAGE.name());
+		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(TargetTypes.WEB_PAGE.name());
 		try {
-			for (int i=0; i < valueObject.length(); i++) {
+			for (int i = 0; i < valueObject.length(); i++) {
 				String val = valueObject.getString(i);
 				target.addValue(val);
-				String resourceId = getIdHelper().buildResourseId(
-						getIdHelper().extractResoureIdPartsFromHttpUri(val));
+				String resourceId = getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri(val));
 				target.addResourceId(resourceId);
 			}
 		} catch (JSONException e) {
-			throw new JsonParseException("unsupported target deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+			throw new JsonParseException("unsupported target deserialization for json represetnation: " + valueObject
+					+ " " + e.getMessage());
 		}
-//		throw new JsonParseException("Multiple target deserialization is not supported yet: " + valueObject);
+		// throw new JsonParseException("Multiple target deserialization is not
+		// supported yet: " + valueObject);
 		return target;
 	}
-	
+
 	private Target parseTarget(JSONObject jo) throws JsonParseException {
 		try {
 			return parseTarget(jo.get(WebAnnotationFields.TARGET));
@@ -464,16 +451,14 @@ public class AnnotationLdParser extends JsonLdParser {
 		}
 	}
 
-	private AnnotationId parseId(Object valueObject, JSONObject jo)
-			throws JsonParseException {
+	private AnnotationId parseId(Object valueObject, JSONObject jo) throws JsonParseException {
 		AnnotationId annoId = null;
 		if (valueObject instanceof String) {
 			annoId = parseIdFromUri((String) valueObject, jo);
 		} else if (valueObject instanceof JSONObject) {
 			annoId = parseIdFromJson((JSONObject) valueObject);
 		} else {
-			throw new JsonParseException("Cannot parse ID value: "
-					+ valueObject);
+			throw new JsonParseException("Cannot parse ID value: " + valueObject);
 		}
 		return annoId;
 	}
@@ -483,17 +468,16 @@ public class AnnotationLdParser extends JsonLdParser {
 		return null;
 	}
 
-	private AnnotationId parseIdFromUri(String valueObject, JSONObject jo)
-			throws JsonParseException {
+	private AnnotationId parseIdFromUri(String valueObject, JSONObject jo) throws JsonParseException {
 		// TODO: check if already implemented or if can be moved in
 		// AnnotationIdDeserializer
 		String parts[] = valueObject.split("/");
 		String identifier = parts[parts.length - 1];
 		String provider = parts[parts.length - 2];
-		final int SLASHES = 2; 
+		final int SLASHES = 2;
 		int baseUrlLength = valueObject.length() - provider.length() - identifier.length() - SLASHES;
 		String baseUrl = valueObject.substring(0, baseUrlLength);
-		
+
 		AnnotationId annoId = new BaseAnnotationId();
 		annoId.setProvider(provider);
 		annoId.setIdentifier(identifier);
@@ -503,8 +487,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	private Agent parseAgent(AgentTypes type, String valueObject) {
-		Agent agent = AgentObjectFactory.getInstance()
-				.createModelObjectInstance(type.name());
+		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(type.name());
 		agent.setHomepage(valueObject);
 		agent.setName(valueObject);
 		// agent.setName((String) valueObject);
@@ -513,20 +496,18 @@ public class AnnotationLdParser extends JsonLdParser {
 
 	private Agent parseAgent(JSONObject valueObject) throws JsonParseException {
 		try {
-			String webType = (String) valueObject
-					.get(WebAnnotationFields.AT_TYPE);
+			String webType = (String) valueObject.get(WebAnnotationFields.AT_TYPE);
 			String[] parts = webType.split(":");
 			String agentType = parts[parts.length - 1];
 
-			Agent agent = AgentObjectFactory.getInstance()
-					.createModelObjectInstance(agentType);
-//			agent.addType(webType);
+			Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(agentType);
+			// agent.addType(webType);
 			agent.setType(webType);
-			if(valueObject.has(WebAnnotationFields.AT_ID))
+			if (valueObject.has(WebAnnotationFields.AT_ID))
 				agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
 
 			// agent.setHomepage(valueObject);
-			if(valueObject.has(WebAnnotationFields.NAME))
+			if (valueObject.has(WebAnnotationFields.NAME))
 				agent.setName(valueObject.getString(WebAnnotationFields.NAME));
 
 			// agent.setName((String) valueObject);
@@ -537,49 +518,51 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	private Body parseBody(Object valueObject) throws JsonParseException {
-			if(valueObject instanceof String)
-				return parseBody(BodyTypes.TAG.name(), (String) valueObject);
-			else if (valueObject instanceof JSONObject)
-				return parseBody((JSONObject)valueObject);
-			else if (valueObject instanceof JSONArray)
-				return parseBody((JSONArray)valueObject);
-			else
-				throw new JsonParseException("unsupported body deserialization for: " + valueObject);
+		if (valueObject instanceof String)
+			return parseBody(BodyTypes.TAG.name(), (String) valueObject);
+		else if (valueObject instanceof JSONObject)
+			return parseBody((JSONObject) valueObject);
+		else if (valueObject instanceof JSONArray)
+			return parseBody((JSONArray) valueObject);
+		else
+			throw new JsonParseException("unsupported body deserialization for: " + valueObject);
 	}
 
 	private Body parseBody(String defaultType, String valueObject) {
-		
-		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-				defaultType);
+
+		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(defaultType);
 		body.addType(defaultType);
 		body.setValue((String) valueObject);
-//		body.setResourceId(getIdHelper().buildResourseId(
-//				getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
+		// body.setResourceId(getIdHelper().buildResourseId(
+		// getIdHelper().extractResoureIdPartsFromHttpUri((String)
+		// valueObject)));
 		return body;
 	}
 
 	private Body parseBody(JSONObject valueObject) throws JsonParseException {
+		// bz now both plaintag and semanictag are specific resources. However,
+		// the usage of SemanticTag should be implemented in the future
 		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.TAG.name());
+
 		try {
 			@SuppressWarnings("rawtypes")
-			Iterator iterator = ((JSONObject) valueObject).keys(); 
+			Iterator iterator = ((JSONObject) valueObject).keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				Object value = ((JSONObject) valueObject).get(key); 
+				Object value = ((JSONObject) valueObject).get(key);
 				switch (key) {
 				case WebAnnotationFields.AT_TYPE:
 					if (value.getClass().equals(JSONArray.class)) {
-						for (int i=0; i < ((JSONArray) value).length(); i++) 
+						for (int i = 0; i < ((JSONArray) value).length(); i++)
 							body.addType(((JSONArray) value).getString(i));
-					}
-					else
+					} else
 						body.addType(value.toString());
 					body.setInternalType(BodyTypes.TAG.name());
 					break;
 				case WebAnnotationFields.CHARS:
 					body.setValue(value.toString());
-					body.setResourceId(getIdHelper().buildResourseId(
-							getIdHelper().extractResoureIdPartsFromHttpUri(value.toString())));
+					body.setResourceId(getIdHelper()
+							.buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri(value.toString())));
 					break;
 				case WebAnnotationFields.DC_LANGUAGE:
 					body.setLanguage(value.toString());
@@ -588,10 +571,15 @@ public class AnnotationLdParser extends JsonLdParser {
 					body.setContentType(value.toString());
 					break;
 				case WebAnnotationFields.SOURCE:
-					body.setSource(value.toString());
+					if(value instanceof String)
+						body.setSource(value.toString());
+					else
+						throw new JsonParseException("source as internet resource is not supported in this version of the parser!");
 					break;
 				case WebAnnotationFields.AT_ID:
-					body.setInternalId(value.toString());
+					//need to align with target.
+					//body.setValue(value.toString());
+					body.setHttpUri(value.toString());
 					break;
 				case WebAnnotationFields.ROLE:
 					body.setRole(value.toString());
@@ -601,36 +589,37 @@ public class AnnotationLdParser extends JsonLdParser {
 				}
 			}
 		} catch (JSONException e) {
-			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+			throw new JsonParseException(
+					"unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
 		}
-		
-		
-//		throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject);
-		
-//		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-//				BodyTypes.TAG.name());
-//		body.setBodyType(BodyTypes.TAG.name());
-//		body.setValue((String) valueObject);
+
+		// throw new JsonParseException("unsupported body deserialization for
+		// json represetnation: " + valueObject);
+
+		// Body body =
+		// BodyObjectFactory.getInstance().createModelObjectInstance(
+		// BodyTypes.TAG.name());
+		// body.setBodyType(BodyTypes.TAG.name());
+		// body.setValue((String) valueObject);
 		return body;
 	}
-	
+
 	private Body parseBody(JSONArray valueObject) throws JsonParseException {
-		Body body = BodyObjectFactory.getInstance()
-				.createModelObjectInstance(BodyTypes.TAG.name());
+		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.TAG.name());
 		try {
-			for (int i=0; i < valueObject.length(); i++) {
+			for (int i = 0; i < valueObject.length(); i++) {
 				String val = valueObject.getString(i);
 				body.addValue(val);
-				String resourceId = getIdHelper().buildResourseId(
-						getIdHelper().extractResoureIdPartsFromHttpUri(val));
+				String resourceId = getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri(val));
 				body.addResourceId(resourceId);
 			}
 		} catch (JSONException e) {
-			throw new JsonParseException("unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+			throw new JsonParseException(
+					"unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
 		}
 		return body;
 	}
-	
+
 	public AnnotationIdHelper getIdHelper() {
 		if (idHelper == null)
 			idHelper = new AnnotationIdHelper();

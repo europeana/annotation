@@ -47,6 +47,7 @@ import eu.europeana.annotation.definitions.model.factory.impl.StyleObjectFactory
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
@@ -351,6 +352,8 @@ public class AnnotationLd extends JsonLd {
 	 * @return Target object
 	 */
 	private Target getTarget(Object mapValue) {
+		//TODO mimimize redundancy to getBody
+		
 		Target target = null;
 		JsonLdProperty property = (JsonLdProperty) mapValue;
 		if (property.getValues() != null && property.getValues().size() > 0) {
@@ -371,34 +374,59 @@ public class AnnotationLd extends JsonLd {
 				if (hasValue(propertyValue, WebAnnotationFields.HTTP_URI)) 
 					target.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.HTTP_URI));
 				
-				JsonLdProperty sourceProperty = propertyValue.getProperty(WebAnnotationFields.SOURCE);
-				JsonLdPropertyValue propertyValue2 = (JsonLdPropertyValue) sourceProperty.getValues().get(0);
-				InternetResource source = new BaseInternetResource();
-				if (hasValue(propertyValue2, WebAnnotationFields.CONTENT_TYPE)) 
-					source.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
-				if (hasValue(propertyValue2, WebAnnotationFields.AT_ID)) {
-					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.AT_ID));
-//					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
+				if(hasValue(propertyValue, WebAnnotationFields.SOURCE) ){ 
+					//sourceUrl
+					target.setSource(propertyValue.getValues().get( WebAnnotationFields.SOURCE));	
+				} else{
+					//if not string source, check for sourceResource 	
+					JsonLdProperty sourceProperty = propertyValue.getProperty(WebAnnotationFields.SOURCE);
+					if (sourceProperty != null)
+						buildSourceResource(target, sourceProperty);
 				}
-				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
-					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
-				target.setSource(source);
 				
 				JsonLdProperty selectorProperty = propertyValue.getProperty(WebAnnotationFields.SELECTOR);
-				if (selectorProperty != null) {
-					JsonLdPropertyValue propertyValue3 = (JsonLdPropertyValue) selectorProperty.getValues().get(0);
-					Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
-							SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
-					if (hasValue(propertyValue3, WebAnnotationFields.AT_TYPE)) 
-						selector.setSelectorType(propertyValue3.getValues().get(WebAnnotationFields.AT_TYPE));
-					if (hasValue(propertyValue3, WebAnnotationFields.DIMENSION_MAP)) 
-						selector.setDimensionMap(
-								JsonUtils.stringToMapExt(propertyValue3.getValues().get(WebAnnotationFields.DIMENSION_MAP)));
-					target.setSelector((Selector)selector);
-				}
+				buildSelector(target, selectorProperty);
 			}
 		}
 		return target;
+	}
+
+	/**
+	 * 
+	 * @param resource can be body or target for example
+	 * @param selectorProperty
+	 */
+	protected void buildSelector(SpecificResource resource, JsonLdProperty selectorProperty) {
+		if (selectorProperty != null) {
+			JsonLdPropertyValue propertyValue3 = (JsonLdPropertyValue) selectorProperty.getValues().get(0);
+			Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
+					SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
+			if (hasValue(propertyValue3, WebAnnotationFields.AT_TYPE)) 
+				selector.setSelectorType(propertyValue3.getValues().get(WebAnnotationFields.AT_TYPE));
+			if (hasValue(propertyValue3, WebAnnotationFields.DIMENSION_MAP)) 
+				selector.setDimensionMap(
+						JsonUtils.stringToMapExt(propertyValue3.getValues().get(WebAnnotationFields.DIMENSION_MAP)));
+			resource.setSelector((Selector)selector);
+		}
+	}
+
+	/**
+	 * 
+	 * @param resource can be body or target for example
+	 * @param sourceProperty
+	 */
+	protected void buildSourceResource(SpecificResource resource, JsonLdProperty sourceProperty) {
+		JsonLdPropertyValue propertyValue2 = (JsonLdPropertyValue) sourceProperty.getValues().get(0);
+		InternetResource sourceResource = new BaseInternetResource();
+		if (hasValue(propertyValue2, WebAnnotationFields.CONTENT_TYPE)) 
+			sourceResource.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
+		if (hasValue(propertyValue2, WebAnnotationFields.AT_ID)) {
+			sourceResource.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.AT_ID));
+//					target.setEuropeanaId(propertyValue2.getValues().get(WebAnnotationFields.SID));
+		}
+		if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
+			sourceResource.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
+		resource.setSourceResource(sourceResource);
 	}
 
 	/**
@@ -596,17 +624,21 @@ public class AnnotationLd extends JsonLd {
 	        JsonLdProperty sourceProperty = new JsonLdProperty(WebAnnotationFields.SOURCE);
 	        JsonLdPropertyValue propertyValue2 = new JsonLdPropertyValue();
 	        
-        	if (annotation.getTarget().getSource() != null) { 
-            	if (!StringUtils.isBlank(annotation.getTarget().getSource().getContentType())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getSource().getContentType());
-            	if (!StringUtils.isBlank(annotation.getTarget().getSource().getHttpUri())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.AT_ID, annotation.getTarget().getSource().getHttpUri());
-            	if (!StringUtils.isBlank(annotation.getTarget().getSource().getMediaType())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSource().getMediaType());
+        	if (annotation.getTarget().getSourceResource() != null) { 
+            	//source available als InternetResource
+        		if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getContentType())) 
+            		propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getSourceResource().getContentType());
+            	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getHttpUri())) 
+            		propertyValue2.getValues().put(WebAnnotationFields.AT_ID, annotation.getTarget().getSourceResource().getHttpUri());
+            	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getMediaType())) 
+            		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSourceResource().getMediaType());
                 if (propertyValue2.getValues().size() != 0) {
 	            	sourceProperty.addValue(propertyValue2);        
 			        propertyValue.putProperty(sourceProperty);
                 }
+        	}else if(annotation.getTarget().getSource() != null){
+        		//source available as string
+        		propertyValue.getValues().put(WebAnnotationFields.SOURCE, annotation.getTarget().getSource());
         	}
 	        
 	        JsonLdProperty selectorProperty = new JsonLdProperty(WebAnnotationFields.SELECTOR);

@@ -17,8 +17,22 @@ public interface SpecificResource extends InternetResource{
 
 	public abstract Selector getSelector();
 
-	public abstract void setSource(InternetResource source);
+	public abstract void setSourceResource(InternetResource source);
 
-	public abstract InternetResource getSource();
-		
+	public abstract InternetResource getSourceResource();
+
+	public abstract void setSource(String source);
+
+	public abstract String getSource();
+	
+	public String getInternalType();
+
+	public void setInternalType(String internalId);
+	
+	public abstract void setInputString(String string);
+	
+	public abstract String getInputString();
+	
+	
+	
 }

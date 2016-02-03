@@ -104,7 +104,7 @@ public class AnnotationTestObjectBuilder {
 //		source.setHttpUri("http://europeana.eu/portal/record//15502/GG_8285.html");
 		source.setHttpUri("http://europeana.eu/portal/record/" + TEST_EUROPEANA_ID + ".html");
 		source.setMediaType("dctypes:Text");
-		target.setSource(source);
+		target.setSourceResource(source);
 		
 		return target;
 	}

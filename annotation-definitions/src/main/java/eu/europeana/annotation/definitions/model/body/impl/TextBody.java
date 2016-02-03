@@ -6,6 +6,7 @@ public class TextBody extends BaseBody {
 
 	public TextBody(){
 		super();
-		setTypeEnum(BodyTypes.TEXT);
+		setInternalType(BodyTypes.TEXT.name());
+		//setTypeEnum(BodyTypes.TEXT);
 	}
 }
