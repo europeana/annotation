@@ -31,8 +31,8 @@ import eu.europeana.annotation.web.http.SwaggerConstants;
 @Api(value = "web-annotation-protocol", description = "Web Annotation Protocol API")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
-	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_JSON_VALUE,  "application/ld+json" })
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "")
 	public ResponseEntity<String> createAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
@@ -45,8 +45,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
 
-	@RequestMapping(value = "/annotation/{annoType}.jsonld", method = RequestMethod.POST, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{annoType}.jsonld", method = RequestMethod.POST, produces = {
+			"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD_WITH_TYPE, value = "")
 	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
@@ -71,8 +71,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return storeAnnotation(wskey, motivation, provider, identifier, indexOnCreate, annotation, userToken);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.GET, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.GET, produces = { 
+			MediaType.APPLICATION_JSON_VALUE,  "application/ld+json"})
 	public ResponseEntity<String> getAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
@@ -84,8 +84,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.GET, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.GET, produces = { 
+			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> getAnnotationJsonld(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
@@ -98,8 +98,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 
-	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.PUT, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.PUT, produces = { 
+			MediaType.APPLICATION_JSON_VALUE,  "application/ld+json" })
 	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "")
 	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
@@ -112,8 +112,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.PUT, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.PUT, produces = {
+			MediaType.APPLICATION_JSON_VALUE,  "application/ld+json"})
 	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "")
 	public ResponseEntity<String> updateAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
@@ -126,8 +126,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.DELETE, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.DELETE, produces = {
+			MediaType.APPLICATION_JSON_VALUE,  "application/ld+json" })
 	public ResponseEntity<String> deleteAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
@@ -138,8 +138,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return deleteAnnotation(wskey, provider, identifier, userToken, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.DELETE, produces = { "application/ld+json",
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.DELETE, produces = { 
+			MediaType.APPLICATION_JSON_VALUE,  "application/ld+json" })
 	public ResponseEntity<String> deleteAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
