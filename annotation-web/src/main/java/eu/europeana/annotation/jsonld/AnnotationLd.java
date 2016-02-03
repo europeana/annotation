@@ -68,7 +68,10 @@ import eu.europeana.annotation.utils.JsonUtils;
  * <p>
  * This implementation is based on the JSON-LD 1.0 specification editor's draft from
  * January 5, 2013. Available online at <a href="http://json-ld.org/spec">http://json-ld.org/spec</a>.
+ * 
+ * deprecation - should use EuropeanaAnnotationLd instead
  */
+@Deprecated 
 public class AnnotationLd extends JsonLd {
     
     private static final Logger logger = LoggerFactory.getLogger(AnnotationLd.class);

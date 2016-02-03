@@ -751,7 +751,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
             	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());	
             if (!StringUtils.isBlank(annotation.getBody().getHttpUri()))         	
             	propertyValue.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
-            if (annotation.getBody().getMultilingual() != null)         	
+            if (annotation.getBody().getMultilingual() != null && !annotation.getBody().getMultilingual().isEmpty())         	
             	propertyValue.getValues().put(WebAnnotationFields.MULTILINGUAL, JsonUtils.mapToString(annotation.getBody().getMultilingual()));
             if (annotation.getBody().getConcept() != null)         	
             	propertyValue.putProperty(addConceptProperty(annotation.getBody().getConcept()));
