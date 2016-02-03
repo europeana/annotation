@@ -649,7 +649,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	 * @param webAnnotation
 	 */
 	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
-		Body body = webAnnotation.getBody();
+//		webAnnotation.
+		Body body = webAnnotation.getBody(); 
 		if (!body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithValue(body);
 		}else{
@@ -670,6 +671,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (!isUrl(body.getSource()))
 			throw new ParamValidationException(
 					ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE, "tag.format", body.getSource());
+
+		//id is not a mandatory field but if exists it must be an URL
+		if (body.getInternalId() != null && !isUrl(body.getInternalId()))
+			throw new ParamValidationException(
+					ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT, "tag.body.id", body.getInternalId());
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
