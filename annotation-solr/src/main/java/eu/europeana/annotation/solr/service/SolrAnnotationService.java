@@ -5,6 +5,7 @@ import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
@@ -26,8 +27,14 @@ public interface SolrAnnotationService {
 	 * @param anno
 	 */
 	public void update(Annotation anno) throws AnnotationServiceException ;
-	
-	
+		
+	/**
+	 * @param anno
+	 * @param summary
+	 * @throws AnnotationServiceException
+	 */
+	public void update(Annotation anno, Summary summary) throws AnnotationServiceException;
+
 	/**
 	 * This method removes a SolrAnnotation object from SOLR.
 	 * @param solrAnnotation

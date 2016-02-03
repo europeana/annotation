@@ -13,6 +13,7 @@ import eu.europeana.annotation.definitions.exception.ModerationRecordValidationE
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
@@ -163,5 +164,10 @@ public class PersistentModerationRecordServiceImpl extends
 		return res;
 	}
 
+	public Summary getModerationSummaryByAnnotationId(AnnotationId annotationId) {
+		ModerationRecord moderationRecord = find(annotationId);
+		return moderationRecord.getSummary();
+	}
+			
 	
 }

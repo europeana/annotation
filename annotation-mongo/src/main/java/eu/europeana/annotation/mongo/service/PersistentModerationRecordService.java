@@ -5,6 +5,7 @@ import java.util.List;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -30,5 +31,6 @@ public interface PersistentModerationRecordService  extends AbstractNoSqlService
 			String status, String startOn, String limit);
 	
 	public ModerationRecord update(ModerationRecord object);
+	public Summary getModerationSummaryByAnnotationId(AnnotationId annotationId);
 	
 }

@@ -25,6 +25,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private Long updatedTimestamp;
 	private Long annotatedAtTimestamp;
 	private Long serializedAtTimestamp;
+	private Long moderationScore;
 	
 	
 	@Override
@@ -211,6 +212,17 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field("updated_timestamp")
 	public void setUpdatedTimestamp(Long updatedTimestamp) {
 		this.updatedTimestamp = updatedTimestamp;
+	}
+
+	@Override
+	@Field("moderation_score")
+	public void setModerationScore(Long moderationScore) {
+		this.moderationScore = moderationScore;
+	}
+
+	@Override
+	public Long getModerationScore() {
+		return moderationScore;
 	}
 
 		

@@ -136,6 +136,10 @@
 		<field name="serialized_at_timestamp" type="long"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 				
+		<!-- @Field("moderationScore")  -->
+		<field name="moderation_score" type="long" indexed="true"
+			required="true" multiValued="false" stored="true"/>
+				
 		<!-- Diego Ceccarelli <diego.ceccarelli@isti.cnr.it> 17-11-2012 -->
 		<!-- SEVERE: Unable to use updateLog: _version_ field must exist in schema -->
 		<field name="_version_" type="long" indexed="true" stored="true"

@@ -36,7 +36,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
-import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
@@ -59,9 +58,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Resource
 	PersistentProviderService mongoProviderPersistance;
-
-	@Resource
-	PersistentModerationRecordService mongoModerationRecordPersistance;
 
 	@Resource
 	PersistentConceptService mongoConceptPersistence;
@@ -90,10 +86,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	public PersistentProviderService getMongoProviderPersistence() {
 		return mongoProviderPersistance;
-	}
-
-	public PersistentModerationRecordService getMongoModerationRecordPersistence() {
-		return mongoModerationRecordPersistance;
 	}
 
 	public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
@@ -347,7 +339,17 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 		// store in mongo database
 		ModerationRecord res = getMongoModerationRecordPersistence().store(newModerationRecord);
-
+		
+		if(getConfiguration().isIndexingEnabled()) {
+			try {
+				Annotation annotation = getMongoPersistance().find(res.getAnnotationId());
+				reindexAnnotation(annotation);				
+			} catch (Exception e) {
+				Logger.getLogger(getClass().getName())
+						.warn("The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ", e);
+			}
+		}
+		
 		return res;
 	}
 

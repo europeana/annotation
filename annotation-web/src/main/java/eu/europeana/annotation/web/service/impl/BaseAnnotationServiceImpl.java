@@ -12,8 +12,10 @@ import com.google.common.base.Strings;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -35,6 +37,9 @@ public class BaseAnnotationServiceImpl {
 
 	@Resource
 	PersistentAnnotationService mongoPersistance;
+
+	@Resource
+	PersistentModerationRecordService mongoModerationRecordPersistance;
 
 	Logger logger = Logger.getLogger(getClass());
 
@@ -67,6 +72,10 @@ public class BaseAnnotationServiceImpl {
 		this.mongoPersistance = mongoPersistance;
 	}
 	
+	public PersistentModerationRecordService getMongoModerationRecordPersistence() {
+		return mongoModerationRecordPersistance;
+	}
+
 	public SolrAnnotationService getSolrService() {
 		return solrService;
 	}
@@ -110,7 +119,8 @@ public class BaseAnnotationServiceImpl {
 	protected boolean reindexAnnotation(Annotation res) {
 		boolean success = false;
 		try {
-			getSolrService().update(res);
+			Summary summary = getMongoModerationRecordPersistence().getModerationSummaryByAnnotationId(res.getAnnotationId());			
+			getSolrService().update(res, summary);
 			success = true;
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).error("Error by reindexing of annotation: "
