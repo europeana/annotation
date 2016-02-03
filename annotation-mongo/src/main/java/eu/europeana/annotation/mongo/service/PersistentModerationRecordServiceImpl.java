@@ -166,6 +166,9 @@ public class PersistentModerationRecordServiceImpl extends
 
 	public Summary getModerationSummaryByAnnotationId(AnnotationId annotationId) {
 		ModerationRecord moderationRecord = find(annotationId);
+		if(moderationRecord == null)
+			return null;
+		
 		return moderationRecord.getSummary();
 	}
 			
