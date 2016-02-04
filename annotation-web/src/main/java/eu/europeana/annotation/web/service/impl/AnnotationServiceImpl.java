@@ -673,9 +673,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 					ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE, "tag.format", body.getSource());
 
 		//id is not a mandatory field but if exists it must be an URL
-		if (body.getInternalId() != null && !isUrl(body.getInternalId()))
+		if (body.getHttpUri() != null && !isUrl(body.getHttpUri()))
 			throw new ParamValidationException(
-					ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT, "tag.body.id", body.getInternalId());
+					ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT, "tag.body.httpUri", body.getHttpUri());
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
