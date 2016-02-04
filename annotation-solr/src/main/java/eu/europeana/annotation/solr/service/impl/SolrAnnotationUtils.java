@@ -119,6 +119,8 @@ public class SolrAnnotationUtils {
 		
 		if (summary != null) {
 			solrAnnotationImpl.setModerationScore((long) summary.getScore()); 
+		} else {
+			solrAnnotationImpl.setModerationScore((long) 0); 
 		}
 		
 		return solrAnnotationImpl;

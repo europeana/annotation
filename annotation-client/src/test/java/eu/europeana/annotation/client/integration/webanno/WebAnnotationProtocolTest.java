@@ -64,7 +64,6 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, requestBody
 				, TEST_USER_TOKEN
 				, null
@@ -81,7 +80,6 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, TAG_JSON_BY_TYPE_JSONLD
 				, TEST_USER_TOKEN
 				, WebAnnotationFields.TAG
@@ -117,7 +115,6 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, TAG_JSON_VALIDATION
 				, TEST_USER_TOKEN
 				, WebAnnotationFields.TAG
@@ -134,7 +131,6 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, LINK_JSON_BY_TYPE_JSONLD
 				, TEST_USER_TOKEN
 				, WebAnnotationFields.LINK

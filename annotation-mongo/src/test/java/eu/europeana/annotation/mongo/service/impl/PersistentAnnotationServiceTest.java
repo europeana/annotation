@@ -40,6 +40,7 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
@@ -315,13 +316,13 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	}
 	 
 	@Test
-	public void testCreateAndUpdatePersistanceAnnotation() {
+	public void testCreateAndUpdatePersistanceAnnotation() throws AnnotationMongoException {
 		
 		Annotation initialPersistentAnnotation = createPersistentAnnotationInstance();
 		Annotation storedAnnotation = annotationService.store(initialPersistentAnnotation);
 		Logger.getLogger(getClass().getName()).info(
 				"testCreatePersistentAnnotation initialPersistentAnnotation: " + initialPersistentAnnotation.toString());
-		Annotation updatedAnnotation = annotationService.updateIndexingTime(storedAnnotation.getAnnotationId());
+		Annotation updatedAnnotation = annotationService.updateIndexingTime(storedAnnotation.getAnnotationId(), initialPersistentAnnotation.getLastUpdate());
 		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) updatedAnnotation;
 	    
 		Logger.getLogger(getClass().getName()).info(

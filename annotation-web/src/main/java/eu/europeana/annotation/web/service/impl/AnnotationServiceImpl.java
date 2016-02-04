@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.impl;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -326,7 +327,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			}
 
 			// save the time of the last SOLR indexing
-			updateLastSolrIndexingTime(res);
+			updateLastIndexingTime(res, newAnnotation.getLastUpdate());
 		}
 
 		return res;
@@ -340,10 +341,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// store in mongo database
 		ModerationRecord res = getMongoModerationRecordPersistence().store(newModerationRecord);
 		
+		//lastindexe
+		Date lastindexing = res.getLastUpdated();
+		
 		if(getConfiguration().isIndexingEnabled()) {
 			try {
 				Annotation annotation = getMongoPersistance().find(res.getAnnotationId());
-				reindexAnnotation(annotation);				
+				reindexAnnotation(annotation, lastindexing);				
 			} catch (Exception e) {
 				Logger.getLogger(getClass().getName())
 						.warn("The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ", e);
@@ -403,7 +407,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		Annotation res = getMongoPersistence().update(annotation);
 	
 		if(getConfiguration().isIndexingEnabled())
-			reindexAnnotation(res);
+			reindexAnnotation(res, res.getLastUpdate());
 		
 		return res;
 	}

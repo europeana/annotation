@@ -12,6 +12,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -189,5 +190,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		 */
 		return getMongoWhitelistPersistence().getAll();
 	}
+
 	
 }

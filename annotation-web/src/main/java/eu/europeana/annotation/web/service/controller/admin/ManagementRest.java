@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.controller.admin;
 
+import java.util.Date;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -381,8 +383,9 @@ public class ManagementRest extends BaseRest {
 		if (!isAdmin(apiKey, userToken))
 			throw new UserAuthorizationException("Not authorized for performing administration operations. Must use a valid apikey and token:", apiKey + "_"+userToken);
 		
+		BaseAnnotationId baseAnnotationId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 		getAdminService().reindexAnnotationById(
-					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+					baseAnnotationId, new Date());
 		
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, "/admin/reindex");

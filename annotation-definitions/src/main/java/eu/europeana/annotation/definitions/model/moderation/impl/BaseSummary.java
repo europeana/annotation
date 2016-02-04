@@ -8,8 +8,8 @@ import eu.europeana.annotation.definitions.model.moderation.Summary;
  */
 public class BaseSummary implements Summary {
 
-	private int endorseSum;
-	private int reportSum;
+	private int endorseSum = 0;
+	private int reportSum = 0;
 	
 	public int getTotal() {
 		return endorseSum - reportSum;

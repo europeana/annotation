@@ -112,7 +112,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(),
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, TAG_JSON, TEST_USER_TOKEN, null);
+				WebAnnotationFields.PROVIDER_WEBANNO, null, TAG_JSON, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 

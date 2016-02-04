@@ -33,6 +33,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
@@ -540,25 +541,41 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
-	public Annotation updateIndexingTime(AnnotationId annoId) {
+	public Annotation updateIndexingTime(AnnotationId annoId, Date lastIndexing) throws AnnotationMongoException {
 
 		Annotation res = null;
 
 		PersistentAnnotation annotation = find(annoId);
 
-		if (annotation != null && annotation.getLastIndexedTimestamp() == null) {
-			annotation.setLastIndexedTimestamp(System.currentTimeMillis());
-			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao()
-					.createUpdateOperations().set(
-							WebAnnotationFields.LAST_INDEXED_TIMESTAMP,
-							annotation.getLastIndexedTimestamp());
+		if (annotation == null){
+			throw new AnnotationMongoException(AnnotationMongoException.NO_RECORD_FOUND + annoId);  
+		}
+		
+		
+		if(lastIndexing == null)
+			lastIndexing = new Date();
+		
+		if(!isValidLastIndexingTimestamp(annotation, lastIndexing))
+			throw new AnnotationMongoRuntimeException(AnnotationMongoRuntimeException.INVALID_LAST_INDEXING + lastIndexing);
+			
+		annotation.setLastIndexedTimestamp(lastIndexing.getTime());
+		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao()
+			.createUpdateOperations().set(
+				WebAnnotationFields.LAST_INDEXED_TIMESTAMP,
+				lastIndexing.getTime());
 			Query<PersistentAnnotation> updateQuery = getAnnotationDao()
 					.createQuery().field("_id").equal(annotation.getId());
 			getAnnotationDao().update(updateQuery, ops);
-			res = annotation; // update(annotation);
-		}
+		
+		return annotation;
+	}
 
-		return res;
+	private boolean isValidLastIndexingTimestamp(PersistentAnnotation annotation, Date lastIndexing) {
+		//if never indexed
+		if (lastIndexing != null && annotation.getLastIndexedTimestamp() == null)
+			return true;
+		
+		return lastIndexing.getTime() > annotation.getLastIndexedTimestamp();
 	}
 
 	/**

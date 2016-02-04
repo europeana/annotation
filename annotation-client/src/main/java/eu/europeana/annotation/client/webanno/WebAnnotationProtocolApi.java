@@ -21,7 +21,11 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> createAnnotation(
-			String wskey, String provider, String identifier, boolean indexOnCreate, 
+			String wskey, String provider, String identifier, Boolean indexOnCreate, 
+			String requestBody, String userToken, String annoType);
+	
+	public ResponseEntity<String> createAnnotation(
+			String wskey, String provider, String identifier, 
 			String requestBody, String userToken, String annoType);
 	
 	/**
@@ -38,7 +42,7 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> createTag(
-			String provider, String identifier, boolean indexOnCreate, 
+			String provider, String identifier, Boolean indexOnCreate, 
 			String requestBody, String userToken);
 	
 	

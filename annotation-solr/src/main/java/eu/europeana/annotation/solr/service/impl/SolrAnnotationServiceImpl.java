@@ -39,7 +39,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	@Override
 	public void store(Annotation anno) throws AnnotationServiceException {
 		try {
-			getLogger().info("store: " + anno.toString());
+			getLogger().debug("store: " + anno.toString());
 			SolrAnnotation indexedAnno = null;
 			
 			if(anno instanceof SolrAnnotation) 
@@ -507,7 +507,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	}
 
 	public void update(Annotation anno, Summary summary) throws AnnotationServiceException {
-		getLogger().info("update log: " + anno.toString());
+		getLogger().debug("update log: " + anno.toString());
 		delete(anno.getAnnotationId());
 		Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
 		store(indexedAnnotation);

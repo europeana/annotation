@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service;
 
+import java.util.Date;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -16,7 +17,7 @@ public interface AdminService {
 	 * @param annoId
 	 * @return success of reindexing operation
 	 */
-	public boolean reindexAnnotationById(AnnotationId annoId);
+	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing);
 
 	/**
 	 * This method performs Solr reindexing for all annotation objects stored in database between 

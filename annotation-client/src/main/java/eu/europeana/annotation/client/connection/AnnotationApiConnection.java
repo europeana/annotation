@@ -329,7 +329,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> createAnnotation(
-			String wskey, String provider, String identifier, boolean indexOnCreate, 
+			String wskey, String provider, String identifier, Boolean indexOnCreate, 
 			String annotation, String userToken, String annoType) throws IOException {
 		
 		String url = getAnnotationServiceUri();
@@ -343,7 +343,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		if (identifier != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
 		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
-		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;		
+		if(indexOnCreate != null )
+			url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;		
 		
 		logger.trace("Ivoking create annotation: " + url);
 		/**

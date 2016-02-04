@@ -74,7 +74,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				UNKNOWN_WSKEY
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, TAG_JSON
 				, TEST_USER_TOKEN
 				, null
@@ -94,7 +93,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, null
 				, TEST_USER_TOKEN
 				, null
@@ -114,7 +112,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, CORRUPTED_JSON
 				, TEST_USER_TOKEN
 				, null
@@ -131,7 +128,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, LINK_JSON_WITHOUT_BLANK
 				, TEST_USER_TOKEN
 				, null
@@ -152,7 +148,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, LINK_JSON_WITH_WRONG_MOTIVATION
 				, TEST_USER_TOKEN
 				, null
@@ -171,7 +166,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, UNKNOWN_PROVIDER
 				, null
-				, false
 				, TAG_JSON
 				, TEST_USER_TOKEN
 				, null
@@ -204,7 +198,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, UNKNOWN_PROVIDED_IDENTIFIER
-				, false
 				, TAG_JSON
 				, TEST_USER_TOKEN
 				, null
@@ -224,7 +217,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WebAnnotationFields.PROVIDER_WEBANNO
 				, null
-				, false
 				, TAG_JSON_BY_TYPE_JSONLD
 				, TEST_USER_TOKEN
 				, INVALID_ANNO_TYPE

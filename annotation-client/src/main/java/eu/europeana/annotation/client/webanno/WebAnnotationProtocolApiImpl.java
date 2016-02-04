@@ -15,7 +15,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 
 	@Override
 	public ResponseEntity<String> createAnnotation(String wskey, String provider, String identifier,
-			boolean indexOnCreate, String annotation, String userToken, String annoType) {
+			Boolean indexOnCreate, String annotation, String userToken, String annoType) {
 
 		ResponseEntity<String> res;
 		try {
@@ -27,6 +27,13 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		}
 
 		return res;
+	}
+	
+	@Override
+	public ResponseEntity<String> createAnnotation(String wskey, String provider, String identifier, String annotation,
+			String userToken, String annoType) {
+		return createAnnotation(wskey, provider, identifier,
+				true, annotation, userToken, annoType);
 	}
 
 	@Override
@@ -72,7 +79,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> createTag(String provider, String identifier, boolean indexOnCreate,
+	public ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate,
 			String annotation, String userToken) {
 		return createAnnotation(getConfiguration().getApiKey(), provider, identifier, indexOnCreate, annotation,
 				userToken, WebAnnotationFields.TAG);
@@ -83,4 +90,6 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();
 		return europeanaParser.parseAnnotation(null, response.getBody());
 	}
+
+	
 }

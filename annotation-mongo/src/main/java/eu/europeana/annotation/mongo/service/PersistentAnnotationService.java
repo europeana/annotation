@@ -1,5 +1,6 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -7,6 +8,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
@@ -72,8 +74,9 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	/**
 	 * This method notices the time of the last SOLR indexing for particular annotation
 	 * @param annoId
+	 * @throws AnnotationMongoException 
 	 */
-	public Annotation updateIndexingTime(AnnotationId annoId);
+	public Annotation updateIndexingTime(AnnotationId annoId, Date lastIndexingDate) throws AnnotationMongoException;
 
 	/**
 	 * This method changes annotation status.

@@ -86,9 +86,6 @@ public class BaseJsonldRest extends BaseRest{
 
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
 			
-			if(getConfiguration().isIndexingEnabled())
-				System.out.println("Must implement annotation indexing here");
-
 			// serialize to jsonld
 			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation);
 			String jsonLd = annotationLd.toString(4);

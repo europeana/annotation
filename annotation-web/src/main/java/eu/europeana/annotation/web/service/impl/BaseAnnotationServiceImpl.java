@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -116,11 +117,13 @@ public class BaseAnnotationServiceImpl {
 	 * @param res
 	 * @return reindexing success status
 	 */
-	protected boolean reindexAnnotation(Annotation res) {
+	protected boolean reindexAnnotation(Annotation res, Date lastIndexing) {
 		boolean success = false;
 		try {
 			Summary summary = getMongoModerationRecordPersistence().getModerationSummaryByAnnotationId(res.getAnnotationId());			
 			getSolrService().update(res, summary);
+			updateLastIndexingTime(res, lastIndexing);
+			
 			success = true;
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).error("Error by reindexing of annotation: "
@@ -138,7 +141,6 @@ public class BaseAnnotationServiceImpl {
 //		}
 
 		// save the time of the last SOLR indexing
-		updateLastSolrIndexingTime(res);
 		return success;
 	}
 
@@ -166,7 +168,7 @@ public class BaseAnnotationServiceImpl {
 					if(annotation == null)
 						throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
 	//				reindexAnnotationById(iter.next().getAnnotationId());
-					boolean success = reindexAnnotationById(annotation.getAnnotationId());
+					boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
 					if (success) {
 						successCount = successCount + 1;
 					} else {
@@ -198,11 +200,11 @@ public class BaseAnnotationServiceImpl {
 	 * @param res
 	 * @return reindexing success status
 	 */
-	public boolean reindexAnnotationById(AnnotationId annoId) {
+	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing) {
 		boolean success = false;
 		try {
 			Annotation res = getAnnotationById(annoId);
-			success = reindexAnnotation(res);
+			success = reindexAnnotation(res, lastIndexing);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).error(e.getMessage());
 			throw new RuntimeException(e);
@@ -210,9 +212,9 @@ public class BaseAnnotationServiceImpl {
 		return success;
 	}
 
-	protected void updateLastSolrIndexingTime(Annotation res) {
+	protected void updateLastIndexingTime(Annotation res, Date lastIndexing) {
 		try {
-			getMongoPersistence().updateIndexingTime(res.getAnnotationId());
+			getMongoPersistence().updateIndexingTime(res.getAnnotationId(), lastIndexing);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName())
 					.warn("The time of the last SOLR indexing could not be saved. " , e);
