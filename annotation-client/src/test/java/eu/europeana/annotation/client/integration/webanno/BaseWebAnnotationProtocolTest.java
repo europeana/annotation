@@ -140,7 +140,7 @@ public class BaseWebAnnotationProtocolTest {
 	}
 	
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
-		assertEquals(status.value(), response.getStatusCode().value());
+		assertEquals(""+status.value(), ""+response.getStatusCode().value());
 
 		Annotation annotation = getApiClient().parseResponseBody(response);
 
