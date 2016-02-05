@@ -230,6 +230,11 @@ public class BaseRest extends ApiResponseBuilder {
 		return annoId;
 	}
 
+	protected boolean authorizeUser(String userToken, String apiKey, String operationName)
+			throws UserAuthorizationException {
+		return authorizeUser(userToken, apiKey, null, operationName);
+	}
+	
 	protected boolean authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
 			throws UserAuthorizationException {
 		// throws exception if user is not found
