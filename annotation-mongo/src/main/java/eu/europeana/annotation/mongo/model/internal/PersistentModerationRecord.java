@@ -27,8 +27,8 @@ public interface PersistentModerationRecord extends ModerationRecord, NoSqlEntit
 	 */
 	public void setId(ObjectId id);
 
-	public abstract void setLastIndexedTimestamp(Long lastIndexedTimestamp);
-
-	public abstract Long getLastIndexedTimestamp();
+//	public abstract void setLastIndexedTimestamp(Long lastIndexedTimestamp);
+//
+//	public abstract Long getLastIndexedTimestamp();
 	
 }

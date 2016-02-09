@@ -225,7 +225,7 @@ public interface AnnotationService {
 	
 	/**
 	 * Check whether annotation for given provider and identifier already exist in database.
-	 * @deprecated the method should return the annotation for the given id and throw an exception
+	 * @deprecated the method should return the annotation for the given id or throw an exception
 	 */
 	public boolean existsInDb(AnnotationId annoId); 
 	
@@ -318,6 +318,6 @@ public interface AnnotationService {
 	 * @throws ModerationNotFoundException
 	 * @throws ModerationMongoException
 	 */
-	public ModerationRecord getModerationRecordById(AnnotationId annoId) 
+	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
 			throws ModerationNotFoundException, ModerationMongoException;
 }

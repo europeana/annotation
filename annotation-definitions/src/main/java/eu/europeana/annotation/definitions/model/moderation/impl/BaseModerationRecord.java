@@ -78,13 +78,12 @@ public class BaseModerationRecord implements ModerationRecord {
 		if(reportList == null)
 			reportList = new ArrayList<Vote>();
 		
-		if(! reportList.contains(vote))
-			reportList.add(vote);
+		reportList.add(vote);
 	}
 	
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equalsContent(Object other) {
 	    if (!(other instanceof ModerationRecord)) {
 	        return false;
 	    }
@@ -104,10 +103,7 @@ public class BaseModerationRecord implements ModerationRecord {
 	    
 	    return res;
 	}
-			
-	public boolean equalsContent(Object other) {
-		return equals(other);
-	}
+	
 	
 	@Override
 	public String toString() {
@@ -116,5 +112,23 @@ public class BaseModerationRecord implements ModerationRecord {
 		if (getAnnotationId() != null) 
 			res = res + "\t\t" + "Id:" + getAnnotationId() + "\n";
 		return res;
+	}
+	
+	@Override
+	public Summary computeSummary() {
+		if(summary == null)
+			summary = new BaseSummary();
+		
+		if(getEndorseList() != null)	
+			summary.setEndorseSum(getEndorseList().size());
+		
+		if(getReportList() != null)	
+			summary.setReportSum(getReportList().size());
+		
+		summary.computeScore();
+		
+		return summary;
+		
 	}	
+	
 }

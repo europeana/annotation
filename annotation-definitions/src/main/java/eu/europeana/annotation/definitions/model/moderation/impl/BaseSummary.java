@@ -10,9 +10,16 @@ public class BaseSummary implements Summary {
 
 	private int endorseSum = 0;
 	private int reportSum = 0;
+	private int score = 0;
 	
+	
+	@Override
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public int getTotal() {
-		return endorseSum - reportSum;
+		return endorseSum + reportSum;
 	}
 
 	public int getEndorseSum() {
@@ -59,6 +66,11 @@ public class BaseSummary implements Summary {
 
 	@Override
 	public int getScore() {
-		return endorseSum - reportSum;
+		return score;
+	}
+
+	@Override
+	public void computeScore() {
+		setScore(getEndorseSum() - getReportSum()); 	
 	}	
 }

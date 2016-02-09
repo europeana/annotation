@@ -17,4 +17,8 @@ public interface Summary {
 
 	public boolean equalsContent(Object other);
 
+	public void setScore(int score);
+	
+	public void computeScore();
+
 }

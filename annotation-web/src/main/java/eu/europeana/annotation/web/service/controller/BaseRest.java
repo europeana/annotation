@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -230,41 +231,39 @@ public class BaseRest extends ApiResponseBuilder {
 		return annoId;
 	}
 
-	protected boolean authorizeUser(String userToken, String apiKey, String operationName)
+	protected Agent authorizeUser(String userToken, String apiKey, String operationName)
 			throws UserAuthorizationException {
 		return authorizeUser(userToken, apiKey, null, operationName);
 	}
 	
-	protected boolean authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
+	protected Agent authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
 			throws UserAuthorizationException {
 		// throws exception if user is not found
 		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
 
 		if (user== null || user.getName() == null || user.getUserGroup() == null)
-			throw new UserAuthorizationException("Invalid User (Token): ", userToken);
+			throw new UserAuthorizationException("Invalid User (Token): ", userToken, HttpStatus.FORBIDDEN);
 		
 		//check permissions
 		if(isAdmin(user))//allow all
-			return true;
+			return user;
 		else if(isTester(user) && configuration.isProductionEnvironment()){
 			//#20 testers not allowed in production environment
-			throw new UserAuthorizationException("Test users are not authorized to perform operations in production environments", user.getName());
+			throw new UserAuthorizationException("Test users are not authorized to perform operations in production environments", user.getName(), HttpStatus.FORBIDDEN);
 		} else	if(hasPermission(user, operationName)){
 			//user is authorized
-			return true;
+			return user;
 		}
 
 		//user is not authorized to perform operation
-		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName());			
-
-		//return false;//uncatchable code
+		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName(), HttpStatus.FORBIDDEN);			
 	}
 
 	protected boolean hasPermission(Agent user, String operationName) {
 		UserGroups userGroup = UserGroups.valueOf(user.getUserGroup());
 		
 		for (String operation : userGroup.getOperations()) {
-			if(operation.equals(operationName))
+			if(operation.equalsIgnoreCase(operationName))
 				return true;//users is authorized, everything ok
 		}
 		

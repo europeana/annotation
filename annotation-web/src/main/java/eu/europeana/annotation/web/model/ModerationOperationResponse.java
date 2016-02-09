@@ -3,6 +3,12 @@ package eu.europeana.annotation.web.model;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
 
+/**
+ * The ModerationResponse should be an EntityResponse<String>
+ * @deprecated
+ * @author GordeaS
+ *
+ */
 public class ModerationOperationResponse extends ApiResponse{
 	
 	ModerationRecord moderationRecord;

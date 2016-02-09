@@ -357,13 +357,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return res;
 	}
 
-	public ModerationRecord getModerationRecordById(AnnotationId annoId) 
+	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
 			throws ModerationNotFoundException, ModerationMongoException {
-		ModerationRecord moderationRecord = getMongoModerationRecordPersistence().find(annoId);
-		if(moderationRecord == null)
-			throw new ModerationNotFoundException(ModerationNotFoundException.MESSAGE_MODERATION_NO_FOUND, annoId.toHttpUrl());
-		
-		return moderationRecord;
+		return getMongoModerationRecordPersistence().find(annoId);
+//		if(moderationRecord == null)
+//			throw new ModerationNotFoundException(ModerationNotFoundException.MESSAGE_MODERATION_NO_FOUND, annoId.toHttpUrl());
+//		
+//		return moderationRecord;
 	}
 
 	

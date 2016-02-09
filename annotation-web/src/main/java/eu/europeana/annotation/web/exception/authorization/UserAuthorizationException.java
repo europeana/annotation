@@ -21,11 +21,15 @@ public class UserAuthorizationException extends HttpException{
 	private String paramValue; 
 	
 	public UserAuthorizationException(String message, String paramValue){
-		this(message, paramValue, null);
+		this(message, paramValue, HttpStatus.UNAUTHORIZED, null);
 	}
 	
 	public UserAuthorizationException(String message, String paramValue, Throwable th){
 		this(message, paramValue, HttpStatus.UNAUTHORIZED, th);
+	}
+	
+	public UserAuthorizationException(String message, String paramValue, HttpStatus status){
+		this(message, paramValue, status, null);
 	}
 
 	public UserAuthorizationException(String message, String paramValue, HttpStatus status, Throwable th){

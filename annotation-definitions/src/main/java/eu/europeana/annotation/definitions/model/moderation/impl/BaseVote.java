@@ -63,7 +63,7 @@ public class BaseVote implements Vote {
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equalsContent(Object other) {
 	    if (!(other instanceof Vote)) {
 	        return false;
 	    }
@@ -95,10 +95,7 @@ public class BaseVote implements Vote {
 	    
 	    return res;
 	}
-			
-	public boolean equalsContent(Object other) {
-		return equals(other);
-	}
+	
 	
 	@Override
 	public String toString() {

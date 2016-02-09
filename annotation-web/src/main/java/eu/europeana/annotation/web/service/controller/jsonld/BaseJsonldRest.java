@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.google.gson.Gson;
 import com.mangofactory.swagger.models.dto.ApiKey;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -27,8 +28,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
+import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -55,7 +58,7 @@ public class BaseJsonldRest extends BaseRest{
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// 1. authorize user
-			authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -188,6 +191,7 @@ public class BaseJsonldRest extends BaseRest{
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
+			
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 			return response;
@@ -204,7 +208,7 @@ public class BaseJsonldRest extends BaseRest{
 	}
 	
 	
-	protected ModerationOperationResponse getModerationById(
+	protected  ResponseEntity<String> getModerationSummary(
 			String wsKey, String provider, String identifier, String action) throws HttpException {
 
 		try {
@@ -218,20 +222,24 @@ public class BaseJsonldRest extends BaseRest{
 			if(provider == null)
 				provider = app.getProvider();
 			
-			
 			//3. Retrieve an annotation based on its identifier;
 			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
 			
 			//4. If annotation doesn’t exist respond with HTTP 404 (if provided moderation id doesn’t exists ) 
-			ModerationRecord moderationRecord = getAnnotationService().getModerationRecordById(annoId);
+			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
 			
+			Gson gsonObj = new Gson();
+			String jsonString = gsonObj.toJson(moderationRecord.getSummary());
+			
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+			headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
+			//headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+
 			//build response
-			ModerationOperationResponse response = new ModerationOperationResponse(
-					wsKey, action);
-			response.success = true;
-
-			response.setModerationRecord(moderationRecord);
-
+			ResponseEntity<String> response = new ResponseEntity<String>(jsonString, headers, HttpStatus.OK);
+			
 			return response;
 			
 		}catch (RuntimeException e) {
@@ -257,7 +265,10 @@ public class BaseJsonldRest extends BaseRest{
 	 */
 	private AnnotationId validateInputsForUpdateDelete(
 			String wsKey, String provider, String identifier, String userToken) throws HttpException {
-		
+
+		// First check the API key as prio 0 check
+		validateApiKey(wsKey);
+
 		// check identifier
 		if (provider == null || identifier == null)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
@@ -265,14 +276,7 @@ public class BaseJsonldRest extends BaseRest{
 
 		// 1. build annotation id object
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
-		
-//		if (annoId == null)
-//			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
-//					"/provider/identifier", identifier, HttpStatus.NOT_FOUND, null);
 
-		// 2. Check client access (a valid “wskey” must be provided)
-		validateApiKey(wsKey);
-		
 		// 3. Retrieve an annotation based on its identifier;
 		//Annotation annotation = getAnnotationService().getAnnotationById(annoId);		
 		
@@ -281,9 +285,9 @@ public class BaseJsonldRest extends BaseRest{
 		
 		// check whether annotation with the given provider and identifier
 		// already exist in the database
-//		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
-//			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-//					"/provider/identifier", annoId.toUri());
+		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
+					"/provider/identifier", annoId.toUri(), HttpStatus.NOT_FOUND, null);
 	
 		return annoId;
 	}
@@ -311,7 +315,7 @@ public class BaseJsonldRest extends BaseRest{
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 			
 			// 5. authorize user
-			authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
+			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
 			
 			// Retrieve an annotation based on its identifier;
 			Annotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -430,7 +434,7 @@ public class BaseJsonldRest extends BaseRest{
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 			
 			// 5. authorize user
-			authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
+			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
 			
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -477,59 +481,48 @@ public class BaseJsonldRest extends BaseRest{
 	 * @return
 	 * @throws HttpException
 	 */
-	protected ModerationOperationResponse storeModeration(
+	protected ResponseEntity<String> storeAnnotationReport(
 				String wsKey, String provider, String identifier, String userToken, String action) 
 			throws HttpException {
 		try {
 
-			//SET DEFAULTS 
-			Application app = getAuthenticationService().getByApiKey(wsKey);
+			//SET DEFAULTS and validates apikey 
+			//1.
+			getAuthenticationService().getByApiKey(wsKey);
 			
-			if(provider == null)
-				provider = app.getProvider();
-			
-			// 0. annotation id
-			AnnotationId annoId = buildAnnotationId(provider, identifier, false);
-			
-			// 1. authorize user
-			authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
+			//2. build and verify annotation ID
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
-			// create moderation record
-			ModerationRecord moderationRecord = new BaseModerationRecord();
-			moderationRecord.setAnnotationId(annoId);
-			Vote vote = new BaseVote();
+			//1. authorize user
+			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
 			
-			//SET DEFAULTS 
-			moderationRecord.setCreated(new Date());
-
-			// add report
-			vote.setCreated(moderationRecord.getCreated());
-			vote.setUserId(userToken);
+			//build vote
+			Date reportDate = new Date();
+			Vote vote = buildVote(user, reportDate);
+						
+			//3. Check if the user has already reported this annotation
+			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
+			if(moderationRecord == null)
+				moderationRecord = buildNewModerationRecord(annoId, reportDate);
+			else
+				validateVote(moderationRecord, vote);
+				
 			moderationRecord.addReport(vote);
-			Summary summary = new BaseSummary();
-			summary.setReportSum(moderationRecord.getReportList().size());
-			summary.setEndorseSum(0);
-			moderationRecord.setSummary(summary);
+			moderationRecord.computeSummary();
+			moderationRecord.setLastUpdated(reportDate);
 			
-			// 2. validate
-			// check whether moderationRecord with the given provider and identifier
-			// already exist in the database
-			if (annoId.getIdentifier() != null && getAnnotationService().existsModerationInDb(annoId))
-				throw new ParamValidationException(ParamValidationException.MESSAGE_MODERATION_ID_EXISTS,
-						"/provider/identifier", annoId.toUri());		
-			
-			//validate api key ... and request limit only if the request is correct (avoid useless DB requests)
-			validateApiKey(wsKey);
-
-			ModerationRecord storedModerationRecord = getAnnotationService().storeModerationRecord(moderationRecord);
+			//update record in the database
+			ModerationRecord storedModeration = getAnnotationService().storeModerationRecord(moderationRecord);
 			
 			//build response
-			ModerationOperationResponse response = new ModerationOperationResponse(
-					wsKey, action);
-			response.success = true;
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+			headers.add(HttpHeaders.ETAG, Long.toString(storedModeration.getLastUpdated().hashCode()));
+//			headers.add(HttpHeaders.LINK, "<http://www.w3.org/ns/ldp#Resource>; rel=\"type\"");
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+			
 
-			response.setModerationRecord(storedModerationRecord);
-
+			ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.CREATED);
 			return response;
 
 		} catch(HttpException e){
@@ -538,6 +531,39 @@ public class BaseJsonldRest extends BaseRest{
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
+	}
+
+
+	//TODO :consider moving to persistent moderation record service
+	private void validateVote(ModerationRecord moderationRecord, Vote vote) throws OperationAuthorizationException{
+		for (Vote existingVote : moderationRecord.getReportList()){
+			if(vote.getUserId().equals(existingVote.getUserId()))
+				throw new OperationAuthorizationException(OperationAuthorizationException.MESSAGE_OPERATION_NOT_AUTHORIZED, 
+						"A report from the same users exists in database!" + vote.getUserId());
+		}
+	}
+
+
+	protected ModerationRecord buildNewModerationRecord(AnnotationId annoId, Date reportDate) {
+		// create moderation record
+		ModerationRecord moderationRecord = new BaseModerationRecord();
+		moderationRecord.setAnnotationId(annoId);
+		
+		//SET DEFAULTS 
+		moderationRecord.setCreated(reportDate);
+		moderationRecord.setLastUpdated(reportDate);
+
+		Summary summary = new BaseSummary();
+		moderationRecord.setSummary(summary);
+		return moderationRecord;
+	}
+
+
+	protected Vote buildVote(Agent user, Date reportDate) {
+		Vote vote = new BaseVote();
+		vote.setCreated(reportDate);
+		vote.setUserId(user.getOpenId());
+		return vote;
 	}
 	
 

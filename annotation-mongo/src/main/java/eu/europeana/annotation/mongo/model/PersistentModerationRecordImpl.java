@@ -16,9 +16,11 @@ import com.google.code.morphia.annotations.Polymorphic;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.Vote;
-import eu.europeana.annotation.mongo.model.internal.PersistentObject;
+import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
+import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
 @Entity("moderationRecord")
 @Polymorphic
@@ -114,28 +116,33 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 	}
 
 	@Override
-	public void setLastIndexedTimestamp(Long lastIndexedTimestamp) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Long getLastIndexedTimestamp() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void addReport(Vote vote) {
 		if(reportList == null)
 			reportList = new ArrayList<Vote>();
 		
-		if(! reportList.contains(vote))
-			reportList.add(vote);
+		reportList.add(vote);
 	}
 
-//	public Summary getModerationSummaryByAnnotationId(AnnotationId annotationId) {
-//		
-//	}
-//			
+	//TODO try to remove duplication with BaseModerationRecord, probably by moving to some business logic class like ModerationHelper
+	@Override
+	public Summary computeSummary() {
+		if(summary == null)
+			summary = new BaseSummary();
+		
+		if(getEndorseList() != null)	
+			summary.setEndorseSum(getEndorseList().size());
+		
+		if(getReportList() != null)	
+			summary.setReportSum(getReportList().size());
+		
+		summary.computeScore();
+		
+		return summary;
+	}	
+
+	@Override
+	public boolean equalsContent(Object other) {
+		throw new RuntimeException(new ModerationMongoException("Method not supported"));
+	}
+
 }

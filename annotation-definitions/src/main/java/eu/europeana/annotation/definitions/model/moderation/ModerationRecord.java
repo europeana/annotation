@@ -21,6 +21,8 @@ public interface ModerationRecord {
 
 	public Summary getSummary();
 
+	public Summary computeSummary();
+
 	public void setSummary(Summary summary);
 
 	public Date getCreated();
@@ -32,6 +34,8 @@ public interface ModerationRecord {
 	public void setLastUpdated(Date lastUpdated);
 	
 	public void addReport(Vote vote);
+
+	boolean equalsContent(Object other);
 	
 
 }
