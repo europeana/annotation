@@ -21,7 +21,10 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 
 	public final static String VCAP = "vcap.services.";
 	public final static String USERNAME = ".credentials.username";
-	public final static String HOSTS = ".credentials.hosts";
+//	public final static String HOSTS = ".credentials.hosts";
+	public final static String HOST = ".credentials.host";
+	public final static String PORT = ".credentials.port";
+	
 	public final static String PASSWORD = ".credentials.password";
 	public final static String PROP_TIMESTAMP = "annotation.properties.timestamp";
 	
@@ -120,27 +123,16 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 				.toString();
 		String mongoUserName = VCAP + mongoDb + USERNAME;
 		String mongoPassword = VCAP + mongoDb + PASSWORD;
-		String mongoHosts = VCAP + mongoDb + HOSTS;
+		String mongoHost = VCAP + mongoDb + HOST;
+		String mongoPort = VCAP + mongoDb + PORT;
 
 		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
 		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
 		
-		logger.info(env.getProperty(mongoHosts));
-		String[] hosts = env.getProperty(mongoHosts).replace('[', ' ')
-				.replace("]", " ").split(",");
-		String mongoHost = "";
-		String mongoPort = "";
+		logger.info(env.getProperty(mongoHost));
 		
-		for (String host : hosts) {
-			mongoHost = mongoHost + host.split(":")[0].trim() + ",";
-			mongoPort = mongoPort + host.split(":")[1].trim() + ",";
-		}
-		
-		mongoHost = mongoHost.substring(0, mongoHost.length() - 1);
-		mongoPort = mongoPort.substring(0, mongoPort.length() - 1);
-		
-		props.put("mongodb.annotation.host", mongoHost);
-		props.put("mongodb.annotation.port", mongoPort);
+		props.put("mongodb.annotation.host", env.getProperty(mongoHost));
+		props.put("mongodb.annotation.port", env.getProperty(mongoPort));
 		
 		props.put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, AnnotationConfiguration.VALUE_ENVIRONMENT_TEST);
 	}
