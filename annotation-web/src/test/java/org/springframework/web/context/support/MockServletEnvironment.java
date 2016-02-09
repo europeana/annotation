@@ -14,19 +14,16 @@ public class MockServletEnvironment extends StandardServletEnvironment {
 
 		String mongoDb = getSystemEnvironment().get("mongo_service").toString();
 		String userNameKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.USERNAME; 
-		if (userNameKey.equals(key)) {
-			return "europeana";
-		}
-
-		String passKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.PASSWORD; 
-		if (passKey.equals(key)) {
-			return "culture";
-		}
+		if (userNameKey.equals(key)) return "europeana";
 		
-		String hostsKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.HOSTS; 
-		if (hostsKey.equals(key)) {
-			return "localhost:27017";
-		}
+		String passKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.PASSWORD; 
+		if (passKey.equals(key)) return "culture";
+		
+		String hostsKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.HOST; 
+		if (hostsKey.equals(key)) return "localhost";
+		
+		String portKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.PORT; 
+		if (portKey.equals(key)) return "27017";
 		
 		// 
 		return super.getProperty(key);
