@@ -15,8 +15,6 @@ import org.springframework.boot.cloudfoundry.VcapApplicationListener;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
-import eu.europeana.annotation.config.AnnotationConfiguration;
-
 public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListener {
 
 	public final static String VCAP = "vcap.services.";
@@ -112,7 +110,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 				
 			writePropsToFile(props, annotationPropertiesFile);			
 			
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 			logger.error("Cannot update annotation properties! ", e1) ;
 		}
@@ -126,15 +124,17 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		String mongoHost = VCAP + mongoDb + HOST;
 		String mongoPort = VCAP + mongoDb + PORT;
 
+		logger.info("mongodb.annotation.username: " +  env.getProperty(mongoHost));
+		logger.info("mongodb.annotation.password: " + env.getProperty(mongoPassword));
+		logger.info("mongodb.annotation.host: " + env.getProperty(mongoHost));
+		logger.info("mongodb.annotation.port: " + env.getProperty(mongoPort, Integer.class));
+		
 		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
 		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
-		
-		logger.info(env.getProperty(mongoHost));
-		
 		props.put("mongodb.annotation.host", env.getProperty(mongoHost));
-		props.put("mongodb.annotation.port", env.getProperty(mongoPort));
+		props.put("mongodb.annotation.port", env.getProperty(mongoPort, Integer.class).toString());
 		
-		props.put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, AnnotationConfiguration.VALUE_ENVIRONMENT_TEST);
+		//props.put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, AnnotationConfiguration.VALUE_ENVIRONMENT_TEST);
 	}
 
 	protected void writePropsToFile(Properties props, File annotationPropertiesFile) throws IOException {
