@@ -10,12 +10,13 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.cloudfoundry.VcapApplicationListener;
+import org.springframework.boot.cloud.CloudFoundryVcapEnvironmentPostProcessor;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
-public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListener {
+public class VcapAnnotationPropertyLoaderListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>{
 
 	public final static String VCAP = "vcap.services.";
 	public final static String USERNAME = ".credentials.username";
@@ -31,7 +32,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	File propertiesFileTemplate = null;
 	File propertiesFile = null;
 
-	private StandardServletEnvironment env;
+	private ConfigurableEnvironment env;
 	
 	Logger logger = Logger.getLogger(getClass()); 
 
@@ -39,23 +40,26 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		this(new StandardServletEnvironment(), null, null);
 	}
 	
-	public VcapAnnotationPropertyLoaderListener(StandardServletEnvironment servletEnv, File propertiesFile, File propertiesFileTemplate) {
+	public VcapAnnotationPropertyLoaderListener(ConfigurableEnvironment servletEnv, File propertiesFile, File propertiesFileTemplate) {
 		super();
 		this.propertiesFileTemplate = propertiesFileTemplate;
 		this.propertiesFile = propertiesFile;
 		env=servletEnv;
-		this.onApplicationEvent(new ApplicationEnvironmentPreparedEvent(
-				new SpringApplication(), new String[0], env));
 	}
 	
 	
 	
 	@Override
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-		super.onApplicationEvent(event);
-
-		if(env != null && env.getSystemEnvironment() != null && env.getSystemEnvironment().get(MONGO_SERVICE) != null)
+		
+		if(env != null && env.getSystemEnvironment() != null && env.getSystemEnvironment().get(MONGO_SERVICE) != null){
+			//process environment variables and flatten json structure
+			CloudFoundryVcapEnvironmentPostProcessor postProcessor = new CloudFoundryVcapEnvironmentPostProcessor();
+			postProcessor.postProcessEnvironment(env, null);
+			
+			//generate updated annotation.properties file
 			updateAnnotationProperties();
+		}
 	}
 
 	protected File getPropertiesFileTemplate() {
@@ -117,6 +121,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 	}
 
 	protected void updateProps(Properties props) {
+		
 		String mongoDb = env.getSystemEnvironment().get(MONGO_SERVICE)
 				.toString();
 		String mongoUserName = VCAP + mongoDb + USERNAME;
@@ -124,7 +129,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		String mongoHost = VCAP + mongoDb + HOST;
 		String mongoPort = VCAP + mongoDb + PORT;
 
-		logger.info("mongodb.annotation.username: " +  env.getProperty(mongoHost));
+		logger.info("mongodb.annotation.username: " +  env.getProperty(mongoUserName));
 		logger.info("mongodb.annotation.password: " + env.getProperty(mongoPassword));
 		logger.info("mongodb.annotation.host: " + env.getProperty(mongoHost));
 		logger.info("mongodb.annotation.port: " + env.getProperty(mongoPort, Integer.class));
@@ -132,7 +137,7 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
 		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
 		props.put("mongodb.annotation.host", env.getProperty(mongoHost));
-		props.put("mongodb.annotation.port", env.getProperty(mongoPort, Integer.class).toString());
+		props.put("mongodb.annotation.port", env.getProperty(mongoPort));
 		
 		//props.put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, AnnotationConfiguration.VALUE_ENVIRONMENT_TEST);
 	}
@@ -155,4 +160,5 @@ public class VcapAnnotationPropertyLoaderListener extends VcapApplicationListene
 				PROP_TIMESTAMP + "=" + System.currentTimeMillis() + "\n",
 				true);
 	}
+	
 }
