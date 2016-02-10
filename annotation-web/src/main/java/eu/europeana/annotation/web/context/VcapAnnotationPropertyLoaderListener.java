@@ -45,6 +45,7 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 		this.propertiesFileTemplate = propertiesFileTemplate;
 		this.propertiesFile = propertiesFile;
 		env=servletEnv;
+		onApplicationEvent(null);
 	}
 	
 	

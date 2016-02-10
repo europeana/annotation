@@ -47,7 +47,7 @@ public class VcapPropertyLoaderListenerTest {
 		VcapAnnotationPropertyLoaderListener propertiesLoader = new VcapAnnotationPropertyLoaderListener(
 				getMockServletEnvironment(), outFile, infile);
 		
-		propertiesLoader.onApplicationEvent(null);
+		//propertiesLoader.onApplicationEvent(null);
 		
 		System.out.println("Update properties in file:"	+	propertiesLoader.getPropertiesFile());
 		Properties props = new Properties();
