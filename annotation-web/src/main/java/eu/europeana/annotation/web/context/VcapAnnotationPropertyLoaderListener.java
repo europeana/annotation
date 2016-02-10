@@ -20,6 +20,7 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 
 	public final static String VCAP = "vcap.services.";
 	public final static String USERNAME = ".credentials.username";
+	public final static String DATABASE = ".credentials.db";
 //	public final static String HOSTS = ".credentials.hosts";
 	public final static String HOST = ".credentials.host";
 	public final static String PORT = ".credentials.port";
@@ -125,16 +126,21 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 		
 		String mongoDb = env.getSystemEnvironment().get(MONGO_SERVICE)
 				.toString();
+		
+		
+		String mongoDatabase = VCAP + mongoDb + DATABASE;
 		String mongoUserName = VCAP + mongoDb + USERNAME;
 		String mongoPassword = VCAP + mongoDb + PASSWORD;
 		String mongoHost = VCAP + mongoDb + HOST;
 		String mongoPort = VCAP + mongoDb + PORT;
 
+		logger.info("mongodb.annotation.dbname: " +  env.getProperty(mongoDatabase));
 		logger.info("mongodb.annotation.username: " +  env.getProperty(mongoUserName));
 		logger.info("mongodb.annotation.password: " + env.getProperty(mongoPassword));
 		logger.info("mongodb.annotation.host: " + env.getProperty(mongoHost));
 		logger.info("mongodb.annotation.port: " + env.getProperty(mongoPort));
 		
+		props.put("mongodb.annotation.dbname", env.getProperty(mongoDatabase));
 		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
 		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
 		props.put("mongodb.annotation.host", env.getProperty(mongoHost));
