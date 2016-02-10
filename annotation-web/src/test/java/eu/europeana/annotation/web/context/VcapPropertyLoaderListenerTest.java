@@ -21,7 +21,7 @@ public class VcapPropertyLoaderListenerTest {
 		System.out.println(startTime);
 		
 		String originalTemplate = getClass().getResource(
-				"/config/annotation.properties.template").getFile();
+				"/generate-config/annotation.properties.template").getFile();
 		System.out.println("Original_template location: " + originalTemplate);
 		
 		String originalConfigFolder = getClass().getResource(
@@ -46,6 +46,8 @@ public class VcapPropertyLoaderListenerTest {
 		
 		VcapAnnotationPropertyLoaderListener propertiesLoader = new VcapAnnotationPropertyLoaderListener(
 				getMockServletEnvironment(), outFile, infile);
+		
+		propertiesLoader.onApplicationEvent(null);
 		
 		System.out.println("Update properties in file:"	+	propertiesLoader.getPropertiesFile());
 		Properties props = new Properties();

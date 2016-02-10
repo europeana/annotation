@@ -1,7 +1,12 @@
 package org.springframework.web.context.support;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 
 import eu.europeana.annotation.web.context.VcapAnnotationPropertyLoaderListener;
 
@@ -13,32 +18,40 @@ public class MockServletEnvironment extends StandardServletEnvironment {
 	public String getProperty(String key) {
 
 		String mongoDb = getSystemEnvironment().get("mongo_service").toString();
-		String userNameKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.USERNAME; 
-		if (userNameKey.equals(key)) return "europeana";
 		
-		String passKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.PASSWORD; 
-		if (passKey.equals(key)) return "culture";
-		
-		String hostsKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.HOST; 
-		if (hostsKey.equals(key)) return "localhost";
-		
-		String portKey = VcapAnnotationPropertyLoaderListener.VCAP + mongoDb + VcapAnnotationPropertyLoaderListener.PORT; 
-		if (portKey.equals(key)) return "27017";
-		
-		// 
-		return super.getProperty(key);
+		if(mockEnv.containsKey(key))
+			return ""+mockEnv.get(key);
+		else
+			return super.getProperty(key);
 	}
 
 	@Override
 	public Map<String, Object> getSystemEnvironment() {
+		//System-Provided:
 		if(mockEnv == null){
 			Map<String, Object> sysEnv = super.getSystemEnvironment();
 			mockEnv = new HashMap<String, Object>();
 			mockEnv.putAll(sysEnv);
-			mockEnv. put("mongo_service", "mongo_annotation");
+			mockEnv. put("mongo_service", "annotation-mongo");
+			URL location = getClass().getResource("/generate-config/vcap_services.env");
+			String services;
+			try {
+				services = FileUtils.readFileToString(new File(location.getFile()));
+				mockEnv.put("VCAP_SERVICES", services);		
+			} catch (IOException e) {
+				throw new RuntimeException("cannot ready resource " + location.getFile() , e);
+			}
+			
+			
 		}
 		return mockEnv;
 
 	}
+	
+	@Override
+	public boolean containsProperty(String key) {
+		return mockEnv.containsKey(key);
+	}
+	
 
 }
