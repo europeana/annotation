@@ -133,7 +133,7 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 		logger.info("mongodb.annotation.username: " +  env.getProperty(mongoUserName));
 		logger.info("mongodb.annotation.password: " + env.getProperty(mongoPassword));
 		logger.info("mongodb.annotation.host: " + env.getProperty(mongoHost));
-		logger.info("mongodb.annotation.port: " + env.getProperty(mongoPort, Integer.class));
+		logger.info("mongodb.annotation.port: " + env.getProperty(mongoPort));
 		
 		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
 		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
@@ -149,12 +149,14 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 				annotationPropertiesFile,
 				"\n### generated configurations ###\n", false);
 		
+		if(props.containsKey(PROP_TIMESTAMP))
+			props.remove(PROP_TIMESTAMP);
+		
 		for (Entry<Object, Object> entry : props.entrySet()) {
 			FileUtils.writeStringToFile(
 					annotationPropertiesFile,
 					entry.getKey().toString() + "=" + entry.getValue().toString() + "\n", true);
 		}
-		
 		
 		//update timestamp
 		FileUtils.writeStringToFile(annotationPropertiesFile,
