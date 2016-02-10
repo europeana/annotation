@@ -51,7 +51,12 @@
 					<artifactId>corelib-search</artifactId>
 					<groupId>eu.europeana.corelib</groupId>
 				</exclusion>
-			</exclusions>
+				<!--  the next exclusion is redundant. just tried to fix some deploy issues -->
+				<exclusion>
+            		<artifactId>spring-boot</artifactId>
+            		<groupId>org.springframework.boot</groupId>
+            	</exclusion>
+            </exclusions>
 		</dependency>
 		
 		<dependency>
