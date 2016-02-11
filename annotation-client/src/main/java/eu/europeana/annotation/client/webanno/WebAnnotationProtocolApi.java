@@ -29,6 +29,18 @@ public interface WebAnnotationProtocolApi {
 			String requestBody, String userToken, String annoType);
 	
 	/**
+	 * This method creates test annotation report object
+	 * 
+	 * @param apiKey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return response entity that contains response body, headers and status code.
+	 */	
+	public ResponseEntity<String> createAnnotationReport(
+			String wskey, String provider, String identifier, String userToken);
+	
+	/**
 	 * This method creates annotation describing it in body JSON string and
 	 * providing it with associated wskey, provider name and identifier.
 	 * When motivation is not given in JSON - annoType must be set up.

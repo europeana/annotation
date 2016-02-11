@@ -117,6 +117,29 @@ public class BaseWebAnnotationProtocolTest {
 	}
 
 	/**
+	 * This method creates test annotation report object
+	 * 
+	 * @param apiKey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return response entity that contains response body, headers and status code.
+	 */
+	protected ResponseEntity<String> storeTestAnnotationReport(
+			String apiKey
+			, String provider
+			, String identifier
+			, String userToken) {
+
+		/**
+		 * store annotation report
+		 */
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotationReport(
+				apiKey, provider, identifier, userToken);
+		return storedResponse;
+	}
+
+	/**
 	 * This method creates test annotation object
 	 * 
 	 * @return response entity that contains response body, headers and status
