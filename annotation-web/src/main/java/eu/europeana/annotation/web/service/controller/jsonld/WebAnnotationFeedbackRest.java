@@ -39,7 +39,7 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			) throws HttpException {
 
 			String action = "get:/annotation/{provider}/{identifier}/moderationsummary";
-			return getModerationSummary(wskey, provider, identifier, action);		
+			return super.getModerationSummary(wskey, provider, identifier, action);		
 	}
 	
 }
