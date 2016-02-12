@@ -91,5 +91,35 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		return europeanaParser.parseAnnotation(null, response.getBody());
 	}
 
+	@Override
+	public ResponseEntity<String> createAnnotationReport(String wskey, String provider, String identifier,
+			String userToken) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.createAnnotationReport(wskey, provider, identifier, userToken);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
+		}
+
+		return res;
+	}
+
+	@Override
+	public ResponseEntity<String> getModerationReport(String wskey, String provider, String identifier,
+			String userToken) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.getModerationReport(wskey, provider, identifier, userToken);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
+		}
+
+		return res;
+	}
+
 	
 }

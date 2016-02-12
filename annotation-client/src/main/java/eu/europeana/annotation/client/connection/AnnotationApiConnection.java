@@ -2,13 +2,10 @@ package eu.europeana.annotation.client.connection;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
-import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -355,6 +352,38 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 	
 	/**
+	 * This method creates Annotation report object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/1222/report?wskey=apiadmin&userToken=tester1
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> createAnnotationReport(
+			String wskey, String provider, String identifier, String userToken) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		if(!url.endsWith(WebAnnotationFields.SLASH))
+			url +=  WebAnnotationFields.SLASH;
+		url += provider + WebAnnotationFields.SLASH;
+		url += identifier + WebAnnotationFields.SLASH;
+		url += WebAnnotationFields.PATH_FIELD_REPORT;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		
+		logger.trace("Ivoking create annotation report: " + url);
+		/**
+		 * Execute Europeana API request
+		 */
+		return postURL(url, "");		
+	}
+
+	
+	/**
 	 * This method retrieves Annotation object.
 	 * Example HTTP request for tag object: 
 	 *      http://localhost:8080/annotation/webanno/497?wskey=apidemo
@@ -376,6 +405,39 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url += WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURL(url);		
+	}
+
+
+	/**
+	 * This method retrieves summary of the Annotation moderation report object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/1202/moderationsummary?wskey=apiadmin&userToken=tester1
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getModerationReport(
+			String wskey, String provider, String identifier, String userToken) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		if(!url.endsWith(WebAnnotationFields.SLASH))
+			url +=  WebAnnotationFields.SLASH;
+		url += provider + WebAnnotationFields.SLASH;
+		url += identifier + WebAnnotationFields.SLASH;
+		url += WebAnnotationFields.PATH_FIELD_MODERATION_SUMMARY;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		
+		logger.trace("Ivoking get annotation moderation report: " + url);
 		
 		/**
 		 * Execute Europeana API request
