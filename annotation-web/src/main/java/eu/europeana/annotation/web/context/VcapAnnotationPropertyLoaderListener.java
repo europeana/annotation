@@ -3,7 +3,6 @@ package eu.europeana.annotation.web.context;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map.Entry;
@@ -85,16 +84,13 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 
 	
 	protected File getConfigFile(String filename) {
-		URL file = getClass().getResource(
-				"/config/" + filename);
-		return new File(file.getFile());
-//		ClassLoader c = getClass().getClassLoader();
-//		@SuppressWarnings("resource")
-//		URLClassLoader urlC = (URLClassLoader) c;
-//		URL[] urls = urlC.getURLs();
-//		String path = urls[0].getPath();
-//		return new File(path + "/config/"
-//				+ filename);
+		ClassLoader c = getClass().getClassLoader();
+		@SuppressWarnings("resource")
+		URLClassLoader urlC = (URLClassLoader) c;
+		URL[] urls = urlC.getURLs();
+		String path = urls[0].getPath();
+		return new File(path + "/config/"
+				+ filename);
 	}
 
 	
