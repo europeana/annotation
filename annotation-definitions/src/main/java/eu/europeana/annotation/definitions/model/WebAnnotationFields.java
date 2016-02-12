@@ -127,6 +127,7 @@ public interface WebAnnotationFields {
 	public static final String PARAM_PROFILE = "profile";
 	public static final String PARAM_START = "start";
 	public static final String PARAM_ROWS = "rows";
+	public static final String PARAM_SCORE = "score";
 	public static final String PARAM_SORT = "sort";
 	public static final String PARAM_SORT_ORDER = "sortOrder";
 	
