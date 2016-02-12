@@ -10,7 +10,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.google.gson.Gson;
-import com.mangofactory.swagger.models.dto.ApiKey;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -28,7 +27,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
-import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
@@ -37,7 +35,6 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.http.HttpHeaders;
-import eu.europeana.annotation.web.model.ModerationOperationResponse;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -208,7 +205,7 @@ public class BaseJsonldRest extends BaseRest{
 	}
 	
 	
-	protected  ResponseEntity<String> getModerationSummary(
+	protected  ResponseEntity<String> getModerationReportSummary(
 			String wsKey, String provider, String identifier, String action) throws HttpException {
 
 		try {

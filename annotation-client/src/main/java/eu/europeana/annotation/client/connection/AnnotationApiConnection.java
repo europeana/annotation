@@ -414,6 +414,39 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 
 	/**
+	 * This method retrieves summary of the Annotation moderation report object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/1202/moderationsummary?wskey=apiadmin&userToken=tester1
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getModerationReport(
+			String wskey, String provider, String identifier, String userToken) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		if(!url.endsWith(WebAnnotationFields.SLASH))
+			url +=  WebAnnotationFields.SLASH;
+		url += provider + WebAnnotationFields.SLASH;
+		url += identifier + WebAnnotationFields.SLASH;
+		url += WebAnnotationFields.PATH_FIELD_MODERATION_SUMMARY;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+		
+		logger.trace("Ivoking get annotation moderation report: " + url);
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURL(url);		
+	}
+
+
+	/**
 	 * This method updates Annotation object by the passed JsonLd update string.
 	 * Example HTTP request: 
 	 *      http://localhost:8080/annotation/{identifier}.jsonld?wskey=apidemo&identifier=http%3A%2F%2Fdata.europeana.eu%2Fannotation%2Fwebanno%2F496

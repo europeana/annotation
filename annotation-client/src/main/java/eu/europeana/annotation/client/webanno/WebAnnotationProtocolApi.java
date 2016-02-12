@@ -41,6 +41,18 @@ public interface WebAnnotationProtocolApi {
 			String wskey, String provider, String identifier, String userToken);
 	
 	/**
+	 * This method retrieves moderation report summary
+	 * 
+	 * @param apiKey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return response entity that contains response body, headers and status code.
+	 */	
+	public ResponseEntity<String> getModerationReport(
+			String wskey, String provider, String identifier, String userToken);
+	
+	/**
 	 * This method creates annotation describing it in body JSON string and
 	 * providing it with associated wskey, provider name and identifier.
 	 * When motivation is not given in JSON - annoType must be set up.
