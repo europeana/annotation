@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +21,11 @@ import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
-import eu.europeana.annotation.definitions.model.vocabulary.search.SortFields;
-import eu.europeana.annotation.definitions.model.vocabulary.search.SortOrder;
 import eu.europeana.annotation.jsonld.AnnotationSetSerializer;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
+import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
+import eu.europeana.annotation.solr.vocabulary.search.SortFields;
+import eu.europeana.annotation.solr.vocabulary.search.SortOrder;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -55,29 +55,19 @@ public class WebAnnotationSearchRest extends BaseRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false, defaultValue = AnnotationProfiles.STANDARD) String profile,
 			@RequestParam(value = WebAnnotationFields.PARAM_START, required = false, defaultValue = Query.DEFAULT_START) int start,
 			@RequestParam(value = WebAnnotationFields.PARAM_ROWS, required = false, defaultValue = Query.DEFAULT_PAGE_SIZE) int rows,
-			@RequestParam(value = WebAnnotationFields.PARAM_SCORE, required = false, defaultValue = "0") Integer score,
 			@RequestParam(value = WebAnnotationFields.PARAM_SORT, required = false) SortFields sort,
 			@RequestParam(value = WebAnnotationFields.PARAM_SORT_ORDER, required = false) SortOrder sortOrder
 			) throws HttpException {
 
 		String action = "get:/annotation/search{.format}";		
 
-		return searchAnnotation(wskey, query, filters, facets, profile, start, rows, action, sort, sortOrder, score);
+		return searchAnnotation(wskey, query, filters, facets, profile, start, rows, action, sort, sortOrder);
 	}
 	
 	private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets, String profile,
 			int start, int rows, String action, SortFields sortField, SortOrder sortOrder
 			) throws HttpException {
-		
-		return searchAnnotation(
-				wskey, queryString, filters, facets, profile, start, rows, action, sortField, sortOrder, 0
-				);
-	}
-		
-	private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets, String profile,
-			int start, int rows, String action, SortFields sortField, SortOrder sortOrder, int score
-			) throws HttpException {
-			
+					
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
@@ -92,20 +82,30 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 	        String sortFieldStr = null;
 			if (sortField != null)
-				sortFieldStr = sortField.getSolrType();				
+				sortFieldStr = sortField.getSolrField();				
 			//set default value
 			String sortOrderField = SortOrder.desc.name();
 			if (sortOrder != null)
 				sortOrderField = sortOrder.toString();		
 			
-			if (score > 0 || score < 0) {
-				String scoreValue = "moderation_score:\"" + score + "\"";
-				String [] scoreArray = new String [] {scoreValue};
-				filters = (String[])ArrayUtils.addAll(filters, scoreArray);
+			if (filters != null) {
+				int count = 0;
+				int FILTER_MODEL_POS = 0;
+				int FILTER_VALUE_POS = 1;
+			    for (String filter : filters) {
+			    	if (filter.contains(WebAnnotationFields.COLON)) {
+				    	String[] filterElem = filter.split(WebAnnotationFields.COLON);
+				        if (QueryFilteringFields.contains(filterElem[FILTER_MODEL_POS])) {
+				            filters[count] = QueryFilteringFields.getSolrFieldByModel(filterElem[FILTER_MODEL_POS])
+				            		+ WebAnnotationFields.COLON + filterElem[FILTER_VALUE_POS];
+				        }
+			    	}
+			        count++;
+			    }
 			}
 
 	        Query searchQuery = buildSearchQuery(
-	        		queryString, filters, facets, start, rows, searchProfile, sortFieldStr, sortOrderField, score);
+	        		queryString, filters, facets, start, rows, searchProfile, sortFieldStr, sortOrderField);
 	        ResultSet<? extends AnnotationView> results = getAnnotationSearchService().search(searchQuery);
 	        AnnotationSetSerializer serializer = new AnnotationSetSerializer(results);
 	        String jsonLd = serializer.serialize(searchProfile);
@@ -131,7 +131,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	}
 
 	protected Query buildSearchQuery(String queryString, String[] filters, String[] facets, int start, int rows
-			, SearchProfiles profile, String sort, String sortOrder, int score) {
+			, SearchProfiles profile, String sort, String sortOrder) {
 		
 		//TODO: check if needed
         String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
@@ -165,7 +165,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 			break;
 
 		case STANDARD:
-			searchQuery.setViewFields(new String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
+			searchQuery.setViewFields(new String[]{SolrAnnotationConstants.ANNOTATION_ID_URL});
 			break;
 
 		default:

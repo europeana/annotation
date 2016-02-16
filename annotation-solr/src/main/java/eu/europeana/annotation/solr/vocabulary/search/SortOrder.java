@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model.vocabulary.search;
+package eu.europeana.annotation.solr.vocabulary.search;
 
 /**
  * Fields for that sorting can be applied

@@ -22,7 +22,7 @@ import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.StatusLogSearchResults;
@@ -77,7 +77,7 @@ public class SearchRest extends BaseRest {
 
 		} catch (AnnotationServiceException e) {
 			// Logger.getLogger(getClass().getName()).error(e);
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response = buildSearchErrorResponse(apiKey, "/annotations/search", e);
 		}
 
@@ -131,7 +131,7 @@ public class SearchRest extends BaseRest {
 			response.totalResults = response.items.size();
 			response.success = true;
 		} catch (Exception e) {
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
@@ -158,7 +158,7 @@ public class SearchRest extends BaseRest {
 			response.totalResults = response.items.size();
 			response.success = true;
 		} catch (Exception e) {
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}

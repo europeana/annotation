@@ -130,6 +130,7 @@ public interface WebAnnotationFields {
 	public static final String PARAM_SCORE = "score";
 	public static final String PARAM_SORT = "sort";
 	public static final String PARAM_SORT_ORDER = "sortOrder";
+	public static final String COLON = ":";
 	
 	
 	/**

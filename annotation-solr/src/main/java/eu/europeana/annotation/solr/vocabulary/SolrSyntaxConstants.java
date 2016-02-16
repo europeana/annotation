@@ -1,6 +1,6 @@
 package eu.europeana.annotation.solr.vocabulary;
 
-public interface SolrAnnotationConst {
+public interface SolrSyntaxConstants {
 	
 	/**
 	 * Search fields for Web Service

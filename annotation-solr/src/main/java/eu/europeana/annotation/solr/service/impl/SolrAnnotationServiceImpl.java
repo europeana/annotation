@@ -25,8 +25,8 @@ import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
@@ -249,7 +249,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		/**
 		 * Construct a SolrQuery
 		 */
-		SolrQuery query = new SolrQuery(SolrAnnotationConst.ALL);
+		SolrQuery query = new SolrQuery(SolrSyntaxConstants.ALL);
 
 		/**
 		 * Query the server
@@ -275,7 +275,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		 * Construct a SolrQuery
 		 */
 		SolrQuery query = new SolrQuery();
-		query.setParam(SolrAnnotationFields.ANNOTATION_ID_URL, new String[] { annoIdUrl });
+		query.setParam(SolrAnnotationConstants.ANNOTATION_ID_URL, new String[] { annoIdUrl });
 		// setFieldList(query);
 
 		getLogger().debug("query: " + query);
@@ -339,7 +339,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 		ResultSet<? extends AnnotationView> res = null;
 
-		res = search(SolrAnnotationConst.ALL_SOLR_ENTRIES);
+		res = search(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
 
 		return res;
 	}
@@ -484,7 +484,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		 * Construct a SolrQuery
 		 */
 		SolrQuery query = new SolrQuery();
-		query.setQuery(field + SolrAnnotationConst.DELIMETER + searchValue);
+		query.setQuery(field + SolrSyntaxConstants.DELIMETER + searchValue);
 
 		/**
 		 * Query the server
@@ -546,7 +546,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	 */
 	protected void cleanUpAll() throws AnnotationServiceException {
 		getLogger().info("clean up all solr annotations");
-		deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
+		deleteByQuery(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
 	}
 
 	@Override
@@ -559,7 +559,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		}
 		solrQuery.setRows(0);
 		solrQuery.setFacet(true);
-		solrQuery.setTimeAllowed(SolrAnnotationConst.TIME_ALLOWED);
+		solrQuery.setTimeAllowed(SolrSyntaxConstants.TIME_ALLOWED);
 		for (String queryFacet : queries) {
 			solrQuery.addFacetQuery(queryFacet);
 		}
