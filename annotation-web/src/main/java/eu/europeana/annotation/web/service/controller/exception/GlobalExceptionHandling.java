@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,58 +22,70 @@ import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.service.controller.ApiResponseBuilder;
 
 @ControllerAdvice
-public class GlobalExceptionHandling extends ApiResponseBuilder{
+public class GlobalExceptionHandling extends ApiResponseBuilder {
 
 	Logger logger = Logger.getLogger(getClass());
-	
+
 	@ExceptionHandler(HttpException.class)
-	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req, HttpServletResponse response)
-			throws IOException {
+	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
+			HttpServletResponse response) throws IOException {
 
-		getLogger().error("An error occured during the invocation of :" + req.getServletPath(), ex);
-		
+		// TODO remove the usage of Model and View
 		boolean includeErrorStack = Boolean.getBoolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
-		
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(), null, ex, includeErrorStack);
-//		response.sendError(ex.getStatus().value());
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		//return res;
-		
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		//headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
-		//headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
+		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
+				null, ex, includeErrorStack);
 
-		//TODO remove the usage of Model and View
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>((String)res.getModel().get("json"), headers, ex.getStatus());
-		
-		return responseEntity;
+		return buildErrorResponse(ex, req, response, res, ex.getStatus());
+
 	}
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
 			throws IOException {
 
-		getLogger().error("An unexpected runtime error occured during the invocation of :" + req.getServletPath(), ex);
-
+		// TODO remove the usage of Model and View
 		boolean includeErrorStack = Boolean.getBoolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
-		
-		//TODO: add AccessController to handle default spring exceptions: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#mvc-ann-rest-spring-mvc-exceptions  
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(), null, ex, includeErrorStack);
-		//response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
+				null, ex, includeErrorStack);
+
+		return buildErrorResponse(ex, req, response, res, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<String> handleMissingRequestParamException(MissingServletRequestParameterException ex, HttpServletRequest req,
+			HttpServletResponse response) throws IOException {
+
+		// TODO remove the usage of Model and View
+		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
+				ex.getMessage(), ex, false);
+
+		return buildErrorResponse(ex, req, response, res, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	protected ResponseEntity<String> buildErrorResponse(Exception ex, HttpServletRequest req,
+			HttpServletResponse response, ModelAndView res, HttpStatus status) {
+		String body = (String) res.getModel().get("json");
+
+		getLogger().error("An error occured during the invocation of :" + req.getServletPath(), ex);
+
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		//return res;
-		
+
+		MultiValueMap<String, String> headers = buildHeadersMap();
+
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(body, headers, status);
+		return responseEntity;
+	}
+
+	protected MultiValueMap<String, String> buildHeadersMap() {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		//headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
-		//headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
-
-		//TODO remove the usage of Model and View
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>((String)res.getModel().get("json"), headers, HttpStatus.INTERNAL_SERVER_ERROR);
-		
-		return responseEntity;
+		// headers.add(HttpHeaders.ETAG, "" +
+		// storedAnnotation.getLastUpdate().hashCode());
+		// headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
+		return headers;
 	}
+
 }

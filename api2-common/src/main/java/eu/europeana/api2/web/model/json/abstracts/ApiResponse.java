@@ -42,6 +42,16 @@ public abstract class ApiResponse {
 	public Long statsDuration;
 
 	public Long requestNumber;
+	
+	public String stackTrace;
+
+	public String getStackTrace() {
+		return stackTrace;
+	}
+
+	public void setStackTrace(String stackTrace) {
+		this.stackTrace = stackTrace;
+	}
 
 	public ApiResponse(String apikey, String action) {
 		this.apikey = apikey;

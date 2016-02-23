@@ -32,38 +32,12 @@
 		<init-param>
 	  		<param-name>swagger.api.basepath</param-name>
 	  		<param-value>http://localhost:8081</param-value>
-		</init-param>
-		<!-- 
-		<init-param>
-		    <param-name>swagger.config.reader</param-name>
-		    <param-value>com.wordnik.swagger.sample.CustomConfigReader</param-value>
-		</init-param>
-		 -->
-		<!-- 
-		<load-on-startup>2</load-on-startup>
-		 -->
+		</init-param>		
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>annotationServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
-<!--  
-    <filter>
-        <filter-name>CharacterEncodingFilter</filter-name>
-        <filter-class>eu.europeana.core.util.web.Utf8OnlyFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>CharacterEncodingFilter</filter-name>
-        <url-pattern>*.rss</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>CharacterEncodingFilter</filter-name>
-        <url-pattern>/</url-pattern>
-    </filter-mapping>
- -->
- 
  
     <session-config>
         <session-timeout>30</session-timeout>

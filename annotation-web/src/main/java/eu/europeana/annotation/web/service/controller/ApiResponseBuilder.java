@@ -51,11 +51,12 @@ public class ApiResponseBuilder {
 			messageBuilder.append(th.toString());
 		if(th != null && th.getCause() !=null && th != th.getCause())
 			messageBuilder.append(blank).append(th.getCause().toString());
-		if(includeErrorStack)
-			messageBuilder.append("\n").append(getStackTraceAsString(th));
 		
 		response = buildErrorResponse(messageBuilder.toString(), response.action, response.apikey);
-
+		
+		if(includeErrorStack && th != null)
+			response.setStackTrace(getStackTraceAsString(th));
+		
 		ModelAndView ret = JsonWebUtils.toJson(response, null);
 		
 		return ret;
