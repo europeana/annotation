@@ -10,7 +10,7 @@ public interface WebAnnotationFields {
 	/**
 	 * Helping constants for Annotation mapping to the JSON-LD format
 	 */
-	public static final String INTERNAL_TYPE = "oa";
+	public static final String INTERNAL_TYPE = "internalType";
 	public static final String CONTEXT = "@context";
 	public static final String SPLITTER = "#";
 	public static final String ANNOTATED_BY = "annotatedBy";
@@ -57,6 +57,10 @@ public interface WebAnnotationFields {
 	public static final String ROLE = "role";
 
 	// skos fields
+	/*
+	 * TODO: //remove skos concepts management and replace it with the Entity API
+	 */
+	@Deprecated 
 	public static final String PREF_LABEL = "prefLabel";
 	public static final String ALT_LABEL = "altLabel";
 	public static final String HIDDEN_LABEL = "hiddenLabel";
@@ -127,8 +131,11 @@ public interface WebAnnotationFields {
 	public static final String PARAM_PROFILE = "profile";
 	public static final String PARAM_START = "start";
 	public static final String PARAM_ROWS = "rows";
+	public static final String PARAM_SCORE = "score";
 	public static final String PARAM_SORT = "sort";
 	public static final String PARAM_SORT_ORDER = "sortOrder";
+	public static final String PARAM_INCLUDE_ERROR_STACK = "includeErrorStack";
+	public static final String COLON = ":";
 	
 	
 	/**

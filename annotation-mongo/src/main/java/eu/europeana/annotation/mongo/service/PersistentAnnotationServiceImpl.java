@@ -492,8 +492,10 @@ public class PersistentAnnotationServiceImpl extends
 	protected PersistentAnnotation updateAnnotation(PersistentAnnotation persistentAnnotation) {
 		PersistentAnnotation res;
 		Query<PersistentAnnotation> findByIdQuery = buildFindByIdQuery(persistentAnnotation);
+		//TODO: reimplement by using the following line
+		//getDao().save(persistentAnnotation)
+		
 		UpdateOperations<PersistentAnnotation> updateOperations = buildUpdateOperations(persistentAnnotation);
-
 		UpdateResults<PersistentAnnotation> key = getAnnotationDao().update(findByIdQuery, updateOperations);
 		int numOfUpdatedEntries = key.getWriteResult().getN(); 
 		
@@ -510,6 +512,12 @@ public class PersistentAnnotationServiceImpl extends
 		return findByIdQuery;
 	}
 
+	/**
+	 * The usage of this method should be avoided. Simply use the dao.save() method
+	 * @param persistentAnnotation
+	 * @return
+	 */
+	@Deprecated 
 	protected UpdateOperations<PersistentAnnotation> buildUpdateOperations(PersistentAnnotation persistentAnnotation) {
 		UpdateOperations<PersistentAnnotation> updateOperations = super.getDao().createUpdateOperations();
 		if (persistentAnnotation.getBody() != null)
@@ -521,7 +529,10 @@ public class PersistentAnnotationServiceImpl extends
 		updateOperations.set(WebAnnotationFields.SERIALIZED_AT, persistentAnnotation.getSerializedAt());
 		updateOperations.set(WebAnnotationFields.SERIALIZED_BY, persistentAnnotation.getSerializedBy());
 		updateOperations.set(WebAnnotationFields.MOTIVATION, persistentAnnotation.getMotivation());
-		updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());
+		if(persistentAnnotation.getType() != null)
+			updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());
+		if(persistentAnnotation.getInternalType() != null)
+			updateOperations.set(WebAnnotationFields.INTERNAL_TYPE, persistentAnnotation.getInternalType());
 		updateOperations.set(WebAnnotationFields.DISABLED, persistentAnnotation.isDisabled());
 		if (persistentAnnotation.getEquivalentTo() != null)
 			updateOperations.set(WebAnnotationFields.EQUIVALENT_TO, persistentAnnotation.getEquivalentTo());
