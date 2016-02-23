@@ -1,5 +1,8 @@
 package eu.europeana.annotation.web.service.controller;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,30 +30,41 @@ public class ApiResponseBuilder {
 
 	/**
 	 * This method generates validation error report.
+	 * The validation report takes as input parameters from the request. This method must take as input the request object and extract parameters as needed.
 	 * @param apiKey
 	 * @param action
 	 * @param errorMessage
 	 * @return
 	 */
-	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th) {
+	@Deprecated
+	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th, boolean includeErrorStack) {
 		
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
 		
-		String message = "";
+		final String blank = " ";
+		StringBuilder messageBuilder = new StringBuilder();
 		
 		if (errorMessage != null)
-			message+= " " + errorMessage;
+			messageBuilder.append(blank).append(errorMessage);
 		if (th !=null)
-			message += th.toString();
+			messageBuilder.append(th.toString());
 		if(th != null && th.getCause() !=null && th != th.getCause())
-			message+= " " + th.getCause().toString();
+			messageBuilder.append(blank).append(th.getCause().toString());
+		if(includeErrorStack)
+			messageBuilder.append("\n").append(getStackTraceAsString(th));
 		
-		response = buildErrorResponse(message, response.action, response.apikey);
+		response = buildErrorResponse(messageBuilder.toString(), response.action, response.apikey);
 
 		ModelAndView ret = JsonWebUtils.toJson(response, null);
 		
 		return ret;
+	}
+
+	String getStackTraceAsString(Throwable th) {
+		StringWriter out = new StringWriter();
+		th.printStackTrace(new PrintWriter(out));
+		return out.toString();
 	}
 
 	/**

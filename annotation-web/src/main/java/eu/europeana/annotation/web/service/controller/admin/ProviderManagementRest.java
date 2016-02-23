@@ -21,7 +21,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.ProviderOperationResponse;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
@@ -58,7 +58,7 @@ public class ProviderManagementRest extends BaseRest {
 			getAnnotationService().deleteProvider(name, idGeneration);
 			response.success = true;
 		} catch (Exception e){
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
@@ -105,12 +105,12 @@ public class ProviderManagementRest extends BaseRest {
 		//validate input params
 //		AnnotationId annoId = buildAnnotationId(provider, annotationNr);
 		if (!IdGenerationTypes.isRegistered(idGeneration)) {
-			return getValidationReport(apiKey, action, ProviderOperationResponse.ERROR_ID_GENERATION_TYPE_DOES_NOT_MATCH + IdGenerationTypes.printTypes(), null);
+			return getValidationReport(apiKey, action, ProviderOperationResponse.ERROR_ID_GENERATION_TYPE_DOES_NOT_MATCH + IdGenerationTypes.printTypes(), null, false);
 		}
 		
 		// check whether annotation vor given provider and annotationNr already exist in database
 		if (getAnnotationService().existsProviderInDb(provider)) 
-			return getValidationReport(apiKey, action, ProviderOperationResponse.ERROR_PROVIDER_EXISTS_IN_DB + provider, null);			
+			return getValidationReport(apiKey, action, ProviderOperationResponse.ERROR_PROVIDER_EXISTS_IN_DB + provider, null, false);			
 		
 		//store				
 		Provider storedProvider = getAnnotationService().storeProvider(provider);

@@ -82,10 +82,10 @@ public class EuropeanaRest extends BaseRest{
 			return JsonWebUtils.toJson(jsonLd, null);
 		} catch (AnnotationStateException e) {
 			getLogger().error("An error occured during the invocation of :" + action, e);
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e);		
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e, false);		
 		} catch (Exception e) {
 			getLogger().error("An error occured during the invocation of :" + action, e);
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage(), e);		
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage(), e, false);		
 		}
 	}
 	

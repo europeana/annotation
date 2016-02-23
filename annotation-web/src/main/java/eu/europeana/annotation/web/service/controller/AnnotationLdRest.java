@@ -80,7 +80,7 @@ public class AnnotationLdRest extends BaseJsonldRest {
 //			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH);
 		//TODO: change to ParamValidationException 
 		if (!annotationIdHelper.validateProvider(webAnnotation, provider)) 
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null, false);
 		
 		//initialize
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);

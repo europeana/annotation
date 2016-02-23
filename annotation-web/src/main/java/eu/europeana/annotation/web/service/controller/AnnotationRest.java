@@ -182,9 +182,9 @@ public class AnnotationRest extends BaseRest {
 
 		//validate input params
 		if (!getAnnotationIdHelper().validateResouceId(webAnnotation, collection, object))
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH, null);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_RESOURCE_ID_DOES_NOT_MATCH, null, false);
 		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null);
+			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_PROVIDER_DOES_NOT_MATCH, null, false);
 		AnnotationIdHelper r = getAnnotationIdHelper();
 
 		//initialize
@@ -240,7 +240,7 @@ public class AnnotationRest extends BaseRest {
 			
 			// check whether annotation vor given provider and annotationNr already exist in database
 			if (getAnnotationService().existsInDb(annoId)) 
-				return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toHttpUrl(), null);			
+				return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_ANNOTATION_EXISTS_IN_DB + annoId.toHttpUrl(), null, false);			
 			
 			
 	//		if (!getAnnotationIdHelper().validateProvider(webAnnotation, provider)) 
@@ -275,7 +275,7 @@ public class AnnotationRest extends BaseRest {
 	
 			return JsonWebUtils.toJson(response, null);
 		} catch (Exception e) {
-			return getValidationReport(apiKey, action, e.getMessage(), e);		
+			return getValidationReport(apiKey, action, e.getMessage(), e, false);		
 		}
 	}
 
