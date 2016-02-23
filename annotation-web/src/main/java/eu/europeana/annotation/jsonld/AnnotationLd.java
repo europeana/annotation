@@ -109,7 +109,7 @@ public class AnnotationLd extends JsonLd {
                 
     	setUseTypeCoercion(false);
         setUseCuries(true);
-        addNamespacePrefix(WebAnnotationFields.OA_CONTEXT, WebAnnotationFields.OA);
+        addNamespacePrefix(WebAnnotationFields.WA_CONTEXT, WebAnnotationFields.OA);
         //TODO: verify if the following check is needed
         //if(isApplyNamespaces())
         	setUsedNamespaces(namespacePrefixMap);

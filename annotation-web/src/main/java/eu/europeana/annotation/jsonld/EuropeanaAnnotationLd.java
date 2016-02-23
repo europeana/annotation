@@ -82,7 +82,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
-    	jsonLdResource.putProperty(WebAnnotationFields.CONTEXT, WebAnnotationFields.OA_CONTEXT);   
+    	jsonLdResource.putProperty(WebAnnotationFields.CONTEXT, WebAnnotationFields.WA_CONTEXT);   
         if (!StringUtils.isBlank(annotation.getType())) {
         	jsonLdResource.addType(annotation.getType());
         } else {

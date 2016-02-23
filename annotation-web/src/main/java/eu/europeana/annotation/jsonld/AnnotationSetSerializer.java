@@ -65,7 +65,7 @@ public class AnnotationSetSerializer extends JsonLd {
 
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
-		jsonLdResource.putProperty(WebAnnotationFields.CONTEXT, WebAnnotationFields.OA_CONTEXT);
+		jsonLdResource.putProperty(WebAnnotationFields.CONTEXT, WebAnnotationFields.WA_CONTEXT);
 		String[] oaType = new String[] { "BasicContainer", "Collection" };
 		jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.AT_TYPE, oaType));
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL_ITEMS, getAnnotationSet().getResultSize());
