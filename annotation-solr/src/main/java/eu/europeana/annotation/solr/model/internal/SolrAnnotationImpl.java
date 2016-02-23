@@ -8,9 +8,9 @@ import org.apache.solr.client.solrj.beans.Field;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
-public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation {
+public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation, SolrAnnotationConstants {
 
 	private String annotationIdUrl;
 	private List<String> targetUrls;
@@ -34,7 +34,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("annotated_at_timestamp")
+	@Field(ANNOTATED_AT_TIMESTAMP)
 	public void setAnnotatedAtTimestamp(Long annotatedAtTimestamp) {
 		this.annotatedAtTimestamp = annotatedAtTimestamp;
 	}
@@ -45,7 +45,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("serialized_at_timestamp")
+	@Field(SERIALIZED_AT_TIMESTAMP)
 	public void setSerializedAtTimestamp(Long serializedAtTimestamp) {
 		this.serializedAtTimestamp = serializedAtTimestamp;
 	}
@@ -60,7 +60,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("target_urls")
+	@Field(TARGET_URLS)
 	public void setTargetUrls(List<String> targetUrls) {
 		this.targetUrls = targetUrls;
 	}
@@ -71,7 +71,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("target_record_ids")
+	@Field(TARGET_RECORD_IDS)
 	public void setTargetRecordIds(List<String> recordIds) {
 		this.targetRecordIds = recordIds;
 	}
@@ -82,7 +82,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("motivation_key")
+	@Field(MOTIVATION_KEY)
 	public void setMotivationKey(String motivationKey) {
 		this.motivationKey = motivationKey;
 	}
@@ -93,7 +93,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("body_internal_type_key")
+	@Field(BODY_INTERNAL_TYPE_KEY)
 	public void setBodyInternalTypeKey(String bodyInternalTypeKey) {
 		this.bodyInternalTypeKey = bodyInternalTypeKey;
 	}
@@ -104,7 +104,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("target_internal_type_key")
+	@Field(TARGET_INTERNAL_TYPE_KEY)
 	public void setTargetInternalTypeKey(String targetInternalTypeKey) {
 		this.targetInternalTypeKey = targetInternalTypeKey;
 	}
@@ -116,7 +116,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 
 	
 	@Override
-	@Field("body_tag_id")
+	@Field(BODY_TAG_ID)
 	public void setBodyTagId(String id) {
 		this.bodyTagId = id;
 	}
@@ -128,7 +128,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 
 	
 	@Override
-	@Field("body_value")
+	@Field(BODY_VALUE)
 	public void setBodyValue(String bodyValue) {
 
 		this.bodyValue = bodyValue;
@@ -176,7 +176,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("annotation_id_url")
+	@Field(ANNOTATION_ID_URL2)
 	public void setAnnotationIdUrl(String annotationIdUrl) {
 		this.annotationIdUrl = annotationIdUrl;
 	}
@@ -193,7 +193,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(SolrAnnotationFields.INTERNAL_TYPE_KEY)
+	@Field(SolrAnnotationConstants.INTERNAL_TYPE_KEY)
 	public void setInternalTypeKey(String internalTypeKey) {
 		this.internalTypeKey = internalTypeKey;
 	}
@@ -209,13 +209,13 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field("updated_timestamp")
+	@Field(UPDATED_TIMESTAMP)
 	public void setUpdatedTimestamp(Long updatedTimestamp) {
 		this.updatedTimestamp = updatedTimestamp;
 	}
 
 	@Override
-	@Field("moderation_score")
+	@Field(MODERATION_SCORE)
 	public void setModerationScore(Long moderationScore) {
 		this.moderationScore = moderationScore;
 	}

@@ -20,7 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
@@ -177,7 +177,7 @@ public class WhitelistRest extends BaseRest {
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
@@ -209,7 +209,7 @@ public class WhitelistRest extends BaseRest {
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
-			Logger.getLogger(SolrAnnotationConst.ROOT).error(e);
+			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}

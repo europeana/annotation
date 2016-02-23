@@ -16,15 +16,15 @@ import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.service.SolrTagService;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationFields;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
+import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 public class SolrTagServiceImpl implements SolrTagService {
 
 	SolrServer solrServer;
 
 //	private static final Logger log = Logger.getLogger(SolrTagServiceImpl.class);
-	private static final Logger log = Logger.getLogger(SolrAnnotationConst.ROOT);
+	private static final Logger log = Logger.getLogger(SolrSyntaxConstants.ROOT);
 	
 	public void setSolrServer(SolrServer solrServer) {
 		this.solrServer = solrServer;
@@ -108,7 +108,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 			
 		List<? extends SolrTag> res = null;
 		
-	    res = search(SolrAnnotationConst.ALL_SOLR_ENTRIES);
+	    res = search(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
 	    
 	    return res;
 	}
@@ -197,7 +197,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 //	    query.addFilterQuery(SolrAnnotationConst.LABEL + ":" + searchTerm);
 //	    query.addFilterQuery("label:OK");
 //TODO: update this
-	    query.setFields(SolrAnnotationFields.BODY_VALUE);
+	    query.setFields(SolrAnnotationConstants.BODY_VALUE);
 //	    query.setFields("label");
 	    
 	    /**
@@ -259,7 +259,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	 */
 	public void cleanUpAll() throws TagServiceException {
     	log.info("clean up all solr tags");
-    	deleteByQuery(SolrAnnotationConst.ALL_SOLR_ENTRIES);
+    	deleteByQuery(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
 	}
 
 	@Override

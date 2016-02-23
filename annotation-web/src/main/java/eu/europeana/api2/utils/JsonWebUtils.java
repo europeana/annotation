@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.jsonldjava.utils.JSONUtils;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConst;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 public class JsonWebUtils {
 	
@@ -90,10 +90,10 @@ public class JsonWebUtils {
 //				} else {
 					prefix = "";
 				//}
-				query = prefix + field + SolrAnnotationConst.DELIMETER + query;
+				query = prefix + field + SolrSyntaxConstants.DELIMETER + query;
 //			}
 		} else {
-			query = SolrAnnotationConst.ALL_SOLR_ENTRIES;
+			query = SolrSyntaxConstants.ALL_SOLR_ENTRIES;
 		}
 		return query;
 	}
