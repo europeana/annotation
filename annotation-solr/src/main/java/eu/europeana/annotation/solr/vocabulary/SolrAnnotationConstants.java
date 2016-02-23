@@ -9,7 +9,7 @@ public interface SolrAnnotationConstants {
 	
 	public static final String BODY_VALUE = "body_value";
 	public static final String BODY_TEXT  = "body_text";
-	public static final String BODY_INTERNAL_TYPE_KEY = "body_internal_type";
+	public static final String BODY_INTERNAL_TYPE_KEY = "body_internal_type_key";
 	public static final String INTERNAL_TYPE_KEY = "internal_type_key";	
 	public static final String MODERATION_SCORE = "moderation_score";
 	public static final String UPDATED_TIMESTAMP = "updated_timestamp";
