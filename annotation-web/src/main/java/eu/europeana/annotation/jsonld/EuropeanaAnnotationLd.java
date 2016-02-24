@@ -39,6 +39,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 
 public class EuropeanaAnnotationLd extends JsonLd {
 
@@ -176,12 +177,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
     }
 
     /**
-     * This method converts AnnotationLd to Annotation object.
+     * This method converts the jsonld representation (EuropeanaAnnotationLd) to model object (Annotation).
      * @return Annotation object
+     * @throws RequestBodyValidationException 
      */
     @SuppressWarnings("rawtypes")
-    @Deprecated
-	public Annotation getAnnotation() {
+    public Annotation getAnnotation() throws RequestBodyValidationException {
 		//TODO: must instantiate the correct class
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
@@ -273,25 +274,35 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 * This method retrieves Agent object for serializedBy field from AnnotationLd object.
 	 * @param mapValue
 	 * @return Agent object
+	 * @throws RequestBodyValidationException 
 	 */
-	private Agent getSerializedBy(Object mapValue) {
+	private Agent getSerializedBy(Object mapValue) throws RequestBodyValidationException {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
 		return getAgentByProperty(property, AgentTypes.SOFTWARE);
 	}
 
-	private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgentType) {
+	private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgentType) throws RequestBodyValidationException {
 		
 		Agent agent = null;  
 		
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
+			AgentTypes agentType;
+			
 			String objectType = extractObjectType(propertyValue);
 			//if not available in the input string use the default one
 			if(objectType == null)
-				objectType = defaultAgentType.name();
+				agentType = defaultAgentType;
+			else{
+				agentType = AgentTypes.getByJsonValue(objectType);
+				//wrong type
+				if(agentType == null)
+					throw new RequestBodyValidationException(RequestBodyValidationException.MESSAGE_PARSE_BODY + "Invalid Agent Type: ", objectType);
+				
+			}
 			
-			agent = AgentObjectFactory.getInstance().createModelObjectInstance(objectType);
+			agent = AgentObjectFactory.getInstance().createObjectInstance(agentType);
 			if (hasValue(propertyValue, WebAnnotationFields.INPUT_STRING)) 
 				agent.setInputString(propertyValue.getValues().get(WebAnnotationFields.INPUT_STRING));
 			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
@@ -316,7 +327,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 * @return
 	 */
 	private String extractObjectType(JsonLdPropertyValue propertyValue) {
-		return extractObjectType(propertyValue, WebAnnotationFields.AT_TYPE);
+		return extractObjectType(propertyValue, WebAnnotationFields.AT_TYPE);		
 	}
 
 	private String extractObjectType(JsonLdPropertyValue propertyValue, String fieldName) {
@@ -328,8 +339,9 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 * This method retrieves Agent object for annotatedBy field from AnnotationLd object.
 	 * @param mapValue
 	 * @return Agent object
+	 * @throws RequestBodyValidationException 
 	 */
-	private Agent getAnnotatedBy(Object mapValue) {
+	private Agent getAnnotatedBy(Object mapValue) throws RequestBodyValidationException {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
 		return getAgentByProperty(property, AgentTypes.PERSON);
 	}
@@ -791,8 +803,8 @@ public class EuropeanaAnnotationLd extends JsonLd {
 			Agent agent) {
        	if(agent.getOpenId() != null)
        		propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
-        if (!StringUtils.isBlank(agent.getType())) 
-        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, agent.getType());
+        if (!StringUtils.isBlank(agent.getType())) //convert internal type to json value
+        	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, AgentTypes.valueOf(agent.getInternalType()).getJsonValue());
         if (!StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (!StringUtils.isBlank(agent.getHomepage())) 
