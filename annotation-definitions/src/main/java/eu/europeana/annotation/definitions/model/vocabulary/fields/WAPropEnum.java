@@ -21,15 +21,19 @@ public enum WAPropEnum implements WebAnnotationProperty{
 	 * @param propertyName
 	 * @return
 	 */
-	public static WAPropEnum getWAProperty(String jsonPropName){
+	public static WAPropEnum getByJsonProperty(String jsonPropName){
 		String[] values = jsonPropName.split(COLON, 2);
 		//last token
 		String value = values[values.length -1];
 		//remove "@"
 		if(value.startsWith(AT));
 			value = value.substring(1);
-			
-		return valueOf(value.toUpperCase());
+		try{
+			return valueOf(value.toUpperCase());
+		}catch(NullPointerException e){
+			//if not found return null
+			return null;
+		}
 	}
 	
 	@Override
