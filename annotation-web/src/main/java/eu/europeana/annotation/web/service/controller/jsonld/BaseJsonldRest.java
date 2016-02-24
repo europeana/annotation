@@ -25,8 +25,8 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
+import eu.europeana.annotation.utils.parse.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
@@ -61,11 +61,11 @@ public class BaseJsonldRest extends BaseRest{
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 			
 			//SET DEFAULTS 
-			if(webAnnotation.getSerializedBy() == null)
-				webAnnotation.setSerializedBy(buildDefaultSerializedBy(app));
+			if(webAnnotation.getGenerator() == null)
+				webAnnotation.setGenerator(buildDefaultSerializedBy(app));
 			
-			if(webAnnotation.getAnnotatedBy() == null)
-				webAnnotation.setAnnotatedBy(buildDefaultAnnotatedBy(app));
+			if(webAnnotation.getCreator() == null)
+				webAnnotation.setCreator(buildDefaultAnnotatedBy(app));
 			
 
 			// 2. validate
@@ -180,7 +180,7 @@ public class BaseJsonldRest extends BaseRest{
 			if(annotation.getLastUpdate() != null)
 				etag = annotation.getLastUpdate().hashCode();
 			else
-				etag = annotation.getSerializedAt().hashCode();
+				etag = annotation.getGenerated().hashCode();
 				
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
@@ -379,14 +379,14 @@ public class BaseJsonldRest extends BaseRest{
 			+ " to: " + updatedWebAnnotation.getMotivationType());
 //		if (updatedWebAnnotation.getMotivation() != null) 
 //			currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-		if (updatedWebAnnotation.getAnnotatedAt() != null) 
-			storedAnnotation.setAnnotatedAt(updatedWebAnnotation.getAnnotatedAt());
-		if (updatedWebAnnotation.getAnnotatedBy() != null) 
-			storedAnnotation.setAnnotatedBy(updatedWebAnnotation.getAnnotatedBy());
-		if (updatedWebAnnotation.getSerializedAt() != null) 
-			storedAnnotation.setSerializedAt(updatedWebAnnotation.getSerializedAt());
-		if (updatedWebAnnotation.getSerializedBy() != null) 
-			storedAnnotation.setSerializedBy(updatedWebAnnotation.getSerializedBy());
+		if (updatedWebAnnotation.getCreated() != null) 
+			storedAnnotation.setCreated(updatedWebAnnotation.getCreated());
+		if (updatedWebAnnotation.getCreator() != null) 
+			storedAnnotation.setCreator(updatedWebAnnotation.getCreator());
+		if (updatedWebAnnotation.getGenerated() != null) 
+			storedAnnotation.setGenerated(updatedWebAnnotation.getGenerated());
+		if (updatedWebAnnotation.getGenerator() != null) 
+			storedAnnotation.setGenerator(updatedWebAnnotation.getGenerator());
 		if (updatedWebAnnotation.getBody() != null) 
 			storedAnnotation.setBody(updatedWebAnnotation.getBody());
 		if (updatedWebAnnotation.getTarget() != null) 

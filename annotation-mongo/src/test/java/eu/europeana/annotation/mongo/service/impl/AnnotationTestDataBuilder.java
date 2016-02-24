@@ -55,14 +55,14 @@ public class AnnotationTestDataBuilder {
 	
 		assertNotNull(storedAnnotation.getAnnotationId().getIdentifier());
 		assertNotNull(((PersistentAnnotation) storedAnnotation)
-				.getAnnotatedAt());
+				.getCreated());
 		assertEquals(
-				((PersistentAnnotation) storedAnnotation).getAnnotatedAt(),
-				((PersistentAnnotation) storedAnnotation).getSerializedAt());
+				((PersistentAnnotation) storedAnnotation).getCreated(),
+				((PersistentAnnotation) storedAnnotation).getGenerated());
 	
 		assertNotNull(storedAnnotation.getBody());
 		assertNotNull(storedAnnotation.getTarget());
-		assertNotNull(storedAnnotation.getAnnotatedBy());
+		assertNotNull(storedAnnotation.getCreator());
 	}
 
 	protected ObjectTag buildObjectTag() {
@@ -74,7 +74,7 @@ public class AnnotationTestDataBuilder {
 		Agent creator = new SoftwareAgent();
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
-		persistentObject.setAnnotatedBy(creator);
+		persistentObject.setCreator(creator);
 		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
 		return persistentObject;
 	}
@@ -125,10 +125,10 @@ public class AnnotationTestDataBuilder {
 		Agent creator = new SoftwareAgent();
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
-		persistentObject.setAnnotatedBy(creator);
+		persistentObject.setCreator(creator);
 		
 		//set serializeb by
-		persistentObject.setSerializedBy(creator);
+		persistentObject.setGenerator(creator);
 		
 		//motivation
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());

@@ -26,13 +26,13 @@ public interface SolrAnnotation extends Annotation {
 	
 	public String getInternalTypeKey();
 	
-	Date getAnnotatedAt();
+	Date getCreated();
 
-	void setAnnotatedAt(Date annotatedAt);
+	void setCreated(Date annotatedAt);
 
-	String getAnnotatedByString();
+	String getCreatorString();
 
-	void setAnnotatedByString(String annotatedBy);
+	void setCreatorString(String annotatedBy);
 
 	void setAnnotationIdUrl(String annotationIdUrl);
 
@@ -70,13 +70,13 @@ public interface SolrAnnotation extends Annotation {
 
 	Long getUpdatedTimestamp();
 
-	void setSerializedAtTimestamp(Long serializedAtTimestamp);
+	void setGeneratedTimestamp(Long serializedAtTimestamp);
 
-	Long getSerializedAtTimestamp();
+	Long getGeneratedTimestamp();
 
-	void setAnnotatedAtTimestamp(Long annotatedAtTimestamp);
+	void setCreatedTimestamp(Long annotatedAtTimestamp);
 
-	Long getAnnotatedAtTimestamp();
+	Long getCreatedTimestamp();
 
 	public void setModerationScore(Long moderationScore);
 	

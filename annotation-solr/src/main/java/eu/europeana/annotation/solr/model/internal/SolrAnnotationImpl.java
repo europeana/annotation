@@ -19,35 +19,35 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String bodyValue;
 	private String bodyInternalTypeKey;
 	private String targetInternalTypeKey;
-	private String annotatedByString;
+	private String creatorString;
 	private String internalTypeKey;
 	private String bodyTagId;
 	private Long updatedTimestamp;
-	private Long annotatedAtTimestamp;
-	private Long serializedAtTimestamp;
+	private Long createdTimestamp;
+	private Long generatedTimestamp;
 	private Long moderationScore;
 	
 	
 	@Override
-	public Long getAnnotatedAtTimestamp() {
-		return annotatedAtTimestamp;
+	public Long getCreatedTimestamp() {
+		return createdTimestamp;
 	}
 
 	@Override
-	@Field(ANNOTATED_AT_TIMESTAMP)
-	public void setAnnotatedAtTimestamp(Long annotatedAtTimestamp) {
-		this.annotatedAtTimestamp = annotatedAtTimestamp;
+	@Field(CREATED_TIMESTAMP)
+	public void setCreatedTimestamp(Long annotatedAtTimestamp) {
+		this.createdTimestamp = annotatedAtTimestamp;
 	}
 
 	@Override
-	public Long getSerializedAtTimestamp() {
-		return serializedAtTimestamp;
+	public Long getGeneratedTimestamp() {
+		return generatedTimestamp;
 	}
 
 	@Override
-	@Field(SERIALIZED_AT_TIMESTAMP)
-	public void setSerializedAtTimestamp(Long serializedAtTimestamp) {
-		this.serializedAtTimestamp = serializedAtTimestamp;
+	@Field(GENERATED_TIMESTAMP)
+	public void setGeneratedTimestamp(Long serializedAtTimestamp) {
+		this.generatedTimestamp = serializedAtTimestamp;
 	}
 
 	public String getBodyValue() {
@@ -176,20 +176,20 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(ANNOTATION_ID_URL2)
+	@Field(ANNOTATION_ID_URL)
 	public void setAnnotationIdUrl(String annotationIdUrl) {
 		this.annotationIdUrl = annotationIdUrl;
 	}
 
 	@Override
-	//@Field("annotatedBy_string")
-	public void setAnnotatedByString(String annotatedBy) {
-		this.annotatedByString = annotatedBy;
+	//@Field("creator_string")
+	public void setCreatorString(String annotatedBy) {
+		this.creatorString = annotatedBy;
 	}
 
 	@Override
-	public String getAnnotatedByString() {
-		return annotatedByString;
+	public String getCreatorString() {
+		return creatorString;
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		
 	public String toString() {
 		return "SolrAnnotation [annotationIdUrl:" + getAnnotationIdUrl() + ", annotationIdUrl:" + getAnnotationIdUrl()
-				+ ", annotatedAt:" + getAnnotatedAt() + ", bodyValue:" + getBodyValue() + "]";
+				+ ", annotatedAt:" + getCreated() + ", bodyValue:" + getBodyValue() + "]";
 	}
 
 }

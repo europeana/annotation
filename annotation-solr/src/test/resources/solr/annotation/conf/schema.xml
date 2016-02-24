@@ -128,12 +128,12 @@
 		<field name="body_text" type="text" indexed="true" stored="false"
 			multiValued="false" />
 				
-		<!-- @Field("annotatedAt")  -->
-		<field name="annotated_at_timestamp" type="long"  indexed="true"
+		<!-- @Field("created")  -->
+		<field name="created_timestamp" type="long"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 				
-		<!-- @Field("serializedAt")  -->
-		<field name="serialized_at_timestamp" type="long"  indexed="true"
+		<!-- @Field("generated")  -->
+		<field name="generated_timestamp" type="long"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 				
 		<!-- @Field("moderationScore")  -->

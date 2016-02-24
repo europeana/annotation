@@ -86,7 +86,7 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setInternalType(annotation.getInternalType());
 		solrAnnotationImpl.setInternalTypeKey(annotation.getInternalType());
 		// solrAnnotationImpl.setInternalType(annotation.getInternalType());
-		solrAnnotationImpl.setAnnotatedBy(annotation.getAnnotatedBy());
+		solrAnnotationImpl.setCreator(annotation.getCreator());
 		Body body = annotation.getBody();
 
 		if (body != null) {
@@ -98,15 +98,15 @@ public class SolrAnnotationUtils {
 				body = convertToSolrMultilingual(body);
 		}
 
-		solrAnnotationImpl.setAnnotatedAt(annotation.getAnnotatedAt());
-		solrAnnotationImpl.setAnnotatedByString(annotation.getAnnotatedBy().getName());
+		solrAnnotationImpl.setCreated(annotation.getCreated());
+		solrAnnotationImpl.setCreatorString(annotation.getCreator().getName());
 		solrAnnotationImpl.setTarget(annotation.getTarget());
 		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
 
 		// solrAnnotationImpl.setLanguage(body.getLanguage());
 		solrAnnotationImpl.setMotivation(annotation.getMotivation());
-		solrAnnotationImpl.setSerializedAt(annotation.getSerializedAt());
-		solrAnnotationImpl.setSerializedBy(annotation.getSerializedBy());
+		solrAnnotationImpl.setGenerated(annotation.getGenerated());
+		solrAnnotationImpl.setGenerator(annotation.getGenerator());
 		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
 		solrAnnotationImpl.setAnnotationIdUrl(annotation.getAnnotationId().toHttpUrl());
 
@@ -114,8 +114,8 @@ public class SolrAnnotationUtils {
 		// TODO: add the equivalent to solr configs
 		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
 		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
-		solrAnnotationImpl.setAnnotatedAtTimestamp(annotation.getAnnotatedAt().getTime());
-		solrAnnotationImpl.setSerializedAtTimestamp(annotation.getSerializedAt().getTime());
+		solrAnnotationImpl.setCreatedTimestamp(annotation.getCreated().getTime());
+		solrAnnotationImpl.setGeneratedTimestamp(annotation.getGenerated().getTime());
 		
 		if (summary != null) {
 			solrAnnotationImpl.setModerationScore((long) summary.getScore()); 

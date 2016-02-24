@@ -1,4 +1,4 @@
-package eu.europeana.annotation.jsonld;
+package eu.europeana.annotation.utils.parse.jsonld;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,12 +7,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-
-import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -39,7 +36,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.utils.JsonUtils;
-import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 
 public class EuropeanaAnnotationLd extends JsonLd {
 
@@ -96,35 +92,35 @@ public class EuropeanaAnnotationLd extends JsonLd {
 //        if (!StringUtils.isBlank(annotation.getType())) 
 //        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
         
-        if(annotation.getSerializedBy().getInputString() == null || isJsonObjectInput(annotation.getSerializedBy().getInputString())){
+        if(annotation.getGenerator().getInputString() == null || isJsonObjectInput(annotation.getGenerator().getInputString())){
         	//user input string provided
         	//TODO: why reset?
-        	annotation.getSerializedBy().setInputString(null);
+        	annotation.getGenerator().setInputString(null);
             JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
             if (serializedByProperty != null)
             	jsonLdResource.putProperty(serializedByProperty);                
         } else {
         	//input string is a single value
-        	jsonLdResource.putProperty(WebAnnotationFields.GENERATOR, annotation.getSerializedBy().getInputString());
+        	jsonLdResource.putProperty(WebAnnotationFields.GENERATOR, annotation.getGenerator().getInputString());
         }
         
         
         
-        if (annotation.getAnnotatedAt() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.CREATED, TypeUtils.convertDateToStr(annotation.getAnnotatedAt()));
+        if (annotation.getCreated() != null) 
+        	jsonLdResource.putProperty(WebAnnotationFields.CREATED, TypeUtils.convertDateToStr(annotation.getCreated()));
 
-        if (annotation.getAnnotatedBy().getInputString() == null  || isJsonObjectInput(annotation.getAnnotatedBy().getInputString())){
+        if (annotation.getCreator().getInputString() == null  || isJsonObjectInput(annotation.getCreator().getInputString())){
         	//TODO: why reset?
-        	annotation.getAnnotatedBy().setInputString(null);
+        	annotation.getCreator().setInputString(null);
             JsonLdProperty annotatedByProperty = addAnnotatedByProperty(annotation);
             if (annotatedByProperty != null)
             	jsonLdResource.putProperty(annotatedByProperty);                
         } else {
-        	jsonLdResource.putProperty(WebAnnotationFields.CREATOR, annotation.getAnnotatedBy().getInputString());
+        	jsonLdResource.putProperty(WebAnnotationFields.CREATOR, annotation.getCreator().getInputString());
         }
         	
-        if (annotation.getSerializedAt() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.GENERATED, TypeUtils.convertDateToStr(annotation.getSerializedAt()));
+        if (annotation.getGenerated() != null) 
+        	jsonLdResource.putProperty(WebAnnotationFields.GENERATED, TypeUtils.convertDateToStr(annotation.getGenerated()));
         if (!StringUtils.isBlank(annotation.getMotivation())) 
         	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATION, annotation.getMotivation());
         JsonLdProperty styledByProperty = addStyledByProperty(annotation);
@@ -182,7 +178,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
      * @throws RequestBodyValidationException 
      */
     @SuppressWarnings("rawtypes")
-    public Annotation getAnnotation() throws RequestBodyValidationException {
+    public Annotation getAnnotation() {
 		//TODO: must instantiate the correct class
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
@@ -208,12 +204,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		    case WebAnnotationFields.CREATED:
 		    	String annotatedAtValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(annotatedAtValue)) 
-					annotation.setAnnotatedAt(TypeUtils.convertStrToDate(annotatedAtValue));
+					annotation.setCreated(TypeUtils.convertStrToDate(annotatedAtValue));
 		    	break;
 		    case WebAnnotationFields.GENERATED:
 		    	String serializedAtValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(serializedAtValue)) 
-					annotation.setSerializedAt(TypeUtils.convertStrToDate(serializedAtValue));
+					annotation.setGenerated(TypeUtils.convertStrToDate(serializedAtValue));
 		    	break;
 		    case WebAnnotationFields.MOTIVATION:
 		    	String motivationValue = getLiteralPropertyValue(mapValue);
@@ -230,11 +226,11 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		    	break;
 		    case WebAnnotationFields.GENERATOR:
 				Agent serializedBy = getSerializedBy(mapValue);
-				annotation.setSerializedBy(serializedBy);
+				annotation.setGenerator(serializedBy);
 		    	break;
 		    case WebAnnotationFields.CREATOR:
 				Agent annotatedBy = getAnnotatedBy(mapValue);
-				annotation.setAnnotatedBy(annotatedBy);
+				annotation.setCreator(annotatedBy);
 		    	break;
 		    case WebAnnotationFields.STYLED_BY:
 		    	Style style = getStyledBy(mapValue);
@@ -276,12 +272,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 * @return Agent object
 	 * @throws RequestBodyValidationException 
 	 */
-	private Agent getSerializedBy(Object mapValue) throws RequestBodyValidationException {
+	private Agent getSerializedBy(Object mapValue) {
 		JsonLdProperty property = (JsonLdProperty) mapValue;
 		return getAgentByProperty(property, AgentTypes.SOFTWARE);
 	}
 
-	private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgentType) throws RequestBodyValidationException {
+	private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgentType){
 		
 		Agent agent = null;  
 		
@@ -298,7 +294,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 				agentType = AgentTypes.getByJsonValue(objectType);
 				//wrong type
 				if(agentType == null)
-					throw new RequestBodyValidationException(RequestBodyValidationException.MESSAGE_PARSE_BODY + "Invalid Agent Type: ", objectType);
+					throw new AnnotationAttributeInstantiationException(AnnotationAttributeInstantiationException.DEFAULT_MESSAGE, objectType);
 				
 			}
 			
@@ -341,7 +337,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	 * @return Agent object
 	 * @throws RequestBodyValidationException 
 	 */
-	private Agent getAnnotatedBy(Object mapValue) throws RequestBodyValidationException {
+	private Agent getAnnotatedBy(Object mapValue){
 		JsonLdProperty property = (JsonLdProperty) mapValue;
 		return getAgentByProperty(property, AgentTypes.PERSON);
 	}
@@ -582,32 +578,32 @@ public class EuropeanaAnnotationLd extends JsonLd {
      * @param serializedAnnotationLd
      * @return Annotation object
      */
-    public static Annotation deserialise(String serialisedAnnotationLd) {
-    	Annotation res = null;
-        Gson gson = new Gson();
-        AnnotationLd annotationLdDeserialisedObject = gson.fromJson(serialisedAnnotationLd, AnnotationLd.class);
-        String annotationLdDeserialisedString = annotationLdDeserialisedObject.toString();
-        AnnotationLd.toConsole("deserialise: ", annotationLdDeserialisedString);
-        try {
-			JsonLd deserialisedJsonLd = JsonLdParser.parseExt(annotationLdDeserialisedString);
-			res = AnnotationLd.getAnnotationFromJsonLd(deserialisedJsonLd);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return res;
-    }
+//    public static Annotation deserialise(String serialisedAnnotationLd) {
+//    	Annotation res = null;
+//        Gson gson = new Gson();
+//        AnnotationLd annotationLdDeserialisedObject = gson.fromJson(serialisedAnnotationLd, AnnotationLd.class);
+//        String annotationLdDeserialisedString = annotationLdDeserialisedObject.toString();
+//        AnnotationLd.toConsole("deserialise: ", annotationLdDeserialisedString);
+//        try {
+//			JsonLd deserialisedJsonLd = JsonLdParser.parseExt(annotationLdDeserialisedString);
+//			res = AnnotationLd.getAnnotationFromJsonLd(deserialisedJsonLd);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//        return res;
+//    }
     
-    /**
-     * This method converts deserialised JsonLd to Annotation object.
-     * @param deserialisedJsonLd
-     * @return Annotation object
-     */
-    public static Annotation getAnnotationFromJsonLd(JsonLd deserialisedJsonLd) {
-    	Annotation res = null;
-    	AnnotationLd annotationLd = new AnnotationLd(deserialisedJsonLd);
-    	res = annotationLd.getAnnotation();
-    	return res;
-    }
+//    /**
+//     * This method converts deserialised JsonLd to Annotation object.
+//     * @param deserialisedJsonLd
+//     * @return Annotation object
+//     */
+//    public static Annotation getAnnotationFromJsonLd(JsonLd deserialisedJsonLd) {
+//    	Annotation res = null;
+//    	AnnotationLd annotationLd = new AnnotationLd(deserialisedJsonLd);
+//    	res = annotationLd.getAnnotation();
+//    	return res;
+//    }
     
 	private JsonLdProperty addTargetProperty(Annotation annotation) {
 		JsonLdProperty targetProperty = new JsonLdProperty(WebAnnotationFields.TARGET);
@@ -791,7 +787,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	private JsonLdProperty addSerializedByProperty(Annotation annotation) {
 		JsonLdProperty serializedByProperty = new JsonLdProperty(WebAnnotationFields.GENERATOR);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
-        Agent agent = annotation.getSerializedBy();        
+        Agent agent = annotation.getGenerator();        
         addAgentByProperty(propertyValue, agent);
         if (propertyValue.getValues().size() == 0)
         	return null;
@@ -814,7 +810,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	private JsonLdProperty addAnnotatedByProperty(Annotation annotation) {
 		JsonLdProperty annotatedByProperty = new JsonLdProperty(WebAnnotationFields.CREATOR);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
-        Agent agent = annotation.getAnnotatedBy();  
+        Agent agent = annotation.getCreator();  
         addAgentByProperty(propertyValue, agent);
         if (propertyValue.getValues().size() == 0)
         	return null;

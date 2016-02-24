@@ -19,13 +19,13 @@ public abstract class AbstractAnnotation implements Annotation {
 	protected AnnotationId annotationId = null;
 	private String type;
 	private String internalType;
-	private Date annotatedAt;
-	private Agent annotatedBy;
+	private Agent creator;
+	private Agent generator;
+	private Date created;
+	private Date generated;
 	private Body body;
 	private Target target;
 	private String motivation;
-	private Date serializedAt;
-	private Agent serializedBy;
 	private Style styledBy;	
 	protected MotivationTypes motivationType;	
 	private boolean disabled;	
@@ -41,7 +41,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	
 	@Override
 	public boolean equals(Object other) {
-	    if (!(other instanceof Annotation)) {
+	    //TODO: change implementation This 
+		if (!(other instanceof Annotation)) {
 	        return false;
 	    }
 
@@ -69,14 +70,14 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    if ((this.getAnnotatedAt() != null) && (that.getAnnotatedAt() != null) &&
-	    		(!this.getAnnotatedAt().equals(that.getAnnotatedAt()))) {
+	    if ((this.getCreated() != null) && (that.getCreated() != null) &&
+	    		(!this.getCreated().equals(that.getCreated()))) {
 	    	System.out.println("Annotation objects have different 'annotatedAt' fields.");
 	    	res = false;
 	    }
 	    
-	    if ((this.getAnnotatedBy() != null) && (that.getAnnotatedBy() != null) &&
-	    		(!this.getAnnotatedBy().equals(that.getAnnotatedBy()))) {
+	    if ((this.getCreator() != null) && (that.getCreator() != null) &&
+	    		(!this.getCreator().equals(that.getCreator()))) {
 	    	System.out.println("Annotation objects have different 'annotatedBy' objects.");
 	    	res = false;
 	    }
@@ -99,14 +100,14 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    if ((this.getSerializedAt() != null) && (that.getSerializedAt() != null) &&
-	    		(!this.getSerializedAt().equals(that.getSerializedAt()))) {
+	    if ((this.getGenerated() != null) && (that.getGenerated() != null) &&
+	    		(!this.getGenerated().equals(that.getGenerated()))) {
 	    	System.out.println("Annotation objects have different 'serializedAt' fields.");
 	    	res = false;
 	    }
 	    
-	    if ((this.getSerializedBy() != null) && (that.getSerializedBy() != null) &&
-	    		(!this.getSerializedBy().equals(that.getSerializedBy()))) {
+	    if ((this.getGenerator() != null) && (that.getGenerator() != null) &&
+	    		(!this.getGenerator().equals(that.getGenerator()))) {
 	    	System.out.println("Annotation objects have different 'serializedBy' objects.");
 	    	res = false;
 	    }
@@ -138,14 +139,14 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    if ((this.getAnnotatedAt() != null) && (that.getAnnotatedAt() != null) &&
-	    		(!this.getAnnotatedAt().equals(that.getAnnotatedAt()))) {
+	    if ((this.getCreated() != null) && (that.getCreated() != null) &&
+	    		(!this.getCreated().equals(that.getCreated()))) {
 	    	System.out.println("Annotation objects have different 'annotatedAt' fields.");
 	    	res = false;
 	    }
 	    
-	    if ((this.getAnnotatedBy() != null) && (that.getAnnotatedBy() != null) &&
-	    		(!this.getAnnotatedBy().equalsContent(that.getAnnotatedBy()))) {
+	    if ((this.getCreator() != null) && (that.getCreator() != null) &&
+	    		(!this.getCreator().equalsContent(that.getCreator()))) {
 	    	System.out.println("Annotation objects have different 'annotatedBy' objects.");
 	    	res = false;
 	    }
@@ -168,14 +169,14 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    if ((this.getSerializedAt() != null) && (that.getSerializedAt() != null) &&
-	    		(!this.getSerializedAt().equals(that.getSerializedAt()))) {
+	    if ((this.getGenerated() != null) && (that.getGenerated() != null) &&
+	    		(!this.getGenerated().equals(that.getGenerated()))) {
 	    	System.out.println("Annotation objects have different 'serializedAt' fields.");
 	    	res = false;
 	    }
 	    
-	    if ((this.getSerializedBy() != null) && (that.getSerializedBy() != null) &&
-	    		(!this.getSerializedBy().equalsContent(that.getSerializedBy()))) {
+	    if ((this.getGenerator() != null) && (that.getGenerator() != null) &&
+	    		(!this.getGenerator().equalsContent(that.getGenerator()))) {
 	    	System.out.println("Annotation objects have different 'serializedBy' objects.");
 	    	res = false;
 	    }
@@ -258,18 +259,18 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 
 	@Override
-	public Date getAnnotatedAt() {
-		return annotatedAt;
+	public Date getCreated() {
+		return created;
 	}
 
 	@Override
-	public Agent getAnnotatedBy() {
-		return annotatedBy;
+	public Agent getCreator() {
+		return creator;
 	}
 
 	@Override
-	public void setAnnotatedBy(Agent annotatedBy) {
-		this.annotatedBy = annotatedBy;
+	public void setCreator(Agent annotatedBy) {
+		this.creator = annotatedBy;
 	}
 
 	@Override
@@ -316,8 +317,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 
 	@Override
-	public Date getSerializedAt() {
-		return serializedAt;
+	public Date getGenerated() {
+		return generated;
 	}
 
 	
@@ -332,23 +333,23 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 
 	@Override
-	public Agent getSerializedBy() {
-		return serializedBy;
+	public Agent getGenerator() {
+		return generator;
 	}
 
 	@Override
-	public void setSerializedBy(Agent serializedBy) {
-		this.serializedBy = serializedBy;
+	public void setGenerator(Agent serializedBy) {
+		this.generator = serializedBy;
 	}
 
 	@Override
-	public void setAnnotatedAt(Date annotatedAt) {
-		this.annotatedAt = annotatedAt;
+	public void setCreated(Date annotatedAt) {
+		this.created = annotatedAt;
 	}
 	
 	@Override
-	public void setSerializedAt(Date serializedAt) {
-		this.serializedAt = serializedAt;
+	public void setGenerated(Date serializedAt) {
+		this.generated = serializedAt;
 	}
 	
 	public void setAnnotationId(AnnotationId annotationId) {
@@ -403,12 +404,12 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "annotationId:" + annotationId.toString() + "\n";
 		if (type != null) 
 			res = res + "\t" + "type:" + type + "\n";
-		if (annotatedAt != null) 
-			res = res + "\t" + "annotatedAt:" + annotatedAt + "\n";
-		if (annotatedBy != null) 
-			res = res + "\t" + "annotatedBy:" + annotatedBy.toString() + "\n";
-		if (serializedBy != null) 
-			res = res + "\t" + "serializedBy:" + serializedBy.toString() + "\n";
+		if (created != null) 
+			res = res + "\t" + "annotatedAt:" + created + "\n";
+		if (creator != null) 
+			res = res + "\t" + "annotatedBy:" + creator.toString() + "\n";
+		if (generator != null) 
+			res = res + "\t" + "serializedBy:" + generator.toString() + "\n";
 		if (styledBy != null) 
 			res = res + "\t" + "styledBy:" + styledBy.toString() + "\n";
 		if (motivation != null) 

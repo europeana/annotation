@@ -18,8 +18,13 @@ public enum AgentTypes implements WebAnnoationKeyword{
 	 * @return
 	 */
 	public static AgentTypes getByJsonValue(String jsonValue){
+		
+		String[] values = jsonValue.split(":", 2);
+		//last token
+		String ignoreNamespace  = values[values.length -1];
+		
 		for(AgentTypes agentType : AgentTypes.values()){
-			if(agentType.getJsonValue().equalsIgnoreCase(jsonValue))
+			if(agentType.getJsonValue().equalsIgnoreCase(ignoreNamespace))
 				return agentType;
 		}
 		return null;

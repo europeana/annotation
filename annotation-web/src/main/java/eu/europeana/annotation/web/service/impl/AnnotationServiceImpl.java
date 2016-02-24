@@ -585,7 +585,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 //			throw new AnnotationStateException("Given user (" + user + ") does not match to the 'annotatedBy' user ("
 //					+ res.getAnnotatedBy().getName() + ").");
 		//TODO update when the authorization concept is specified
-		if(annotation.isPrivate() && !annotation.getAnnotatedBy().getOpenId().equals(user))
+		if(annotation.isPrivate() && !annotation.getCreator().getOpenId().equals(user))
 			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE, AnnotationStates.PRIVATE);
 
 	}

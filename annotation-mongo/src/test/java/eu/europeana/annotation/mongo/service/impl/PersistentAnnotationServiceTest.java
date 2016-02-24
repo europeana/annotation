@@ -302,10 +302,10 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		Agent creator = new SoftwareAgent();
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
-		persistentObject.setAnnotatedBy(creator);
+		persistentObject.setCreator(creator);
 		
 		//set serializeb by
-		persistentObject.setSerializedBy(creator);
+		persistentObject.setGenerator(creator);
 		
 		//motivation
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());

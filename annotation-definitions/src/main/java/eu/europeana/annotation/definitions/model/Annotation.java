@@ -18,10 +18,6 @@ public interface Annotation {
 
 	public abstract String getInternalType();
 
-	public abstract void setSerializedBy(Agent serializedBy);
-
-	public abstract Agent getSerializedBy();
-
 	public abstract void setStyledBy(Style styledBy);
 
 	public abstract Style getStyledBy();
@@ -40,17 +36,21 @@ public interface Annotation {
 
 	public abstract Body getBody();
 
-	public abstract void setAnnotatedBy(Agent annotatedBy);
+	public abstract void setCreator(Agent annotatedBy);
 
-	public abstract Agent getAnnotatedBy();
+	public abstract Agent getCreator();
 
-	public abstract Date getAnnotatedAt();
+	public abstract void setGenerator(Agent serializedBy);
+
+	public abstract Agent getGenerator();
+
+	public abstract Date getCreated();
 	
-	public abstract Date getSerializedAt();
+	public abstract Date getGenerated();
 
-	void setSerializedAt(Date serializedAt);
+	void setGenerated(Date serializedAt);
 
-	void setAnnotatedAt(Date annotatedAt);
+	void setCreated(Date annotatedAt);
 	
 	public abstract void setType(String type);
 

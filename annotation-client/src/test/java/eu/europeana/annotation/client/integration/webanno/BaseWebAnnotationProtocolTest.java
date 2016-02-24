@@ -35,13 +35,13 @@ public class BaseWebAnnotationProtocolTest {
 
 	String START = "{";
 	String END = "}";
-	String TYPE = "\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\","
+	String TYPE = "\"@context\": \"" + WebAnnotationFields.WA_CONTEXT + "\","
 			+ "\"@type\": \"oa:Annotation\",";
 
-	String ANNOTATED_SERIALIZED = "\"annotatedBy\": {" + "\"@id\": \"https://www.historypin.org/en/person/55376/\","
-			+ "\"@type\": \"foaf:Person\"," + "\"name\": \"John Smith\"" + "},"
-			+ "\"annotatedAt\": \"2015-02-27T12:00:43Z\"," + "\"serializedAt\": \"2015-02-28T13:00:34Z\","
-			+ "\"serializedBy\": \"http://www.historypin.org\",";
+	String ANNOTATED_SERIALIZED = "\"creator\": {" + "\"@id\": \"https://www.historypin.org/en/person/55376/\","
+			+ "\"@type\": \"Person\"," + "\"name\": \"John Smith\"" + "},"
+			+ "\"created\": \"2015-02-27T12:00:43Z\"," + "\"generated\": \"2015-02-28T13:00:34Z\","
+			+ "\"generator\": \"http://www.historypin.org\",";
 
 	String EQUIVALENT_TO = "\"oa:equivalentTo\": \"https://www.historypin.org/en/item/456\",";
 
@@ -53,14 +53,14 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
 			 "\"motivation\": \"oa:tagging\"," +
-		     "\"annotatedBy\": {" +
+		     "\"creator\": {" +
 		     "\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
-		     "\"@type\": \"foaf:Person\"," +
+		     "\"@type\": \"Person\"," +
 		     "\"name\": \"John Smith\"" +
 		     "}," +
-		     "\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
-		     "\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
-		     "\"serializedBy\": \"http://www.historypin.org\"," +
+		     "\"created\": \"2015-02-27T12:00:43Z\"," +
+		     "\"generated\": \"2015-02-28T13:00:34Z\"," +
+		     "\"generator\": \"http://www.historypin.org\"," +
 		     "\"body\": \"" + BODY_VALUE_TO_TRIM + "\"," +
 			 "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
 

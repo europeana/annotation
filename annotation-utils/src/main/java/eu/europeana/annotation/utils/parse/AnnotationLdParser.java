@@ -31,6 +31,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
+/**
+ * Replaced by EuropeanaAnnotationLd
+ * @author GordeaS
+ *
+ */
 public class AnnotationLdParser extends JsonLdParser {
 
 	protected final Logger logger = Logger.getLogger(this.getClass());
@@ -227,20 +232,20 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setAnnotationId(annotationId);
 			break;
 		case WebAnnotationFields.CREATED:
-			anno.setAnnotatedAt(TypeUtils.convertStrToDate((String) valueObject));
+			anno.setCreated(TypeUtils.convertStrToDate((String) valueObject));
 			break;
 		case WebAnnotationFields.CREATOR:
 			Agent annotator = parseAnnotator(valueObject);
 			annotator.setInputString(valueObject.toString());
-			anno.setAnnotatedBy(annotator);
+			anno.setCreator(annotator);
 			break;
 		case WebAnnotationFields.GENERATED:
-			anno.setSerializedAt(TypeUtils.convertStrToDate((String) valueObject));
+			anno.setGenerated(TypeUtils.convertStrToDate((String) valueObject));
 			break;
 		case WebAnnotationFields.GENERATOR:
 			Agent serializer = parseSerializer(valueObject);
 			serializer.setInputString(valueObject.toString());
-			anno.setSerializedBy(serializer);
+			anno.setGenerator(serializer);
 			break;
 		case WebAnnotationFields.MOTIVATION:
 			anno.setMotivation((String) valueObject);
@@ -497,10 +502,9 @@ public class AnnotationLdParser extends JsonLdParser {
 	private Agent parseAgent(JSONObject valueObject) throws JsonParseException {
 		try {
 			String webType = (String) valueObject.get(WebAnnotationFields.AT_TYPE);
-			String[] parts = webType.split(":");
-			String agentType = parts[parts.length - 1];
-
-			Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(agentType);
+			AgentTypes agentType = AgentTypes.getByJsonValue(webType);
+			
+			Agent agent = AgentObjectFactory.getInstance().createObjectInstance(agentType);
 			// agent.addType(webType);
 			agent.setType(webType);
 			if (valueObject.has(WebAnnotationFields.AT_ID))

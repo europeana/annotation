@@ -33,8 +33,8 @@ public class TaggingTest extends BaseWebAnnotationProtocolTest {
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 		
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getAnnotatedBy());
-		assertNotNull(storedAnno.getSerializedBy());
+		assertNotNull(storedAnno.getCreator());
+		assertNotNull(storedAnno.getGenerator());
 		
 		
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();

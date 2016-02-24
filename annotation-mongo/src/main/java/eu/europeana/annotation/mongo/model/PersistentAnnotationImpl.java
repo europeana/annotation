@@ -37,10 +37,14 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	private String type;
 	private String internalType;
-	private Date annotatedAt;
 	
 	@Embedded
-	private Agent annotatedBy;
+	private Agent creator;
+	@Embedded
+	private Agent generator;
+	private Date created;
+	private Date generated;
+	
 	@Embedded
 	private Body body;
 	@Embedded
@@ -48,9 +52,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Target target;
 	
 	private String motivation;
-	private Date serializedAt;
-	@Embedded
-	private Agent serializedBy;
 	private Style styledBy;
 
 	private Long lastIndexedTimestamp;
@@ -95,12 +96,12 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.type = type;
 	}
 
-	public Agent getAnnotatedBy() {
-		return annotatedBy;
+	public Agent getCreator() {
+		return creator;
 	}
 
-	public void setAnnotatedBy(Agent annotatedBy) {
-		this.annotatedBy = annotatedBy;
+	public void setCreator(Agent annotatedBy) {
+		this.creator = annotatedBy;
 	}
 
 	public Body getBody() {
@@ -134,12 +135,12 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 
 	
 
-	public Agent getSerializedBy() {
-		return serializedBy;
+	public Agent getGenerator() {
+		return generator;
 	}
 
-	public void setSerializedBy(Agent serializedBy) {
-		this.serializedBy = serializedBy;
+	public void setGenerator(Agent serializedBy) {
+		this.generator = serializedBy;
 	}
 
 	public Style getStyledBy() {
@@ -151,33 +152,33 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	}
 
 	@Override
-	public Date getSerializedAt() {
-		return serializedAt;
+	public Date getGenerated() {
+		return generated;
 	}
 
 	@Override
-	public void setSerializedAt(Date serializedAt) {
-		this.serializedAt = serializedAt;
+	public void setGenerated(Date serializedAt) {
+		this.generated = serializedAt;
 		
 	}
 	
 	public void setSerializedAtTs(Long serializedAtTs) {
-		this.serializedAt = new Date(serializedAtTs);
+		this.generated = new Date(serializedAtTs);
 	}
 
 	@Override
-	public Date getAnnotatedAt() {
-		return annotatedAt;
+	public Date getCreated() {
+		return created;
 	}
 	
 	@Override
-	public void setAnnotatedAt(Date annotatedAt) {
-		this.annotatedAt = annotatedAt;
+	public void setCreated(Date annotatedAt) {
+		this.created = annotatedAt;
 		
 	}
 	
 	public void setAnnotatedAtTs(Long annotatedAtTs) {
-		this.annotatedAt = new Date(annotatedAtTs);
+		this.created = new Date(annotatedAtTs);
 	}
 
     @Override
@@ -199,7 +200,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	}
 	
 	public String toString() {
-		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", annotatedAt:" + getAnnotatedAt() + 
+		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", created:" + getCreated() + 
 				", Id:" + getId() + ", last update: " + getLastIndexedTimestamp() + ", disabled: " + isDisabled() + "]";
 	}
 

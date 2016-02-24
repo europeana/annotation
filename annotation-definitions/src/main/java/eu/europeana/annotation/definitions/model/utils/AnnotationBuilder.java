@@ -24,13 +24,13 @@ public class AnnotationBuilder {
 			Annotation to) {
 		to.setType(annotation.getType());
 		to.setInternalType(annotation.getInternalType());
-		to.setAnnotatedAt(annotation.getAnnotatedAt());
-		to.setAnnotatedBy(annotation.getAnnotatedBy());
+		to.setCreated(annotation.getCreated());
+		to.setCreator(annotation.getCreator());
 		to.setBody(annotation.getBody());
 		to.setTarget(annotation.getTarget());
 		to.setMotivation(annotation.getMotivation());
-		to.setSerializedAt(annotation.getSerializedAt());
-		to.setSerializedBy(annotation.getSerializedBy());
+		to.setGenerated(annotation.getGenerated());
+		to.setGenerator(annotation.getGenerator());
 		to.setStyledBy(annotation.getStyledBy());
 		to.setDisabled(annotation.isDisabled());
 		to.setSameAs(annotation.getSameAs());

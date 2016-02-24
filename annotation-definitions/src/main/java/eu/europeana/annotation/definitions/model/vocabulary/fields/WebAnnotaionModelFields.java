@@ -62,11 +62,4 @@ public interface WebAnnotaionModelFields {
 	public static final String NS_OWL = "owl";
 	public static final String NS_AS = "as";
 	
-	
-	public static final String LEGACY_ANNOTATED_BY = "annotatedBy";
-	public static final String LEGACY_ANNOTATED_AT = "annotatedAt";
-	public static final String LEGACY_SERIALIZED_AT = "serializedAt";
-	public static final String LEGACY_SERIALIZED_BY = "serializedBy";
-	
-	
 }

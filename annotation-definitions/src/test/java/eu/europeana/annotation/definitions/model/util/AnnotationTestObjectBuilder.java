@@ -116,8 +116,8 @@ public class AnnotationTestObjectBuilder {
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
         
-		annotation.setAnnotatedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
-        annotation.setSerializedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+		annotation.setCreated(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+        annotation.setGenerated(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
 
         // set target
 		Target target = buildTarget();
@@ -130,11 +130,11 @@ public class AnnotationTestObjectBuilder {
 				
 		// set annotatedBy
 		Agent annotatedByAgent = buildAnnotatedByAgent();
-		annotation.setAnnotatedBy(annotatedByAgent);
+		annotation.setCreator(annotatedByAgent);
 		
 		// set serializedBy
 		Agent agent = buildSerializedByAgent();
-		annotation.setSerializedBy(agent);
+		annotation.setGenerator(agent);
 				
 		// motivation
 		annotation.setMotivation(MotivationTypes.TAGGING.getOaType());
@@ -169,8 +169,8 @@ public class AnnotationTestObjectBuilder {
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
         
-		annotation.setAnnotatedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
-        annotation.setSerializedAt(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+		annotation.setCreated(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
+        annotation.setGenerated(TypeUtils.convertStrToDate("2012-11-10T09:08:07"));
 
         // set target
 		Target target = buildTarget();
@@ -183,11 +183,11 @@ public class AnnotationTestObjectBuilder {
 				
 		// set annotatedBy
 		Agent annotatedByAgent = buildAnnotatedByAgent();
-		annotation.setAnnotatedBy(annotatedByAgent);
+		annotation.setCreator(annotatedByAgent);
 		
 		// set serializedBy
 		Agent agent = buildSerializedByAgent();
-		annotation.setSerializedBy(agent);
+		annotation.setGenerator(agent);
 				
 		// motivation
 		annotation.setMotivation(MotivationTypes.TAGGING.getOaType());
@@ -250,8 +250,8 @@ public class AnnotationTestObjectBuilder {
 				AnnotationTypes.OBJECT_TAG.name());
 		
 		annotation.setType(null);
-        annotation.setAnnotatedAt(null);
-        annotation.setSerializedAt(null);
+        annotation.setCreated(null);
+        annotation.setGenerated(null);
 
         // set target
 		annotation.setTarget(null);
@@ -264,14 +264,14 @@ public class AnnotationTestObjectBuilder {
 		Agent annotatedByAgent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
 		annotatedByAgent .setName(null);
-		annotation.setAnnotatedBy(annotatedByAgent);
+		annotation.setCreator(annotatedByAgent);
 		
 		// set serializedBy
 		Agent serializedByAgent = AgentObjectFactory.getInstance().createModelObjectInstance(
 				AgentTypes.SOFTWARE.name());
 		serializedByAgent.setName(null);
 		serializedByAgent.setHomepage(null);
-		annotation.setSerializedBy(serializedByAgent);
+		annotation.setGenerator(serializedByAgent);
 				
 		// motivation
 		annotation.setMotivation(null);

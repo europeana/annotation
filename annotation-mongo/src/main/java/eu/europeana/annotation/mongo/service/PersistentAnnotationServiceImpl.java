@@ -90,11 +90,11 @@ public class PersistentAnnotationServiceImpl extends
 	 */
 	private void validatePersistentAnnotationExt(PersistentAnnotation object, Date now, boolean generateId) {
 			
-		if (object.getAnnotatedAt() == null)
-			object.setAnnotatedAt(now);
+		if (object.getCreated() == null)
+			object.setCreated(now);
 		
-		if(object.getSerializedAt() == null)
-			object.setSerializedAt(now);
+		if(object.getGenerated() == null)
+			object.setGenerated(now);
 		
 		// check Europeana ID
 		if (generateId && object.getId() != null)
@@ -120,8 +120,8 @@ public class PersistentAnnotationServiceImpl extends
 					AnnotationValidationException.ERROR_NULL_TARGET);
 
 		// check AnnotatedBy (creator)
-		if (object.getAnnotatedBy() == null
-				|| object.getAnnotatedBy().getName() == null)
+		if (object.getCreator() == null
+				|| object.getCreator().getName() == null)
 			throw new AnnotationValidationException(
 					AnnotationValidationException.ERROR_NULL_ANNOTATED_BY);
 
@@ -212,8 +212,8 @@ public class PersistentAnnotationServiceImpl extends
 			try {
 				tag = tagService.find(query);
 				if (tag == null) {
-					query.setCreator(object.getAnnotatedBy().getName() + " : "
-							+ object.getAnnotatedBy().getOpenId());
+					query.setCreator(object.getCreator().getName() + " : "
+							+ object.getCreator().getOpenId());
 					tag = tagService.create(query);
 				}
 
@@ -524,10 +524,10 @@ public class PersistentAnnotationServiceImpl extends
 			updateOperations.set(WebAnnotationFields.BODY, persistentAnnotation.getBody());
 		if (persistentAnnotation.getTarget() != null)
 			updateOperations.set(WebAnnotationFields.TARGET, persistentAnnotation.getTarget());
-		updateOperations.set(WebAnnotationFields.LEGACY_ANNOTATED_AT, persistentAnnotation.getAnnotatedAt());
-		updateOperations.set(WebAnnotationFields.LEGACY_ANNOTATED_BY, persistentAnnotation.getAnnotatedBy());
-		updateOperations.set(WebAnnotationFields.LEGACY_SERIALIZED_AT, persistentAnnotation.getSerializedAt());
-		updateOperations.set(WebAnnotationFields.LEGACY_SERIALIZED_BY, persistentAnnotation.getSerializedBy());
+		updateOperations.set(WebAnnotationFields.CREATED, persistentAnnotation.getCreated());
+		updateOperations.set(WebAnnotationFields.CREATOR, persistentAnnotation.getCreator());
+		updateOperations.set(WebAnnotationFields.GENERATED, persistentAnnotation.getGenerated());
+		updateOperations.set(WebAnnotationFields.GENERATOR, persistentAnnotation.getGenerator());
 		updateOperations.set(WebAnnotationFields.MOTIVATION, persistentAnnotation.getMotivation());
 		if(persistentAnnotation.getType() != null)
 			updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());

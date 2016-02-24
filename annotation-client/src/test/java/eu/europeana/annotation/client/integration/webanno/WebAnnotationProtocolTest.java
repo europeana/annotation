@@ -204,6 +204,8 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	//	assertTrue(response.getBody().equals(""));
 	//	System.out.println(response.getBody());
 		log.debug("Response body: " + response.getBody());
+		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
+			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 	}
 			
