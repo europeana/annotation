@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.BaseAnnotationApi;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements WebAnnotationProtocolApi {

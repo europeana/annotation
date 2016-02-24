@@ -12,7 +12,7 @@ import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 public class AnnotationJsonApiImpl extends BaseAnnotationApi implements AnnotationJsonApi {
 

@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.factory;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -7,7 +8,6 @@ import eu.europeana.annotation.definitions.model.factory.impl.SelectorObjectFact
 import eu.europeana.annotation.definitions.model.factory.impl.StyleObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationPartTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 
 public class ModelObjectFactory {
 

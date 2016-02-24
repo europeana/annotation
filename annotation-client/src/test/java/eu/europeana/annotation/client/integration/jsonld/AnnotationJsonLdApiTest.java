@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 /**
 * @Deprecated replaced by WebAnnotationProtocol

@@ -13,7 +13,7 @@ import org.junit.Before;
 import eu.europeana.annotation.client.AnnotationJsonLdApiImpl;
 import eu.europeana.annotation.client.EuropeanaLdApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 

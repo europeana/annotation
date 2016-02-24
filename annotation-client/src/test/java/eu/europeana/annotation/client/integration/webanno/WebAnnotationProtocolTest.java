@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 
 
 /**

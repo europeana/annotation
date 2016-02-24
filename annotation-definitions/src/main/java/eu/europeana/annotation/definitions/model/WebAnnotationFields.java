@@ -1,6 +1,6 @@
-package eu.europeana.annotation.definitions.model.vocabulary.fields;
+package eu.europeana.annotation.definitions.model;
 
-import eu.europeana.annotation.definitions.model.WebAnnotaionModelFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotaionModelFields;
 
 /**
  * @author GrafR

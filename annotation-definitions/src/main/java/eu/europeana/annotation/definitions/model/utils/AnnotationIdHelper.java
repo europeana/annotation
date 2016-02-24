@@ -6,10 +6,10 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 
 public class AnnotationIdHelper {
 

@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 
 /**
  * This is a class for Concept object that is a part of the Body object.
@@ -816,7 +816,7 @@ public class BaseConcept implements Concept {
 		if (getVocabulary() != null) 
 			res = res + "\t\t" + WebAnnotationFields.VOCABULARY + ":" + getVocabulary() + "\n";
 		if (getContext() != null) 
-			res = res + "\t\t" + WebAnnotationFields.CONTEXT + ":" + getVocabulary() + "\n";
+			res = res + "\t\t" + WebAnnotationFields.AT_CONTEXT + ":" + getVocabulary() + "\n";
 		if (getAncestors() != null) 
 			res = res + "\t\t" + WebAnnotationFields.ANCESTORS + ":" + getAncestors() + "\n";
 		if (getInScheme() != null) 

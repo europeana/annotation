@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
@@ -59,7 +60,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
 
 /**
@@ -267,7 +267,7 @@ public class AnnotationLd extends JsonLd {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
 			String internalType = extractInternalType(propertyValue);
-			String registeredInternalType = AgentTypes.isRegisteredAs(internalType);
+			String registeredInternalType = isRegisteredAs(internalType);
 			//if not set 
 			if (StringUtils.isBlank(registeredInternalType))
 				throw new AnnotationAttributeInstantiationException(internalType);
@@ -284,6 +284,24 @@ public class AnnotationLd extends JsonLd {
 		}
 		return agent;
 	}
+
+		
+	/**
+	 * 
+	 * @param test
+	 * @return
+	 */
+	@Deprecated
+	private String isRegisteredAs(String test) {
+
+	    for (AgentTypes c : AgentTypes.values()) {
+	        if (c.name().toLowerCase().equals(test.replace("_", "").toLowerCase())) {
+	            return c.name();
+	        }
+	    }
+
+	    return "";
+	}		
 
 	protected boolean hasValue(JsonLdPropertyValue propertyValue, String fieldName) {
 		return !StringUtils.isBlank(propertyValue.getValues().get(fieldName));

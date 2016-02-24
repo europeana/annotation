@@ -18,11 +18,11 @@ import eu.europeana.annotation.client.model.result.ConceptOperationResponse;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.JsonUtils;
 

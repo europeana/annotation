@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model;
+package eu.europeana.annotation.definitions.model.vocabulary.fields;
 
 public interface WebAnnotaionModelFields {
 
@@ -6,7 +6,7 @@ public interface WebAnnotaionModelFields {
 	/**
 	 * Model attribute names
 	 */
-	public static final String CONTEXT = "@context";
+	public static final String AT_CONTEXT = "@context";
 	public static final String ANNOTATED_BY = "annotatedBy";
 	public static final String ANNOTATED_AT = "annotatedAt";
 	public static final String NAME = "name";

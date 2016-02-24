@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.jsonldjava.utils.JSONUtils;
 
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 public class JsonWebUtils {

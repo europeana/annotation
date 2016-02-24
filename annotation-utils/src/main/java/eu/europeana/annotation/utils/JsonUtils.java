@@ -31,6 +31,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
@@ -47,7 +48,6 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelistEntry;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;

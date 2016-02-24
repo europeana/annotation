@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
@@ -37,7 +38,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
 
 public class EuropeanaAnnotationLd extends JsonLd {
@@ -82,7 +82,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
-    	jsonLdResource.putProperty(WebAnnotationFields.CONTEXT, WebAnnotationFields.WA_CONTEXT);   
+    	jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, WebAnnotationFields.WA_CONTEXT);   
         if (!StringUtils.isBlank(annotation.getType())) {
         	jsonLdResource.addType(annotation.getType());
         } else {

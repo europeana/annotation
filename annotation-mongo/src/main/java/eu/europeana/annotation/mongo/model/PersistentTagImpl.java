@@ -9,8 +9,8 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 
+import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
 
