@@ -226,18 +226,18 @@ public class AnnotationLdParser extends JsonLdParser {
 			AnnotationId annotationId = parseId(valueObject, jo);
 			anno.setAnnotationId(annotationId);
 			break;
-		case WebAnnotationFields.ANNOTATED_AT:
+		case WebAnnotationFields.CREATED:
 			anno.setAnnotatedAt(TypeUtils.convertStrToDate((String) valueObject));
 			break;
-		case WebAnnotationFields.ANNOTATED_BY:
+		case WebAnnotationFields.CREATOR:
 			Agent annotator = parseAnnotator(valueObject);
 			annotator.setInputString(valueObject.toString());
 			anno.setAnnotatedBy(annotator);
 			break;
-		case WebAnnotationFields.SERIALIZED_AT:
+		case WebAnnotationFields.GENERATED:
 			anno.setSerializedAt(TypeUtils.convertStrToDate((String) valueObject));
 			break;
-		case WebAnnotationFields.SERIALIZED_BY:
+		case WebAnnotationFields.GENERATOR:
 			Agent serializer = parseSerializer(valueObject);
 			serializer.setInputString(valueObject.toString());
 			anno.setSerializedBy(serializer);

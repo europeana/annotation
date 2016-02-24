@@ -7,11 +7,15 @@ public interface WebAnnotaionModelFields {
 	 * Model attribute names
 	 */
 	public static final String AT_CONTEXT = "@context";
-	public static final String ANNOTATED_BY = "annotatedBy";
-	public static final String ANNOTATED_AT = "annotatedAt";
+	//public static final String ANNOTATED_BY = "annotatedBy";
+	public static final String CREATOR = "creator";
+//	public static final String ANNOTATED_AT = "annotatedAt";
+	public static final String CREATED = "created";
 	public static final String NAME = "name";
-	public static final String SERIALIZED_AT = "serializedAt";
-	public static final String SERIALIZED_BY = "serializedBy";
+//	public static final String SERIALIZED_AT = "serializedAt";
+//	public static final String SERIALIZED_BY = "serializedBy";
+	public static final String GENERATED = "generated";
+	public static final String GENERATOR = "generator";
 	public static final String HOMEPAGE = "homepage";
 	public static final String MOTIVATION = "motivation";
 	public static final String STYLED_BY = "styledBy";
@@ -59,6 +63,10 @@ public interface WebAnnotaionModelFields {
 	public static final String NS_AS = "as";
 	
 	
+	public static final String LEGACY_ANNOTATED_BY = "annotatedBy";
+	public static final String LEGACY_ANNOTATED_AT = "annotatedAt";
+	public static final String LEGACY_SERIALIZED_AT = "serializedAt";
+	public static final String LEGACY_SERIALIZED_BY = "serializedBy";
 	
 	
 }

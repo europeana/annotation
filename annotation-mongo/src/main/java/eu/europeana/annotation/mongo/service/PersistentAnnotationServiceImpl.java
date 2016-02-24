@@ -524,10 +524,10 @@ public class PersistentAnnotationServiceImpl extends
 			updateOperations.set(WebAnnotationFields.BODY, persistentAnnotation.getBody());
 		if (persistentAnnotation.getTarget() != null)
 			updateOperations.set(WebAnnotationFields.TARGET, persistentAnnotation.getTarget());
-		updateOperations.set(WebAnnotationFields.ANNOTATED_AT, persistentAnnotation.getAnnotatedAt());
-		updateOperations.set(WebAnnotationFields.ANNOTATED_BY, persistentAnnotation.getAnnotatedBy());
-		updateOperations.set(WebAnnotationFields.SERIALIZED_AT, persistentAnnotation.getSerializedAt());
-		updateOperations.set(WebAnnotationFields.SERIALIZED_BY, persistentAnnotation.getSerializedBy());
+		updateOperations.set(WebAnnotationFields.LEGACY_ANNOTATED_AT, persistentAnnotation.getAnnotatedAt());
+		updateOperations.set(WebAnnotationFields.LEGACY_ANNOTATED_BY, persistentAnnotation.getAnnotatedBy());
+		updateOperations.set(WebAnnotationFields.LEGACY_SERIALIZED_AT, persistentAnnotation.getSerializedAt());
+		updateOperations.set(WebAnnotationFields.LEGACY_SERIALIZED_BY, persistentAnnotation.getSerializedBy());
 		updateOperations.set(WebAnnotationFields.MOTIVATION, persistentAnnotation.getMotivation());
 		if(persistentAnnotation.getType() != null)
 			updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());

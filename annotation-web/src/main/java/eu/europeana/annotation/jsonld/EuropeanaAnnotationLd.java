@@ -104,13 +104,13 @@ public class EuropeanaAnnotationLd extends JsonLd {
             	jsonLdResource.putProperty(serializedByProperty);                
         } else {
         	//input string is a single value
-        	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_BY, annotation.getSerializedBy().getInputString());
+        	jsonLdResource.putProperty(WebAnnotationFields.GENERATOR, annotation.getSerializedBy().getInputString());
         }
         
         
         
         if (annotation.getAnnotatedAt() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.ANNOTATED_AT, TypeUtils.convertDateToStr(annotation.getAnnotatedAt()));
+        	jsonLdResource.putProperty(WebAnnotationFields.CREATED, TypeUtils.convertDateToStr(annotation.getAnnotatedAt()));
 
         if (annotation.getAnnotatedBy().getInputString() == null  || isJsonObjectInput(annotation.getAnnotatedBy().getInputString())){
         	//TODO: why reset?
@@ -119,11 +119,11 @@ public class EuropeanaAnnotationLd extends JsonLd {
             if (annotatedByProperty != null)
             	jsonLdResource.putProperty(annotatedByProperty);                
         } else {
-        	jsonLdResource.putProperty(WebAnnotationFields.ANNOTATED_BY, annotation.getAnnotatedBy().getInputString());
+        	jsonLdResource.putProperty(WebAnnotationFields.CREATOR, annotation.getAnnotatedBy().getInputString());
         }
         	
         if (annotation.getSerializedAt() != null) 
-        	jsonLdResource.putProperty(WebAnnotationFields.SERIALIZED_AT, TypeUtils.convertDateToStr(annotation.getSerializedAt()));
+        	jsonLdResource.putProperty(WebAnnotationFields.GENERATED, TypeUtils.convertDateToStr(annotation.getSerializedAt()));
         if (!StringUtils.isBlank(annotation.getMotivation())) 
         	jsonLdResource.putProperty(WebAnnotationFields.MOTIVATION, annotation.getMotivation());
         JsonLdProperty styledByProperty = addStyledByProperty(annotation);
@@ -204,12 +204,12 @@ public class EuropeanaAnnotationLd extends JsonLd {
 				if (!StringUtils.isBlank(typeValue)) 
 					annotation.setType(typeValue);
 		    	break;
-		    case WebAnnotationFields.ANNOTATED_AT:
+		    case WebAnnotationFields.CREATED:
 		    	String annotatedAtValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(annotatedAtValue)) 
 					annotation.setAnnotatedAt(TypeUtils.convertStrToDate(annotatedAtValue));
 		    	break;
-		    case WebAnnotationFields.SERIALIZED_AT:
+		    case WebAnnotationFields.GENERATED:
 		    	String serializedAtValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(serializedAtValue)) 
 					annotation.setSerializedAt(TypeUtils.convertStrToDate(serializedAtValue));
@@ -227,11 +227,11 @@ public class EuropeanaAnnotationLd extends JsonLd {
 				Target target = getTarget(mapValue);						
 			    annotation.setTarget(target);
 		    	break;
-		    case WebAnnotationFields.SERIALIZED_BY:
+		    case WebAnnotationFields.GENERATOR:
 				Agent serializedBy = getSerializedBy(mapValue);
 				annotation.setSerializedBy(serializedBy);
 		    	break;
-		    case WebAnnotationFields.ANNOTATED_BY:
+		    case WebAnnotationFields.CREATOR:
 				Agent annotatedBy = getAnnotatedBy(mapValue);
 				annotation.setAnnotatedBy(annotatedBy);
 		    	break;
@@ -777,7 +777,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	}
 
 	private JsonLdProperty addSerializedByProperty(Annotation annotation) {
-		JsonLdProperty serializedByProperty = new JsonLdProperty(WebAnnotationFields.SERIALIZED_BY);
+		JsonLdProperty serializedByProperty = new JsonLdProperty(WebAnnotationFields.GENERATOR);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getSerializedBy();        
         addAgentByProperty(propertyValue, agent);
@@ -800,7 +800,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	}
 
 	private JsonLdProperty addAnnotatedByProperty(Annotation annotation) {
-		JsonLdProperty annotatedByProperty = new JsonLdProperty(WebAnnotationFields.ANNOTATED_BY);
+		JsonLdProperty annotatedByProperty = new JsonLdProperty(WebAnnotationFields.CREATOR);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getAnnotatedBy();  
         addAgentByProperty(propertyValue, agent);
