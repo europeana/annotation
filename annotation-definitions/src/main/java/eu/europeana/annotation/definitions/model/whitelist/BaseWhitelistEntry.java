@@ -2,7 +2,7 @@ package eu.europeana.annotation.definitions.model.whitelist;
 
 import java.util.Date;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 
 /**
  * This is a class for Whitelist object.

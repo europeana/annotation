@@ -1,61 +1,32 @@
-package eu.europeana.annotation.definitions.model;
+package eu.europeana.annotation.definitions.model.vocabulary.fields;
+
+import eu.europeana.annotation.definitions.model.WebAnnotaionModelFields;
 
 /**
  * @author GrafR
  * 
  */
 // TODO: move the field values to other interfaces/enumerations
-public interface WebAnnotationFields {
+public interface WebAnnotationFields extends WebAnnotaionModelFields{
 
-	/**
-	 * Helping constants for Annotation mapping to the JSON-LD format
-	 */
-	public static final String INTERNAL_TYPE = "internalType";
-	public static final String CONTEXT = "@context";
+	
 	public static final String SPLITTER = "#";
-	public static final String ANNOTATED_BY = "annotatedBy";
-	public static final String ANNOTATED_AT = "annotatedAt";
-	public static final String NAME = "name";
-	public static final String SERIALIZED_AT = "serializedAt";
-	public static final String SERIALIZED_BY = "serializedBy";
-	public static final String FOAF_HOMEPAGE = "foaf:homepage";
-	public static final String MOTIVATION = "motivation";
-	public static final String STYLED_BY = "styledBy";
-	public static final String SAME_AS = "sameAs";
-	public static final String EQUIVALENT_TO = "equivalentTo";
-	public static final String STATUS = "status";
+	
+	
+	
+	//TODO: move to appropriate location verify if still used
 	public static final String DISABLED = "disabled";
 	public static final String START_ON = "startOn";
 	public static final String LIMIT = "limit";
-	public static final String CONTENT_TYPE = "contentType";
-	public static final String HTTP_URI = "httpUri";
-	public static final String SOURCE = "source";
-	public static final String SELECTOR = "selector";
-	public static final String STYLE_CLASS = "styleClass";
-	public static final String AT_TYPE = "@type";
 	public static final String INPUT_STRING = "inputString";
-	public static final String BODY = "body";
-	public static final String BODY_TYPE = "bodyType";
-	// public static final String TARGET_TYPE = "targetType";
 	public static final String DIMENSION_MAP = "dimensionMap";
 	public static final String CHARS = "chars";
-	public static final String DC_LANGUAGE = "language";
-	public static final String FORMAT = "format";
-	public static final String MEDIA_TYPE = "mediaType";
-	public static final String FOAF_PAGE = "foaf:page";
-	public static final String FOAF = "foaf";
-	public static final String TARGET = "target";
-	public static final String AT_ID = "@id";
-	public static final String TYPE = "type";
-	public static final String ANNOTATION_ID = "annotationId";
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-	public static final String LAST_INDEXED_TIMESTAMP = "lastIndexedTimestamp";
-	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String MULTILINGUAL = "multilingual";
 	public static final String TOTAL_ITEMS = "totalItems";
-	public static final String CONTAINS = "contains";
-	public static final String ROLE = "role";
-
+	
+	
+	
 	// skos fields
 	/*
 	 * TODO: //remove skos concepts management and replace it with the Entity API

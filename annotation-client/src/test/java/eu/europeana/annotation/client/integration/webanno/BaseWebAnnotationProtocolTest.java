@@ -19,8 +19,8 @@ import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 
 public class BaseWebAnnotationProtocolTest {
 

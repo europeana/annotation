@@ -34,7 +34,6 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
@@ -60,6 +59,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
 
 /**
@@ -279,8 +279,8 @@ public class AnnotationLd extends JsonLd {
 				agent.setOpenId(propertyValue.getValues().get(WebAnnotationFields.AT_ID));
 			if (hasValue(propertyValue, WebAnnotationFields.NAME)) 
 				agent.setName(propertyValue.getValues().get(WebAnnotationFields.NAME));
-			if (hasValue(propertyValue, WebAnnotationFields.FOAF_HOMEPAGE)) 
-				agent.setHomepage(propertyValue.getValues().get(WebAnnotationFields.FOAF_HOMEPAGE));
+			if (hasValue(propertyValue, WebAnnotationFields.HOMEPAGE)) 
+				agent.setHomepage(propertyValue.getValues().get(WebAnnotationFields.HOMEPAGE));
 		}
 		return agent;
 	}
@@ -459,8 +459,8 @@ public class AnnotationLd extends JsonLd {
 					body.setLanguage(propertyValue.getValues().get(WebAnnotationFields.DC_LANGUAGE));
 				if (hasValue(propertyValue, WebAnnotationFields.FORMAT)) 
 					body.setContentType(propertyValue.getValues().get(WebAnnotationFields.FORMAT));
-				if (hasValue(propertyValue, WebAnnotationFields.FOAF_PAGE)) 
-					body.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.FOAF_PAGE));
+				if (hasValue(propertyValue, WebAnnotationFields.PAGE)) 
+					body.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.PAGE));
 				if (hasValue(propertyValue, WebAnnotationFields.MULTILINGUAL)) 
 					body.setMultilingual(JsonUtils.stringToMap(propertyValue.getValues().get(WebAnnotationFields.MULTILINGUAL)));
 				if (hasValue(propertyValue, WebAnnotationFields.AT_ID)) 
@@ -745,7 +745,7 @@ public class AnnotationLd extends JsonLd {
             if (!StringUtils.isBlank(annotation.getBody().getContentType()))         	
             	propertyValue.getValues().put(WebAnnotationFields.FORMAT, annotation.getBody().getContentType());	
             if (!StringUtils.isBlank(annotation.getBody().getHttpUri()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.FOAF_PAGE, annotation.getBody().getHttpUri());
+            	propertyValue.getValues().put(WebAnnotationFields.PAGE, annotation.getBody().getHttpUri());
             if (annotation.getBody().getMultilingual() != null)         	
             	propertyValue.getValues().put(WebAnnotationFields.MULTILINGUAL, JsonUtils.mapToString(annotation.getBody().getMultilingual()));
             if (annotation.getBody().getConcept() != null)         	
@@ -789,7 +789,7 @@ public class AnnotationLd extends JsonLd {
         if (agent != null && !StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
         if (agent != null && !StringUtils.isBlank(agent.getHomepage())) 
-        	propertyValue.getValues().put(WebAnnotationFields.FOAF_HOMEPAGE, agent.getHomepage());
+        	propertyValue.getValues().put(WebAnnotationFields.HOMEPAGE, agent.getHomepage());
 	}
 
 	private JsonLdProperty addAnnotatedByProperty(Annotation annotation) {

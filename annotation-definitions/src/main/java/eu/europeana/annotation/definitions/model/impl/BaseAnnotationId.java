@@ -1,7 +1,7 @@
 package eu.europeana.annotation.definitions.model.impl;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationFields;
 
 public class BaseAnnotationId implements AnnotationId{
 
