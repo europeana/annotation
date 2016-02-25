@@ -95,13 +95,15 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			HttpServletResponse response) throws IOException {
 
 		
+		boolean includeErrorStack = Boolean.getBoolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
+		
 		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
 		if(statusCode == null)
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 		
 		// TODO remove the usage of Model and View
 		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
-				ex.getMessage(), ex, false);
+				ex.getMessage(), ex, includeErrorStack);
 
 		return buildErrorResponse(ex, req, response, res, statusCode);
 	}
