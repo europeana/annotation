@@ -17,5 +17,8 @@ public interface Operations {
 	
 	//moderation
 	public static final String MODERATION_ALL = "moderation_all";
-		
+	
+	//whitelist
+	public static final String WHITELIST_ALL = "whitelist_all";
+	
 }

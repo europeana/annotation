@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
@@ -23,6 +24,7 @@ public class WhitelistJsonApiTest {
 	private static String TEST_NAME = "test.data.europeana";
 	
     private WhitelistJsonApiImpl whitelistJsonApi;
+    protected Logger log = Logger.getLogger(getClass());
     
     @Before
     public void initObjects() {
@@ -38,6 +40,9 @@ public class WhitelistJsonApiTest {
 
 	@Test
 	public void crudWhitelistEntry() {
+		
+		//ensure that old failing tests doesn't breake the current run
+		removeIfExists(TEST_HTTP_URI);
 		
 		/**
 		 * Create a whitelistEntry object within the test and do not rely on the objects stored in the database.
@@ -70,6 +75,17 @@ public class WhitelistJsonApiTest {
 		}
 
 		assertTrue(numDeletedWhitelistEntries == 1);		
+	}
+
+	private void removeIfExists(String tEST_HTTP_URI2) {
+		try{
+			WhitelistEntry resultWhitelistEntry = whitelistJsonApi.getWhitelistEntryByUrl(TEST_HTTP_URI);
+			if(resultWhitelistEntry != null)
+				whitelistJsonApi.deleteWhitelistEntry(TEST_HTTP_URI);
+		}catch(Exception ex){
+			log.warn("posible problem to clean failing test results", ex);
+		}
+		
 	}
 
 	/**

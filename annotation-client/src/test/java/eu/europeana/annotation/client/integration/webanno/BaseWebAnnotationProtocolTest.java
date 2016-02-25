@@ -30,6 +30,8 @@ public class BaseWebAnnotationProtocolTest {
 
 	public static final String TAG_MINIMAL = "/tag/minimal.json";
 	public static final String TAG_STANDARD = "/tag/standard.json";
+	public static final String SEMANTICTAG_MINIMAL = "/semantictag/minimal.json";
+	public static final String SEMANTICTAG_STANDARD = "/semantictag/standard.json";
 	public static final String LINK_MINIMAL = "/link/minimal.json";
 	public static final String LINK_STANDARD = "/link/standard.json";
 

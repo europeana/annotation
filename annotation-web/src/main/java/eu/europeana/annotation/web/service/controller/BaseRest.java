@@ -245,7 +245,8 @@ public class BaseRest extends ApiResponseBuilder {
 			throw new UserAuthorizationException("Invalid User (Token): ", userToken, HttpStatus.FORBIDDEN);
 		
 		//check permissions
-		if(isAdmin(user))//allow all
+		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
+		if(isAdmin(user) && hasPermission(user, operationName))//allow all
 			return user;
 		else if(isTester(user) && configuration.isProductionEnvironment()){
 			//#20 testers not allowed in production environment

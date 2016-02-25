@@ -49,14 +49,14 @@ public class WhitelistRest extends BaseRest {
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getWhitelistEntry (
-		@RequestParam(value = "apiKey", required = true) String apiKey,
-		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException, UserAuthorizationException {
 		
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.RETRIEVE);
+		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		WhitelistEntry whitelist = getAdminService().getWhitelistEntryByUrl(url);
 
@@ -82,13 +82,13 @@ public class WhitelistRest extends BaseRest {
 			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ModelAndView getFullWhitelist(
-		@RequestParam(value = "apiKey", required = true) String apiKey,
-		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
 				throws ApplicationAuthenticationException, UserAuthorizationException {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.RETRIEVE);
+		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		List<? extends WhitelistEntry> whitelist = getAdminService().getWhitelist();
 
@@ -105,13 +105,13 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="createWhitelistEntry", value="", hidden=false)
 	public ModelAndView createWhitelistEntry (
-		@RequestParam(value = "apiKey", required = true) String apiKey,
-		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 		@RequestBody String whitelist) throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.CREATE);
+		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 		
 		String action = "post:/whitelist/create";
 		
@@ -136,13 +136,13 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="loadDefaultWhitelist", value="")//, hidden=true)
 	public ModelAndView loadDefaultWhitelist (
-		@RequestParam(value = "apiKey", required = true) String apiKey,
-		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
 				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException{
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.RETRIEVE);
+		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		List<? extends WhitelistEntry> whitelist = getAdminService().loadWhitelistFromResources();
 
@@ -160,13 +160,13 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
 	public ModelAndView deleteAllWhitelistEntries(
-		@RequestParam(value = "apiKey", required = true) String apiKey,
-		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
 				throws ApplicationAuthenticationException, UserAuthorizationException {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.DELETE);
+		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
@@ -191,14 +191,14 @@ public class WhitelistRest extends BaseRest {
 	@ResponseBody
 	@ApiOperation(notes="deleteWhitelist", value="", hidden=false)
 	public ModelAndView deleteWhitelistEntry(
-		@RequestParam(value = "apiKey", required = true) String apiKey,
-		@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException, UserAuthorizationException {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.DELETE);
+		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(

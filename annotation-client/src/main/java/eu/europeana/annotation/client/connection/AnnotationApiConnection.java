@@ -120,7 +120,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @return
 	 */
 	public AnnotationSearchResults getAnnotationLd(String provider, Long annotationNr) throws IOException {
-		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		if (StringUtils.isNotEmpty(provider))
@@ -214,7 +214,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ConceptOperationResponse createConcept(String conceptJson) throws IOException {
-		String url = getAnnotationServiceUri().replace("annotations","concepts") + WebAnnotationFields.SLASH; // current annotation service uri is .../annotation-web/annotations
+		String url = getConceptsBaseUri() + WebAnnotationFields.SLASH; // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.CONCEPT_JSON_REST + WebAnnotationFields.PAR_CHAR;		
 		url += "uri=" + JsonUtils.extractUriFromConceptJson(conceptJson);
 		// Execute Concept API request
@@ -226,6 +226,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String conceptJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
 		aor.setJson(conceptJsonString);
 		return aor;
+	}
+
+	protected String getConceptsBaseUri() {
+		return getAnnotationServiceUri().replace("annotations","concepts");
 	}
 
 	/**
@@ -241,7 +245,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationOperationResponse createAnnotationLd(
 			String provider, Long annotationNr, String annotationJsonLdStr) throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.ANNOTATION_LD_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
@@ -276,7 +280,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationOperationResponse createEuropeanaAnnotationLd(
 			String motivation, String provider, Long annotationNr, String europeanaLdStr) throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
 //		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
 		url += "annotation/" + motivation + ".jsonld" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
@@ -594,7 +598,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		url += JsonUtils.extractEuropeanaIdFromJsonLdStr(annotationJsonLdStr);
 //		url += ModelConst.JSON_REST;
 
-		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
 //		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
@@ -793,7 +797,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public ConceptOperationResponse getConcept(
 			String uri) throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotations","concepts") + WebAnnotationFields.SLASH; // current annotation service uri is .../annotation-web/annotations
+		String url = getConceptsBaseUri() + WebAnnotationFields.SLASH; // current annotation service uri is .../annotation-web/annotations
 		url += WebAnnotationFields.CONCEPT_JSON_REST + WebAnnotationFields.PAR_CHAR;		
 		url += "uri=" + uri;
 
@@ -852,7 +856,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public AnnotationOperationResponse searchAnnotationStatusLogs(String status, String startOn, String limit) throws IOException {
-		String url = getAnnotationServiceUri().replace("annotations",""); // current annotation service uri is .../annotation-web/annotations
+		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
 		url += "/statuslogs/search" + WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.STATUS + WebAnnotationFields.EQUALS + status + WebAnnotationFields.AND;
 		url += WebAnnotationFields.START_ON + WebAnnotationFields.EQUALS + startOn + WebAnnotationFields.AND;
@@ -902,7 +906,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public AnnotationOperationResponse disableAnnotation(String provider, String identifier) throws IOException {
-		String url = getAnnotationServiceUri().replace("/annotations",""); // current annotation service uri is .../annotation-web/annotations 
+		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations 
 		url += "/admin/annotation/disable/" + provider + "/" + identifier + ".json";
 //		url += "/admin/annotation/disable/" + provider + "/" + annotationNr + ".json" + WebAnnotationFields.PAR_CHAR;
 //		url += "/admin/annotation/disable" + WebAnnotationFields.PAR_CHAR;
@@ -959,9 +963,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public WhitelistOperationResponse createWhitelistEntry(String whitelistEntryJson) throws IOException {
-		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
-				+ "create"; 
-		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();		
+		String action = "create";
+		String url = getWhitelistServiceUrl(action);
+		
 		// Execute Whitelist API request
 		String json = getJSONResultWithBody(url, whitelistEntryJson);
 		
@@ -981,6 +985,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return aor;
 	}
 
+	protected String getWhitelistServiceBaseUri() {
+		return getAnnotationServiceUri().replace("annotation","whitelist") + "/";
+	}
+
 	
 	/**
 	 * Sample HTTP request
@@ -989,9 +997,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public WhitelistOperationResponse loadWhitelist() throws IOException {
-		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
-				+ "load"; 
-		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();		
+		String action = "load"; 
+		String url = getWhitelistServiceUrl(action);	
+
+		
 		// Execute Whitelist API request
 		String json = getJSONResult(url);
 		
@@ -1016,6 +1025,16 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return aor;
 	}
 
+	protected String getWhitelistServiceUrl(String action) {
+		String url = getWhitelistServiceBaseUri()
+				+ action; 
+		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" 
+				+ getAdminApiKey();
+		//TODO: add admin user tocken to properties
+		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
+		return url;
+	}
+
 	
 	/**
 	 * Sample HTTP request
@@ -1027,9 +1046,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public WhitelistOperationResponse getWhitelistEntry(
 			String httpUrl) throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
-				+ "search"; 
-		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
+		String action = "search";
+		String url = getWhitelistServiceUrl(action);	
+
 		url += WebAnnotationFields.AND + "url=" + httpUrl;
 		// Execute Whitelist API request
 		String json = getJSONResult(url);
@@ -1059,9 +1078,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 */
 	public WhitelistOperationResponse getWhitelist() throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
-				+ "view"; 
-		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
+		String action = "view";
+		String url = getWhitelistServiceUrl(action);	
+	
+		
 		// Execute Whitelist API request
 		String json = getJSONResult(url);
 		
@@ -1097,9 +1117,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public ResponseEntity<String> deleteWhitelistEntry(
 			String httpUrl) throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
-				+ "delete"; 
-		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
+		String action = "delete";
+		String url = getWhitelistServiceUrl(action);	
+	
+				
 		url += WebAnnotationFields.AND + "url=" + httpUrl;
 		// Execute Whitelist API request
 		return deleteURL(url);
@@ -1114,9 +1135,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 */
 	public ResponseEntity<String> deleteWholeWhitelist() throws IOException {
 		
-		String url = getAnnotationServiceUri().replace("annotation-web/","").replace("annotations","whitelist")
-				+ "deleteall"; 
-		url += WebAnnotationFields.PAR_CHAR + "apiKey=" + getApiKey();	
+		String action = "deleteall";
+		String url = getWhitelistServiceUrl(action);	
+
+		
 		// Execute Whitelist API request
 		return deleteURL(url);
 	}

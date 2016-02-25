@@ -31,6 +31,11 @@ public class BaseApiConnection {
 		return apiKey;
 	}
 
+	public String getAdminApiKey() {
+		//TODO create properties entry 
+		return "apiadmin";
+	}
+	
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
