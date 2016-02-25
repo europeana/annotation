@@ -28,14 +28,6 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 		this.internalId = internalId;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
 	//	@Override
 //	public String getBodyType() {
 //		return bodyType;
@@ -190,8 +182,8 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 	    	res = false;
 	    }
 	    
-	    if ((this.getRole() != null) && (that.getRole() != null) &&
-	    		(!this.getRole().equals(that.getRole()))) {
+	    if ((this.getPurpose() != null) && (that.getPurpose() != null) &&
+	    		(!this.getPurpose().equals(that.getPurpose()))) {
 	    	System.out.println("Body objects have different body roles.");
 	    	res = false;
 	    }
@@ -227,8 +219,8 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 			res = res + "\t\t" + "bodyId:" + getInternalId().toString() + "\n";
 		if (getSource() != null) 
 			res = res + "\t\t" + "bodySource:" + getSource().toString() + "\n";
-		if (getRole() != null) 
-			res = res + "\t\t" + "bodyRole:" + getRole().toString() + "\n";
+		if (getPurpose() != null) 
+			res = res + "\t\t" + "bodyRole:" + getPurpose().toString() + "\n";
 		return res;
 	}	
 }

@@ -3,7 +3,7 @@ package eu.europeana.annotation.definitions.model.vocabulary.fields;
 
 public enum WAPropEnum implements WebAnnotationProperty{
 
-	CONTEXT(WebAnnotaionModelFields.AT_CONTEXT, null);
+	CONTEXT(WebAnnotationModelFields.AT_CONTEXT, null);
 	
 	private static final String AT = "@";
 	private static final String COLON = ":";

@@ -1,6 +1,6 @@
 package eu.europeana.annotation.definitions.model.vocabulary.fields;
 
-public interface WebAnnotaionModelFields {
+public interface WebAnnotationModelFields {
 
 	
 	/**
@@ -38,7 +38,7 @@ public interface WebAnnotaionModelFields {
 	public static final String AT_ID = "@id";
 	public static final String TYPE = "type";
 	public static final String CONTAINS = "contains";
-	public static final String ROLE = "role";
+	public static final String PURPOSE = "purpose";
 
 	/** internal fields */
 	public static final String INTERNAL_TYPE = "internalType";

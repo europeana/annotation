@@ -22,17 +22,17 @@ The json-ld serialization available in the following box is a valid input to be 
 (motivation:tagging)
 <textarea rows="20" cols="120" name="jsonldtag">
 {
-    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",
-<% if(!hasType){ %>    "motivation": "oa:tagging",<% }//endif%>	
-    "annotatedBy": {
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+    "creator": {
         "@id": "https://www.historypin.org/en/person/55376/",
-        "@type": "foaf:Person",
+        "@type": "Person",
         "name": "John Smith"
     },
-    "annotatedAt": "2015-02-27T12:00:43Z",
-    "serializedAt": "2015-02-28T13:00:34Z",
-    "serializedBy": "http://www.historypin.org",
+    "created": "2015-02-27T12:00:43Z",
+    "generated": "2015-02-28T13:00:34Z",
+    "generator": "http://www.historypin.org",
     "body": "church",
     "target": "http://data.europeana.eu/item/123/xyz",
     "oa:equivalentTo": "https://www.historypin.org/en/item/456"
@@ -47,14 +47,14 @@ The json-ld serialization available in the following box is a valid input to be 
 (motivation:tagging)
 <textarea rows="20" cols="120" name="jsonldtag">
 {
-    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",
-<% if(!hasType){ %>    "motivation": "oa:tagging",<% }//endif%>	
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
         "@type": "SpecificResource",
-        "@id": "http://sws.geonames.org/2988507",  
-        "source": "http://sws.geonames.org/2988507",
-        "role": "SEMANTIC_TAG",
+        "@id": "http://sws.geonames.org/2988506",  
+        "source": "http://www.geonames.org/2988507",
+        "purpose": "tagging",
         "language": "en"
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
@@ -71,17 +71,17 @@ The json-ld serialization available in the following box is a valid input to be 
 (motivation:linking)  
 <textarea rows="22" cols="120" name="jsonldobjectlink">
 {
-    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",
-<% if(!hasType){ %>    "motivation": "oa:linking",<% }//endif %>	
-    "annotatedBy": {
+<% if(!hasType){ %>    "motivation": "linking",<% }//endif %>	
+    "creator": {
         "@id": "https://www.historypin.org/en/person/55376/",
         "@type": "foaf:Person",
         "name": "John Smith"
     },
-    "annotatedAt": "2015-02-27T12:00:43Z",
-    "serializedAt": "2015-02-28T13:00:34Z",
-    "serializedBy": "http://www.historypin.org",
+    "created": "2015-02-27T12:00:43Z",
+    "generated": "2015-02-28T13:00:34Z",
+    "generator": "http://www.historypin.org",
     "target": [
         "http://www.europeana.eu/portal/record/123/xyz", 
         "http://www.europeana.eu/portal/record/333/xxx"

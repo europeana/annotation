@@ -14,10 +14,10 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	private InternetResource source;
 	private State state;
 	private String styleClass;
-	protected String role;
+	protected String purpose;
 	private String internalType;
 	private String inputString;
-
+	
 	
 	public String getInputString() {
 		return inputString;
@@ -71,5 +71,13 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	@Override
 	public void setStyleClass(String styleClass) {
 		this.styleClass = styleClass;
+	}
+	
+	public String getPurpose() {
+		return purpose;
+	}
+
+	public void setPurpose(String role) {
+		this.purpose = role;
 	}
 }

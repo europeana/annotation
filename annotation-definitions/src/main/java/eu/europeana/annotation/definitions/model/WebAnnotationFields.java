@@ -1,13 +1,13 @@
 package eu.europeana.annotation.definitions.model;
 
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotaionModelFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 
 /**
  * @author GrafR
  * 
  */
 // TODO: move the field values to other interfaces/enumerations
-public interface WebAnnotationFields extends WebAnnotaionModelFields{
+public interface WebAnnotationFields extends WebAnnotationModelFields{
 
 	
 	public static final String SPLITTER = "#";

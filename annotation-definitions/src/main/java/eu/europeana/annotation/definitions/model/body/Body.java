@@ -47,10 +47,6 @@ public interface Body extends SpecificResource{
 	
 	public boolean equalsContent(Object other);	
 
-	public abstract void setRole(String role);
-
-	public abstract String getRole();
-
 	void setInternalId(String internalId);
 
 	String getInternalId();		

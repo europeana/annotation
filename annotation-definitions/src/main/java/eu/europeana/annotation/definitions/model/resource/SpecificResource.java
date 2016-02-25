@@ -33,6 +33,10 @@ public interface SpecificResource extends InternetResource{
 	
 	public abstract String getInputString();
 	
+	public abstract void setPurpose(String motivation);
+
+	public abstract String getPurpose();
+	
 	
 	
 }

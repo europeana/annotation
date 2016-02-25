@@ -3,7 +3,7 @@ package eu.europeana.annotation.definitions.model.vocabulary;
 
 public enum AgentTypes implements WebAnnoationKeyword{
 
-	PERSON("Person"), SOFTWARE("SoftwareAgent"), ORGANIZATION("Organization");
+	PERSON("Person"), SOFTWARE("Software"), ORGANIZATION("Organization");
 	
 	private String jsonValue;
 

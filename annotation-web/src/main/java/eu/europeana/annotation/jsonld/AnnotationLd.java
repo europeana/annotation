@@ -485,8 +485,8 @@ public class AnnotationLd extends JsonLd {
 					body.setInternalId(propertyValue.getValues().get(WebAnnotationFields.AT_ID));
 				if (hasValue(propertyValue, WebAnnotationFields.SOURCE)) 
 					body.setSource(propertyValue.getValues().get(WebAnnotationFields.SOURCE));
-				if (hasValue(propertyValue, WebAnnotationFields.ROLE)) 
-					body.setRole(propertyValue.getValues().get(WebAnnotationFields.ROLE));
+				if (hasValue(propertyValue, WebAnnotationFields.PURPOSE)) 
+					body.setPurpose(propertyValue.getValues().get(WebAnnotationFields.PURPOSE));
 			}
 			
 			Concept concept = getConcept(propertyValue); 
@@ -772,8 +772,8 @@ public class AnnotationLd extends JsonLd {
             	propertyValue.getValues().put(WebAnnotationFields.AT_ID, annotation.getBody().getInternalId());
             if (!StringUtils.isBlank(annotation.getBody().getSource()))         	
             	propertyValue.getValues().put(WebAnnotationFields.SOURCE, annotation.getBody().getSource());
-            if (!StringUtils.isBlank(annotation.getBody().getRole()))         	
-            	propertyValue.getValues().put(WebAnnotationFields.ROLE, annotation.getBody().getRole());
+            if (!StringUtils.isBlank(annotation.getBody().getPurpose()))         	
+            	propertyValue.getValues().put(WebAnnotationFields.PURPOSE, annotation.getBody().getPurpose());
             if (propertyValue.getValues().size() == 0)
             	return null;
 	        bodyProperty.addValue(propertyValue);        
