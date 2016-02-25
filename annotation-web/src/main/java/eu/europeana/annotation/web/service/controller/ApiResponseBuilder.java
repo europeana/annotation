@@ -46,9 +46,9 @@ public class ApiResponseBuilder {
 		StringBuilder messageBuilder = new StringBuilder();
 		
 		if (errorMessage != null)
-			messageBuilder.append(blank).append(errorMessage);
+			messageBuilder.append(blank).append(errorMessage).append(". ");
 		if (th !=null)
-			messageBuilder.append(th.toString());
+			messageBuilder.append("Caused by: ").append(th.toString());
 		if(th != null && th.getCause() !=null && th != th.getCause())
 			messageBuilder.append(blank).append(th.getCause().toString());
 		
