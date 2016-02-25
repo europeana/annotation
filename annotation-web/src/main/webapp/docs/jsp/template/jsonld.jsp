@@ -54,7 +54,6 @@ The json-ld serialization available in the following box is a valid input to be 
         "@type": "SpecificResource",
         "@id": "http://sws.geonames.org/2988506",  
         "source": "http://www.geonames.org/2988507",
-        "purpose": "tagging",
         "language": "en"
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
