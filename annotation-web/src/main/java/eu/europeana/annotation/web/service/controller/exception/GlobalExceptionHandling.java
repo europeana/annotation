@@ -1,20 +1,38 @@
 package eu.europeana.annotation.web.service.controller.exception;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.ConversionNotSupportedException;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 import org.springframework.web.util.NestedServletException;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -26,7 +44,26 @@ import eu.europeana.annotation.web.service.controller.ApiResponseBuilder;
 public class GlobalExceptionHandling extends ApiResponseBuilder {
 
 	Logger logger = Logger.getLogger(getClass());
-
+	
+	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
+	//see DefaultHandlerExceptionResolver.doResolveException
+	static {
+		statusCodeMap.put(NoSuchRequestHandlingMethodException.class, HttpStatus.NOT_FOUND);
+		statusCodeMap.put(HttpRequestMethodNotSupportedException.class, HttpStatus.METHOD_NOT_ALLOWED);
+		statusCodeMap.put(HttpMediaTypeNotSupportedException.class, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+		statusCodeMap.put(HttpMediaTypeNotAcceptableException.class, HttpStatus.NOT_ACCEPTABLE);
+		statusCodeMap.put(MissingServletRequestParameterException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(ServletRequestBindingException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(ConversionNotSupportedException.class, HttpStatus.INTERNAL_SERVER_ERROR);
+		statusCodeMap.put(TypeMismatchException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(HttpMessageNotReadableException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(HttpMessageNotWritableException.class, HttpStatus.INTERNAL_SERVER_ERROR);
+		statusCodeMap.put(MethodArgumentNotValidException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(MissingServletRequestPartException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(BindException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(NoHandlerFoundException.class, HttpStatus.NOT_FOUND);
+	}
+	
 	@ExceptionHandler(HttpException.class)
 	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
@@ -53,22 +90,27 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 
 	}
 
-	@ExceptionHandler({NestedServletException.class, MissingServletRequestParameterException.class})
-	public ResponseEntity<String> handleMissingRequestParamException(MissingServletRequestParameterException ex, HttpServletRequest req,
+	@ExceptionHandler({ServletException.class, NestedRuntimeException.class, MethodArgumentNotValidException.class, BindException.class})
+	public ResponseEntity<String> handleMissingRequestParamException(Exception ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
 
+		
+		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
+		if(statusCode == null)
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+		
 		// TODO remove the usage of Model and View
 		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				ex.getMessage(), ex, false);
 
-		return buildErrorResponse(ex, req, response, res, HttpStatus.INTERNAL_SERVER_ERROR);
+		return buildErrorResponse(ex, req, response, res, statusCode);
 	}
 
 	protected ResponseEntity<String> buildErrorResponse(Exception ex, HttpServletRequest req,
 			HttpServletResponse response, ModelAndView res, HttpStatus status) {
 		String body = (String) res.getModel().get("json");
 
-		getLogger().error("An error occured during the invocation of :" + req.getServletPath(), ex);
+		logger.error("An error occured during the invocation of :" + req.getServletPath(), ex);
 
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
