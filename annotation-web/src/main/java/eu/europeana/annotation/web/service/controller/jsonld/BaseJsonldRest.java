@@ -62,10 +62,10 @@ public class BaseJsonldRest extends BaseRest{
 			
 			//SET DEFAULTS 
 			if(webAnnotation.getGenerator() == null)
-				webAnnotation.setGenerator(buildDefaultSerializedBy(app));
+				webAnnotation.setGenerator(buildDefaultGenerator(app));
 			
 			if(webAnnotation.getCreator() == null)
-				webAnnotation.setCreator(buildDefaultAnnotatedBy(app));
+				webAnnotation.setCreator(user);
 			
 
 			// 2. validate
@@ -118,7 +118,7 @@ public class BaseJsonldRest extends BaseRest{
 	}
 	
 
-	Agent buildDefaultSerializedBy(Application app) {
+	Agent buildDefaultGenerator(Application app) {
 		Agent serializer = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.SOFTWARE);
 		serializer.setName(app.getName());
 		serializer.setHomepage(app.getHomepage());
@@ -127,15 +127,15 @@ public class BaseJsonldRest extends BaseRest{
 		return serializer;
 	}
 
-	Agent buildDefaultAnnotatedBy(Application app) {
-		Agent annotator = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-		
-		annotator.setName(app.getAnonymousUser().getName());
-		annotator.setHomepage(app.getAnonymousUser().getHomepage());
-		annotator.setOpenId(app.getAnonymousUser().getOpenId());
-		
-		return annotator;
-	}
+//	Agent buildDefaultCreator(Application app, Agent user) {
+//		Agent annotator = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+//		
+//		annotator.setName(app.getAnonymousUser().getName());
+//		annotator.setHomepage(app.getAnonymousUser().getHomepage());
+//		annotator.setOpenId(app.getAnonymousUser().getOpenId());
+//		
+//		return annotator;
+//	}
 
 	protected ResponseEntity<String> getAnnotationById(
 			String wsKey, String provider, String identifier, String action) throws HttpException {
