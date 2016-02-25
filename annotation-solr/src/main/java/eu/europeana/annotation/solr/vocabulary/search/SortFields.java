@@ -8,8 +8,8 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
  */
 public enum SortFields implements MappedSolrField {
 
-	  annotatedAt(SolrAnnotationConstants.CREATED,  SolrAnnotationConstants.CREATED_TIMESTAMP)
-	, serializedAt(SolrAnnotationConstants.GENERATED, SolrAnnotationConstants.GENERATED_TIMESTAMP)
+	  created(SolrAnnotationConstants.CREATED,  SolrAnnotationConstants.CREATED_TIMESTAMP)
+	, generated(SolrAnnotationConstants.GENERATED, SolrAnnotationConstants.GENERATED_TIMESTAMP)
 	, modified(SolrAnnotationConstants.MODIFIED, SolrAnnotationConstants.UPDATED_TIMESTAMP); 
 
 	
