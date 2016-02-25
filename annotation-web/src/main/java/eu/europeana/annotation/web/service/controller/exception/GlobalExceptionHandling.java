@@ -15,6 +15,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.NestedServletException;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
@@ -52,7 +53,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 
 	}
 
-	@ExceptionHandler(MissingServletRequestParameterException.class)
+	@ExceptionHandler({NestedServletException.class, MissingServletRequestParameterException.class})
 	public ResponseEntity<String> handleMissingRequestParamException(MissingServletRequestParameterException ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
 
@@ -61,7 +62,6 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 				ex.getMessage(), ex, false);
 
 		return buildErrorResponse(ex, req, response, res, HttpStatus.INTERNAL_SERVER_ERROR);
-
 	}
 
 	protected ResponseEntity<String> buildErrorResponse(Exception ex, HttpServletRequest req,
