@@ -69,7 +69,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			HttpServletResponse response) throws IOException {
 
 		// TODO remove the usage of Model and View
-		boolean includeErrorStack = Boolean.getBoolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack = new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
 		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				null, ex, includeErrorStack);
 
@@ -82,7 +82,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			throws IOException {
 
 		// TODO remove the usage of Model and View
-		boolean includeErrorStack = Boolean.getBoolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack =new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
 		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				null, ex, includeErrorStack);
 
@@ -95,7 +95,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			HttpServletResponse response) throws IOException {
 
 		
-		boolean includeErrorStack = Boolean.getBoolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack = new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
 		
 		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
 		if(statusCode == null)
