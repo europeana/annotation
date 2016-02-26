@@ -21,7 +21,7 @@ public interface PersistentModerationRecordService  extends AbstractNoSqlService
 	
 	//delete methods
 	public void remove(String id) throws AnnotationMongoRuntimeException;
-	public void remove(PersistentModerationRecord queryModerationRecord) throws AnnotationMongoException;
+	public void remove(PersistentModerationRecord queryModerationRecord) throws ModerationMongoException;
 	
 	//store() methods
 	public PersistentModerationRecord create(PersistentModerationRecord moderationRecord) throws AnnotationMongoException;
@@ -32,5 +32,7 @@ public interface PersistentModerationRecordService  extends AbstractNoSqlService
 	
 	public ModerationRecord update(ModerationRecord object);
 	public Summary getModerationSummaryByAnnotationId(AnnotationId annotationId);
+	
+	public void remove(AnnotationId annoId) throws ModerationMongoException;
 	
 }

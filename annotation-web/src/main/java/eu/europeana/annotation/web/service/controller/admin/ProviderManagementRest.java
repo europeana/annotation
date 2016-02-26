@@ -47,7 +47,7 @@ public class ProviderManagementRest extends BaseRest {
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
 		@RequestParam(value = "idGeneration", required = true, defaultValue = WebAnnotationFields.REST_DEFAULT_PROVIDER_ID_GENERATION_TYPE) String idGeneration,
-		@RequestParam(value = "name", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String name) {
+		@RequestParam(value = "name", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String name) {
 
 
 		AnnotationOperationResponse response;

@@ -48,6 +48,7 @@ import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -423,15 +424,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	// public void deleteAnnotation(String resourceId, String provider, Long
 	// annotationNr) {
-	public void deleteAnnotation(AnnotationId annoId) {
-		try {
-			//TODO: completely delete from mongo and solr
-			//getMongoPersistence().delete(annoId);
+	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException{
+		try{
 			getSolrService().delete(annoId);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			getMongoModerationRecordPersistence().remove(annoId);
+			getMongoPersistence().remove(annoId);
+		}catch(Throwable th){
+			throw new InternalServerException(th);
 		}
-		getMongoPersistence().remove(annoId);
 	}
 
 	@Override

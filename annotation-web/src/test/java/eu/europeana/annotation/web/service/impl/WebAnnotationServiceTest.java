@@ -47,6 +47,7 @@ import eu.europeana.annotation.jsonld.AnnotationLdTest;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 
@@ -258,7 +259,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		
 	@Test
 	public void testDeleteAnnotation() 
-			throws MalformedURLException, IOException, AnnotationServiceException {
+			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
 		Annotation testAnnotation = createTestAnnotation();		
         
@@ -338,7 +339,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		
 	@Test
 	public void testDeleteTag() 
-			throws MalformedURLException, IOException, TagServiceException {
+			throws MalformedURLException, IOException, TagServiceException, InternalServerException {
 		
 		Annotation testAnnotation = createTestAnnotation();		
         

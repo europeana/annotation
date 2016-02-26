@@ -18,6 +18,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
@@ -298,8 +299,9 @@ public interface AnnotationService {
 	/**
 	 * This method deletes annotation by annotationId values.
 	 * @param annoId
+	 * @throws InternalServerException 
 	 */
-	void deleteAnnotation(AnnotationId annoId);
+	void deleteAnnotation(AnnotationId annoId) throws InternalServerException;
 
 	void indexAnnotation(AnnotationId annoId);
 

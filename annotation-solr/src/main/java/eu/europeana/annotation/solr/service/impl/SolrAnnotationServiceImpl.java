@@ -586,7 +586,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		try {
 			getLogger().info("delete annotation with ID: " + annoUrl);
 			UpdateResponse rsp = solrServer.deleteById(annoUrl);
-			getLogger().info("delete response: " + rsp.toString());
+			getLogger().trace("delete response: " + rsp.toString());
 			solrServer.commit();
 		} catch (SolrServerException ex) {
 			throw new AnnotationServiceException(
@@ -594,7 +594,11 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		} catch (IOException ex) {
 			throw new AnnotationServiceException(
 					"Unexpected IO exception occured when deleting annotations for: " + annoUrl, ex);
+		}catch (Throwable th) {
+			throw new AnnotationServiceException(
+					"Unexpected exception occured when deleting annotations for: " + annoUrl, th);
 		}
+		
 
 	}
 	

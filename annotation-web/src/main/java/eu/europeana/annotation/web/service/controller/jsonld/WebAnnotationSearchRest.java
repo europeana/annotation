@@ -44,7 +44,7 @@ import eu.europeana.corelib.utils.StringArrayUtils;
 public class WebAnnotationSearchRest extends BaseRest {
 
 	@RequestMapping(value = { "/annotation/search",
-			"/annotation/search.jsonld" }, method = {RequestMethod.GET,RequestMethod.POST}, produces = { "application/ld+json",
+			"/annotation/search.json", "/annotation/search.jsonld" }, method = {RequestMethod.GET,RequestMethod.POST}, produces = { "application/ld+json",
 					MediaType.APPLICATION_JSON_VALUE })
 	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "search")
 	public ResponseEntity<String> search(

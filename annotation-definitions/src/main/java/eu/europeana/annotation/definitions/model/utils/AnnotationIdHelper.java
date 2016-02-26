@@ -91,24 +91,25 @@ public class AnnotationIdHelper {
 		
 	/**
      * Extracts provider name from the given identifier URL.
-	 * @param identifier The URL
+	 * @param uri The URL
 	 * @return provider
 	 */
-	public String extractProviderFromIdentifier(String identifier) {
+	public String extractProviderFromUri(String uri) {
 		int PROVIDER_TOKEN_POS = 2;
-		return extractTokenFromUrl(identifier, PROVIDER_TOKEN_POS);
+		return extractTokenFromUrl(uri, PROVIDER_TOKEN_POS);
 	}
 		
 	/**
      * Extracts id from the given identifier URL.
-	 * @param identifier The URL
+	 * @param uri The URL
 	 * @return id
 	 */
-	public String extractIdFromIdentifier(String identifier) {
-		int ID_TOKEN_POS = 1;
-		return extractTokenFromUrl(identifier, ID_TOKEN_POS);
+	public String extractIdFromUri(String uri) {
+		int ID_TOKEN_POS = 3;
+		return extractTokenFromUrl(uri, ID_TOKEN_POS);
 	}
-		
+	
+			
 	/**
      * Extracts token from the given URL.
 	 * @param url The input URL
@@ -117,9 +118,11 @@ public class AnnotationIdHelper {
 	 */
 	public String extractTokenFromUrl(String url, int tokenPos) {
 		String res = "";
+		int stringArrayPos;
 		if (StringUtils.isNotEmpty(url)) {
 			String[] arr = url.split("/");
-			res = arr[arr.length - tokenPos];
+			stringArrayPos = (arr.length - 1) - (3 - tokenPos);
+			res = arr[stringArrayPos];
 		}
 		return res;
 	}
@@ -248,17 +251,30 @@ public class AnnotationIdHelper {
 	 * This method initializes AnnotationId object by passed identifier 
 	 * when identifier is an URL and contains provider.
 	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'
-	 * @param identifier
+	 * @param uri
 	 * @return AnnotationId object
 	 */
-	public AnnotationId initializeAnnotationId(
-			String identifier) {
+	public AnnotationId parseAnnotationId(
+			String uri) {
+		
+		return parseAnnotationId(uri, false);
+		
+	}
+	
+	public AnnotationId parseAnnotationId(
+			String uri, boolean includeBaseUrl) {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
-		String provider = extractProviderFromIdentifier(identifier);
-		String id = extractIdFromIdentifier(identifier);
+		String provider = extractProviderFromUri(uri);
+		String id = extractIdFromUri(uri);
 		annotationId.setProvider(provider);
 		annotationId.setIdentifier(id);
+
+		if(includeBaseUrl){
+			String baseUrl = StringUtils.remove(uri, annotationId.toUri());
+			annotationId.setBaseUrl(baseUrl); 
+		}
+		
 		
 		return annotationId;
 		

@@ -107,6 +107,9 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PARAM_SORT_ORDER = "sortOrder";
 	public static final String COLON = ":";
 	public static final String PARAM_INCLUDE_ERROR_STACK = "includeErrorStack";
+	public static final String REQ_PARAM_PROVIDER = PATH_PARAM_PROVIDER;
+	public static final String REQ_PARAM_IDENTIFIER = PATH_PARAM_IDENTIFIER;
+	
 	
 	/**
 	 * Query Fields
@@ -212,12 +215,13 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	/**
 	 * Default values for the Rest API services
 	 */
+	public static final String DEFAULT_PROVIDER = "webanno";
+	
 	public static final String REST_COLLECTION = "15502";
 	public static final String REST_OBJECT = "GG_8285";
-	public static final String REST_PROVIDER = "webanno";
 	public static final String REST_RESOURCE_ID = SLASH + REST_COLLECTION + SLASH + REST_OBJECT;
 	public static final String REST_ANNOTATION_NR = "1";
-	public static final String REST_ANNOTATION_ID = REST_PROVIDER + SLASH + REST_ANNOTATION_NR;
+	public static final String REST_ANNOTATION_ID = DEFAULT_PROVIDER + SLASH + REST_ANNOTATION_NR;
 	public static final String REST_TAG_ID = "5506c37343247ba48753d1e5";
 	public static final String REST_LANGUAGE = "en";
 	public static final String REST_START_ON = "0";

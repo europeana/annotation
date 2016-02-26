@@ -224,7 +224,7 @@ public class BaseRest extends ApiResponseBuilder {
 		if (identifier.split(WebAnnotationFields.SLASH).length < ParamValidationException.MIN_IDENTIFIER_LEN)
 			return null;
 
-		AnnotationId annoId = getAnnotationIdHelper().initializeAnnotationId(identifier);
+		AnnotationId annoId = getAnnotationIdHelper().parseAnnotationId(identifier);
 
 		// annotationService.validateAnnotationId(annoId);
 
@@ -236,6 +236,17 @@ public class BaseRest extends ApiResponseBuilder {
 		return authorizeUser(userToken, apiKey, null, operationName);
 	}
 	
+	
+	@Deprecated
+	/**
+	 * use authorizeUser(String userToken, String apiKey, String operationName) instead
+	 * @param userToken
+	 * @param apiKey
+	 * @param annoId
+	 * @param operationName
+	 * @return
+	 * @throws UserAuthorizationException
+	 */
 	protected Agent authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
 			throws UserAuthorizationException {
 		// throws exception if user is not found
@@ -288,7 +299,7 @@ public class BaseRest extends ApiResponseBuilder {
 	 */
 	protected String extractProviderFromIdentifier(String identifier) {
 
-		return getAnnotationIdHelper().extractProviderFromIdentifier(identifier);
+		return getAnnotationIdHelper().extractProviderFromUri(identifier);
 	}
 
 	protected void validateApiKey(String wsKey) throws ApplicationAuthenticationException {

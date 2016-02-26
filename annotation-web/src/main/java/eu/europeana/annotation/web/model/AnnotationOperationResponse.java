@@ -1,8 +1,12 @@
 package eu.europeana.annotation.web.model;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
 
+@JsonSerialize(include = Inclusion.NON_EMPTY)
 public class AnnotationOperationResponse extends ApiResponse{
 	
 	Annotation annotation;

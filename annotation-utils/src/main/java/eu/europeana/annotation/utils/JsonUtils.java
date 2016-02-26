@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 //import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
@@ -385,10 +386,12 @@ public class JsonUtils {
 	}
 	
     /**
+     *  use public static List<String> toStringList(String json)
      * This method converts JSON string to List<String>.
      * @param value The input string
      * @return resulting List<String>
      */
+	@Deprecated
     public static List<String> stringToList(String value) {
     	String reg = ",";
     	value = value.replace(" ", ""); // remove blanks
@@ -403,6 +406,40 @@ public class JsonUtils {
         return res;
     }
     
+   /**
+    * Supports conversion of {["val1", "val2"]} or ["val1", "val2"] 
+    * This method converts JSON string to List<String>.
+    * @param value The input string
+    * @return resulting List<String>
+    */
+   public static List<String> toStringList(String json, boolean removeQuote) {
+   		String list = json.trim();
+   		String startCurly = "{";
+   		String endCurly = "}";
+		if(list.startsWith(startCurly))
+   			list = list.substring(startCurly.length());
+   		if(list.endsWith(endCurly))
+   			list = list.substring(0, list.length() - endCurly.length());
+		list = list.trim();
+		
+		String startBracket = "[";
+		String endBracket = "]";
+		
+		if(list.startsWith(startBracket))
+   			list = list.substring(startBracket.length());
+   		if(list.endsWith(endBracket))
+   			list = list.substring(0, list.length() - endBracket.length());
+		list = list.trim();
+		if(removeQuote)
+			list = list.replaceAll("\"", "");
+		
+		list = list.replaceAll("\n", "");
+		list = list.replaceAll(",", " ");
+		
+		String[] values = StringUtils.split(list);
+		
+       return Arrays.asList(values);
+   }
     
     /**
      * This method extracts identifier from the AnnotationId string. 

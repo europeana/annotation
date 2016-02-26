@@ -57,7 +57,7 @@ public class EuropeanaRest extends BaseRest{
 	@ResponseBody
 	public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
-		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.REST_PROVIDER) String provider,
+		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 		@RequestParam(value = "identifier", required = true) String identifier
 		) {
 		
