@@ -1,5 +1,7 @@
 package eu.europeana.annotation.utils.parse;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -251,7 +254,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setMotivation((String) valueObject);
 			break;
 		case WebAnnotationFields.BODY:
-			Body body = parseBody(valueObject);
+			Body body = parseBody(anno.getMotivationType(), valueObject);
 			body.setInputString(valueObject.toString());
 			anno.setBody(body);
 			break;
@@ -268,126 +271,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		default:
 			break;
 		}
-
-		// if (valueObject instanceof JSONObject) {
-		// JSONObject jsonValue = (JSONObject) valueObject;
-		// String jsonValueStr = jsonValue.toString();
-		// String jsonValueNormalized = normalize(jsonValueStr);
-		//
-		// JsonLdProperty jlp = new JsonLdProperty(property);
-		// String mapString = jsonValueNormalized.substring(1,
-		// jsonValueNormalized.length() - 1); // remove braces
-		// JsonLdPropertyValue jlpv = new JsonLdPropertyValue();
-		//
-		// if(JsonLd.CONTEXT.equals(property)){
-		// parseContext(jld, valueObject);
-		// return;
-		// }
-		//
-		//
-		// if (!mapString.contains("}")) {
-		// /**
-		// * The property is a single map - without complex objects inside
-		// */
-		// jlpv = parseJsonLdPropertyValue(mapString);
-		// jlp.addValue(jlpv);
-		// } else {
-		// Map<String, String> propMap =
-		// (Map<String, String>) convertToMapAndList(jsonValue,
-		// jld.getNamespacePrefixMap());
-		// List<String> keyList = new ArrayList<String>();
-		// keyList.addAll(propMap.keySet());
-		// Iterator<?> it = propMap.entrySet().iterator();
-		// while (it.hasNext()) {
-		// Map.Entry pairs = (Map.Entry)it.next();
-		// String key = "\"" + pairs.getKey().toString() + "\"";
-		// int nextPos = findNextKey(key, keyList, mapString);
-		// int startPos = mapString.indexOf(key) + key.length() + 1; // +1 for
-		// ':'
-		// String value = mapString.substring(startPos, nextPos);
-		// if (value.lastIndexOf(",") == value.length() - 1) {
-		// value = value.substring(0, value.length() - 1);
-		// }
-		// value = value.substring(1, value.length() - 1); // remove braces
-		// key = key.replace("\"", "");
-		// if (!value.contains(",")) {
-		// if (!value.contains("\":\"")) {
-		// /**
-		// * simple key value pair
-		// */
-		// jlpv.getValues().put(key, value);
-		// } else {
-		// /**
-		// * complex value with ':'
-		// */
-		// JsonLdProperty subProperty = new JsonLdProperty(key);
-		// JsonLdPropertyValue sub_jlpv = new JsonLdPropertyValue();
-		// Map<String, String> propMap2 = splitToMap(value);
-		// Iterator<?> it2 = propMap2.entrySet().iterator();
-		// while (it2.hasNext()) {
-		// Map.Entry pairs2 = (Map.Entry)it2.next();
-		// String key2 = pairs2.getKey().toString().replace("\"",
-		// "").replace("{", "").replace("}", "");
-		// String value2 = pairs2.getValue().toString();//.replace("\"",
-		// "").replace("{", "").replace("}", "");
-		// if (value2.length() < 2) {
-		// value2 = "";
-		// }
-		// sub_jlpv.getValues().put(key2, value2);
-		// subProperty.addValue(sub_jlpv);
-		// jlpv.putProperty(subProperty);
-		// }
-		// }
-		// } else {
-		// if (value.contains(":") && value.contains("euType") &&
-		// !key.equals("selector")) { // for the euType
-		// // if (value.contains(":") && value.contains("#")) { // for the
-		// euType
-		// jlpv.getValues().put(key, value);
-		// } else {
-		// JsonLdProperty subProperty = new JsonLdProperty(key);
-		// JsonLdPropertyValue sub_jlpv = parseJsonLdPropertyValue(value);
-		// subProperty.addValue(sub_jlpv);
-		// jlpv.putProperty(subProperty);
-		// }
-		// }
-		// }
-		// jlp.addValue(jlpv);
-		// }
-		// subject.putProperty(jlp);
-		// } else if (valueObject instanceof JSONArray) {
-		// JSONArray arrayValue = (JSONArray) valueObject;
-		// String jsonValueStr = arrayValue.toString();
-		// String jsonValueNormalized = normalize(jsonValueStr);
-		// JsonLdProperty jlp = new JsonLdProperty(property);
-		// String arrayString = jsonValueNormalized.substring(1,
-		// jsonValueNormalized.length() - 1);
-		// String[] propArray = splitToArray(arrayString);
-		// Iterator<String> itr = Arrays.asList(propArray).iterator();
-		// while (itr.hasNext()) {
-		// String propString = normalizeArrayString(itr.next());
-		// JsonLdPropertyValue jlpv = parseJsonLdPropertyValue(propString);
-		// jlp.addValue(jlpv);
-		// }
-		// subject.putProperty(jlp);
-		// } else if (valueObject instanceof String) {
-		// // JsonLdPropertyValue jlpv = new JsonLdPropertyValue();
-		// // JsonLdProperty jlp = new JsonLdProperty(property);
-		//
-		// String stringValue = (String) valueObject;
-		// subject.putProperty(property, unCURIE(stringValue, jld
-		// .getNamespacePrefixMap()));
-		// // jlpv.getValues().put(property, unCURIE(stringValue, jld
-		// // .getNamespacePrefixMap()));
-		// // jlp.addValue(jlpv);
-		// } else {
-		// // JsonLdPropertyValue jlpv = new JsonLdPropertyValue();
-		// // JsonLdProperty jlp = new JsonLdProperty(property);
-		//
-		// subject.putProperty(property, valueObject);
-		// // jlpv.getValues().put(property, (String) valueObject);
-		// // jlp.addValue(jlpv);
-		// }
+		
 	}
 
 	private Agent parseSerializer(Object valueObject) throws JsonParseException {
@@ -521,21 +405,72 @@ public class AnnotationLdParser extends JsonLdParser {
 		}
 	}
 
-	private Body parseBody(Object valueObject) throws JsonParseException {
-		if (valueObject instanceof String)
-			return parseBody(BodyTypes.TAG.name(), (String) valueObject);
-		else if (valueObject instanceof JSONObject)
-			return parseBody((JSONObject) valueObject);
+	private Body parseBody(MotivationTypes motivation, Object valueObject) throws JsonParseException {
+		
+		if (valueObject instanceof String) {
+			return parseBody((String) valueObject, motivation);
+		} else if (valueObject instanceof JSONObject)
+			return parseBody((JSONObject) valueObject, motivation);
 		else if (valueObject instanceof JSONArray)
-			return parseBody((JSONArray) valueObject);
+			return parseBody((JSONArray) valueObject, motivation);
 		else
 			throw new JsonParseException("unsupported body deserialization for: " + valueObject);
 	}
 
-	private Body parseBody(String defaultType, String valueObject) {
 
-		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(defaultType);
-		body.addType(defaultType);
+	
+	
+	protected BodyTypes guesBodyInternalType(MotivationTypes motivation, String value) {
+		
+		switch (motivation) {
+		case LINKING:
+			return BodyTypes.LINK;
+
+		case TAGGING:
+			return guesBodyTagSubType(value);
+		
+		default:
+			break;
+		}
+		throw new AnnotationAttributeInstantiationException("Cannot find appropriate body type with MotivationType: " + motivation);		 
+	}
+
+	
+	private BodyTypes guesBodyTagSubType(String value) {
+		//TODO: improve this .. similar check is done in validation.. these two places should be merged. 
+		try {
+			new URL(value);
+			return BodyTypes.SEMANTIC_TAG;
+		} catch (MalformedURLException e) {
+			return BodyTypes.TAG;
+		}
+		
+
+	}
+
+	private Body parseBody(String valueObject, MotivationTypes motivation) {
+
+		BodyTypes bodyType = guesBodyInternalType(motivation, (String)valueObject);
+		
+		Body body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
+		body.setValue((String) valueObject);
+		// body.setResourceId(getIdHelper().buildResourseId(
+		// getIdHelper().extractResoureIdPartsFromHttpUri((String)
+		// valueObject)));
+		return body;
+	}
+	
+	/**
+	 * use parseBody(BodyTypes bodyType, String valueObject)
+	 * @param bodyType
+	 * @param valueObject
+	 * @return
+	 */
+	@Deprecated
+	private Body parseBody(String bodyType, String valueObject) {
+
+		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(bodyType);
+		body.addType(bodyType);
 		body.setValue((String) valueObject);
 		// body.setResourceId(getIdHelper().buildResourseId(
 		// getIdHelper().extractResoureIdPartsFromHttpUri((String)
@@ -543,10 +478,11 @@ public class AnnotationLdParser extends JsonLdParser {
 		return body;
 	}
 
-	private Body parseBody(JSONObject valueObject) throws JsonParseException {
+	private Body parseBody(JSONObject valueObject, MotivationTypes motivation) throws JsonParseException {
 		// bz now both plaintag and semanictag are specific resources. However,
 		// the usage of SemanticTag should be implemented in the future
-		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.TAG.name());
+		BodyTypes bodyType = guesBodyInternalType(valueObject, motivation);
+		Body body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
 
 		try {
 			@SuppressWarnings("rawtypes")
@@ -561,7 +497,7 @@ public class AnnotationLdParser extends JsonLdParser {
 							body.addType(((JSONArray) value).getString(i));
 					} else
 						body.addType(value.toString());
-					body.setInternalType(BodyTypes.TAG.name());
+					body.setInternalType(bodyType.name());
 					break;
 				case WebAnnotationFields.CHARS:
 					body.setValue(value.toString());
@@ -608,11 +544,43 @@ public class AnnotationLdParser extends JsonLdParser {
 		return body;
 	}
 
-	private Body parseBody(JSONArray valueObject) throws JsonParseException {
-		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.TAG.name());
+	private BodyTypes guesBodyInternalType(JSONObject valueObject, MotivationTypes motivation) {
+		switch (motivation) {
+		case LINKING:
+			return BodyTypes.LINK;
+		case TAGGING:
+			//simple resource (semantic) tag - extended
+			//specific resource - minimal or extended;
+			// in any case SemanticTag
+			if(valueObject.has(WebAnnotationFields.AT_ID) || valueObject.has(WebAnnotationFields.SOURCE))
+					return BodyTypes.SEMANTIC_TAG;
+			else if(valueObject.has(WebAnnotationFields.VALUE))
+					return BodyTypes.TAG; 
+		
+		default:
+			break;
+			
+		}
+		
+		throw new AnnotationAttributeInstantiationException("Cannot find appropriate body type with MotivationType: " + motivation);		 
+
+	}
+
+
+	private Body parseBody(JSONArray valueObject, MotivationTypes motivation) throws JsonParseException {
+		
+		BodyTypes bodyType = null;
+		Body body = null;
 		try {
 			for (int i = 0; i < valueObject.length(); i++) {
 				String val = valueObject.getString(i);
+				
+				//initialize body object
+				if(i== 0){
+					bodyType = guesBodyInternalType(motivation, val);
+					body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
+				}
+				
 				body.addValue(val);
 				String resourceId = getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri(val));
 				body.addResourceId(resourceId);

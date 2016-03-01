@@ -121,6 +121,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	    return res;
 	}
 	
+	@Override
 	public boolean equalsContent(Object other) {
 	    if (!(other instanceof Annotation)) {
 	        return false;
@@ -300,15 +301,7 @@ public abstract class AbstractAnnotation implements Annotation {
 
 	@Override
 	public MotivationTypes getMotivationType() {
-		motivationType = MotivationTypes.UNKNOWN;
-		if(getMotivation() == null)
-			return null;
-		for(MotivationTypes element : MotivationTypes.values()){
-			if(element.getOaType().equals(getMotivation()))
-				return element;
-		}
-		
-		return  MotivationTypes.UNKNOWN;		
+			return MotivationTypes.getType(getMotivation());			
 	}
 	
 	@Override

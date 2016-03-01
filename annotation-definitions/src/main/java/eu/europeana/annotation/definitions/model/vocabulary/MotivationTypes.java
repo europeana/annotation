@@ -33,7 +33,11 @@ public enum MotivationTypes {
 		String[] values = oaType.split(":", 2);
 		//last token
 		String value = values[values.length -1];
-		return valueOf(value.toUpperCase());
+		try{
+			return valueOf(value.toUpperCase());
+		}catch(Throwable th){
+			return MotivationTypes.UNKNOWN;
+		}	
 	}
 
 	public String getAnnoType() {

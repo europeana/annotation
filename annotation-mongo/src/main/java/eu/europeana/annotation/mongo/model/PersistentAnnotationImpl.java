@@ -259,5 +259,10 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		//TODO: change the usage of status to the usage of visibility when the specification is complete
 		return AnnotationStates.PRIVATE.equals(getStatus());
 	}
+
+	@Override
+	public boolean equalsContent(Object other) {
+		throw new RuntimeException("Operation not supported yet");
+	}
 	
 }

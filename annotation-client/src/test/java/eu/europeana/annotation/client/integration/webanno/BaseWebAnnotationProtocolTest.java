@@ -20,7 +20,9 @@ import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
+import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 public class BaseWebAnnotationProtocolTest {
 
@@ -28,10 +30,6 @@ public class BaseWebAnnotationProtocolTest {
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 
-	public static final String TAG_MINIMAL = "/tag/minimal.json";
-	public static final String TAG_STANDARD = "/tag/standard.json";
-	public static final String SEMANTICTAG_MINIMAL = "/semantictag/minimal.json";
-	public static final String SEMANTICTAG_STANDARD = "/semantictag/standard.json";
 	public static final String LINK_MINIMAL = "/link/minimal.json";
 	public static final String LINK_STANDARD = "/link/standard.json";
 
@@ -213,6 +211,11 @@ public class BaseWebAnnotationProtocolTest {
 		br.close();
 		return out.toString();
 		
+	}
+	
+	protected Annotation parseAnnotation(String jsonString, MotivationTypes motivationType) throws JsonParseException {
+		AnnotationLdParser europeanaParser = new AnnotationLdParser();
+		return europeanaParser.parseAnnotation(motivationType, jsonString);
 	}
 
 	protected void validateOutputAgainstInput(Annotation storedAnno, Annotation inputAnno)

@@ -32,6 +32,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
@@ -655,10 +656,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
 //		webAnnotation.
 		Body body = webAnnotation.getBody(); 
-		if (!body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
-			validateTagWithValue(body);
-		}else{
+		if (body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithSpecificResource(body);
+		}else if(BodyTypes.isSemanticTagBody(body.getInternalType())){
+			validateSemanticTagUrl(body);
+		}else {
+			validateTagWithValue(body);
 		}		
 	}
 
@@ -683,6 +686,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
+		
 		String value = body.getValue();
 		
 		value = value.trim();
@@ -703,14 +707,20 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		body.setInputString(value);
 		
 		int MAX_TAG_LENGTH = 64;
-		if (value.length() > MAX_TAG_LENGTH)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", ""+value.length());
 		
 		if(isUrl(value))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format", value);
+		else if (value.length() > MAX_TAG_LENGTH)
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", ""+value.length());
+		
 	}
 	
 	
+	protected void validateSemanticTagUrl(Body body) {
+		// TODO Add whitelist based validation here
+		
+	}
+
 	private boolean isUrl(String value) {
 		
 		//if (value.startsWith("http://") || value.startsWith("ftp://") || value.startsWith("https://")) {

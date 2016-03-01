@@ -78,5 +78,7 @@ public interface Annotation {
 
 	public boolean isPrivate();
 
+	boolean equalsContent(Object other);
+
 	
 }
