@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.common.base.Strings;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -33,28 +31,33 @@ import eu.europeana.annotation.web.http.AnnotationProfiles;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.corelib.utils.StringArrayUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * This class implements the Search Annotations - REST API
  */
 
+//@Api(value = "web-annotation-search", description = "Search API")
 @Controller
-@Api(value = "web-annotation-search", description = "Search API")
+@SwaggerSelect
+@Api(tags = "Web Annotation Search", description=" ")
 public class WebAnnotationSearchRest extends BaseRest {
 
 	@RequestMapping(value = { "/annotation/search",
 			"/annotation/search.json", "/annotation/search.jsonld" }, method = {RequestMethod.GET,RequestMethod.POST}, produces = { "application/ld+json",
 					MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "search")
+	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "")
 	public ResponseEntity<String> search(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,
 			@RequestParam(value = WebAnnotationFields.PARAM_QF, required = false) String[] filters,
 			@RequestParam(value = WebAnnotationFields.PARAM_FACET, required = false) String[] facets,
-			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false, defaultValue = AnnotationProfiles.STANDARD) String profile,
-			@RequestParam(value = WebAnnotationFields.PARAM_START, required = false, defaultValue = Query.DEFAULT_START) int start,
-			@RequestParam(value = WebAnnotationFields.PARAM_ROWS, required = false, defaultValue = Query.DEFAULT_PAGE_SIZE) int rows,
+			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, defaultValue = AnnotationProfiles.STANDARD) String profile,
+			@RequestParam(value = WebAnnotationFields.PARAM_START, defaultValue = Query.DEFAULT_START) int start,
+			@RequestParam(value = WebAnnotationFields.PARAM_ROWS, defaultValue = Query.DEFAULT_PAGE_SIZE) int rows,
 			@RequestParam(value = WebAnnotationFields.PARAM_SORT, required = false) SortFields sort,
 			@RequestParam(value = WebAnnotationFields.PARAM_SORT_ORDER, required = false) SortOrder sortOrder
 			) throws HttpException {

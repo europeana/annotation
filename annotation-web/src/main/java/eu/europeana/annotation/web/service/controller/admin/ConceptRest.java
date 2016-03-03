@@ -1,16 +1,12 @@
 package eu.europeana.annotation.web.service.controller.admin;
 
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
@@ -19,9 +15,11 @@ import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.ConceptOperationResponse;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
+import io.swagger.annotations.ApiOperation;
 
 //@Controller
 //@Api(value = "concepts", description = "Concept JSON Rest Service")
+@Deprecated
 public class ConceptRest extends BaseRest {
 
 

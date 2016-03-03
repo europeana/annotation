@@ -68,26 +68,5 @@
     	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
     	 -->
     </beans:bean>
-    
-    
-    <!--  TODO: this is not needed anymore as the controllers are automatically discovered -->
-    <!--  rest api bean -->
-	<!-- 
-	<beans:bean id="annotationRest" class="eu.europeana.annotation.web.service.controller.AnnotationRest">
-		<beans:property name="annotationService" ref="annotationService"/>
-		<beans:property name="configuration" ref="configuration"/>
-    	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
-    </beans:bean>	
-    
-	<beans:bean id="managementRest" class="eu.europeana.annotation.web.service.controller.admin.ManagementRest">
-		<beans:property name="annotationService" ref="annotationService"/>
-		<beans:property name="configuration" ref="configuration"/>
-    </beans:bean>	
-   
-	<beans:bean id="providerManagementRest" class="eu.europeana.annotation.web.service.controller.admin.ProviderManagementRest">
-		<beans:property name="annotationService" ref="annotationService"/>
-		<beans:property name="configuration" ref="configuration"/>
-    </beans:bean>
-     -->	
    
 </beans:beans>

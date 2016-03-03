@@ -3,16 +3,12 @@ package eu.europeana.annotation.web.service.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -22,13 +18,13 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
-import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.api2.utils.JsonWebUtils;
 
 //@Controller
 //@Api(value = "annotations", description = "Annotation JSON Rest Service")
+@Deprecated
 public class AnnotationRest extends BaseRest {
 
 
@@ -163,7 +159,7 @@ public class AnnotationRest extends BaseRest {
 //	@RequestMapping(value = "/annotations/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/annotations/col/{collection}/{object}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
+//	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
 	public ModelAndView createAnnotation (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,
@@ -220,7 +216,7 @@ public class AnnotationRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/{provider}/{annotationNr}.json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
+//	@ApiOperation(notes=SwaggerConstants.SAMPLES_JSON_LINK, value="")
 	public ModelAndView createAnnotationByProvider (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "profile", required = false) String profile,

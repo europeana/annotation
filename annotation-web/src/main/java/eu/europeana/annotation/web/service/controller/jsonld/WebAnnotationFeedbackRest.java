@@ -8,17 +8,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wordnik.swagger.annotations.Api;
-
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
-
+//@Api(value = "web-annotation-feedback", description = "Providing Feedback on Annotations - API")
 @Controller
-@Api(value = "web-annotation-feedback", description = "Providing Feedback on Annotations - API")
+@SwaggerSelect
+@Api(tags = "Provide Feedback on Annotaions", description=" ")
 public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/{provider}/{identifier}/report", method = RequestMethod.POST, produces = {"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@ApiOperation(value = "Report an (innapropriate) annotation", nickname = "reportAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> reportAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider, 
@@ -31,6 +34,7 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 	}
 
 	@RequestMapping(value = "/annotation/{provider}/{identifier}/moderationsummary", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ApiOperation(value = "Retrieve moderation summary", nickname = "getModerationReportSummary", response = java.lang.Void.class)
 	public ResponseEntity<String> getModerationSummary(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider, 

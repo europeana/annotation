@@ -29,10 +29,12 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:/annotation-web-mvc.xml</param-value>
 		</init-param>
+		<!-- 
 		<init-param>
 	  		<param-name>swagger.api.basepath</param-name>
 	  		<param-value>http://localhost:8081</param-value>
-		</init-param>		
+		</init-param>
+		 -->		
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>annotationServlet</servlet-name>

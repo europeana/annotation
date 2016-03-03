@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.ApiOperation;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
@@ -25,6 +23,7 @@ import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api2.utils.JsonWebUtils;
+import io.swagger.annotations.ApiOperation;
 
 
 /**
@@ -41,6 +40,7 @@ public class EuropeanaRest extends BaseRest{
 
 	@RequestMapping(value = "/annotationld/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
+	@ApiOperation(value = "Delete an entry from the whitelist", nickname = "deleteWhitelistEntry", response = java.lang.Void.class)
 	public ModelAndView getAnnotationLdByPath (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 //		@RequestParam(value = "profile", required = false) String profile,

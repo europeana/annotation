@@ -4,26 +4,19 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
-import eu.europeana.annotation.definitions.model.search.result.ResultSet;
-import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
-import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.StatusLogSearchResults;
 import eu.europeana.annotation.web.model.TagSearchResults;
@@ -31,11 +24,12 @@ import eu.europeana.api2.utils.JsonWebUtils;
 
 //@Controller
 //@Api(value = "search", description = "Annotation Search Rest Service")
+@Deprecated
 public class SearchRest extends BaseRest {
 
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes = SwaggerConstants.SEARCH_FIELDS_LINK, value = "")
+//	@ApiOperation(notes = SwaggerConstants.SEARCH_FIELDS_LINK, value = "")
 	public ModelAndView searchAnnotationByField(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "value", required = true) String value,
@@ -110,7 +104,7 @@ public class SearchRest extends BaseRest {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/tags/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes = SwaggerConstants.SEARCH_FIELDS_LINK, value = "")
+//	@ApiOperation(notes = SwaggerConstants.SEARCH_FIELDS_LINK, value = "")
 	public ModelAndView searchTagByField(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "value", required = true) String value,
@@ -142,7 +136,7 @@ public class SearchRest extends BaseRest {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/statuslogs/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes = SwaggerConstants.SEARCH_STATUS_FIELDS_LINK, value = "")
+//	@ApiOperation(notes = SwaggerConstants.SEARCH_STATUS_FIELDS_LINK, value = "")
 	public ModelAndView showStatusLogsByStatus(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "profile", required = false) String profile,
 			@RequestParam(value = "status", required = true) String status,

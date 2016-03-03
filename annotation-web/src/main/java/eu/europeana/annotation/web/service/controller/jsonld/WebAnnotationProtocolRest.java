@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <CURRENT SPECIFICATION> POST /<annotation-web>/annotation.jsonLd GET /
@@ -25,14 +25,17 @@ import eu.europeana.annotation.web.http.SwaggerConstants;
  * <annotation-web>/search.jsonld
  */
 
+//@Api(value = "web-annotation-protocol", description = "Web Annotation Protocol API")
 @Controller
-@Api(value = "web-annotation-protocol", description = "Web Annotation Protocol API")
+@SwaggerSelect
+@Api(tags = "Web Annotation Protocol", description=" ")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, produces = {
 			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "")
-	public ResponseEntity<String> createAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Report an (innapropriate) annotation", nickname = "createAnnotation", response = java.lang.Void.class)
+	public ResponseEntity<String> createAnnotation(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,

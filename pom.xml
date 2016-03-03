@@ -53,6 +53,7 @@
 		<version.spring>4.0.9.RELEASE</version.spring>
 		<version.corelib>2.1</version.corelib>
 		<version.log4j>1.2.12</version.log4j>
+		<version.commonsLang3>3.0</version.commonsLang3>
 		
 	</properties>
 	<modules>

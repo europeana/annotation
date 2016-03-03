@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
@@ -27,10 +24,14 @@ import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api2.utils.JsonWebUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Controller
-@Api(value = "Web Annotation Admin", description = "Annotation Management Rest Service")
+@SwaggerSelect
+@Api(tags = "Web Annotation Admin", description=" ")
 public class ManagementRest extends BaseRest {
 
 	// @GET
@@ -500,7 +501,7 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes = "reindex by annotation id", value = "", hidden = false)
+	@ApiOperation(value = "Reindex by annotation id", nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
 	public ModelAndView reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
@@ -535,7 +536,8 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(notes = SwaggerConstants.REINDEX_HELP_NOTE, value = "", hidden = false)
+	@ApiOperation(value = "Reindex by annotation id", notes = SwaggerConstants.REINDEX_HELP_NOTE, 
+		nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
 	public ModelAndView reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "startDate", required = false) String startDate,
 			@RequestParam(value = "endDate", required = false) String endDate,

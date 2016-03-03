@@ -19,17 +19,31 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 	<context:annotation-config />
-	<mvc:annotation-driven />
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg value="UTF-8" />
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json</value>
+						<value>application/ld+json</value>
+						<value>text/plain</value>					
+				 	</list>
+				 </property>
+			</bean>
+		</mvc:message-converters>	
+	</mvc:annotation-driven>
+	
 	<mvc:default-servlet-handler />	
 	
 	<import resource="./annotation-web-context.xml"/>
+				 
+	<bean class="eu.europeana.api.common.config.swagger.SwaggerConfig">
+	</bean>
 	
 	<context:component-scan base-package="eu.europeana.annotation.web.service.controller">
 	</context:component-scan>
 	
-	<bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig">
-	</bean>
-
 	<!--Basic application beans. -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/" />
