@@ -3,7 +3,7 @@
 						<!--  <h3>Annotation</h3>
 						-->
 						<div class="left">
-							<img src="../../images/fether.png" height="64" />
+							<img src="../../img/feather.png" height="64" />
 							<%=pageDescription%>
 						</div>
 					</div>

@@ -11,7 +11,8 @@ boolean hasType = withType != null;
 
 					<ul id="toc">
 						<li><a href="#tag">Create (Object) Tag</a></li>
-						<li><a href="#semantictag">Create (Semantic) Tag</a></li>
+						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
+						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 					</ul>
 
@@ -40,6 +41,7 @@ The json-ld serialization available in the following box is a valid input to be 
 </textarea>
 <br>
 
+<!-- 
 <h3 id="semantictag_simple_minimal">Create Semantic Tag - Simple Resource - minimal representation</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
@@ -48,14 +50,15 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="20" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",  
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+<%// if(!hasType){ %>    "motivation": "tagging",<%// }//endif%>	
     "body": "http://www.geonames.org/2988507",
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
 </textarea>
 <br>
+ -->
 
-<h3 id="semantictag_simple_extended">Create Semantic Tag - Simple Resource - extended representation</h3>
+<h3 id="semantictag_simple">Create Semantic Tag - Simple Resource - extended representation</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
@@ -65,9 +68,11 @@ The json-ld serialization available in the following box is a valid input to be 
     "@context": "http://www.w3.org/ns/anno.jsonld",  
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-        "@id": "http://www.geonames.org/2988507",  
+        "@id": "http://www.geonames.org/2988507"
+<!--         ,  
         "language": "en",
         "format": "application/rdf+xml"
+       --> 
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
@@ -87,14 +92,14 @@ The json-ld serialization available in the following box is a valid input to be 
     "body": {
         "@type": "SpecificResource",
         "source": "http://www.geonames.org/2988507",
-        "purpose": "SEMANTIC_TAG"   
+        "purpose": "tagging"   
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
 </textarea>
 <br>
 
-
+<!-- 
 <h3 id="semantictag_specific_extended">Create Semantic Tag - Specific Resource - extended representation</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
@@ -104,7 +109,7 @@ The json-ld serialization available in the following box is a valid input to be 
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+<%// if(!hasType){ %>    "motivation": "tagging",<%// }//endif%>	
     "body": {
         "@type": "SpecificResource",
         "@id": "http://sws.geonames.org/2988506",  
@@ -117,6 +122,7 @@ The json-ld serialization available in the following box is a valid input to be 
 }
 </textarea>
 <br>
+ -->
 
 <h3 id="objectlink">Create Object Link </h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Object Links</b>. 
