@@ -96,7 +96,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
         	//user input string provided
         	//TODO: why reset?
         	annotation.getGenerator().setInputString(null);
-            JsonLdProperty serializedByProperty = addSerializedByProperty(annotation);
+            JsonLdProperty serializedByProperty = addGeneratorProperty(annotation);
             if (serializedByProperty != null)
             	jsonLdResource.putProperty(serializedByProperty);                
         } else {
@@ -112,7 +112,7 @@ public class EuropeanaAnnotationLd extends JsonLd {
         if (annotation.getCreator().getInputString() == null  || isJsonObjectInput(annotation.getCreator().getInputString())){
         	//TODO: why reset?
         	annotation.getCreator().setInputString(null);
-            JsonLdProperty annotatedByProperty = addAnnotatedByProperty(annotation);
+            JsonLdProperty annotatedByProperty = addCreator(annotation);
             if (annotatedByProperty != null)
             	jsonLdResource.putProperty(annotatedByProperty);                
         } else {
@@ -784,22 +784,25 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		return bodyProperty;
 	}
 
-	private JsonLdProperty addSerializedByProperty(Annotation annotation) {
-		JsonLdProperty serializedByProperty = new JsonLdProperty(WebAnnotationFields.GENERATOR);
+	private JsonLdProperty addGeneratorProperty(Annotation annotation) {
+		JsonLdProperty generatorProperty = new JsonLdProperty(WebAnnotationFields.GENERATOR);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getGenerator();        
         addAgentByProperty(propertyValue, agent);
         if (propertyValue.getValues().size() == 0)
         	return null;
-        serializedByProperty.addValue(propertyValue);
-		return serializedByProperty;
+        generatorProperty.addValue(propertyValue);
+		return generatorProperty;
 	}
 
 	private void addAgentByProperty(JsonLdPropertyValue propertyValue,
 			Agent agent) {
-       	if(agent.getOpenId() != null)
+       	
+		boolean showOpenId = false; 
+		if(agent.getOpenId() != null && showOpenId)
        		propertyValue.getValues().put(WebAnnotationFields.AT_ID, agent.getOpenId());
-        if (!StringUtils.isBlank(agent.getType())) //convert internal type to json value
+        
+       	if (!StringUtils.isBlank(agent.getType())) //convert internal type to json value
         	propertyValue.getValues().put(WebAnnotationFields.AT_TYPE, AgentTypes.valueOf(agent.getInternalType()).getJsonValue());
         if (!StringUtils.isBlank(agent.getName())) 
         	propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
@@ -807,15 +810,15 @@ public class EuropeanaAnnotationLd extends JsonLd {
         	propertyValue.getValues().put(WebAnnotationFields.HOMEPAGE, agent.getHomepage());
 	}
 
-	private JsonLdProperty addAnnotatedByProperty(Annotation annotation) {
-		JsonLdProperty annotatedByProperty = new JsonLdProperty(WebAnnotationFields.CREATOR);
+	private JsonLdProperty addCreator(Annotation annotation) {
+		JsonLdProperty creator = new JsonLdProperty(WebAnnotationFields.CREATOR);
         JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
         Agent agent = annotation.getCreator();  
         addAgentByProperty(propertyValue, agent);
         if (propertyValue.getValues().size() == 0)
         	return null;
-        annotatedByProperty.addValue(propertyValue);
-		return annotatedByProperty;
+        creator.addValue(propertyValue);
+		return creator;
 	}
 
 	private boolean isJsonObjectInput(String inputString) {
