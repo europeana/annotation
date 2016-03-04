@@ -440,7 +440,8 @@ public class AnnotationLdParser extends JsonLdParser {
 		//TODO: improve this .. similar check is done in validation.. these two places should be merged. 
 		try {
 			new URL(value);
-			return BodyTypes.SEMANTIC_TAG;
+			//return BodyTypes.SEMANTIC_TAG;
+			throw new AnnotationAttributeInstantiationException(WebAnnotationFields.BODY, "URLs is are not supported in text tags. Use proper Semantic Tag formats instead.");
 		} catch (MalformedURLException e) {
 			return BodyTypes.TAG;
 		}
