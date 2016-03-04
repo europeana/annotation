@@ -33,7 +33,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, produces = {
 			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Report an (innapropriate) annotation", nickname = "createAnnotation", response = java.lang.Void.class)
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation", nickname = "createAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
@@ -48,7 +48,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, produces = {
 			"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
-	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD_WITH_TYPE, value = "")
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
@@ -72,8 +72,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return storeAnnotation(wskey, motivation, provider, identifier, indexOnCreate, annotation, userToken);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.GET, produces = { 
+	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.GET, produces = { 
 			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@ApiOperation(value = "Retrieve annotation", nickname = "getAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> getAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
@@ -81,27 +82,14 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 //			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 
-			String action = "get:/annotation/{provider}/{identifier}";
+			String action = "get:/annotation/{provider}/{identifier}[.{format}]";
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.GET, produces = { 
+	
+	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.PUT, produces = { 
 			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<String> getAnnotationJsonld(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
-//			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
-			) throws HttpException {
-
-			String action = "get:/annotation/{provider}/{identifier}.jsonld";
-			
-			return getAnnotationById(wskey, provider, identifier, action);
-	}
-
-	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.PUT, produces = { 
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "")
+	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "Update annotation", nickname = "updateAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
@@ -109,46 +97,23 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 		
-		String action = "put:/annotation/{provider}/{identifier}";
+		String action = "put:/annotation/{provider}/{identifier}[.{format}]";
 		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.PUT, produces = {
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
-	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "")
-	public ResponseEntity<String> updateAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestBody String annotation,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
-			) throws HttpException {
-		
-		String action = "put:/annotation/{provider}/{identifier}.jsonld";
-		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
-	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}.jsonld", method = RequestMethod.DELETE, produces = {
+	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.DELETE, produces = {
 			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<String> deleteAnnotationJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+	@ApiOperation(value = "Delete annotation", nickname = "deleteAnnotation", response = java.lang.Void.class)
+	public ResponseEntity<String> deleteAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
 			) throws HttpException {
 
-		String action = "delete:/annotation/{provider}/{identifier}.jsonld";
+		String action = "delete:/annotation/{provider}/{identifier}[.{format}]";
 		return deleteAnnotation(wskey, provider, identifier, userToken, action);
 	}
 	
-	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.DELETE, produces = { 
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE  })
-	public ResponseEntity<String> deleteAnnotation(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
-			) throws HttpException {
-
-		String action = "delete:/annotation/{provider}/{identifier}";
-		return deleteAnnotation(wskey, provider, identifier, userToken, action);
-	}
+	
 }

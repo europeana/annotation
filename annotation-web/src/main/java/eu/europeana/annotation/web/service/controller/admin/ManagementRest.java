@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -42,9 +41,8 @@ public class ManagementRest extends BaseRest {
 		return getConfiguration().getComponentName() + "-admin";
 	}
 
-	// @DELETE
-	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces ={"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
+	@ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
 	public AnnotationOperationResponse deleteAnnotationById(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_PROVIDER, required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
@@ -62,7 +60,7 @@ public class ManagementRest extends BaseRest {
 	}
 
 	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
+	@ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", response = java.lang.Void.class)
 	public AnnotationOperationResponse deleteAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
@@ -500,7 +498,6 @@ public class ManagementRest extends BaseRest {
 	// }
 
 	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Reindex by annotation id", nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
 	public ModelAndView reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
@@ -535,7 +532,6 @@ public class ManagementRest extends BaseRest {
 	}
 
 	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Reindex by annotation id", notes = SwaggerConstants.REINDEX_HELP_NOTE, 
 		nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
 	public ModelAndView reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,

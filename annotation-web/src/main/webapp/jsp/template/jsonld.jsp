@@ -12,7 +12,7 @@ boolean hasType = withType != null;
 					<ul id="toc">
 						<li><a href="#tag">Create (Object) Tag</a></li>
 						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
-						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
+						<li><a href="#semantictag_specific">Create (Semantic) Tag - Specific Resource</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 					</ul>
 
@@ -21,7 +21,7 @@ The json-ld serialization available in the following box is a valid input to be 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
-<textarea rows="20" cols="120" name="jsonldtag">
+<textarea rows="18" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",
@@ -58,33 +58,34 @@ The json-ld serialization available in the following box is a valid input to be 
 <br>
  -->
 
-<h3 id="semantictag_simple">Create Semantic Tag - Simple Resource - extended representation</h3>
+<h3 id="semantictag_simple">Create Semantic Tag - Simple Resource</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
-<textarea rows="20" cols="120" name="jsonldtag">
+<textarea rows="10" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",  
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
         "@id": "http://www.geonames.org/2988507"
-<!--         ,  
-        "language": "en",
-        "format": "application/rdf+xml"
-       --> 
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
 </textarea>
+<!--         ,  
+        "language": "en",
+        "format": "application/rdf+xml"
+       --> 
+
 <br>
 
-<h3 id="semantictag_specific_minimal">Create Semantic Tag - Specific Resource - minimal representation</h3>
+<h3 id="semantictag_specific">Create Semantic Tag - Specific Resource</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
-<textarea rows="20" cols="120" name="jsonldtag">
+<textarea rows="12" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",
@@ -130,7 +131,7 @@ The json-ld serialization available in the following box is a valid input to be 
 
 <br>
 (motivation:linking)  
-<textarea rows="22" cols="120" name="jsonldobjectlink">
+<textarea rows="20" cols="120" name="jsonldobjectlink">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "@type": "oa:Annotation",

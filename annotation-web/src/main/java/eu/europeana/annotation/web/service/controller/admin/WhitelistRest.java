@@ -106,7 +106,6 @@ public class WhitelistRest extends BaseRest {
 	
 	@RequestMapping(value = "/create", method = RequestMethod.POST
 			, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Add a new entry to whitelist", nickname = "createWhitelistEntry", response = java.lang.Void.class)
 	public ModelAndView createWhitelistEntry (
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,

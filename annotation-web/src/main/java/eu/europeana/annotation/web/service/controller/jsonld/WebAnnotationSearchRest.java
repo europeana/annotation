@@ -49,7 +49,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	@RequestMapping(value = { "/annotation/search",
 			"/annotation/search.json", "/annotation/search.jsonld" }, method = {RequestMethod.GET,RequestMethod.POST}, produces = { "application/ld+json",
 					MediaType.APPLICATION_JSON_VALUE })
-	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "")
+	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "Search annotations", nickname = "search", response = java.lang.Void.class)
 	public ResponseEntity<String> search(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,

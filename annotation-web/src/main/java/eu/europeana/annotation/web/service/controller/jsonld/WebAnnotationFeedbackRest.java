@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiOperation;
 //@Api(value = "web-annotation-feedback", description = "Providing Feedback on Annotations - API")
 @Controller
 @SwaggerSelect
-@Api(tags = "Provide Feedback on Annotaions", description=" ")
+@Api(tags = "Provide Feedback on Annotations", description=" ")
 public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/{provider}/{identifier}/report", method = RequestMethod.POST, produces = {"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
