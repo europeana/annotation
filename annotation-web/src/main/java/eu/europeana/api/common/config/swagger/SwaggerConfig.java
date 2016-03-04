@@ -51,6 +51,10 @@ public class SwaggerConfig {
 					.apis(not(or(withMethodAnnotation(SwaggerIgnore.class), 
 							withClassAnnotation(SwaggerIgnore.class)))) // Selection by RequestHandler
 					.build().host(getHostAndPort()).apiInfo(apiInfo());
+			
+			//user friendly naming of collections and maps with generics
+			docketConfig.forCodeGeneration(true);
+			
 		}
 		return docketConfig;
 	}

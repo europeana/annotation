@@ -18,7 +18,6 @@
         http://www.springframework.org/schema/mvc 
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-	<context:annotation-config />
 	<mvc:annotation-driven>
 		<mvc:message-converters register-defaults="true">
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
@@ -34,13 +33,17 @@
 		</mvc:message-converters>	
 	</mvc:annotation-driven>
 	
+	<context:annotation-config />
+	
+	<bean class="eu.europeana.api.common.config.swagger.SwaggerConfig">
+	</bean>
+	<bean class="springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper">
+	</bean>
+	
 	<mvc:default-servlet-handler />	
 	
 	<import resource="./annotation-web-context.xml"/>
 				 
-	<bean class="eu.europeana.api.common.config.swagger.SwaggerConfig">
-	</bean>
-	
 	<context:component-scan base-package="eu.europeana.annotation.web.service.controller">
 	</context:component-scan>
 	
