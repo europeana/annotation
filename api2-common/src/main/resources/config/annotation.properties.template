@@ -35,6 +35,9 @@ annotation.environment.development.baseUrl=http://localhost:8080/annotation
 annotation.whitelist.default=/config/default_whitelist.json
 
 # mongoDB settings
+
+annotation.environment.vcap.mongoservice = mongo_service
+
 ### annotation database ###
 mongodb.annotation.dbname=annotation_test
 mongodb.annotation.host=127.0.0.1

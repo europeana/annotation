@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.context;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -9,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.boot.cloud.CloudFoundryVcapEnvironmentPostProcessor;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -32,6 +34,8 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 	private final static String MONGO_SERVICE = "mongo_service";
 	File propertiesFileTemplate = null;
 	File propertiesFile = null;
+	
+	Properties originalProperties;
 
 	private ConfigurableEnvironment env;
 	
@@ -54,14 +58,32 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 	@Override
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 		
-		if(env != null && env.getSystemEnvironment() != null && env.getSystemEnvironment().get(MONGO_SERVICE) != null){
+		String mongoServiceName;
+		try {
+			mongoServiceName = getMongoServiceName();
+		} catch (Throwable th) {
+			logger.error("Cannot read mongo service name!" + th.getMessage());
+			th.printStackTrace();
+			return;
+		}
+		
+		if(env != null && env.getSystemEnvironment() != null && StringUtils.isNotBlank(mongoServiceName) && env.getSystemEnvironment().get(mongoServiceName) != null){
 			//process environment variables and flatten json structure
 			CloudFoundryVcapEnvironmentPostProcessor postProcessor = new CloudFoundryVcapEnvironmentPostProcessor();
 			postProcessor.postProcessEnvironment(env, null);
 			
 			//generate updated annotation.properties file
-			updateAnnotationProperties();
+			updateAnnotationProperties(mongoServiceName);
 		}
+	}
+
+	protected String getMongoServiceName() throws FileNotFoundException, IOException {
+		originalProperties = loadProperties();
+		String mongoServiceName = originalProperties.getProperty("annotation.environment.vcap.mongoservice", MONGO_SERVICE);
+		if(StringUtils.isNotBlank(mongoServiceName))
+			logger.info("Loading VCAP properties for mongo service: " + mongoServiceName);
+		
+		return mongoServiceName;
 	}
 
 	protected File getPropertiesFileTemplate() {
@@ -95,26 +117,15 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 
 	
 	
-	public void updateAnnotationProperties() {
+	public void updateAnnotationProperties(String mongoServiceName) {
 	
-		
-		File annotationPropertiesFile = getPropertiesFile();
-		File propertiesTemplate = getPropertiesFileTemplate();
-		Properties props = new Properties();
-
 		try {
-			if(annotationPropertiesFile.exists()){
-				logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
-				props.load(new FileInputStream(annotationPropertiesFile));
-			}else{
-				logger.info("Load configuration properties from template: " + propertiesTemplate.getAbsolutePath());
-				props.load(new FileInputStream(propertiesTemplate));
-			}
-		
 			
-			updateProps(props);
+			Properties updatedProps = loadProperties();
+			
+			updateProps(updatedProps, mongoServiceName);
 				
-			writePropsToFile(props, annotationPropertiesFile);			
+			writePropsToFile(updatedProps, getPropertiesFile());			
 			
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -122,9 +133,32 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 		}
 	}
 
-	protected void updateProps(Properties props) {
+	protected Properties loadProperties() throws IOException, FileNotFoundException {
+		Properties props = new Properties();
+
+		File annotationPropertiesFile = getPropertiesFile();
+		loadProperties(annotationPropertiesFile, props);
 		
-		String mongoDb = env.getSystemEnvironment().get(MONGO_SERVICE)
+		//
+		if(annotationPropertiesFile.exists()){
+			File propertiesTemplate = getPropertiesFileTemplate();
+			logger.info("Load configuration properties from template: " + propertiesTemplate.getAbsolutePath());
+			props.load(new FileInputStream(propertiesTemplate));
+		}
+		return props;
+	}
+
+	protected void loadProperties(File annotationPropertiesFile, Properties props)
+			throws IOException, FileNotFoundException {
+		if(annotationPropertiesFile.exists()){
+			logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
+			props.load(new FileInputStream(getPropertiesFile()));
+		}
+	}
+
+	protected void updateProps(Properties props, String mongoServiceName) {
+		
+		String mongoDb = env.getSystemEnvironment().get(mongoServiceName)
 				.toString();
 		
 		
