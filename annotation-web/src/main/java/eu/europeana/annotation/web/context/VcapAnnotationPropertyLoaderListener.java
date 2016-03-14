@@ -118,14 +118,14 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 	
 	
 	public void updateAnnotationProperties(String mongoServiceName) {
-	
+		logger.info("Updating annotation properties for mongo service: " + mongoServiceName) ;
 		try {
 			
-			Properties updatedProps = loadProperties();
+			Properties serverProperties = loadProperties();
 			
-			updateProps(updatedProps, mongoServiceName);
+			updateProps(serverProperties, mongoServiceName);
 				
-			writePropsToFile(updatedProps, getPropertiesFile());			
+			writePropsToFile(serverProperties, getPropertiesFile());			
 			
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -152,7 +152,16 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 			throws IOException, FileNotFoundException {
 		if(annotationPropertiesFile.exists()){
 			logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
-			props.load(new FileInputStream(getPropertiesFile()));
+			FileInputStream inStream = new FileInputStream(getPropertiesFile());
+			props.load(inStream);
+			
+			if(inStream != null){
+				try{
+					inStream.close();
+				}catch(Throwable th){
+					logger.warn("Cannot close input stream for properties file. " + annotationPropertiesFile.getAbsolutePath(), th);
+				}
+			}
 		}
 	}
 
@@ -160,6 +169,7 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 		
 		String mongoDb = env.getSystemEnvironment().get(mongoServiceName)
 				.toString();
+		logger.info("Configured mongo service" +  mongoDb);
 		
 		
 		String mongoDatabase = VCAP + mongoDb + DATABASE;
