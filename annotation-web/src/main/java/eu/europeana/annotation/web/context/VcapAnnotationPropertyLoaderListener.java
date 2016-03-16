@@ -151,7 +151,6 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 	protected void loadProperties(File annotationPropertiesFile, Properties props)
 			throws IOException, FileNotFoundException {
 		if(annotationPropertiesFile.exists()){
-			logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
 			FileInputStream inStream = new FileInputStream(getPropertiesFile());
 			props.load(inStream);
 			
@@ -195,6 +194,7 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 
 	protected void writePropsToFile(Properties props, File annotationPropertiesFile) throws IOException {
 		//overwrite existing file by setting append to false
+		logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
 		FileUtils.writeStringToFile(
 				annotationPropertiesFile,
 				"\n### generated configurations ###\n", false);

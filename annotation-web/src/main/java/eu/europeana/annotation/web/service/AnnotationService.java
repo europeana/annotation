@@ -300,8 +300,9 @@ public interface AnnotationService {
 	 * This method deletes annotation by annotationId values.
 	 * @param annoId
 	 * @throws InternalServerException 
+	 * @throws AnnotationServiceException 
 	 */
-	void deleteAnnotation(AnnotationId annoId) throws InternalServerException;
+	void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
 
 	void indexAnnotation(AnnotationId annoId);
 
