@@ -216,7 +216,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	
 	
 	@Test
-	public void testDeleteObjectTag(){
+	public void testDeleteObjectTag() throws AnnotationMongoException{
 				//*** STORE OBJECTS ****
 				ObjectTag firstObject = buildObjectTag();
 

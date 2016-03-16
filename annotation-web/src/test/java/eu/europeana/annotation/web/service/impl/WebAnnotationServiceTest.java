@@ -339,7 +339,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		
 	@Test
 	public void testDeleteTag() 
-			throws MalformedURLException, IOException, TagServiceException, InternalServerException {
+			throws MalformedURLException, IOException, TagServiceException, InternalServerException, AnnotationServiceException {
 		
 		Annotation testAnnotation = createTestAnnotation();		
         

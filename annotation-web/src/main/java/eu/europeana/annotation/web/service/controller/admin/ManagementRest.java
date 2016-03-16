@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -43,7 +45,7 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces ={"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
 	@ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
-	public AnnotationOperationResponse deleteAnnotationById(
+	public ModelAndView deleteAnnotationById(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_PROVIDER, required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) String identifier,
@@ -55,13 +57,14 @@ public class ManagementRest extends BaseRest {
 
 		deleteAnnotationForGood(provider, identifier, apiKey, userToken);
 		response.success = true;
+		//response.setStatus(status);
 
-		return response;
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", response = java.lang.Void.class)
-	public AnnotationOperationResponse deleteAnnotationSet(
+	public ModelAndView deleteAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@RequestBody String uris) throws HttpException {
@@ -94,7 +97,7 @@ public class ManagementRest extends BaseRest {
 		response.setStatus("Success count: " + successCount + ". Failure count: " + failureCount);
 		response.success = true;
 
-		return response;
+		return JsonWebUtils.toJson(response, null);
 	}
 
 	protected void deleteAnnotationForGood(String provider, String identifier, String apiKey, String userToken)
@@ -115,7 +118,11 @@ public class ManagementRest extends BaseRest {
 		// 1. authorize user
 		authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
-		getAnnotationService().deleteAnnotation(annoId);
+		try {
+			getAnnotationService().deleteAnnotation(annoId);
+		} catch (AnnotationServiceException e) {
+			throw new InternalServerException(e);
+		}
 	}
 
 	// @PUT

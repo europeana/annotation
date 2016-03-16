@@ -36,6 +36,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.jsonld.AnnotationLd;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
@@ -51,6 +52,7 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
@@ -425,14 +427,33 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	// public void deleteAnnotation(String resourceId, String provider, Long
 	// annotationNr) {
-	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException{
+	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException{
+		
+		//mongo is the master
 		try{
-			getSolrService().delete(annoId);
-			getMongoModerationRecordPersistence().remove(annoId);
 			getMongoPersistence().remove(annoId);
+		}catch(AnnotationMongoException e){
+			if (StringUtils.startsWith(e.getMessage(), AnnotationMongoException.NO_RECORD_FOUND)){
+					//consider annotation deleted in mongo and try to remove the related items
+					getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoId.toHttpUrl());
+			}else{
+				//do not remove anything if the master object cannt be deleted
+				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + annoId.toHttpUrl(),  e);
+			}
 		}catch(Throwable th){
 			throw new InternalServerException(th);
 		}
+		
+		//delete moderation record if possible
+		try{
+			getMongoModerationRecordPersistence().remove(annoId);
+		}catch(Throwable th){
+			//expected ModerationMongoException
+			getLogger().warn("Cannot remove moderation record for annotation id: " + annoId.toHttpUrl());
+		}
+		
+		//delete from solr .. and throw AnnotationServiceException if operation is not successfull 
+		getSolrService().delete(annoId);
 	}
 
 	@Override
