@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 			<classifier>test</classifier>
 			<scope>test</scope>
 		</dependency>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-jdk14</artifactId>
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 			<scope>test</scope>
 			<classifier>test</classifier>
 		</dependency>

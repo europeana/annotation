@@ -37,22 +37,22 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>api2-common</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-mongo</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		
 		<!-- swagger -->
@@ -169,7 +169,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 			<!--  

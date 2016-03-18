@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApiSnapshot}</version>			
+			<version>${version.annotationApi}</version>			
 		</dependency>
 		
 		<!-- 

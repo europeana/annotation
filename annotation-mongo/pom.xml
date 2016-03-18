@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		
 		<dependency>
@@ -84,12 +84,12 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApiSnapshot}</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>api2-common</artifactId>
-			<version>0.2.1-SNAPSHOT</version>
+			<version>${version.annotationApi}</version>
 		</dependency>
 	</dependencies>
 	
