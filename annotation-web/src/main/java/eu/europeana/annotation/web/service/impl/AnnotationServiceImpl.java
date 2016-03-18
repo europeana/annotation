@@ -362,12 +362,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
-			throws ModerationNotFoundException, ModerationMongoException {
+			throws ModerationMongoException {
 		return getMongoModerationRecordPersistence().find(annoId);
-//		if(moderationRecord == null)
-//			throw new ModerationNotFoundException(ModerationNotFoundException.MESSAGE_MODERATION_NO_FOUND, annoId.toHttpUrl());
-//		
-//		return moderationRecord;
+	
 	}
 
 	

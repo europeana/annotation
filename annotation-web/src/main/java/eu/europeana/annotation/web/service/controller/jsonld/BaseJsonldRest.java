@@ -231,6 +231,8 @@ public class BaseJsonldRest extends BaseRest {
 			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 			// moderation id doesn’t exists )
 			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
+			if(moderationRecord == null)
+				moderationRecord = buildNewModerationRecord(annoId, null);
 
 			Gson gsonObj = new Gson();
 			String jsonString = gsonObj.toJson(moderationRecord.getSummary());
