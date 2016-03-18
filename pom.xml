@@ -13,7 +13,7 @@
 
 	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-api</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.2.1-RC</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
 	<!--
@@ -43,8 +43,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.annotationApi>0.2.1</version.annotationApi>
-		<version.annotationApiSnapshot>0.2.1-SNAPSHOT</version.annotationApiSnapshot>
+		<version.annotationApi>0.2.1-RC</version.annotationApi>
+		<version.annotationApiSnapshot>0.2.1-RC</version.annotationApiSnapshot>
 		<version.java>1.7</version.java>
 		<version.junit>4.11</version.junit>
 		<version.springAop>4.0.9.RELEASE</version.springAop>
