@@ -3,6 +3,9 @@ package eu.europeana.annotation.web.service.authentication.mock;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
@@ -13,12 +16,20 @@ import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
+import eu.europeana.harvester.domain.GenericSubTaskConfiguration;
 
 public class MockAuthenticationServiceImpl implements AuthenticationService
 // , ApiKeyService
 {
 	
+	private static final String COLLECTIONS_API_KEY = "phVKTQ8g9F";
+	private static final String COLLECTIONS_USER_TOKEN = "pyU4HCDWfS";
+
+	@Resource
+	AnnotationConfiguration configuration;
+	
 	public static final String EUROPEANA_FOUNDATION = "Europeana Foundation";
+	public static final String EUROPEANA_COLLECTIONS = "Europeana Collections";
 	
 	private Map<String, Application> cachedClients = new HashMap<String, Application>();
 	
@@ -34,7 +45,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		switch (apiKey) {
 
 		case "apiadmin":
-			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_EUROPEANA);			
+			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_EUROPEANA_DEV);			
 			break;
 		case "apidemo":
 			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_WEBANNO);			
@@ -47,6 +58,10 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 			break;
 		case "withdemo":
 			app = createMockClientApplication(apiKey, "With", WebAnnotationFields.PROVIDER_WITH);			
+			break;
+		case COLLECTIONS_API_KEY:
+			//collections
+			app = createMockClientApplication(apiKey, EUROPEANA_COLLECTIONS, WebAnnotationFields.PROVIDER_COLLECTIONS);			
 			break;
 		default:
 			throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
@@ -73,7 +88,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 		Agent admin = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		admin.setName(applicationName + "-" + WebAnnotationFields.USER_ADMIN);
-		if(WebAnnotationFields.PROVIDER_EUROPEANA.equals(applicationName))
+		if(WebAnnotationFields.PROVIDER_EUROPEANA_DEV.equals(applicationName))
 			admin.setUserGroup(UserGroups.ADMIN.name());
 		else
 			admin.setUserGroup(UserGroups.USER.name());
@@ -81,6 +96,32 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		app.setAdminUser(admin);
 		
 		//authenticated users 
+		createTesterUsers(applicationName, app);
+
+		createRegularUser(apiKey, applicationName, app);
+		
+		return app;
+	}
+
+	protected void createRegularUser(String apiKey, String applicationName, Application app) {
+		if(!COLLECTIONS_API_KEY.equals(apiKey))
+			return;
+		
+		Agent collectionsUser = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		String username = "Firstuser";
+		collectionsUser.setName(applicationName + "-" + username);
+		collectionsUser.setOpenId(username+"@" + applicationName);
+		collectionsUser.setUserGroup(UserGroups.USER.name());
+		
+		app.addAuthenticatedUser(COLLECTIONS_USER_TOKEN, collectionsUser);	
+	}
+
+	protected void createTesterUsers(String applicationName, Application app) {
+		
+		//testers not allowed in production
+		if(getConfiguration().isProductionEnvironment())
+			return;
+		
 		String username = "tester1";
 		Agent tester1 = createTesterUser(username, applicationName);
 		app.addAuthenticatedUser(username, tester1);
@@ -92,8 +133,6 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		username = "tester3";
 		Agent tester3 = createTesterUser(username, applicationName);
 		app.addAuthenticatedUser(username, tester3);
-
-		return app;
 	}
 
 	protected Agent createTesterUser(String username, String applicationName) {
@@ -152,6 +191,14 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		getCachedClients().put(apiKey, app);
 		
 		return app;
+	}
+
+	public AnnotationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(AnnotationConfiguration configuration) {
+		this.configuration = configuration;
 	}
 
 }

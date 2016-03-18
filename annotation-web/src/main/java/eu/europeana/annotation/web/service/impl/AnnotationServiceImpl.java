@@ -637,6 +637,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
 						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
 			break;
+		case WebAnnotationFields.PROVIDER_COLLECTIONS:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(
+						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+			break;
+		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(
+						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+			break;
+		case WebAnnotationFields.PROVIDER_WITH:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(
+						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+			break;
+
 		default:
 			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER, annoId.getProvider());
 		}

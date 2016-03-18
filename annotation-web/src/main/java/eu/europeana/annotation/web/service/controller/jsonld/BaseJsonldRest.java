@@ -82,8 +82,10 @@ public class BaseJsonldRest extends BaseRest {
 			// 3-6 create ID and annotation + backend validation
 			webAnnotation.setAnnotationId(annoId);
 			
+			
 			//validate api key ... and request limit only if the request is correct (avoid useless DB requests)
-			validateApiKey(wsKey);
+			//Done in authorize user
+			//validateApiKey(wsKey);
 
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
 			

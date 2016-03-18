@@ -20,6 +20,7 @@ import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
@@ -110,7 +111,7 @@ public class ManagementRest extends BaseRest {
 	}
 
 	protected void deleteAnnotationForGood(AnnotationId annoId, String apiKey, String userToken)
-			throws InternalServerException, UserAuthorizationException, ApplicationAuthenticationException {
+			throws InternalServerException, UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);

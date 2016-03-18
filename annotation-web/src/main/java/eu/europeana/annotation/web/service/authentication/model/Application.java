@@ -40,7 +40,7 @@ public interface Application {
 	
 	Map<String, Agent> getAuthenticatedUsers();
 	
-	void addAuthenticatedUser(String key, Agent user);
+	void addAuthenticatedUser(String token, Agent user);
 	
 
 }

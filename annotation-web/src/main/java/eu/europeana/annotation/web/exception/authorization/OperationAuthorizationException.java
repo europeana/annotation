@@ -14,6 +14,7 @@ public class OperationAuthorizationException extends HttpException{
 	 * 
 	 */
 	public static final String MESSAGE_OPERATION_NOT_AUTHORIZED = "The user is not allowed to perform the given operation!";
+	public static final String MESSAGE_CLIENT_NOT_AUTHORIZED = "The client application is not allowed to perform the given operation!";
 	
 	private String paramValue; 
 	
