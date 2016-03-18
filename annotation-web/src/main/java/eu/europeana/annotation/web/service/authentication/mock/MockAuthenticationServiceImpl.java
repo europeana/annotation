@@ -108,7 +108,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 			return;
 		
 		Agent collectionsUser = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-		String username = "Firstuser";
+		String username = "Europeana Collections Curator";
 		collectionsUser.setName(applicationName + "-" + username);
 		collectionsUser.setOpenId(username+"@" + applicationName);
 		collectionsUser.setUserGroup(UserGroups.USER.name());
