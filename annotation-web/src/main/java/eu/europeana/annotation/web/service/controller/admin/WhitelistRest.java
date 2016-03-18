@@ -19,6 +19,7 @@ import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
@@ -55,7 +56,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 		@RequestParam(value = "url", required = true) String url
-		) throws ApplicationAuthenticationException, UserAuthorizationException {
+		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 		
 		validateApiKey(apiKey);
 
@@ -88,7 +89,7 @@ public class WhitelistRest extends BaseRest {
 	public ModelAndView getFullWhitelist(
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
-				throws ApplicationAuthenticationException, UserAuthorizationException {
+				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
 		validateApiKey(apiKey);
 
@@ -110,7 +111,7 @@ public class WhitelistRest extends BaseRest {
 	public ModelAndView createWhitelistEntry (
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestBody String whitelist) throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException {
+		@RequestBody String whitelist) throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
 		validateApiKey(apiKey);
 
@@ -141,7 +142,7 @@ public class WhitelistRest extends BaseRest {
 	public ModelAndView loadDefaultWhitelist (
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
-				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException{
+				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException{
 
 		validateApiKey(apiKey);
 
@@ -165,7 +166,7 @@ public class WhitelistRest extends BaseRest {
 	public ModelAndView deleteAllWhitelistEntries(
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
-				throws ApplicationAuthenticationException, UserAuthorizationException {
+				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
 		validateApiKey(apiKey);
 
@@ -197,7 +198,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 		@RequestParam(value = "url", required = true) String url
-		) throws ApplicationAuthenticationException, UserAuthorizationException {
+		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
 		validateApiKey(apiKey);
 

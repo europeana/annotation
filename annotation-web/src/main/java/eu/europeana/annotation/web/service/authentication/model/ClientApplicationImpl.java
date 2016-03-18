@@ -104,8 +104,8 @@ public class ClientApplicationImpl implements Application{
 	}
 
 	@Override
-	public void addAuthenticatedUser(String key, Agent user) {
-		getAuthenticatedUsers().put(key, user);
+	public void addAuthenticatedUser(String token, Agent user) {
+		getAuthenticatedUsers().put(token, user);
 	}
 	
 	

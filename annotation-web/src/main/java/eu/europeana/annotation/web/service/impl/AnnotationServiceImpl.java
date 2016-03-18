@@ -362,12 +362,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
-			throws ModerationNotFoundException, ModerationMongoException {
+			throws ModerationMongoException {
 		return getMongoModerationRecordPersistence().find(annoId);
-//		if(moderationRecord == null)
-//			throw new ModerationNotFoundException(ModerationNotFoundException.MESSAGE_MODERATION_NO_FOUND, annoId.toHttpUrl());
-//		
-//		return moderationRecord;
+	
 	}
 
 	
@@ -637,6 +634,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
 						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
 			break;
+		case WebAnnotationFields.PROVIDER_COLLECTIONS:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(
+						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+			break;
+		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(
+						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+			break;
+		case WebAnnotationFields.PROVIDER_WITH:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(
+						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
+						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+			break;
+
 		default:
 			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER, annoId.getProvider());
 		}

@@ -157,9 +157,11 @@ public class PersistentAnnotationServiceImpl extends
 
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
 //		MongoAnnotationId embeddedId;
-		String provider = object.getAnnotationId().getProvider(); 
+//		String provider = object.getAnnotationId().getProvider(); 
 
-		if(StringUtils.isEmpty(provider) || WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
+		//
+		//if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
+		if(StringUtils.isEmpty(object.getAnnotationId().getIdentifier())){
 			return generateAnnotationId(object.getAnnotationId().getProvider());	
 		}else{
 			return new MongoAnnotationId(object.getAnnotationId());

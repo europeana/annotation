@@ -25,16 +25,19 @@ import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
+import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
+import eu.europeana.annotation.web.service.authentication.model.Application;
 
 public class BaseRest extends ApiResponseBuilder {
 
@@ -232,7 +235,7 @@ public class BaseRest extends ApiResponseBuilder {
 	}
 
 	protected Agent authorizeUser(String userToken, String apiKey, String operationName)
-			throws UserAuthorizationException {
+			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
 		return authorizeUser(userToken, apiKey, null, operationName);
 	}
 	
@@ -248,12 +251,19 @@ public class BaseRest extends ApiResponseBuilder {
 	 * @throws UserAuthorizationException
 	 */
 	protected Agent authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
-			throws UserAuthorizationException {
+			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
 		// throws exception if user is not found
+		//TODO: add userToken to agent
+		Application app = getAuthenticationService().getByApiKey(apiKey);
 		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
-
+		
 		if (user== null || user.getName() == null || user.getUserGroup() == null)
 			throw new UserAuthorizationException("Invalid User (Token): ", userToken, HttpStatus.FORBIDDEN);
+		
+		if(!isAdmin(user) && !hasPermission(app, annoId, operationName))
+			throw new OperationAuthorizationException(OperationAuthorizationException.MESSAGE_CLIENT_NOT_AUTHORIZED, 
+					"client app provider: " + app.getProvider() + "; annotation provider: "+ annoId.getProvider(), HttpStatus.FORBIDDEN);
+		
 		
 		//check permissions
 		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
@@ -271,6 +281,15 @@ public class BaseRest extends ApiResponseBuilder {
 		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName(), HttpStatus.FORBIDDEN);			
 	}
 
+	//verify client app privileges 
+	private boolean hasPermission(Application app, AnnotationId annoId, String operationName) {
+		if(Operations.MODERATION_ALL.equals(operationName) || Operations.RETRIEVE.equals(operationName) )
+			return true;
+		
+		return annoId.getProvider().equals(app.getProvider());
+	}
+
+	//verify user privileges
 	protected boolean hasPermission(Agent user, String operationName) {
 		UserGroups userGroup = UserGroups.valueOf(user.getUserGroup());
 		

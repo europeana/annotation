@@ -82,8 +82,10 @@ public class BaseJsonldRest extends BaseRest {
 			// 3-6 create ID and annotation + backend validation
 			webAnnotation.setAnnotationId(annoId);
 			
+			
 			//validate api key ... and request limit only if the request is correct (avoid useless DB requests)
-			validateApiKey(wsKey);
+			//Done in authorize user
+			//validateApiKey(wsKey);
 
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
 			
@@ -229,6 +231,8 @@ public class BaseJsonldRest extends BaseRest {
 			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 			// moderation id doesn’t exists )
 			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
+			if(moderationRecord == null)
+				moderationRecord = buildNewModerationRecord(annoId, null);
 
 			Gson gsonObj = new Gson();
 			String jsonString = gsonObj.toJson(moderationRecord.getSummary());
