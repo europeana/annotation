@@ -139,8 +139,8 @@ public class VcapAnnotationPropertyLoaderListener implements ApplicationListener
 		File annotationPropertiesFile = getPropertiesFile();
 		loadProperties(annotationPropertiesFile, props);
 		
-		//
-		if(annotationPropertiesFile.exists()){
+		// Load properties from template if regular property file doesn't exist
+		if(!annotationPropertiesFile.exists()){
 			File propertiesTemplate = getPropertiesFileTemplate();
 			logger.info("Load configuration properties from template: " + propertiesTemplate.getAbsolutePath());
 			props.load(new FileInputStream(propertiesTemplate));
