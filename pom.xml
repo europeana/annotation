@@ -56,16 +56,16 @@
 		
 	</properties>
 	<modules>
-		<!--
 		<module>api2-common</module>
 		<module>annotation-definitions</module>
 		<module>annotation-utils</module>
+		<!--
 		<module>annotation-dereferenciation</module>
+			-->
 		<module>annotation-mongo</module>
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
-			-->
-	
+		
 		
 	</modules>
 	<build>
