@@ -13,7 +13,6 @@
 		<version>${version.annotationApiSnapshot}</version>
 		 -->
 		<version>${version.annotationApi}</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
   
   <dependencies>

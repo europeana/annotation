@@ -10,7 +10,6 @@
 	<parent>
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-api</artifactId>
-		<!-- <version>${version.annotationApiSnapshot}</version> -->
 		<version>${version.annotationApi}</version>
 	</parent>
 
@@ -61,10 +60,6 @@
 			<scope>test</scope>
 			<classifier>test</classifier>
 		</dependency>
-		<!-- <dependency> <groupId>commons-codec</groupId> <artifactId>commons-codec</artifactId> 
-			<version>1.7</version> <type>pom</type> <scope>compile</scope> </dependency> -->
-		<!-- <dependency> <groupId>commons-logging</groupId> <artifactId>commons-logging</artifactId> 
-			<version>1.1.2</version> </dependency> -->
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
