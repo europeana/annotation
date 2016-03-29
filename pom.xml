@@ -16,8 +16,10 @@
 	<version>0.2.1-RC2</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
+	<!-- 
 	<url>http://labs.europeana.eu/api/annotations</url>
-	
+	 -->
+	 
 	<parent>
 		<artifactId>corelib</artifactId>
 		<groupId>eu.europeana</groupId>
