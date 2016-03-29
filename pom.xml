@@ -13,7 +13,7 @@
 
 	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-api</artifactId>
-	<version>0.2.1-RC2</version>
+	<version>${version.annotationApi}</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
 	<!-- 
