@@ -12,7 +12,6 @@
 		<!-- 
 		<version>${version.annotationApiSnapshot}</version>
 		 -->
-		<version>${version.annotationApi}</version>
 	</parent>
   
   <dependencies>
@@ -30,4 +29,5 @@
 		</dependency>		
   </dependencies>
   
+  <version>${version.annotationApi}</version>
 </project>
