@@ -16,7 +16,6 @@ import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
-import eu.europeana.harvester.domain.GenericSubTaskConfiguration;
 
 public class MockAuthenticationServiceImpl implements AuthenticationService
 // , ApiKeyService
