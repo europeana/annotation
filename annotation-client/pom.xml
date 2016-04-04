@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${version.annotationld}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>junit</groupId>
