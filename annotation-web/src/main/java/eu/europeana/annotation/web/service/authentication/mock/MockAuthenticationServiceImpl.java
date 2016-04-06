@@ -1,9 +1,15 @@
 package eu.europeana.annotation.web.service.authentication.mock;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
+import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -15,6 +21,8 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
+import eu.europeana.annotation.web.service.authentication.model.ApplicationDeserializer;
+import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
 
 public class MockAuthenticationServiceImpl implements AuthenticationService
@@ -30,6 +38,9 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 	public static final String EUROPEANA_FOUNDATION = "Europeana Foundation";
 	public static final String EUROPEANA_COLLECTIONS = "Europeana Collections";
 	
+	public final String API_KEY_CONFIG_FOLDER = "/config"; 
+	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
+	
 	private Map<String, Application> cachedClients = new HashMap<String, Application>();
 	
 	
@@ -37,35 +48,81 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		return cachedClients;
 	}
 
+
+	public Application readApiKeyApplicationFromFile(String apiKey, String path) 
+			throws ApplicationAuthenticationException {  
+		  
+		Application app;
+		     
+		try {  	    
+		    BufferedReader br = new BufferedReader(  
+		         new FileReader(path));  
+		     
+		    BaseDeserializer deserializer = new BaseDeserializer();
+		    Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
+		    String jsonData = br.readLine();
+		    app = gson.fromJson(jsonData, Application.class); 
+		    br.close();
+		    
+		    System.out.println("Api Key: "+ app.getApiKey());  		     
+		} catch (IOException e) {  
+		    throw new ApplicationAuthenticationException(
+				 ApplicationAuthenticationException.MESSAGE_APIKEY_FILE_NOT_FOUND
+				 , apiKey + ". " + e.getMessage());
+		}  
+		return app;
+    }  
+
+	
 	@Override
 	public Application findByApiKey(String apiKey) throws ApplicationAuthenticationException {
 
-		Application app;
-		switch (apiKey) {
+		Application app = null;
+		
+		String configFolder = getClass().getResource(API_KEY_CONFIG_FOLDER).getFile();
+        String pathToApiKeyFolder = configFolder + API_KEY_STORAGE_FOLDER;
+		File folder = new File(pathToApiKeyFolder);
+		File[] listOfFiles = folder.listFiles();
 
-		case "apiadmin":
-			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_EUROPEANA_DEV);			
-			break;
-		case "apidemo":
-			app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_WEBANNO);			
-			break;
-		case "hpdemo":
-			app = createMockClientApplication(apiKey, "HistoryPin", WebAnnotationFields.PROVIDER_HISTORY_PIN);			
-			break;
-		case "punditdemo":
-			app = createMockClientApplication(apiKey, "Pundit", WebAnnotationFields.PROVIDER_PUNDIT);			
-			break;
-		case "withdemo":
-			app = createMockClientApplication(apiKey, "With", WebAnnotationFields.PROVIDER_WITH);			
-			break;
-		case COLLECTIONS_API_KEY:
-			//collections
-			app = createMockClientApplication(apiKey, EUROPEANA_COLLECTIONS, WebAnnotationFields.PROVIDER_COLLECTIONS);			
-			break;
-		default:
-			throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
-		}
-
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	        if (listOfFiles[i].isFile()) {
+	        	String fileName = listOfFiles[i].getPath();
+	            System.out.println("File " + fileName);
+	            app = readApiKeyApplicationFromFile(apiKey, fileName);
+	            if (app.getApiKey().equals(apiKey))
+	            	break;
+	        }
+	    }		
+		
+	    if (app == null) {
+			switch (apiKey) {
+	
+			case "apiadmin":
+				app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_EUROPEANA_DEV);			
+				break;
+			case "apidemo":
+				app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_WEBANNO);			
+				break;
+			case "hpdemo":
+				app = createMockClientApplication(apiKey, "HistoryPin", WebAnnotationFields.PROVIDER_HISTORY_PIN);			
+				break;
+			case "punditdemo":
+				app = createMockClientApplication(apiKey, "Pundit", WebAnnotationFields.PROVIDER_PUNDIT);			
+				break;
+			case "withdemo":
+				app = createMockClientApplication(apiKey, "With", WebAnnotationFields.PROVIDER_WITH);			
+				break;
+			case COLLECTIONS_API_KEY:
+				//collections
+				app = createMockClientApplication(apiKey, EUROPEANA_COLLECTIONS, WebAnnotationFields.PROVIDER_COLLECTIONS);			
+				break;
+			default:
+				throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
+			}
+	    }
+	    
+		if (app == null)
+	    	throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
 		return app;
 	}
 

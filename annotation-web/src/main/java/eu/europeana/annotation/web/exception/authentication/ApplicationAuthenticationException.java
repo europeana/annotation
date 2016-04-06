@@ -15,6 +15,8 @@ public class ApplicationAuthenticationException extends HttpException{
 	 */
 	public static final String MESSAGE_NO_APPLICATION_FOR_APIKEY = "No client application registered for the given apiKey!";
 	public static final String MESSAGE_INVALID_APIKEY = "Invalid apiKey! ";
+	public static final String MESSAGE_APIKEY_FILE_NOT_FOUND = 
+			"No apiKey file found in /config/authentication_templates folder! ";
 		
 	private String paramValue; 
 	

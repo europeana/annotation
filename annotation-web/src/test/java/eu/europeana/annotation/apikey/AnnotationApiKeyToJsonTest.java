@@ -16,6 +16,7 @@
 package eu.europeana.annotation.apikey;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -80,7 +81,18 @@ public class AnnotationApiKeyToJsonTest {
 	
 	/**
      * This test performs storage of api key data in JSON format.
+	 * @throws ApplicationAuthenticationException 
      */
+    @Test
+    public void testFindApiKeyApplicationFromJsonFile() throws ApplicationAuthenticationException {
+    	  	
+    	Application app = getAuthenticationService().findByApiKey("hpdemo");
+    	assertNotNull(app);
+    	assertNotNull(app.getApiKey());
+    	assertTrue(app.getApiKey().equals("hpdemo"));
+    }
+   
+    
     @Test
     public void testStoreApiKeysAsJson() {
     	  	
