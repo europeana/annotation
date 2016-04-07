@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package eu.europeana.annotation.apikey;
+package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,19 +21,30 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.gson.Gson;
 
+import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.moderation.Vote;
+import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 import eu.europeana.corelib.logging.Logger;
@@ -44,7 +55,7 @@ import eu.europeana.corelib.logging.Logger;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-web-context.xml" 
 	})
-public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
+public class AnnotationApiKeyTest {
 	
 	public final String API_KEY_CONFIG_FOLDER = "/config"; 
 	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
@@ -84,51 +95,53 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
 	
 	
 	/**
-     * This test performs storage of api key data in JSON format.
-	 * @throws ApplicationAuthenticationException 
+     * This test performs storage of moderation reports for admin user 
+     * for all api keys stored in JSON files in template folder.
+	 * @throws HttpException 
      */
     @Test
-    public void testFindApiKeyApplicationFromJsonFile() throws ApplicationAuthenticationException {
-    	  	
-    	Application app = getAuthenticationService().findByApiKey("hpdemo");
-    	assertNotNull(app);
-    	assertNotNull(app.getApiKey());
-    	assertTrue(app.getApiKey().equals("hpdemo"));
-    }
-   
-    
-    @Test
-    public void testStoreApiKeysAsJson() {
+    public void testCreateAnnotationRecordsForAdminUserFromConfigTemplate() throws HttpException {
     	  	
     	for (Map.Entry<String, String> entry : apyKeyMap.entrySet()) {
-        	storeApiKeyAsJson(entry.getKey(), entry.getValue());
+        	Application app = getAuthenticationService().findByApiKey(entry.getKey());
+        	assertNotNull(app);
+        	assertNotNull(app.getApiKey());
+        	Agent adminUser = app.getAdminUser();
+        	assertNotNull(adminUser.getName());
+    		try {
+    			String wsKey = entry.getKey();
+    			getAuthenticationService().getByApiKey(wsKey);
+
+    			AnnotationId annoId = validateInputsForUpdateDelete(
+    					wsKey, app.getProvider(), TEST_IDENTIFIER, USER_ADMIN);
+
+    			@SuppressWarnings("deprecation")
+				Agent user = authorizeUser(USER_ADMIN, wsKey, annoId, Operations.REPORT);
+
+    			Date reportDate = new Date();
+    			Vote vote = buildVote(user, reportDate);
+    			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
+    			if (moderationRecord == null)
+    				moderationRecord = buildNewModerationRecord(annoId, reportDate);
+
+    			moderationRecord.addReport(vote);
+    			moderationRecord.computeSummary();
+    			moderationRecord.setLastUpdated(reportDate);
+
+    			ModerationRecord storedModeration = getAnnotationService().storeModerationRecord(
+    					moderationRecord);
+            	assertNotNull(storedModeration);
+            	assertNotNull(storedModeration.getAnnotationId());
+            	assertNotNull(storedModeration.getAnnotationId().getProvider().equals(app.getProvider()));
+    		} catch (HttpException e) {
+    			// avoid wrapping HttpExceptions
+    			throw e;
+    		} catch (Exception e) {
+    			throw new InternalServerException(e);
+    		}
+        	
     	}
-    }
+    }  
     
-    public void storeApiKeyAsJson(String key, String filename) {
-    	
-    	Application app;
-		try {
-			app = getAuthenticationService().findByApiKey(key);
-	    	String json = getGson().toJson(app);
-			String configFolder = getClass().getResource(API_KEY_CONFIG_FOLDER).getFile();
-			// create file to store api key 
-            String path = configFolder + API_KEY_STORAGE_FOLDER + "/" + filename + ".json";
-			File f = new File(path);
-			f.getParentFile().mkdirs(); 
-			f.createNewFile();
-			// store api key data
-	    	FileWriter file = new FileWriter(f);
-			file.write(json);
-			file.close();
-	    	assertNotNull(app);
-	    	assertNotNull(app.getApiKey());
-	    	logger.info(app.getApiKey());
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (ApplicationAuthenticationException e) {
-			e.printStackTrace();
-		}
-    }
-    
+	
 }
