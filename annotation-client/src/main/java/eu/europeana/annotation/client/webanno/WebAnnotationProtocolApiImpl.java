@@ -121,5 +121,19 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		return res;
 	}
 
-	
+	@Override
+	public ResponseEntity<String> findApplicationByApiKey(
+			String apiKey) {
+		
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.findApplicationByApiKey(apiKey);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi findApiKey method", e);
+		}
+
+		return res;
+	}
+
 }

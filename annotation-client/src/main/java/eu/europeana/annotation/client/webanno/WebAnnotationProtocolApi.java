@@ -112,4 +112,12 @@ public interface WebAnnotationProtocolApi {
 	 */
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException;
 		
+	/**
+	 * This method returns application data for api key from stored template file in JSON format.
+	 * @param apiKey
+	 * @return
+	 */
+	public ResponseEntity<String> findApplicationByApiKey(
+			String apiKey);
+	
 }

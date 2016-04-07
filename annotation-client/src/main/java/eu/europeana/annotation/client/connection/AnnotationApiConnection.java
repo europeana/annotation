@@ -1143,4 +1143,31 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return deleteURL(url);
 	}
 
+	/**
+	 * This method retrieves summary of the Annotation moderation report object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/findapikey?wskey=apikey
+	 * @param wskey
+	 * @return response entity that comprises application data.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> findApplicationByApiKey(
+			String apiKey) throws IOException {
+		
+		String url = getAnnotationServiceUri();
+		if(!url.endsWith(WebAnnotationFields.SLASH))
+			url +=  WebAnnotationFields.SLASH;
+		url += WebAnnotationFields.PATH_PARAM_FIND_APPLICATION_BY_API_KEY;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + apiKey;
+		
+		logger.trace("Ivoking find api key: " + url);
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURL(url);		
+	}
+
+
 }

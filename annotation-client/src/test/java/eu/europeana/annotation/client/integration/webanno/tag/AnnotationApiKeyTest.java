@@ -91,13 +91,9 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_MINIMAL);
 		
 		Annotation storedAnno = createTag(requestBody);
-		
-		Annotation inputAnno = parseTag(requestBody);
-		
-		//validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
-		
-//    	for (Map.Entry<String, String> entry : apyKeyMap.entrySet()) {
+			
+    	for (Map.Entry<String, String> entry : apyKeyMap.entrySet()) {
+    		ResponseEntity<String> response = getApiClient().findApplicationByApiKey(entry.getKey());
 //        	Application app = getAuthenticationService().findByApiKey(entry.getKey());
 //        	assertNotNull(app);
 //        	assertNotNull(app.getApiKey());
@@ -134,8 +130,11 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 //    		} catch (Exception e) {
 //    			throw new InternalServerException(e);
 //    		}
-//        	
-//    	}
+//    		ResponseEntity<String> response = getApiClient().deleteAnnotation(wskey, provider, identifier, userToken, format)
+//    				createTag(
+//    				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+//    				TEST_USER_TOKEN);
+    	}
 		
 	}
 		

@@ -87,6 +87,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PATH_PARAM_IDENTIFIER = "identifier";
 	public static final String PATH_FIELD_REPORT = "report";
 	public static final String PATH_FIELD_MODERATION_SUMMARY = "moderationsummary";
+	public static final String PATH_PARAM_FIND_APPLICATION_BY_API_KEY = "findApplicationByApiKey";
 	//Not needed yet
 	//public static final String WHITELIST = "whitelist";
 
