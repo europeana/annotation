@@ -25,7 +25,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.atlas.json.io.parser.JSONParser;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
@@ -37,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+
 
 /**
  * This class implements api key testing scenarios.
@@ -87,7 +87,12 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 //		    JSONObject json = (JSONObject) parser.parse(jsonData);		    
 		    try {
 				JSONObject json = new JSONObject(jsonData);
-				res = (String) json.get(fieldName);
+				if (fieldName.equals("userGroup")) {
+					JSONObject adminJsonObject = (JSONObject) json.get("admin");
+					res = (String) adminJsonObject.get(fieldName);
+				} else {
+					res = (String) json.get(fieldName);
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -140,39 +145,47 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 		
     	for (Map.Entry<String, String> entry : apiKeyMap.entrySet()) {
 
+//    		Annotation storedAnno = createTagWithProviderAndUserToken(
+//    				requestBody, entry.getValue(), TEST_USER_TOKEN);
     		Annotation storedAnno = createTag(requestBody);
     		String provider = getApiKeyApplicationValueByFieldName(
     				entry.getKey(), entry.getValue(), "provider");
+    		String userGroup = getApiKeyApplicationValueByFieldName(
+    				entry.getKey(), entry.getValue(), "userGroup");
 //    		String identifier = getApiKeyApplicationValueByFieldName(
 //    				entry.getKey(), entry.getValue(), "identifier");
     		String identifier = storedAnno.getAnnotationId().getIdentifier();
-			log.info(
-					"apiKey: " + entry.getKey() + 
-//					", provider: " + storedAnno.getAnnotationId().getProvider() +
-//					", identifier: " + storedAnno.getAnnotationId().getIdentifier() +
-					", provider: " + provider +
-					", identifier: " + identifier +
-					", userToken: " + TEST_USER_TOKEN
-					);
-    		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
-    				entry.getKey()
-//    				, storedAnno.getAnnotationId().getProvider()
-//    				, storedAnno.getAnnotationId().getIdentifier()
-    				, provider
-    				, identifier
-    				, TEST_USER_TOKEN);
-    		validateReportResponse(reportResponse, HttpStatus.CREATED);
+    		if (userGroup.equals("ADMIN") 
+    				&& provider.equals(storedAnno.getAnnotationId().getProvider())) {
+//    		if (provider.equals(entry.getValue())) {
+				log.info(
+						"apiKey: " + entry.getKey() + 
+	//					", provider: " + storedAnno.getAnnotationId().getProvider() +
+	//					", identifier: " + storedAnno.getAnnotationId().getIdentifier() +
+						", provider: " + provider +
+						", identifier: " + identifier +
+						", userToken: " + TEST_USER_TOKEN
+						);
+	    		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
+	    				entry.getKey()
+	//    				, storedAnno.getAnnotationId().getProvider()
+	//    				, storedAnno.getAnnotationId().getIdentifier()
+	    				, provider
+	    				, identifier
+	    				, TEST_USER_TOKEN);
+	    		validateReportResponse(reportResponse, HttpStatus.CREATED);
     		
-    		ResponseEntity<String> response = getApiClient().deleteAnnotation(
-    				entry.getKey()
-//    				, storedAnno.getAnnotationId().getProvider()
-//    				, storedAnno.getAnnotationId().getIdentifier()
-    				, provider
-    				, identifier
-    				, TEST_USER_TOKEN
-    				, JSON_FORMAT
-    				);
-    		validateReportResponse(response, HttpStatus.NO_CONTENT);
+	    		ResponseEntity<String> response = getApiClient().deleteAnnotation(
+	    				entry.getKey()
+	    				, storedAnno.getAnnotationId().getProvider()
+	//    				, storedAnno.getAnnotationId().getIdentifier()
+	//    				, provider
+	    				, identifier
+	    				, TEST_USER_TOKEN
+	    				, JSON_FORMAT
+	    				);
+	    		validateReportResponse(response, HttpStatus.NO_CONTENT);
+    		}
     	}
 		
 	}
