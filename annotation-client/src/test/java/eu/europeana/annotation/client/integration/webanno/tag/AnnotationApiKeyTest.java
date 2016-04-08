@@ -17,13 +17,19 @@ package eu.europeana.annotation.client.integration.webanno.tag;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.jena.atlas.json.io.parser.JSONParser;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -37,16 +43,12 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
  */
 public class AnnotationApiKeyTest extends BaseTaggingTest {
 	
-//	public final String API_KEY_CONFIG_FOLDER = "/config"; 
-//	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
-//	public final String USER_ADMIN = "admin";
-//	public final String TEST_IDENTIFIER = null;//"http://data.europeana.eu/annotation/webanno/494";
+	public final String API_KEY_CONFIG_FOLDER = "/config"; 
+	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
 	
 	protected Logger log = Logger.getLogger(getClass());
 
-//	public static String TEST_API_KEY = "apiadmin";
 	public static String TEST_USER_TOKEN = "admin";
-	public static String TEST_REPORT_SUMMARY_FIELD = "reportSum";
 	public static String JSON_FORMAT = "json";
 
 	
@@ -67,6 +69,59 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 		initApiKeyMap();
     }
 
+	
+	public String readApiKeyApplicationFromFile(String apiKey, String path, String fieldName) {  
+		  
+		String res = "";
+		     
+		try {  	    
+		    BufferedReader br = new BufferedReader(  
+		         new FileReader(path));  
+		     
+		    String jsonData = br.readLine();
+		    br.close();
+		    
+		    log.info("Load apiKey: "+ apiKey);  		
+		    
+//		    JSONParser parser = new JSONParser();
+//		    JSONObject json = (JSONObject) parser.parse(jsonData);		    
+		    try {
+				JSONObject json = new JSONObject(jsonData);
+				res = (String) json.get(fieldName);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (IOException e) {  
+		    log.info("apiKey \"" + apiKey + "\" file not found. " + e.getMessage());
+		}  
+		return res;
+    }  
+
+	
+	public String getApiKeyApplicationValueByFieldName(
+			String apiKey, String organization, String fieldName) {
+
+		String res = "";
+		
+		String configFolder = getClass().getResource(API_KEY_CONFIG_FOLDER).getFile();
+        String pathToApiKeyFolder = configFolder + API_KEY_STORAGE_FOLDER;
+		File folder = new File(pathToApiKeyFolder);
+		File[] listOfFiles = folder.listFiles();
+
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	        if (listOfFiles[i].isFile()) {
+	        	String fileName = listOfFiles[i].getPath();
+	        	if ((organization + "." +  JSON_FORMAT).equals(listOfFiles[i].getName())) {
+	        		System.out.println("File " + fileName);
+	        		res = readApiKeyApplicationFromFile(apiKey, fileName, fieldName);
+	        		break;
+	        	}
+	        }
+	    }
+	    return res;
+	}
+	
 
 	/**
      * This test performs storage of moderation reports for admin user 
@@ -86,23 +141,34 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
     	for (Map.Entry<String, String> entry : apiKeyMap.entrySet()) {
 
     		Annotation storedAnno = createTag(requestBody);
+    		String provider = getApiKeyApplicationValueByFieldName(
+    				entry.getKey(), entry.getValue(), "provider");
+//    		String identifier = getApiKeyApplicationValueByFieldName(
+//    				entry.getKey(), entry.getValue(), "identifier");
+    		String identifier = storedAnno.getAnnotationId().getIdentifier();
 			log.info(
 					"apiKey: " + entry.getKey() + 
-					", provider: " + storedAnno.getAnnotationId().getProvider() +
-					", identifier: " + storedAnno.getAnnotationId().getIdentifier() +
+//					", provider: " + storedAnno.getAnnotationId().getProvider() +
+//					", identifier: " + storedAnno.getAnnotationId().getIdentifier() +
+					", provider: " + provider +
+					", identifier: " + identifier +
 					", userToken: " + TEST_USER_TOKEN
 					);
     		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
     				entry.getKey()
-    				, storedAnno.getAnnotationId().getProvider()
-    				, storedAnno.getAnnotationId().getIdentifier()
+//    				, storedAnno.getAnnotationId().getProvider()
+//    				, storedAnno.getAnnotationId().getIdentifier()
+    				, provider
+    				, identifier
     				, TEST_USER_TOKEN);
     		validateReportResponse(reportResponse, HttpStatus.CREATED);
     		
     		ResponseEntity<String> response = getApiClient().deleteAnnotation(
     				entry.getKey()
-    				, storedAnno.getAnnotationId().getProvider()
-    				, storedAnno.getAnnotationId().getIdentifier()
+//    				, storedAnno.getAnnotationId().getProvider()
+//    				, storedAnno.getAnnotationId().getIdentifier()
+    				, provider
+    				, identifier
     				, TEST_USER_TOKEN
     				, JSON_FORMAT
     				);

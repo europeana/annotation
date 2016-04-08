@@ -7,7 +7,7 @@ import eu.europeana.annotation.web.service.authentication.model.Application;
 
 public interface AuthenticationService {
 
-	public Application loadByApiKey(String apiKey) throws ApplicationAuthenticationException;
+	public void loadApiKeys() throws ApplicationAuthenticationException;
 	
 	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException;
 
