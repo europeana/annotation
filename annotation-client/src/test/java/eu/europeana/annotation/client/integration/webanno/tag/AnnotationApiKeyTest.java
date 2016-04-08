@@ -15,15 +15,13 @@
 */
 package eu.europeana.annotation.client.integration.webanno.tag;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Before;
@@ -31,41 +29,36 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
-import eu.europeana.annotation.definitions.model.moderation.Vote;
 
 /**
  * This class implements api key testing scenarios.
  */
 public class AnnotationApiKeyTest extends BaseTaggingTest {
 	
-	public final String API_KEY_CONFIG_FOLDER = "/config"; 
-	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
-	public final String USER_ADMIN = "admin";
-	public final String TEST_IDENTIFIER = null;//"http://data.europeana.eu/annotation/webanno/494";
+//	public final String API_KEY_CONFIG_FOLDER = "/config"; 
+//	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
+//	public final String USER_ADMIN = "admin";
+//	public final String TEST_IDENTIFIER = null;//"http://data.europeana.eu/annotation/webanno/494";
 	
 	protected Logger log = Logger.getLogger(getClass());
 
-	public static String TEST_API_KEY = "apiadmin";
-	public static String TEST_USER_TOKEN = "tester1";
+//	public static String TEST_API_KEY = "apiadmin";
+	public static String TEST_USER_TOKEN = "admin";
 	public static String TEST_REPORT_SUMMARY_FIELD = "reportSum";
+	public static String JSON_FORMAT = "json";
 
 	
-    private static final Map<String, String> apyKeyMap = new HashMap<String, String>();
+    private static final Map<String, String> apiKeyMap = new HashMap<String, String>();
     
     private static void initApiKeyMap() {
-    	apyKeyMap.put("apiadmin", WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
-    	apyKeyMap.put("apidemo", WebAnnotationFields.PROVIDER_WEBANNO);
-    	apyKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
-    	apyKeyMap.put("punditdemo", WebAnnotationFields.PROVIDER_PUNDIT);
-    	apyKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
-    	apyKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
+    	apiKeyMap.put("apiadmin", WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
+    	apiKeyMap.put("apidemo", WebAnnotationFields.PROVIDER_WEBANNO);
+    	apiKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
+    	apiKeyMap.put("punditdemo", WebAnnotationFields.PROVIDER_PUNDIT);
+    	apiKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
+    	apiKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
     }
 	
    
@@ -85,57 +78,44 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 	 * @throws InvocationTargetException
 	 */
 	@Test
-	public void createTagMinimal() throws IOException, JsonParseException, 
+	public void createTagMinimalWithModerationReportAndRemoval() throws IOException, JsonParseException, 
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		String requestBody = getJsonStringInput(TAG_MINIMAL);
 		
-		Annotation storedAnno = createTag(requestBody);
-			
-    	for (Map.Entry<String, String> entry : apyKeyMap.entrySet()) {
-    		ResponseEntity<String> response = getApiClient().findApplicationByApiKey(entry.getKey());
-//        	Application app = getAuthenticationService().findByApiKey(entry.getKey());
-//        	assertNotNull(app);
-//        	assertNotNull(app.getApiKey());
-//        	Agent adminUser = app.getAdminUser();
-//        	assertNotNull(adminUser.getName());
-//    		try {
-//    			String wsKey = entry.getKey();
-//    			getAuthenticationService().getByApiKey(wsKey);
-//
-//    			AnnotationId annoId = validateInputsForUpdateDelete(
-//    					wsKey, app.getProvider(), TEST_IDENTIFIER, USER_ADMIN);
-//
-//    			@SuppressWarnings("deprecation")
-//				Agent user = authorizeUser(USER_ADMIN, wsKey, annoId, Operations.REPORT);
-//
-//    			Date reportDate = new Date();
-//    			Vote vote = buildVote(user, reportDate);
-//    			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
-//    			if (moderationRecord == null)
-//    				moderationRecord = buildNewModerationRecord(annoId, reportDate);
-//
-//    			moderationRecord.addReport(vote);
-//    			moderationRecord.computeSummary();
-//    			moderationRecord.setLastUpdated(reportDate);
-//
-//    			ModerationRecord storedModeration = getAnnotationService().storeModerationRecord(
-//    					moderationRecord);
-//            	assertNotNull(storedModeration);
-//            	assertNotNull(storedModeration.getAnnotationId());
-//            	assertNotNull(storedModeration.getAnnotationId().getProvider().equals(app.getProvider()));
-//    		} catch (HttpException e) {
-//    			// avoid wrapping HttpExceptions
-//    			throw e;
-//    		} catch (Exception e) {
-//    			throw new InternalServerException(e);
-//    		}
-//    		ResponseEntity<String> response = getApiClient().deleteAnnotation(wskey, provider, identifier, userToken, format)
-//    				createTag(
-//    				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
-//    				TEST_USER_TOKEN);
+    	for (Map.Entry<String, String> entry : apiKeyMap.entrySet()) {
+
+    		Annotation storedAnno = createTag(requestBody);
+			log.info(
+					"apiKey: " + entry.getKey() + 
+					", provider: " + storedAnno.getAnnotationId().getProvider() +
+					", identifier: " + storedAnno.getAnnotationId().getIdentifier() +
+					", userToken: " + TEST_USER_TOKEN
+					);
+    		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
+    				entry.getKey()
+    				, storedAnno.getAnnotationId().getProvider()
+    				, storedAnno.getAnnotationId().getIdentifier()
+    				, TEST_USER_TOKEN);
+    		validateReportResponse(reportResponse, HttpStatus.CREATED);
+    		
+    		ResponseEntity<String> response = getApiClient().deleteAnnotation(
+    				entry.getKey()
+    				, storedAnno.getAnnotationId().getProvider()
+    				, storedAnno.getAnnotationId().getIdentifier()
+    				, TEST_USER_TOKEN
+    				, JSON_FORMAT
+    				);
+    		validateReportResponse(response, HttpStatus.NO_CONTENT);
     	}
 		
 	}
+	
+	
+	protected void validateReportResponse(ResponseEntity<String> response, HttpStatus status) 
+			throws JsonParseException {
+		assertEquals(response.getStatusCode(), status);
+	}
+	
 		
 }
