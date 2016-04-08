@@ -114,7 +114,7 @@ public class AnnotationApiKeyTest extends BaseTaggingTest {
 	
 	protected void validateReportResponse(ResponseEntity<String> response, HttpStatus status) 
 			throws JsonParseException {
-		assertEquals(response.getStatusCode(), status);
+		assertEquals(status, response.getStatusCode());
 	}
 	
 		

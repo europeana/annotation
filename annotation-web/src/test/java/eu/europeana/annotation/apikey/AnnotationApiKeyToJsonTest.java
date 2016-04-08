@@ -90,7 +90,7 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
     @Test
     public void testFindApiKeyApplicationFromJsonFile() throws ApplicationAuthenticationException {
     	  	
-    	Application app = getAuthenticationService().findByApiKey("hpdemo");
+    	Application app = getAuthenticationService().loadByApiKey("hpdemo");
     	assertNotNull(app);
     	assertNotNull(app.getApiKey());
     	assertTrue(app.getApiKey().equals("hpdemo"));
@@ -109,7 +109,7 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
     	
     	Application app;
 		try {
-			app = getAuthenticationService().findByApiKey(key);
+			app = getAuthenticationService().loadByApiKey(key);
 	    	String json = getGson().toJson(app);
 			String configFolder = getClass().getResource(API_KEY_CONFIG_FOLDER).getFile();
 			// create file to store api key 

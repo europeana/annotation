@@ -75,7 +75,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 	
 	@Override
-	public Application findByApiKey(String apiKey) throws ApplicationAuthenticationException {
+	public Application loadByApiKey(String apiKey) throws ApplicationAuthenticationException {
 
 		Application app = null;
 		
@@ -88,39 +88,18 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 	        if (listOfFiles[i].isFile()) {
 	        	String fileName = listOfFiles[i].getPath();
 	            System.out.println("File " + fileName);
-	            app = readApiKeyApplicationFromFile(apiKey, fileName);
-	            if (app.getApiKey().equals(apiKey))
+	            Application templateApp = readApiKeyApplicationFromFile(apiKey, fileName);
+	            if (templateApp.getApiKey().equals(apiKey)) {
+					app = createMockClientApplication(
+							templateApp.getApiKey()
+							, templateApp.getOrganization()
+							, templateApp.getName()
+							);			
 	            	break;
+	            }
 	        }
 	    }		
 		
-	    if (app == null) {
-			switch (apiKey) {
-	
-			case "apiadmin":
-				app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_EUROPEANA_DEV);			
-				break;
-			case "apidemo":
-				app = createMockClientApplication(apiKey, EUROPEANA_FOUNDATION, WebAnnotationFields.PROVIDER_WEBANNO);			
-				break;
-			case "hpdemo":
-				app = createMockClientApplication(apiKey, "HistoryPin", WebAnnotationFields.PROVIDER_HISTORY_PIN);			
-				break;
-			case "punditdemo":
-				app = createMockClientApplication(apiKey, "Pundit", WebAnnotationFields.PROVIDER_PUNDIT);			
-				break;
-			case "withdemo":
-				app = createMockClientApplication(apiKey, "With", WebAnnotationFields.PROVIDER_WITH);			
-				break;
-			case COLLECTIONS_API_KEY:
-				//collections
-				app = createMockClientApplication(apiKey, EUROPEANA_COLLECTIONS, WebAnnotationFields.PROVIDER_COLLECTIONS);			
-				break;
-			default:
-				throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
-			}
-	    }
-	    
 		if (app == null)
 	    	throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY, apiKey);
 		return app;
@@ -238,14 +217,17 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 	@Override
 	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException{
-		Application app = getCachedClients().get(apiKey);
-		if(app != null)
+		
+		Application app = null;
+		
+		if (getCachedClients().get(apiKey) != null) {
 			return app;
-		
-		//else
-		app = findByApiKey(apiKey); //throws exception
-		getCachedClients().put(apiKey, app);
-		
+		} else {
+			// if cache is empty - load application data for apiKey from template file
+			app = loadByApiKey(apiKey); //throws exception
+			getCachedClients().put(apiKey, app);
+		}	
+
 		return app;
 	}
 
