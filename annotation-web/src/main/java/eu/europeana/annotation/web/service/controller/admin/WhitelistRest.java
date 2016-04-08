@@ -31,11 +31,9 @@ import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-//@Api( basePath= "/"+WebAnnotationFields.WHITELIST,  value = WebAnnotationFields.WHITELIST
-//	, description = "Whitelist JSON Rest Service", hidden=true)
 @Controller
 @SwaggerSelect
-@Api(tags = "Whitelist JSON Rest Service", description=" ")
+@Api(tags = "Whitelist JSON Rest Service", description=" ", hidden=true)
 @RequestMapping(value = "/"+WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {
 
