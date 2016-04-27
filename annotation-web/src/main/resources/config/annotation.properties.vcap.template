@@ -17,7 +17,7 @@
 
 ##common settings
 #boolean value indicating if the indexing of annotations in solr should be performed. required valid solr configurations
-annotation.indexing.enabled=true
+annotation.indexing.enabled=false
 
 #string value indicating if the application runs in "production", "test", "development" environment 
 annotation.environment=production
@@ -34,19 +34,33 @@ annotation.environment.development.baseUrl=http://localhost:8080/annotation
 #default whitelist resource name
 annotation.whitelist.default=/config/default_whitelist.json
 
-# mongoDB settings
+# VCAP settings
 annotation.environment.vcap.mongoservice = mongo_service
+#available values: pivotal, a9s 
+annotation.environment.vcap.provider = pivotal
 
+# mongoDB settings
 ### annotation database ###
+#deprecated
 mongodb.annotation.dbname=annotation_test
+#deprecated
 mongodb.annotation.host=127.0.0.1
+#deprecated
 mongodb.annotation.port=27017
+#deprecated
 mongodb.annotation.username=europeana
+#deprecated
 mongodb.annotation.password=culture
+#Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+#USER, PASSWORD are optional (in local environment) 
+mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
 
 # solr connection settings
-solr.annotation.url = http://148.251.139.77/solr/annotation
-solr.tag.url = http://148.251.139.77/solr/tag
+#solr.annotation.url = http://148.251.139.77/solr/annotation
+#solr.tag.url = http://148.251.139.77/solr/tag
+
+solr.annotation.url = http://localhost:8282/solr/annotation
+solr.tag.url = http://localhost:8282/solr/tag
 solr.annotation.timeout = 60000
 solr.tag.timeout = 60000
 
