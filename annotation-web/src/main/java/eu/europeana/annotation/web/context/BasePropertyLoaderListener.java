@@ -79,6 +79,8 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 			
 			//generate updated annotation.properties file
 			updateAnnotationProperties(vcapProvider, mongoServiceName);
+		}else{
+			logger.warn("Cannot update VCAP properties. Invalid Vcap Envinronment: " + vcapProvider + " - " + mongoServiceName);
 		}
 	}
 
@@ -173,6 +175,7 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 		
 		
 		if(annotationPropertiesFile.exists()){
+			logger.debug("Loading annotationProperties from file: " + annotationPropertiesFile.getAbsolutePath());
 			FileInputStream inStream = new FileInputStream(annotationPropertiesFile);
 			props.load(inStream);
 			
@@ -183,6 +186,8 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 					logger.warn("Cannot close input stream for properties file. " + annotationPropertiesFile.getAbsolutePath(), th);
 				}
 			}
+		}else{
+			logger.warn("Annotation properties file doesn't exist! " + annotationPropertiesFile.getAbsolutePath());		
 		}
 	}
 
