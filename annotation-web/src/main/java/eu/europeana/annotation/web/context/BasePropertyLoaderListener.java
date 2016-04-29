@@ -75,12 +75,18 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 			CloudFoundryVcapEnvironmentPostProcessor postProcessor = new CloudFoundryVcapEnvironmentPostProcessor();
 			postProcessor.postProcessEnvironment(getEnv(), null);
 			
+			if(getEnv().getSystemEnvironment().get(mongoServiceName) == null){
+				logger.warn("Cannot update VCAP properties. Vcap Mongo Service not available in environment variables: " + vcapProvider + " - " + mongoServiceName);
+				return;
+			}
+				
+			
 			buildMongoServiceKeys(mongoServiceName);
 			
 			//generate updated annotation.properties file
 			updateAnnotationProperties(vcapProvider, mongoServiceName);
 		}else{
-			logger.warn("Cannot update VCAP properties. Invalid Vcap Envinronment: " + vcapProvider + " - " + mongoServiceName);
+			
 		}
 	}
 

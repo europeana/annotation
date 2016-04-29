@@ -175,8 +175,7 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 
 		if (isPivotalProvider(vcapProvider) || isA9sProvider(vcapProvider))
 			return getEnv() != null && getEnv().getSystemEnvironment() != null
-					&& StringUtils.isNotBlank(mongoServiceName)
-					&& getEnv().getSystemEnvironment().get(mongoServiceName) != null;
+					&& StringUtils.isNotBlank(mongoServiceName);
 
 		// if(VCAP_PROVIDER_A9S.equals(vcapProvider))
 		// return getEnv() != null && getEnv().getSystemEnvironment() != null &&
