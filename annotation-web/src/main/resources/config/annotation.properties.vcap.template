@@ -35,9 +35,9 @@ annotation.environment.development.baseUrl=http://localhost:8080/annotation
 annotation.whitelist.default=/config/default_whitelist.json
 
 # VCAP settings
-annotation.environment.vcap.mongoservice = mongo_service
 #available values: pivotal, a9s 
 annotation.environment.vcap.provider = pivotal
+annotation.environment.vcap.mongoservice = mongolab
 
 # mongoDB settings
 ### annotation database ###
