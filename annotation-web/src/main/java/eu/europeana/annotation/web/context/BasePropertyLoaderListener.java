@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -19,21 +20,26 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 public abstract class BasePropertyLoaderListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
-	public final static String VCAP = "vcap.services.";
-	public final static String USERNAME = ".credentials.username";
-	public final static String DATABASE = ".credentials.db";
+	private static final String VCAP_SERVICES = "VCAP_SERVICES";
+	public final static String VCAP_SERVICES_PREFIX = "vcap.services.";
+	public final static String MONGO_SERVICE = "mongo_service";
+	public final static String CREDENTIALS_USERNAME = ".credentials.username";
+	public final static String CREDENTIALS_DB = ".credentials.db";
+	//public final static String CREDENTIALS_DB = ".credentials.db";
+	
+	//public final static String DATABASE = ".credentials.db";
 	// public final static String HOSTS = ".credentials.hosts";
-	public final static String HOST = ".credentials.host";
-	public final static String PORT = ".credentials.port";
-	public final static String CONNECTION_URI = ".credentials.uri";
+	public final static String CREDENTIALS_HOST = ".credentials.host";
+	public final static String CREDENTIALS_PORT = ".credentials.port";
+	public final static String CREDENTIALS_URI = ".credentials.uri";
 
-	public final static String PASSWORD = ".credentials.password";
+	public final static String CREDENTIALS_PASSWORD = ".credentials.password";
 	public final static String PROP_TIMESTAMP = "annotation.properties.timestamp";
 
 	protected ConfigurableEnvironment env;
 	boolean loadOriginalFromTemplate = false;
 	
-	String mongoDbService;
+	String mongoService;
 	String mongoDatabaseKey;
 	String mongoUserNameKey;
 	String mongoPasswordKey;
@@ -75,21 +81,9 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 			CloudFoundryVcapEnvironmentPostProcessor postProcessor = new CloudFoundryVcapEnvironmentPostProcessor();
 			postProcessor.postProcessEnvironment(getEnv(), null);
 			
-			if(getEnv().getSystemEnvironment().get("annotation-test-mongo") != null){
-				logger.info("Found variables for service: " + "annotation-test-mongo");
-				//return;
+			if(logger.isDebugEnabled()){
+				printSystemEnvironmentKeys();
 			}
-			
-			if(getEnv().getSystemEnvironment().get("annotation-mongo") != null){
-				logger.info("Found variables for service: annotation-mongo");
-				//return;
-			}
-			
-			if(getEnv().getSystemEnvironment().get("mongolab") != null){
-				logger.info("Found variables for service: mongolab");
-				//return;
-			}
-			
 			
 			buildMongoServiceKeys(mongoServiceName);
 			
@@ -100,25 +94,46 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 		}
 	}
 
+	protected void printSystemEnvironmentKeys() {
+		Set<String> keys = getEnv().getSystemEnvironment().keySet();
+		StringBuilder builder = new StringBuilder("Available System environment properties (keys): ");
+		for (String key : keys) {
+			builder.append(key).append(", ");
+		}
+		
+		logger.debug(builder.toString());
+		
+		Object vcapServices = getEnv().getSystemEnvironment().get(VCAP_SERVICES);
+		logger.debug("VcapServices: " + vcapServices);
+				
+		if(getEnv().getSystemEnvironment().get(getMongoServiceName(null)) != null){
+			logger.debug("Found variables for service: " + getMongoServiceName(null));
+		}
+	}
+
 	public abstract void updateAnnotationProperties(String vcapProvider, String mongoServiceName);
 	
 	protected void buildMongoServiceKeys(String mongoServiceName) {
 		
-		mongoDbService = env.getSystemEnvironment().get(mongoServiceName)
-				.toString();
-		logger.info("Configured mongo service: " +  mongoDbService);
+		mongoService = (String) env.getSystemEnvironment().get(mongoServiceName);
+		logger.info("Configured mongo service: " +  mongoService);
 		
-		mongoDatabaseKey = buildDbNamePropKey(mongoDbService);
-		mongoUserNameKey = buildDbUserNamePropKey(mongoDbService);
-		mongoPasswordKey = buildDBPassPropKey(mongoDbService);
-		mongoHostKey = buildDbHostPropKey(mongoDbService);
-		mongoPortKey = buildDbPortPropKey(mongoDbService);
-		connectionUriKey = buildDbConnectionUrlPropKey(mongoDbService);
+		mongoDatabaseKey = buildDbNamePropKey(mongoService);
+		mongoUserNameKey = buildDbUserNamePropKey(mongoService);
+		mongoPasswordKey = buildDBPassPropKey(mongoService);
+		mongoHostKey = buildDbHostPropKey(mongoService);
+		mongoPortKey = buildDbPortPropKey(mongoService);
+		connectionUriKey = buildDbConnectionUrlPropKey(mongoService);
 	}
 
-	protected abstract boolean isValidVcapEnvironment(String vcapProvider, String mongoServiceName);
+	protected boolean isValidVcapEnvironment(String vcapProvider, String mongoServiceName){
+		return getEnv() != null && getEnv().getSystemEnvironment() != null
+				&& StringUtils.isNotBlank(mongoServiceName) && env.getSystemEnvironment().get(mongoServiceName) != null;
+	}
 	
-	protected abstract String getMongoServiceName(String vcapProvider) throws FileNotFoundException, IOException;
+	protected String getMongoServiceName(String vcapProvider){
+		return MONGO_SERVICE;
+	}
 	
 	protected String getVcapProvider() throws FileNotFoundException, IOException {
 		String vcapProvider = getOriginalProperties().getProperty("annotation.environment.vcap.provider");
@@ -151,28 +166,28 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 		return env;
 	}
 
-	protected String buildDbConnectionUrlPropKey(String mongoDb) {
-		return VCAP + mongoDb + CONNECTION_URI;
+	protected String buildDbConnectionUrlPropKey(String mongoService) {
+		return VCAP_SERVICES_PREFIX + mongoService + CREDENTIALS_URI;
 	}
 
 	protected String buildDbPortPropKey(String mongoDb) {
-		return VCAP + mongoDb + PORT;
+		return VCAP_SERVICES_PREFIX + mongoDb + CREDENTIALS_PORT;
 	}
 
 	protected String buildDbHostPropKey(String mongoDb) {
-		return VCAP + mongoDb + HOST;
+		return VCAP_SERVICES_PREFIX + mongoDb + CREDENTIALS_HOST;
 	}
 
 	protected String buildDBPassPropKey(String mongoDb) {
-		return VCAP + mongoDb + PASSWORD;
+		return VCAP_SERVICES_PREFIX + mongoDb + CREDENTIALS_PASSWORD;
 	}
 
 	protected String buildDbUserNamePropKey(String mongoDb) {
-		return VCAP + mongoDb + USERNAME;
+		return VCAP_SERVICES_PREFIX + mongoDb + CREDENTIALS_USERNAME;
 	}
 
 	protected String buildDbNamePropKey(String mongoDb) {
-		return VCAP + mongoDb + DATABASE;
+		return VCAP_SERVICES_PREFIX + mongoDb + CREDENTIALS_DB;
 	}
 
 //	protected Properties loadProperties() throws IOException, FileNotFoundException {

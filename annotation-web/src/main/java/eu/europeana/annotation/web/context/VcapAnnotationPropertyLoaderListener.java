@@ -1,8 +1,6 @@
 package eu.europeana.annotation.web.context;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
@@ -13,8 +11,6 @@ import org.springframework.web.context.support.StandardServletEnvironment;
 
 public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderListener {
 
-	public final static String MONGO_SERVICE_A9S = "mongo_service";
-	public final static String MONGO_SERVICE_PIVOTAL = "mongolab";
 	public final static String VCAP_PROVIDER_A9S = "a9s";
 	public final static String VCAP_PROVIDER_PIVOTAL = "pivotal";
 
@@ -117,6 +113,8 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 	protected void updateA9sProps(Properties props) {
 		StringBuilder builder = new StringBuilder("mongodb://");
 
+		//env.getProperty(mongoHostKey)
+		
 		// optional
 		if (StringUtils.isNotBlank(env.getProperty(mongoUserNameKey))) {
 			logger.info("mongodb.annotation.username: " + env.getProperty(mongoUserNameKey));
@@ -155,33 +153,27 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 		props.put("mongodb.annotation.connectionUrl", builder.toString());
 	}
 
-	@Override
-	protected String getMongoServiceName(String vcapProvider) throws FileNotFoundException, IOException {
-		String defaultMongoServiceName = "";
-		if (isPivotalProvider(vcapProvider))
-			defaultMongoServiceName = MONGO_SERVICE_PIVOTAL;
-		if (isA9sProvider(vcapProvider))
-			defaultMongoServiceName = MONGO_SERVICE_A9S;
-
-		String mongoServiceName = getOriginalProperties().getProperty("annotation.environment.vcap.mongoservice",
-				defaultMongoServiceName);
-		logger.info("Loading VCAP properties for mongo service: " + vcapProvider + " - " + mongoServiceName);
-
-		return mongoServiceName;
-	}
+//	@Override
+//	protected String getMongoServiceName(String vcapProvider) throws FileNotFoundException, IOException {
+////		String defaultMongoServiceName = "";
+////		if (isPivotalProvider(vcapProvider))
+////			defaultMongoServiceName = MONGO_SERVICE_PIVOTAL;
+////		if (isA9sProvider(vcapProvider))
+////			defaultMongoServiceName = MONGO_SERVICE;
+////
+////		String mongoServiceName = getOriginalProperties().getProperty("annotation.environment.vcap.mongoservice",
+////				defaultMongoServiceName);
+////		logger.info("Loading VCAP properties for mongo service: " + vcapProvider + " - " + mongoServiceName);
+//
+//		
+//	}
 
 	@Override
 	protected boolean isValidVcapEnvironment(String vcapProvider, String mongoServiceName) {
 
 		if (isPivotalProvider(vcapProvider) || isA9sProvider(vcapProvider))
-			return getEnv() != null && getEnv().getSystemEnvironment() != null
-					&& StringUtils.isNotBlank(mongoServiceName);
+			return super.isValidVcapEnvironment(vcapProvider, mongoServiceName);
 
-		// if(VCAP_PROVIDER_A9S.equals(vcapProvider))
-		// return getEnv() != null && getEnv().getSystemEnvironment() != null &&
-		// StringUtils.isNotBlank(mongoServiceName) &&
-		// getEnv().getSystemEnvironment().get(mongoServiceName) != null;
-		//
 		return false;
 	}
 }

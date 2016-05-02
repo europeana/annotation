@@ -1,5 +1,7 @@
 package org.springframework.web.context.support;
 
+import eu.europeana.annotation.web.context.VcapAnnotationPropertyLoaderListener;
+
 public class MockPivotalServletEnvironment extends MockServletEnvironment {
 
 	@Override
@@ -8,7 +10,7 @@ public class MockPivotalServletEnvironment extends MockServletEnvironment {
 	}
 
 	protected void putMongoServiceName() {
-		mockEnv. put("mongolab", "annotation-mongo");
+		mockEnv. put(VcapAnnotationPropertyLoaderListener.MONGO_SERVICE, "annotation-mongo");
 	}
 
 }
