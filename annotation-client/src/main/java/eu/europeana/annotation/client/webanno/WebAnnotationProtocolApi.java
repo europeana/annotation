@@ -112,4 +112,5 @@ public interface WebAnnotationProtocolApi {
 	 */
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException;
 		
+
 }

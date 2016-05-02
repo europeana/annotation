@@ -121,5 +121,4 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		return res;
 	}
 
-	
 }

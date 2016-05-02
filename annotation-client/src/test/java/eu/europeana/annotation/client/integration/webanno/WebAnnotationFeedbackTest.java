@@ -25,7 +25,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 
 	protected Logger log = Logger.getLogger(getClass());
 
-	public static String TEST_API_KEY = "apiadmin";
+	public static String TEST_API_KEY = "apidemo"; //"apiadmin";
 	public static String TEST_USER_TOKEN = "tester1";
 	public static String TEST_REPORT_SUMMARY_FIELD = "reportSum";
 

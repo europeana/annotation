@@ -1,217 +1,179 @@
 package eu.europeana.annotation.web.context;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Map.Entry;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.boot.cloud.CloudFoundryVcapEnvironmentPostProcessor;
-import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
-public class VcapAnnotationPropertyLoaderListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>{
+public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderListener {
 
-	public final static String VCAP = "vcap.services.";
-	public final static String USERNAME = ".credentials.username";
-	public final static String DATABASE = ".credentials.db";
-//	public final static String HOSTS = ".credentials.hosts";
-	public final static String HOST = ".credentials.host";
-	public final static String PORT = ".credentials.port";
-	
-	public final static String PASSWORD = ".credentials.password";
-	public final static String PROP_TIMESTAMP = "annotation.properties.timestamp";
-	
-
-	private final static String MONGO_SERVICE = "mongo_service";
-	File propertiesFileTemplate = null;
-	File propertiesFile = null;
-	
-	Properties originalProperties;
-
-	private ConfigurableEnvironment env;
-	
-	Logger logger = Logger.getLogger(getClass()); 
+	public final static String VCAP_PROVIDER_A9S = "a9s";
+	public final static String VCAP_PROVIDER_PIVOTAL = "pivotal";
 
 	public VcapAnnotationPropertyLoaderListener() {
-		this(new StandardServletEnvironment(), null, null);
+		this(new StandardServletEnvironment(), null, null, false);
 	}
-	
-	public VcapAnnotationPropertyLoaderListener(ConfigurableEnvironment servletEnv, File propertiesFile, File propertiesFileTemplate) {
+
+	public VcapAnnotationPropertyLoaderListener(ConfigurableEnvironment servletEnv, File propertiesFile,
+			File propertiesFileTemplate, boolean loadOriginalFromTemplate) {
 		super();
 		this.propertiesFileTemplate = propertiesFileTemplate;
 		this.propertiesFile = propertiesFile;
-		env=servletEnv;
+		this.loadOriginalFromTemplate = loadOriginalFromTemplate;
+		env = servletEnv;
 		onApplicationEvent(null);
 	}
-	
-	
-	
-	@Override
-	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-		
-		String mongoServiceName;
+
+	protected boolean isA9sProvider(String vcapProvider) {
+		return VCAP_PROVIDER_A9S.equals(vcapProvider);
+	}
+
+	protected boolean isPivotalProvider(String vcapProvider) {
+		return VCAP_PROVIDER_PIVOTAL.equals(vcapProvider);
+	}
+
+	public void updateAnnotationProperties(String vcapProvider, String mongoServiceName) {
+		logger.info("Updating annotation properties for mongo service: " + vcapProvider + " - " + mongoServiceName);
 		try {
-			mongoServiceName = getMongoServiceName();
-		} catch (Throwable th) {
-			logger.error("Cannot read mongo service name!" + th.getMessage());
-			th.printStackTrace();
-			return;
-		}
-		
-		if(env != null && env.getSystemEnvironment() != null && StringUtils.isNotBlank(mongoServiceName) && env.getSystemEnvironment().get(mongoServiceName) != null){
-			//process environment variables and flatten json structure
-			CloudFoundryVcapEnvironmentPostProcessor postProcessor = new CloudFoundryVcapEnvironmentPostProcessor();
-			postProcessor.postProcessEnvironment(env, null);
-			
-			//generate updated annotation.properties file
-			updateAnnotationProperties(mongoServiceName);
-		}
-	}
 
-	protected String getMongoServiceName() throws FileNotFoundException, IOException {
-		originalProperties = loadProperties();
-		String mongoServiceName = originalProperties.getProperty("annotation.environment.vcap.mongoservice", MONGO_SERVICE);
-		if(StringUtils.isNotBlank(mongoServiceName))
-			logger.info("Loading VCAP properties for mongo service: " + mongoServiceName);
-		
-		return mongoServiceName;
-	}
+			Properties serverProperties = new Properties();
+			loadProperties(serverProperties);
 
-	protected File getPropertiesFileTemplate() {
-		String templateFileName = "annotation.properties.vcap.template";
-		
-		if(propertiesFileTemplate == null){
-			propertiesFileTemplate = getConfigFile(templateFileName);
-		}
-		return propertiesFileTemplate;
-	}
+			updateProps(serverProperties, vcapProvider, mongoServiceName);
 
-	protected File getPropertiesFile() {
-		String fileName = "annotation.properties";
-		
-		if(propertiesFile == null){
-			propertiesFile = getConfigFile(fileName);
-		}
-		return propertiesFile;
-	}
+			writePropsToFile(serverProperties, getPropertiesFile());
 
-	
-	protected File getConfigFile(String filename) {
-		ClassLoader c = getClass().getClassLoader();
-		@SuppressWarnings("resource")
-		URLClassLoader urlC = (URLClassLoader) c;
-		URL[] urls = urlC.getURLs();
-		String path = urls[0].getPath();
-		return new File(path + "/config/"
-				+ filename);
-	}
-
-	
-	
-	public void updateAnnotationProperties(String mongoServiceName) {
-		logger.info("Updating annotation properties for mongo service: " + mongoServiceName) ;
-		try {
-			
-			Properties serverProperties = loadProperties();
-			
-			updateProps(serverProperties, mongoServiceName);
-				
-			writePropsToFile(serverProperties, getPropertiesFile());			
-			
 		} catch (Exception e1) {
 			e1.printStackTrace();
-			logger.error("Cannot update annotation properties! ", e1) ;
+			logger.error("Cannot update annotation properties! ", e1);
 		}
 	}
 
-	protected Properties loadProperties() throws IOException, FileNotFoundException {
-		Properties props = new Properties();
+	@Override
+	protected void updateProps(Properties props, String vcapProvider, String mongoServiceName) {
 
-		File annotationPropertiesFile = getPropertiesFile();
-		loadProperties(annotationPropertiesFile, props);
-		
-		// Load properties from template if regular property file doesn't exist
-		if(!annotationPropertiesFile.exists()){
-			File propertiesTemplate = getPropertiesFileTemplate();
-			logger.info("Load configuration properties from template: " + propertiesTemplate.getAbsolutePath());
-			props.load(new FileInputStream(propertiesTemplate));
-		}
-		return props;
+		if (isA9sProvider(vcapProvider))
+			updateA9sProps(props);
+		else if (isPivotalProvider(vcapProvider))
+			updatePivotalProps(props);
 	}
 
-	protected void loadProperties(File annotationPropertiesFile, Properties props)
-			throws IOException, FileNotFoundException {
-		if(annotationPropertiesFile.exists()){
-			FileInputStream inStream = new FileInputStream(getPropertiesFile());
-			props.load(inStream);
-			
-			if(inStream != null){
-				try{
-					inStream.close();
-				}catch(Throwable th){
-					logger.warn("Cannot close input stream for properties file. " + annotationPropertiesFile.getAbsolutePath(), th);
-				}
+	protected void updatePivotalProps(Properties props) {
+		logger.info("mongodb.annotation.connectionUrl: " + env.getProperty(connectionUriKey));
+		String connectionUrl = env.getProperty(connectionUriKey);
+		URI connectionUri;
+		try {
+			connectionUri = new URI(connectionUrl);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			logger.error("Cannot update annotation properties! ", e);
+			return;
+		}
+
+		// optional
+		if (StringUtils.isNotBlank(connectionUri.getUserInfo())) {
+
+			String[] userInfo = connectionUri.getUserInfo().split(":");
+
+			logger.info("mongodb.annotation.username: " + userInfo[0]);
+			props.put("mongodb.annotation.username",  userInfo[0]);
+
+			// optional
+			if (userInfo.length > 1) {
+				logger.info("mongodb.annotation.password: " + userInfo[1]);
+				props.put("mongodb.annotation.password", userInfo[1]);
 			}
+
 		}
-	}
 
-	protected void updateProps(Properties props, String mongoServiceName) {
-		
-		String mongoDb = env.getSystemEnvironment().get(mongoServiceName)
-				.toString();
-		logger.info("Configured mongo service" +  mongoDb);
-		
-		
-		String mongoDatabase = VCAP + mongoDb + DATABASE;
-		String mongoUserName = VCAP + mongoDb + USERNAME;
-		String mongoPassword = VCAP + mongoDb + PASSWORD;
-		String mongoHost = VCAP + mongoDb + HOST;
-		String mongoPort = VCAP + mongoDb + PORT;
+		// mandatory
+		logger.info("mongodb.annotation.host: " + connectionUri.getHost());
+		props.put("mongodb.annotation.host", connectionUri.getHost());
 
-		logger.info("mongodb.annotation.dbname: " +  env.getProperty(mongoDatabase));
-		logger.info("mongodb.annotation.username: " +  env.getProperty(mongoUserName));
-		logger.info("mongodb.annotation.password: " + env.getProperty(mongoPassword));
-		logger.info("mongodb.annotation.host: " + env.getProperty(mongoHost));
-		logger.info("mongodb.annotation.port: " + env.getProperty(mongoPort));
-		
-		props.put("mongodb.annotation.dbname", env.getProperty(mongoDatabase));
-		props.put("mongodb.annotation.username", env.getProperty(mongoUserName));
-		props.put("mongodb.annotation.password", env.getProperty(mongoPassword));
-		props.put("mongodb.annotation.host", env.getProperty(mongoHost));
-		props.put("mongodb.annotation.port", env.getProperty(mongoPort));
-		
-		//props.put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, AnnotationConfiguration.VALUE_ENVIRONMENT_TEST);
-	}
-
-	protected void writePropsToFile(Properties props, File annotationPropertiesFile) throws IOException {
-		//overwrite existing file by setting append to false
-		logger.warn("The configuration file already exists. The configuration file will be overwritten: " + annotationPropertiesFile.getAbsolutePath());
-		FileUtils.writeStringToFile(
-				annotationPropertiesFile,
-				"\n### generated configurations ###\n", false);
-		
-		if(props.containsKey(PROP_TIMESTAMP))
-			props.remove(PROP_TIMESTAMP);
-		
-		for (Entry<Object, Object> entry : props.entrySet()) {
-			FileUtils.writeStringToFile(
-					annotationPropertiesFile,
-					entry.getKey().toString() + "=" + entry.getValue().toString() + "\n", true);
+		// optional
+		if (StringUtils.isNotBlank("" + connectionUri.getPort())) {
+			logger.info("mongodb.annotation.port: " + "" + connectionUri.getPort());
+			props.put("mongodb.annotation.port", "" + connectionUri.getPort());
 		}
-		
-		//update timestamp
-		FileUtils.writeStringToFile(annotationPropertiesFile,
-				PROP_TIMESTAMP + "=" + System.currentTimeMillis() + "\n",
-				true);
+
+		// mandatory
+		//eliminate "/" from the database name
+		String databse = connectionUri.getPath().substring(1);
+		logger.info("mongodb.annotation.dbname: " + databse);
+		props.put("mongodb.annotation.dbname", databse);
+
+		logger.info("mongodb.annotation.connectionUrl: " + connectionUrl);
+		props.put("mongodb.annotation.connectionUrl", connectionUrl);
 	}
-	
+
+	protected void updateA9sProps(Properties props) {
+		StringBuilder builder = new StringBuilder("mongodb://");
+
+		//env.getProperty(mongoHostKey)
+		
+		// optional
+		if (StringUtils.isNotBlank(env.getProperty(mongoUserNameKey))) {
+			logger.info("mongodb.annotation.username: " + env.getProperty(mongoUserNameKey));
+			props.put("mongodb.annotation.username", env.getProperty(mongoUserNameKey));
+			builder.append(env.getProperty(mongoUserNameKey));
+
+			// optional
+			logger.info("mongodb.annotation.password: " + env.getProperty(mongoPasswordKey));
+			if (StringUtils.isNotBlank(env.getProperty(mongoPasswordKey))) {
+				props.put("mongodb.annotation.password", env.getProperty(mongoPasswordKey));
+				builder.append(":").append(env.getProperty(mongoPasswordKey));
+			}
+
+			// user:pass@
+			builder.append("@");
+		}
+
+		// mandatory
+		logger.info("mongodb.annotation.host: " + env.getProperty(mongoHostKey));
+		props.put("mongodb.annotation.host", env.getProperty(mongoHostKey));
+		builder.append(env.getProperty(mongoHostKey));
+
+		// optional
+		if (StringUtils.isNotBlank(env.getProperty(mongoPortKey))) {
+			logger.info("mongodb.annotation.port: " + env.getProperty(mongoPortKey));
+			props.put("mongodb.annotation.port", env.getProperty(mongoPortKey));
+			builder.append(":").append(env.getProperty(mongoPortKey));
+		}
+
+		// mandatory
+		logger.info("mongodb.annotation.dbname: " + env.getProperty(mongoDatabaseKey));
+		props.put("mongodb.annotation.dbname", env.getProperty(mongoDatabaseKey));
+		builder.append("/").append(env.getProperty(mongoDatabaseKey));
+
+		logger.info("mongodb.annotation.connectionUrl: " + builder.toString());
+		props.put("mongodb.annotation.connectionUrl", builder.toString());
+	}
+
+//	@Override
+//	protected String getMongoServiceName(String vcapProvider) throws FileNotFoundException, IOException {
+////		String defaultMongoServiceName = "";
+////		if (isPivotalProvider(vcapProvider))
+////			defaultMongoServiceName = MONGO_SERVICE_PIVOTAL;
+////		if (isA9sProvider(vcapProvider))
+////			defaultMongoServiceName = MONGO_SERVICE;
+////
+////		String mongoServiceName = getOriginalProperties().getProperty("annotation.environment.vcap.mongoservice",
+////				defaultMongoServiceName);
+////		logger.info("Loading VCAP properties for mongo service: " + vcapProvider + " - " + mongoServiceName);
+//
+//		
+//	}
+
+	@Override
+	protected boolean isValidVcapEnvironment(String vcapProvider, String mongoServiceName) {
+
+		if (isPivotalProvider(vcapProvider) || isA9sProvider(vcapProvider))
+			return super.isValidVcapEnvironment(vcapProvider, mongoServiceName);
+
+		return false;
+	}
 }
