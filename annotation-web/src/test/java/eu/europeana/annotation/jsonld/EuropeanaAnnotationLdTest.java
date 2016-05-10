@@ -34,7 +34,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.utils.parse.jsonld.EuropeanaAnnotationLd;
+import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 
 
 /**
@@ -81,7 +81,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testCreateEmptyEuropeanaAnnotationLd() {
     	
         Annotation baseObjectTag = createEmptyBaseObjectTagInstance();        
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag);
         
         String actual = annotation.toString(0);
         //EuropeanaAnnotationLd.toConsole("", actual);
@@ -105,7 +105,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testAnnotationToEuropeanaAnnotationLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        EuropeanaAnnotationLd EuropeanaAnnotationLd = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer EuropeanaAnnotationLd = new AnnotationLdSerializer(baseObjectTag);
         
         String actual = EuropeanaAnnotationLd.toString();
 //        EuropeanaAnnotationLd.toConsole("", actual);
@@ -129,7 +129,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.setTarget(null);
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag);
         
         String actual = annotation.toString();
 //        EuropeanaAnnotationLd.toConsole("", actual);       
@@ -155,7 +155,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         baseObjectTag.getTarget().setStyleClass(null);
         baseObjectTag.getTarget().setType(null);
         baseObjectTag.getTarget().setValue(null);
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag);
         
         String actual = annotation.toString();
 //        EuropeanaAnnotationLd.toConsole("", actual);       
@@ -171,7 +171,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();     
         baseObjectTag.setBody(null);
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag);
         
         String actual = annotation.toString();
 //        EuropeanaAnnotationLd.toConsole("", actual);       
@@ -182,16 +182,16 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testGsonSerializationForEuropeanaAnnotationLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        EuropeanaAnnotationLd EuropeanaAnnotationLd = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer EuropeanaAnnotationLd = new AnnotationLdSerializer(baseObjectTag);
         
         String EuropeanaAnnotationLdOriginal = EuropeanaAnnotationLd.toString();
 //        EuropeanaAnnotationLd.toConsole("### EuropeanaAnnotationLd original ###", EuropeanaAnnotationLdOriginal);
 
         Gson gson = new Gson();
-        String EuropeanaAnnotationLdSerializedString = gson.toJson(EuropeanaAnnotationLd, EuropeanaAnnotationLd.class);
+        String EuropeanaAnnotationLdSerializedString = gson.toJson(EuropeanaAnnotationLd, AnnotationLdSerializer.class);
 //        EuropeanaAnnotationLd.toConsole("### EuropeanaAnnotationLdGsonSerializedString ###", EuropeanaAnnotationLdSerializedString);
         
-        EuropeanaAnnotationLd EuropeanaAnnotationLdDeserializedObject = gson.fromJson(EuropeanaAnnotationLdSerializedString, EuropeanaAnnotationLd.class);
+        AnnotationLdSerializer EuropeanaAnnotationLdDeserializedObject = gson.fromJson(EuropeanaAnnotationLdSerializedString, AnnotationLdSerializer.class);
         String EuropeanaAnnotationLdDeserializedString = EuropeanaAnnotationLdDeserializedObject.toString();
 //        EuropeanaAnnotationLd.toConsole("### EuropeanaAnnotationLdGsonDeserializedString ###", EuropeanaAnnotationLdDeserializedString);
 
@@ -202,7 +202,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testEuropeanaAnnotationLdToJsonLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag);
         
         String annotationLdStr = annotation.toString();
 //        EuropeanaAnnotationLd.toConsole("### EuropeanaAnnotationLd original ###", EuropeanaAnnotationLdStr);
@@ -243,7 +243,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     public void testParseEuropeanaAnnotationLdStringToJsonLd() {
     	
         Annotation baseObjectTag = createBaseObjectTagInstance();        
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(baseObjectTag);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag);
         
         String actual = annotation.toString();
 //        EuropeanaAnnotationLd.toConsole("", actual);
@@ -257,11 +257,11 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         
         assertEquals(expectedIndent, actualIndent);
 
-        EuropeanaAnnotationLd parsedEuropeanaAnnotationLd = null;
+        AnnotationLdSerializer parsedEuropeanaAnnotationLd = null;
         JsonLd parsedJsonLd = null;
         try {
 //        	parsedJsonLd = JsonLdParser.parseExt(actual);
-        	parsedEuropeanaAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
+        	parsedEuropeanaAnnotationLd = new AnnotationLdSerializer(parsedJsonLd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -295,7 +295,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         /**
          * convert Annotation object to EuropeanaAnnotationLd object.
          */
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(originalAnnotation);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(originalAnnotation);
         String initialAnnotationIndent = annotation.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### initialAnnotation ###", initialAnnotationIndent);
 
@@ -304,7 +304,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromEuropeanaAnnotationLd = annotation.getAnnotation();
 
-        EuropeanaAnnotationLd convertedEuropeanaAnnotationLd = new EuropeanaAnnotationLd(annotationFromEuropeanaAnnotationLd);
+        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
         String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
@@ -359,7 +359,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          * convert Annotation object to EuropeanaAnnotationLd object.
          * 1. Annotation object -> EuropeanaAnnotationLd object
          */
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(originalAnnotation);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(originalAnnotation);
         
         /**
          * get JsonLd string
@@ -373,7 +373,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          * parse JsonLd string using JsonLdParser.
          * 3. JsonLd string -> JsonLdParser -> JsonLd object
          */
-        EuropeanaAnnotationLd parsedEuropeanaAnnotationLd = null;
+        AnnotationLdSerializer parsedEuropeanaAnnotationLd = null;
         JsonLd parsedJsonLd = null;
         try {
         	parsedJsonLd = JsonLdParser.parseExt(initialAnnotationStr);
@@ -382,7 +382,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         	 * convert JsonLd to EuropeanaAnnotationLd.
         	 * 4. JsonLd object -> EuropeanaAnnotationLd object
         	 */
-        	parsedEuropeanaAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
+        	parsedEuropeanaAnnotationLd = new AnnotationLdSerializer(parsedJsonLd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -420,7 +420,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         /**
          * convert Annotation object to EuropeanaAnnotationLd object.
          */
-        EuropeanaAnnotationLd annotation = new EuropeanaAnnotationLd(originalAnnotation);
+        AnnotationLdSerializer annotation = new AnnotationLdSerializer(originalAnnotation);
         String initialAnnotationIndent = annotation.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### initialAnnotation ###", initialAnnotationIndent);
 
@@ -429,7 +429,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromEuropeanaAnnotationLd = annotation.getAnnotation();
 
-        EuropeanaAnnotationLd convertedEuropeanaAnnotationLd = new EuropeanaAnnotationLd(annotationFromEuropeanaAnnotationLd);
+        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
         String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
@@ -459,11 +459,11 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object -> EuropeanaAnnotationLd object
          */
-        EuropeanaAnnotationLd parsedEuropeanaAnnotationLd = null;
+        AnnotationLdSerializer parsedEuropeanaAnnotationLd = null;
         JsonLd parsedJsonLd = null;
         try {
         	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdObjectString);
-        	parsedEuropeanaAnnotationLd = new EuropeanaAnnotationLd(parsedJsonLd);
+        	parsedEuropeanaAnnotationLd = new AnnotationLdSerializer(parsedJsonLd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

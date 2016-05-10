@@ -1,4 +1,4 @@
-package eu.europeana.annotation.utils.parse.jsonld;
+package eu.europeana.annotation.utils.serialize;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,7 +37,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.utils.JsonUtils;
 
-public class EuropeanaAnnotationLd extends JsonLd {
+public class AnnotationLdSerializer extends JsonLd {
 
   //  private static final Logger logger = LoggerFactory.getLogger(AnnotationLd.class);
     
@@ -50,14 +50,14 @@ public class EuropeanaAnnotationLd extends JsonLd {
 	/**
      * @param annotation
      */
-    public EuropeanaAnnotationLd(Annotation annotation) {
+    public AnnotationLdSerializer(Annotation annotation) {
     	setAnnotation(annotation);
     }
     
     /**
      * @param jsonLd
      */
-    public EuropeanaAnnotationLd(JsonLd jsonLd) {
+    public AnnotationLdSerializer(JsonLd jsonLd) {
     	setJsonLd(jsonLd);
     }
     
@@ -841,14 +841,4 @@ public class EuropeanaAnnotationLd extends JsonLd {
 		return styledByProperty;
 	}
     
-//TODO: remove dead code	
-//    public static void toConsole(String description, String actual) {
-//    	logger.info(description);
-//    	logger.info(actual);
-//        String s = actual;
-//        s = s.replaceAll("\\\\", "\\\\\\\\");
-//        s = s.replace("\"", "\\\"");
-//        s = s.replace("\n", "\\n");
-//        logger.info(s);
-//    }
 }

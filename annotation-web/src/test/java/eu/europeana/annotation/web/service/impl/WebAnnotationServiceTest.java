@@ -45,7 +45,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.utils.parse.jsonld.EuropeanaAnnotationLd;
+import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
@@ -78,7 +78,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize an original Annotation test object.
 		 */
-        EuropeanaAnnotationLd origAnnotationLd = new EuropeanaAnnotationLd(testAnnotation);
+        AnnotationLdSerializer origAnnotationLd = new AnnotationLdSerializer(testAnnotation);
         
         String original = origAnnotationLd.toString();
 //        AnnotationLd.toConsole("", original);
@@ -108,7 +108,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize Annotation object that was retrieved from a database.
 		 */
-		EuropeanaAnnotationLd annotationLd = new EuropeanaAnnotationLd(webAnnotation);
+		AnnotationLdSerializer annotationLd = new AnnotationLdSerializer(webAnnotation);
         
         String actual = annotationLd.toString();
 //        AnnotationLd.toConsole("", actual);

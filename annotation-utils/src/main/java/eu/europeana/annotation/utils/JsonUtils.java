@@ -29,6 +29,7 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
+import eu.europeana.annotation.definitions.exception.WhitelistParserException;
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -64,7 +65,7 @@ import eu.europeana.annotation.utils.serialization.WhitelistDeserializer;
 
 /**
  * @Deprecated the provided methods must be replaced by proper usage of the json to annotation parser 
- *
+ * This class is mainly used in Annotation Client. Should be moved there
  */
 public class JsonUtils {
 	
@@ -102,12 +103,12 @@ public class JsonUtils {
 	}
 	
 	
-	public static List<WhitelistEntry> toWhitelist(String pathToJson) {
+	public static List<WhitelistEntry> toWhitelist(String pathToJsonFile) {
 		List<WhitelistEntry> res = new ArrayList<WhitelistEntry>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			JsonNode rootNode = mapper.readTree(new File(pathToJson));
+			JsonNode rootNode = mapper.readTree(new File(pathToJsonFile));
 			List<JsonNode> rootList = rootNode.findValues("whitelist");
 			JsonNode entriesJsonNode = rootList.get(0);
 			for (JsonNode jsonNode : entriesJsonNode) {
@@ -115,11 +116,10 @@ public class JsonUtils {
 				res.add(whitelistEntry);
 			}
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new WhitelistParserException(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new WhitelistParserException("Cannot access the json file: " + pathToJsonFile,
+					e);
 		}
 		return res;
 	}
@@ -151,7 +151,12 @@ public class JsonUtils {
 		return whitelist;
 	}
 	
-		
+	
+	/**
+	 * @Deprecated use 
+	 * @param json
+	 * @return
+	 */
 	public static Annotation toAnnotationObject(String json) {
 		JsonParser parser;
 		Annotation annotation = null;
