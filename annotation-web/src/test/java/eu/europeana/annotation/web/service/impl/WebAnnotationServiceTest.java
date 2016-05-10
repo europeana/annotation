@@ -42,24 +42,26 @@ import eu.europeana.annotation.definitions.model.resource.TagResource;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.jsonld.AnnotationLd;
-import eu.europeana.annotation.jsonld.AnnotationLdTest;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.utils.parse.jsonld.EuropeanaAnnotationLd;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 
 /**
  * Unit test for the Web Annotation service
- *
+ * @deprecated adapt to use EuropeanaAnnotationLd
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
 	})
 public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
+	public static String TEST_RO_VALUE = "Vlad Tepes";
+	public static String TEST_EN_VALUE = "Vlad the Impaler";
+	
 	@Resource 
 	AnnotationService webAnnotationService;
 	
@@ -76,16 +78,16 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize an original Annotation test object.
 		 */
-        AnnotationLd origAnnotationLd = new AnnotationLd(testAnnotation, ANNOTATION_BASEURL);
+        EuropeanaAnnotationLd origAnnotationLd = new EuropeanaAnnotationLd(testAnnotation);
         
         String original = origAnnotationLd.toString();
-        AnnotationLd.toConsole("", original);
+//        AnnotationLd.toConsole("", original);
         String expectedOrig = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@id\":\"http://data.europeana.eu/annotation/webanno/null\",\"@type\":\"OBJECT_TAG\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"foaf:Person\",\"name\":\"annonymous web user\"},\"body\":{\"@type\":\"[SEMANTIC_TAG,oa:Tag,cnt:ContentAsText,dctypes:Text]\",\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"language\":\"ro\",\"multilingual\":\"\"},\"equivalentTo\":\"http://historypin.com/annotation/1234\",\"motivation\":\"TAGGING\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"prov:Software\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"oa:CSS\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\",\"dimensionMap\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//testCollection/testObject.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"type\":\"oa:IMAGE\"},\"type\":\"OBJECT_TAG\"}";
         
         assertEquals(expectedOrig, original);
 		
         String origIndent = origAnnotationLd.toString(4);
-        AnnotationLd.toConsole("", origIndent);
+//        AnnotationLd.toConsole("", origIndent);
         		
 		/**
 		 * Store Annotation in database.
@@ -106,13 +108,13 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize Annotation object that was retrieved from a database.
 		 */
-        AnnotationLd annotationLd = new AnnotationLd(webAnnotation, ANNOTATION_BASEURL);
+		EuropeanaAnnotationLd annotationLd = new EuropeanaAnnotationLd(webAnnotation);
         
         String actual = annotationLd.toString();
-        AnnotationLd.toConsole("", actual);
+//        AnnotationLd.toConsole("", actual);
         
         String actualIndent = annotationLd.toString(4);
-        AnnotationLd.toConsole("", actualIndent);
+//        AnnotationLd.toConsole("", actualIndent);
         
         /**
          * read Annotation object from the serialized AnnotationLd object.
@@ -229,10 +231,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		Annotation testAnnotation = createTestAnnotation();		
 		
 		testAnnotation.getBody().addLabelInMapping(
-				"ro", AnnotationLdTest.TEST_RO_VALUE);
+				"ro", //AnnotationLdTest.TEST_RO_VALUE
+				"ro_value");
 //		SolrAnnotationConst.SolrAnnotationLanguages.RO.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_RO_VALUE);
 		testAnnotation.getBody().addLabelInMapping(
-				"en", AnnotationLdTest.TEST_EN_VALUE);
+				"en", //AnnotationLdTest.TEST_EN_VALUE
+				"en_value");
 //		SolrAnnotationConst.SolrAnnotationLanguages.EN.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_EN_VALUE);
 
 		/**
@@ -251,8 +255,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		System.out.println("webAnnotation: " + webAnnotation.toString());
 		
 		assertTrue(webAnnotation.getAnnotationId() != null && webAnnotation.getAnnotationId().toString().length() > 0);
-        assertTrue(webAnnotation.getBody().getMultilingual().containsValue(AnnotationLdTest.TEST_EN_VALUE) 
-        		&& webAnnotation.getBody().getMultilingual().containsValue(AnnotationLdTest.TEST_RO_VALUE));
+        assertTrue(webAnnotation.getBody().getMultilingual().containsValue(TEST_EN_VALUE) 
+        		&& webAnnotation.getBody().getMultilingual().containsValue(TEST_RO_VALUE));
 //		assertEquals(testAnnotation, webAnnotation);
 		assertEquals(testAnnotation.getBody(), webAnnotation.getBody());
 	}

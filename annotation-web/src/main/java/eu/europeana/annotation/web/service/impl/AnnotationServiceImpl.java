@@ -35,7 +35,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.jsonld.AnnotationLd;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
@@ -167,34 +166,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getSolrTagService().search(query, startOn, limit);
 	}
 
-	@Override
-	public Annotation parseAnnotation(String annotationJsonLdStr) {
-
-		/**
-		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
-		 * -> JsonLd object
-		 */
-		AnnotationLd parsedAnnotationLd = null;
-		JsonLd parsedJsonLd = null;
-		try {
-			parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
-
-			/**
-			 * convert JsonLd to AnnotationLd. JsonLd object -> AnnotationLd
-			 * object
-			 */
-			parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
-		} catch (Exception e) {
-			String errorMessage = "Cannot Parse JSON-LD input! ";
-			getLogger().error(errorMessage, e);
-		}
-
-		/**
-		 * AnnotationLd object -> Annotation object.
-		 */
-		return parsedAnnotationLd.getAnnotation();
-	}
-
+	
 	@Override
 	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException {
 
