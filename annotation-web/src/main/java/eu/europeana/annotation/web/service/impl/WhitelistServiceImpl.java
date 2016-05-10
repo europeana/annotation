@@ -15,6 +15,7 @@ import eu.europeana.annotation.definitions.exception.WhitelistValidationExceptio
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.WhiteListParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AdminService;
 
@@ -121,8 +122,8 @@ public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements A
 		List<WhitelistEntry> defaultWhitelist = new ArrayList<WhitelistEntry>();
 		URL whiteListFile = getClass().getResource(whitelistPath);
 		
-		defaultWhitelist = JsonUtils.toWhitelist(
-				whiteListFile.getPath().substring(1));
+		defaultWhitelist = WhiteListParser.toWhitelist(
+				whiteListFile.getFile());
 		
 		/**
 		 *  store whitelist objects in database

@@ -16,6 +16,7 @@ import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
@@ -78,7 +79,7 @@ public class ManagementRest extends BaseRest {
 		int failureCount = 0;
 		int successCount = 0;
 		
-		List<String> uriList = JsonUtils.toStringList(uris, true);
+		List<String> uriList = BaseJsonParser.toStringList(uris, true);
 		AnnotationId annoId;
 		
 		for (String annoUri : uriList) {
