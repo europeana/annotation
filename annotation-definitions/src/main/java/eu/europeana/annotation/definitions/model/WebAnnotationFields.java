@@ -12,8 +12,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	
 	public static final String SPLITTER = "#";
 	
-	
-	
 	//TODO: move to appropriate location verify if still used
 	public static final String DISABLED = "disabled";
 	public static final String START_ON = "startOn";

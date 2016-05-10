@@ -26,6 +26,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -45,6 +46,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
+import eu.europeana.annotation.utils.serialize.AnnotationLdDeserializerDeprecated;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -52,7 +54,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
 
 /**
  * Unit test for the Web Annotation service
- * @deprecated adapt to use EuropeanaAnnotationLd
+ * @deprecated adapt to use AnnotationLdParser and AnnotationLdDeserializerDeprecated
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
@@ -108,7 +110,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize Annotation object that was retrieved from a database.
 		 */
-		AnnotationLdSerializer annotationLd = new AnnotationLdSerializer(webAnnotation);
+		AnnotationLdDeserializerDeprecated annotationLd = new AnnotationLdDeserializerDeprecated((JsonLd) webAnnotation);
         
         String actual = annotationLd.toString();
 //        AnnotationLd.toConsole("", actual);

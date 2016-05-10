@@ -3,18 +3,31 @@ package eu.europeana.annotation.definitions.model.vocabulary.fields;
 
 public enum WAPropEnum implements WebAnnotationProperty{
 
-	CONTEXT(WebAnnotationModelFields.AT_CONTEXT, null);
+	CONTEXT(WebAnnotationModelFields.AT_CONTEXT, true),
+	ID(WebAnnotationModelFields.ID, true),
+	TYPE(WebAnnotationModelFields.TYPE, true);
 	
 	private static final String AT = "@";
 	private static final String COLON = ":";
+	private final boolean jsonLdKeyword;
 	private String jsonPropertyName;
 	private String namespace;
+
 	
-	WAPropEnum(String jsonPropertyName, String namespace){
-		this.jsonPropertyName = jsonPropertyName;
-		this.namespace = namespace;
+	WAPropEnum(String jsonPropertyName){
+		this(jsonPropertyName, false, null);
+	}
+	
+	WAPropEnum(String jsonPropertyName, boolean jsonLdKeyword){
+		this(jsonPropertyName, jsonLdKeyword, null);
 	}
 
+	WAPropEnum(String jsonPropertyName, boolean jsonLdKeyword, String namespace){
+		this.jsonPropertyName = jsonPropertyName;
+		this.namespace = namespace;
+		this.jsonLdKeyword = jsonLdKeyword;
+	}
+	
 	/**
 	 * This is a commodity method to determine the appropriate wa property basing of different variations of json property names
 	 * (i.e. with or without namespace, with @)  
@@ -41,6 +54,14 @@ public enum WAPropEnum implements WebAnnotationProperty{
 		return jsonPropertyName;
 	}
 	
+	public String getDefaultJsonLdPropertyName(){
+		if(isJsonLdKeyword() && !getJsonPropertyName().startsWith(AT))
+			return AT + getJsonPropertyName();
+		
+		return getJsonPropertyName();
+	}
+	
+	
 	@Override
 	public String toString() {
 		return getJsonPropertyName();
@@ -58,6 +79,10 @@ public enum WAPropEnum implements WebAnnotationProperty{
 			ret = getNamespace() + COLON + getJsonPropertyName();
 		
 		return ret;
+	}
+
+	public boolean isJsonLdKeyword() {
+		return jsonLdKeyword;
 	}
 	
 	
