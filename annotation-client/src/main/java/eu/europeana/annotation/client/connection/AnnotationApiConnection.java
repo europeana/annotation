@@ -25,6 +25,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.WhiteListParser;
 
 /**
  * @author GrafR
@@ -980,7 +981,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		aor.setWhitelistEntry(JsonUtils.toWhitelistEntry(whitelistJsonString));
+		aor.setWhitelistEntry(WhiteListParser.toWhitelistEntry(whitelistJsonString));
 		aor.setJson(json);
 		return aor;
 	}
@@ -1013,7 +1014,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			JSONArray whitelistEntries = mainObject.getJSONArray("items");
 			for (int i=0; i < whitelistEntries.length(); i++) {
 			    JSONObject entry = (JSONObject) whitelistEntries.get(0);
-			    WhitelistEntry whitelistEntry = JsonUtils.toWhitelistEntry(entry.toString());
+			    WhitelistEntry whitelistEntry = WhiteListParser.toWhitelistEntry(entry.toString());
 			    resList.add(whitelistEntry);
 			}
 			
@@ -1064,7 +1065,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		aor.setWhitelistEntry(JsonUtils.toWhitelistEntry(whitelistJsonString));
+		aor.setWhitelistEntry(WhiteListParser.toWhitelistEntry(whitelistJsonString));
 		aor.setJson(json);
 		return aor;
 	}
@@ -1094,7 +1095,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			JSONArray whitelistEntries = mainObject.getJSONArray("items");
 			for (int i=0; i < whitelistEntries.length(); i++) {
 			    JSONObject entry = (JSONObject) whitelistEntries.get(0);
-			    WhitelistEntry whitelistEntry = JsonUtils.toWhitelistEntry(entry.toString());
+			    WhitelistEntry whitelistEntry = WhiteListParser.toWhitelistEntry(entry.toString());
 			    resList.add(whitelistEntry);
 			}
 			

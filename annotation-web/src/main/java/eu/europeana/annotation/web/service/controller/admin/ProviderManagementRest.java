@@ -30,7 +30,6 @@ import eu.europeana.api2.utils.JsonWebUtils;
 //@Api(value = "admin-api", description = "Provider Management Rest Service")
 public class ProviderManagementRest extends BaseRest {
 
-	/*
 	@GET
 	@RequestMapping(value = "/admin/provider/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
@@ -122,6 +121,6 @@ public class ProviderManagementRest extends BaseRest {
 
 		return JsonWebUtils.toJson(response, null);
 	}
-*/
+
 	
 }

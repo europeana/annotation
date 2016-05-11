@@ -68,13 +68,6 @@ public interface AnnotationService {
 			String resourceId, String startOn, String limit, boolean isDisabled);
 	
 	/**
-	 * This method creates Annotation object from a JsonLd string.
-	 * @param annotationJsonLdStr
-	 * @return Annotation object
-	 */
-	public Annotation parseAnnotation(String annotationJsonLdStr);
-
-	/**
 	 * This method creates Europeana Annotation object from a JsonLd string.
 	 * @param motivationType 
 	 * @param annotationJsonLdStr

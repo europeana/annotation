@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 	public static final String EUROPEANA_COLLECTIONS = "Europeana Collections";
 
 	public final String API_KEY_CONFIG_FOLDER = "/config";
-	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates";
+	public final String API_KEY_STORAGE_FOLDER = "/authentication";
 
 	private Map<String, Application> cachedClients = new HashMap<String, Application>();
 
@@ -82,10 +83,19 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 		Application app = null;
 
-		String configFolder = getClass().getResource(API_KEY_CONFIG_FOLDER).getFile();
-		String pathToApiKeyFolder = configFolder + API_KEY_STORAGE_FOLDER;
-		File folder = new File(pathToApiKeyFolder);
+		URL authenticationConfigFolder = getClass().getResource(API_KEY_CONFIG_FOLDER + API_KEY_STORAGE_FOLDER);
+		
+		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
+		
+		File folder = new File(authenticationConfigFolder.getFile());
 		File[] listOfFiles = folder.listFiles();
+		
+		if(!(listOfFiles.length > 0))
+			logger.warn("No authentication configurations found!");
+		
+		
+		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
+		
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {

@@ -12,47 +12,17 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.WhiteListParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.service.AdminService;
 
-public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
-
-//	@Resource
-//	AnnotationConfiguration configuration;
+public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
 	@Resource
 	PersistentWhitelistService mongoWhitelistPersistence;
-
-//	@Resource
-//	AuthenticationService authenticationService;
-//
-//	Logger logger = Logger.getLogger(getClass());
-
-
-//	public AuthenticationService getAuthenticationService() {
-//		return authenticationService;
-//	}
-//
-//	public void setAuthenticationService(AuthenticationService authenticationService) {
-//		this.authenticationService = authenticationService;
-//	}
-//
-//	@Override
-//	public String getComponentName() {
-//		return configuration.getComponentName();
-//	}
-//
-//	protected AnnotationConfiguration getConfiguration() {
-//		return configuration;
-//	}
-//
-//	public void setConfiguration(AnnotationConfiguration configuration) {
-//		this.configuration = configuration;
-//	}
 
 	public PersistentWhitelistService getMongoWhitelistPersistence() {
 		return mongoWhitelistPersistence;
@@ -152,8 +122,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		List<WhitelistEntry> defaultWhitelist = new ArrayList<WhitelistEntry>();
 		URL whiteListFile = getClass().getResource(whitelistPath);
 		
-		defaultWhitelist = JsonUtils.toWhitelist(
-				whiteListFile.getPath().substring(1));
+		defaultWhitelist = WhiteListParser.toWhitelist(
+				whiteListFile.getFile());
 		
 		/**
 		 *  store whitelist objects in database

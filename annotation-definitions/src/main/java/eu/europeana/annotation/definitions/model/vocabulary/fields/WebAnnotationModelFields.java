@@ -28,6 +28,7 @@ public interface WebAnnotationModelFields {
 	public static final String SELECTOR = "selector";
 	public static final String STYLE_CLASS = "styleClass";
 	public static final String AT_TYPE = "@type";
+	public static final String TYPE = "type";
 	public static final String BODY = "body";
 	// public static final String TARGET_TYPE = "targetType";
 	public static final String DC_LANGUAGE = "language";
@@ -36,7 +37,7 @@ public interface WebAnnotationModelFields {
 	public static final String PAGE = "page";
 	public static final String TARGET = "target";
 	public static final String AT_ID = "@id";
-	public static final String TYPE = "type";
+	public static final String ID = "id";
 	public static final String CONTAINS = "contains";
 	public static final String PURPOSE = "purpose";
 

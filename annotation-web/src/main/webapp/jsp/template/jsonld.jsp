@@ -24,11 +24,11 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="18" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
+    "type": "oa:Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "creator": {
-        "@id": "https://www.historypin.org/en/person/55376/",
-        "@type": "Person",
+        "id": "https://www.historypin.org/en/person/55376/",
+        "type": "Person",
         "name": "John Smith"
     },
     "created": "2015-02-27T12:00:43Z",
@@ -68,7 +68,7 @@ The json-ld serialization available in the following box is a valid input to be 
     "@context": "http://www.w3.org/ns/anno.jsonld",  
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-        "@id": "http://www.geonames.org/2988507"
+        "id": "http://www.geonames.org/2988507"
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
@@ -88,10 +88,10 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="12" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
+    "type": "oa:Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-        "@type": "SpecificResource",
+        "type": "SpecificResource",
         "source": "http://www.geonames.org/2988507",
         "purpose": "tagging"   
     },
@@ -134,11 +134,11 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="20" cols="120" name="jsonldobjectlink">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
+    "type": "oa:Annotation",
 <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>	
     "creator": {
-        "@id": "https://www.historypin.org/en/person/55376/",
-        "@type": "foaf:Person",
+        "id": "https://www.historypin.org/en/person/55376/",
+        "type": "foaf:Person",
         "name": "John Smith"
     },
     "created": "2015-02-27T12:00:43Z",

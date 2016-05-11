@@ -8,8 +8,8 @@
   <parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
-		<version>${version.annotationApiSnapshot}</version>
-	</parent>
+		<version>${version.annotationApi}</version>
+  </parent>
   
   <dependencies>
 	   	<dependency>

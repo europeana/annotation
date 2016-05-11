@@ -15,34 +15,25 @@ import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 public class WhitelistDeserializer extends StdDeserializer<WhitelistEntry> {
 	
 	public WhitelistDeserializer() {
-		super(WhitelistEntry.class);
+		this(BaseWhitelistEntry.class);
 		
 	}
 
+	public WhitelistDeserializer(Class<? extends WhitelistEntry> clazz) {
+		super(clazz);
+		
+	}
+	
 	@Override
 	public WhitelistEntry deserialize(JsonParser jp, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
 		
 		ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 		ObjectNode root = (ObjectNode) mapper.readTree(jp);
-		Class<? extends WhitelistEntry> realClass = null;
+//		Class<? extends WhitelistEntry> realClass = null;
+//		realClass = BaseWhitelistEntry.class;
 		
-//		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
-//		while (elementsIterator.hasNext()) {
-//			Entry<String, JsonNode> element = elementsIterator.next();
-//			if (ModelConst.TYPE.equals(element.getKey())) {
-//				String typeValue = element.getValue().getTextValue();
-//				realClass = WhitelistObjectFactory.getInstance()
-//						.getClassForType(typeValue);
-//				break;
-//			}
-//		}
-		
-		realClass = BaseWhitelistEntry.class;
-		if (realClass == null)
-			return null;
-		
-		return mapper.readValue(root, realClass);
+		return (WhitelistEntry) mapper.readValue(root, getValueClass());
 	}
 	
 	

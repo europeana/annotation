@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
-import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.WhiteListParser;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
@@ -123,7 +123,7 @@ public class WhitelistRest extends BaseRest {
 		String action = "post:/whitelist/create";
 		
 		//parse
-		WhitelistEntry webWhitelist = JsonUtils.toWhitelistEntry(whitelist);
+		WhitelistEntry webWhitelist = WhiteListParser.toWhitelistEntry(whitelist);
 	
 		//store				
 		WhitelistEntry storedWhitelist = getAdminService().storeWhitelistEntry(webWhitelist);

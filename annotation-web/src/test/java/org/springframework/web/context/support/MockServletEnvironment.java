@@ -2,22 +2,19 @@ package org.springframework.web.context.support;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import eu.europeana.annotation.web.context.VcapAnnotationPropertyLoaderListener;
-
-public class MockServletEnvironment extends StandardServletEnvironment {
+public abstract class MockServletEnvironment extends StandardServletEnvironment {
 
 	Map<String, Object> mockEnv;
 	
 	@Override
 	public String getProperty(String key) {
 
-		String mongoDb = getSystemEnvironment().get("mongo_service").toString();
+//		String mongoDb = getSystemEnvironment().get("mongo_service").toString();
 		
 		if(mockEnv.containsKey(key))
 			return ""+mockEnv.get(key);
@@ -32,14 +29,14 @@ public class MockServletEnvironment extends StandardServletEnvironment {
 			Map<String, Object> sysEnv = super.getSystemEnvironment();
 			mockEnv = new HashMap<String, Object>();
 			mockEnv.putAll(sysEnv);
-			mockEnv. put("mongo_service", "annotation-mongo");
-			URL location = getClass().getResource("/generate-config/vcap_services.env");
+			putMongoServiceName();
+			String location = getClass().getResource(getEnvFilePath()).getFile();
 			String services;
 			try {
-				services = FileUtils.readFileToString(new File(location.getFile()));
+				services = FileUtils.readFileToString(new File(location));
 				mockEnv.put("VCAP_SERVICES", services);		
 			} catch (IOException e) {
-				throw new RuntimeException("cannot ready resource " + location.getFile() , e);
+				throw new RuntimeException("cannot ready resource " + location , e);
 			}
 			
 			
@@ -47,11 +44,18 @@ public class MockServletEnvironment extends StandardServletEnvironment {
 		return mockEnv;
 
 	}
+
+	protected abstract void putMongoServiceName();
 	
 	@Override
 	public boolean containsProperty(String key) {
 		return mockEnv.containsKey(key);
 	}
+
+
+
+
+	public abstract String getEnvFilePath();
 	
 
 }
