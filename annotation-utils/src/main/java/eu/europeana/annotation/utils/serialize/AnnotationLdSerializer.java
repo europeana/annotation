@@ -51,9 +51,9 @@ public class AnnotationLdSerializer extends JsonLd {
 		jsonLdResource.setSubject("");
 		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, WebAnnotationFields.WA_CONTEXT);
 		if (!StringUtils.isBlank(annotation.getType())) {
-			jsonLdResource.addType(annotation.getType());
+			jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());
 		} else {
-			jsonLdResource.addType(WebAnnotationFields.DEFAULT_ANNOTATION_TYPE);
+			jsonLdResource.putProperty(WebAnnotationFields.TYPE, WebAnnotationFields.DEFAULT_ANNOTATION_TYPE);		
 		}
 
 		if (annotation.getAnnotationId() != null) {
