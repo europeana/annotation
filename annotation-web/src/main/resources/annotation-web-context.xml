@@ -57,7 +57,7 @@
     	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
     </beans:bean>
     
-	<beans:bean id="adminService" class="eu.europeana.annotation.web.service.impl.AdminServiceImpl">
+	<beans:bean id="adminService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
     	<beans:property name="configuration" ref="configuration"/>
     	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
     </beans:bean>
