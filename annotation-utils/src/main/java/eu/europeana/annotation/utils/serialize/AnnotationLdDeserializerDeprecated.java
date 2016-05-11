@@ -454,4 +454,43 @@ private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgen
 	   			setApplyNamespaces(jsonLd.isApplyNamespaces());
 	    	}    	
 	    }
+		
+		/**
+		 * This method takes passed serialised AnnotationLd GSON string and passes
+		 * it to the parser.
+		 * 
+		 * @param serializedAnnotationLd
+		 * @return Annotation object
+		 */
+		// public static Annotation deserialise(String serialisedAnnotationLd) {
+		// Annotation res = null;
+		// Gson gson = new Gson();
+		// AnnotationLd annotationLdDeserialisedObject =
+		// gson.fromJson(serialisedAnnotationLd, AnnotationLd.class);
+		// String annotationLdDeserialisedString =
+		// annotationLdDeserialisedObject.toString();
+		// AnnotationLd.toConsole("deserialise: ", annotationLdDeserialisedString);
+		// try {
+		// JsonLd deserialisedJsonLd =
+		// JsonLdParser.parseExt(annotationLdDeserialisedString);
+		// res = AnnotationLd.getAnnotationFromJsonLd(deserialisedJsonLd);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// return res;
+		// }
+
+		// /**
+		// * This method converts deserialised JsonLd to Annotation object.
+		// * @param deserialisedJsonLd
+		// * @return Annotation object
+		// */
+		// public static Annotation getAnnotationFromJsonLd(JsonLd
+		// deserialisedJsonLd) {
+		// Annotation res = null;
+		// AnnotationLd annotationLd = new AnnotationLd(deserialisedJsonLd);
+		// res = annotationLd.getAnnotation();
+		// return res;
+		// }
+
 }
