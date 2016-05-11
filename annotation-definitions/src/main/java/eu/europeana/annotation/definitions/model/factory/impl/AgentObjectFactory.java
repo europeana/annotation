@@ -29,6 +29,7 @@ public class AgentObjectFactory extends
 	public Agent createObjectInstance(Enum<AgentTypes> modelObjectType) {
 		Agent res = super.createObjectInstance(modelObjectType);
 		res.setInternalType(modelObjectType.name());
+		res.setType(modelObjectType.toString());
 		return res;
 	}	
 

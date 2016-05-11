@@ -125,17 +125,9 @@ public class AnnotationLdParser extends JsonLdParser {
 	private void parseJsonObject(JSONObject jo, Annotation annoLd, int bnodeCount, String profile)
 			throws JsonParseException {
 
-		// The root subject is used for cases where no explicit subject is
-		// specified. We need
-		// at least one dummy subject (bnode) to support type coercion because
-		// types are assigned to
-		// subjects.
-		// JsonLdResource subject = new JsonLdResource();
-
 		try {
 			if (jo.has(JsonLdCommon.CONTEXT)) {
-				// JSONObject context = jo.getJSONObject(JsonLdCommon.CONTEXT);
-
+				
 				Object context = jo.get(JsonLdCommon.CONTEXT);
 				if (context instanceof String) {
 					// default context, no namespace ...
@@ -144,32 +136,22 @@ public class AnnotationLdParser extends JsonLdParser {
 					// parse namespaces
 					for (int i = 0; i < contextObject.names().length(); i++) {
 						String name = contextObject.names().getString(i).toLowerCase();
-						// if (name.equals(JsonLdCommon.COERCE)) {
-						// JSONObject typeObject = context.getJSONObject(name);
-						// for (int j = 0; j < typeObject.names().length(); j++)
-						// {
-						// String property = typeObject.names().getString(j);
-						// String type = typeObject.getString(property);
-						// subject.putPropertyType(property, type);
-						// }
-						// } else {
 						addNamespacePrefix(contextObject.getString(name), name);
-						// }
 					}
 				}
 
 				jo.remove(JsonLdCommon.CONTEXT);
 			}
 
-			// If there is a local profile specified for this subject, we
-			// use that one. Otherwise we assign the profile given by the
-			// parameter.
-			if (jo.has(JsonLdCommon.PROFILE)) {
-				// String localProfile = unCURIE(jo
-				// .getString(JsonLdCommon.PROFILE), getNamespacePrefixMap());
-				// profile = localProfile;
-				// jo.remove(JsonLdCommon.PROFILE);
-			}
+//			// If there is a local profile specified for this subject, we
+//			// use that one. Otherwise we assign the profile given by the
+//			// parameter.
+//			if (jo.has(JsonLdCommon.PROFILE)) {
+//				// String localProfile = unCURIE(jo
+//				// .getString(JsonLdCommon.PROFILE), getNamespacePrefixMap());
+//				// profile = localProfile;
+//				// jo.remove(JsonLdCommon.PROFILE);
+//			}
 			// subject.setProfile(profile);
 
 			if (jo.names() != null && jo.names().length() > 0) {
@@ -225,13 +207,22 @@ public class AnnotationLdParser extends JsonLdParser {
 			throws JSONException, JsonParseException {
 
 		Object valueObject = jo.get(property);
+		AnnotationId annotationId;
+		
+		//TODO: improve to use WAPropEnum instead of constants, and reduce redundancy related to @id vs. id
 		switch (property) {
 		case WebAnnotationFields.AT_TYPE:
 			anno.setType((String) valueObject);
-			// anno.setInternalType(anno.getType());
 			break;
+		case WebAnnotationFields.TYPE:
+			anno.setType((String) valueObject);
+			break;	
 		case WebAnnotationFields.AT_ID:
-			AnnotationId annotationId = parseId(valueObject, jo);
+			annotationId = parseId(valueObject, jo);
+			anno.setAnnotationId(annotationId);
+			break;
+		case WebAnnotationFields.ID:
+			annotationId = parseId(valueObject, jo);
 			anno.setAnnotationId(annotationId);
 			break;
 		case WebAnnotationFields.CREATED:
@@ -304,8 +295,6 @@ public class AnnotationLdParser extends JsonLdParser {
 
 	private Target parseTarget(String defaultType, String valueObject) {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(defaultType);
-		// already done through constructor
-		// target.setTargetType(TargetTypes.TEXT.name());
 		target.setValue((String) valueObject);
 		target.setResourceId(
 				getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
@@ -327,8 +316,6 @@ public class AnnotationLdParser extends JsonLdParser {
 			throw new JsonParseException("unsupported target deserialization for json represetnation: " + valueObject
 					+ " " + e.getMessage());
 		}
-		// throw new JsonParseException("Multiple target deserialization is not
-		// supported yet: " + valueObject);
 		return target;
 	}
 
@@ -345,16 +332,12 @@ public class AnnotationLdParser extends JsonLdParser {
 		if (valueObject instanceof String) {
 			annoId = parseIdFromUri((String) valueObject, jo);
 		} else if (valueObject instanceof JSONObject) {
-			annoId = parseIdFromJson((JSONObject) valueObject);
+			//annoId = parseIdFromJson((JSONObject) valueObject);
+			throw new JsonParseException("Cannot parse ID value: " + valueObject);
 		} else {
 			throw new JsonParseException("Cannot parse ID value: " + valueObject);
 		}
 		return annoId;
-	}
-
-	private AnnotationId parseIdFromJson(JSONObject valueObject) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	private AnnotationId parseIdFromUri(String valueObject, JSONObject jo) throws JsonParseException {
@@ -379,30 +362,40 @@ public class AnnotationLdParser extends JsonLdParser {
 		Agent agent = AgentObjectFactory.getInstance().createModelObjectInstance(type.name());
 		agent.setHomepage(valueObject);
 		agent.setName(valueObject);
-		// agent.setName((String) valueObject);
 		return agent;
 	}
 
 	private Agent parseAgent(JSONObject valueObject) throws JsonParseException {
 		try {
-			String webType = (String) valueObject.get(WebAnnotationFields.AT_TYPE);
-			AgentTypes agentType = AgentTypes.getByJsonValue(webType);
 			
+			String webType = parseTypeValue(valueObject);
+			AgentTypes agentType = AgentTypes.getByJsonValue(webType);
 			Agent agent = AgentObjectFactory.getInstance().createObjectInstance(agentType);
-			// agent.addType(webType);
-			agent.setType(webType);
+			//agent.setType(webType);
+			
+			//TODO: consider using the WAPropEnum
 			if (valueObject.has(WebAnnotationFields.AT_ID))
 				agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
-
+			else if(valueObject.has(WebAnnotationFields.ID))
+				agent.setOpenId(valueObject.getString(WebAnnotationFields.ID));
+			
 			// agent.setHomepage(valueObject);
 			if (valueObject.has(WebAnnotationFields.NAME))
 				agent.setName(valueObject.getString(WebAnnotationFields.NAME));
 
-			// agent.setName((String) valueObject);
 			return agent;
 		} catch (JSONException e) {
 			throw new JsonParseException("cannot parse agent", e);
 		}
+	}
+
+	protected String parseTypeValue(JSONObject valueObject) throws JSONException {
+		String webType = null;
+		if(valueObject.has(WebAnnotationFields.AT_TYPE))
+			webType = (String) valueObject.get(WebAnnotationFields.AT_TYPE);
+		else if(valueObject.has(WebAnnotationFields.TYPE))
+			webType = (String) valueObject.get(WebAnnotationFields.TYPE);
+		return webType;
 	}
 
 	private Body parseBody(MotivationTypes motivation, Object valueObject) throws JsonParseException {
@@ -455,32 +448,11 @@ public class AnnotationLdParser extends JsonLdParser {
 		
 		Body body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
 		body.setValue((String) valueObject);
-		// body.setResourceId(getIdHelper().buildResourseId(
-		// getIdHelper().extractResoureIdPartsFromHttpUri((String)
-		// valueObject)));
 		return body;
 	}
 	
-	/**
-	 * use parseBody(BodyTypes bodyType, String valueObject)
-	 * @param bodyType
-	 * @param valueObject
-	 * @return
-	 */
-	@Deprecated
-	private Body parseBody(String bodyType, String valueObject) {
-
-		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(bodyType);
-		body.addType(bodyType);
-		body.setValue((String) valueObject);
-		// body.setResourceId(getIdHelper().buildResourseId(
-		// getIdHelper().extractResoureIdPartsFromHttpUri((String)
-		// valueObject)));
-		return body;
-	}
-
 	private Body parseBody(JSONObject valueObject, MotivationTypes motivation) throws JsonParseException {
-		// bz now both plaintag and semanictag are specific resources. However,
+		// by now both plaintag and semantictag are specific resources. However,
 		// the usage of SemanticTag should be implemented in the future
 		BodyTypes bodyType = guesBodyInternalType(valueObject, motivation);
 		Body body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
@@ -493,13 +465,22 @@ public class AnnotationLdParser extends JsonLdParser {
 				Object value = ((JSONObject) valueObject).get(key);
 				switch (key) {
 				case WebAnnotationFields.AT_TYPE:
-					if (value.getClass().equals(JSONArray.class)) {
-						for (int i = 0; i < ((JSONArray) value).length(); i++)
-							body.addType(((JSONArray) value).getString(i));
-					} else
-						body.addType(value.toString());
+//					if (value.getClass().equals(JSONArray.class)) {
+//						for (int i = 0; i < ((JSONArray) value).length(); i++)
+//							body.addType(((JSONArray) value).getString(i));
+//					} else
+					body.addType(value.toString());
 					body.setInternalType(bodyType.name());
 					break;
+				case WebAnnotationFields.TYPE:
+//					if (value.getClass().equals(JSONArray.class)) {
+//						for (int i = 0; i < ((JSONArray) value).length(); i++)
+//							body.addType(((JSONArray) value).getString(i));
+//					} else
+					body.addType(value.toString());
+					body.setInternalType(bodyType.name());
+					break;
+
 				case WebAnnotationFields.CHARS:
 					body.setValue(value.toString());
 					body.setResourceId(getIdHelper()
@@ -522,6 +503,12 @@ public class AnnotationLdParser extends JsonLdParser {
 					//body.setValue(value.toString());
 					body.setHttpUri(value.toString());
 					break;
+				case WebAnnotationFields.ID:
+					//need to align with target.
+					//body.setValue(value.toString());
+					body.setHttpUri(value.toString());
+					break;
+				
 				case WebAnnotationFields.PURPOSE:
 					body.setPurpose(value.toString());
 					break;
@@ -534,14 +521,6 @@ public class AnnotationLdParser extends JsonLdParser {
 					"unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
 		}
 
-		// throw new JsonParseException("unsupported body deserialization for
-		// json represetnation: " + valueObject);
-
-		// Body body =
-		// BodyObjectFactory.getInstance().createModelObjectInstance(
-		// BodyTypes.TAG.name());
-		// body.setBodyType(BodyTypes.TAG.name());
-		// body.setValue((String) valueObject);
 		return body;
 	}
 
@@ -553,7 +532,8 @@ public class AnnotationLdParser extends JsonLdParser {
 			//simple resource (semantic) tag - extended
 			//specific resource - minimal or extended;
 			// in any case SemanticTag
-			if(valueObject.has(WebAnnotationFields.AT_ID) || valueObject.has(WebAnnotationFields.SOURCE))
+			//support both @id and id in input
+			if(valueObject.has(WebAnnotationFields.ID) ||valueObject.has(WebAnnotationFields.AT_ID) || valueObject.has(WebAnnotationFields.SOURCE))
 					return BodyTypes.SEMANTIC_TAG;
 			else if(valueObject.has(WebAnnotationFields.VALUE))
 					return BodyTypes.TAG; 

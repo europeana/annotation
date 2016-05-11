@@ -56,7 +56,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		return cachedClients;
 	}
 
-	public Application readApiKeyApplicationFromFile(String path)
+	public Application readApplicationConfigFromFile(String path)
 			throws ApplicationAuthenticationException {
 
 		Application app;
@@ -65,6 +65,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 			BufferedReader br = new BufferedReader(new FileReader(path));
 
 			BaseDeserializer deserializer = new BaseDeserializer();
+			
 			Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
 			String jsonData = br.readLine();
 			app = gson.fromJson(jsonData, Application.class);
@@ -80,8 +81,6 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 	@Override
 	public void loadApiKeys() throws ApplicationAuthenticationException {
-
-		Application app = null;
 
 		URL authenticationConfigFolder = getClass().getResource(API_KEY_CONFIG_FOLDER + API_KEY_STORAGE_FOLDER);
 		
@@ -102,13 +101,10 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 				String fileName = listOfFiles[i].getAbsolutePath();
 				
 				getLogger().info("Loading api keys from file: " + fileName);
-				Application templateApp = readApiKeyApplicationFromFile(fileName);
-				app = createMockClientApplication(
-							templateApp.getApiKey(), templateApp.getOrganization(),
-							templateApp.getName());
+				Application application = readApplicationConfigFromFile(fileName);
 					
 				//put app in the cache
-				getCachedClients().put(app.getApiKey(), app);				
+				getCachedClients().put(application.getApiKey(), application);				
 			}
 		}
 	}

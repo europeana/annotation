@@ -1,10 +1,10 @@
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
-    "type": "oa:Annotation",
+    "@type": "oa:Annotation",
     "motivation": "oa:Linking",	
     "creator": {
-        "id": "https://www.historypin.org/en/person/55376/",
-        "type": "Person",
+        "@id": "https://www.historypin.org/en/person/55376/",
+        "@type": "Person",
         "name": "John Smith"
     },
     "created": "2015-02-27T12:00:43Z",
