@@ -56,7 +56,7 @@ public class AnnotationLdSerializer extends JsonLd {
         }
         
         if (annotation.getAnnotationId() != null){ 
-        	jsonLdResource.putProperty(WebAnnotationFields.AT_ID, annotation.getAnnotationId().toHttpUrl()); 
+        	jsonLdResource.putProperty(WebAnnotationFields.ID, annotation.getAnnotationId().toHttpUrl()); 
         }
 //        if (!StringUtils.isBlank(annotation.getType())) 
 //        	jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());   
@@ -212,7 +212,7 @@ public class AnnotationLdSerializer extends JsonLd {
             	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getContentType())) 
             		propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE, annotation.getTarget().getSourceResource().getContentType());
             	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getHttpUri())) 
-            		propertyValue2.getValues().put(WebAnnotationFields.AT_ID, annotation.getTarget().getSourceResource().getHttpUri());
+            		propertyValue2.getValues().put(WebAnnotationFields.ID, annotation.getTarget().getSourceResource().getHttpUri());
             	if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getMediaType())) 
             		propertyValue2.getValues().put(WebAnnotationFields.FORMAT, annotation.getTarget().getSourceResource().getMediaType());
                 if (propertyValue2.getValues().size() != 0) {
