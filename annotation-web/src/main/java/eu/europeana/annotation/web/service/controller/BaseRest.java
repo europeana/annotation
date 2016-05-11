@@ -7,6 +7,9 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -28,6 +31,7 @@ import eu.europeana.annotation.web.exception.authentication.ApplicationAuthentic
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
@@ -326,4 +330,17 @@ public class BaseRest extends ApiResponseBuilder {
 		getAuthenticationService().getByApiKey(wsKey);
 	}
 
+	
+	protected ResponseEntity <String> buildResponseEntityForJsonString(String jsonStr) {
+		
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+		headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
+		headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+
+		ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, HttpStatus.OK);
+		
+		return response;		
+	}
+	
 }

@@ -27,7 +27,7 @@ import eu.europeana.api2.utils.JsonWebUtils;
 @Deprecated
 public class AnnotationRest extends BaseRest {
 
-
+/*
 //	@ApiOperation(value = "", position = 0)
 	@RequestMapping(value = "/annotations/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public String getComponentName() {
@@ -274,5 +274,6 @@ public class AnnotationRest extends BaseRest {
 			return getValidationReport(apiKey, action, e.getMessage(), e, false);		
 		}
 	}
-
+*/
+	
 }

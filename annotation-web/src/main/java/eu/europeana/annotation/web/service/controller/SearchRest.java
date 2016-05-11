@@ -27,6 +27,7 @@ import eu.europeana.api2.utils.JsonWebUtils;
 @Deprecated
 public class SearchRest extends BaseRest {
 
+	/*
 	@RequestMapping(value = "/annotations/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 //	@ApiOperation(notes = SwaggerConstants.SEARCH_FIELDS_LINK, value = "")
@@ -159,5 +160,6 @@ public class SearchRest extends BaseRest {
 
 		return JsonWebUtils.toJson(response, null);
 	}
+*/
 
 }

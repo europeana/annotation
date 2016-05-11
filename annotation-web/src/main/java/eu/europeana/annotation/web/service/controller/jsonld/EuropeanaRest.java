@@ -1,29 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
-import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
-import eu.europeana.annotation.utils.parse.jsonld.EuropeanaAnnotationLd;
-import eu.europeana.annotation.web.http.SwaggerConstants;
-import eu.europeana.annotation.web.model.AnnotationOperationResponse;
-import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
-import eu.europeana.api2.utils.JsonWebUtils;
-import io.swagger.annotations.ApiOperation;
 
 
 /**
@@ -36,17 +13,19 @@ GET /<annotation-web>/search.jsonld
 //@Controller
 //@Api(value = "europeanald", description = "Europeana Annotation-Ld Rest Service")
 @Deprecated
-public class EuropeanaRest extends BaseRest{
+public class EuropeanaRest extends BaseRest {
 
+/*	
 	@RequestMapping(value = "/annotationld/{provider}/{annotationNr}.jsonld",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(value = "Delete an entry from the whitelist", nickname = "deleteWhitelistEntry", response = java.lang.Void.class)
-	public ModelAndView getAnnotationLdByPath (
+	public ResponseEntity<String> getAnnotationLdByPath (
+//			public ModelAndView getAnnotationLdByPath (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 //		@RequestParam(value = "profile", required = false) String profile,
 		@PathVariable(value = "provider") String provider,
 		@PathVariable(value = "identifier") String identifier
-		) {
+		) throws HttpException {
 		
 		String action = "get:/annotationld/{provider}/{annotationNr}.jsonld";
 		return getAnnotation(apiKey, provider, identifier, action);	
@@ -55,21 +34,34 @@ public class EuropeanaRest extends BaseRest{
 //	@RequestMapping(value = "/annotation.jsonld?provider=&annotationNr=", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/annotation.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ModelAndView getAnnotationLd (
+	public ResponseEntity<String> getAnnotationLd (
+//			public ModelAndView getAnnotationLd (
 		@RequestParam(value = "apiKey", required = false) String apiKey,
 		@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 		@RequestParam(value = "identifier", required = true) String identifier
-		) {
+		) throws HttpException {
 		
 		String action = "get:/annotation.jsonld";
 		return getAnnotation(apiKey, provider, identifier, action);	
 	}
 
-	private ModelAndView getAnnotation(String apiKey, String provider,
-			String identifier, String action) {
+	
+	private ResponseEntity<String> getAnnotation(String apiKey, String provider,
+//			private ModelAndView getAnnotation(String apiKey, String provider,
+			String identifier, String action) throws HttpException {
 		
 		try {
-			Annotation annotation = getAnnotationService().getAnnotationById(new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
+			// 2. Check client access (a valid “wskey” must be provided)
+			validateApiKey(apiKey);
+
+			// SET DEFAULTS
+			Application app = getAuthenticationService().getByApiKey(apiKey);
+
+			if (provider == null)
+				provider = app.getProvider();
+
+			Annotation annotation = getAnnotationService().getAnnotationById(
+					new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier));
 			
 			getAnnotationService().checkVisibility(annotation, null);
 			
@@ -79,15 +71,35 @@ public class EuropeanaRest extends BaseRest{
 			JsonLd annotationLd = new EuropeanaAnnotationLd(resAnnotation);
 			String jsonLd = annotationLd.toString(4);
 	       	
-			return JsonWebUtils.toJson(jsonLd, null);
+//			return JsonWebUtils.toJson(jsonLd, null);
+			return buildResponseEntityForJsonString(jsonLd);
+//			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+//			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+//			headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
+//			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+//
+//			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
+//			
+//			return response;
+			
 		} catch (AnnotationStateException e) {
-			getLogger().error("An error occured during the invocation of :" + action, e);
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e, false);		
+//			getLogger().error("An error occured during the invocation of :" + action, e);
+//			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_VISIBILITY_CHECK + ". " + e.getMessage(), e, false);		
+			throw new InternalServerException(e);
+//		} catch (Exception e) {
+//			getLogger().error("An error occured during the invocation of :" + action, e);
+//			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage(), e, false);		
+		} catch (RuntimeException e) {
+			// not found ..
+			throw new InternalServerException(e);
+		} catch (HttpException e) {
+			// avoid wrapping http exception
+			throw e;
 		} catch (Exception e) {
-			getLogger().error("An error occured during the invocation of :" + action, e);
-			return getValidationReport(apiKey, action, AnnotationOperationResponse.ERROR_NO_OBJECT_FOUND + ". " + e.getMessage(), e, false);		
+			throw new InternalServerException(e);
 		}
 	}
+*/
 	
 //	@RequestMapping(value = "/annotation/{motivation}.jsonld", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 //	@ResponseBody
@@ -133,10 +145,12 @@ public class EuropeanaRest extends BaseRest{
 //		}
 //	}
 	
+	/*
 	@RequestMapping(value = "/annotations/search.jsonld", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(notes=SwaggerConstants.SEARCH_NOTES, value="")
-	public ModelAndView searchLd(
+	public ResponseEntity<String> searchLd(
+//			public ModelAndView searchLd(
 		@RequestParam(value = "wsKey", required = false) String wsKey,
 		@RequestParam(value = "target", required = false) String target,
 		@RequestParam(value = "resourceId", required = false) String resourceId) {
@@ -152,7 +166,9 @@ public class EuropeanaRest extends BaseRest{
 		}
 		response = buildSearchResponse(
 				annotationList, wsKey, "/annotations/search.jsonld");
-		return JsonWebUtils.toJson(response, null);
+//		return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);		
 	}
 
 	
@@ -172,5 +188,6 @@ public class EuropeanaRest extends BaseRest{
 //		
 //		return targetUri;
 //	}
+*/
 
 }

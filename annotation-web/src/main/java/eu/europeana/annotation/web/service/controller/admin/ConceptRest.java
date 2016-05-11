@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 public class ConceptRest extends BaseRest {
 
 
+	/*
 	@RequestMapping(value = "/concepts/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
@@ -85,5 +86,6 @@ public class ConceptRest extends BaseRest {
 
 		return JsonWebUtils.toJson(response, null);
 	}
+*/
 
 }

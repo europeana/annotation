@@ -24,6 +24,7 @@ import eu.europeana.api2.utils.JsonWebUtils;
 @Deprecated
 public class AnnotationLdRest extends BaseJsonldRest {
 
+	/*
 	@RequestMapping(value = "/annotationld/component", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String getComponentName() {
@@ -85,17 +86,18 @@ public class AnnotationLdRest extends BaseJsonldRest {
 		
 		webAnnotation.setAnnotationId(annoId);		
 		Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexing);
-
+*/
+	
 		/**
 		 * Convert PersistentAnnotation in Annotation.
 		 */
-		Annotation resAnnotation = annotationBuilder
-				.copyIntoWebAnnotation(storedAnnotation);
-
-		AnnotationLd annotationLd = new AnnotationLd(resAnnotation, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = annotationLd.toString(4);
-	
-		return JsonWebUtils.toJson(jsonLd, null);
-	}
+//		Annotation resAnnotation = annotationBuilder
+//				.copyIntoWebAnnotation(storedAnnotation);
+//
+//		AnnotationLd annotationLd = new AnnotationLd(resAnnotation, getConfiguration().getAnnotationBaseUrl());
+//        String jsonLd = annotationLd.toString(4);
+//	
+//		return JsonWebUtils.toJson(jsonLd, null);
+//	}
 
 }
