@@ -4,16 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.concept.Concept;
-import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
 
 public interface Body extends SpecificResource{
 
-//	public abstract String getBodyType();
-//
-//	public abstract void setBodyType(String bodyTypeStr);
-
+	//TODO sergiu: consider changing to String instead of list
 	public abstract void setType(List<String> bodyType);
 
 	public abstract void addType(String newType);

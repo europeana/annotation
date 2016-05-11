@@ -4,11 +4,6 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 
 public abstract class AbstractModelObjectFactory <O , E extends Enum<E>> {
 
-//	 private Class<E> enumClass;
-//
-//	 protected AbstractModelObjectFactory<O, E >(Class<E> enumClass1) {
-//	        this.enumClass = enumClass1;
-//	 }
 	
 	public O createModelObjectInstance(String modelObjectType) {
 		return createObjectInstance(getEnumEntry(modelObjectType));
@@ -19,8 +14,6 @@ public abstract class AbstractModelObjectFactory <O , E extends Enum<E>> {
 		try {
 			return (O) getClassForType(modelObjectType).newInstance();
 			
-			//O modelObjectClass = getClassForType(agentType).newInstance();
-			//agent.setType(agentType.name());
 		} catch (Exception e) {
 			throw new AnnotationInstantiationException(
 					modelObjectType.toString(), e);
