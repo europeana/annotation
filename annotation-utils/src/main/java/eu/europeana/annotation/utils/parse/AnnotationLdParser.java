@@ -211,16 +211,9 @@ public class AnnotationLdParser extends JsonLdParser {
 		
 		//TODO: improve to use WAPropEnum instead of constants, and reduce redundancy related to @id vs. id
 		switch (property) {
-		case WebAnnotationFields.AT_TYPE:
-			anno.setType((String) valueObject);
-			break;
 		case WebAnnotationFields.TYPE:
 			anno.setType((String) valueObject);
 			break;	
-		case WebAnnotationFields.AT_ID:
-			annotationId = parseId(valueObject, jo);
-			anno.setAnnotationId(annotationId);
-			break;
 		case WebAnnotationFields.ID:
 			annotationId = parseId(valueObject, jo);
 			anno.setAnnotationId(annotationId);
@@ -374,9 +367,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			//agent.setType(webType);
 			
 			//TODO: consider using the WAPropEnum
-			if (valueObject.has(WebAnnotationFields.AT_ID))
-				agent.setOpenId(valueObject.getString(WebAnnotationFields.AT_ID));
-			else if(valueObject.has(WebAnnotationFields.ID))
+			if(valueObject.has(WebAnnotationFields.ID))
 				agent.setOpenId(valueObject.getString(WebAnnotationFields.ID));
 			
 			// agent.setHomepage(valueObject);
@@ -391,9 +382,7 @@ public class AnnotationLdParser extends JsonLdParser {
 
 	protected String parseTypeValue(JSONObject valueObject) throws JSONException {
 		String webType = null;
-		if(valueObject.has(WebAnnotationFields.AT_TYPE))
-			webType = (String) valueObject.get(WebAnnotationFields.AT_TYPE);
-		else if(valueObject.has(WebAnnotationFields.TYPE))
+		if(valueObject.has(WebAnnotationFields.TYPE))
 			webType = (String) valueObject.get(WebAnnotationFields.TYPE);
 		return webType;
 	}
@@ -464,14 +453,6 @@ public class AnnotationLdParser extends JsonLdParser {
 				String key = (String) iterator.next();
 				Object value = ((JSONObject) valueObject).get(key);
 				switch (key) {
-				case WebAnnotationFields.AT_TYPE:
-//					if (value.getClass().equals(JSONArray.class)) {
-//						for (int i = 0; i < ((JSONArray) value).length(); i++)
-//							body.addType(((JSONArray) value).getString(i));
-//					} else
-					body.addType(value.toString());
-					body.setInternalType(bodyType.name());
-					break;
 				case WebAnnotationFields.TYPE:
 //					if (value.getClass().equals(JSONArray.class)) {
 //						for (int i = 0; i < ((JSONArray) value).length(); i++)
@@ -497,11 +478,6 @@ public class AnnotationLdParser extends JsonLdParser {
 						body.setSource(value.toString());
 					else
 						throw new JsonParseException("source as internet resource is not supported in this version of the parser!");
-					break;
-				case WebAnnotationFields.AT_ID:
-					//need to align with target.
-					//body.setValue(value.toString());
-					body.setHttpUri(value.toString());
 					break;
 				case WebAnnotationFields.ID:
 					//need to align with target.
@@ -533,7 +509,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			//specific resource - minimal or extended;
 			// in any case SemanticTag
 			//support both @id and id in input
-			if(valueObject.has(WebAnnotationFields.ID) ||valueObject.has(WebAnnotationFields.AT_ID) || valueObject.has(WebAnnotationFields.SOURCE))
+			if(valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
 					return BodyTypes.SEMANTIC_TAG;
 			else if(valueObject.has(WebAnnotationFields.VALUE))
 					return BodyTypes.TAG; 

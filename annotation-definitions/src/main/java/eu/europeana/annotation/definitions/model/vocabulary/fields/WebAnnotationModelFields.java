@@ -7,13 +7,9 @@ public interface WebAnnotationModelFields {
 	 * Model attribute names
 	 */
 	public static final String AT_CONTEXT = "@context";
-	//public static final String ANNOTATED_BY = "annotatedBy";
 	public static final String CREATOR = "creator";
-//	public static final String ANNOTATED_AT = "annotatedAt";
 	public static final String CREATED = "created";
 	public static final String NAME = "name";
-//	public static final String SERIALIZED_AT = "serializedAt";
-//	public static final String SERIALIZED_BY = "serializedBy";
 	public static final String GENERATED = "generated";
 	public static final String GENERATOR = "generator";
 	public static final String HOMEPAGE = "homepage";
@@ -27,16 +23,15 @@ public interface WebAnnotationModelFields {
 	public static final String SOURCE = "source";
 	public static final String SELECTOR = "selector";
 	public static final String STYLE_CLASS = "styleClass";
-	public static final String AT_TYPE = "@type";
+//	public static final String AT_TYPE = "@type";
 	public static final String TYPE = "type";
 	public static final String BODY = "body";
-	// public static final String TARGET_TYPE = "targetType";
 	public static final String DC_LANGUAGE = "language";
 	public static final String FORMAT = "format";
 	public static final String MEDIA_TYPE = "mediaType";
 	public static final String PAGE = "page";
 	public static final String TARGET = "target";
-	public static final String AT_ID = "@id";
+//	public static final String AT_ID = "@id";
 	public static final String ID = "id";
 	public static final String CONTAINS = "contains";
 	public static final String PURPOSE = "purpose";

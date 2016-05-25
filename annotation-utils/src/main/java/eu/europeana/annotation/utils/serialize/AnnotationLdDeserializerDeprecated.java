@@ -68,7 +68,7 @@ public class AnnotationLdDeserializerDeprecated extends JsonLd{
 		    String key = pairs.getKey().toString();
 		    Object mapValue = pairs.getValue();
 		    switch (key) {
-		    case WebAnnotationFields.AT_ID:
+		    case WebAnnotationFields.ID:
 		    	String annotationIdValue = getLiteralPropertyValue(mapValue);
 				if (!StringUtils.isBlank(annotationIdValue)) 
 					((BaseObjectTag) annotation).parse(annotationIdValue);
@@ -179,8 +179,8 @@ public class AnnotationLdDeserializerDeprecated extends JsonLd{
 			String objectType = "";
 			if (!StringUtils.isBlank(propertyValue.getType())) 
 				objectType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getType());
-			if (StringUtils.isBlank(objectType) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-				objectType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+			if (StringUtils.isBlank(objectType) && hasValue(propertyValue, WebAnnotationFields.TYPE)) 
+				objectType = getTypeHelper().getInternalTypeFromTypeArray(propertyValue.getValues().get(WebAnnotationFields.TYPE));
 			//if not set 
 			if (StringUtils.isBlank(objectType))
 				throw new AnnotationAttributeInstantiationException(objectType);
@@ -189,8 +189,8 @@ public class AnnotationLdDeserializerDeprecated extends JsonLd{
 			
 			if (!StringUtils.isBlank(propertyValue.getType())) 
 				style.setHttpUri(propertyValue.getType());
-			if (StringUtils.isBlank(propertyValue.getType()) && hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-				style.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE));
+			if (StringUtils.isBlank(propertyValue.getType()) && hasValue(propertyValue, WebAnnotationFields.TYPE)) 
+				style.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.TYPE));
 			if (hasValue(propertyValue, WebAnnotationFields.STYLE_CLASS)) 
 				style.setContentType(propertyValue.getValues().get(WebAnnotationFields.STYLE_CLASS));
 			if (hasValue(propertyValue, WebAnnotationFields.SOURCE)) 
@@ -229,8 +229,8 @@ public class AnnotationLdDeserializerDeprecated extends JsonLd{
 				InternetResource source = new BaseInternetResource();
 				if (hasValue(propertyValue2, WebAnnotationFields.CONTENT_TYPE)) 
 					source.setContentType(propertyValue2.getValues().get(WebAnnotationFields.CONTENT_TYPE));
-				if (hasValue(propertyValue2, WebAnnotationFields.AT_ID)) {
-					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.AT_ID));
+				if (hasValue(propertyValue2, WebAnnotationFields.ID)) {
+					source.setHttpUri(propertyValue2.getValues().get(WebAnnotationFields.ID));
 				}
 				if (hasValue(propertyValue2, WebAnnotationFields.FORMAT)) 
 					source.setMediaType(propertyValue2.getValues().get(WebAnnotationFields.FORMAT));
@@ -242,8 +242,8 @@ public class AnnotationLdDeserializerDeprecated extends JsonLd{
 					JsonLdPropertyValue propertyValue3 = (JsonLdPropertyValue) selectorProperty.getValues().get(0);
 					Selector selector = SelectorObjectFactory.getInstance().createModelObjectInstance(
 							SelectorTypes.SVG_RECTANGLE_SELECTOR.name());
-					if (hasValue(propertyValue3, WebAnnotationFields.AT_TYPE)) 
-						selector.setSelectorType(propertyValue3.getValues().get(WebAnnotationFields.AT_TYPE));
+					if (hasValue(propertyValue3, WebAnnotationFields.TYPE)) 
+						selector.setSelectorType(propertyValue3.getValues().get(WebAnnotationFields.TYPE));
 					if (hasValue(propertyValue3, WebAnnotationFields.DIMENSION_MAP)) 
 						selector.setDimensionMap(
 								JsonUtils.stringToMapExt(propertyValue3.getValues().get(WebAnnotationFields.DIMENSION_MAP)));
@@ -304,7 +304,7 @@ private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgen
 		if (property.getValues() != null && property.getValues().size() > 0) {
 			JsonLdPropertyValue propertyValue = (JsonLdPropertyValue) property.getValues().get(0);
 			
-			if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) {
+			if (hasValue(propertyValue, WebAnnotationFields.TYPE)) {
 				String objectType = extractObjectType(propertyValue);
 
 				//if not set 
@@ -313,8 +313,8 @@ private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgen
 				
 				body = BodyObjectFactory.getInstance().createModelObjectInstance(objectType);
 				
-				if (hasValue(propertyValue, WebAnnotationFields.AT_TYPE)) 
-					body.setType(TypeUtils.convertStringToList(propertyValue.getValues().get(WebAnnotationFields.AT_TYPE)));			
+				if (hasValue(propertyValue, WebAnnotationFields.TYPE)) 
+					body.setType(TypeUtils.convertStringToList(propertyValue.getValues().get(WebAnnotationFields.TYPE)));			
 
 				if (hasValue(propertyValue, WebAnnotationFields.INPUT_STRING)) 
 					body.setInputString(propertyValue.getValues().get(WebAnnotationFields.INPUT_STRING));
@@ -328,8 +328,8 @@ private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgen
 					body.setHttpUri(propertyValue.getValues().get(WebAnnotationFields.PAGE));
 				if (hasValue(propertyValue, WebAnnotationFields.MULTILINGUAL)) 
 					body.setMultilingual(JsonUtils.stringToMap(propertyValue.getValues().get(WebAnnotationFields.MULTILINGUAL)));
-				if (hasValue(propertyValue, WebAnnotationFields.AT_ID)) 
-					body.setInternalId(propertyValue.getValues().get(WebAnnotationFields.AT_ID));
+				if (hasValue(propertyValue, WebAnnotationFields.ID)) 
+					body.setInternalId(propertyValue.getValues().get(WebAnnotationFields.ID));
 				if (hasValue(propertyValue, WebAnnotationFields.SOURCE)) 
 					body.setSource(propertyValue.getValues().get(WebAnnotationFields.SOURCE));
 				if (hasValue(propertyValue, WebAnnotationFields.PURPOSE)) 
