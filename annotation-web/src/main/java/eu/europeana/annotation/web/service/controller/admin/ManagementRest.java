@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.WebAnnotationFields;
@@ -46,7 +46,8 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces ={"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
 	@ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
-	public ModelAndView deleteAnnotationById(
+	public ResponseEntity<String> deleteAnnotationById(
+//			public ModelAndView deleteAnnotationById(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_PROVIDER, required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) String identifier,
@@ -60,12 +61,15 @@ public class ManagementRest extends BaseRest {
 		response.success = true;
 		//response.setStatus(status);
 
-		return JsonWebUtils.toJson(response, null);
+//		return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);				
 	}
 
 	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", response = java.lang.Void.class)
-	public ModelAndView deleteAnnotationSet(
+	public ResponseEntity<String> deleteAnnotationSet(
+//			public ModelAndView deleteAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@RequestBody String uris) throws HttpException {
@@ -98,7 +102,9 @@ public class ManagementRest extends BaseRest {
 		response.setStatus("Success count: " + successCount + ". Failure count: " + failureCount);
 		response.success = true;
 
-		return JsonWebUtils.toJson(response, null);
+//		return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);				
 	}
 
 	protected void deleteAnnotationForGood(String provider, String identifier, String apiKey, String userToken)
@@ -507,7 +513,8 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Reindex by annotation id", nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
-	public ModelAndView reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
+	public ResponseEntity<String> reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
+//			public ModelAndView reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
@@ -524,7 +531,9 @@ public class ManagementRest extends BaseRest {
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/reindex");
 
-		return JsonWebUtils.toJson(response, null);
+//		return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);				
 	}
 
 	/**
@@ -542,7 +551,8 @@ public class ManagementRest extends BaseRest {
 	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Reindex by annotation id", notes = SwaggerConstants.REINDEX_HELP_NOTE, 
 		nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
-	public ModelAndView reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
+	public ResponseEntity<String> reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
+//			public ModelAndView reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "startDate", required = false) String startDate,
 			@RequestParam(value = "endDate", required = false) String endDate,
 			@RequestParam(value = "startTimestamp", required = false) String startTimestamp,
@@ -559,7 +569,9 @@ public class ManagementRest extends BaseRest {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/reindexset");
 		response.setStatus(status);
 
-		return JsonWebUtils.toJson(response, null);
+//		return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);				
 	}
 
 }
