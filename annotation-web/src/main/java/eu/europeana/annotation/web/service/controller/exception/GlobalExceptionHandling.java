@@ -67,12 +67,11 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
 
-		// TODO remove the usage of Model and View
 		boolean includeErrorStack = new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
 		AnnotationOperationResponse res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				null, ex, includeErrorStack);
 
-//		return buildErrorResponse(ex, req, response, res, ex.getStatus());
+		logger.debug(res.getError(), ex);
 		return buildErrorResponse(res, ex.getStatus());
 
 	}
@@ -81,12 +80,11 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
 			throws IOException {
 
-		// TODO remove the usage of Model and View
 		boolean includeErrorStack =new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
 		AnnotationOperationResponse res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				null, ex, includeErrorStack);
 
-//		return buildErrorResponse(ex, req, response, res, HttpStatus.INTERNAL_SERVER_ERROR);
+		logger.debug(res.getError(), ex);
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
@@ -102,24 +100,17 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 		if(statusCode == null)
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 		
-		// TODO remove the usage of Model and View
 		AnnotationOperationResponse res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				ex.getMessage(), ex, includeErrorStack);
 
-//		return buildErrorResponse(ex, req, response, res, statusCode);
+		logger.debug(res.getError(), ex);
 		return buildErrorResponse(res, statusCode);
 	}
 
-	protected ResponseEntity<String> buildErrorResponse(AnnotationOperationResponse res //Exception ex
-			//, HttpServletRequest req, HttpServletResponse response, ModelAndView res
+	protected ResponseEntity<String> buildErrorResponse(AnnotationOperationResponse res 
 			, HttpStatus status) {
-//		String body = (String) res.getModel().get("json");
 
 		String body = JsonWebUtils.toJson(res);
-		
-//		logger.error("An error occured during the invocation of :" + req.getServletPath(), ex);
-
-//		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
 		MultiValueMap<String, String> headers = buildHeadersMap();
 

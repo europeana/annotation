@@ -318,10 +318,8 @@ private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgen
 
 				if (hasValue(propertyValue, WebAnnotationFields.INPUT_STRING)) 
 					body.setInputString(propertyValue.getValues().get(WebAnnotationFields.INPUT_STRING));
-				if (hasValue(propertyValue, WebAnnotationFields.CHARS)) 
-					body.setValue(propertyValue.getValues().get(WebAnnotationFields.CHARS));
-				if (hasValue(propertyValue, WebAnnotationFields.DC_LANGUAGE)) 
-					body.setLanguage(propertyValue.getValues().get(WebAnnotationFields.DC_LANGUAGE));
+				if (hasValue(propertyValue, WebAnnotationFields.LANGUAGE)) 
+					body.setLanguage(propertyValue.getValues().get(WebAnnotationFields.LANGUAGE));
 				if (hasValue(propertyValue, WebAnnotationFields.FORMAT)) 
 					body.setContentType(propertyValue.getValues().get(WebAnnotationFields.FORMAT));
 				if (hasValue(propertyValue, WebAnnotationFields.PAGE)) 
@@ -455,42 +453,6 @@ private Agent getAgentByProperty(JsonLdProperty property, AgentTypes defaultAgen
 	    	}    	
 	    }
 		
-		/**
-		 * This method takes passed serialised AnnotationLd GSON string and passes
-		 * it to the parser.
-		 * 
-		 * @param serializedAnnotationLd
-		 * @return Annotation object
-		 */
-		// public static Annotation deserialise(String serialisedAnnotationLd) {
-		// Annotation res = null;
-		// Gson gson = new Gson();
-		// AnnotationLd annotationLdDeserialisedObject =
-		// gson.fromJson(serialisedAnnotationLd, AnnotationLd.class);
-		// String annotationLdDeserialisedString =
-		// annotationLdDeserialisedObject.toString();
-		// AnnotationLd.toConsole("deserialise: ", annotationLdDeserialisedString);
-		// try {
-		// JsonLd deserialisedJsonLd =
-		// JsonLdParser.parseExt(annotationLdDeserialisedString);
-		// res = AnnotationLd.getAnnotationFromJsonLd(deserialisedJsonLd);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// return res;
-		// }
-
-		// /**
-		// * This method converts deserialised JsonLd to Annotation object.
-		// * @param deserialisedJsonLd
-		// * @return Annotation object
-		// */
-		// public static Annotation getAnnotationFromJsonLd(JsonLd
-		// deserialisedJsonLd) {
-		// Annotation res = null;
-		// AnnotationLd annotationLd = new AnnotationLd(deserialisedJsonLd);
-		// res = annotationLd.getAnnotation();
-		// return res;
-		// }
+		
 
 }
