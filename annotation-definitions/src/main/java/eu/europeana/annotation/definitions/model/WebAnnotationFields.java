@@ -18,12 +18,13 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String LIMIT = "limit";
 	public static final String INPUT_STRING = "inputString";
 	public static final String DIMENSION_MAP = "dimensionMap";
-	public static final String CHARS = "chars";
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	public static final String MULTILINGUAL = "multilingual";
 	public static final String TOTAL_ITEMS = "totalItems";
 	
-	
+	//
+	public static final String MIME_TYPE_TEXT_PLAIN = "text/plain";   
+	public static final String BODY_CLASS_TEXTUAL_BODY = "TextualBody";
 	
 	// skos fields
 	/*

@@ -36,16 +36,16 @@ public class BaseWebAnnotationProtocolTest {
 	String START = "{";
 	String END = "}";
 	String TYPE = "\"@context\": \"" + WebAnnotationFields.WA_CONTEXT + "\","
-			+ "\"@type\": \"oa:Annotation\",";
+			+ "\"type\": \"oa:Annotation\",";
 
-	String ANNOTATED_SERIALIZED = "\"creator\": {" + "\"@id\": \"https://www.historypin.org/en/person/55376/\","
-			+ "\"@type\": \"Person\"," + "\"name\": \"John Smith\"" + "},"
+	String ANNOTATED_SERIALIZED = "\"creator\": {" + "\"id\": \"https://www.historypin.org/en/person/55376/\","
+			+ "\"type\": \"Person\"," + "\"name\": \"John Smith\"" + "},"
 			+ "\"created\": \"2015-02-27T12:00:43Z\"," + "\"generated\": \"2015-02-28T13:00:34Z\","
 			+ "\"generator\": \"http://www.historypin.org\",";
 
 	String EQUIVALENT_TO = "\"oa:equivalentTo\": \"https://www.historypin.org/en/item/456\",";
 
-	public String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"body\": \"church\","
+	public String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyText\": \"church\","
 			+ "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
 
 	public String BODY_VALUE_TO_TRIM = " überhaupt ";
@@ -53,15 +53,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
 			 "\"motivation\": \"oa:tagging\"," +
-		     "\"creator\": {" +
-		     "\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
-		     "\"@type\": \"Person\"," +
-		     "\"name\": \"John Smith\"" +
-		     "}," +
-		     "\"created\": \"2015-02-27T12:00:43Z\"," +
-		     "\"generated\": \"2015-02-28T13:00:34Z\"," +
-		     "\"generator\": \"http://www.historypin.org\"," +
-		     "\"body\": \"" + BODY_VALUE_TO_TRIM + "\"," +
+		     "\"bodyText\": \"" + BODY_VALUE_TO_TRIM + "\"," +
 			 "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
 
 	public String TAG_JSON_BY_TYPE_JSONLD = START + TAG_CORE + END;
@@ -78,7 +70,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
-	public String UPDATE_BODY = "\"body\": \"Buccin Trombone\"";
+	public String UPDATE_BODY = "\"bodyText\": \"Buccin Trombone\"";
 
 	public String UPDATE_TARGET = "\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\"";
 

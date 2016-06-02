@@ -179,7 +179,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				);
 		
 		assertNotNull(response.getBody());
-		assertTrue(response.getBody().contains(UPDATE_BODY));
+		assertTrue(response.getBody().contains(UPDATE_BODY.replace("\"bodyText\": ", "")));
 		assertTrue(response.getBody().contains(UPDATE_TARGET));
 		assertEquals( HttpStatus.OK, response.getStatusCode());
 	}

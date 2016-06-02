@@ -34,10 +34,8 @@ public class ApiResponseBuilder {
 	 * @param errorMessage
 	 * @return
 	 */
-//	@Deprecated
 	protected AnnotationOperationResponse getValidationReport(String apiKey, String action, String errorMessage, Throwable th, boolean includeErrorStack) {
-//		protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th, boolean includeErrorStack) {
-		
+
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
 		
@@ -60,9 +58,6 @@ public class ApiResponseBuilder {
 			response.setStackTrace(getStackTraceAsString(th));
 
 		return response;
-//		ModelAndView ret = JsonWebUtils.toJson(response, null);
-//		
-//		return ret;
 	}
 
 	String getStackTraceAsString(Throwable th) {
@@ -78,16 +73,6 @@ public class ApiResponseBuilder {
 	 * @param message
 	 * @return
 	 */
-	protected AnnotationOperationResponse getReport(String apiKey, String action, String message) {
-//		protected ModelAndView getReport(String apiKey, String action, String message) {
-		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, action);
-		response = buildResponse(message, response.action, response.apikey);
-//		ModelAndView ret = JsonWebUtils.toJson(response, null);
-//		return ret;
-		return response;
-	}
-	
 	public AnnotationOperationResponse buildResponse(String message,
 			String action, String apiKey) {
 		AnnotationOperationResponse response;

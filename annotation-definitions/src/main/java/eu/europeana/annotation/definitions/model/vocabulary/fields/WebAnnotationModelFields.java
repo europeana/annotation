@@ -26,7 +26,9 @@ public interface WebAnnotationModelFields {
 //	public static final String AT_TYPE = "@type";
 	public static final String TYPE = "type";
 	public static final String BODY = "body";
-	public static final String DC_LANGUAGE = "language";
+	public static final String BODY_TEXT = "bodyText";
+	public static final String TEXT = "text";
+	public static final String LANGUAGE = "language";
 	public static final String FORMAT = "format";
 	public static final String MEDIA_TYPE = "mediaType";
 	public static final String PAGE = "page";

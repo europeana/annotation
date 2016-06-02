@@ -40,7 +40,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		    END;
 	
     public String CORRUPTED_UPDATE_BODY =
-    		"\"body\":=,\"Buccin Trombone\"";
+    		"\"bodyText\":=,\"Buccin Trombone\"";
 
     public String CORRUPTED_UPDATE_JSON =
     		START +

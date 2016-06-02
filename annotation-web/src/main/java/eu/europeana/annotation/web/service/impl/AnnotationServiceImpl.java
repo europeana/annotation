@@ -712,8 +712,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			value = value.trim();
 		}
 		
+		//reset the tag value with the trimmed value 
 		body.setValue(value);
-		body.setInputString(value);
 		
 		int MAX_TAG_LENGTH = 64;
 		
