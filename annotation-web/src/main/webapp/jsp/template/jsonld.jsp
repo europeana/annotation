@@ -60,7 +60,7 @@ The json-ld serialization available in the following box is a valid input to be 
     "body": {
 		"text": "biserica",
 		"language": "ro"
-    }
+    },
     "target": "http://data.europeana.eu/item/123/xyz",
     "creator": {
         "id": "https://www.historypin.org/en/person/55376/",
