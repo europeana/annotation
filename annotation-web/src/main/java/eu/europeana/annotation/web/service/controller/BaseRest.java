@@ -266,7 +266,7 @@ public class BaseRest extends ApiResponseBuilder {
 		
 		if(!isAdmin(user) && !hasPermission(app, annoId, operationName))
 			throw new OperationAuthorizationException(OperationAuthorizationException.MESSAGE_CLIENT_NOT_AUTHORIZED, 
-					"client app provider: " + app.getProvider() + "; annotation provider: "+ annoId.getProvider(), HttpStatus.FORBIDDEN);
+					"client app provider: " + app.getProvider() + "; annotation id: "+ annoId, HttpStatus.FORBIDDEN);
 		
 		
 		//check permissions
