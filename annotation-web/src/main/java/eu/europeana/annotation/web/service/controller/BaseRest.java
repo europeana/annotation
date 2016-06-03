@@ -290,7 +290,7 @@ public class BaseRest extends ApiResponseBuilder {
 		if(Operations.MODERATION_ALL.equals(operationName) || Operations.RETRIEVE.equals(operationName) )
 			return true;
 		
-		return annoId.getProvider().equals(app.getProvider());
+		return annoId!= null && app.getProvider().equals(annoId.getProvider());
 	}
 
 	//verify user privileges
