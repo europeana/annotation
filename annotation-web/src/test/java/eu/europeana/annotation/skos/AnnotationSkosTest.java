@@ -23,14 +23,17 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.utils.concept.SkosUtils;
 
 /**
+ * @deprecated skos vocabularies will be managed though entity-collection
  * This class implements different SKOS testing scenarios.
  */
+@Ignore
 public class AnnotationSkosTest {
 
 	public final String ALT_LABEL_KEY       = "http://www.w3.org/2004/02/skos/core#altLabel1_altLabel";

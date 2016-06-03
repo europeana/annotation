@@ -78,7 +78,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	    
 	    if ((this.getCreator() != null) && (that.getCreator() != null) &&
 	    		(!this.getCreator().equals(that.getCreator()))) {
-	    	System.out.println("Annotation objects have different 'annotatedBy' objects.");
+	    	System.out.println("Annotation objects have different 'creator' objects.");
 	    	res = false;
 	    }
 	    
