@@ -664,8 +664,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	 */
 	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
 //		webAnnotation.
-		Body body = webAnnotation.getBody(); 
-		if (body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
+		Body body = webAnnotation.getBody();
+		
+		if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithSpecificResource(body);
 		}else if(BodyTypes.isSemanticTagBody(body.getInternalType())){
 			validateSemanticTagUrl(body);
