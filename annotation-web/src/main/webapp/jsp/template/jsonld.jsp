@@ -33,7 +33,7 @@ The response will be however, expanded to the TextualBody representation. see al
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "oa:Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
-    "textBody": "church",
+    "bodyText": "church",
     "target": "http://data.europeana.eu/item/123/xyz",
     "creator": {
         "id": "https://www.historypin.org/en/person/55376/",
