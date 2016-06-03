@@ -9,15 +9,22 @@ boolean hasType = withType != null;
 %>	
 <%@include file="description.jspf"%>
 
+<p>
+The following properties are optional in all annotations:
+<b>context, type, creator, created, generated, generator, format.</b> 
+</p>
 					<ul id="toc">
-						<li><a href="#tag">Create (Object) Tag</a></li>
+						<li><a href="#tag_bodyText">Create (Object) Tag - bodyText</a></li>
+						<li><a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a></li>
+						<li><a href="#semantictag_simple_minimal">Create Semantic Tag - minimal representation</a></li>
 						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
 						<li><a href="#semantictag_specific">Create (Semantic) Tag - Specific Resource</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 					</ul>
 
-<h3 id="tag">Create (Object) Tag</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of (simple) <b>tags</b>. 
+<h3 id="tag_bodyText">Create (Object) Tag</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of simple <b>tags</b> using the bodyText.
+The response will be however, expanded to the TextualBody representation. see also <a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a>
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
@@ -26,6 +33,8 @@ The json-ld serialization available in the following box is a valid input to be 
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "oa:Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+    "textBody": "church",
+    "target": "http://data.europeana.eu/item/123/xyz",
     "creator": {
         "id": "https://www.historypin.org/en/person/55376/",
         "type": "Person",
@@ -33,33 +42,55 @@ The json-ld serialization available in the following box is a valid input to be 
     },
     "created": "2015-02-27T12:00:43Z",
     "generated": "2015-02-28T13:00:34Z",
-    "generator": "http://www.historypin.org",
-    "body": "church",
-    "target": "http://data.europeana.eu/item/123/xyz",
-    "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+    "generator": "http://www.historypin.org"
 }
 </textarea>
 <br>
 
-<!-- 
-<h3 id="semantictag_simple_minimal">Create Semantic Tag - Simple Resource - minimal representation</h3>
+<h3 id="tag_TextualBody">Create (Object) Tag - TextualBody</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of (simple) <b>tags</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:tagging)
+<textarea rows="19" cols="120" name="jsonldtag">
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "type": "oa:Annotation",
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+    "body": {
+		"text": "biserica",
+		"language": "ro"
+    }
+    "target": "http://data.europeana.eu/item/123/xyz",
+    "creator": {
+        "id": "https://www.historypin.org/en/person/55376/",
+        "type": "Person",
+        "name": "John Smith"
+    },
+    "created": "2015-02-27T12:00:43Z",
+    "generated": "2015-02-28T13:00:34Z",
+    "generator": "http://www.historypin.org"
+}
+</textarea>
+<br>
+
+<h3 id="semantictag_simple_minimal">Create Semantic Tag - minimal representation</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
-<textarea rows="20" cols="120" name="jsonldtag">
+<textarea rows="7" cols="40" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",  
-<%// if(!hasType){ %>    "motivation": "tagging",<%// }//endif%>	
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": "http://www.geonames.org/2988507",
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
 </textarea>
 <br>
- -->
 
 <h3 id="semantictag_simple">Create Semantic Tag - Simple Resource</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
+The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. Format is optional. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
@@ -68,7 +99,8 @@ The json-ld serialization available in the following box is a valid input to be 
     "@context": "http://www.w3.org/ns/anno.jsonld",  
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-        "id": "http://www.geonames.org/2988507"
+        "id": "http://www.geonames.org/2988507",
+        "format": "application/rdf+xml"
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
@@ -134,8 +166,12 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="20" cols="120" name="jsonldobjectlink">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "type": "oa:Annotation",
+    "type": "oa:Annotation",  
 <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>	
+    "target": [
+        "http://www.europeana.eu/portal/record/123/xyz", 
+        "http://www.europeana.eu/portal/record/333/xxx"
+    ],
     "creator": {
         "id": "https://www.historypin.org/en/person/55376/",
         "type": "foaf:Person",
@@ -144,10 +180,7 @@ The json-ld serialization available in the following box is a valid input to be 
     "created": "2015-02-27T12:00:43Z",
     "generated": "2015-02-28T13:00:34Z",
     "generator": "http://www.historypin.org",
-    "target": [
-        "http://www.europeana.eu/portal/record/123/xyz", 
-        "http://www.europeana.eu/portal/record/333/xxx"
-    ],
+    ,
     "oa:equivalentTo": "https://www.historypin.org/en/item/789"
 }
 </textarea>
