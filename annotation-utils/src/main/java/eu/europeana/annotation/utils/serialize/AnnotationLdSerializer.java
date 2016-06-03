@@ -411,7 +411,7 @@ public class AnnotationLdSerializer extends JsonLd {
 
 	private boolean isJsonObjectInput(String inputString) {
 		return inputString != null && inputString.contains("{") 
-				|| (inputString.indexOf(WebAnnotationFields.BODY_TEXT) == 1);
+				|| (inputString.indexOf(WebAnnotationFields.BODY_VALUE) == 1);
 	}
 
 	private JsonLdProperty addStyledByProperty(Annotation annotation) {

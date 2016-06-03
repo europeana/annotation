@@ -45,7 +45,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	String EQUIVALENT_TO = "\"oa:equivalentTo\": \"https://www.historypin.org/en/item/456\",";
 
-	public String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyText\": \"church\","
+	public String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyValue\": \"church\","
 			+ "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
 
 	public String BODY_VALUE_TO_TRIM = " überhaupt ";
@@ -53,7 +53,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
 			 "\"motivation\": \"oa:tagging\"," +
-		     "\"bodyText\": \"" + BODY_VALUE_TO_TRIM + "\"," +
+		     "\"bodyValue\": \"" + BODY_VALUE_TO_TRIM + "\"," +
 			 "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
 
 	public String TAG_JSON_BY_TYPE_JSONLD = START + TAG_CORE + END;
@@ -70,7 +70,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
-	public String UPDATE_BODY = "\"bodyText\": \"Buccin Trombone\"";
+	public String UPDATE_BODY = "\"bodyValue\": \"Buccin Trombone\"";
 
 	public String UPDATE_TARGET = "\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\"";
 

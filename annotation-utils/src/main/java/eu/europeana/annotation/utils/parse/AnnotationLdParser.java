@@ -239,7 +239,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		case WebAnnotationFields.MOTIVATION:
 			anno.setMotivation((String) valueObject);
 			break;
-		case WebAnnotationFields.BODY_TEXT:
+		case WebAnnotationFields.BODY_VALUE:
 			Body bodyText = parseBodyText(anno.getMotivationType(), valueObject.toString());
 			bodyText.setInputString(serializeBodyText(valueObject.toString()));
 			anno.setBody(bodyText);
@@ -268,7 +268,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	protected String serializeBodyText(String valueObject) {
-		return "\""+ WebAnnotationFields.BODY_TEXT + "\":\"" + valueObject.toString() + "\"";
+		return "\""+ WebAnnotationFields.BODY_VALUE + "\":\"" + valueObject.toString() + "\"";
 	}
 
 	private Agent parseSerializer(Object valueObject) throws JsonParseException {

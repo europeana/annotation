@@ -14,7 +14,7 @@ The following properties are optional in all annotations:
 <b>context, type, creator, created, generated, generator, format.</b> 
 </p>
 					<ul id="toc">
-						<li><a href="#tag_bodyText">Create (Object) Tag - bodyText</a></li>
+						<li><a href="#tag_bodyValue">Create (Object) Tag - bodyValue</a></li>
 						<li><a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a></li>
 						<li><a href="#semantictag_simple_minimal">Create Semantic Tag - minimal representation</a></li>
 						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
@@ -22,8 +22,8 @@ The following properties are optional in all annotations:
 						<li><a href="#objectlink">Create Object Link</a></li>
 					</ul>
 
-<h3 id="tag_bodyText">Create (Object) Tag</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of simple <b>tags</b> using the bodyText.
+<h3 id="tag_bodyValue">Create (Object) Tag</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of simple <b>tags</b> using the bodyValue.
 The response will be however, expanded to the TextualBody representation. see also <a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a>
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
@@ -33,7 +33,7 @@ The response will be however, expanded to the TextualBody representation. see al
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "oa:Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
-    "bodyText": "church",
+    "bodyValue": "church",
     "target": "http://data.europeana.eu/item/123/xyz",
     "creator": {
         "id": "https://www.historypin.org/en/person/55376/",
