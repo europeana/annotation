@@ -666,6 +666,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 //		webAnnotation.
 		Body body = webAnnotation.getBody();
 		
+		//TODO: the body type shouldn't be null at this stage
 		if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithSpecificResource(body);
 		}else if(BodyTypes.isSemanticTagBody(body.getInternalType())){

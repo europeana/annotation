@@ -260,8 +260,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setEquivalentTo((String) valueObject);
 			break;
 		default:
-			throw new JsonParseException("Unsupported Property: " + property);
-			//break;
+			//throw new JsonParseException("Unsupported Property: " + property);
+			logger.warn("Unsupported Property: " + property);
+			break;
 		}
 
 	}
