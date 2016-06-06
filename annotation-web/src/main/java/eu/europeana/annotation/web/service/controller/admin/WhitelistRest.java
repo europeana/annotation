@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.WhiteListParser;

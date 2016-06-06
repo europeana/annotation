@@ -15,10 +15,10 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;

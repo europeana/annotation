@@ -12,7 +12,6 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -22,7 +21,8 @@ import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
@@ -137,10 +137,10 @@ public class SolrAnnotationUtils {
 	 */
 	protected Body convertToSolrMultilingual(Body body) {
 		// TODO: update this when semantic tagging specifications are available
-		if (!BodyTypes.SEMANTIC_TAG.name().equals(body.getInternalType()))
+		if (!BodyInternalTypes.SEMANTIC_TAG.name().equals(body.getInternalType()))
 			return body;
 
-		Body bodyRes = BodyObjectFactory.getInstance().createModelObjectInstance(BodyTypes.SEMANTIC_TAG.name());
+		Body bodyRes = BodyObjectFactory.getInstance().createModelObjectInstance(BodyInternalTypes.SEMANTIC_TAG.name());
 		Map<String, String> multilingualMap = body.getMultilingual();
 		Map<String, String> solrMultilingualMap = new HashMap<String, String>();
 		for (Map.Entry<String, String> entry : multilingualMap.entrySet()) {

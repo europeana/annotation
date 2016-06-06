@@ -25,16 +25,16 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
@@ -669,7 +669,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		//TODO: the body type shouldn't be null at this stage
 		if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithSpecificResource(body);
-		}else if(BodyTypes.isSemanticTagBody(body.getInternalType())){
+		}else if(BodyInternalTypes.isSemanticTagBody(body.getInternalType())){
 			validateSemanticTagUrl(body);
 		}else {
 			validateTagWithValue(body);

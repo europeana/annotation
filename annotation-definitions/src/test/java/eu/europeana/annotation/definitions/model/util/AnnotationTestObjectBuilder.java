@@ -37,7 +37,7 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
@@ -57,7 +57,7 @@ public class AnnotationTestObjectBuilder {
 	public static Body buildSemanticTagBody(String text, String language) {
 		
 		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-				BodyTypes.SEMANTIC_TAG.name());
+				BodyInternalTypes.SEMANTIC_TAG.name());
 		
 //		body.setType("[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:"
 //				+ BodyTypes.SEMANTIC_TAG.name() 

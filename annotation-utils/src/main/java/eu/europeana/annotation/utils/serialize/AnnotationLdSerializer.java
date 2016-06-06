@@ -11,13 +11,13 @@ import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationLdSerializer extends JsonLd {

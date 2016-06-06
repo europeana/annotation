@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;

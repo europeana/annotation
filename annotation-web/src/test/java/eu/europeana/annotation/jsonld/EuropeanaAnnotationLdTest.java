@@ -33,8 +33,8 @@ import org.junit.Test;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public interface Body extends SpecificResource{
 
@@ -14,7 +14,7 @@ public interface Body extends SpecificResource{
 
 	public abstract void addType(String newType);
 
-	public abstract void setTypeEnum(BodyTypes agentType);
+	public abstract void setTypeEnum(BodyInternalTypes agentType);
 
 	public abstract List<String> getType();
 	

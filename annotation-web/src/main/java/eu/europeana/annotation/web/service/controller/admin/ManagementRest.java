@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;

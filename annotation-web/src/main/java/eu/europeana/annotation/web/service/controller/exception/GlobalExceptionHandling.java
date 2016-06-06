@@ -32,7 +32,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;

@@ -7,10 +7,10 @@ import eu.europeana.annotation.definitions.model.body.impl.SemanticLinkBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public class BodyObjectFactory extends
-		AbstractModelObjectFactory<Body, BodyTypes> {
+		AbstractModelObjectFactory<Body, BodyInternalTypes> {
 
 	private static BodyObjectFactory singleton;
 
@@ -31,17 +31,17 @@ public class BodyObjectFactory extends
 	}
 
 	@Override
-	public Body createObjectInstance(Enum<BodyTypes> modelObjectType) {
+	public Body createObjectInstance(Enum<BodyInternalTypes> modelObjectType) {
 		Body res = super.createObjectInstance(modelObjectType);
 		res.setInternalType(modelObjectType.name());
 		return res;
 	}
 		
 	@Override
-	public Class<? extends Body> getClassForType(Enum<BodyTypes> modelType) {
+	public Class<? extends Body> getClassForType(Enum<BodyInternalTypes> modelType) {
 		// TEXT, TAG, SEMANTIC_TAG, SEMANTIC_LINK;
 		Class<? extends Body> returnType = null;
-		BodyTypes bodyType = BodyTypes.valueOf(modelType.name());
+		BodyInternalTypes bodyType = BodyInternalTypes.valueOf(modelType.name());
 		switch (bodyType) {
 		case SEMANTIC_LINK:
 			returnType = SemanticLinkBody.class;
@@ -64,8 +64,8 @@ public class BodyObjectFactory extends
 	}
 
 	@Override
-	public Class<BodyTypes> getEnumClass() {
-		return BodyTypes.class;
+	public Class<BodyInternalTypes> getEnumClass() {
+		return BodyInternalTypes.class;
 	}
 
 }

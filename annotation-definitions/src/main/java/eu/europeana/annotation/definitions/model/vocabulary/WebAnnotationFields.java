@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model;
+package eu.europeana.annotation.definitions.model.vocabulary;
 
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 
@@ -22,9 +22,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String MULTILINGUAL = "multilingual";
 	public static final String TOTAL_ITEMS = "totalItems";
 	
-	//
-	public static final String MIME_TYPE_TEXT_PLAIN = "text/plain";   
-	public static final String BODY_CLASS_TEXTUAL_BODY = "TextualBody";
 	
 	// skos fields
 	/*

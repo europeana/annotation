@@ -1,6 +1,6 @@
 package eu.europeana.annotation.definitions.model.vocabulary;
 
-public enum MotivationTypes {
+public enum MotivationTypes implements JsonKeyword{
 
 	  BOOKMARKING("oa:bookmarking", null)
 	, CLASSIFYING("oa:classifying", null)
@@ -60,6 +60,11 @@ public enum MotivationTypes {
 	@Override
 	public String toString() {
 		return super.toString() + ":" + getOaType() + ":" + getAnnoType();
+	}
+
+	@Override
+	public String getJsonValue() {
+		return getOaType();
 	}
 	
 }

@@ -24,13 +24,13 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -206,9 +206,9 @@ public class PersistentAnnotationServiceImpl extends
 			body.copyInto(query);
 			// query.setValue(body.getValue());
 			// query.setHttpUri(body.getHttpUri());
-			if (BodyTypes.isSimpleTagBody(body.getType()))
+			if (BodyInternalTypes.isSimpleTagBody(body.getType()))
 				query.setTagTypeEnum(TagTypes.SIMPLE_TAG);
-			else if (BodyTypes.isSemanticTagBody(body.getType()))
+			else if (BodyInternalTypes.isSemanticTagBody(body.getType()))
 				query.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
 
 			try {
@@ -230,7 +230,7 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		if(BodyTypes.isTagBody(object.getBody().getType()))
+		if(BodyInternalTypes.isTagBody(object.getBody().getType()))
 			return true;
 ///		List<String> types = object.getBody().getType();
 //		Iterator<String> itr = types.iterator();
@@ -240,7 +240,7 @@ public class PersistentAnnotationServiceImpl extends
 ///		}		
 //		String euType = new TypeUtils().getEuTypeFromTypeArray(type);
 //		return BodyTypes.isTagBody(object.getBody().getInternalType());//
-		return BodyTypes.isTagBody(object.getBody().getInternalType());
+		return BodyInternalTypes.isTagBody(object.getBody().getInternalType());
 	}
 
 	@Override

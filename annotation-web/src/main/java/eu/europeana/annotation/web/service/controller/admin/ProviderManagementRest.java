@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.definitions.model.Provider;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.ProviderOperationResponse;

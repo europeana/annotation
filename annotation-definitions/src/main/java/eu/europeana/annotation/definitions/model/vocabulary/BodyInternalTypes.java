@@ -8,8 +8,8 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
-public enum BodyTypes {
-	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK;
+public enum BodyInternalTypes {
+	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, PLACE;
 	
 	public static boolean isTagBody(String type) {
 		boolean res = false;
@@ -36,7 +36,7 @@ public enum BodyTypes {
 	
 	public static boolean contains(String test) {
 
-	    for (BodyTypes c : BodyTypes.values()) {
+	    for (BodyInternalTypes c : BodyInternalTypes.values()) {
 	        if (c.name().equals(test)) {
 	            return true;
 	        }
@@ -45,15 +45,15 @@ public enum BodyTypes {
 	    return false;
 	}	
 	
-	public static String isRegisteredAs(String test) {
-
-	    for (BodyTypes c : BodyTypes.values()) {
-	        if (c.name().toLowerCase().equals(test.replace("_", "").toLowerCase())) {
-	            return c.name();
-	        }
-	    }
-
-	    return "";
-	}	
+//	public static String isRegisteredAs(String test) {
+//
+//	    for (BodyTypes c : BodyTypes.values()) {
+//	        if (c.name().toLowerCase().equals(test.replace("_", "").toLowerCase())) {
+//	            return c.name();
+//	        }
+//	    }
+//
+//	    return "";
+//	}	
 	
 }

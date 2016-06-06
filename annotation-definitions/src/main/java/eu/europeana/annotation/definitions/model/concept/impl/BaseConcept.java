@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
  * This is a class for Concept object that is a part of the Body object.

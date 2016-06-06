@@ -32,10 +32,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import eu.europeana.annotation.config.AnnotationConfigurationImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.service.AnnotationService;
 

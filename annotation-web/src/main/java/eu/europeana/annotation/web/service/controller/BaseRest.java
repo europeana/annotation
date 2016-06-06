@@ -15,7 +15,6 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
@@ -25,6 +24,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
@@ -267,8 +267,7 @@ public class BaseRest extends ApiResponseBuilder {
 		if(!isAdmin(user) && !hasPermission(app, annoId, operationName))
 			throw new OperationAuthorizationException(OperationAuthorizationException.MESSAGE_CLIENT_NOT_AUTHORIZED, 
 					"client app provider: " + app.getProvider() + "; annotation id: "+ annoId, HttpStatus.FORBIDDEN);
-		
-		
+				
 		//check permissions
 		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
 		if(isAdmin(user) && hasPermission(user, operationName))//allow all

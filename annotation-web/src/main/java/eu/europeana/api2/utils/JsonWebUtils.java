@@ -11,7 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import com.github.jsonldjava.utils.JSONUtils;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 public class JsonWebUtils {

@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public abstract class BaseBody extends BaseSpecificResource implements Body {
 	
@@ -32,7 +32,7 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 //	public String getBodyType() {
 //		return bodyType;
 //	}
-	public void setTypeEnum(BodyTypes bodyType) {
+	public void setTypeEnum(BodyInternalTypes bodyType) {
 //		this.bodyType = bodyType.name();
 		setInternalType(bodyType.name());
 	}

@@ -13,7 +13,6 @@ import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.concept.Concept;
@@ -35,6 +34,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
 
 /**

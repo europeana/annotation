@@ -18,7 +18,6 @@ import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstanti
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
@@ -30,9 +29,11 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 
 /**
  * Replaced by EuropeanaAnnotationLd
@@ -430,17 +431,17 @@ public class AnnotationLdParser extends JsonLdParser {
 	private Body parseBodyText(MotivationTypes motivation, String bodyText) throws JsonParseException {
 		Body body = parseBody(bodyText, motivation);
 		// add "bodyText" implications
-		body.setContentType(WebAnnotationFields.MIME_TYPE_TEXT_PLAIN);
-		body.addType(WebAnnotationFields.BODY_CLASS_TEXTUAL_BODY);
+		body.setContentType(WebAnnotationModelKeywords.MIME_TYPE_TEXT_PLAIN);
+		body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 		
 		return body;
 	}
 
-	protected BodyTypes guesBodyInternalType(MotivationTypes motivation, String value) {
+	protected BodyInternalTypes guesBodyInternalType(MotivationTypes motivation, String value) {
 
 		switch (motivation) {
 		case LINKING:
-			return BodyTypes.LINK;
+			return BodyInternalTypes.LINK;
 
 		case TAGGING:
 			return guesBodyTagSubType(value);
@@ -452,21 +453,21 @@ public class AnnotationLdParser extends JsonLdParser {
 				"Cannot find appropriate body type with MotivationType: " + motivation);
 	}
 
-	private BodyTypes guesBodyTagSubType(String value) {
+	private BodyInternalTypes guesBodyTagSubType(String value) {
 		// TODO: improve this .. similar check is done in validation.. these two
 		// places should be merged.
 		try {
 			new URL(value);
-			return BodyTypes.SEMANTIC_TAG;		
+			return BodyInternalTypes.SEMANTIC_TAG;		
 		} catch (MalformedURLException e) {
-			return BodyTypes.TAG;
+			return BodyInternalTypes.TAG;
 		}
 
 	}
 
 	private Body parseBody(String valueObject, MotivationTypes motivation) {
 
-		BodyTypes bodyType = guesBodyInternalType(motivation, valueObject);
+		BodyInternalTypes bodyType = guesBodyInternalType(motivation, valueObject);
 
 		Body body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
 		body.setValue(valueObject);
@@ -476,7 +477,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	private Body parseBody(JSONObject valueObject, MotivationTypes motivation) throws JsonParseException {
 		// by now both plaintag and semantictag are specific resources. However,
 		// the usage of SemanticTag should be implemented in the future
-		BodyTypes bodyType = guesBodyInternalType(valueObject, motivation);
+		BodyInternalTypes bodyType = guesBodyInternalType(valueObject, motivation);
 		Body body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
 
 		try {
@@ -501,7 +502,7 @@ public class AnnotationLdParser extends JsonLdParser {
 				case WebAnnotationFields.TEXT:
 					body.setValue(value.toString());
 					//add implications of TEXT field
-					body.addType(WebAnnotationFields.BODY_CLASS_TEXTUAL_BODY);
+					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 					break;
 				case WebAnnotationFields.FORMAT:
 					body.setContentType(value.toString());
@@ -534,19 +535,19 @@ public class AnnotationLdParser extends JsonLdParser {
 		return body;
 	}
 
-	private BodyTypes guesBodyInternalType(JSONObject valueObject, MotivationTypes motivation) {
+	private BodyInternalTypes guesBodyInternalType(JSONObject valueObject, MotivationTypes motivation) {
 		switch (motivation) {
 		case LINKING:
-			return BodyTypes.LINK;
+			return BodyInternalTypes.LINK;
 		case TAGGING:
 			// simple resource (semantic) tag - extended
 			// specific resource - minimal or extended;
 			// in any case SemanticTag
 			// support both @id and id in input
 			if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
-				return BodyTypes.SEMANTIC_TAG;
+				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.TEXT))
-				return BodyTypes.TAG;
+				return BodyInternalTypes.TAG;
 
 		default:
 			break;
@@ -560,7 +561,7 @@ public class AnnotationLdParser extends JsonLdParser {
 
 	private Body parseBody(JSONArray valueObject, MotivationTypes motivation) throws JsonParseException {
 
-		BodyTypes bodyType = null;
+		BodyInternalTypes bodyType = null;
 		Body body = null;
 		try {
 			for (int i = 0; i < valueObject.length(); i++) {

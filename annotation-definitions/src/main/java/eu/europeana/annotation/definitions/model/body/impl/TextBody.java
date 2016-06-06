@@ -1,12 +1,12 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public class TextBody extends BaseBody {
 
 	public TextBody(){
 		super();
-		setInternalType(BodyTypes.TEXT.name());
+		setInternalType(BodyInternalTypes.TEXT.name());
 		//setTypeEnum(BodyTypes.TEXT);
 	}
 }

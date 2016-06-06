@@ -32,7 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.gson.Gson;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
