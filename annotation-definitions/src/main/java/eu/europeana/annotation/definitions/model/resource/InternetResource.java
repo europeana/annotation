@@ -32,8 +32,11 @@ public interface InternetResource {
 
 	public abstract String getHttpUri();
 
+	/** replaced by the type of the extenral resources */
+	@Deprecated
 	public abstract void setMediaType(String mediaType);
-
+	/** replaced by the type of the extenral resources */
+	@Deprecated
 	public abstract String getMediaType();
 
 	public abstract void setContentType(String contentType);

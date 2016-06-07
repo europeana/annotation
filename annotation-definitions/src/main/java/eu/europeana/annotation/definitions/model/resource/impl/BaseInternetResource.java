@@ -6,14 +6,10 @@ import java.util.List;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 
-public class BaseInternetResource implements InternetResource{
+public class BaseInternetResource extends AbstractResource implements InternetResource{
 
-	private String contentType;
 	private String mediaType;
 	private String httpUri;
-	private String language;
-	private String value;
-	
 	private List<String> values = new ArrayList<String>(2);
 
 	public void addValue(String value) {
@@ -59,16 +55,6 @@ public class BaseInternetResource implements InternetResource{
 	}	
 	
 	@Override
-	public String getContentType() {
-		return contentType;
-	}
-
-	@Override
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	@Override
 	public String getMediaType() {
 		return mediaType;
 	}
@@ -86,26 +72,6 @@ public class BaseInternetResource implements InternetResource{
 	@Override
 	public void setHttpUri(String httpUri) {
 		this.httpUri = httpUri;
-	}
-
-	@Override
-	public String getLanguage() {
-		return language;
-	}
-
-	@Override
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	@Override

@@ -84,7 +84,7 @@ public class AnnotationTestObjectBuilder {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(
 				TargetTypes.IMAGE.name());
 
-		target.setType("oa:" + TargetTypes.IMAGE.name());
+		target.addType("oa:" + TargetTypes.IMAGE.name());
 		
 //		target.setType(
 //				"[oa:SpecificResource,euType:" 

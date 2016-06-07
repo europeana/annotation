@@ -6,17 +6,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 
 public class BaseTarget extends BaseSpecificResource implements Target {
  
-	private String targetType;
-	@Override
-	public String getType() {
-		return targetType;
-	}
-
-	@Override
-	public void setType(String targetType) {
-		this.targetType = targetType;
-	}
-	
 	@Override
 	public void setTypeEnum(TargetTypes targetType) {
 		setInternalType(targetType.name());
@@ -24,9 +13,9 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 	
 	public BaseTarget(){}
 	
-	public BaseTarget(String targetType){
+	public BaseTarget(String internalType){
 		super();
-		setType(targetType);
+		setInternalType(internalType);
 	}
 
 	public BaseTarget(TargetTypes targetType){

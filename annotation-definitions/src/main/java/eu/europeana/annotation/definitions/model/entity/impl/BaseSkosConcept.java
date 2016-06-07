@@ -1,10 +1,10 @@
-package eu.europeana.annotation.definitions.model.concept.impl;
+package eu.europeana.annotation.definitions.model.entity.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europeana.annotation.definitions.model.concept.Concept;
-import eu.europeana.annotation.definitions.model.concept.SkosConcept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
+import eu.europeana.annotation.definitions.model.entity.SkosConcept;
 
 /**
  * This is a class for SkosConcept object that is a part of the Body object.

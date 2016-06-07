@@ -2,7 +2,7 @@ package eu.europeana.annotation.client.model.result;
 
 import java.util.List;
 
-import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 
 public class TagSearchResults extends AbstractAnnotationApiResponse{
 

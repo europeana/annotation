@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
+import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
@@ -134,30 +135,22 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.bodyValue = bodyValue;
 	}
 
-	// @Field("*_multilingual")
-	// protected Map<String, String> multiLingual;
-
 	public Map<String, String> getMultilingual() {
-		Map<String, String> res = new HashMap<String, String>();
-		if (getBody() != null && getBody().getMultilingual() != null)
-			res = getBody().getMultilingual();
-		return res;
-		// return multiLingual;
+		
+		
+		if(getBody()!=null && (getBody() instanceof SkosConceptBody))
+			return ((SkosConceptBody)getBody()).getMultilingual();
+		
+		return null;		
 	}
 
 //	@Field("*_multilingual")
 	public void setMultilingual(Map<String, String> multilingual) {
-		// if (super.getBody() == null) {
-		// Body body =
-		// BodyObjectFactory.getInstance().createModelObjectInstance(
-		// BodyTypes.SEMANTIC_TAG.name());
-		// body.setMultilingual(multilingual);
-		// super.setBody(body);
-		// } else {
-		if (super.getBody() != null)
-			super.getBody().setMultilingual(multilingual);
-		// }
-		// this.multiLingual = multiLingual;
+
+		//TODO: re-implement when needed
+//		if (super.getBody() != null)
+//			super.getBody().setMultilingual(multilingual);
+		
 	}
 
 	/**

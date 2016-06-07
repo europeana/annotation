@@ -27,7 +27,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -38,8 +37,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
-import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
@@ -48,7 +49,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
-import eu.europeana.annotation.utils.serialize.AnnotationLdDeserializerDeprecated;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -251,11 +251,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		
 		Annotation testAnnotation = createTestAnnotation();		
 		
-		testAnnotation.getBody().addLabelInMapping(
+		SkosConceptBody body = (SkosConceptBody)testAnnotation.getBody();
+		body.addLabelInMapping(
 				"ro", //AnnotationLdTest.TEST_RO_VALUE
 				"ro_value");
 //		SolrAnnotationConst.SolrAnnotationLanguages.RO.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_RO_VALUE);
-		testAnnotation.getBody().addLabelInMapping(
+		body.addLabelInMapping(
 				"en", //AnnotationLdTest.TEST_EN_VALUE
 				"en_value");
 //		SolrAnnotationConst.SolrAnnotationLanguages.EN.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_EN_VALUE);
@@ -276,10 +277,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		System.out.println("webAnnotation: " + webAnnotation.toString());
 		
 		assertTrue(webAnnotation.getAnnotationId() != null && webAnnotation.getAnnotationId().toString().length() > 0);
-        assertTrue(webAnnotation.getBody().getMultilingual().containsValue(TEST_EN_VALUE) 
-        		&& webAnnotation.getBody().getMultilingual().containsValue(TEST_RO_VALUE));
+		
+		SkosConceptBody body2 = (SkosConceptBody)webAnnotation.getBody();
+		assertTrue(body2.getMultilingual().containsValue(TEST_EN_VALUE) 
+        		&& body2.getMultilingual().containsValue(TEST_RO_VALUE));
 //		assertEquals(testAnnotation, webAnnotation);
-		assertEquals(testAnnotation.getBody(), webAnnotation.getBody());
+		assertEquals(body, body2);
 	}
 		
 	@Test

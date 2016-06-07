@@ -1,11 +1,18 @@
-package eu.europeana.annotation.definitions.model.resource;
+package eu.europeana.annotation.definitions.model.resource.impl;
 
 import java.util.List;
 import java.util.Map;
 
+import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 
 
+/**
+ * This class is deprecated and needs to be refactored when adding support for previews and entities 
+ * @author GordeaS
+ *
+ */
+@Deprecated
 public interface TagResource extends InternetResource{
 
 	
@@ -27,8 +34,17 @@ public interface TagResource extends InternetResource{
 
 	public abstract String getLastUpdatedBy();
 
+	/**
+	 * not used and not wa standard
+	 * @param value
+	 */
+	@Deprecated
 	public abstract void addToSameAs(String value);
-
+	/**
+	 * not used and not wa standard
+	 * @param value
+	 */
+	@Deprecated
 	public abstract List<String> getSameAs();
 
 	//functional methods  

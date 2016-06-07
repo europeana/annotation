@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
 public enum BodyInternalTypes {
-	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, PLACE;
+	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, GEO_TAG;
 	
 	public static boolean isTagBody(String type) {
 		boolean res = false;
@@ -44,16 +44,5 @@ public enum BodyInternalTypes {
 
 	    return false;
 	}	
-	
-//	public static String isRegisteredAs(String test) {
-//
-//	    for (BodyTypes c : BodyTypes.values()) {
-//	        if (c.name().toLowerCase().equals(test.replace("_", "").toLowerCase())) {
-//	            return c.name();
-//	        }
-//	    }
-//
-//	    return "";
-//	}	
 	
 }

@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model.concept.impl;
+package eu.europeana.annotation.definitions.model.entity.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 

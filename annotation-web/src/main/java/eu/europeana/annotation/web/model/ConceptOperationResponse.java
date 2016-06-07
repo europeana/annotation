@@ -1,6 +1,6 @@
 package eu.europeana.annotation.web.model;
 
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
 
 public class ConceptOperationResponse extends ApiResponse {

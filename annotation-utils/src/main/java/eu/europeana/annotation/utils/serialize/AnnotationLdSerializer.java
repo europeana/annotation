@@ -12,7 +12,7 @@ import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
@@ -184,11 +184,11 @@ public class AnnotationLdSerializer extends JsonLd {
 			if (!StringUtils.isBlank(annotation.getTarget().getInputString()))
 				propertyValue.getValues().put(WebAnnotationFields.INPUT_STRING,
 						annotation.getTarget().getInputString());
-			if (!StringUtils.isBlank(annotation.getTarget().getType()))
-				propertyValue.addType(annotation.getTarget().getType().replace("[", "").replace("]", ""));
-
-			if (!StringUtils.isBlank(annotation.getTarget().getType()))
-				propertyValue.getValues().put(WebAnnotationFields.TYPE, annotation.getTarget().getType());
+			
+			List<String> types = annotation.getTarget().getType();
+			if (types != null && !types.isEmpty())
+				putTypeProperty(propertyValue, types);		
+			
 			if (!StringUtils.isBlank(annotation.getTarget().getContentType()))
 				propertyValue.getValues().put(WebAnnotationFields.CONTENT_TYPE,
 						annotation.getTarget().getContentType());
@@ -341,13 +341,9 @@ public class AnnotationLdSerializer extends JsonLd {
 		if (annotation.getBody() == null)
 			return null;
 
-		if (annotation.getBody().getType() != null && !annotation.getBody().getType().isEmpty()){
-			if(annotation.getBody().getType().size() == 1)
-				propertyValue.getValues().put(WebAnnotationFields.TYPE,
-					annotation.getBody().getType().get(0));
-			else
-				propertyValue.putProperty(
-						buildArrayProperty(WebAnnotationFields.TYPE, annotation.getBody().getType()));		
+		List<String> types = annotation.getBody().getType();
+		if (types != null && !types.isEmpty()){
+			putTypeProperty(propertyValue, types);		
 		}
 		
 		if (!StringUtils.isBlank(annotation.getBody().getValue()))
@@ -376,6 +372,15 @@ public class AnnotationLdSerializer extends JsonLd {
 
 			
 		return bodyProperty;
+	}
+
+	protected void putTypeProperty(JsonLdPropertyValue propertyValue, List<String> types) {
+		if(types.size() == 1)
+			propertyValue.getValues().put(WebAnnotationFields.TYPE,
+				types.get(0));
+		else
+			propertyValue.putProperty(
+					buildArrayProperty(WebAnnotationFields.TYPE, types));
 	}
 
 	private JsonLdProperty addGeneratorProperty(Annotation annotation) {

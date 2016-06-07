@@ -13,6 +13,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -51,18 +52,18 @@ public class SolrAnnotationUtils {
 		if (searchQuery.getFilters() != null)
 			solrQuery.addFilterQuery(searchQuery.getFilters());
 
-		if (searchQuery.getFacetFields() != null){
+		if (searchQuery.getFacetFields() != null) {
 			solrQuery.setFacet(true);
 			solrQuery.addFacetField(searchQuery.getFacetFields());
 			solrQuery.setFacetLimit(SolrAnnotationConstants.DEFAULT_FACET_LIMIT);
 		}
-		
+
 		if (searchQuery.getSort() != null) {
 			solrQuery.setSort(searchQuery.getSort(), SolrQuery.ORDER.valueOf(searchQuery.getSortOrder()));
 		}
 
 		solrQuery.setFields(searchQuery.getViewFields());
-		
+
 		return solrQuery;
 	}
 
@@ -116,13 +117,13 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
 		solrAnnotationImpl.setCreatedTimestamp(annotation.getCreated().getTime());
 		solrAnnotationImpl.setGeneratedTimestamp(annotation.getGenerated().getTime());
-		
+
 		if (summary != null) {
-			solrAnnotationImpl.setModerationScore((long) summary.getScore()); 
+			solrAnnotationImpl.setModerationScore((long) summary.getScore());
 		} else {
-			solrAnnotationImpl.setModerationScore((long) 0); 
+			solrAnnotationImpl.setModerationScore((long) 0);
 		}
-		
+
 		return solrAnnotationImpl;
 
 	}
@@ -141,17 +142,7 @@ public class SolrAnnotationUtils {
 			return body;
 
 		Body bodyRes = BodyObjectFactory.getInstance().createModelObjectInstance(BodyInternalTypes.SEMANTIC_TAG.name());
-		Map<String, String> multilingualMap = body.getMultilingual();
-		Map<String, String> solrMultilingualMap = new HashMap<String, String>();
-		for (Map.Entry<String, String> entry : multilingualMap.entrySet()) {
-			String key = entry.getKey();
-			if (!key.contains(WebAnnotationFields.UNDERSCORE + WebAnnotationFields.MULTILINGUAL)) {
-				key = key.toUpperCase() + WebAnnotationFields.UNDERSCORE + WebAnnotationFields.MULTILINGUAL;
-			}
-			solrMultilingualMap.put(key, entry.getValue());
-		}
-		if (solrMultilingualMap.size() > 0)
-			bodyRes.setMultilingual(solrMultilingualMap);
+
 		// if (StringUtils.isNotEmpty(body.getType()))
 		if (body.getType() != null)
 			bodyRes.setType(body.getType());
@@ -168,7 +159,26 @@ public class SolrAnnotationUtils {
 		if (StringUtils.isNotBlank(((PlainTagBody) body).getTagId())) {
 			((PlainTagBody) bodyRes).setTagId(((PlainTagBody) body).getTagId());
 		}
+
+		setMultilingualMap(body, bodyRes);
 		return bodyRes;
+	}
+
+	protected void setMultilingualMap(Body body, Body bodyRes) {
+		if ((body instanceof SkosConceptBody) && (bodyRes instanceof SkosConceptBody)) {
+			SkosConceptBody skosBody = (SkosConceptBody) body;
+			Map<String, String> multilingualMap = skosBody.getMultilingual();
+			Map<String, String> solrMultilingualMap = new HashMap<String, String>();
+			for (Map.Entry<String, String> entry : multilingualMap.entrySet()) {
+				String key = entry.getKey();
+				if (!key.contains(WebAnnotationFields.UNDERSCORE + WebAnnotationFields.MULTILINGUAL)) {
+					key = key.toUpperCase() + WebAnnotationFields.UNDERSCORE + WebAnnotationFields.MULTILINGUAL;
+				}
+				solrMultilingualMap.put(key, entry.getValue());
+			}
+			if (solrMultilingualMap.size() > 0)
+				((SkosConceptBody)bodyRes).setMultilingual(solrMultilingualMap);
+		}
 	}
 
 	/**
@@ -193,7 +203,9 @@ public class SolrAnnotationUtils {
 		solrTagImpl.setLanguage(tag.getLanguage());
 		solrTagImpl.setContentType(tag.getContentType());
 		solrTagImpl.setHttpUri(tag.getHttpUri());
-		solrTagImpl.setMultilingual(tag.getMultilingual());
+
+		if (tag instanceof SkosConceptBody)
+			solrTagImpl.setMultilingual(((SkosConceptBody) tag).getMultilingual());
 
 		res = solrTagImpl;
 

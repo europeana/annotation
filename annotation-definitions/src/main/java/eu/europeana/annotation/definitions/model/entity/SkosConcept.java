@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model.concept;
+package eu.europeana.annotation.definitions.model.entity;
 
 import java.util.List;
 import java.util.Map;
