@@ -34,6 +34,10 @@ public enum BodyInternalTypes {
 		return SEMANTIC_TAG.name().equalsIgnoreCase(internalType);
 	}
 	
+	public static boolean isGeoTagBody(String internalType) {
+		return GEO_TAG.name().equalsIgnoreCase(internalType);
+	}
+	
 	public static boolean contains(String test) {
 
 	    for (BodyInternalTypes c : BodyInternalTypes.values()) {

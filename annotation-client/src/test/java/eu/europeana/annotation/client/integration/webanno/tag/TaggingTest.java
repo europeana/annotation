@@ -1,6 +1,7 @@
 package eu.europeana.annotation.client.integration.webanno.tag;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class TaggingTest extends BaseTaggingTest {
@@ -54,6 +57,22 @@ public class TaggingTest extends BaseTaggingTest {
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
 
+	}
+	
+	
+	@Test
+	public void createGeoTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		String requestBody = getJsonStringInput(TAG_GEOTAG);
+		
+		Annotation inputAnno = parseTag(requestBody);
+		
+		Annotation storedAnno = createTag(requestBody);
+		
+		assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
+		//validate the reflection of input in output!
+		validateOutputAgainstInput(storedAnno, inputAnno);
+		
 	}
 	
 	@Test

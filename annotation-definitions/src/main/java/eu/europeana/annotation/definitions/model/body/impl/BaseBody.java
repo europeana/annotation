@@ -1,15 +1,10 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public abstract class BaseBody extends BaseSpecificResource implements Body {
 	
@@ -96,21 +91,23 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 		String res = "\t### Body ###\n";
 		
 		if (getType() != null) 
-			res = res + "\t\t" + "bodyType:" + getType().toString() + "\n";
+			res = res + "\t\t" + "bodyType:" + getType() + "\n";
+		if (getType() != null) 
+			res = res + "\t\t" + "internalType:" + getInternalType() + "\n";
 		if (getContentType() != null) 
-			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
+			res = res + "\t\t" + "contentType:" + getContentType() + "\n";
 		if (getMediaType() != null) 
 			res = res + "\t\t" + "mediaType:" + getMediaType() + "\n";
 		if (getHttpUri() != null) 
 			res = res + "\t\t" + "httpUri:" + getHttpUri() + "\n";
 		if (getLanguage() != null) 
-			res = res + "\t\t" + "language:" + getLanguage().toString() + "\n";
+			res = res + "\t\t" + "language:" + getLanguage() + "\n";
 		if (getValue() != null) 
-			res = res + "\t\t" + "value:" + getValue().toString() + "\n";
+			res = res + "\t\t" + "value:" + getValue() + "\n";
 		if (getSource() != null) 
-			res = res + "\t\t" + "bodySource:" + getSource().toString() + "\n";
+			res = res + "\t\t" + "bodySource:" + getSource() + "\n";
 		if (getPurpose() != null) 
-			res = res + "\t\t" + "bodyRole:" + getPurpose().toString() + "\n";
+			res = res + "\t\t" + "bodyRole:" + getPurpose() + "\n";
 		return res;
 	}	
 }

@@ -1,0 +1,9 @@
+{
+  "motivation": "tagging",
+  "body": {
+    "type": "edm:Place",
+    "wgs84_pos:lat": "48.85341",
+    "wgs84_pos:long": "2.3488"
+  },
+  "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+}

@@ -12,7 +12,9 @@ import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.entity.Concept;
+import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
@@ -368,10 +370,22 @@ public class AnnotationLdSerializer extends JsonLd {
 		if (!StringUtils.isBlank(annotation.getBody().getPurpose()))
 			propertyValue.getValues().put(WebAnnotationFields.PURPOSE, annotation.getBody().getPurpose());
 
+		if(annotation.getBody() instanceof PlaceBody)
+			putPlaceProperties(annotation, propertyValue);
+		
 		bodyProperty.addValue(propertyValue);
-
-			
 		return bodyProperty;
+	}
+
+	protected void putPlaceProperties(Annotation annotation, JsonLdPropertyValue propertyValue) {
+		Place place = ((PlaceBody) annotation.getBody()).getPlace();
+		if(place != null){
+			if(!StringUtils.isBlank(place.getLatitude()))
+					propertyValue.getValues().put(WebAnnotationFields.LATITUDE, place.getLatitude());
+			
+			if(!StringUtils.isBlank(place.getLatitude()))
+				propertyValue.getValues().put(WebAnnotationFields.LONGITUDE, place.getLongitude());
+		}
 	}
 
 	protected void putTypeProperty(JsonLdPropertyValue propertyValue, List<String> types) {

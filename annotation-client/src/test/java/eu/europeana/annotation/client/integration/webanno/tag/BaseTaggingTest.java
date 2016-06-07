@@ -18,6 +18,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
 	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
 	public static final String TAG_STANDARD = "/tag/standard.json";
+	public static final String TAG_GEOTAG = "/tag/geotag.json";
 	public static final String SEMANTICTAG_SIMPLE_MINIMAL = "/semantictag/simple_minimal.json";
 	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";

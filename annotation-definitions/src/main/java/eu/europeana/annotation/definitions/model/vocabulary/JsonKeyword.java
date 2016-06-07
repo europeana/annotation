@@ -7,4 +7,5 @@ public interface JsonKeyword {
 	 * @return
 	 */
 	public String getJsonValue();
+	
 }

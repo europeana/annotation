@@ -19,23 +19,17 @@ public enum ResourceTypes implements JsonKeyword{
 	ResourceTypes(String jsonValue){
 		this.jsonValue = jsonValue; 
 	}
-	
-		
-//	public static boolean contains(String test) {
-//
-//	    for (ResourceTypes c : ResourceTypes.values()) {
-//	        if (c.name().equals(test)) {
-//	            return true;
-//	        }
-//	    }
-//
-//	    return false;
-//	}
 
 	@Override
 	public String getJsonValue() {
 		return jsonValue;
 	}	
 
+	public boolean hasName(String name) {
+		return this.name().equalsIgnoreCase(name);
+	}	
 	
+	public boolean hasJsonValue(String jsonValue) {
+		return this.getJsonValue().equalsIgnoreCase(jsonValue);
+	}
 }

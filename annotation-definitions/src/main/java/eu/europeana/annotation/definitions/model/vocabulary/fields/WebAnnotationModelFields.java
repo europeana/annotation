@@ -38,6 +38,11 @@ public interface WebAnnotationModelFields {
 	public static final String CONTAINS = "contains";
 	public static final String PURPOSE = "purpose";
 
+	/** geo location **/
+	public static final String LATITUDE = "wgs84_pos:lat";
+	public static final String LONGITUDE = "wgs84_pos:long";
+	
+	
 	/** internal fields */
 	public static final String INTERNAL_TYPE = "internalType";
 	public static final String BODY_TYPE = "bodyType";

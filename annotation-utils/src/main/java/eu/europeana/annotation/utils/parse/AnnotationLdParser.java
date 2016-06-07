@@ -20,6 +20,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -31,6 +32,7 @@ import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
@@ -375,7 +377,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	private Agent parseAgent(JSONObject valueObject) throws JsonParseException {
 		try {
 
-			String webType = parseTypeValue(valueObject);
+			String webType = parseStringTypeValue(valueObject);
 			AgentTypes agentType = AgentTypes.getByJsonValue(webType);
 			Agent agent = AgentObjectFactory.getInstance().createObjectInstance(agentType);
 			// agent.setType(webType);
@@ -394,10 +396,12 @@ public class AnnotationLdParser extends JsonLdParser {
 		}
 	}
 
-	protected String parseTypeValue(JSONObject valueObject) throws JSONException {
+	protected String parseStringTypeValue(JSONObject valueObject) throws JSONException {
 		String webType = null;
-		if (valueObject.has(WebAnnotationFields.TYPE))
+		if (valueObject.has(WebAnnotationFields.TYPE)){
 			webType = (String) valueObject.get(WebAnnotationFields.TYPE);
+		}
+		
 		return webType;
 	}
 
@@ -435,34 +439,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 		
 		return body;
-	}
-
-	protected BodyInternalTypes guesBodyInternalType(MotivationTypes motivation, String value) {
-
-		switch (motivation) {
-		case LINKING:
-			return BodyInternalTypes.LINK;
-
-		case TAGGING:
-			return guesBodyTagSubType(value);
-
-		default:
-			break;
-		}
-		throw new AnnotationAttributeInstantiationException(
-				"Cannot find appropriate body type with MotivationType: " + motivation);
-	}
-
-	private BodyInternalTypes guesBodyTagSubType(String value) {
-		// TODO: improve this .. similar check is done in validation.. these two
-		// places should be merged.
-		try {
-			new URL(value);
-			return BodyInternalTypes.SEMANTIC_TAG;		
-		} catch (MalformedURLException e) {
-			return BodyInternalTypes.TAG;
-		}
-
 	}
 
 	private Body parseBody(String valueObject, MotivationTypes motivation) {
@@ -523,6 +499,14 @@ public class AnnotationLdParser extends JsonLdParser {
 				case WebAnnotationFields.PURPOSE:
 					body.setPurpose(value.toString());
 					break;
+					
+				case WebAnnotationFields.LATITUDE:
+					setLatitude(body, value.toString());
+					break;
+				case WebAnnotationFields.LONGITUDE:
+					setLongitude(body, value.toString());
+					break;
+					
 				default:
 					break;
 				}
@@ -535,6 +519,48 @@ public class AnnotationLdParser extends JsonLdParser {
 		return body;
 	}
 
+	private void setLongitude(Body body, String longitude) throws JsonParseException {
+		if(body instanceof PlaceBody)
+			((PlaceBody)body).getPlace().setLongitude(longitude);
+		else
+			throw new JsonParseException("Longitude not supported for bodyType: " + body.getInternalType());
+	}
+
+	private void setLatitude(Body body, String latitude) throws JsonParseException {
+		if(body instanceof PlaceBody)
+			((PlaceBody)body).getPlace().setLatitude(latitude);
+		else
+			throw new JsonParseException("Longitude not supported for bodyType: " + body.getInternalType());
+	}
+	
+	/**
+	 * guess internal type if the json value of the body is a string
+	 * @param motivation
+	 * @param value
+	 * @return
+	 */
+	protected BodyInternalTypes guesBodyInternalType(MotivationTypes motivation, String value) {
+
+		switch (motivation) {
+		case LINKING:
+			return BodyInternalTypes.LINK;
+
+		case TAGGING:
+			return guesBodyTagSubType(value);
+
+		default:
+			break;
+		}
+		throw new AnnotationAttributeInstantiationException(
+				"Cannot find appropriate body type with MotivationType: " + motivation);
+	}
+
+	/**
+	 * gues the internal type of the body if the json value is an object
+	 * @param valueObject
+	 * @param motivation
+	 * @return
+	 */
 	private BodyInternalTypes guesBodyInternalType(JSONObject valueObject, MotivationTypes motivation) {
 		switch (motivation) {
 		case LINKING:
@@ -544,7 +570,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			// specific resource - minimal or extended;
 			// in any case SemanticTag
 			// support both @id and id in input
-			if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
+			if(hasType(valueObject, ResourceTypes.PLACE))
+				return BodyInternalTypes.GEO_TAG;
+			else if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.TEXT))
 				return BodyInternalTypes.TAG;
@@ -556,18 +584,59 @@ public class AnnotationLdParser extends JsonLdParser {
 
 		throw new AnnotationAttributeInstantiationException(
 				"Cannot find appropriate body type with MotivationType: " + motivation);
+	}
+	
+	private BodyInternalTypes guesBodyTagSubType(String value) {
+		// TODO: improve this .. similar check is done in validation.. these two
+		// places should be merged.
+		try {
+			new URL(value);
+			return BodyInternalTypes.SEMANTIC_TAG;		
+		} catch (MalformedURLException e) {
+			return BodyInternalTypes.TAG;
+		}
 
 	}
 
-	private Body parseBody(JSONArray valueObject, MotivationTypes motivation) throws JsonParseException {
+	protected boolean hasType(JSONObject valueObject, ResourceTypes jsonType){
+		
+		if (! valueObject.has(WebAnnotationFields.TYPE))
+			return false;
+		
+		//check type is string
+		try{
+			String value = parseStringTypeValue(valueObject);
+			return jsonType.getJsonValue().equals(value);
+		}catch(JSONException e){
+			//type might be array
+			//continue
+		}
+		
+		try{
+			String value;
+			JSONArray array = (JSONArray) valueObject.get(WebAnnotationFields.TYPE);
+			for (int i = 0; i < array.length(); i++) {
+				value = array.getString(i);
+				if(jsonType.getJsonValue().equals(value))
+					return true;
+			}
+		}catch(JSONException e){
+			logger.warn("Unexpected problem occured when parsing type value: " + valueObject);
+			//return false;
+		}
+		
+		return false;	
+	}
+
+	private Body parseBody(JSONArray jsonValue, MotivationTypes motivation) throws JsonParseException {
 
 		BodyInternalTypes bodyType = null;
 		Body body = null;
 		try {
-			for (int i = 0; i < valueObject.length(); i++) {
-				String val = valueObject.getString(i);
+			for (int i = 0; i < jsonValue.length(); i++) {
+				String val = jsonValue.getString(i);
 
-				// initialize body object
+				// initialize body object with the fist value in array
 				if (i == 0) {
 					bodyType = guesBodyInternalType(motivation, val);
 					body = BodyObjectFactory.getInstance().createObjectInstance(bodyType);
@@ -579,7 +648,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			}
 		} catch (JSONException e) {
 			throw new JsonParseException(
-					"unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+					"unsupported body deserialization for json representation: " + jsonValue + " " + e.getMessage());
 		}
 		return body;
 	}
