@@ -38,6 +38,8 @@ public interface WebAnnotationModelFields {
 	public static final String CONTAINS = "contains";
 	public static final String PURPOSE = "purpose";
 
+	/** Europeana extensions **/
+	public static final String GRAPH = "@graph";
 	/** geo location **/
 	public static final String LATITUDE = "wgs84_pos:lat";
 	public static final String LONGITUDE = "wgs84_pos:long";
