@@ -35,6 +35,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WAPropEnum;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 
 /**
@@ -217,6 +218,9 @@ public class AnnotationLdParser extends JsonLdParser {
 		// redundancy related to @id vs. id
 		switch (property) {
 		case WebAnnotationFields.TYPE:
+			//weak check. Valid values are "oa:Annotation", "Annotation"
+			if(!((String)valueObject).endsWith(WebAnnotationFields.ANNOTATION_TYPE))
+				throw new JsonParseException("Invalid annotation type: " + valueObject);
 			anno.setType((String) valueObject);
 			break;
 		case WebAnnotationFields.ID:
@@ -570,7 +574,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			// specific resource - minimal or extended;
 			// in any case SemanticTag
 			// support both @id and id in input
-			if(hasType(valueObject, ResourceTypes.PLACE))
+			if(valueObject.has(WebAnnotationFields.GRAPH))
+				return BodyInternalTypes.GRAPH;
+			else if(hasType(valueObject, ResourceTypes.PLACE))
 				return BodyInternalTypes.GEO_TAG;
 			else if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
 				return BodyInternalTypes.SEMANTIC_TAG;
