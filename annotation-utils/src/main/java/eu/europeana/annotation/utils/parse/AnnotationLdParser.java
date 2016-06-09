@@ -384,7 +384,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			String webType = parseStringTypeValue(valueObject);
 			AgentTypes agentType = AgentTypes.getByJsonValue(webType);
 			Agent agent = AgentObjectFactory.getInstance().createObjectInstance(agentType);
-			// agent.setType(webType);
+			agent.setInputString(valueObject.toString());
 
 			// TODO: consider using the WAPropEnum
 			if (valueObject.has(WebAnnotationFields.ID))
@@ -393,6 +393,11 @@ public class AnnotationLdParser extends JsonLdParser {
 			// agent.setHomepage(valueObject);
 			if (valueObject.has(WebAnnotationFields.NAME))
 				agent.setName(valueObject.getString(WebAnnotationFields.NAME));
+
+			if (valueObject.has(WebAnnotationFields.HOMEPAGE))
+				agent.setHomepage(valueObject.getString(WebAnnotationFields.HOMEPAGE));
+			
+			
 
 			return agent;
 		} catch (JSONException e) {
