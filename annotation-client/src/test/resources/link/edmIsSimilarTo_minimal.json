@@ -1,0 +1,10 @@
+{
+  "motivation": "linking",
+  "body": {
+    "@graph": {
+      "id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+      "edm:isSimilarTo": "http://thesession.org/tunes/52"
+    }
+  },
+  "target": "http://data.europeana.eu/item/2059207/data_sounds_T471_5"
+}

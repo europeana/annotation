@@ -9,7 +9,6 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 public class BaseInternetResource extends AbstractResource implements InternetResource{
 
 	private String mediaType;
-	private String httpUri;
 	private List<String> values = new ArrayList<String>(2);
 
 	public void addValue(String value) {
@@ -62,16 +61,6 @@ public class BaseInternetResource extends AbstractResource implements InternetRe
 	@Override
 	public void setMediaType(String mediaType) {
 		this.mediaType = mediaType;
-	}
-
-	@Override
-	public String getHttpUri() {
-		return httpUri;
-	}
-
-	@Override
-	public void setHttpUri(String httpUri) {
-		this.httpUri = httpUri;
 	}
 
 	@Override

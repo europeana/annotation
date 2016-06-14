@@ -139,7 +139,7 @@ public class PersistentAnnotationServiceImpl extends
 				if (body.getTagId() == null) {
 					PersistentTag tag = findOrCreateTag(object, body);
 					// set tagId
-					body.setTagId(tag.getId().toString());
+					body.setTagId(tag.getId());
 				}
 			}
 		}
@@ -555,8 +555,6 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public Annotation updateIndexingTime(AnnotationId annoId, Date lastIndexing) throws AnnotationMongoException {
-
-		Annotation res = null;
 
 		PersistentAnnotation annotation = find(annoId);
 

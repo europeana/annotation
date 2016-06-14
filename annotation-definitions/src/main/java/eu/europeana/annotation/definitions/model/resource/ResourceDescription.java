@@ -4,30 +4,42 @@ import java.util.List;
 
 public interface ResourceDescription {
 
-	void setValue(String value);
+	public void setValue(String value);
 
-	String getValue();
+	public String getValue();
 
-	void setLanguage(String language);
+	public void setLanguage(String language);
 
-	String getLanguage();
+	public String getLanguage();
 
-	void setContentType(String contentType);
+	/**
+	 * Web Annotation Model - Format 
+	 * @param contentType
+	 */
+	public void setContentType(String contentType);
 
-	String getContentType();
+	public String getContentType();
 
-	void setType(List<String> bodyTypeList);
+	public void setType(List<String> bodyTypeList);
 
-	List<String> getType();
+	public List<String> getType();
 
-	void addType(String newType);
+	public void addType(String newType);
 
-	void setInternalType(String internalType);
+	public void setInternalType(String internalType);
 
-	String getInternalType();
+	public String getInternalType();
 
-	void setInputString(String inputString);
+	public void setInputString(String inputString);
 
-	String getInputString();
+	public String getInputString();
+
+	public void setTitle(String title);
+
+	public String getTitle();
+	
+	public abstract void setHttpUri(String httpUri);
+
+	public abstract String getHttpUri();
 
 }

@@ -4,6 +4,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
+import eu.europeana.annotation.definitions.model.body.impl.RdfGraphBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticLinkBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
@@ -58,6 +59,9 @@ public class BodyObjectFactory extends
 			break;
 		case GEO_TAG:
 			returnType = EdmPlaceBody.class; 
+			break;
+		case GRAPH:
+			returnType = RdfGraphBody.class; 
 			break;
 		
 		default:

@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
 public enum BodyInternalTypes {
-	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, GEO_TAG;
+	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, GEO_TAG, GRAPH;
 	
 	public static boolean isTagBody(String type) {
 		boolean res = false;
@@ -36,6 +36,10 @@ public enum BodyInternalTypes {
 	
 	public static boolean isGeoTagBody(String internalType) {
 		return GEO_TAG.name().equalsIgnoreCase(internalType);
+	}
+	
+	public static boolean isGraphBody(String internalType) {
+		return GRAPH.name().equalsIgnoreCase(internalType);
 	}
 	
 	public static boolean contains(String test) {

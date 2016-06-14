@@ -9,6 +9,9 @@ public interface WebAnnotationModelFields {
 	//** common fields **/
 	public static final String ID = "id";
 	public static final String TYPE = "type";
+	public static final String LANGUAGE = "language";
+	public static final String FORMAT = "format";
+	public static final String TITLE = "dc:title";
 	
 	//** annotation fields **/
 	public static final String AT_CONTEXT = "@context";
@@ -40,9 +43,7 @@ public interface WebAnnotationModelFields {
 	public static final String STYLE_CLASS = "styleClass";
 //	public static final String AT_TYPE = "@type";
 	public static final String TEXT = "text";
-	public static final String LANGUAGE = "language";
-	public static final String FORMAT = "format";
-	public static final String MEDIA_TYPE = "mediaType";
+//	public static final String MEDIA_TYPE = "mediaType";
 	public static final String PAGE = "page";
 	
 //	public static final String AT_ID = "@id";
