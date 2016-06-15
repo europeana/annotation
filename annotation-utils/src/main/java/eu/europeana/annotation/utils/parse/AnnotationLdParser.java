@@ -137,14 +137,16 @@ public class AnnotationLdParser extends JsonLdParser {
 
 				Object context = jo.get(JsonLdCommon.CONTEXT);
 				if (context instanceof String) {
-					// default context, no namespace ...
-				} else {
+					// default context, no namespace parsing is needed ...
+				} else if(context instanceof JSONObject){
 					JSONObject contextObject = (JSONObject) context;
 					// parse namespaces
 					for (int i = 0; i < contextObject.names().length(); i++) {
 						String name = contextObject.names().getString(i).toLowerCase();
 						addNamespacePrefix(contextObject.getString(name), name);
 					}
+				} else if(context instanceof JSONObject){
+					//TODO: extract namespaces from multiple contexts if required 
 				}
 
 				jo.remove(JsonLdCommon.CONTEXT);
