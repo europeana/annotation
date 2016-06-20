@@ -14,6 +14,7 @@ public class AnnotationAttributeInstantiationException extends RuntimeException{
 	public static final String BASE_MESSAGE = "Cannot instantiate annotation attribute. ";
 	public static final String DEFAULT_MESSAGE = "Cannot instantiate annotation attribute for type: ";
 	public static final String MESSAGE_UNKNOWN_TYPE = "Unknown/unsurported property. Cannot instantiate annotation attribute for type: ";
+	public static final String MESSAGE_UNKNOWN_KEYWORD = "Unknown/unsurported keyword. Cannot instantiate value of the annotation attribute using the keyword: ";
 	
 	public AnnotationAttributeInstantiationException(String attributeType){
 		this(attributeType, DEFAULT_MESSAGE);

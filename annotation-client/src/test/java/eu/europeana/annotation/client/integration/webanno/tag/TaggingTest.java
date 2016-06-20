@@ -85,6 +85,31 @@ public class TaggingTest extends BaseTaggingTest {
 				TEST_USER_TOKEN);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+		//log.debug("Error message: " + );
+	}
+	
+	@Test
+	public void createWrongGeoTagLat() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LAT);
+		
+		ResponseEntity<String> response = getApiClient().createTag(
+				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+				TEST_USER_TOKEN);
+		
+		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void createWrongGeoTagLong() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LONG);
+		
+		ResponseEntity<String> response = getApiClient().createTag(
+				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+				TEST_USER_TOKEN);
+		
+		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
 	}
 
 	

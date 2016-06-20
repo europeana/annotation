@@ -152,8 +152,8 @@ public class SolrAnnotationUtils {
 			bodyRes.setHttpUri(body.getHttpUri());
 		if (StringUtils.isNotEmpty(body.getLanguage()))
 			bodyRes.setLanguage(body.getLanguage());
-		if (StringUtils.isNotEmpty(body.getMediaType()))
-			bodyRes.setMediaType(body.getMediaType());
+//		if (StringUtils.isNotEmpty(body.getMediaType()))
+//			bodyRes.setMediaType(body.getMediaType());
 		if (StringUtils.isNotEmpty(body.getValue()))
 			bodyRes.setValue(body.getValue());
 		if (StringUtils.isNotBlank(((PlainTagBody) body).getTagId())) {

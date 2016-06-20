@@ -13,9 +13,8 @@ public class AbstractResource implements ResourceDescription{
 	private String language;
 	private String value;
 	private String title;
+	private String context;
 	
-	
-
 	//in 90+% of cases the size is 1, for the 99+% the size is <=2
 	private List<String> type = new ArrayList<String>(1);
 	
@@ -106,4 +105,13 @@ public class AbstractResource implements ResourceDescription{
 		this.title = title;
 	}
 	
+	@Override
+	public String getContext() {
+		return context;
+	}
+
+	@Override
+	public void setContext(String context) {
+		this.context = context;
+	}	
 }

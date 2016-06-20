@@ -22,6 +22,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 public class BaseWebAnnotationProtocolTest {
@@ -35,7 +36,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	String START = "{";
 	String END = "}";
-	String TYPE = "\"@context\": \"" + WebAnnotationFields.WA_CONTEXT + "\","
+	String TYPE = "\"@context\": \"" + WebAnnotationModelKeywords.WA_CONTEXT + "\","
 			+ "\"type\": \"oa:Annotation\",";
 
 	String ANNOTATED_SERIALIZED = "\"creator\": {" + "\"id\": \"https://www.historypin.org/en/person/55376/\","

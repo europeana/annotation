@@ -8,7 +8,7 @@ public interface Body extends SpecificResource, ResourceDescription{
 
 	public abstract void setTypeEnum(BodyInternalTypes agentType);
 	
-	public boolean equalsContent(Object other);	
+	public boolean equalsContent(Object other);
 
 	
 }

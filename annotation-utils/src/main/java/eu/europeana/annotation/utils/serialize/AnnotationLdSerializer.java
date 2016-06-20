@@ -12,7 +12,6 @@ import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.entity.Concept;
@@ -23,6 +22,7 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
 
@@ -51,7 +51,7 @@ public class AnnotationLdSerializer extends JsonLd {
 
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
-		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, WebAnnotationFields.WA_CONTEXT);
+		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, ContextTypes.ANNO.getJsonValue());
 
 		if (!StringUtils.isBlank(annotation.getType()))
 			jsonLdResource.putProperty(WebAnnotationFields.TYPE, annotation.getType());
@@ -200,7 +200,7 @@ public class AnnotationLdSerializer extends JsonLd {
 				putTypeProperty(propertyValue, types);		
 			
 			if (!StringUtils.isBlank(annotation.getTarget().getContentType()))
-				propertyValue.getValues().put(WebAnnotationFields.CONTENT_TYPE,
+				propertyValue.getValues().put(WebAnnotationFields.FORMAT,
 						annotation.getTarget().getContentType());
 			if (!StringUtils.isBlank(annotation.getTarget().getHttpUri()))
 				propertyValue.getValues().put(WebAnnotationFields.HTTP_URI, annotation.getTarget().getHttpUri());
@@ -248,16 +248,15 @@ public class AnnotationLdSerializer extends JsonLd {
 		JsonLdProperty sourceProperty = new JsonLdProperty(WebAnnotationFields.SOURCE);
 		JsonLdPropertyValue propertyValue2 = new JsonLdPropertyValue();
 
+		
 		if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getContentType()))
-			propertyValue2.getValues().put(WebAnnotationFields.CONTENT_TYPE,
+			propertyValue2.getValues().put(WebAnnotationFields.FORMAT,
 					annotation.getTarget().getSourceResource().getContentType());
+		
 		if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getHttpUri()))
 			propertyValue2.getValues().put(WebAnnotationFields.ID,
 					annotation.getTarget().getSourceResource().getHttpUri());
-		if (!StringUtils.isBlank(annotation.getTarget().getSourceResource().getMediaType()))
-			propertyValue2.getValues().put(WebAnnotationFields.FORMAT,
-					annotation.getTarget().getSourceResource().getMediaType());
-
+		
 		if (propertyValue2.getValues().size() != 0) {
 			sourceProperty.addValue(propertyValue2);
 		}
@@ -380,15 +379,17 @@ public class AnnotationLdSerializer extends JsonLd {
 
 	protected void putResourceDescriptionProps(ResourceDescription resourceDescription, JsonLdPropertyValue propertyValue) {
 		
-		if (!StringUtils.isBlank(resourceDescription.getHttpUri()))
+		if (StringUtils.isNotBlank(resourceDescription.getHttpUri()))
 			propertyValue.getValues().put(WebAnnotationFields.ID, resourceDescription.getHttpUri());
-		if (!StringUtils.isBlank(resourceDescription.getValue()))
-			propertyValue.getValues().put(WebAnnotationFields.TEXT, resourceDescription.getValue());
-		if (!StringUtils.isBlank(resourceDescription.getLanguage()))
+		if (StringUtils.isNotBlank(resourceDescription.getContext()))
+			propertyValue.getValues().put(WebAnnotationFields.AT_CONTEXT, resourceDescription.getContext());
+		if (StringUtils.isNotBlank(resourceDescription.getValue()))
+			propertyValue.getValues().put(WebAnnotationFields.VALUE, resourceDescription.getValue());
+		if (StringUtils.isNotBlank(resourceDescription.getLanguage()))
 			propertyValue.getValues().put(WebAnnotationFields.LANGUAGE, resourceDescription.getLanguage());
-		if (!StringUtils.isBlank(resourceDescription.getContentType()))
+		if (StringUtils.isNotBlank(resourceDescription.getContentType()))
 			propertyValue.getValues().put(WebAnnotationFields.FORMAT, resourceDescription.getContentType());
-		if (!StringUtils.isBlank(resourceDescription.getTitle()))
+		if (StringUtils.isNotBlank(resourceDescription.getTitle()))
 			propertyValue.getValues().put(WebAnnotationFields.TITLE, resourceDescription.getTitle());
 	}
 
@@ -409,6 +410,8 @@ public class AnnotationLdSerializer extends JsonLd {
 			JsonLdProperty graphProperty = new JsonLdProperty(WebAnnotationFields.GRAPH);
 			JsonLdPropertyValue graphValue = new JsonLdPropertyValue();
 			graphValue.getValues().put(WebAnnotationFields.ID, graph.getResourceUri());
+			if(StringUtils.isNotBlank(graph.getContext()))
+				graphValue.getValues().put(WebAnnotationFields.AT_CONTEXT, graph.getContext());
 			
 			if(graph.getNodeUri() != null)//the node has only the id
 				graphValue.getValues().put(graph.getRelationName(), graph.getNodeUri());

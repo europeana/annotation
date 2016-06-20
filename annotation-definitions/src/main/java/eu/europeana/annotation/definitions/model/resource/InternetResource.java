@@ -22,17 +22,13 @@ public interface InternetResource extends ResourceDescription {
 	public abstract List<String> getResourceIds();
 	
 
-	/** replaced by the type of the extenral resources */
+	/** replaced by the type of the exteral resources */
 	@Deprecated
 	public abstract void setMediaType(String mediaType);
 	/** replaced by the type of the extenral resources */
 	@Deprecated
 	public abstract String getMediaType();
 
-//	public abstract void setContentType(String contentType);
-//
-//	public abstract String getContentType();
-	
 	void setHttpUri(String httpUri);
 
 	String getHttpUri();

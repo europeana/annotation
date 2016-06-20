@@ -34,6 +34,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
@@ -482,29 +483,48 @@ public class AnnotationLdParser extends JsonLdParser {
 				String key = (String) iterator.next();
 				Object value = (valueObject).get(key);
 				switch (key) {
+				//GRAPH-(linking)
 				case WebAnnotationFields.GRAPH:
 					parseGraphElement(body, valueObject);
 					break;
 				case WebAnnotationFields.TYPE:
-					// if (value.getClass().equals(JSONArray.class)) {
-					// for (int i = 0; i < ((JSONArray) value).length(); i++)
-					// body.addType(((JSONArray) value).getString(i));
-					// } else
+					// TODO: add support multiple types.
 					body.addType(value.toString());
-					body.setInternalType(bodyType.name());
+					//internal type is set in the Factory Method 
+					//body.setInternalType(bodyType.name());
 					break;
-
+				case WebAnnotationFields.AT_CONTEXT:
+					
+					ContextTypes context;
+					String localContextProp = "body.context";
+					try{
+						context = ContextTypes.valueOfJsonValue(value.toString());
+					}catch(Throwable th){
+						throw new AnnotationAttributeInstantiationException(
+								AnnotationAttributeInstantiationException.BASE_MESSAGE, localContextProp);
+					}
+					body.setContext(context.getJsonValue());
+					break;
+				
+				//Resource Description
+				case WebAnnotationFields.ID:
+					// need to align with target.
+					// body.setValue(value.toString());
+					body.setHttpUri(value.toString());
+					break;
 				case WebAnnotationFields.LANGUAGE:
 					body.setLanguage(value.toString());
-					break;
-				case WebAnnotationFields.TEXT:
-					body.setValue(value.toString());
-					//add implications of TEXT field
-					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 					break;
 				case WebAnnotationFields.FORMAT:
 					body.setContentType(value.toString());
 					break;
+				//Textual Body
+				case WebAnnotationFields.VALUE:
+					body.setValue(value.toString());
+					//add implications of TEXT field
+					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
+					break;
+				//Specific Resource	
 				case WebAnnotationFields.SOURCE:
 					if (value instanceof String)
 						body.setSource(value.toString());
@@ -512,16 +532,12 @@ public class AnnotationLdParser extends JsonLdParser {
 						throw new JsonParseException(
 								"source as internet resource is not supported in this version of the parser!");
 					break;
-				case WebAnnotationFields.ID:
-					// need to align with target.
-					// body.setValue(value.toString());
-					body.setHttpUri(value.toString());
-					break;
-
+				
 				case WebAnnotationFields.PURPOSE:
 					body.setPurpose(value.toString());
 					break;
-					
+				//TODO: separate specific fields for parsing the whole specific object
+				//PLACE	
 				case WebAnnotationFields.LATITUDE:
 					setLatitude(body, value.toString());
 					break;
@@ -557,7 +573,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		while (iter.hasNext()) {
 			key = (String) iter.next();
 			//Assumption. Only ID and RelationName elements are present in the @Graph
-			if(WebAnnotationFields.ID.equals(key))
+			if(WebAnnotationFields.ID.equals(key) || WebAnnotationFields.AT_CONTEXT.equals(key))
 				continue;
 			else{
 				relationName = key;
@@ -568,6 +584,10 @@ public class AnnotationLdParser extends JsonLdParser {
 			throw new JsonParseException("Invalid body. Graph Bodies must have a relation element (i.e. rdf:predicate)" + valueObject);
 		
 		String id = (String) jsonGraph.get(WebAnnotationFields.ID);
+		//optional context
+		if(jsonGraph.has(WebAnnotationFields.AT_CONTEXT))
+			graphBody.getGraph().setContext((String) jsonGraph.get(WebAnnotationFields.ID));
+		
 		graphBody.getGraph().setResourceUri(id);
 		graphBody.getGraph().setRelationName(relationName);
 		
@@ -663,7 +683,7 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.GEO_TAG;
 			else if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
 				return BodyInternalTypes.SEMANTIC_TAG;
-			else if (valueObject.has(WebAnnotationFields.TEXT))
+			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
 
 		default:

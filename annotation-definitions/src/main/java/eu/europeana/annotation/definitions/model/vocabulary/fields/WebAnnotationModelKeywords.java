@@ -16,8 +16,12 @@ public class WebAnnotationModelKeywords {
 	
 	//EUROPEANA EXTENSIONS CLASSES
 	public static final String CLASS_GRAPH = "Graph";
-	public static final String CLASS_EDM_PLACE = "edm:Place";
+	public static final String CLASS_EDM_PLACE = "Place";
 	
 	
-	//
+	//Contexts
+	public static final String WA_CONTEXT = "https://www.w3.org/ns/anno.jsonld";
+	public static final String EDM_CONTEXT = "http://www.europeana.eu/schemas/context/edm.jsonld";
+	public static final String ENTITY_CONTEXT = "http://www.europeana.eu/schemas/context/entity.jsonld";
+	
 }

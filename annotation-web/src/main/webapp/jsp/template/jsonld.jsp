@@ -60,7 +60,7 @@ The json-ld serialization available in the following box is a valid input to be 
     "type": "Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-		"text": "biserica",
+		"value": "biserica",
 		"language": "ro"
     },
     "target": "http://data.europeana.eu/item/123/xyz",
@@ -87,9 +87,10 @@ The json-ld serialization available in the following box is a valid input to be 
     "type": "Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
+   		"@context": "http://www.europeana.eu/schemas/context/entity.jsonld",   
    		"type": "edm:Place",
-   		"wgs84_pos:lat": "48.85341",
-   		"wgs84_pos:long": "2.3488"
+   		"lat": "48.85341",
+   		"long": "2.3488"
  	},
  	"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
@@ -191,11 +192,12 @@ The json-ld serialization available in the following box is a valid input to be 
   <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
   "body": {
     "@graph": {
+      "@context" : "http://www.europeana.eu/schemas/context/edm.jsonld",
       "id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
       "edm:isSimilarTo": {
         "id": "http://thesession.org/tunes/52",
         "format": "text/html",
-        "dc:title": "The Kid On The Mountain (slip jig) on The Session"
+        "title": "The Kid On The Mountain (slip jig) on The Session"
       }
     }
   },

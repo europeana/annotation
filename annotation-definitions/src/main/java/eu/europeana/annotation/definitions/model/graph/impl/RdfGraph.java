@@ -10,6 +10,7 @@ public class RdfGraph implements Graph{
 	String relationName;
 	String nodeUri;
 	InternetResource node;
+	String context;
 	
 	@Override
 	public String getResourceUri() {
@@ -42,5 +43,13 @@ public class RdfGraph implements Graph{
 	@Override
 	public void setNode(InternetResource node) {
 		this.node = node;
+	}
+	@Override
+	public String getContext() {
+		return context;
+	}
+	@Override
+	public void setContext(String context) {
+		this.context = context;
 	}
 }

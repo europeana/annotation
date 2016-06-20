@@ -2,11 +2,12 @@
   "motivation": "linking",
   "body": {
     "@graph": {
+      "@context" : "http://www.europeana.eu/schemas/context/edm.jsonld",
       "id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
-      "edm:isSimilarTo": {
+      "isSimilarTo": {
         "id": "http://thesession.org/tunes/52",
         "format": "text/html",
-        "dc:title": "The Kid On The Mountain (slip jig) on The Session"
+        "title": "The Kid On The Mountain (slip jig) on The Session"
       }
     }
   },

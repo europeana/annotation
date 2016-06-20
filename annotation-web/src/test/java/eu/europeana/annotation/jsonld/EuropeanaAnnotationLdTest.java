@@ -152,7 +152,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         baseObjectTag.getTarget().setHttpUri(null);
 //        baseObjectTag.getTarget().setEuropeanaId(null);
         baseObjectTag.getTarget().setLanguage(null);
-        baseObjectTag.getTarget().setMediaType(null);
+//        baseObjectTag.getTarget().setMediaType(null);
         baseObjectTag.getTarget().setSelector(null);
         baseObjectTag.getTarget().setSource(null);
         baseObjectTag.getTarget().setState(null);

@@ -58,7 +58,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	// public static final String DEFAULT_MEDIA_TYPE = "oa:SemanticTag";
 	public static final String ANNOTATION_TYPE = "Annotation";
 	public static final String OA = "oa";
-	public static final String WA_CONTEXT = "https://www.w3.org/ns/anno.jsonld";
 	public static final String SEPARATOR_SEMICOLON = ":";
 
 	// TAGS

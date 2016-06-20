@@ -11,7 +11,9 @@ public interface WebAnnotationModelFields {
 	public static final String TYPE = "type";
 	public static final String LANGUAGE = "language";
 	public static final String FORMAT = "format";
-	public static final String TITLE = "dc:title";
+	public static final String TITLE = "title";
+	public static final String VALUE = "value";
+
 	
 	//** annotation fields **/
 	public static final String AT_CONTEXT = "@context";
@@ -36,30 +38,25 @@ public interface WebAnnotationModelFields {
 	public static final String STYLED_BY = "styledBy";
 	public static final String SAME_AS = "sameAs";
 	public static final String EQUIVALENT_TO = "equivalentTo";
-	public static final String CONTENT_TYPE = "contentType";
 	public static final String HTTP_URI = "httpUri";
 	public static final String SOURCE = "source";
 	public static final String SELECTOR = "selector";
 	public static final String STYLE_CLASS = "styleClass";
-//	public static final String AT_TYPE = "@type";
-	public static final String TEXT = "text";
-//	public static final String MEDIA_TYPE = "mediaType";
+//	public static final String TEXT = "text";
 	public static final String PAGE = "page";
 	
-//	public static final String AT_ID = "@id";
 	public static final String CONTAINS = "contains";
 	public static final String PURPOSE = "purpose";
 
 	/** Europeana extensions **/
 	public static final String GRAPH = "@graph";
 	/** geo location **/
-	public static final String LATITUDE = "wgs84_pos:lat";
-	public static final String LONGITUDE = "wgs84_pos:long";
+	public static final String LATITUDE = "lat";
+	public static final String LONGITUDE = "long";
 	
 	
 	/** internal fields */
 	public static final String INTERNAL_TYPE = "internalType";
-	public static final String BODY_TYPE = "bodyType";
 	public static final String LAST_INDEXED_TIMESTAMP = "lastIndexedTimestamp";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String ANNOTATION_ID = "annotationId";

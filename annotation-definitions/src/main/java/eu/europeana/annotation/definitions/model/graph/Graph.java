@@ -4,20 +4,24 @@ import eu.europeana.annotation.definitions.model.resource.InternetResource;
 
 public interface Graph {
 
-	void setNode(InternetResource node);
+	public void setNode(InternetResource node);
 
-	InternetResource getNode();
+	public InternetResource getNode();
 
-	void setNodeUri(String nodeUri);
+	public void setNodeUri(String nodeUri);
 
-	String getNodeUri();
+	public String getNodeUri();
 
-	void setRelationName(String relationName);
+	public void setRelationName(String relationName);
 
-	String getRelationName();
+	public String getRelationName();
 
-	void setResourceUri(String resourceUri);
+	public void setResourceUri(String resourceUri);
 
-	String getResourceUri();
+	public String getResourceUri();
+
+	public void setContext(String context);
+
+	public String getContext();
 
 }

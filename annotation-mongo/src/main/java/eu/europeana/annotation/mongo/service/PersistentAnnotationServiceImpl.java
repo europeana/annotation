@@ -24,6 +24,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
+import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -40,19 +41,21 @@ import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
+import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
+import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
-public class PersistentAnnotationServiceImpl extends
-		AbstractNoSqlServiceImpl<PersistentAnnotation, String> implements
-		PersistentAnnotationService {
+public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
+		implements PersistentAnnotationService {
 
+	GeoPlaceValidator geoPlaceValidator;
+	
 	@Resource
 	private PersistentTagService tagService;
-	
+
 	@Resource
 	private AnnotationConfiguration configuration;
-	
-	
+
 	AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 
 	public AnnotationBuilder getAnnotationBuilder() {
@@ -81,99 +84,102 @@ public class PersistentAnnotationServiceImpl extends
 	private void validatePersistentAnnotation(PersistentAnnotation object, Date now) {
 		validatePersistentAnnotationExt(object, now, true);
 	}
-	
+
 	/**
-	 * This method validates persistent annotation and generates ID if genarateId=true.
+	 * This method validates persistent annotation and generates ID if
+	 * genarateId=true.
+	 * 
 	 * @param object
 	 * @param now
 	 * @param generateId
 	 */
 	private void validatePersistentAnnotationExt(PersistentAnnotation object, Date now, boolean generateId) {
-			
+
 		if (object.getCreated() == null)
 			object.setCreated(now);
-		
-		if(object.getGenerated() == null)
+
+		if (object.getGenerated() == null)
 			object.setGenerated(now);
-		
+
+		// check creator
+		if (object.getCreator() == null || object.getCreator().getName() == null)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATED_BY);
+
 		// check Europeana ID
 		if (generateId && object.getId() != null)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
+
+		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider()))
 			throw new AnnotationValidationException(
-					AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
-		
-		//TODO: check and remove the following code .. 
-		//if (object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
-		//check Annotation ID
-//		if (object.getAnnotationId() == null){ 
-//				throw new AnnotationValidationException(
-//						"AnnotationId must not be null.");
-//		} else 
-		
-		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider())) 
-				throw new AnnotationValidationException(
-						"AnnotationId must not be null. AnnotationId.provider attribute is required");
-		//}
-		
+					"AnnotationId must not be null. AnnotationId.provider attribute is required");
+				// }
+
 		// check target
-		if (object.getTarget() == null)
-			throw new AnnotationValidationException(
-					AnnotationValidationException.ERROR_NULL_TARGET);
+		validateTarget(object);
+		// checkBody
+		validateBody(object);
 
-		// check AnnotatedBy (creator)
-		if (object.getCreator() == null
-				|| object.getCreator().getName() == null)
-			throw new AnnotationValidationException(
-					AnnotationValidationException.ERROR_NULL_ANNOTATED_BY);
-
-		if (!object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
-			// check body
-			// note: Bookmarks or Highlights may not have a body .. but they are not
-			// supported yet
-			if (object.getBody() == null)
-				throw new AnnotationValidationException(
-						AnnotationValidationException.ERROR_NULL_EUROPEANA_ID);
-	
-			// check if TAG
-			if (hasTagBody(object)) {	
-				TagBody body = (TagBody) object.getBody();
-				if (body.getTagId() == null) {
-					PersistentTag tag = findOrCreateTag(object, body);
-					// set tagId
-					body.setTagId(tag.getId());
-				}
-			}
-		}
-		
 		if (generateId) {
 			MongoAnnotationId embeddedId = initializeAnnotationId(object);
 			object.setAnnotationId(embeddedId);
 		}
-		
-		//validate annotation NR
-		//TODO: update this condition when specification is available
-		if(Long.parseLong(object.getAnnotationId().getIdentifier()) < 1)
+
+		// validate annotation NR
+		// TODO: update this condition when specification is available
+		if (Long.parseLong(object.getAnnotationId().getIdentifier()) < 1)
 			throw new AnnotationValidationException("Annotaion.AnnotationId.identifier must be a positive number!");
 	}
 
-	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
-//		MongoAnnotationId embeddedId;
-//		String provider = object.getAnnotationId().getProvider(); 
+	protected void validateTarget(PersistentAnnotation object) {
+		if (object.getTarget() == null)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_TARGET);
+	}
 
-		//
-		//if(WebAnnotationFields.PROVIDER_WEBANNO.equals(provider)){
-		if(StringUtils.isEmpty(object.getAnnotationId().getIdentifier())){
-			return generateAnnotationId(object.getAnnotationId().getProvider());	
-		}else{
+	protected void validateBody(PersistentAnnotation object) {
+
+		if (object.getBody() == null && isBodyMandatory(object))//check if mandatory
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_BODY);
+		else if(object.getBody() == null)
+			return;//nothing to check
+		
+			
+		if(object.getBody() instanceof PlaceBody)
+			getGeoPlaceValidator().validate(((PlaceBody)object.getBody()).getPlace());
+		
+		// check if TAG
+		if (hasTagBody(object)) {
+			TagBody body = (TagBody) object.getBody();
+			if (body.getTagId() == null) {
+				//TODO: validation must not change the database state. create tag must not be invoked here
+				PersistentTag tag = findOrCreateTag(object, body);
+				// set tagId
+				body.setTagId(tag.getId());
+			}
+		}
+	}
+
+	
+
+	
+
+	
+	protected boolean isBodyMandatory(PersistentAnnotation object) {
+		return !object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name());
+	}
+
+	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
+		if (StringUtils.isEmpty(object.getAnnotationId().getIdentifier())) {
+			return generateAnnotationId(object.getAnnotationId().getProvider());
+		} else {
 			return new MongoAnnotationId(object.getAnnotationId());
 		}
 	}
 
 	@Override
 	public MongoAnnotationId generateAnnotationId(String provider) {
-		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(
-				provider);
+		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
 		annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
-		
+
 		return new MongoAnnotationId(annoId);
 	}
 
@@ -187,16 +193,13 @@ public class PersistentAnnotationServiceImpl extends
 
 			String collection = arrValue[collectionPosition];
 			String object = arrValue[objectPosition].replace(".html", "");
-			if (StringUtils.isNotEmpty(collection)
-					&& StringUtils.isNotEmpty(object))
-				res = WebAnnotationFields.SLASH + collection
-						+ WebAnnotationFields.SLASH + object;
+			if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
+				res = WebAnnotationFields.SLASH + collection + WebAnnotationFields.SLASH + object;
 		}
 		return res;
 	}
 
-	private PersistentTag findOrCreateTag(PersistentAnnotation object,
-			TagBody body) {
+	private PersistentTag findOrCreateTag(PersistentAnnotation object, TagBody body) {
 
 		PersistentTag tag = null;
 
@@ -214,14 +217,12 @@ public class PersistentAnnotationServiceImpl extends
 			try {
 				tag = tagService.find(query);
 				if (tag == null) {
-					query.setCreator(object.getCreator().getName() + " : "
-							+ object.getCreator().getOpenId());
+					query.setCreator(object.getCreator().getName() + " : " + object.getCreator().getOpenId());
 					tag = tagService.create(query);
 				}
 
 			} catch (AnnotationMongoException e) {
-				throw new AnnotationValidationException(
-						"Cannot read tag from database", e);
+				throw new AnnotationValidationException("Cannot read tag from database", e);
 			}
 		}
 		if (tag.getId() == null && tag.getObjectId() != null)
@@ -230,43 +231,35 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		if(BodyInternalTypes.isTagBody(object.getBody().getType()))
+		if (BodyInternalTypes.isTagBody(object.getBody().getType()))
 			return true;
-///		List<String> types = object.getBody().getType();
-//		Iterator<String> itr = types.iterator();
-//		while(itr.hasNext()) {
-//			if(BodyTypes.isTagBody(itr.next()))
-//				return true;
-///		}		
-//		String euType = new TypeUtils().getEuTypeFromTypeArray(type);
-//		return BodyTypes.isTagBody(object.getBody().getInternalType());//
 		return BodyInternalTypes.isTagBody(object.getBody().getInternalType());
 	}
 
 	@Override
 	public Annotation store(Annotation object) {
-		if(object instanceof PersistentAnnotation)
+		if (object instanceof PersistentAnnotation)
 			return this.store((PersistentAnnotation) object);
-		else{
+		else {
 			PersistentAnnotation persistentObject = copyIntoPersistentAnnotation(object);
-			return this.store(persistentObject); 
+			return this.store(persistentObject);
 		}
-		
+
 	}
 
 	@Override
 	public Annotation update(Annotation object) {
-		
-		//reset last update timestamp
+
+		// reset last update timestamp
 		object.setLastUpdate(new Date());
-		
-		if(object instanceof PersistentAnnotation)
+
+		if (object instanceof PersistentAnnotation)
 			return this.update((PersistentAnnotation) object);
-		else{
+		else {
 			PersistentAnnotation persistentObject = copyIntoPersistentAnnotation(object);
-			return this.update(persistentObject); 
+			return this.update(persistentObject);
 		}
-		
+
 	}
 
 	@Override
@@ -289,15 +282,12 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
-	public List<? extends Annotation> getAnnotationListByProvider(
-			String europeanaId, String provider) {
-		return getFilteredAnnotationList(europeanaId, provider, null, null,
-				false);
+	public List<? extends Annotation> getAnnotationListByProvider(String europeanaId, String provider) {
+		return getFilteredAnnotationList(europeanaId, provider, null, null, false);
 	}
 
 	@Override
-	public List<? extends Annotation> getAnnotationListByTarget(
-			String target) {
+	public List<? extends Annotation> getAnnotationListByTarget(String target) {
 		List<? extends Annotation> results = filterAnnotationListByTarget(target, false);
 		if (results.size() == 0)
 			results = filterAnnotationListByTarget(target, true);
@@ -305,8 +295,7 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	@Override
-	public List<? extends Annotation> getAnnotationListByResourceId(
-			String resourceId) {
+	public List<? extends Annotation> getAnnotationListByResourceId(String resourceId) {
 		List<? extends Annotation> results = filterAnnotationListByResourceId(resourceId, false);
 		if (results.size() == 0)
 			results = filterAnnotationListByResourceId(resourceId, true);
@@ -314,56 +303,60 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	/**
-	 * This method filters active annotations by target. By searching in 'target.value' parameter 'multiple' is false.
-	 * By searching in 'target.values' parameter 'multiple' is true.
+	 * This method filters active annotations by target. By searching in
+	 * 'target.value' parameter 'multiple' is false. By searching in
+	 * 'target.values' parameter 'multiple' is true.
+	 * 
 	 * @param target
 	 * @param multiple
 	 * @return evaluated list
 	 */
-	public List<? extends Annotation> filterAnnotationListByTarget(
-			String target, boolean multiple) {
+	public List<? extends Annotation> filterAnnotationListByTarget(String target, boolean multiple) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotEmpty(target)) {
 			if (multiple)
-				query.disableValidation().field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUES).equal(target);
+				query.disableValidation().field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUES)
+						.equal(target);
 			else
-				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUE, target); 
+				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUE,
+						target);
 		}
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
-				.find(query);
+		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
 
 	/**
-	 * This method filters active annotations by target. By searching in 'target.resourceId' parameter 'multiple' is false.
-	 * By searching in 'target.resourceId' parameter 'multiple' is true.
+	 * This method filters active annotations by target. By searching in
+	 * 'target.resourceId' parameter 'multiple' is false. By searching in
+	 * 'target.resourceId' parameter 'multiple' is true.
+	 * 
 	 * @param target
 	 * @param multiple
 	 * @return evaluated list
 	 */
-	public List<? extends Annotation> filterAnnotationListByResourceId(
-			String target, boolean multiple) {
+	public List<? extends Annotation> filterAnnotationListByResourceId(String target, boolean multiple) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotEmpty(target)) {
 			if (multiple)
-				query.disableValidation().field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS).equal(target);
+				query.disableValidation()
+						.field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS)
+						.equal(target);
 			else
-				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_ID, target); 
+				query.disableValidation()
+						.filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_ID, target);
 		}
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
-				.find(query);
+		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
 
 	@Override
-	public List<? extends Annotation> getFilteredAnnotationList(
-			String europeanaId, String provider, String startOn, String limit,
-			boolean isDisabled) {
+	public List<? extends Annotation> getFilteredAnnotationList(String europeanaId, String provider, String startOn,
+			String limit, boolean isDisabled) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-//		if (StringUtils.isNotEmpty(europeanaId))
-//			query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
+		// if (StringUtils.isNotEmpty(europeanaId))
+		// query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		if (StringUtils.isNotEmpty(provider))
 			query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_DISABLED, isDisabled);
@@ -379,14 +372,13 @@ public class PersistentAnnotationServiceImpl extends
 					"startOn: " + startOn + ", limit: " + limit + ". ", e);
 		}
 
-		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
-				.find(query);
+		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
 
 	@Override
 	public PersistentAnnotation find(AnnotationId annoId) {
-		
+
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
@@ -409,25 +401,27 @@ public class PersistentAnnotationServiceImpl extends
 
 	}
 
-//	@Override
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
-//	 * (java.lang.String, java.lang.Integer)
-//	 */
-////	public void remove(String resourceId, String provider, Long annotationNr) {
-//	public void remove(String baseUrl, String provider, String identifier) {
-//		// String objectId = findObjectId(resourceId, annotationNr);
-//		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-////		query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
-//		query.filter(PersistentAnnotation.FIELD_BASEURL, baseUrl);
-//		query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-//
-//		getDao().deleteByQuery(query);
-//	}
+	// @Override
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// *
+	// eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
+	// * (java.lang.String, java.lang.Integer)
+	// */
+	//// public void remove(String resourceId, String provider, Long
+	// annotationNr) {
+	// public void remove(String baseUrl, String provider, String identifier) {
+	// // String objectId = findObjectId(resourceId, annotationNr);
+	// Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+	//// query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
+	// query.filter(PersistentAnnotation.FIELD_BASEURL, baseUrl);
+	// query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
+	// query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
+	//
+	// getDao().deleteByQuery(query);
+	// }
 
 	// private String findObjectId(String resourceId, Integer annotationNr) {
 	// Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
@@ -446,7 +440,7 @@ public class PersistentAnnotationServiceImpl extends
 
 	@Override
 	public void remove(AnnotationId annoId) {
-		
+
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
 		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
@@ -455,37 +449,35 @@ public class PersistentAnnotationServiceImpl extends
 		getDao().deleteByQuery(query);
 	}
 
-	public PersistentAnnotation update(PersistentAnnotation object) { 
+	public PersistentAnnotation update(PersistentAnnotation object) {
 
 		PersistentAnnotation res = null;
-		
+
 		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) object;
 
-		if (persistentAnnotation != null
-				&& persistentAnnotation.getAnnotationId() != null) {
-/*			remove(//persistentAnnotation.getAnnotationId().getResourceId(),
-					persistentAnnotation.getAnnotationId().getProvider(),
-					persistentAnnotation.getAnnotationId().getIdentifier());
-			//MongoDB object id - not annotation id
-			persistentAnnotation.setId(null);
-			if (persistentAnnotation.getBody() != null) {
-				((TagBody) persistentAnnotation.getBody()).setTagId(null);
-			}
-			res = store(persistentAnnotation);
-*/			
+		if (persistentAnnotation != null && persistentAnnotation.getAnnotationId() != null) {
+			/*
+			 * remove(//persistentAnnotation.getAnnotationId().getResourceId(),
+			 * persistentAnnotation.getAnnotationId().getProvider(),
+			 * persistentAnnotation.getAnnotationId().getIdentifier());
+			 * //MongoDB object id - not annotation id
+			 * persistentAnnotation.setId(null); if
+			 * (persistentAnnotation.getBody() != null) { ((TagBody)
+			 * persistentAnnotation.getBody()).setTagId(null); } res =
+			 * store(persistentAnnotation);
+			 */
 			PersistentAnnotation dbAnnotation = find(persistentAnnotation.getAnnotationId());
 			persistentAnnotation.setId(dbAnnotation.getId());
-			
+
 			// generate new and replace existing timestamp for the Annotation
 			Date now = new Date();
 			// validate mandatory fields
 			validatePersistentAnnotationExt(persistentAnnotation, now, false);
 			persistentAnnotation.setLastUpdate(now);
-			
+
 			res = updateAnnotation(persistentAnnotation);
 		} else {
-			throw new AnnotationValidationException(
-					AnnotationValidationException.ERROR_NULL_ANNOTATION_ID);
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATION_ID);
 		}
 
 		return res;
@@ -494,16 +486,15 @@ public class PersistentAnnotationServiceImpl extends
 	protected PersistentAnnotation updateAnnotation(PersistentAnnotation persistentAnnotation) {
 		PersistentAnnotation res;
 		Query<PersistentAnnotation> findByIdQuery = buildFindByIdQuery(persistentAnnotation);
-		//TODO: reimplement by using the following line
-		//getDao().save(persistentAnnotation)
-		
+		// TODO: reimplement by using the following line
+		// getDao().save(persistentAnnotation)
+
 		UpdateOperations<PersistentAnnotation> updateOperations = buildUpdateOperations(persistentAnnotation);
 		UpdateResults<PersistentAnnotation> key = getAnnotationDao().update(findByIdQuery, updateOperations);
-		int numOfUpdatedEntries = key.getWriteResult().getN(); 
-		
+		int numOfUpdatedEntries = key.getWriteResult().getN();
+
 		if (numOfUpdatedEntries != 1)
-			throw new AnnotationUpdateException(
-					persistentAnnotation.getAnnotationId().toString());
+			throw new AnnotationUpdateException(persistentAnnotation.getAnnotationId().toString());
 		res = find(persistentAnnotation.getAnnotationId());
 		return res;
 	}
@@ -515,11 +506,13 @@ public class PersistentAnnotationServiceImpl extends
 	}
 
 	/**
-	 * The usage of this method should be avoided. Simply use the dao.save() method
+	 * The usage of this method should be avoided. Simply use the dao.save()
+	 * method
+	 * 
 	 * @param persistentAnnotation
 	 * @return
 	 */
-	@Deprecated 
+	@Deprecated
 	protected UpdateOperations<PersistentAnnotation> buildUpdateOperations(PersistentAnnotation persistentAnnotation) {
 		UpdateOperations<PersistentAnnotation> updateOperations = super.getDao().createUpdateOperations();
 		if (persistentAnnotation.getBody() != null)
@@ -531,17 +524,19 @@ public class PersistentAnnotationServiceImpl extends
 		updateOperations.set(WebAnnotationFields.GENERATED, persistentAnnotation.getGenerated());
 		updateOperations.set(WebAnnotationFields.GENERATOR, persistentAnnotation.getGenerator());
 		updateOperations.set(WebAnnotationFields.MOTIVATION, persistentAnnotation.getMotivation());
-		if(persistentAnnotation.getType() != null)
+		if (persistentAnnotation.getType() != null)
 			updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());
-		if(persistentAnnotation.getInternalType() != null)
+		if (persistentAnnotation.getInternalType() != null)
 			updateOperations.set(WebAnnotationFields.INTERNAL_TYPE, persistentAnnotation.getInternalType());
 		updateOperations.set(WebAnnotationFields.DISABLED, persistentAnnotation.isDisabled());
 		if (persistentAnnotation.getEquivalentTo() != null)
 			updateOperations.set(WebAnnotationFields.EQUIVALENT_TO, persistentAnnotation.getEquivalentTo());
-//			if (persistentAnnotation.getInternalType() != null)
-//				updateOperations.set(WebAnnotationFields.INTERNAL_TYPE, persistentAnnotation.getInternalType());
+		// if (persistentAnnotation.getInternalType() != null)
+		// updateOperations.set(WebAnnotationFields.INTERNAL_TYPE,
+		// persistentAnnotation.getInternalType());
 		if (persistentAnnotation.getLastIndexedTimestamp() != null)
-			updateOperations.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, persistentAnnotation.getLastIndexedTimestamp());
+			updateOperations.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP,
+					persistentAnnotation.getLastIndexedTimestamp());
 		if (persistentAnnotation.getLastUpdate() != null)
 			updateOperations.set(WebAnnotationFields.LAST_UPDATE, persistentAnnotation.getLastUpdate());
 		if (persistentAnnotation.getSameAs() != null)
@@ -558,46 +553,47 @@ public class PersistentAnnotationServiceImpl extends
 
 		PersistentAnnotation annotation = find(annoId);
 
-		if (annotation == null){
-			throw new AnnotationMongoException(AnnotationMongoException.NO_RECORD_FOUND + annoId);  
+		if (annotation == null) {
+			throw new AnnotationMongoException(AnnotationMongoException.NO_RECORD_FOUND + annoId);
 		}
-		
-		
-		if(lastIndexing == null)
+
+		if (lastIndexing == null)
 			lastIndexing = new Date();
-		
-		if(!isValidLastIndexingTimestamp(annotation, lastIndexing))
-			throw new AnnotationMongoRuntimeException(AnnotationMongoRuntimeException.INVALID_LAST_INDEXING + lastIndexing);
-			
+
+		if (!isValidLastIndexingTimestamp(annotation, lastIndexing))
+			throw new AnnotationMongoRuntimeException(
+					AnnotationMongoRuntimeException.INVALID_LAST_INDEXING + lastIndexing);
+
 		annotation.setLastIndexedTimestamp(lastIndexing.getTime());
-		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao()
-			.createUpdateOperations().set(
-				WebAnnotationFields.LAST_INDEXED_TIMESTAMP,
-				lastIndexing.getTime());
-			Query<PersistentAnnotation> updateQuery = getAnnotationDao()
-					.createQuery().field("_id").equal(annotation.getId());
-			getAnnotationDao().update(updateQuery, ops);
-		
+		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
+				.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, lastIndexing.getTime());
+		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id")
+				.equal(annotation.getId());
+		getAnnotationDao().update(updateQuery, ops);
+
 		return annotation;
 	}
 
 	private boolean isValidLastIndexingTimestamp(PersistentAnnotation annotation, Date lastIndexing) {
-		//if never indexed
+		// if never indexed
 		if (lastIndexing != null && annotation.getLastIndexedTimestamp() == null)
 			return true;
-		
+
 		return lastIndexing.getTime() > annotation.getLastIndexedTimestamp();
 	}
 
 	/**
 	 * This method returns annotations by start- and end timestamps.
-	 * @param startTimestamp as long value in string format
-	 * @param endTimestamp as long value in string format
+	 * 
+	 * @param startTimestamp
+	 *            as long value in string format
+	 * @param endTimestamp
+	 *            as long value in string format
 	 * @return evaluated ID list
 	 */
 	public List<String> filterByTimestamp(
-//			public List<AnnotationId> filterByTimestamp(
-//			public List<? extends Annotation> filterByTimestamp(
+			// public List<AnnotationId> filterByTimestamp(
+			// public List<? extends Annotation> filterByTimestamp(
 			String startTimestamp, String endTimestamp) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (!Strings.isNullOrEmpty(startTimestamp)) {
@@ -608,18 +604,17 @@ public class PersistentAnnotationServiceImpl extends
 			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}
-//		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao()
-//				.find(query);
+		// QueryResults<? extends PersistentAnnotation> results =
+		// getAnnotationDao()
+		// .find(query);
 		List<String> results = getAnnotationDao().findIds(query);
 		String resultsArrString = results.toString();
 		resultsArrString = resultsArrString.substring(1, resultsArrString.length() - 1);
 		results = new ArrayList<String>(Arrays.asList(resultsArrString.split(",")));
-//		return results.asList();
+		// return results.asList();
 		return results;
 	}
 
-
-	
 	@Override
 	public Annotation updateStatus(Annotation newAnnotation) {
 
@@ -629,20 +624,17 @@ public class PersistentAnnotationServiceImpl extends
 
 		if (annotation != null) {
 			annotation.setStatus(newAnnotation.getStatus());
-			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao()
-					.createUpdateOperations().set(
-							WebAnnotationFields.STATUS,
-							annotation.getStatus());
-			Query<PersistentAnnotation> updateQuery = getAnnotationDao()
-					.createQuery().field("_id").equal(annotation.getId());
+			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
+					.set(WebAnnotationFields.STATUS, annotation.getStatus());
+			Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id")
+					.equal(annotation.getId());
 			getAnnotationDao().update(updateQuery, ops);
-			res = annotation; 
+			res = annotation;
 		}
 
 		return res;
 	}
 
-		
 	@SuppressWarnings("deprecation")
 	public PersistentAnnotation copyIntoPersistentAnnotation(Annotation annotation) {
 
@@ -650,9 +642,9 @@ public class PersistentAnnotationServiceImpl extends
 				.getInstance().createAnnotationInstance(annotation.getInternalType()));
 
 		MongoAnnotationId mongoAnnotationId = new MongoAnnotationId();
-	    mongoAnnotationId.copyFrom(annotation.getAnnotationId());
-	    persistentAnnotation.setAnnotationId(mongoAnnotationId);
-	    
+		mongoAnnotationId.copyFrom(annotation.getAnnotationId());
+		persistentAnnotation.setAnnotationId(mongoAnnotationId);
+
 		getAnnotationBuilder().copyAnnotationAttributes(annotation, persistentAnnotation);
 		return persistentAnnotation;
 	}
@@ -668,6 +660,12 @@ public class PersistentAnnotationServiceImpl extends
 
 	public void setConfiguration(AnnotationConfiguration configuration) {
 		this.configuration = configuration;
+	}
+
+	public GeoPlaceValidator getGeoPlaceValidator() {
+		if(geoPlaceValidator == null)
+			geoPlaceValidator = new EdmPlaceValidatorImpl();
+		return geoPlaceValidator;
 	}
 
 }

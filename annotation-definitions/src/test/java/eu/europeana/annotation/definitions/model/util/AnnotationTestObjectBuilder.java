@@ -72,7 +72,7 @@ public class AnnotationTestObjectBuilder {
 		body.setValue(text);
 		body.setLanguage(language);
 		body.setContentType("text/plain");
-		body.setMediaType("[oa:SemanticTag]");
+//		body.setMediaType("[oa:SemanticTag]");
 		body.setHttpUri("https://www.freebase.com/m/035br4");
 		body.setInputString("{fake serialization}");
 		
@@ -104,7 +104,7 @@ public class AnnotationTestObjectBuilder {
 		source.setContentType("text/html");
 //		source.setHttpUri("http://europeana.eu/portal/record//15502/GG_8285.html");
 		source.setHttpUri("http://europeana.eu/portal/record/" + TEST_EUROPEANA_ID + ".html");
-		source.setMediaType("dctypes:Text");
+//		source.setMediaType("dctypes:Text");
 		target.setSourceResource(source);
 		target.setInputString("{fake serialization}");
 		

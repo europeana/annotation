@@ -68,8 +68,12 @@ public class BaseInternetResource extends AbstractResource implements InternetRe
 		destination.setContentType(this.getContentType());
 		destination.setHttpUri(this.getHttpUri());
 		destination.setLanguage(this.getLanguage());
-		destination.setMediaType(this.getMediaType());
+		destination.setInternalType(this.getInternalType());
 		destination.setValue(this.getValue());
+		destination.setValues(this.getValues());
+		destination.setContext(this.getContext());
+		destination.setResourceId(this.getResourceId());
+		destination.setResourceIds(this.getResourceIds());
 	}
 	
 	@Override
@@ -88,12 +92,6 @@ public class BaseInternetResource extends AbstractResource implements InternetRe
 	    if ((this.getContentType() != null) && (that.getContentType() != null) &&
 	    		(!this.getContentType().equals(that.getContentType()))) {
 	    	System.out.println("Style objects have different 'contentType' fields.");
-	    	res = false;
-	    }
-	    
-	    if ((this.getMediaType() != null) && (that.getMediaType() != null) &&
-	    		(!this.getMediaType().equals(that.getMediaType()))) {
-	    	System.out.println("Style objects have different 'mediaType' fields.");
 	    	res = false;
 	    }
 	    
@@ -128,8 +126,6 @@ public class BaseInternetResource extends AbstractResource implements InternetRe
 		
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
-		if (getMediaType() != null) 
-			res = res + "\t\t" + "mediaType:" + getMediaType() + "\n";
 		if (getHttpUri() != null) 
 			res = res + "\t\t" + "httpUri:" + getHttpUri() + "\n";
 		if (getLanguage() != null) 

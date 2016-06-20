@@ -3,7 +3,7 @@
   "body": {
     "@context" : "http://www.europeana.eu/schemas/context/entity.jsonld",
     "type": "Place",
-    "lat": "48.853415",
+    "lat": "8,853415",
     "long": "-102.348800"
   },
   "target": "http://data.europeana.eu/item/09102/_UEDIN_214"

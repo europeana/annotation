@@ -59,13 +59,7 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 	    	System.out.println("Target objects have different language values.");
 	    	res = false;
 	    }
-
-	    if ((this.getMediaType() != null) && (that.getMediaType() != null) &&
-	    		(!this.getMediaType().equals(that.getMediaType()))) {
-	    	System.out.println("Target objects have different media types.");
-	    	res = false;
-	    }
-
+	   
 	    if ((this.getSelector() != null) && (that.getSelector() != null) &&
 	    		(!this.getSelector().equals(that.getSelector()))) {
 //	    		(this.getSelector().getSelectorType() != null) && (that.getSelector().getSelectorType() != null) &&
@@ -92,12 +86,7 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 		    	System.out.println("Target objects have different source languages.");
 		    	res = false;
 		    }
-	
-		    if ((this.getSourceResource().getMediaType() != null) && (that.getSourceResource().getMediaType() != null) &&
-		    		(!this.getSourceResource().getMediaType().equals(that.getSourceResource().getMediaType()))) {
-		    	System.out.println("Target objects have different source media types.");
-		    	res = false;
-		    }
+		   
 	
 		    if ((this.getSourceResource().getValue() != null) && (that.getSourceResource().getValue() != null) &&
 		    		(!this.getSourceResource().getValue().equals(that.getSourceResource().getValue()))) {
@@ -133,8 +122,6 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 			res = res + "\t\t" + "targetType:" + getType().toString() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
-		if (getMediaType() != null) 
-			res = res + "\t\t" + "mediaType:" + getMediaType() + "\n";
 		if (getHttpUri() != null) 
 			res = res + "\t\t" + "httpUri:" + getHttpUri() + "\n";
 		if (getLanguage() != null) 

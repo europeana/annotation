@@ -8,6 +8,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public abstract class BaseBody extends BaseSpecificResource implements Body {
 	
+	protected Map<String, String> multilingual;
+    
 	public void setTypeEnum(BodyInternalTypes bodyType) {
 //		this.bodyType = bodyType.name();
 		setInternalType(bodyType.name());
@@ -15,8 +17,6 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 
 	protected BaseBody(){} 
 	
-	protected Map<String, String> multilingual;
-
 	
 	@Override
 	public boolean equals(Object other) {
@@ -55,12 +55,6 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 	    	res = false;
 	    }
 		    
-	    if ((this.getMediaType() != null) && (that.getMediaType() != null) &&
-	    		(!this.getMediaType().equals(that.getMediaType()))) {
-	    	System.out.println("Body objects have different media types.");
-	    	res = false;
-	    }
-		    
 	    if ((this.getValue() != null) && (that.getValue() != null) &&
 	    		(!this.getValue().equals(that.getValue()))) {
 	    	System.out.println("Body objects have different values.");
@@ -92,12 +86,12 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 		
 		if (getType() != null) 
 			res = res + "\t\t" + "bodyType:" + getType() + "\n";
+		if (getContext() != null) 
+			res = res + "\t\t" + "@context:" + getContext() + "\n";
 		if (getType() != null) 
 			res = res + "\t\t" + "internalType:" + getInternalType() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType() + "\n";
-		if (getMediaType() != null) 
-			res = res + "\t\t" + "mediaType:" + getMediaType() + "\n";
 		if (getHttpUri() != null) 
 			res = res + "\t\t" + "httpUri:" + getHttpUri() + "\n";
 		if (getLanguage() != null) 
@@ -109,5 +103,7 @@ public abstract class BaseBody extends BaseSpecificResource implements Body {
 		if (getPurpose() != null) 
 			res = res + "\t\t" + "bodyRole:" + getPurpose() + "\n";
 		return res;
-	}	
+	}
+
+	
 }

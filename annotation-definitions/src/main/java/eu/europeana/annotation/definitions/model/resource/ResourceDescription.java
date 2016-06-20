@@ -42,4 +42,7 @@ public interface ResourceDescription {
 
 	public abstract String getHttpUri();
 
+	public void setContext(String context);
+
+	public String getContext();	
 }
