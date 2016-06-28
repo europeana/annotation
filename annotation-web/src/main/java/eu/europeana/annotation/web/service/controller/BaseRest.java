@@ -242,80 +242,7 @@ public class BaseRest extends ApiResponseBuilder {
 
 		return annoId;
 	}
-
-	protected Agent authorizeUser(String userToken, String apiKey, String operationName)
-			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-		return authorizeUser(userToken, apiKey, null, operationName);
-	}
 	
-	
-	@Deprecated
-	/**
-	 * use authorizeUser(String userToken, String apiKey, String operationName) instead
-	 * @param userToken
-	 * @param apiKey
-	 * @param annoId
-	 * @param operationName
-	 * @return
-	 * @throws UserAuthorizationException
-	 */
-	protected Agent authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
-			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-		// throws exception if user is not found
-		//TODO: add userToken to agent
-		Application app = getAuthenticationService().getByApiKey(apiKey);
-		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
-		
-		if (user== null || user.getName() == null || user.getUserGroup() == null)
-			throw new UserAuthorizationException("Invalid User (Token): ", userToken, HttpStatus.FORBIDDEN);
-		
-		if(!isAdmin(user) && !hasPermission(app, annoId, operationName))
-			throw new OperationAuthorizationException(OperationAuthorizationException.MESSAGE_CLIENT_NOT_AUTHORIZED, 
-					"client app provider: " + app.getProvider() + "; annotation id: "+ annoId, HttpStatus.FORBIDDEN);
-				
-		//check permissions
-		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
-		if(isAdmin(user) && hasPermission(user, operationName))//allow all
-			return user;
-		else if(isTester(user) && configuration.isProductionEnvironment()){
-			//#20 testers not allowed in production environment
-			throw new UserAuthorizationException("Test users are not authorized to perform operations in production environments", user.getName(), HttpStatus.FORBIDDEN);
-		} else	if(hasPermission(user, operationName)){
-			//user is authorized
-			return user;
-		}
-
-		//user is not authorized to perform operation
-		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName(), HttpStatus.FORBIDDEN);			
-	}
-
-	//verify client app privileges 
-	private boolean hasPermission(Application app, AnnotationId annoId, String operationName) {
-		if(Operations.MODERATION_ALL.equals(operationName) || Operations.RETRIEVE.equals(operationName) )
-			return true;
-		
-		return annoId!= null && app.getProvider().equals(annoId.getProvider());
-	}
-
-	//verify user privileges
-	protected boolean hasPermission(Agent user, String operationName) {
-		UserGroups userGroup = UserGroups.valueOf(user.getUserGroup());
-		
-		for (String operation : userGroup.getOperations()) {
-			if(operation.equalsIgnoreCase(operationName))
-				return true;//users is authorized, everything ok
-		}
-		
-		return false;
-	}
-
-	protected boolean isAdmin(Agent user) {
-		return UserGroups.ADMIN.name().equals(user.getUserGroup());
-	}
-	
-	protected boolean isTester(Agent user) {
-		return UserGroups.TESTER.name().equals(user.getUserGroup());
-	}
 	
 	/**
 	 * This method extracts provider name from an identifier URL e.g. identifier
@@ -348,9 +275,6 @@ public class BaseRest extends ApiResponseBuilder {
 	}
 
 	public AuthorizationService getAuthorizationService() {
-		if(authorizationService == null || authenticationService == null)
-			return new AuthorizationServiceImpl(authenticationService);
-		
 		return authorizationService;
 	}
 

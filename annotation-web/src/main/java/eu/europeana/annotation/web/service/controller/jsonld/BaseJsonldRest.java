@@ -56,7 +56,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// 1. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -326,7 +326,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
 			// 5. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
+			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
 
 			// Retrieve an annotation based on its identifier;
 			Annotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
@@ -450,7 +450,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
 			// 5. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
+			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
 
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
@@ -511,7 +511,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
 			// 1. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
+			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
 
 			// build vote
 			Date reportDate = new Date();

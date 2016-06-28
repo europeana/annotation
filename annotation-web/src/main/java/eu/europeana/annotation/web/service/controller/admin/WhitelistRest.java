@@ -59,7 +59,7 @@ public class WhitelistRest extends BaseRest {
 		
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		WhitelistEntry whitelist = getAdminService().getWhitelistEntryByUrl(url);
 
@@ -94,7 +94,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		List<? extends WhitelistEntry> whitelist = getAdminService().getWhitelist();
 
@@ -118,7 +118,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 		
 		String action = "post:/whitelist/create";
 		
@@ -151,7 +151,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		List<? extends WhitelistEntry> whitelist = getAdminService().loadWhitelistFromResources();
 
@@ -177,7 +177,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
@@ -211,7 +211,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(

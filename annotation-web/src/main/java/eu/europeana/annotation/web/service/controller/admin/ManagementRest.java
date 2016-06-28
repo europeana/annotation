@@ -78,7 +78,7 @@ public class ManagementRest extends BaseRest {
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
-		authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
 		int failureCount = 0;
 		int successCount = 0;
@@ -123,7 +123,7 @@ public class ManagementRest extends BaseRest {
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
-		authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
 		try {
 			getAnnotationService().deleteAnnotation(annoId);
