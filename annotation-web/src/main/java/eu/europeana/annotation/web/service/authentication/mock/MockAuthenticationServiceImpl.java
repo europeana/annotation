@@ -11,6 +11,11 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
 import com.google.gson.Gson;
 
@@ -28,7 +33,7 @@ import eu.europeana.annotation.web.service.authentication.model.ApplicationDeser
 import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
 
-public class MockAuthenticationServiceImpl implements AuthenticationService
+public class MockAuthenticationServiceImpl implements AuthenticationService, ResourceServerTokenServices
 // , ApiKeyService
 {
 
@@ -242,6 +247,19 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 	public void setConfiguration(AnnotationConfiguration configuration) {
 		this.configuration = configuration;
+	}
+
+	@Override
+	public OAuth2Authentication loadAuthentication(String accessToken)
+			throws AuthenticationException, InvalidTokenException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OAuth2AccessToken readAccessToken(String accessToken) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

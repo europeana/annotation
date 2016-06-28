@@ -48,7 +48,14 @@
 	 -->
 	 		
     <!--  AuthenticationService -->
+   	<!-- 
    	<beans:bean name="annotation_authenticationService" class="eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl"/>
+	 -->
+	<beans:bean name="annotation_authenticationService" class="eu.europeana.annotation.web.service.authentication.mock.BridgeAuthenticationManagerAdapter"/>
+	<beans:bean name="annotation_authorizationService" class="eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl">
+		<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
+    </beans:bean>
+    
 	
     
     <!--  java api bean -->

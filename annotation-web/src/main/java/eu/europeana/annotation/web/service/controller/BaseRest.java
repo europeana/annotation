@@ -42,6 +42,8 @@ import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
+import eu.europeana.annotation.web.service.authorization.AuthorizationService;
+import eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl;
 
 public class BaseRest extends ApiResponseBuilder {
 
@@ -56,6 +58,9 @@ public class BaseRest extends ApiResponseBuilder {
 
 	@Resource
 	AuthenticationService authenticationService;
+	
+	@Resource
+	AuthorizationService authorizationService;
 
 	@Resource
 	AnnotationSearchService annotationSearchService;
@@ -340,6 +345,17 @@ public class BaseRest extends ApiResponseBuilder {
 		ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, HttpStatus.OK);
 		
 		return response;		
+	}
+
+	public AuthorizationService getAuthorizationService() {
+		if(authorizationService == null || authenticationService == null)
+			return new AuthorizationServiceImpl(authenticationService);
+		
+		return authorizationService;
+	}
+
+	public void setAuthorizationService(AuthorizationService authorizationService) {
+		this.authorizationService = authorizationService;
 	}
 	
 }
