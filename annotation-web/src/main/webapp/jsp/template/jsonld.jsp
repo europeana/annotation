@@ -88,7 +88,7 @@ The json-ld serialization available in the following box is a valid input to be 
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
    		"@context": "http://www.europeana.eu/schemas/context/entity.jsonld",   
-   		"type": "edm:Place",
+   		"type": "Place",
    		"lat": "48.85341",
    		"long": "2.3488"
  	},
@@ -194,7 +194,7 @@ The json-ld serialization available in the following box is a valid input to be 
     "@graph": {
       "@context" : "http://www.europeana.eu/schemas/context/edm.jsonld",
       "id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
-      "edm:isSimilarTo": {
+      "isSimilarTo": {
         "id": "http://thesession.org/tunes/52",
         "format": "text/html",
         "title": "The Kid On The Mountain (slip jig) on The Session"
