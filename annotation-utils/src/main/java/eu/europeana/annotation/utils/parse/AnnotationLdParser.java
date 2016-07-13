@@ -586,7 +586,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		String id = (String) jsonGraph.get(WebAnnotationFields.ID);
 		//optional context
 		if(jsonGraph.has(WebAnnotationFields.AT_CONTEXT))
-			graphBody.getGraph().setContext((String) jsonGraph.get(WebAnnotationFields.ID));
+			graphBody.getGraph().setContext((String) jsonGraph.get(WebAnnotationFields.AT_CONTEXT));
 		
 		graphBody.getGraph().setResourceUri(id);
 		graphBody.getGraph().setRelationName(relationName);
