@@ -179,6 +179,21 @@ The json-ld serialization available in the following box is a valid input to be 
 </textarea>
 <br>
  -->
+<h3 id="objectlink">Create Object Link</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of generic <b>Object Links</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+
+<br>
+(motivation:linking)  
+<textarea rows="15" cols="120" name="jsonldobjectlink">
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
+  "target": [ "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+              "http://data.europeana.eu/item/2059207/data_sounds_T471_4" ] 
+  
+}
+</textarea>
 
 <h3 id="objectlink_specificRelation">Create Object Link - by specifying a relation type </h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Object Links with specification of concrete relationships</b>. 
@@ -186,7 +201,7 @@ The json-ld serialization available in the following box is a valid input to be 
 
 <br>
 (motivation:linking)  
-<textarea rows="15" cols="120" name="jsonldobjectlink">
+<textarea rows="15" cols="120" name="jsonldobjectlinkspeciicrelation">
 {
   "@context": "http://www.w3.org/ns/anno.jsonld",
   <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
