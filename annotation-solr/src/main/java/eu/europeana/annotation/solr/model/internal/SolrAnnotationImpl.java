@@ -1,6 +1,5 @@
 package eu.europeana.annotation.solr.model.internal;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +10,20 @@ import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
+/**
+ * Change the implementation to use an adapter pattern.
+ * @Deprecated 
+ * @author GordeaS
+ *
+ */
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation, SolrAnnotationConstants {
 
 	private String annotationIdUrl;
 	private List<String> targetUrls;
 	private List<String> targetRecordIds;
 	private String motivationKey;
+	private String generatorName;
+	private String generatorId;
 	private String bodyValue;
 	private String bodyInternalTypeKey;
 	private String targetInternalTypeKey;
@@ -61,7 +68,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(TARGET_URLS)
+	@Field(TARGET_ID)
 	public void setTargetUrls(List<String> targetUrls) {
 		this.targetUrls = targetUrls;
 	}
@@ -72,7 +79,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(TARGET_RECORD_IDS)
+	@Field(TARGET_RECORD_ID)
 	public void setTargetRecordIds(List<String> recordIds) {
 		this.targetRecordIds = recordIds;
 	}
@@ -83,7 +90,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(MOTIVATION_KEY)
+	@Field(MOTIVATION)
 	public void setMotivationKey(String motivationKey) {
 		this.motivationKey = motivationKey;
 	}
@@ -94,7 +101,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(BODY_INTERNAL_TYPE_KEY)
+	@Field(BODY_INTERNAL_TYPE)
 	public void setBodyInternalTypeKey(String bodyInternalTypeKey) {
 		this.bodyInternalTypeKey = bodyInternalTypeKey;
 	}
@@ -105,7 +112,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(TARGET_INTERNAL_TYPE_KEY)
+	@Field(TARGET_INTERNAL_TYPE)
 	public void setTargetInternalTypeKey(String targetInternalTypeKey) {
 		this.targetInternalTypeKey = targetInternalTypeKey;
 	}
@@ -186,7 +193,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(SolrAnnotationConstants.INTERNAL_TYPE_KEY)
+	@Field(SolrAnnotationConstants.INTERNAL_TYPE)
 	public void setInternalTypeKey(String internalTypeKey) {
 		this.internalTypeKey = internalTypeKey;
 	}
@@ -222,6 +229,28 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public String toString() {
 		return "SolrAnnotation [annotationIdUrl:" + getAnnotationIdUrl() + ", annotationIdUrl:" + getAnnotationIdUrl()
 				+ ", annotatedAt:" + getCreated() + ", bodyValue:" + getBodyValue() + "]";
+	}
+
+	@Override
+	public String getGeneratorName() {
+		return generatorName;
+	}
+
+	@Override
+	@Field(GENERATOR_NAME)
+	public void setGeneratorName(String generatorName) {
+		this.generatorName = generatorName;
+	}
+
+	@Override
+	public String getGeneratorId() {
+		return generatorId;
+	}
+
+	@Override
+	@Field(GENERATOR_ID)
+	public void setGeneratorId(String generatorId) {
+		this.generatorId = generatorId;
 	}
 
 }

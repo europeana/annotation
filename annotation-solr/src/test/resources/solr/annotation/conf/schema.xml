@@ -83,35 +83,41 @@
 	
 	<fields>
 		<!-- @Field("annotationIdUrl")  -->
-		<field name="annotation_id_url" type="keyword"  indexed="true"
+		<field name="annotation_id" type="keyword"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 		
 		<!-- @Field("internalTypeKey")  -->
-		<field name="internal_type_key" type="keyword"  indexed="false"
+		<field name="internal_type" type="keyword"  indexed="false"
 			required="true" multiValued="false" stored="true"/>
 		
 		<!-- @Field("bodyInternalTypeKey")  -->
-		<field name="body_internal_type_key" type="keyword"  indexed="false"
+		<field name="body_internal_type" type="keyword"  indexed="false"
 			required="false" multiValued="false" stored="true"/>
 		
 		<!-- @Field("targetInternalTypeKey")  -->
-		<field name="target_internal_type_key" type="keyword"  indexed="false"
+		<field name="target_internal_type" type="keyword"  indexed="false"
 			required="false" multiValued="false" stored="true"/>
 		
 		<!-- @Field("targetUrls")  -->
-		<field name="target_urls" type="keyword"  indexed="true"
+		<field name="target_id" type="keyword"  indexed="true"
 			required="true" multiValued="true" stored="true"/>
 		
 		<!-- @Field("targetRecordIds")  -->
-		<field name="target_record_ids" type="keyword"  indexed="true"
+		<field name="target_record_id" type="keyword"  indexed="true"
 			required="true" multiValued="true" stored="false"/>
 		
 		
 		<!-- @Field("motivationKey")  -->
-		<field name="motivation_key" type="keyword"  indexed="true"
+		<field name="motivation" type="keyword"  indexed="true"
 			required="true" multiValued="false" stored="true"/>
 		
 		
+		<field name="generator_id" type="keyword"  indexed="true"
+			required="true" multiValued="false" stored="true"/>
+		
+		<field name="generator_name" type="keyword"  indexed="true"
+			required="false" multiValued="false" stored="true"/>
+				
 		<!-- @Field("body_tag_id")  -->
 		<field name="body_tag_id" type="keyword"  indexed="false"
 			required="false" multiValued="false" stored="true"/>

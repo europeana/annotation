@@ -107,7 +107,12 @@ public class SolrAnnotationUtils {
 		// solrAnnotationImpl.setLanguage(body.getLanguage());
 		solrAnnotationImpl.setMotivation(annotation.getMotivation());
 		solrAnnotationImpl.setGenerated(annotation.getGenerated());
-		solrAnnotationImpl.setGenerator(annotation.getGenerator());
+		if(annotation.getGenerator() != null){
+			solrAnnotationImpl.setGenerator(annotation.getGenerator());
+			solrAnnotationImpl.setGeneratorId(annotation.getGenerator().getOpenId());
+			solrAnnotationImpl.setGeneratorName(annotation.getGenerator().getName());
+		}
+		
 		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
 		solrAnnotationImpl.setAnnotationIdUrl(annotation.getAnnotationId().toHttpUrl());
 
