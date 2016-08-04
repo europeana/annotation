@@ -3,6 +3,8 @@ package eu.europeana.annotation.web.service.controller.admin;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,9 @@ import eu.europeana.annotation.web.exception.authorization.OperationAuthorizatio
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
+import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
+import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api2.utils.JsonWebUtils;
@@ -33,21 +37,25 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @SwaggerSelect
-@Api(tags = "Web Annotation Admin", description=" ", hidden=true)
+@Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
 
-	// @GET
-	// @RequestMapping(value = "/admin/component", method = RequestMethod.GET,
-	// produces = MediaType.TEXT_HTML_VALUE)
-	// @ResponseBody
-	public String getComponentName() {
-		return getConfiguration().getComponentName() + "-admin";
+	@Resource
+	private AdminService adminService;
+
+	public AdminService getAdminService() {
+		return adminService;
 	}
 
-	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces ={"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+	}
+
+	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = {
+			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
 	@ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotationById(
-//			public ModelAndView deleteAnnotationById(
+			// public ModelAndView deleteAnnotationById(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_PROVIDER, required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) String identifier,
@@ -59,17 +67,14 @@ public class ManagementRest extends BaseRest {
 
 		deleteAnnotationForGood(provider, identifier, apiKey, userToken);
 		response.success = true;
-		//response.setStatus(status);
-
-//		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);				
+		return buildResponseEntityForJsonString(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotationSet(
-//			public ModelAndView deleteAnnotationSet(
+			// public ModelAndView deleteAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@RequestBody String uris) throws HttpException {
@@ -80,31 +85,19 @@ public class ManagementRest extends BaseRest {
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
-		int failureCount = 0;
-		int successCount = 0;
-		
 		List<String> uriList = BaseJsonParser.toStringList(uris, true);
-		AnnotationId annoId;
-		
-		for (String annoUri : uriList) {
-			annoId = JsonUtils.getIdHelper().parseAnnotationId(annoUri, true);
-			try{
-				getAnnotationService().deleteAnnotation(annoId);
-				successCount++;
-			}catch(Throwable th){
-				getLogger().info(th);
-				failureCount++;
-			}
-		}
+
+		BatchProcessingStatus status = getAdminService().deleteAnnotationSet(uriList);
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/deleteset");
-		response.setStatus("Success count: " + successCount + ". Failure count: " + failureCount);
+		response.setStatus(
+				"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
 		response.success = true;
 
-//		return JsonWebUtils.toJson(response, null);
+		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);				
+		return buildResponseEntityForJsonString(jsonStr);
 	}
 
 	protected void deleteAnnotationForGood(String provider, String identifier, String apiKey, String userToken)
@@ -117,7 +110,8 @@ public class ManagementRest extends BaseRest {
 	}
 
 	protected void deleteAnnotationForGood(AnnotationId annoId, String apiKey, String userToken)
-			throws InternalServerException, UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
+			throws InternalServerException, UserAuthorizationException, ApplicationAuthenticationException,
+			OperationAuthorizationException {
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -126,7 +120,7 @@ public class ManagementRest extends BaseRest {
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
 		try {
-			getAnnotationService().deleteAnnotation(annoId);
+			getAdminService().deleteAnnotation(annoId);
 		} catch (AnnotationServiceException e) {
 			throw new InternalServerException(e);
 		}
@@ -512,18 +506,28 @@ public class ManagementRest extends BaseRest {
 	// }
 
 	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Reindex by annotation id", nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
-	public ResponseEntity<String> reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
-//			public ModelAndView reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey", required = false) String apiKey,
+	@ApiOperation(value = "Reindex by annotation id", nickname = "reindexAnnotationByAnnotationId", response = java.lang.Void.class)
+	public ResponseEntity<String> reindexAnnotationByAnnotationId(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			// public ModelAndView
+			// reindexAnnotationByAnnotationId(@RequestParam(value = "apiKey",
+			// required = false) String apiKey,
 			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
-					throws UserAuthorizationException {
+					throws UserAuthorizationException, HttpException {
 
-		if (!isAdmin(apiKey, userToken))
-			throw new UserAuthorizationException(
-					"Not authorized for performing administration operations. Must use a valid apikey and token:",
-					apiKey + "_" + userToken);
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+
+		// if (!isAdmin(apiKey, userToken))
+		// throw new UserAuthorizationException(
+		// "Not authorized for performing administration operations. Must use a
+		// valid apikey and token:",
+		// apiKey + "_" + userToken);
 
 		BaseAnnotationId baseAnnotationId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider,
 				identifier);
@@ -531,9 +535,8 @@ public class ManagementRest extends BaseRest {
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/reindex");
 
-//		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);				
+		return buildResponseEntityForJsonString(jsonStr);
 	}
 
 	/**
@@ -548,11 +551,12 @@ public class ManagementRest extends BaseRest {
 		return (apiKey.equals("apiadmin") && userToken.equals("admin"));
 	}
 
-	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Reindex by annotation id", notes = SwaggerConstants.REINDEX_HELP_NOTE, 
-		nickname="reindexAnnotationByAnnotationId", response = java.lang.Void.class)
-	public ResponseEntity<String> reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
-//			public ModelAndView reindexAnnotationSet(@RequestParam(value = "apiKey", required = false) String apiKey,
+	@RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Reindex a set of annotations defined by selection criteria", notes = SwaggerConstants.REINDEX_HELP_NOTE, nickname = "reindexAnnotationBySelection", response = java.lang.Void.class)
+	public ResponseEntity<String> reindexAnnotationSelection(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			// public ModelAndView reindexAnnotationSet(@RequestParam(value =
+			// "apiKey", required = false) String apiKey,
 			@RequestParam(value = "startDate", required = false) String startDate,
 			@RequestParam(value = "endDate", required = false) String endDate,
 			@RequestParam(value = "startTimestamp", required = false) String startTimestamp,
@@ -564,14 +568,67 @@ public class ManagementRest extends BaseRest {
 			throw new UserAuthorizationException("User not authorized. Must use the admin apikey and token:",
 					apiKey + "_" + userToken);
 
-		String status = getAdminService().reindexAnnotationSet(startDate, endDate, startTimestamp, endTimestamp);
+		BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp, endTimestamp);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/reindexset");
-		response.setStatus(status);
+		response.setStatus(status.toString());
 
-//		return JsonWebUtils.toJson(response, null);
+		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);				
+		return buildResponseEntityForJsonString(jsonStr);
 	}
 
+	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Reindex by annotation id", notes = SwaggerConstants.REINDEX_HELP_NOTE, nickname = "reindexAnnotationByAnnotationId", response = java.lang.Void.class)
+	public ResponseEntity<String> reindexAnnotationSet(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			@RequestBody String uris) throws UserAuthorizationException, HttpException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+
+		List<String> uriList = BaseJsonParser.toStringList(uris, true);
+
+		BatchProcessingStatus status = getAdminService().reindexAnnotationSet(uriList);
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
+		response.setStatus(
+				"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
+		response.success = true;
+
+		// return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);
+	}
+	
+	@RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Reindex all annotations", notes = SwaggerConstants.REINDEX_HELP_NOTE, nickname = "reindexAll", response = java.lang.Void.class)
+	public ResponseEntity<String> reindexAll(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+					throws UserAuthorizationException, HttpException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+
+		BatchProcessingStatus status = getAdminService().reindexAll();
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
+		response.setStatus(
+				"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
+		response.success = true;
+
+		// return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		return buildResponseEntityForJsonString(jsonStr);
+	}
 }

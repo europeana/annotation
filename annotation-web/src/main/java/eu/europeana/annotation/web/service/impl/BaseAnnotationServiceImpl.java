@@ -144,51 +144,7 @@ public class BaseAnnotationServiceImpl {
 		return success;
 	}
 
-	public String reindexAnnotationSet(String startDate, String endDate, String startTimestamp, String endTimestamp) {
-		String status = "";
-		int successCount = 0;
-		int failureCount = 0;
-		if (!Strings.isNullOrEmpty(startDate)) {
-			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
-		}
-
-		if (!Strings.isNullOrEmpty(endDate)) {
-			endTimestamp = TypeUtils.getUnixDateStringFromDate(endDate);
-		}
-
-		List<String> res = getMongoPersistence().filterByTimestamp(startTimestamp, endTimestamp);
-		Iterator<String> iter = res.iterator();
-		while (iter.hasNext()) {
-			String id = iter.next();
-			try {
-				Annotation annotation = getMongoPersistence().findByID(id);
-				if(annotation == null)
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
-				if (success) {
-					successCount = successCount + 1;
-				} else {
-					failureCount = failureCount + 1;					
-				}
-			}
-			catch (IllegalArgumentException iae) {
-				String msg = "id: " + id + ". " + iae.getMessage();
-					Logger.getLogger(getClass().getName()).error(msg);
-//						throw new RuntimeException(iae);
-					failureCount = failureCount + 1;					
-			} catch (Exception e) {
-				String msg = "Date error by reindexing of annotation set." +
-					" startDate: " + startDate + ", endDate: " + endDate 
-					+ ", startTimestamp: " + startTimestamp+ ", endTimestamp: " + endTimestamp 
-					+ ". " + e.getMessage();
-				Logger.getLogger(getClass().getName()).error(msg);
-				status = msg;
-//				throw new RuntimeException(e);
-			}
-		}
-		status = "success count: " + String.valueOf(successCount) + ", failure count: " + String.valueOf(failureCount);
-		return status;
-	}
+	
 
 	/**
 	 * Returns true by successful reindexing.

@@ -15,7 +15,6 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
-import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
@@ -28,22 +27,15 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
-import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
-import eu.europeana.annotation.web.model.vocabulary.Operations;
-import eu.europeana.annotation.web.model.vocabulary.UserGroups;
-import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
-import eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl;
 
 public class BaseRest extends ApiResponseBuilder {
 
@@ -52,9 +44,6 @@ public class BaseRest extends ApiResponseBuilder {
 
 	@Resource
 	private AnnotationService annotationService;
-
-	@Resource
-	private AdminService adminService;
 
 	@Resource
 	AuthenticationService authenticationService;
@@ -82,15 +71,7 @@ public class BaseRest extends ApiResponseBuilder {
 	public AuthenticationService getAuthenticationService() {
 		return authenticationService;
 	}
-
-	public AdminService getAdminService() {
-		return adminService;
-	}
-
-	public void setAdminService(AdminService adminService) {
-		this.adminService = adminService;
-	}
-	
+		
 	public void setAuthenticationService(AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
 	}

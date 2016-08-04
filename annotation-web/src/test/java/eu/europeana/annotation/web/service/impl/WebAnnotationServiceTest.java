@@ -51,6 +51,7 @@ import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 
@@ -68,6 +69,10 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	
 	@Resource 
 	AnnotationService webAnnotationService;
+	
+	@Resource 
+	AdminService adminService;
+	
 	
 	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
 	
@@ -299,7 +304,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Delete Annotation.
 		 */
-		webAnnotationService.deleteAnnotation(
+		adminService.deleteAnnotation(
 				storedAnnotation.getAnnotationId());
 		
 		/**
@@ -380,7 +385,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Delete Annotation.
 		 */
-		webAnnotationService.deleteAnnotation(
+		adminService.deleteAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
 				storedAnnotation.getAnnotationId());
 		

@@ -14,12 +14,11 @@ import javax.annotation.Resource;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
-import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
-import eu.europeana.annotation.web.service.AdminService;
+import eu.europeana.annotation.web.service.WhitelistService;
 
-public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
+public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements WhitelistService {
 
 	@Resource
 	PersistentWhitelistService mongoWhitelistPersistence;

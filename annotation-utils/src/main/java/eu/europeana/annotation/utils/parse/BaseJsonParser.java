@@ -20,7 +20,6 @@ public class BaseJsonParser {
     /**
      * Supports conversion of {["val1", "val2"]} or ["val1", "val2"] 
      * This method converts JSON string to List<String>.
-     * @deprecated - TODO change implementation to use the standard json parser
      * @param value The input string
      * @return resulting List<String>
      */

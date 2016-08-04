@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.controller.admin;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.ws.rs.DELETE;
 
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
+import eu.europeana.annotation.web.service.WhitelistService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api2.utils.JsonWebUtils;
@@ -36,8 +38,18 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Whitelist JSON Rest Service", description=" ", hidden=true)
 @RequestMapping(value = "/"+WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {
+	
+	@Resource
+	private WhitelistService whitelistService;
+	
+	public WhitelistService getWhitelistService() {
+		return whitelistService;
+	}
 
-
+	public void setWhitelistService(WhitelistService whitelistService) {
+		this.whitelistService = whitelistService;
+	}
+	
 	@RequestMapping(value = "/component", method = RequestMethod.GET
 			, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
@@ -61,7 +73,7 @@ public class WhitelistRest extends BaseRest {
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
-		WhitelistEntry whitelist = getAdminService().getWhitelistEntryByUrl(url);
+		WhitelistEntry whitelist = getWhitelistService().getWhitelistEntryByUrl(url);
 
 		WhitelistOperationResponse response = new WhitelistOperationResponse(
 				apiKey, "/whitelist/search");
@@ -96,7 +108,7 @@ public class WhitelistRest extends BaseRest {
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
-		List<? extends WhitelistEntry> whitelist = getAdminService().getWhitelist();
+		List<? extends WhitelistEntry> whitelist = getWhitelistService().getWhitelist();
 
 		String action = "get:/whitelist/view";
 		
@@ -126,7 +138,7 @@ public class WhitelistRest extends BaseRest {
 		WhitelistEntry webWhitelist = WhiteListParser.toWhitelistEntry(whitelist);
 	
 		//store				
-		WhitelistEntry storedWhitelist = getAdminService().storeWhitelistEntry(webWhitelist);
+		WhitelistEntry storedWhitelist = getWhitelistService().storeWhitelistEntry(webWhitelist);
 
 		//build response
 		WhitelistOperationResponse response = new WhitelistOperationResponse(
@@ -153,7 +165,7 @@ public class WhitelistRest extends BaseRest {
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
 
-		List<? extends WhitelistEntry> whitelist = getAdminService().loadWhitelistFromResources();
+		List<? extends WhitelistEntry> whitelist = getWhitelistService().loadWhitelistFromResources();
 
 		String action = "/load";
 		
@@ -184,7 +196,7 @@ public class WhitelistRest extends BaseRest {
 				apiKey, "/whitelist/deleteall");
 			
 		try{
-			int numDeletedWhitelistEntries = getAdminService().deleteWholeWhitelist();
+			int numDeletedWhitelistEntries = getWhitelistService().deleteWholeWhitelist();
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
@@ -218,7 +230,7 @@ public class WhitelistRest extends BaseRest {
 				apiKey, "delete/whitelist/delete");
 			
 		try{
-			int numDeletedWhitelistEntries = getAdminService().deleteWhitelistEntry(url);
+			int numDeletedWhitelistEntries = getWhitelistService().deleteWhitelistEntry(url);
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
@@ -231,6 +243,5 @@ public class WhitelistRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		return buildResponseEntityForJsonString(jsonStr);		
 	}
-
 	
 }
