@@ -1,20 +1,15 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Strings;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;

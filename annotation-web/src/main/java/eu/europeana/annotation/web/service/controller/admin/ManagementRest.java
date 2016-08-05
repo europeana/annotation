@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -578,7 +579,7 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
-	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Reindex by annotation id", notes = SwaggerConstants.REINDEX_HELP_NOTE, nickname = "reindexAnnotationByAnnotationId", response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
@@ -593,17 +594,19 @@ public class ManagementRest extends BaseRest {
 
 		List<String> uriList = BaseJsonParser.toStringList(uris, true);
 
-		BatchProcessingStatus status = getAdminService().reindexAnnotationSet(uriList);
+		BatchProcessingStatus status = getAdminService().reindexAnnotationSet(uriList, false);
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
 		response.setStatus(
 				"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
-		response.success = true;
-
+		//only if at least one item was successfully reindexed
+		response.success = (status.getSuccessCount() > 0);
+		
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);
+		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;  
+		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
 	
 	@RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

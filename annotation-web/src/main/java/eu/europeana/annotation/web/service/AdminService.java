@@ -51,11 +51,11 @@ public interface AdminService {
 	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
 
 	/**
-	 * This methods reindexes the set of annotations identified by their uris
+	 * This methods reindexes the set of annotations identified by their uris or objectIds
 	 * @param uriList
 	 * @return
 	 */
-	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList);
+	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList, boolean isObjectId);
 
 	/**
 	 * this method is used to reindex all annotations available in the database 

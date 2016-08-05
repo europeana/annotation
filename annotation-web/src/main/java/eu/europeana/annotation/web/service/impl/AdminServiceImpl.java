@@ -1,13 +1,9 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 import com.google.common.base.Strings;
 
@@ -93,69 +89,47 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp) {
+		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
+		return reindexAnnotationSet(res, true);
+	}
+
+	@Override
+	//TODO:reimplement using database cursors for higher scalability
+	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
+		
 		BatchProcessingStatus status = new BatchProcessingStatus();
-		List<String> res = getMongoPersistence().filterByTimestamp(startTimestamp, endTimestamp);
-		Iterator<String> iter = res.iterator();
-		while (iter.hasNext()) {
-			String id = iter.next();
+		AnnotationId annoId = null;
+		Annotation annotation;
+		int count = 0;
+		for (String id : ids) {
 			try {
-				Annotation annotation = getMongoPersistence().findByID(id);
+				count++;
+				if(count % 1000 == 0)
+					getLogger().info("Processing object: " + count);
+				//check
+				if(isObjectId){
+					annotation = getMongoPersistence().findByID(id);
+				}else{
+					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+					annotation = getMongoPersistence().find(annoId);
+				}
+				
 				if (annotation == null)
 					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
 				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
 				if (success) 
 					status.incrementSuccessCount();
 				else 
-					status.incrementFailureCount();
+					status.incrementFailureCount();			
 			} catch (IllegalArgumentException iae) {
 				String msg = "id: " + id + ". " + iae.getMessage();
-				Logger.getLogger(getClass().getName()).error(msg);
+				getLogger().error(msg);
 				// throw new RuntimeException(iae);
 				status.incrementFailureCount();
 			} catch (Exception e) {
-				Calendar start = new GregorianCalendar();
-				start.setTimeInMillis(Long.parseLong(startTimestamp));
-				
-				Calendar end = new GregorianCalendar();
-				start.setTimeInMillis(Long.parseLong(endTimestamp));
-				
-				
-				String msg = "Date error by reindexing of annotation set." + " startTimestamp: " + startTimestamp +  "( " + start +")" 
-						+ ", endTimestamp: " + endTimestamp + "(" + end + "). "
+				String msg = "Error when reindexing annotation: "+ annoId
 						+ e.getMessage();
-				Logger.getLogger(getClass().getName()).error(msg);
-				status.incrementFailureCount();
-				// throw new RuntimeException(e);
-			}
-		}
-		return status;
-	}
-
-	@Override
-	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList) {
-		
-		BatchProcessingStatus status = new BatchProcessingStatus();
-		Iterator<String> iter = uriList.iterator();
-		while (iter.hasNext()) {
-			String id = iter.next();
-			try {
-				Annotation annotation = getMongoPersistence().findByID(id);
-				if (annotation == null)
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
-				if (success)
-					status.incrementSuccessCount();
-				else 
-					status.incrementFailureCount();
-			} catch (IllegalArgumentException iae) {
-				String msg = "id: " + id + ". " + iae.getMessage();
-				Logger.getLogger(getClass().getName()).error(msg);
-				// throw new RuntimeException(iae);
-				status.incrementFailureCount();
-			} catch (Exception e) {
-				String msg = "Cannot (re)index annotation with id: "+ id + "\n "
-						+ e.getMessage();
-				Logger.getLogger(getClass().getName()).error(msg);
+				getLogger().error(msg);
 				status.incrementFailureCount();
 				// throw new RuntimeException(e);
 			}

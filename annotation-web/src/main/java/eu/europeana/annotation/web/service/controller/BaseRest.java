@@ -245,14 +245,20 @@ public class BaseRest extends ApiResponseBuilder {
 	
 	protected ResponseEntity <String> buildResponseEntityForJsonString(String jsonStr) {
 		
+		HttpStatus httpStatus = HttpStatus.OK;
+		ResponseEntity<String> response = buildResponseEntityForJsonString(jsonStr, httpStatus);
+		
+		return response;		
+	}
+
+	protected ResponseEntity<String> buildResponseEntityForJsonString(String jsonStr, HttpStatus httpStatus) {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 		headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
 		headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
 
-		ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, HttpStatus.OK);
-		
-		return response;		
+		ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, httpStatus);
+		return response;
 	}
 
 	public AuthorizationService getAuthorizationService() {

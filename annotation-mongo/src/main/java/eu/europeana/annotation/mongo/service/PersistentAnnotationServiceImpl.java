@@ -1,7 +1,6 @@
 package eu.europeana.annotation.mongo.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -591,7 +590,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 *            as long value in string format
 	 * @return evaluated ID list
 	 */
-	public List<String> filterByTimestamp(
+	public List<String> filterByLastUpdateTimestamp(
 			// public List<AnnotationId> filterByTimestamp(
 			// public List<? extends Annotation> filterByTimestamp(
 			String startTimestamp, String endTimestamp) {
@@ -604,15 +603,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}
-		// QueryResults<? extends PersistentAnnotation> results =
-		// getAnnotationDao()
-		// .find(query);
-		List<String> results = getAnnotationDao().findIds(query);
-		String resultsArrString = results.toString();
-		resultsArrString = resultsArrString.substring(1, resultsArrString.length() - 1);
-		results = new ArrayList<String>(Arrays.asList(resultsArrString.split(",")));
-		// return results.asList();
-		return results;
+		//Actually this is a list of Objects
+		List<String> res = getAnnotationDao().findIds(query);
+		//convert the list
+		List<String> response = new ArrayList<String>(res.size());
+		for (Object id : res){ response.add(id.toString()); }
+		
+		return response;
 	}
 
 	@Override

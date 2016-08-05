@@ -53,21 +53,34 @@
 	 -->
 	<beans:bean name="annotation_authenticationService" class="eu.europeana.annotation.web.service.authentication.mock.BridgeAuthenticationManagerAdapter"/>
 	<beans:bean name="annotation_authorizationService" class="eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl">
+		<!-- 
 		<beans:property name="configuration" ref="configuration"/>
-    	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
+    	<beans:property name="authenticationService" ref="annotation_authenticationService"/>
+    	 --> 	
     </beans:bean>
     
 	
     
     <!--  java api bean -->
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
+    	<!-- 
     	<beans:property name="configuration" ref="configuration"/>
-    	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
+    	<beans:property name="authenticationService" ref="annotation_authenticationService"/>
+    	 --> 	
     </beans:bean>
     
-	<beans:bean id="adminService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
+	<beans:bean id="whitelistService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
+    <!-- 	
     	<beans:property name="configuration" ref="configuration"/>
-    	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
+    	<beans:property name="authenticationService" ref="annotation_authenticationService"/>
+    	 --> 	
+    </beans:bean>
+    
+    <beans:bean id="adminService" class="eu.europeana.annotation.web.service.impl.AdminServiceImpl">
+    <!-- 
+    	<beans:property name="configuration" ref="configuration"/>
+    	<beans:property name="authenticationService" ref="annotation_authenticationService"/>
+    	 --> 	
     </beans:bean>
     
     <beans:bean id="annotationSearchService" class="eu.europeana.annotation.web.service.impl.AnnotationSearchServiceImpl">
