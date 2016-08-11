@@ -94,5 +94,4 @@
 		<name>Europeana Foundation</name>
 	</organization>
 	
-	<version>${version.annotationApi}</version>
 </project>
