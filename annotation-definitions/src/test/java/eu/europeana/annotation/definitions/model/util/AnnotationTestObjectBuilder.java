@@ -37,7 +37,7 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StyleTypes;
@@ -57,7 +57,7 @@ public class AnnotationTestObjectBuilder {
 	public static Body buildSemanticTagBody(String text, String language) {
 		
 		Body body = BodyObjectFactory.getInstance().createModelObjectInstance(
-				BodyTypes.SEMANTIC_TAG.name());
+				BodyInternalTypes.SEMANTIC_TAG.name());
 		
 //		body.setType("[oa:Tag,cnt:ContentAsText,dctypes:Text,euType:"
 //				+ BodyTypes.SEMANTIC_TAG.name() 
@@ -72,8 +72,9 @@ public class AnnotationTestObjectBuilder {
 		body.setValue(text);
 		body.setLanguage(language);
 		body.setContentType("text/plain");
-		body.setMediaType("[oa:SemanticTag]");
+//		body.setMediaType("[oa:SemanticTag]");
 		body.setHttpUri("https://www.freebase.com/m/035br4");
+		body.setInputString("{fake serialization}");
 		
 		return body;
 	}
@@ -83,7 +84,7 @@ public class AnnotationTestObjectBuilder {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(
 				TargetTypes.IMAGE.name());
 
-		target.setType("oa:" + TargetTypes.IMAGE.name());
+		target.addType("oa:" + TargetTypes.IMAGE.name());
 		
 //		target.setType(
 //				"[oa:SpecificResource,euType:" 
@@ -103,8 +104,9 @@ public class AnnotationTestObjectBuilder {
 		source.setContentType("text/html");
 //		source.setHttpUri("http://europeana.eu/portal/record//15502/GG_8285.html");
 		source.setHttpUri("http://europeana.eu/portal/record/" + TEST_EUROPEANA_ID + ".html");
-		source.setMediaType("dctypes:Text");
+//		source.setMediaType("dctypes:Text");
 		target.setSourceResource(source);
+		target.setInputString("{fake serialization}");
 		
 		return target;
 	}

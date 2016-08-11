@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 
 /**
@@ -40,7 +40,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		    END;
 	
     public String CORRUPTED_UPDATE_BODY =
-    		"\"body\":=,\"Buccin Trombone\"";
+    		"\"bodyText\":=,\"Buccin Trombone\"";
 
     public String CORRUPTED_UPDATE_JSON =
     		START +

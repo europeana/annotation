@@ -29,13 +29,13 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
+import eu.europeana.annotation.definitions.exception.WhitelistParserException;
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
@@ -49,8 +49,10 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelistEntry;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
+import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
@@ -64,16 +66,13 @@ import eu.europeana.annotation.utils.serialization.WhitelistDeserializer;
 
 /**
  * @Deprecated the provided methods must be replaced by proper usage of the json to annotation parser 
- *
+ * This class is mainly used in Annotation Client. Should be moved there
  */
-public class JsonUtils {
+public class JsonUtils extends BaseJsonParser{
 	
 //	private static Logger log = Logger.getRootLogger();
 //	private static final Logger log = Logger.getLogger(JSONUtils.class);
 //	private static ObjectMapper objectMapper = new ObjectMapper();
-	private static ObjectMapper objectMapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY)
-			.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private static final JsonFactory jsonFactory = new JsonFactory();
 	
 	private static AnnotationIdHelper idHelper;
 	public static AnnotationIdHelper getIdHelper() {
@@ -83,75 +82,11 @@ public class JsonUtils {
 	}
 	
 	
-	public static InputStream readJsonFileInInputStream(String pathToJson) {
-	    InputStream is = null;
-
-	    try {
-	        is = new FileInputStream(pathToJson);
-
-	        is.close(); 
-	    } catch (FileNotFoundException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-	    }
-
-	    return is;
-	}
-	
-	
-	public static List<WhitelistEntry> toWhitelist(String pathToJson) {
-		List<WhitelistEntry> res = new ArrayList<WhitelistEntry>();
-		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode rootNode = mapper.readTree(new File(pathToJson));
-			List<JsonNode> rootList = rootNode.findValues("whitelist");
-			JsonNode entriesJsonNode = rootList.get(0);
-			for (JsonNode jsonNode : entriesJsonNode) {
-				WhitelistEntry whitelistEntry = mapper.readValue(jsonNode, BaseWhitelistEntry.class);
-				res.add(whitelistEntry);
-			}
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res;
-	}
-	
-	
-	public static WhitelistEntry toWhitelistEntry(String json) {
-		JsonParser parser;
-		WhitelistEntry whitelist = null;
-		try {
-			parser = jsonFactory.createJsonParser(json);
-			SimpleModule module =  
-			      new SimpleModule("WhitelistDeserializerModule",  
-			          new Version(1, 0, 0, null));  
-			    
-			module.addDeserializer(WhitelistEntry.class, new WhitelistDeserializer());  
-//			module.addDeserializer(Map.class, new MapDeserializer());
-			module.addDeserializer(List.class, new ListDeserializer());
-			
-			objectMapper.registerModule(module); 
-			
-			parser.setCodec(objectMapper);
-			whitelist = objectMapper.readValue(parser, WhitelistEntry.class);
-		} catch (JsonParseException e) {
-			throw new AnnotationInstantiationException("Json formating exception!", e);
-		} catch (IOException e) {
-			throw new AnnotationInstantiationException("Json reading exception!", e);
-		}
-		
-		return whitelist;
-	}
-	
-		
+	/**
+	 * @Deprecated use 
+	 * @param json
+	 * @return
+	 */
 	public static Annotation toAnnotationObject(String json) {
 		JsonParser parser;
 		Annotation annotation = null;
@@ -405,41 +340,6 @@ public class JsonUtils {
         }
         return res;
     }
-    
-   /**
-    * Supports conversion of {["val1", "val2"]} or ["val1", "val2"] 
-    * This method converts JSON string to List<String>.
-    * @param value The input string
-    * @return resulting List<String>
-    */
-   public static List<String> toStringList(String json, boolean removeQuote) {
-   		String list = json.trim();
-   		String startCurly = "{";
-   		String endCurly = "}";
-		if(list.startsWith(startCurly))
-   			list = list.substring(startCurly.length());
-   		if(list.endsWith(endCurly))
-   			list = list.substring(0, list.length() - endCurly.length());
-		list = list.trim();
-		
-		String startBracket = "[";
-		String endBracket = "]";
-		
-		if(list.startsWith(startBracket))
-   			list = list.substring(startBracket.length());
-   		if(list.endsWith(endBracket))
-   			list = list.substring(0, list.length() - endBracket.length());
-		list = list.trim();
-		if(removeQuote)
-			list = list.replaceAll("\"", "");
-		
-		list = list.replaceAll("\n", "");
-		list = list.replaceAll(",", " ");
-		
-		String[] values = StringUtils.split(list);
-		
-       return Arrays.asList(values);
-   }
     
     /**
      * This method extracts identifier from the AnnotationId string. 

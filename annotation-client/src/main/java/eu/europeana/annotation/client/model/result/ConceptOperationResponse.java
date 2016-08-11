@@ -1,6 +1,6 @@
 package eu.europeana.annotation.client.model.result;
 
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 
 public class ConceptOperationResponse extends AbstractAnnotationApiResponse{
 

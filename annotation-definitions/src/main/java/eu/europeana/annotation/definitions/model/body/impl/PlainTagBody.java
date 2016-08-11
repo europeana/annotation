@@ -1,7 +1,7 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
 import eu.europeana.annotation.definitions.model.body.TagBody;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public class PlainTagBody extends BaseBody implements TagBody{
 
@@ -9,7 +9,7 @@ public class PlainTagBody extends BaseBody implements TagBody{
 	
 	public PlainTagBody(){
 		super();
-		setInternalType(BodyTypes.TAG.name());
+		setInternalType(BodyInternalTypes.TAG.name());
 	}
 
 	@Override

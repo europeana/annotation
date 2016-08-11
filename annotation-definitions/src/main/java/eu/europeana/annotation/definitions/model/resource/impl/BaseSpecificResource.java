@@ -15,22 +15,7 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	private State state;
 	private String styleClass;
 	protected String purpose;
-	private String internalType;
-	private String inputString;
 	
-	
-	public String getInputString() {
-		return inputString;
-	}
-	public void setInputString(String inputString) {
-		this.inputString = inputString;
-	}
-	public String getInternalType() {
-		return internalType;
-	}
-	public void setInternalType(String internalType) {
-		this.internalType = internalType;
-	}
 	public String getSource() {
 		return sourceUri;
 	}

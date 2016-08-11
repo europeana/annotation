@@ -6,14 +6,9 @@ import java.util.List;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 
-public class BaseInternetResource implements InternetResource{
+public class BaseInternetResource extends AbstractResource implements InternetResource{
 
-	private String contentType;
 	private String mediaType;
-	private String httpUri;
-	private String language;
-	private String value;
-	
 	private List<String> values = new ArrayList<String>(2);
 
 	public void addValue(String value) {
@@ -59,16 +54,6 @@ public class BaseInternetResource implements InternetResource{
 	}	
 	
 	@Override
-	public String getContentType() {
-		return contentType;
-	}
-
-	@Override
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	@Override
 	public String getMediaType() {
 		return mediaType;
 	}
@@ -79,42 +64,16 @@ public class BaseInternetResource implements InternetResource{
 	}
 
 	@Override
-	public String getHttpUri() {
-		return httpUri;
-	}
-
-	@Override
-	public void setHttpUri(String httpUri) {
-		this.httpUri = httpUri;
-	}
-
-	@Override
-	public String getLanguage() {
-		return language;
-	}
-
-	@Override
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
 	public void copyInto(InternetResource destination){
 		destination.setContentType(this.getContentType());
 		destination.setHttpUri(this.getHttpUri());
 		destination.setLanguage(this.getLanguage());
-		destination.setMediaType(this.getMediaType());
+		destination.setInternalType(this.getInternalType());
 		destination.setValue(this.getValue());
+		destination.setValues(this.getValues());
+		destination.setContext(this.getContext());
+		destination.setResourceId(this.getResourceId());
+		destination.setResourceIds(this.getResourceIds());
 	}
 	
 	@Override
@@ -133,12 +92,6 @@ public class BaseInternetResource implements InternetResource{
 	    if ((this.getContentType() != null) && (that.getContentType() != null) &&
 	    		(!this.getContentType().equals(that.getContentType()))) {
 	    	System.out.println("Style objects have different 'contentType' fields.");
-	    	res = false;
-	    }
-	    
-	    if ((this.getMediaType() != null) && (that.getMediaType() != null) &&
-	    		(!this.getMediaType().equals(that.getMediaType()))) {
-	    	System.out.println("Style objects have different 'mediaType' fields.");
 	    	res = false;
 	    }
 	    
@@ -173,8 +126,6 @@ public class BaseInternetResource implements InternetResource{
 		
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
-		if (getMediaType() != null) 
-			res = res + "\t\t" + "mediaType:" + getMediaType() + "\n";
 		if (getHttpUri() != null) 
 			res = res + "\t\t" + "httpUri:" + getHttpUri() + "\n";
 		if (getLanguage() != null) 

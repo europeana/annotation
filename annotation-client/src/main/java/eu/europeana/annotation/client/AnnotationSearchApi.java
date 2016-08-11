@@ -3,7 +3,7 @@ package eu.europeana.annotation.client;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 
 public interface AnnotationSearchApi {
 

@@ -9,16 +9,15 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
-import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
@@ -67,13 +66,6 @@ public interface AnnotationService {
 	public List<? extends Annotation> getFilteredAnnotationList (
 			String resourceId, String startOn, String limit, boolean isDisabled);
 	
-	/**
-	 * This method creates Annotation object from a JsonLd string.
-	 * @param annotationJsonLdStr
-	 * @return Annotation object
-	 */
-	public Annotation parseAnnotation(String annotationJsonLdStr);
-
 	/**
 	 * This method creates Europeana Annotation object from a JsonLd string.
 	 * @param motivationType 
@@ -295,14 +287,6 @@ public interface AnnotationService {
 	 * @throws ParamValidationException 
 	 */
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
-
-	/**
-	 * This method deletes annotation by annotationId values.
-	 * @param annoId
-	 * @throws InternalServerException 
-	 * @throws AnnotationServiceException 
-	 */
-	void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
 
 	void indexAnnotation(AnnotationId annoId);
 

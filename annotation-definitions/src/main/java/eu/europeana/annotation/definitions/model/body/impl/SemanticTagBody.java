@@ -1,6 +1,6 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public class SemanticTagBody extends PlainTagBody{
 
@@ -8,7 +8,7 @@ public class SemanticTagBody extends PlainTagBody{
 	
 	public SemanticTagBody(){
 		super();
-		setInternalType(BodyTypes.SEMANTIC_TAG.name());
+		setInternalType(BodyInternalTypes.SEMANTIC_TAG.name());
 	}
 
 	public String getRelated() {

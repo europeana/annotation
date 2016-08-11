@@ -27,7 +27,7 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
-import eu.europeana.annotation.utils.parse.jsonld.EuropeanaAnnotationLd;
+import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
@@ -56,7 +56,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
 			
 			// 1. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -90,7 +90,7 @@ public class BaseJsonldRest extends BaseRest {
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
 			
 			// serialize to jsonld
-			JsonLd annotationLd = new EuropeanaAnnotationLd(storedAnnotation);
+			JsonLd annotationLd = new AnnotationLdSerializer(storedAnnotation);
 			String jsonLd = annotationLd.toString(4);
 			// return JsonWebUtils.toJson(jsonLd, null);
 
@@ -181,7 +181,7 @@ public class BaseJsonldRest extends BaseRest {
 							e);
 			}
 
-			JsonLd annotationLd = new EuropeanaAnnotationLd(annotation);
+			JsonLd annotationLd = new AnnotationLdSerializer(annotation);
 			String jsonLd = annotationLd.toString(4);
 
 			int etag;
@@ -326,7 +326,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
 			// 5. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
+			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
 
 			// Retrieve an annotation based on its identifier;
 			Annotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
@@ -351,7 +351,7 @@ public class BaseJsonldRest extends BaseRest {
 			Annotation updatedAnnotation = getAnnotationService().updateAnnotation(storedAnnotation);
 
 			// serialize to jsonld
-			JsonLd annotationLd = new EuropeanaAnnotationLd(updatedAnnotation);
+			JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation);
 			String jsonLd = annotationLd.toString(4);
 
 			// build response entity with headers
@@ -450,7 +450,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
 			// 5. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
+			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
 
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
@@ -511,7 +511,7 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
 			// 1. authorize user
-			Agent user = authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
+			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
 
 			// build vote
 			Date reportDate = new Date();

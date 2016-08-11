@@ -2,7 +2,7 @@ package eu.europeana.annotation.mongo.model.internal;
 
 import org.bson.types.ObjectId;
 
-import eu.europeana.annotation.definitions.model.resource.TagResource;
+import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
 

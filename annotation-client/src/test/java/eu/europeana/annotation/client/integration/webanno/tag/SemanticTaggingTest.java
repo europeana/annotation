@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class SemanticTaggingTest extends BaseTaggingTest {
 
@@ -37,18 +37,8 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 	public void createSemanticTagSimpleMinimal() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		String inputType = SEMANTICTAG_SIMPLE_MINIMAL;
-		
-		System.out.println("Input File: " + inputType);
-		
-		String requestBody = getJsonStringInput(inputType);
-
-		ResponseEntity<String> response = getApiClient().createTag(
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
-				TEST_USER_TOKEN);
-		
-		assertEquals(""+HttpStatus.BAD_REQUEST.value() , ""+response.getStatusCode());
-		//assertTrue(response.getBody().indexOf("AnnotationAttributeInstantiationException") > 0);
+		Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_MINIMAL);
+		System.out.println(anno.getBody().getInternalType());
 	}
 
 	@Test

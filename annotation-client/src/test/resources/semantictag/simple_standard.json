@@ -1,9 +1,9 @@
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
-    "@type": "oa:Annotation",
+    "type": "Annotation",
     "motivation": "tagging",	
     "body": {
-        "@id": "http://www.geonames.org/2988507",  
+        "id": "http://www.geonames.org/2988507",  
         "language": "en",
         "format": "application/rdf+xml"
     },

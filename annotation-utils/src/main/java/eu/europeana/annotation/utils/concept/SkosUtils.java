@@ -22,10 +22,10 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.concept.Concept;
-import eu.europeana.annotation.definitions.model.concept.impl.BaseConcept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
+import eu.europeana.annotation.definitions.model.entity.impl.BaseConcept;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 
 /**

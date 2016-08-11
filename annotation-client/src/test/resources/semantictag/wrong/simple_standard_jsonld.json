@@ -1,0 +1,11 @@
+{
+    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "@type": "Annotation",
+    "motivation": "tagging",	
+    "body": {
+        "@id": "http://www.geonames.org/2988507",  
+        "language": "en",
+        "format": "application/rdf+xml"
+    },
+    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+}

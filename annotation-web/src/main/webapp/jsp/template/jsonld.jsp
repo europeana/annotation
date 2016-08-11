@@ -9,57 +9,111 @@ boolean hasType = withType != null;
 %>	
 <%@include file="description.jspf"%>
 
+<p>
+The following properties are optional in all annotations:
+<b>context, type, creator, created, generated, generator, format.</b> 
+</p>
 					<ul id="toc">
-						<li><a href="#tag">Create (Object) Tag</a></li>
+						<li><a href="#tag_bodyValue">Create (Object) Tag - bodyValue</a></li>
+						<li><a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a></li>
+						<li><a href="#tag_geoTag">Create (Object) GeoTag</a></li>
+						<li><a href="#semantictag_simple_minimal">Create Semantic Tag - minimal representation</a></li>
 						<li><a href="#semantictag_simple">Create (Semantic) Tag</a></li>
 						<li><a href="#semantictag_specific">Create (Semantic) Tag - Specific Resource</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
+						<li><a href="#objectlink_specificRelation">Create Object Link - by specifying a relation type</a></li>
 					</ul>
 
-<h3 id="tag">Create (Object) Tag</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of (simple) <b>tags</b>. 
+<h3 id="tag_bodyValue">Create (Object) Tag</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of simple <b>tags</b> using the bodyValue.
+The response will be however, expanded to the TextualBody representation. see also <a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a>
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
 <textarea rows="18" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
+    "type": "Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+    "bodyValue": "church",
+    "target": "http://data.europeana.eu/item/123/xyz",
     "creator": {
-        "@id": "https://www.historypin.org/en/person/55376/",
-        "@type": "Person",
+        "id": "https://www.historypin.org/en/person/55376/",
+        "type": "Person",
         "name": "John Smith"
     },
     "created": "2015-02-27T12:00:43Z",
     "generated": "2015-02-28T13:00:34Z",
-    "generator": "http://www.historypin.org",
-    "body": "church",
-    "target": "http://data.europeana.eu/item/123/xyz",
-    "oa:equivalentTo": "https://www.historypin.org/en/item/456"
+    "generator": "http://www.historypin.org"
 }
 </textarea>
 <br>
 
-<!-- 
-<h3 id="semantictag_simple_minimal">Create Semantic Tag - Simple Resource - minimal representation</h3>
+<h3 id="tag_TextualBody">Create (Object) Tag - TextualBody</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of (simple) <b>tags</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:tagging)
+<textarea rows="19" cols="120" name="jsonldtag">
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "type": "Annotation",
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+    "body": {
+		"value": "biserica",
+		"language": "ro"
+    },
+    "target": "http://data.europeana.eu/item/123/xyz",
+    "creator": {
+        "id": "https://www.historypin.org/en/person/55376/",
+        "type": "Person",
+        "name": "John Smith"
+    },
+    "created": "2015-02-27T12:00:43Z",
+    "generated": "2015-02-28T13:00:34Z",
+    "generator": "http://www.historypin.org"
+}
+</textarea>
+<br>
+
+<h3 id="tag_getTag">Create (Object) GeoTag</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>geo tags</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:tagging)
+<textarea rows="12" cols="120" name="jsonldtag">
+ {
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "type": "Annotation",
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+    "body": {
+   		"@context": "http://www.europeana.eu/schemas/context/entity.jsonld",   
+   		"type": "Place",
+   		"lat": "48.85341",
+   		"long": "2.3488"
+ 	},
+ 	"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+}
+</textarea>
+<br>
+
+<h3 id="semantictag_simple_minimal">Create Semantic Tag - minimal representation</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
-<textarea rows="20" cols="120" name="jsonldtag">
+<textarea rows="7" cols="40" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",  
-<%// if(!hasType){ %>    "motivation": "tagging",<%// }//endif%>	
+<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": "http://www.geonames.org/2988507",
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
 </textarea>
 <br>
- -->
 
 <h3 id="semantictag_simple">Create Semantic Tag - Simple Resource</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
+The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. Format is optional. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
 (motivation:tagging)
@@ -68,7 +122,8 @@ The json-ld serialization available in the following box is a valid input to be 
     "@context": "http://www.w3.org/ns/anno.jsonld",  
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-        "@id": "http://www.geonames.org/2988507"
+        "id": "http://www.geonames.org/2988507",
+        "format": "application/rdf+xml"
     },
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
@@ -88,10 +143,10 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="12" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
+    "type": "Annotation",
 <% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
     "body": {
-        "@type": "SpecificResource",
+        "type": "SpecificResource",
         "source": "http://www.geonames.org/2988507",
         "purpose": "tagging"   
     },
@@ -124,31 +179,44 @@ The json-ld serialization available in the following box is a valid input to be 
 </textarea>
 <br>
  -->
-
-<h3 id="objectlink">Create Object Link </h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Object Links</b>. 
+<h3 id="objectlink">Create Object Link</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of generic <b>Object Links</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 
 <br>
 (motivation:linking)  
-<textarea rows="20" cols="120" name="jsonldobjectlink">
+<textarea rows="15" cols="120" name="jsonldobjectlink">
 {
-    "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
-<% if(!hasType){ %>    "motivation": "linking",<% }//endif %>	
-    "creator": {
-        "@id": "https://www.historypin.org/en/person/55376/",
-        "@type": "foaf:Person",
-        "name": "John Smith"
-    },
-    "created": "2015-02-27T12:00:43Z",
-    "generated": "2015-02-28T13:00:34Z",
-    "generator": "http://www.historypin.org",
-    "target": [
-        "http://www.europeana.eu/portal/record/123/xyz", 
-        "http://www.europeana.eu/portal/record/333/xxx"
-    ],
-    "oa:equivalentTo": "https://www.historypin.org/en/item/789"
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
+  "target": [ "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+              "http://data.europeana.eu/item/2059207/data_sounds_T471_4" ] 
+  
+}
+</textarea>
+
+<h3 id="objectlink_specificRelation">Create Object Link - by specifying a relation type </h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Object Links with specification of concrete relationships</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+
+<br>
+(motivation:linking)  
+<textarea rows="15" cols="120" name="jsonldobjectlinkspeciicrelation">
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
+  "body": {
+    "@graph": {
+      "@context" : "http://www.europeana.eu/schemas/context/edm.jsonld",
+      "id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+      "isSimilarTo": {
+        "id": "http://thesession.org/tunes/52",
+        "format": "text/html",
+        "title": "The Kid On The Mountain (slip jig) on The Session"
+      }
+    }
+  },
+  "target": "http://data.europeana.eu/item/2059207/data_sounds_T471_5"
 }
 </textarea>
 

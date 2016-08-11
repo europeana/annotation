@@ -17,7 +17,7 @@ import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
 public class BodyDeserializer extends StdDeserializer<Body> {
 	
@@ -45,7 +45,7 @@ public class BodyDeserializer extends StdDeserializer<Body> {
 					while (itr.hasNext()) {
 						JsonNode jn = itr.next();
 						String curElement = jn.toString().replace("\"", "");
-					    if (BodyTypes.contains(curElement)) {
+					    if (BodyInternalTypes.contains(curElement)) {
 					    	value = curElement;
 					    	break;
 					    }

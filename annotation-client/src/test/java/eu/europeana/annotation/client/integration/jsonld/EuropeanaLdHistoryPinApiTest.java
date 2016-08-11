@@ -10,10 +10,10 @@ import org.junit.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 //disabled as the rest interface is disabled 
 @Ignore
@@ -34,7 +34,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 		assertNotNull(annotationStr);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 		assertNotNull(annotationStr);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 		assertNotNull(annotationStr);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(providerHistoryPin, annotationNr, annotation);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
 	@Test
@@ -109,7 +109,7 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 		System.out.println("historypin get annotation test: " + annotationStr);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
-		assertTrue(BodyTypes.isTagBody(annotation.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isTagBody(annotation.getBody().getInternalType()));
 	}
 	
 	@Test

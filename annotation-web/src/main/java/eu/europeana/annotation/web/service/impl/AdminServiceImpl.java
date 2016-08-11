@@ -1,195 +1,144 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.apache.commons.lang.StringUtils;
 
-import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
+import com.google.common.base.Strings;
+
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
-import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
+import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.service.AdminService;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
-//	@Resource
-//	AnnotationConfiguration configuration;
+	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
+		AnnotationId annoId;
+		BatchProcessingStatus status = new BatchProcessingStatus();
 
-	@Resource
-	PersistentWhitelistService mongoWhitelistPersistence;
-
-//	@Resource
-//	AuthenticationService authenticationService;
-//
-//	Logger logger = Logger.getLogger(getClass());
-
-
-//	public AuthenticationService getAuthenticationService() {
-//		return authenticationService;
-//	}
-//
-//	public void setAuthenticationService(AuthenticationService authenticationService) {
-//		this.authenticationService = authenticationService;
-//	}
-//
-//	@Override
-//	public String getComponentName() {
-//		return configuration.getComponentName();
-//	}
-//
-//	protected AnnotationConfiguration getConfiguration() {
-//		return configuration;
-//	}
-//
-//	public void setConfiguration(AnnotationConfiguration configuration) {
-//		this.configuration = configuration;
-//	}
-
-	public PersistentWhitelistService getMongoWhitelistPersistence() {
-		return mongoWhitelistPersistence;
-	}
-
-	public void setMongoWhitelistPersistance(PersistentWhitelistService mongoWhitelistPersistence) {
-		this.mongoWhitelistPersistence = mongoWhitelistPersistence;
-	}
-
-
-	/**
-     * Whitelist methods
-     * @throws ParamValidationException 
-     */
-	@Override
-	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelistEntry) throws ParamValidationException {
-
-		validateWhitelistEntry(newWhitelistEntry);
-		// store in mongo database
-		return getMongoWhitelistPersistence().store(newWhitelistEntry);
+		for (String annoUri : uriList) {
+			annoId = JsonUtils.getIdHelper().parseAnnotationId(annoUri, true);
+			try {
+				deleteAnnotation(annoId);
+				status.incrementSuccessCount();
+			} catch (Throwable th) {
+				getLogger().info(th);
+				status.incrementFailureCount();
+			}
+		}
+		return status;
 	}
 
 	@Override
-	public WhitelistEntry updateWhitelistEntry(WhitelistEntry whitelist) {
-		return getMongoWhitelistPersistence().update(whitelist);
-	}
+	// public void deleteAnnotation(String resourceId, String provider, Long
+	// annotationNr) {
+	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException {
 
-	@Override
-	public int deleteWhitelistEntry(String url) {
-		int res = getMongoWhitelistPersistence().removeByUrl(url);
-		if (res == 0) 
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NO_ENTRIES_FOUND_TO_DELETE);
-		return res;
-	}
-
-	@Override
-	public WhitelistEntry getWhitelistEntryByUrl(String url) {
-		return getMongoWhitelistPersistence().findByUrl(url);
-	}
-
-	@Override
-	public WhitelistEntry getWhitelistEntryByName(String name) {
-		return getMongoWhitelistPersistence().findByName(name);
-	}
-
-	public int deleteWholeWhitelist() {
-		int numDeletedWhitelistEntries = getMongoWhitelistPersistence().removeAll();
-		if (numDeletedWhitelistEntries == 0) 
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NO_ENTRIES_FOUND_TO_DELETE);
-        return numDeletedWhitelistEntries;
-	}
-
-	
-	private void validateMandatoryFields(WhitelistEntry whitelistEntry) {
-
-		if (whitelistEntry.getName() == null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_NAME);
-
-		if (whitelistEntry.getHttpUrl() == null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_URI);
-
-		if (whitelistEntry.getStatus() == null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_NULL_STATUS);
-
-		if (!whitelistEntry.getHttpUrl().startsWith(WhitelistValidationException.HTTP))
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NOT_HTTP_URI);
-	}
-
-
-	private void enrichWhitelistEntry(WhitelistEntry whitelistEntry) {
-
-		DateFormat df = new SimpleDateFormat(WhitelistValidationException.DATE_FORMAT);
-		Date dateobj = new Date();
-		String currentDateStr = df.format(dateobj);
+		// mongo is the master
 		try {
-			Date currentDate = df.parse(currentDateStr);
-			whitelistEntry.setCreationDate(currentDate);
-			whitelistEntry.setLastUpdate(currentDate);
-			whitelistEntry.setEnableFrom(currentDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
+			getMongoPersistence().remove(annoId);
+		} catch (AnnotationMongoException e) {
+			if (StringUtils.startsWith(e.getMessage(), AnnotationMongoException.NO_RECORD_FOUND)) {
+				// consider annotation deleted in mongo and try to remove the
+				// related items
+				getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoId.toHttpUrl());
+			} else {
+				// do not remove anything if the master object cannt be deleted
+				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + annoId.toHttpUrl(),
+						e);
+			}
+		} catch (Throwable th) {
+			throw new InternalServerException(th);
 		}
-	}
 
-
-	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws ParamValidationException{
-		List<? extends WhitelistEntry> res = new ArrayList<WhitelistEntry>();
-		
-		/**
-		 * load property with the path to the default whitelist JSON file
-		 */
-		String whitelistPath = getConfiguration().getDefaultWhitelistResourcePath();
-		
-		/**
-		 * load whitelist from resources in JSON format
-		 */
-		List<WhitelistEntry> defaultWhitelist = new ArrayList<WhitelistEntry>();
-		URL whiteListFile = getClass().getResource(whitelistPath);
-		
-		defaultWhitelist = JsonUtils.toWhitelist(
-				whiteListFile.getPath().substring(1));
-		
-		/**
-		 *  store whitelist objects in database
-		 */
-		Iterator<WhitelistEntry> itrDefault = defaultWhitelist.iterator();
-		while (itrDefault.hasNext()) {
-			WhitelistEntry whitelistEntry = itrDefault.next();
-			storeWhitelistEntry(whitelistEntry);
+		// delete moderation record if possible
+		try {
+			getMongoModerationRecordPersistence().remove(annoId);
+		} catch (Throwable th) {
+			// expected ModerationMongoException
+			getLogger().warn("Cannot remove moderation record for annotation id: " + annoId.toHttpUrl());
 		}
+
+		// delete from solr .. and throw AnnotationServiceException if operation
+		// is not successfull
+		getSolrService().delete(annoId);
+	}
+
+	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
+			String endTimestamp) {
 		
-		/**
-		 *  retrieve whitelist objects
-		 */
-		res = getWhitelist();
+//		int successCount = 0;
+//		int failureCount = 0;
+		if (!Strings.isNullOrEmpty(startDate)) {
+			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
+		}
 
-		return res;
+		if (!Strings.isNullOrEmpty(endDate)) {
+			endTimestamp = TypeUtils.getUnixDateStringFromDate(endDate);
+		}
+
+		return reindexAnnotationSelection(startTimestamp, endTimestamp);
 	}
 
-	private void validateWhitelistEntry(WhitelistEntry whitelistEntry) {
-		validateMandatoryFields(whitelistEntry);
-		enrichWhitelistEntry(whitelistEntry);
-		if (getWhitelistEntryByUrl(whitelistEntry.getHttpUrl()) != null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_HTTP_URL_EXISTS 
-					+ whitelistEntry.getHttpUrl());
-		if (getWhitelistEntryByName(whitelistEntry.getName()) != null)
-			throw new WhitelistValidationException(WhitelistValidationException.ERROR_NAME_EXISTS
-					+ whitelistEntry.getHttpUrl());
+	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp) {
+		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
+		return reindexAnnotationSet(res, true);
 	}
-	
-	public List<? extends WhitelistEntry> getWhitelist() {
+
+	@Override
+	//TODO:reimplement using database cursors for higher scalability
+	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
 		
-		/**
-		 *  retrieve all whitelist objects
-		 */
-		return getMongoWhitelistPersistence().getAll();
+		BatchProcessingStatus status = new BatchProcessingStatus();
+		AnnotationId annoId = null;
+		Annotation annotation;
+		int count = 0;
+		for (String id : ids) {
+			try {
+				count++;
+				if(count % 1000 == 0)
+					getLogger().info("Processing object: " + count);
+				//check
+				if(isObjectId){
+					annotation = getMongoPersistence().findByID(id);
+				}else{
+					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+					annotation = getMongoPersistence().find(annoId);
+				}
+				
+				if (annotation == null)
+					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
+				if (success) 
+					status.incrementSuccessCount();
+				else 
+					status.incrementFailureCount();			
+			} catch (IllegalArgumentException iae) {
+				String msg = "id: " + id + ". " + iae.getMessage();
+				getLogger().error(msg);
+				// throw new RuntimeException(iae);
+				status.incrementFailureCount();
+			} catch (Exception e) {
+				String msg = "Error when reindexing annotation: "+ annoId
+						+ e.getMessage();
+				getLogger().error(msg);
+				status.incrementFailureCount();
+				// throw new RuntimeException(e);
+			}
+		}
+		return status;
 	}
 
-	
+	@Override
+	public BatchProcessingStatus reindexAll() {
+		return reindexAnnotationSelection( "0", ""+System.currentTimeMillis());
+	}
 }

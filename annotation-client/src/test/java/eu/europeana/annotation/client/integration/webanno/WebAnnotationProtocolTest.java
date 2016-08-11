@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 
 /**
@@ -179,7 +179,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				);
 		
 		assertNotNull(response.getBody());
-		assertTrue(response.getBody().contains(UPDATE_BODY));
+		assertTrue(response.getBody().contains(UPDATE_BODY.replace("\""+WebAnnotationFields.BODY_VALUE+"\": ", "")));
 		assertTrue(response.getBody().contains(UPDATE_TARGET));
 		assertEquals( HttpStatus.OK, response.getStatusCode());
 	}

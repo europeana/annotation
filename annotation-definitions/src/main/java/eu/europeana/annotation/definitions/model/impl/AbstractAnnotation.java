@@ -6,13 +6,13 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public abstract class AbstractAnnotation implements Annotation {
 
@@ -78,7 +78,7 @@ public abstract class AbstractAnnotation implements Annotation {
 	    
 	    if ((this.getCreator() != null) && (that.getCreator() != null) &&
 	    		(!this.getCreator().equals(that.getCreator()))) {
-	    	System.out.println("Annotation objects have different 'annotatedBy' objects.");
+	    	System.out.println("Annotation objects have different 'creator' objects.");
 	    	res = false;
 	    }
 	    

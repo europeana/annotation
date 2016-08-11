@@ -3,7 +3,7 @@ package eu.europeana.annotation.mongo.service;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.exception.ConceptValidationException;
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentConcept;

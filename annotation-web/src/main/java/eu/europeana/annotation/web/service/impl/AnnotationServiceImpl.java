@@ -13,8 +13,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.apache.stanbol.commons.jsonld.JsonLdParser;
 
 import com.google.common.base.Strings;
 
@@ -25,18 +23,18 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.entity.Concept;
+import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.jsonld.AnnotationLd;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
@@ -50,10 +48,7 @@ import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
-import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
-import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
-import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
@@ -132,18 +127,17 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
 	}
 
-
 	@Override
-	public  List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
+	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
 		return null;
-		//return getSolrService().search(query);
+		// return getSolrService().search(query);
 	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
 			throws AnnotationServiceException {
 		return null;
-		//return getSolrService().search(query, startOn, limit);
+		// return getSolrService().search(query, startOn, limit);
 	}
 
 	@Override
@@ -168,35 +162,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	public Annotation parseAnnotation(String annotationJsonLdStr) {
-
-		/**
-		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
-		 * -> JsonLd object
-		 */
-		AnnotationLd parsedAnnotationLd = null;
-		JsonLd parsedJsonLd = null;
-		try {
-			parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdStr);
-
-			/**
-			 * convert JsonLd to AnnotationLd. JsonLd object -> AnnotationLd
-			 * object
-			 */
-			parsedAnnotationLd = new AnnotationLd(parsedJsonLd);
-		} catch (Exception e) {
-			String errorMessage = "Cannot Parse JSON-LD input! ";
-			getLogger().error(errorMessage, e);
-		}
-
-		/**
-		 * AnnotationLd object -> Annotation object.
-		 */
-		return parsedAnnotationLd.getAnnotation();
-	}
-
-	@Override
-	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException {
+	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr)
+			throws JsonParseException {
 
 		/**
 		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
@@ -281,7 +248,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getMongoConceptPersistence().findByUrl(url);
 	}
 
-    
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -322,12 +288,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 			// check if the tag is already indexed
 			try {
-				//TODO : enable+ refactor when semantic tagging is in place 
-//				SolrTag indexedTag = copyIntoSolrTag(res.getBody());
-//				getSolrTagService().findOrStore(indexedTag);
+				// TODO : enable+ refactor when semantic tagging is in place
+				// SolrTag indexedTag = copyIntoSolrTag(res.getBody());
+				// getSolrTagService().findOrStore(indexedTag);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName())
-						.warn("The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. ", e);
+				Logger.getLogger(getClass().getName()).warn(
+						"The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. ",
+						e);
 			}
 
 			// save the time of the last SOLR indexing
@@ -344,30 +311,29 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 		// store in mongo database
 		ModerationRecord res = getMongoModerationRecordPersistence().store(newModerationRecord);
-		
-		//lastindexe
+
+		// lastindexe
 		Date lastindexing = res.getLastUpdated();
-		
-		if(getConfiguration().isIndexingEnabled()) {
+
+		if (getConfiguration().isIndexingEnabled()) {
 			try {
 				Annotation annotation = getMongoPersistance().find(res.getAnnotationId());
-				reindexAnnotation(annotation, lastindexing);				
+				reindexAnnotation(annotation, lastindexing);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName())
-						.warn("The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ", e);
+				Logger.getLogger(getClass().getName()).warn(
+						"The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ",
+						e);
 			}
 		}
-		
+
 		return res;
 	}
 
-	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
-			throws ModerationMongoException {
+	public ModerationRecord findModerationRecordById(AnnotationId annoId) throws ModerationMongoException {
 		return getMongoModerationRecordPersistence().find(annoId);
-	
+
 	}
 
-	
 	/**
 	 * This method validates AnnotationId object.
 	 * 
@@ -386,7 +352,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new AnnotationValidationException("Annotaion.AnnotationId.provider must not be null!");
 	}
 
-
 	/**
 	 * This method validates AnnotationId object for moderation record.
 	 * 
@@ -401,15 +366,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new ModerationRecordValidationException("ModerationRecord.AnnotationId.provider must not be null!");
 	}
 
-
 	@Override
 	public Annotation updateAnnotation(Annotation annotation) {
-		
+
 		Annotation res = getMongoPersistence().update(annotation);
-	
-		if(getConfiguration().isIndexingEnabled())
+
+		if (getConfiguration().isIndexingEnabled())
 			reindexAnnotation(res, res.getLastUpdate());
-		
+
 		return res;
 	}
 
@@ -422,41 +386,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	// public void deleteAnnotation(String resourceId, String provider, Long
-	// annotationNr) {
-	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException{
-		
-		//mongo is the master
-		try{
-			getMongoPersistence().remove(annoId);
-		}catch(AnnotationMongoException e){
-			if (StringUtils.startsWith(e.getMessage(), AnnotationMongoException.NO_RECORD_FOUND)){
-					//consider annotation deleted in mongo and try to remove the related items
-					getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoId.toHttpUrl());
-			}else{
-				//do not remove anything if the master object cannt be deleted
-				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + annoId.toHttpUrl(),  e);
-			}
-		}catch(Throwable th){
-			throw new InternalServerException(th);
-		}
-		
-		//delete moderation record if possible
-		try{
-			getMongoModerationRecordPersistence().remove(annoId);
-		}catch(Throwable th){
-			//expected ModerationMongoException
-			getLogger().warn("Cannot remove moderation record for annotation id: " + annoId.toHttpUrl());
-		}
-		
-		//delete from solr .. and throw AnnotationServiceException if operation is not successfull 
-		getSolrService().delete(annoId);
-	}
-
-	@Override
 	public Annotation disableAnnotation(AnnotationId annoId) {
 		try {
-			//disable annotation
+			// disable annotation
 			Annotation res = getMongoPersistence().find(annoId);
 			return disableAnnotation(res);
 		} catch (Exception e) {
@@ -474,16 +406,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new RuntimeException(e);
 		}
 
-		if(getConfiguration().isIndexingEnabled())
+		if (getConfiguration().isIndexingEnabled())
 			removeFromIndex(annotation);
-		
+
 		return res;
 	}
 
 	protected void removeFromIndex(Annotation annotation) {
-		try{
+		try {
 			getSolrService().delete(annotation.getAnnotationId());
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toUri(), e);
 		}
 	}
@@ -593,19 +525,24 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	 * europeana.annotation.definitions.model.Annotation, java.lang.String)
 	 */
 	public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException {
-//		Annotation res = null;
-//		res = getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
-//				annotation.getAnnotationId().getIdentifier());
+		// Annotation res = null;
+		// res =
+		// getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
+		// annotation.getAnnotationId().getIdentifier());
 		if (annotation.isDisabled())
-			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE, AnnotationStates.DISABLED);
+			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
+					AnnotationStates.DISABLED);
 
-//		if (annotation.
-//				StringUtils.isNotEmpty(user) && !user.equals("null") && !res.getAnnotatedBy().getName().equals(user))
-//			throw new AnnotationStateException("Given user (" + user + ") does not match to the 'annotatedBy' user ("
-//					+ res.getAnnotatedBy().getName() + ").");
-		//TODO update when the authorization concept is specified
-		if(annotation.isPrivate() && !annotation.getCreator().getOpenId().equals(user))
-			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE, AnnotationStates.PRIVATE);
+		// if (annotation.
+		// StringUtils.isNotEmpty(user) && !user.equals("null") &&
+		// !res.getAnnotatedBy().getName().equals(user))
+		// throw new AnnotationStateException("Given user (" + user + ") does
+		// not match to the 'annotatedBy' user ("
+		// + res.getAnnotatedBy().getName() + ").");
+		// TODO update when the authorization concept is specified
+		if (annotation.isPrivate() && !annotation.getCreator().getOpenId().equals(user))
+			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
+					AnnotationStates.PRIVATE);
 
 	}
 
@@ -614,153 +551,169 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		switch (annoId.getProvider()) {
 		case WebAnnotationFields.PROVIDER_HISTORY_PIN:
 			if (annoId.getIdentifier() == null || Long.parseLong(annoId.getIdentifier()) < 1)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL, 
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER, annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_PUNDIT:
 			if (annoId.getIdentifier() == null || Long.parseLong(annoId.getIdentifier()) < 1)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL, 
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER, annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_BASE:
 			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(
-						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_WEBANNO:
 			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(
-						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_COLLECTIONS:
 			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(
-						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
 			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(
-						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_WITH:
 			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(
-						ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,  
-						WebAnnotationFields.PROVIDER +"/"+ WebAnnotationFields.IDENTIFIER,  annoId.toUri());
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 
 		default:
-			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER, annoId.getProvider());
+			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER,
+					annoId.getProvider());
 		}
 
 	}
 
 	protected boolean validateResource(String url) throws ParamValidationException {
-		
+
 		String domainName;
 		try {
 			domainName = getMongoWhitelistPersistence().getDomainName(url);
 			Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
 			if (!domains.contains(domainName))
-				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE, "target.value", url);
+				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+						"target.value", url);
 		} catch (URISyntaxException e) {
 			throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID, "target.value", url);
 		}
-		
+
 		return true;
 	}
 
-	
 	/**
 	 * Validation of simple tags.
 	 * 
-	 * Pre-processing:
-	 *     Trim spaces.
-	 *     If the tag is encapsulated by double or single quotes, remove these.
-     *
-	 * Validation rules:
-     *     A maximum of 64 characters is allowed for the tag.
-	 *     Tags cannot be URIs, tags which start with http://, ftp:// or https:// are not allowed.
+	 * Pre-processing: Trim spaces. If the tag is encapsulated by double or
+	 * single quotes, remove these.
 	 *
-	 * Examples of allowed tags: black, white, "black and white" (will become tag: black and white)
+	 * Validation rules: A maximum of 64 characters is allowed for the tag. Tags
+	 * cannot be URIs, tags which start with http://, ftp:// or https:// are not
+	 * allowed.
+	 *
+	 * Examples of allowed tags: black, white, "black and white" (will become
+	 * tag: black and white)
 	 *
 	 * @param webAnnotation
 	 */
-	private void validateTag(Annotation webAnnotation)  throws ParamValidationException {
-//		webAnnotation.
-		Body body = webAnnotation.getBody(); 
-		if (body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
+	private void validateTag(Annotation webAnnotation) throws ParamValidationException {
+		// webAnnotation.
+		Body body = webAnnotation.getBody();
+
+		// TODO: the body type shouldn't be null at this stage
+		if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithSpecificResource(body);
-		}else if(BodyTypes.isSemanticTagBody(body.getInternalType())){
+		} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
 			validateSemanticTagUrl(body);
-		}else {
+		} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
+			validateGeoTag(body);
+		} else {
 			validateTagWithValue(body);
-		}		
+		}
+	}
+
+	private void validateGeoTag(Body body) throws ParamValidationException {
+		if (!(body instanceof PlaceBody))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.class", body.getClass().toString());
+
+		Place place = ((PlaceBody) body).getPlace();
+		
+		if(StringUtils.isEmpty(place.getLatitude()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.latitude", null);
+				
+		if(StringUtils.isEmpty(place.getLongitude()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.longitude", null);
+
 	}
 
 	private void validateTagWithSpecificResource(Body body) throws ParamValidationException {
-		//check mandatory fields
+		// check mandatory fields
 		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
-			throw new ParamValidationException(
-					ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.type", body.getType().toString());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					"tag.body.type", body.getType().toString());
 		if (Strings.isNullOrEmpty(body.getSource()))
-			throw new ParamValidationException(
-					ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.source", body.getSource());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					"tag.body.source", body.getSource());
 
-		//source must be an URL
+		// source must be an URL
 		if (!isUrl(body.getSource()))
-			throw new ParamValidationException(
-					ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE, "tag.format", body.getSource());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+					"tag.format", body.getSource());
 
-		//id is not a mandatory field but if exists it must be an URL
+		// id is not a mandatory field but if exists it must be an URL
 		if (body.getHttpUri() != null && !isUrl(body.getHttpUri()))
-			throw new ParamValidationException(
-					ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT, "tag.body.httpUri", body.getHttpUri());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
+					"tag.body.httpUri", body.getHttpUri());
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
-		
+
 		String value = body.getValue();
-		
+
 		value = value.trim();
-		//remove leading and end quotes
-		if(value.startsWith("\"")){
+		// remove leading and end quotes
+		if (value.startsWith("\"")) {
 			int secondPosition = 1;
 			value = value.substring(secondPosition);
 			value = value.trim();
 		}
-		
-		if(value.endsWith("\"")){
+
+		if (value.endsWith("\"")) {
 			int secondLastPosition = value.length() - 1;
 			value = value.substring(0, secondLastPosition);
 			value = value.trim();
 		}
-		
+
+		// reset the tag value with the trimmed value
 		body.setValue(value);
-		body.setInputString(value);
-		
+
 		int MAX_TAG_LENGTH = 64;
-		
-		if(isUrl(value))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format", value);
+
+		if (isUrl(value))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format",
+					value);
 		else if (value.length() > MAX_TAG_LENGTH)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size", ""+value.length());
-		
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size",
+					"" + value.length());
+
 	}
-	
-	
+
 	protected void validateSemanticTagUrl(Body body) {
 		// TODO Add whitelist based validation here
-		
+
 	}
 
 	private boolean isUrl(String value) {
-		
-		//if (value.startsWith("http://") || value.startsWith("ftp://") || value.startsWith("https://")) {
+
+		// if (value.startsWith("http://") || value.startsWith("ftp://") ||
+		// value.startsWith("https://")) {
 		try {
 			new URL(value);
 		} catch (MalformedURLException e) {
@@ -771,24 +724,24 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
-		
+
 		switch (webAnnotation.getMotivationType()) {
 		case LINKING:
-			//validate target URLs against whitelist 
-			if(webAnnotation.getTarget().getValue() != null)
+			// validate target URLs against whitelist
+			if (webAnnotation.getTarget().getValue() != null)
 				validateResource(webAnnotation.getTarget().getValue());
-				
-			if(webAnnotation.getTarget().getValues()!= null)
-			for(String url : webAnnotation.getTarget().getValues()){
-				validateResource(url);
-			}
+
+			if (webAnnotation.getTarget().getValues() != null)
+				for (String url : webAnnotation.getTarget().getValues()) {
+					validateResource(url);
+				}
 			break;
 		case TAGGING:
 			validateTag(webAnnotation);
 			break;
 		default:
 			break;
-		}				
+		}
 	}
 	
 }

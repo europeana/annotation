@@ -12,7 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.codehaus.jackson.node.ObjectNode;
 
-import eu.europeana.annotation.definitions.model.concept.Concept;
+import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.factory.impl.ConceptObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 

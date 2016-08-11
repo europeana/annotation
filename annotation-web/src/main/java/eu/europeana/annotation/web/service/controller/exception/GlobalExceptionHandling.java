@@ -29,16 +29,15 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
-import org.springframework.web.util.NestedServletException;
 
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.service.controller.ApiResponseBuilder;
+import eu.europeana.api2.utils.JsonWebUtils;
 
 @ControllerAdvice
 public class GlobalExceptionHandling extends ApiResponseBuilder {
@@ -68,12 +67,12 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
 
-		// TODO remove the usage of Model and View
 		boolean includeErrorStack = new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
+		AnnotationOperationResponse res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				null, ex, includeErrorStack);
 
-		return buildErrorResponse(ex, req, response, res, ex.getStatus());
+		logger.debug(res.getError(), ex);
+		return buildErrorResponse(res, ex.getStatus());
 
 	}
 
@@ -81,12 +80,12 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
 			throws IOException {
 
-		// TODO remove the usage of Model and View
 		boolean includeErrorStack =new Boolean(req.getParameter(WebAnnotationFields.PARAM_INCLUDE_ERROR_STACK));
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
+		AnnotationOperationResponse res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				null, ex, includeErrorStack);
 
-		return buildErrorResponse(ex, req, response, res, HttpStatus.INTERNAL_SERVER_ERROR);
+		logger.debug(res.getError(), ex);
+		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
@@ -101,20 +100,17 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 		if(statusCode == null)
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 		
-		// TODO remove the usage of Model and View
-		ModelAndView res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
+		AnnotationOperationResponse res = getValidationReport(req.getParameter(WebAnnotationFields.PARAM_WSKEY), req.getServletPath(),
 				ex.getMessage(), ex, includeErrorStack);
 
-		return buildErrorResponse(ex, req, response, res, statusCode);
+		logger.debug(res.getError(), ex);
+		return buildErrorResponse(res, statusCode);
 	}
 
-	protected ResponseEntity<String> buildErrorResponse(Exception ex, HttpServletRequest req,
-			HttpServletResponse response, ModelAndView res, HttpStatus status) {
-		String body = (String) res.getModel().get("json");
+	protected ResponseEntity<String> buildErrorResponse(AnnotationOperationResponse res 
+			, HttpStatus status) {
 
-		logger.error("An error occured during the invocation of :" + req.getServletPath(), ex);
-
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		String body = JsonWebUtils.toJson(res);
 
 		MultiValueMap<String, String> headers = buildHeadersMap();
 

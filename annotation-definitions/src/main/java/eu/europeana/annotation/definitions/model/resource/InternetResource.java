@@ -2,11 +2,8 @@ package eu.europeana.annotation.definitions.model.resource;
 
 import java.util.List;
 
-public interface InternetResource {
+public interface InternetResource extends ResourceDescription {
 
-	public abstract void setValue(String value);
-
-	public abstract String getValue();
 
 	public abstract void setValues(List<String> values);
 
@@ -24,22 +21,18 @@ public interface InternetResource {
 
 	public abstract List<String> getResourceIds();
 	
-	public abstract void setLanguage(String language);
 
-	public abstract String getLanguage();
-
-	public abstract void setHttpUri(String httpUri);
-
-	public abstract String getHttpUri();
-
+	/** replaced by the type of the exteral resources */
+	@Deprecated
 	public abstract void setMediaType(String mediaType);
-
+	/** replaced by the type of the extenral resources */
+	@Deprecated
 	public abstract String getMediaType();
 
-	public abstract void setContentType(String contentType);
+	void setHttpUri(String httpUri);
 
-	public abstract String getContentType();
-	
+	String getHttpUri();
+
 	public abstract void copyInto(InternetResource destination);
 
 }

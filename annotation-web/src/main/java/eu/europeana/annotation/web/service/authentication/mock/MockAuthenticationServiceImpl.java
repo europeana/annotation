@@ -11,14 +11,19 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
@@ -28,7 +33,7 @@ import eu.europeana.annotation.web.service.authentication.model.ApplicationDeser
 import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
 
-public class MockAuthenticationServiceImpl implements AuthenticationService
+public class MockAuthenticationServiceImpl implements AuthenticationService, ResourceServerTokenServices
 // , ApiKeyService
 {
 
@@ -56,7 +61,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 		return cachedClients;
 	}
 
-	public Application readApiKeyApplicationFromFile(String path)
+	public Application readApplicationConfigFromFile(String path)
 			throws ApplicationAuthenticationException {
 
 		Application app;
@@ -65,6 +70,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 			BufferedReader br = new BufferedReader(new FileReader(path));
 
 			BaseDeserializer deserializer = new BaseDeserializer();
+			
 			Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
 			String jsonData = br.readLine();
 			app = gson.fromJson(jsonData, Application.class);
@@ -80,8 +86,6 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 	@Override
 	public void loadApiKeys() throws ApplicationAuthenticationException {
-
-		Application app = null;
 
 		URL authenticationConfigFolder = getClass().getResource(API_KEY_CONFIG_FOLDER + API_KEY_STORAGE_FOLDER);
 		
@@ -102,13 +106,10 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 				String fileName = listOfFiles[i].getAbsolutePath();
 				
 				getLogger().info("Loading api keys from file: " + fileName);
-				Application templateApp = readApiKeyApplicationFromFile(fileName);
-				app = createMockClientApplication(
-							templateApp.getApiKey(), templateApp.getOrganization(),
-							templateApp.getName());
+				Application application = readApplicationConfigFromFile(fileName);
 					
 				//put app in the cache
-				getCachedClients().put(app.getApiKey(), app);				
+				getCachedClients().put(application.getApiKey(), application);				
 			}
 		}
 	}
@@ -246,6 +247,19 @@ public class MockAuthenticationServiceImpl implements AuthenticationService
 
 	public void setConfiguration(AnnotationConfiguration configuration) {
 		this.configuration = configuration;
+	}
+
+	@Override
+	public OAuth2Authentication loadAuthentication(String accessToken)
+			throws AuthenticationException, InvalidTokenException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OAuth2AccessToken readAccessToken(String accessToken) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -9,13 +9,18 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 
 	public static final String TAG_MINIMAL = "/tag/minimal.json";
+	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
+	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
+	public static final String TAG_GEO_WRONG_LAT = "/tag/wrong/geotag_wrong_lat.json";
+	public static final String TAG_GEO_WRONG_LONG = "/tag/wrong/geotag_wrong_long.json";
 	public static final String TAG_STANDARD = "/tag/standard.json";
+	public static final String TAG_GEOTAG = "/tag/geotag.json";
 	public static final String SEMANTICTAG_SIMPLE_MINIMAL = "/semantictag/simple_minimal.json";
 	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";

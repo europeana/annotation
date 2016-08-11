@@ -4,10 +4,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
-import eu.europeana.api2.utils.JsonWebUtils;
 
 public class ApiResponseBuilder {
 
@@ -36,9 +34,8 @@ public class ApiResponseBuilder {
 	 * @param errorMessage
 	 * @return
 	 */
-	@Deprecated
-	protected ModelAndView getValidationReport(String apiKey, String action, String errorMessage, Throwable th, boolean includeErrorStack) {
-		
+	protected AnnotationOperationResponse getValidationReport(String apiKey, String action, String errorMessage, Throwable th, boolean includeErrorStack) {
+
 		AnnotationOperationResponse response = new AnnotationOperationResponse(
 				apiKey, action);
 		
@@ -59,10 +56,8 @@ public class ApiResponseBuilder {
 		
 		if(includeErrorStack && th != null)
 			response.setStackTrace(getStackTraceAsString(th));
-		
-		ModelAndView ret = JsonWebUtils.toJson(response, null);
-		
-		return ret;
+
+		return response;
 	}
 
 	String getStackTraceAsString(Throwable th) {
@@ -78,14 +73,6 @@ public class ApiResponseBuilder {
 	 * @param message
 	 * @return
 	 */
-	protected ModelAndView getReport(String apiKey, String action, String message) {
-		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, action);
-		response = buildResponse(message, response.action, response.apikey);
-		ModelAndView ret = JsonWebUtils.toJson(response, null);
-		return ret;
-	}
-	
 	public AnnotationOperationResponse buildResponse(String message,
 			String action, String apiKey) {
 		AnnotationOperationResponse response;
