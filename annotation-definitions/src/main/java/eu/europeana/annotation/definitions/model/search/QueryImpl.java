@@ -8,43 +8,47 @@ import org.apache.commons.lang.StringUtils;
 
 public class QueryImpl implements Cloneable, Query{
 
-	
-
-//	static {
-//		defaultFacets = new ArrayList<>();
-//		for (Facet facet : Facet.values()) {
-//			defaultFacets.add(facet.toString());
-//		}
-//	}
-	
-	private int start;
-	private int rows;
+	private int pageNr;
+	private int pageSize;
+	private long limit;
 	private String sort;
 	private String sortOrder;
 	private String query;
 	private String[] filters;
 	private String[] facetFields;
 	private String[] viewFields;
+	private SearchProfiles searchProfile;
 
 	@Override
-	public int getStart() {
-		return start;
+	public int getPageNr() {
+		return pageNr;
 	}
 
 	@Override
-	public void setStart(int start) {
-		this.start = start;
+	public void setPageNr(int pageNr) {
+		this.pageNr = pageNr;
 	}
 
 	@Override
-	public int getRows() {
-		return rows;
+	public int getPageSize() {
+		return pageSize;
 	}
 
 	@Override
-	public void setRows(int rows) {
-		this.rows = rows;
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
+
+	@Override
+	public long getLimit() {
+		return limit;
+	}
+
+	@Override
+	public void setLimit(long limit) {
+		this.limit = limit;
+	}
+		
 
 	@Override
 	public String getQuery() {
@@ -111,9 +115,10 @@ public class QueryImpl implements Cloneable, Query{
 	public String toString() {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + query);
-		params.add("start=" + start);
-		params.add("rows=" + rows);
-
+		params.add("page=" + getPageNr());
+		params.add("pageSize=" + getPageSize());
+		params.add("limit=" + getLimit());
+		
 		if (sort != null){
 			String sortParam = "sort=" + sort;
 			if(sortOrder != null)
@@ -140,5 +145,16 @@ public class QueryImpl implements Cloneable, Query{
 		
 		return StringUtils.join(params, "&");
 	}
+
+	@Override
+	public SearchProfiles getSearchProfile() {
+		return searchProfile;
+	}
+
+	@Override
+	public void setSearchProfile(SearchProfiles searchProfile) {
+		this.searchProfile = searchProfile;
+	}
+
 	
 }

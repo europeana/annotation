@@ -46,9 +46,6 @@ public class SolrAnnotationUtils {
 
 		solrQuery.setQuery(searchQuery.getQuery());
 
-		solrQuery.setRows(searchQuery.getRows());
-		solrQuery.setStart(searchQuery.getStart());
-
 		if (searchQuery.getFilters() != null)
 			solrQuery.addFilterQuery(searchQuery.getFilters());
 
@@ -63,6 +60,11 @@ public class SolrAnnotationUtils {
 		}
 
 		solrQuery.setFields(searchQuery.getViewFields());
+		
+//		searchQuery.setStart(page>0? page -1: page);
+//		searchQuery.setRows(Math.min(rows, Query.MAX_PAGE_SIZE));
+		solrQuery.setStart(searchQuery.getPageNr() * searchQuery.getPageSize());
+		solrQuery.setRows(searchQuery.getPageSize());
 
 		return solrQuery;
 	}
