@@ -21,6 +21,8 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 			"<http://www.w3.org/TR/annotation-protocol/constraints>;\n" +
 			"rel=\"http://www.w3.org/ns/ldp#constrainedBy\"";
 	public static final String VALUE_LDP_CONTENT_TYPE = "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\"";
+	public static final String VALUE_CONSTRAINTS = "<http://www.w3.org/TR/annotation-protocol/constraints>; " +
+			"rel=\"http://www.w3.org/ns/ldp#constrainedBy\"";
 	
 	
 }

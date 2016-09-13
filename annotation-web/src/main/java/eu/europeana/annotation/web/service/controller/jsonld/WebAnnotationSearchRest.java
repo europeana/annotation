@@ -106,7 +106,8 @@ public class WebAnnotationSearchRest extends BaseRest {
 			//** build response
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT + ", "+ HttpHeaders.PREFER);
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_CONTAINER);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_CONSTRAINTS);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GOH);
 			headers.add(HttpHeaders.CONTENT_TYPE, "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\"");
 
