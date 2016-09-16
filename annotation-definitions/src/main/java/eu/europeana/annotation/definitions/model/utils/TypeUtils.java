@@ -232,24 +232,6 @@ public class TypeUtils {
 		return res;
 	}
 	
-	/**
-	 * This method presents a list as a string in JSON-LD format.
-	 * @param typeList
-	 * @return type list string
-	 */
-	public static String getTypeListAsStr(List<String> typeList) {
-		
-		if (typeList.size() == 0)
-			return null;
-			
-		if (typeList.size() == 1)
-			return typeList.get(0);
-		
-		if (typeList.size() > 1) 
-			return "[" + StringUtils.join(typeList, ", ") + "]";
-
-		return null;
-	}
 	
 	/**
 	 * This method converts JSON-LD string to a Java list.

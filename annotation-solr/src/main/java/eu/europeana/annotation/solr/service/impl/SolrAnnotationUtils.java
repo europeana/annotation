@@ -205,7 +205,8 @@ public class SolrAnnotationUtils {
 			solrTagImpl.setId(((PlainTagBody) tag).getTagId());
 		}
 		// solrTagImpl.setTagType(tag.getType());
-		solrTagImpl.setTagType(TypeUtils.getTypeListAsStr(tag.getType()));
+		//TODO: replace the following code with a proper implementation 
+		//solrTagImpl.setTagType(TypeUtils.getTypeListAsStr(tag.getType()));
 		solrTagImpl.setValue(tag.getValue());
 		solrTagImpl.setLanguage(tag.getLanguage());
 		solrTagImpl.setContentType(tag.getContentType());

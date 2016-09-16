@@ -53,8 +53,10 @@
 		<version.corelib>2.1</version.corelib>
 		<version.log4j>1.2.12</version.log4j>
 		<version.commonsLang3>3.0</version.commonsLang3>
+		<!--
 		<version.annotationld>1.0.0-RELEASE</version.annotationld>
-		
+		-->
+		<version.annotationld>1.0.1-RELEASE</version.annotationld>
 	</properties>
 	<modules>
 		<module>api2-common</module>
