@@ -121,7 +121,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	private String buildCollectionUrl(HttpServletRequest request) {
 
 		String queryString = request.getQueryString();
-		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
+//		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
 
 		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(),
@@ -130,11 +130,16 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
 	protected String removeParam(final String queryParam, String queryParams) {
 		String tmp;
-		int startPos = queryParams.indexOf(queryParam);
+		//avoid name conflicts search "queryParam="
+		int startPos = queryParams.indexOf(queryParam+WebAnnotationFields.EQUALS);
 		int startEndPos = queryParams.indexOf(WebAnnotationFields.AND, startPos + 1);
 
-		if (startPos > 0) {
+		if (startPos >= 0) {
+			//make sure to remove the "&" if not the first param
+			if(startPos>0)
+				startPos--;		 
 			tmp = queryParams.substring(0, startPos);
+			
 			if (startEndPos > 0)
 				tmp += queryParams.substring(startEndPos);
 		} else {

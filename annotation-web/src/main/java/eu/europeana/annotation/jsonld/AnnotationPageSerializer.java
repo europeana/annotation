@@ -149,7 +149,7 @@ public class AnnotationPageSerializer extends JsonLd {
 			}
 			
 			if(items.length > 0 )
-				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.CONTAINS, items));
+				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.ITEMS, items));
 			
 			return;//needs until updated to switch construct
 		}
