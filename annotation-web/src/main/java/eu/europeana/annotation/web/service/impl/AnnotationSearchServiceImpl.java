@@ -13,6 +13,7 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -21,7 +22,6 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.exception.HttpException;
-import eu.europeana.annotation.web.protocol.model.AnnotationPage;
 import eu.europeana.annotation.web.protocol.model.impl.AnnotationPageImpl;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -93,37 +93,44 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		protocol.setCollectionUri(collectionUrl);
 		
 		int currentPage = query.getPageNr();
-		String currentPageUrl = buildPageUrl(collectionUrl, currentPage);
+		String currentPageUrl = buildPageUrl(collectionUrl, currentPage, query.getPageSize());
 		protocol.setCurrentPageUri(currentPageUrl);
 
 		if (currentPage > 0) {
-			String prevPage = buildPageUrl(collectionUrl, currentPage - 1);
+			String prevPage = buildPageUrl(collectionUrl, currentPage - 1, query.getPageSize());
 			protocol.setPrevPageUri(prevPage);	
 		}
 		
 		//if current page is not the last one
 		boolean isLastPage = protocol.getTotalInCollection() <= (currentPage + 1) * query.getPageSize(); 
 		if(!isLastPage){
-			String nextPage = buildPageUrl(collectionUrl, currentPage + 1);
+			String nextPage = buildPageUrl(collectionUrl, currentPage + 1, query.getPageSize());
 			protocol.setNextPageUri(nextPage);
 		}
 		
 		return protocol;
 	}
 
-	private String buildPageUrl(String collectionUrl, int page) {
+	private String buildPageUrl(String collectionUrl, int page, int pageSize) {
+		StringBuilder builder = new StringBuilder(collectionUrl);
+		builder.append(WebAnnotationFields.AND).append(WebAnnotationFields.PARAM_PAGE)
+			.append(WebAnnotationFields.EQUALS).append(page);
 
-		return collectionUrl + WebAnnotationFields.AND + WebAnnotationFields.PARAM_PAGE + WebAnnotationFields.EQUALS
-				+ page;
+		builder.append(WebAnnotationFields.AND).append(WebAnnotationFields.PARAM_PAGE_SIZE)
+		.append(WebAnnotationFields.EQUALS).append(pageSize);
 
+		return builder.toString();
 	}
 
 	private String buildCollectionUrl(HttpServletRequest request) {
 
 		String queryString = request.getQueryString();
+		
 //		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
-
+		queryString = removeParam(WebAnnotationFields.PARAM_PAGE_SIZE, queryString);
+		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
+		
 		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(),
 				request.getRequestURI(), queryString);
 	}

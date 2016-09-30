@@ -1,7 +1,6 @@
-package eu.europeana.annotation.web.protocol.model;
+package eu.europeana.annotation.definitions.model.search.result;
 
 import eu.europeana.annotation.definitions.model.search.Query;
-import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 
 public interface AnnotationPage {
