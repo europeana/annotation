@@ -1,8 +1,6 @@
 package eu.europeana.annotation.utils.serialize;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -113,7 +111,7 @@ public class AnnotationLdSerializer extends JsonLd {
 					jsonLdResource.putProperty(WebAnnotationFields.TARGET, annotation.getTarget().getValue());
 				}else if (annotation.getTarget().getValues() != null && !annotation.getTarget().getValues().isEmpty()){
 					//array as target
-					JsonLdProperty targetProperty = addArrayProperty(WebAnnotationFields.TARGET,
+					JsonLdProperty targetProperty = buildListProperty(WebAnnotationFields.TARGET,
 							annotation.getTarget().getValues());
 					if (targetProperty != null)
 						jsonLdResource.putProperty(targetProperty);
@@ -138,7 +136,7 @@ public class AnnotationLdSerializer extends JsonLd {
 					jsonLdResource.putProperty(bodyProperty);
 			} else {
 				if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0) {
-					JsonLdProperty bodyProperty = addArrayProperty(WebAnnotationFields.BODY,
+					JsonLdProperty bodyProperty = buildListProperty(WebAnnotationFields.BODY,
 							annotation.getBody().getValues());
 					if (bodyProperty != null)
 						jsonLdResource.putProperty(bodyProperty);
@@ -269,73 +267,19 @@ public class AnnotationLdSerializer extends JsonLd {
 		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
 
 		if (concept != null) {
-			addListToProperty(concept.getNotation(), propertyValue, WebAnnotationFields.NOTATION);
-			addListToProperty(concept.getNarrower(), propertyValue, WebAnnotationFields.NARROWER);
-			addListToProperty(concept.getBroader(), propertyValue, WebAnnotationFields.BROADER);
-			addListToProperty(concept.getRelated(), propertyValue, WebAnnotationFields.RELATED);
+			addListToPropertyValue(concept.getNotation(), propertyValue, WebAnnotationFields.NOTATION);
+			addListToPropertyValue(concept.getNarrower(), propertyValue, WebAnnotationFields.NARROWER);
+			addListToPropertyValue(concept.getBroader(), propertyValue, WebAnnotationFields.BROADER);
+			addListToPropertyValue(concept.getRelated(), propertyValue, WebAnnotationFields.RELATED);
 
-			addMapToProperty(concept.getPrefLabel(), propertyValue, WebAnnotationFields.PREF_LABEL);
-			addMapToProperty(concept.getHiddenLabel(), propertyValue, WebAnnotationFields.HIDDEN_LABEL);
-			addMapToProperty(concept.getAltLabel(), propertyValue, WebAnnotationFields.ALT_LABEL);
+			addMapToPropertyValue(concept.getPrefLabel(), propertyValue, WebAnnotationFields.PREF_LABEL);
+			addMapToPropertyValue(concept.getHiddenLabel(), propertyValue, WebAnnotationFields.HIDDEN_LABEL);
+			addMapToPropertyValue(concept.getAltLabel(), propertyValue, WebAnnotationFields.ALT_LABEL);
 			if (propertyValue.getValues().size() != 0) {
 				conceptProperty.addValue(propertyValue);
 			}
 		}
 		return conceptProperty;
-	}
-
-	/**
-	 * @param map
-	 * @param propertyValue
-	 * @param field
-	 */
-	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
-		JsonLdProperty fieldProperty = new JsonLdProperty(field);
-		JsonLdPropertyValue fieldPropertyValue = new JsonLdPropertyValue();
-
-		Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
-			String curValue = pairs.getValue();
-			if (!StringUtils.isBlank(curValue))
-				fieldPropertyValue.getValues().put(pairs.getKey(), pairs.getValue());
-			it.remove(); // avoids a ConcurrentModificationException
-		}
-		if (fieldPropertyValue.getValues().size() != 0) {
-			fieldProperty.addValue(fieldPropertyValue);
-			propertyValue.putProperty(fieldProperty);
-		}
-	}
-
-	/**
-	 * @param list
-	 * @param propertyValue
-	 * @param field
-	 */
-	private void addListToProperty(List<String> list, JsonLdPropertyValue propertyValue, String field) {
-		String listString = TypeUtils.getTypeListAsStr(list);
-		if (!StringUtils.isBlank(listString))
-			propertyValue.getValues().put(field, listString);
-	}
-
-	/**
-	 * @param annotation
-	 * @return
-	 */
-	private JsonLdProperty addArrayProperty(String propertyName, List<String> valueList) {
-		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-		if (valueList != null && !valueList.isEmpty()) {
-			Iterator<String> itr = valueList.iterator();
-			while (itr.hasNext()) {
-				String value = itr.next();
-				JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
-				propertyValue.setValue(value);
-				arrProperty.addValue(propertyValue);
-			}
-		} else {
-			return null;
-		}
-		return arrProperty;
 	}
 
 	/**
@@ -436,7 +380,7 @@ public class AnnotationLdSerializer extends JsonLd {
 				types.get(0));
 		else
 			propertyValue.putProperty(
-					buildArrayProperty(WebAnnotationFields.TYPE, types));
+					buildListProperty(WebAnnotationFields.TYPE, types));
 	}
 
 	private JsonLdProperty addGeneratorProperty(Annotation annotation) {

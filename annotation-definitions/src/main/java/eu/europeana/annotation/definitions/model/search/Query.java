@@ -14,14 +14,6 @@ public interface Query {
 
 	String getQuery();
 
-	void setRows(int rows);
-
-	int getRows();
-
-	void setStart(int start);
-
-	int getStart();
-
 	void setViewFields(String[] viewFields);
 
 	String[] getViewFields();
@@ -34,14 +26,30 @@ public interface Query {
 
 	public void setSortOrder(String sortOrder);
 
+	void setLimit(long limit);
+
+	long getLimit();
+
+	void setPageSize(int pageSize);
+
+	int getPageSize();
+
+	void setPageNr(int pageNr);
+
+	int getPageNr();
+
+	void setSearchProfile(SearchProfiles searchProfile);
+
+	SearchProfiles getSearchProfile();
+
 	/**
 	 * Default start parameter for Solr
 	 */
-	public static final String DEFAULT_START = "1";
+	public static final int DEFAULT_PAGE = 0;
 	/**
 	 * Default number of items in the SERP
 	 */
-	public static final String DEFAULT_PAGE_SIZE = "10";
+	public static final int DEFAULT_PAGE_SIZE = 10;
 	
 	public static final Integer MAX_PAGE_SIZE = 100;
 	

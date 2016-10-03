@@ -9,6 +9,12 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
 // TODO: move the field values to other interfaces/enumerations
 public interface WebAnnotationFields extends WebAnnotationModelFields{
 
+	//AnnotationPage
+	public static final String PART_OF = "partOf";
+	public static final String TOTAL = "total";
+	public static final String NEXT = "next";
+	public static final String PREV = "prev";
+		
 	
 	public static final String SPLITTER = "#";
 	
@@ -20,7 +26,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String DIMENSION_MAP = "dimensionMap";
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	public static final String MULTILINGUAL = "multilingual";
-	public static final String TOTAL_ITEMS = "totalItems";
 	
 	
 	// skos fields
@@ -95,8 +100,9 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PARAM_QF = "qf";
 	public static final String PARAM_FACET = "facet";
 	public static final String PARAM_PROFILE = "profile";
-	public static final String PARAM_START = "start";
-	public static final String PARAM_ROWS = "rows";
+	public static final String PARAM_PAGE = "page";
+	public static final String PARAM_PAGE_SIZE = "pageSize";
+	public static final String PARAM_LIMIT = "limit";
 	public static final String PARAM_SCORE = "score";
 	public static final String PARAM_SORT = "sort";
 	public static final String PARAM_SORT_ORDER = "sortOrder";
@@ -227,6 +233,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String URI = "uri";
 	public static final String WHITELIST = "whitelist";
 
+	
 	/**
 	 * These namespace prefixes are employed for evaluation of the internal type
 	 * of the objects in Annotation.

@@ -45,7 +45,7 @@ public interface WebAnnotationModelFields {
 //	public static final String TEXT = "text";
 	public static final String PAGE = "page";
 	
-	public static final String CONTAINS = "contains";
+	public static final String ITEMS = "items";
 	public static final String PURPOSE = "purpose";
 
 	/** Europeana extensions **/

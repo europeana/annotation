@@ -1,4 +1,4 @@
-package eu.europeana.annotation.jsonld;
+package eu.europeana.annotation.utils.serialize;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -10,42 +10,37 @@ import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
+import eu.europeana.annotation.definitions.exception.search.SearchRuntimeException;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
-import eu.europeana.annotation.web.exception.FunctionalRuntimeException;
 
-public class AnnotationSetSerializer extends JsonLd {
+public class AnnotationPageSerializer extends JsonLd {
 
 	// private static final Logger logger =
 	// LoggerFactory.getLogger(AnnotationLd.class);
-
+	//ResultSet<? extends AnnotationView> annotationSet;
+	
 	TypeUtils typeHelper = new TypeUtils();
-	ResultSet<? extends AnnotationView> annotationSet;
+	AnnotationPage protocolPage;
 
-	public ResultSet<? extends AnnotationView> getAnnotationSet() {
-		return annotationSet;
-	}
-
-	public void setAnnotationSet(ResultSet<? extends AnnotationView> annotationSet) {
-		this.annotationSet = annotationSet;
+	public  AnnotationPageSerializer(AnnotationPage protocolPage) {
+		this.protocolPage = protocolPage;
 	}
 
 	public TypeUtils getTypeHelper() {
 		return typeHelper;
 	}
-
-	/**
-	 * @param annotationSet
-	 */
-	public AnnotationSetSerializer(ResultSet<? extends AnnotationView> annotationSet) {
-		setAnnotationSet(annotationSet);
+	
+	private ResultSet<? extends AnnotationView> getPageItems() {
+		return protocolPage.getItems();
 	}
+	
 
 	/**
 	 * Adds the given annotation to this JsonLd object using the resource's
@@ -68,12 +63,31 @@ public class AnnotationSetSerializer extends JsonLd {
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
 		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, ContextTypes.ANNO.getJsonValue());
-		String[] oaType = new String[] { "BasicContainer", "Collection" };
-		jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.TYPE, oaType));
-		jsonLdResource.putProperty(WebAnnotationFields.TOTAL_ITEMS, getAnnotationSet().getResultSize());
-
+		//annotation page
+		jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
+		jsonLdResource.putProperty(WebAnnotationFields.TYPE, "AnnotationPage");
+		jsonLdResource.putProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInPage());
+		
+		//collection
+		JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
+		JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
+		collectionPropValue.putProperty(
+				new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
+		collectionPropValue.putProperty(
+				new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
+		collectionProp.addValue(collectionPropValue);
+		
+		jsonLdResource.putProperty(collectionProp);
+		
+		//items
 		serializeItems(jsonLdResource, profile);
 		serializeFacets(jsonLdResource, profile);
+		
+		//nagivation
+		if(protocolPage.getPrevPageUri() != null)
+			jsonLdResource.putProperty(WebAnnotationFields.PREV, protocolPage.getPrevPageUri());
+		if(protocolPage.getNextPageUri() != null)
+			jsonLdResource.putProperty(WebAnnotationFields.NEXT, protocolPage.getNextPageUri());
 		
 		put(jsonLdResource);
 
@@ -81,14 +95,14 @@ public class AnnotationSetSerializer extends JsonLd {
 	}
 
 	protected void serializeFacets(JsonLdResource jsonLdResource, SearchProfiles profile) {
-		if(getAnnotationSet().getFacetFields() == null || getAnnotationSet().getFacetFields().isEmpty())
+		if(getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
 			return;
 		
 		JsonLdProperty facetsProperty = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS);
 //		JsonLdPropertyValue facetsPropertyValue = new JsonLdPropertyValue();
 		//JsonLdProperty facetViewProperty = new JsonLdProperty(null);
 		
-		for (FacetFieldView view : getAnnotationSet().getFacetFields()) 
+		for (FacetFieldView view : getPageItems().getFacetFields()) 
 			facetsProperty.addValue(buildFacetPropertyValue(view));
 		
 		jsonLdResource.putProperty(facetsProperty);
@@ -128,19 +142,19 @@ public class AnnotationSetSerializer extends JsonLd {
 		// switch(profile)
 		if (SearchProfiles.STANDARD.equals(profile)) {
 
-			String[] items = new String[(int) getAnnotationSet().getResults().size()];
+			String[] items = new String[(int) getPageItems().getResults().size()];
 			int i = 0;
-			for (AnnotationView anno : getAnnotationSet().getResults()) {
+			for (AnnotationView anno : getPageItems().getResults()) {
 				items[i++] = anno.getId();
 			}
 			
 			if(items.length > 0 )
-				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.CONTAINS, items));
+				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.ITEMS, items));
 			
 			return;//needs until updated to switch construct
 		}
 		
-		throw new FunctionalRuntimeException("Unsupported search profile: " + profile);
+		throw new SearchRuntimeException("Unsupported search profile: " + profile);
 	}
 
 	/**
