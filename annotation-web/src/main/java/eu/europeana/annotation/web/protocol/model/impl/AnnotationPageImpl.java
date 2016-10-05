@@ -1,9 +1,9 @@
 package eu.europeana.annotation.web.protocol.model.impl;
 
 import eu.europeana.annotation.definitions.model.search.Query;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
-import eu.europeana.annotation.web.protocol.model.AnnotationPage;
 
 public class AnnotationPageImpl implements AnnotationPage{
 

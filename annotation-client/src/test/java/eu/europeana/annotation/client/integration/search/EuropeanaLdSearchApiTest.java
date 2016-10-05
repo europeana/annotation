@@ -22,7 +22,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 @Ignore
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	
-	@Test
+//	@Test
 	public void searchSemanticTagHistoryPinAnnotationByTarget() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -41,7 +41,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		verifySearchResult(annotationStr);
 	}
 
-	@Test
+//	@Test
 	public void searchSemanticTagHistoryPinAnnotationByResourceId() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -60,7 +60,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		verifySearchResult(annotationStr);
 	}
 
-	@Test
+//	@Test
 	public void searchObjectLinkingHistoryPinAnnotationByTarget() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -79,7 +79,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		verifySearchResult(annotationStr);
 	}
 
-	@Test
+//	@Test
 	public void searchObjectLinkingHistoryPinAnnotationByResourceId() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -98,7 +98,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		verifySearchResult(annotationStr);
 	}
 
-	@Test
+//	@Test
 	public void searchAnnotationsWithMultipleTargetsByEachTarget() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();
@@ -133,7 +133,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 //		assertTrue(idList.contains(annotationNr));
 	}
 	
-	@Test
+//	@Test
 	public void searchAnnotationsWithMultipleTargetsByEachResearchId() throws JsonParseException {
 		
 		long annotationNr = System.currentTimeMillis();

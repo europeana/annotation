@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.web.exception.HttpException;
-import eu.europeana.annotation.web.protocol.model.AnnotationPage;
 
 public interface AnnotationSearchService {
 
