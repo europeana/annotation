@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.jsonld.AnnotationPageSerializer;
 import eu.europeana.annotation.solr.vocabulary.search.SortFields;
 import eu.europeana.annotation.solr.vocabulary.search.SortOrder;
+import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationProfiles;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
-import eu.europeana.annotation.web.protocol.model.AnnotationPage;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import io.swagger.annotations.Api;
@@ -40,10 +40,8 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Web Annotation Search", description = " ")
 public class WebAnnotationSearchRest extends BaseRest {
 
-	@RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, 
-			method = {RequestMethod.GET}, produces = { "application/ld+json", MediaType.APPLICATION_JSON_VALUE }
-//			,consumes = "application/ld+json"
-					)
+	@RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, method = {RequestMethod.GET}, 
+					produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "Search annotations", nickname = "search", response = java.lang.Void.class)
 	public ResponseEntity<String> search(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,

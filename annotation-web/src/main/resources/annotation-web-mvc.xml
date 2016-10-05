@@ -26,8 +26,11 @@
 					<list>
 						<value>application/json</value>
 						<value>application/ld+json</value>
-						<value>text/plain</value>					
-				 	</list>
+						<value>text/plain</value>
+						<value>application/json;charset=utf-8</value>
+						<value>application/ld+json;charset=utf-8</value>
+						<value>text/plain;charset=utf-8</value>
+					</list>
 				 </property>
 			</bean>
 		</mvc:message-converters>	
