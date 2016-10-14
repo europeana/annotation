@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-    xmlns:util="http://www.springframework.org/schema/util"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p" 
-    xmlns:oxm="http://www.springframework.org/schema/oxm" 
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:mvc="http://www.springframework.org/schema/mvc"
-    xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util
@@ -31,37 +29,51 @@
 						<value>application/ld+json; charset=utf-8</value>
 						<value>text/plain; charset=utf-8</value>
 					</list>
-				 </property>
+				</property>
 			</bean>
-		</mvc:message-converters>	
+		</mvc:message-converters>
 	</mvc:annotation-driven>
-	
+
 	<context:annotation-config />
-	
+
 	<bean class="eu.europeana.api.common.config.swagger.SwaggerConfig">
 	</bean>
-	<bean class="springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper">
+	<bean
+		class="springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper">
 	</bean>
-	
-	<mvc:default-servlet-handler />	
-	
-	<import resource="./annotation-web-context.xml"/>
-				 
-	<context:component-scan base-package="eu.europeana.annotation.web.service.controller">
+
+	<mvc:default-servlet-handler />
+
+	<mvc:cors>
+		<mvc:mapping path="/api-docs**" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
+		<mvc:mapping path="/api-docs**" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
+	</mvc:cors>
+
+	<import resource="./annotation-web-context.xml" />
+
+	<context:component-scan
+		base-package="eu.europeana.annotation.web.service.controller">
 	</context:component-scan>
-	
+
 	<!--Basic application beans. -->
-	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
 
 	<!-- the json view -->
+	<!-- 
 	<bean id="annotation_mvc_views_jaxbAnnotationBinder" class="org.codehaus.jackson.xc.JaxbAnnotationIntrospector" />
+	 -->
+	<bean id="annotation_mvc_views_jaxbAnnotationBinder" class="com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector" />
+	<!-- 
 	<bean id="annotation_mvc_views_jsonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
+	 -->
+	<bean id="annotation_mvc_views_jsonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 	
-	<bean id="annotation_mvc_views_json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"
-		p:objectMapper="#{annotation_mvc_views_jsonObjectMapper.setAnnotationIntrospector(annotation_mvc_views_jaxbAnnotationBinder)}" 
-	/>
- 	
+	<bean id="annotation_mvc_views_json"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"
+		p:objectMapper="#{annotation_mvc_views_jsonObjectMapper.setAnnotationIntrospector(annotation_mvc_views_jaxbAnnotationBinder)}" />
+
 </beans>
