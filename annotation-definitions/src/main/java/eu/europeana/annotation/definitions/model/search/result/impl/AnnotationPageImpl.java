@@ -1,4 +1,4 @@
-package eu.europeana.annotation.web.protocol.model.impl;
+package eu.europeana.annotation.definitions.model.search.result.impl;
 
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -22,6 +22,9 @@ public class AnnotationPageImpl implements AnnotationPage{
 	private String nextPageUri;
 	private String prevPageUri;
 	
+	
+	public AnnotationPageImpl (){
+	}
 	
 	public AnnotationPageImpl (Query searchQuery){
 		this.searchQuery = searchQuery;		
