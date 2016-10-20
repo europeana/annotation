@@ -1,6 +1,7 @@
 package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -233,4 +234,35 @@ public class BaseWebAnnotationProtocolTest {
 				}
 				
 			}
+
+	protected Annotation createTag(String requestBody) throws JsonParseException {
+		ResponseEntity<String> response = getApiClient().createTag(
+				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+				TEST_USER_TOKEN);
+		
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getCreator());
+		assertNotNull(storedAnno.getGenerator());
+		return storedAnno;
+	}
+
+	protected Annotation createLink(String requestBody) throws JsonParseException {
+		ResponseEntity<String> response = getApiClient().createAnnotation(
+				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
+				TEST_USER_TOKEN, 
+				null //WebAnnotationFields.LINK
+				);
+				
+				
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getCreator());
+		assertNotNull(storedAnno.getGenerator());
+		return storedAnno;
+	}
 }

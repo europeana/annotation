@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client.integration.search;
+package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

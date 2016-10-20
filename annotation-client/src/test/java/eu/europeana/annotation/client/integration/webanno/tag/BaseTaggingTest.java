@@ -33,19 +33,19 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 		return parseAnnotation(jsonString, motivationType);		
 	}
 
-	protected Annotation createTag(String requestBody) throws JsonParseException {
-		ResponseEntity<String> response = getApiClient().createTag(
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
-				TEST_USER_TOKEN);
-		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getCreator());
-		assertNotNull(storedAnno.getGenerator());
-		return storedAnno;
-	}
+//	protected Annotation createTag(String requestBody) throws JsonParseException {
+//		ResponseEntity<String> response = getApiClient().createTag(
+//				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+//				TEST_USER_TOKEN);
+//		
+//		assertNotNull(response.getBody());
+//		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+//		
+//		Annotation storedAnno = getApiClient().parseResponseBody(response);
+//		assertNotNull(storedAnno.getCreator());
+//		assertNotNull(storedAnno.getGenerator());
+//		return storedAnno;
+//	}
 	
 	
 //	protected Annotation createTagWithProviderAndUserToken(

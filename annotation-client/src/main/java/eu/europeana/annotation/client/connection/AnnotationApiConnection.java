@@ -1160,6 +1160,39 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		// Execute Whitelist API request
 		return deleteURL(url);
 	}
+	
+	
+	/**
+	 * Sample HTTP request
+	 * 	   curl -X DELETE --header 'Accept: application/ld+json' 'http://localhost:8080/admin/annotation/delete?wskey=apiadmin&provider=webanno&identifier=19&userToken=admin'
+	 * @return ResponseEntity<String>
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteAnnotation(Integer numericId) throws IOException {
+		
+		String action = "delete";
+		
+		
+		
+		logger.debug("Annotation service URI: " +getAnnotationServiceUri());	
+		String adminAnnotationServiceUri = getAnnotationServiceUri().replace("annotation", "admin/annotation");
+		logger.debug("Admin annotation service URI: " +adminAnnotationServiceUri);	
+		
+		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
+		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
+		url += WebAnnotationFields.AND + WebAnnotationFields.PROVIDER +"=webanno";
+		url += WebAnnotationFields.AND + WebAnnotationFields.IDENTIFIER +"="+Integer.toString(numericId);
+		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
+		
+		logger.debug("Delete Annotation request URL: " + url);
+		// Execute Annotation delete request
+		ResponseEntity<String> re = deleteURL(url);
+		logger.debug(re.toString());
+
+		return re;
+	}
+	
+	
 
 
 }

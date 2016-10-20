@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client.integration.search;
+package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -23,7 +24,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
  * @author Sergiu Gordea @ait
  * @author Sven Schlarb @ait
  */
-public class AnnotationSearchApiTest {
+public class AnnotationSearchApiTest extends BaseWebAnnotationProtocolTest{
 	
 	// http://localhost:8080/annotation/search?wskey=apidemo&query=*%3A*
 
