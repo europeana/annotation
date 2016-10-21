@@ -170,11 +170,21 @@ public class AnnotationPageParser extends JsonLdParser {
 
 			break;
 
-		// AnnotationPage.items)
+		// AnnotationPage.items
 		case WebAnnotationFields.ITEMS:
-			JSONArray itemsArr = (JSONArray) jo.get(WebAnnotationFields.ITEMS);
-			logger.debug("items: " + itemsArr.toString());
-			ap.setItems(parseItems(itemsArr));
+			Object items = jo.get(WebAnnotationFields.ITEMS);
+			
+			ResultSet<? extends AnnotationView> annViewResSet = null;
+			if (items instanceof JSONArray) {
+			    JSONArray itemsJsonArr = (JSONArray)items;
+			    annViewResSet = parseItems(itemsJsonArr);
+			}
+			else if (items instanceof JSONObject) {
+				JSONObject itemsJsonObj = (JSONObject)items;
+				annViewResSet = parseItems(itemsJsonObj);
+			}
+					
+			ap.setItems(annViewResSet);
 			break;
 
 		case WebAnnotationFields.PART_OF:
@@ -205,17 +215,29 @@ public class AnnotationPageParser extends JsonLdParser {
 		}
 	}
 
-	private ResultSet<? extends AnnotationView> parseItems(JSONArray itemsArr) throws JSONException {
+	private ResultSet<? extends AnnotationView> parseItems(JSONArray jsonArr) throws JSONException {
 		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
 		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
-		for (int i = 0, size = itemsArr.length(); i < size; i++) {
-			String resourceId = (String) itemsArr.get(i);
+		for (int i = 0, size = jsonArr.length(); i < size; i++) {
+			String resourceId = (String) jsonArr.get(i);
 			AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
 			avrItem.setId(resourceId);
 			avrItem.setTimestampUpdated(new Date(0));
 			avItemList.add(avrItem);
 		}
-		resAvItemList.setResultSize(itemsArr.length());
+		resAvItemList.setResultSize(jsonArr.length());
+		return resAvItemList.setResults(avItemList);
+	}
+
+	private ResultSet<? extends AnnotationView> parseItems(JSONObject jsonObj) throws JSONException {
+		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
+		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
+		String resourceId = (String) jsonObj.toString();
+		AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
+		avrItem.setId(resourceId);
+		avrItem.setTimestampUpdated(new Date(0));
+		avItemList.add(avrItem);
+		resAvItemList.setResultSize(1);
 		return resAvItemList.setResults(avItemList);
 	}
 
