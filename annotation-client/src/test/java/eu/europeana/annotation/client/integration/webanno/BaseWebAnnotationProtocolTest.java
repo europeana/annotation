@@ -2,6 +2,7 @@ package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,10 +17,14 @@ import org.junit.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import eu.europeana.annotation.client.AnnotationSearchApiImpl;
+import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
+import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -264,5 +269,45 @@ public class BaseWebAnnotationProtocolTest {
 		assertNotNull(storedAnno.getCreator());
 		assertNotNull(storedAnno.getGenerator());
 		return storedAnno;
+	}
+	
+	protected void deleteAnnotation(Integer numericId) {
+		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
+		assertEquals(re.getStatusCode(), HttpStatus.OK);
+		log.debug("Annotation deleted: " + numericId);
+	}
+	
+	protected Integer getNumericAnnotationId(Annotation annotation) {
+		String annotIdUriStr = annotation.getAnnotationId().toString();
+		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
+		return numericId;
+	}
+	
+	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException {
+		
+		Annotation[] testAnnotations = new Annotation[numTestAnno];
+		for( int i = 0; i < numTestAnno; i++) {
+			Annotation annotation = this.createTestAnnotation();
+			assertNotNull(annotation);
+			testAnnotations[i] = annotation;
+		}
+		return testAnnotations;
+	}
+	
+	protected Integer[] getNumericAnnotationIds(Annotation[] annotations) {
+		Integer[] annotationIds = new Integer[annotations.length];
+		for(int i = 0; i < annotations.length; i++) {
+			annotationIds[i] = getNumericAnnotationId(annotations[i]);
+		}
+		return annotationIds;
+	}
+	
+	protected void deleteAnnotations(Integer[] numericIds) {
+		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+		for(int i = 0; i < numericIds.length; i++) {
+			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericIds[i]);
+			assertEquals(re.getStatusCode(), HttpStatus.OK);
+		}
 	}
 }

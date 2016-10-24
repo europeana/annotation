@@ -21,5 +21,13 @@ public class QueryUtils {
 		}
 		return null;
 	}
+	
+	public static Integer getQueryParamNumValue(String queryUrl, String paramName) throws MalformedURLException {
+		String paramVal = getQueryParamValue(queryUrl, paramName);
+		Integer numParamVal = Integer.parseInt(paramVal);
+		return numParamVal;
+	}
+	
+	
 
 }

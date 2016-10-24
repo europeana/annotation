@@ -32,7 +32,6 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 
 	@Override
 	public AnnotationPage searchAnnotations(String query) {
-		logger.debug("Search Annotations ...");
 //		List<? extends Annotation> res;
 		AnnotationPage res;
 		try {
