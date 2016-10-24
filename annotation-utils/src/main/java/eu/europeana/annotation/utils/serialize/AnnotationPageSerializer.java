@@ -20,10 +20,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationPageSerializer extends JsonLd {
 
-	// private static final Logger logger =
-	// LoggerFactory.getLogger(AnnotationLd.class);
-	//ResultSet<? extends AnnotationView> annotationSet;
-	
 	TypeUtils typeHelper = new TypeUtils();
 	AnnotationPage protocolPage;
 
@@ -97,13 +93,12 @@ public class AnnotationPageSerializer extends JsonLd {
 			return;
 		
 		JsonLdProperty facetsProperty = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS);
-//		JsonLdPropertyValue facetsPropertyValue = new JsonLdPropertyValue();
-		//JsonLdProperty facetViewProperty = new JsonLdProperty(null);
 		
 		for (FacetFieldView view : getPageItems().getFacetFields()) 
 			facetsProperty.addValue(buildFacetPropertyValue(view));
 		
-		jsonLdResource.putProperty(facetsProperty);
+		if(facetsProperty.getValues() != null && !facetsProperty.getValues().isEmpty())
+			jsonLdResource.putProperty(facetsProperty);
 				
 	}
 
@@ -160,80 +155,6 @@ public class AnnotationPageSerializer extends JsonLd {
 		
 		if(items.length > 0 )
 			putStringArrayProperty(WebAnnotationFields.ITEMS, items, jsonLdResource);
-//				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.ITEMS, items));
 	}
-
-//	/**
-//	 * TODO: move this to base class build appropriate property representation
-//	 * for string arrays
-//	 * 
-//	 * @param propertyName
-//	 * @param valueList
-//	 * @return
-//	 */
-//	protected JsonLdProperty buildArrayProperty(String propertyName, String[] values) {
-//
-//		if (values == null)
-//			return null;
-//
-//		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-//		JsonLdPropertyValue propertyValue;
-//		for (int i = 0; i < values.length; i++) {
-//			propertyValue = new JsonLdPropertyValue();
-//			propertyValue.setValue(values[i]);
-//			arrProperty.addValue(propertyValue);
-//		}
-//
-//		return arrProperty;
-//	}
-	
-	
-//	/**
-//	 * TODO: move this to base class build appropriate property representation
-//	 * for string arrays
-//	 * 
-//	 * @param propertyName
-//	 * @param valueList
-//	 * @return
-//	 */
-//	protected JsonLdProperty buildValueArrayProperty(String propertyName, String[] values) {
-//
-//		if (values == null)
-//			return null;
-//
-//		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-//		JsonLdPropertyValue propertyValue;
-//		for (int i = 0; i < values.length; i++) {
-//			propertyValue = new JsonLdPropertyValue();
-//			propertyValue.setValue(values[i]);
-//			arrProperty.addValue(propertyValue);
-//		}
-//
-//		return arrProperty;
-//	}
-	
-//	/**
-//	 * @param map
-//	 * @param propertyValue
-//	 * @param field
-//	 */
-//	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
-//        JsonLdProperty fieldProperty = new JsonLdProperty(field);
-//        JsonLdPropertyValue fieldPropertyValue = new JsonLdPropertyValue();
-//        
-//	    Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-//	    while (it.hasNext()) {
-//	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
-//	        String curValue = pairs.getValue();
-//        	if (!StringUtils.isBlank(curValue)) 
-//        		fieldPropertyValue.getValues().put(pairs.getKey(), pairs.getValue());
-//	        it.remove(); // avoids a ConcurrentModificationException
-//	    }
-//        if (fieldPropertyValue.getValues().size() != 0) {
-//         	fieldProperty.addValue(fieldPropertyValue);        
-//         	propertyValue.putProperty(fieldProperty);
-//    	}
-//	}
-//	
 
 }
