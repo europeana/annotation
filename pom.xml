@@ -46,21 +46,17 @@
 		<version.annotationApi>0.2.4-SNAPSHOT</version.annotationApi>
 		<version.java>1.7</version.java>
 		<version.junit>4.11</version.junit>
+<!--  		
 		<version.springAop>4.0.9.RELEASE</version.springAop>
 		<version.springCore>4.0.9.RELEASE</version.springCore>
 		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
-		<!-- 
-		<version.spring>4.0.9.RELEASE</version.spring>
-		 -->
+-->		
 		<version.spring>4.2.5.RELEASE</version.spring>
 		
 		<version.corelib>2.1</version.corelib>
 		<version.log4j>1.2.12</version.log4j>
 		<version.commonsLang3>3.0</version.commonsLang3>
-		<!--
-		<version.annotationld>1.0.0-RELEASE</version.annotationld>
-		-->
-		<version.annotationld>1.0.1-RELEASE</version.annotationld>
+		<version.annotationld>1.1.0</version.annotationld>
 		
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.6.5</version.jackson>

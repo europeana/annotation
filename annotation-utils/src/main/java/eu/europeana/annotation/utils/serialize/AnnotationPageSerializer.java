@@ -1,10 +1,8 @@
 package eu.europeana.annotation.utils.serialize;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
@@ -136,98 +134,106 @@ public class AnnotationPageSerializer extends JsonLd {
 
 	protected void serializeItems(JsonLdResource jsonLdResource, SearchProfiles profile) {
 
-		if (SearchProfiles.FACET.equals(profile))
-			return;
+		switch (profile) {
+		case FACET:
+//			do not serialize items
+			break;
 
-		// switch(profile)
-		if (SearchProfiles.STANDARD.equals(profile)) {
+		case STANDARD:
+			putItemsProperty(jsonLdResource);
 
-			String[] items = new String[(int) getPageItems().getResults().size()];
-			int i = 0;
-			for (AnnotationView anno : getPageItems().getResults()) {
-				items[i++] = anno.getId();
-			}
-			
-			if(items.length > 0 )
-				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.ITEMS, items));
-			
-			return;//needs until updated to switch construct
+			break;
+
+		default:
+			throw new SearchRuntimeException("Unsupported search profile: " + profile);
+		}
+	
+		
+	}
+
+	protected void putItemsProperty(JsonLdResource jsonLdResource) {
+		String[] items = new String[(int) getPageItems().getResults().size()];
+		int i = 0;
+		for (AnnotationView anno : getPageItems().getResults()) {
+			items[i++] = anno.getId();
 		}
 		
-		throw new SearchRuntimeException("Unsupported search profile: " + profile);
+		if(items.length > 0 )
+			putStringArrayProperty(WebAnnotationFields.ITEMS, items, jsonLdResource);
+//				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.ITEMS, items));
 	}
 
-	/**
-	 * TODO: move this to base class build appropriate property representation
-	 * for string arrays
-	 * 
-	 * @param propertyName
-	 * @param valueList
-	 * @return
-	 */
-	protected JsonLdProperty buildArrayProperty(String propertyName, String[] values) {
-
-		if (values == null)
-			return null;
-
-		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-		JsonLdPropertyValue propertyValue;
-		for (int i = 0; i < values.length; i++) {
-			propertyValue = new JsonLdPropertyValue();
-			propertyValue.setValue(values[i]);
-			arrProperty.addValue(propertyValue);
-		}
-
-		return arrProperty;
-	}
+//	/**
+//	 * TODO: move this to base class build appropriate property representation
+//	 * for string arrays
+//	 * 
+//	 * @param propertyName
+//	 * @param valueList
+//	 * @return
+//	 */
+//	protected JsonLdProperty buildArrayProperty(String propertyName, String[] values) {
+//
+//		if (values == null)
+//			return null;
+//
+//		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
+//		JsonLdPropertyValue propertyValue;
+//		for (int i = 0; i < values.length; i++) {
+//			propertyValue = new JsonLdPropertyValue();
+//			propertyValue.setValue(values[i]);
+//			arrProperty.addValue(propertyValue);
+//		}
+//
+//		return arrProperty;
+//	}
 	
 	
-	/**
-	 * TODO: move this to base class build appropriate property representation
-	 * for string arrays
-	 * 
-	 * @param propertyName
-	 * @param valueList
-	 * @return
-	 */
-	protected JsonLdProperty buildValueArrayProperty(String propertyName, String[] values) {
-
-		if (values == null)
-			return null;
-
-		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-		JsonLdPropertyValue propertyValue;
-		for (int i = 0; i < values.length; i++) {
-			propertyValue = new JsonLdPropertyValue();
-			propertyValue.setValue(values[i]);
-			arrProperty.addValue(propertyValue);
-		}
-
-		return arrProperty;
-	}
+//	/**
+//	 * TODO: move this to base class build appropriate property representation
+//	 * for string arrays
+//	 * 
+//	 * @param propertyName
+//	 * @param valueList
+//	 * @return
+//	 */
+//	protected JsonLdProperty buildValueArrayProperty(String propertyName, String[] values) {
+//
+//		if (values == null)
+//			return null;
+//
+//		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
+//		JsonLdPropertyValue propertyValue;
+//		for (int i = 0; i < values.length; i++) {
+//			propertyValue = new JsonLdPropertyValue();
+//			propertyValue.setValue(values[i]);
+//			arrProperty.addValue(propertyValue);
+//		}
+//
+//		return arrProperty;
+//	}
 	
-	/**
-	 * @param map
-	 * @param propertyValue
-	 * @param field
-	 */
-	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
-        JsonLdProperty fieldProperty = new JsonLdProperty(field);
-        JsonLdPropertyValue fieldPropertyValue = new JsonLdPropertyValue();
-        
-	    Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
-	        String curValue = pairs.getValue();
-        	if (!StringUtils.isBlank(curValue)) 
-        		fieldPropertyValue.getValues().put(pairs.getKey(), pairs.getValue());
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-        if (fieldPropertyValue.getValues().size() != 0) {
-         	fieldProperty.addValue(fieldPropertyValue);        
-         	propertyValue.putProperty(fieldProperty);
-    	}
-	}
-	
+//	/**
+//	 * @param map
+//	 * @param propertyValue
+//	 * @param field
+//	 */
+//	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
+//        JsonLdProperty fieldProperty = new JsonLdProperty(field);
+//        JsonLdPropertyValue fieldPropertyValue = new JsonLdPropertyValue();
+//        
+//	    Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+//	    while (it.hasNext()) {
+//	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
+//	        String curValue = pairs.getValue();
+//        	if (!StringUtils.isBlank(curValue)) 
+//        		fieldPropertyValue.getValues().put(pairs.getKey(), pairs.getValue());
+//	        it.remove(); // avoids a ConcurrentModificationException
+//	    }
+//        if (fieldPropertyValue.getValues().size() != 0) {
+//         	fieldProperty.addValue(fieldPropertyValue);        
+//         	propertyValue.putProperty(fieldProperty);
+//    	}
+//	}
+//	
 
 }
