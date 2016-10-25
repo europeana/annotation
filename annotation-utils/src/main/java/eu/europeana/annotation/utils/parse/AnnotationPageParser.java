@@ -175,14 +175,8 @@ public class AnnotationPageParser extends JsonLdParser {
 			Object items = jo.get(WebAnnotationFields.ITEMS);
 			
 			ResultSet<? extends AnnotationView> annViewResSet = null;
-			if (items instanceof JSONArray) {
-			    JSONArray itemsJsonArr = (JSONArray)items;
-			    annViewResSet = parseItems(itemsJsonArr);
-			}
-			else if (items instanceof JSONObject) {
-				JSONObject itemsJsonObj = (JSONObject)items;
-				annViewResSet = parseItems(itemsJsonObj);
-			}
+		    JSONArray itemsJsonArr = (JSONArray)items;
+		    annViewResSet = parseItems(itemsJsonArr);
 					
 			ap.setItems(annViewResSet);
 			break;
@@ -229,16 +223,16 @@ public class AnnotationPageParser extends JsonLdParser {
 		return resAvItemList.setResults(avItemList);
 	}
 
-	private ResultSet<? extends AnnotationView> parseItems(JSONObject jsonObj) throws JSONException {
-		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
-		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
-		String resourceId = (String) jsonObj.toString();
-		AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
-		avrItem.setId(resourceId);
-		avrItem.setTimestampUpdated(new Date(0));
-		avItemList.add(avrItem);
-		resAvItemList.setResultSize(1);
-		return resAvItemList.setResults(avItemList);
-	}
+//	private ResultSet<? extends AnnotationView> parseItems(JSONObject jsonObj) throws JSONException {
+//		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
+//		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
+//		String resourceId = (String) jsonObj.toString();
+//		AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
+//		avrItem.setId(resourceId);
+//		avrItem.setTimestampUpdated(new Date(0));
+//		avItemList.add(avrItem);
+//		resAvItemList.setResultSize(1);
+//		return resAvItemList.setResults(avItemList);
+//	}
 
 }
