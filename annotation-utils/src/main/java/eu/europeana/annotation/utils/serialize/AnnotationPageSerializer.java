@@ -23,18 +23,17 @@ public class AnnotationPageSerializer extends JsonLd {
 	TypeUtils typeHelper = new TypeUtils();
 	AnnotationPage protocolPage;
 
-	public  AnnotationPageSerializer(AnnotationPage protocolPage) {
+	public AnnotationPageSerializer(AnnotationPage protocolPage) {
 		this.protocolPage = protocolPage;
 	}
 
 	public TypeUtils getTypeHelper() {
 		return typeHelper;
 	}
-	
+
 	private ResultSet<? extends AnnotationView> getPageItems() {
 		return protocolPage.getItems();
 	}
-	
 
 	/**
 	 * Adds the given annotation to this JsonLd object using the resource's
@@ -57,73 +56,76 @@ public class AnnotationPageSerializer extends JsonLd {
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
 		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, ContextTypes.ANNO.getJsonValue());
-		//annotation page
+		// annotation page
 		jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
 		jsonLdResource.putProperty(WebAnnotationFields.TYPE, "AnnotationPage");
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInPage());
-		
-		//collection
+
+		// collection
 		JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
 		JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
-		collectionPropValue.putProperty(
-				new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
-		collectionPropValue.putProperty(
-				new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
+		collectionPropValue.putProperty(new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
+		collectionPropValue
+				.putProperty(new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
 		collectionProp.addValue(collectionPropValue);
-		
+
 		jsonLdResource.putProperty(collectionProp);
-		
-		//items
+
+		// items
 		serializeItems(jsonLdResource, profile);
 		serializeFacets(jsonLdResource, profile);
-		
-		//nagivation
-		if(protocolPage.getPrevPageUri() != null)
+
+		// nagivation
+		if (protocolPage.getPrevPageUri() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.PREV, protocolPage.getPrevPageUri());
-		if(protocolPage.getNextPageUri() != null)
+		if (protocolPage.getNextPageUri() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.NEXT, protocolPage.getNextPageUri());
-		
+
 		put(jsonLdResource);
 
 		return toString(4);
 	}
 
 	protected void serializeFacets(JsonLdResource jsonLdResource, SearchProfiles profile) {
-		if(getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
+		if (getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
 			return;
-		
+
 		JsonLdProperty facetsProperty = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS);
-		
-		for (FacetFieldView view : getPageItems().getFacetFields()) 
+
+		for (FacetFieldView view : getPageItems().getFacetFields())
 			facetsProperty.addValue(buildFacetPropertyValue(view));
-		
-		if(facetsProperty.getValues() != null && !facetsProperty.getValues().isEmpty())
+
+		if (facetsProperty.getValues() != null && !facetsProperty.getValues().isEmpty())
 			jsonLdResource.putProperty(facetsProperty);
-				
+
 	}
 
 	private JsonLdPropertyValue buildFacetPropertyValue(FacetFieldView view) {
-		
+
 		JsonLdPropertyValue facetViewEntry = new JsonLdPropertyValue();
-		
+
 		facetViewEntry.putProperty(new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_FIELD, view.getName()));
-		
-		JsonLdProperty values = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
-		JsonLdPropertyValue labelCountValue;
-		Map<String, String> valueMap;
-		
-		for (Map.Entry<String, Long> valueCount : view.getValueCountMap().entrySet()) {
-			labelCountValue = new JsonLdPropertyValue();
-			valueMap = new TreeMap<String, String>();
-			valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_LABEL, valueCount.getKey());
-			valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_COUNT, valueCount.getValue().toString());
-			labelCountValue.setValues(valueMap);
-			
-			values.addValue(labelCountValue);
+
+		//only if values for facet count are available
+		if (view.getValueCountMap() != null && view.getValueCountMap().isEmpty()) {
+
+			JsonLdProperty values = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
+			JsonLdPropertyValue labelCountValue;
+			Map<String, String> valueMap;
+
+			for (Map.Entry<String, Long> valueCount : view.getValueCountMap().entrySet()) {
+				labelCountValue = new JsonLdPropertyValue();
+				valueMap = new TreeMap<String, String>();
+				valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_LABEL, valueCount.getKey());
+				valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_COUNT, valueCount.getValue().toString());
+				labelCountValue.setValues(valueMap);
+
+				values.addValue(labelCountValue);
+			}
+
+			facetViewEntry.putProperty(values);
 		}
-		
-		facetViewEntry.putProperty(values);
-		
+
 		return facetViewEntry;
 	}
 
@@ -131,7 +133,7 @@ public class AnnotationPageSerializer extends JsonLd {
 
 		switch (profile) {
 		case FACET:
-//			do not serialize items
+			// do not serialize items
 			break;
 
 		case STANDARD:
@@ -142,8 +144,7 @@ public class AnnotationPageSerializer extends JsonLd {
 		default:
 			throw new SearchRuntimeException("Unsupported search profile: " + profile);
 		}
-	
-		
+
 	}
 
 	protected void putItemsProperty(JsonLdResource jsonLdResource) {
@@ -152,8 +153,8 @@ public class AnnotationPageSerializer extends JsonLd {
 		for (AnnotationView anno : getPageItems().getResults()) {
 			items[i++] = anno.getId();
 		}
-		
-		if(items.length > 0 )
+
+		if (items.length > 0)
 			putStringArrayProperty(WebAnnotationFields.ITEMS, items, jsonLdResource);
 	}
 
