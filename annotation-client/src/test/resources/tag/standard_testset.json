@@ -9,7 +9,10 @@
     },
     "created": "2015-02-27T12:00:43Z",
     "generated": "2015-02-28T13:00:34Z",
-    "generator": "http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651",
+    "generator": {
+    	id : "http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651",
+    	name : "test_generator"
+    }
     "body": {
 		"value": "test",
 		"language": "en"
