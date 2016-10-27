@@ -1176,7 +1176,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		logger.debug("Annotation service URI: " +getAnnotationServiceUri());	
 		String adminAnnotationServiceUri = getAnnotationServiceUri().replace("annotation", "admin/annotation");
-		logger.debug("Admin annotation service URI: " +adminAnnotationServiceUri);	
+		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
 		
 		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
 		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
@@ -1184,10 +1184,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.AND + WebAnnotationFields.IDENTIFIER +"="+Integer.toString(numericId);
 		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
 		
-		logger.debug("Delete Annotation request URL: " + url);
+		logger.trace("Delete Annotation request URL: " + url);
 		// Execute Annotation delete request
 		ResponseEntity<String> re = deleteURL(url);
-		logger.debug(re.toString());
+		logger.trace(re.toString());
 
 		return re;
 	}

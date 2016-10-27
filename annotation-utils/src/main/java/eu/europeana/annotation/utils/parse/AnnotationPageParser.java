@@ -147,7 +147,7 @@ public class AnnotationPageParser extends JsonLdParser {
 		case WebAnnotationFields.PREV:
 			String prevPageUri = valueObject.toString();
 			logger.debug("prevPageUri: " + prevPageUri);
-			ap.setNextPageUri(prevPageUri);
+			ap.setPrevPageUri(prevPageUri);
 			break;
 
 		// AnnotationPage.NextPageUri
@@ -161,7 +161,7 @@ public class AnnotationPageParser extends JsonLdParser {
 		case WebAnnotationFields.ID:
 			String currentPageUri = valueObject.toString();
 			logger.debug("currentPageUri: " + currentPageUri);
-			ap.setNextPageUri(currentPageUri);
+			ap.setCurrentPageUri(currentPageUri);
 			// AnnotationPage.CurrentPage (int)
 			String currentPageVal = QueryUtils.getQueryParamValue(valueObject.toString(), WebAnnotationFields.PAGE);
 			int currentPageNum = Integer.parseInt(currentPageVal);

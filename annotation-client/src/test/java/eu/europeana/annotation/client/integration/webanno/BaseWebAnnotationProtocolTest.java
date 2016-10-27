@@ -275,7 +275,7 @@ public class BaseWebAnnotationProtocolTest {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
 		assertEquals(re.getStatusCode(), HttpStatus.OK);
-		log.debug("Annotation deleted: " + numericId);
+		log.trace("Annotation deleted: " + numericId);
 	}
 	
 	protected Integer getNumericAnnotationId(Annotation annotation) {

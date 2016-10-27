@@ -4,11 +4,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationDataSetTest;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
@@ -25,111 +28,96 @@ import eu.europeana.annotation.utils.QueryUtils;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 
 /**
- * TODO: rewrite
+ * Annotation search API test class
  * 
  * @author Sergiu Gordea @ait
  * @author Sven Schlarb @ait
  */
-public class AnnotationSearchApiTest extends BaseWebAnnotationProtocolTest {
-	
-	// http://localhost:8080/annotation/search?wskey=apidemo&query=*%3A*
-	protected Logger log = Logger.getLogger(getClass());
+public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 
-	public static String VALUE     = "Vlad";
-	public static String VALUE_ALL = "*:*";
-	public static String START_ON  = "0";
-	public static String LIMIT     = "10";
-	public static String FIELD     = "multilingual";
-	public static String LANGUAGE  = "ro";	
-	
-	public static final int TOTAL_IN_PAGE = 10;
-	public static final int TOTAL_IN_COLLECTION = 21;
-		
+	static final String VALUE_ALL = "*:*";
+	static final String VALUE_TESTSET = "generator_name: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 
-	@Test
-	public void searchAnnotation() throws Exception {
+	static final int TOTAL_IN_PAGE = 10;
+	static final int TOTAL_IN_COLLECTION = 21;
 
-		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
-		
-		AnnotationPage annotationPage = 
-				annotationSearchApi.searchAnnotations(VALUE_ALL);
-		
-		assertNotNull("AnnotationPage must not be null", annotationPage);
-		assertEquals("First page must be 0", annotationPage.getCurrentPage(), 0);
+	private Annotation[] annotations;
+
+	/**
+	 * Create annotations data set before each test execution
+	 * 
+	 * @throws IOException
+	 */
+	@Before
+	public void createAnnotationDataSet() throws JsonParseException, IOException {
+		annotations = createMultipleTestAnnotations(TOTAL_IN_COLLECTION);
+		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
 	}
-	
-	private void assertCollectionAndPageSize(AnnotationPage annotationPage) {
-		assertNotNull("AnnotationPage must not be null", annotationPage);
-		assertEquals("First page must be 0", annotationPage.getCurrentPage(), 0);
-		assertEquals(TOTAL_IN_COLLECTION, annotationPage.getTotalInCollection());
-		assertEquals(TOTAL_IN_PAGE, annotationPage.getTotalInPage());
-		assertEquals(TOTAL_IN_PAGE, annotationPage.getItems().getResultSize());
-	}	
 
-	
-	private void assertNextPageUri(AnnotationPage annotationPage, Integer expectedPageNum) throws MalformedURLException {
-		// http://localhost:8080/annotation/search?wskey=apidemo&query=*%3A*&page=1&pageSize=10
-		String nextPageUri = annotationPage.getNextPageUri();
-		Integer nextPageNum = QueryUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PAGE);
-		assertEquals(expectedPageNum, nextPageNum);
-		Integer pageSizeNum = QueryUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PARAM_PAGE_SIZE);
-		assertEquals(new Integer(TOTAL_IN_PAGE), pageSizeNum);
+	/**
+	 * Delete annotations data set after each test execution
+	 */
+	@After
+	public void deleteAnnotationDataSet() {
+		deleteAnnotations(annotations);
 	}
-	
 
+	/**
+	 * Check if the next page URI points to the correct page number
+	 * 
+	 * @param annPg
+	 *            Annotation page object
+	 * @param expPgNum
+	 *            Expected page number
+	 * @throws MalformedURLException
+	 */
+	private void assertNextPageNumber(AnnotationPage annPg, Integer expPgNum) throws MalformedURLException {
+		String nextPageUri = annPg.getNextPageUri();
+		Integer nextPgNum = QueryUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PAGE);
+		log.debug(nextPageUri);
+		log.debug(nextPgNum);
+		assertEquals(expPgNum, nextPgNum);
+	}
+
+	/**
+	 * Test search query and verify search result
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testSearchAnnotationPaging() throws Exception {
+
+		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
-		// create
-		Annotation[] annotations = createMultipleTestAnnotations(TOTAL_IN_COLLECTION);
-		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
-		
-		// search
-		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
+		// first page
+		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET);
+		assertNotNull("AnnotationPage must not be null", annPg);
+		assertEquals(TOTAL_IN_COLLECTION, annPg.getTotalInCollection());
+		assertEquals(annPg.getCurrentPage(), 0);
+		assertEquals(TOTAL_IN_PAGE, annPg.getTotalInPage());
+		assertEquals(TOTAL_IN_PAGE, annPg.getItems().getResultSize());
+		assertNextPageNumber(annPg, 1);
+
+		// second page
+		String npUri = annPg.getNextPageUri();
+		String nextPageJson = annSearchApi.getApiConnection().getHttpConnection().getURLContent(npUri);
 		AnnotationPageParser annoPageParser = new AnnotationPageParser();
+		AnnotationPage secondAnnoPg = annoPageParser.parseAnnotationPage(nextPageJson);
+		String currentPageUri = secondAnnoPg.getCurrentPageUri();
+		log.debug("currentPageUri" + currentPageUri);
+		String nextCurrentPageUri = secondAnnoPg.getNextPageUri();
+		log.debug("nextCurrentPageUri" + nextCurrentPageUri);
+		assertNotNull(secondAnnoPg);
+		assertEquals(secondAnnoPg.getCurrentPage(), 1);
+		assertNextPageNumber(secondAnnoPg, 2);
+		assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getTotalInPage());
+		assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getItems().getResultSize());
 		
-		AnnotationPage annotationPage = annotationSearchApi.searchAnnotations(VALUE_ALL);
-		
-		assertCollectionAndPageSize(annotationPage);
-		assertNextPageUri(annotationPage, 1);
-		
-		String npUri = annotationPage.getNextPageUri();
-		String nextPageJson = annotationSearchApi.getApiConnection().getHttpConnection().getURLContent(npUri);
-		
-		log.debug(nextPageJson);
-
-		AnnotationPage nextAnnoPage = annoPageParser.parseAnnotationPage(nextPageJson);
-		assertNotNull(nextAnnoPage);
-		
-		Integer[] annotationIds = getNumericAnnotationIds(annotations);
-		assertEquals(TOTAL_IN_COLLECTION, annotationIds.length);
-		this.deleteAnnotations(annotationIds);
+		// last page
+		int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
+		AnnotationPage lastPage = annSearchApi.searchAnnotations(VALUE_TESTSET, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
+		assertEquals(lastPage.getCurrentPage(), lastPageNum);
 		
 	}
 
-//	@Test
-	public void searchAnnotationByLimit() throws Exception {
-
-		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
-		
-		AnnotationPage annotationPage = 
-				annotationSearchApi.searchAnnotations(VALUE, START_ON, LIMIT, null, null);
-		
-		assertNotNull(annotationPage);
-		//assertTrue(annotationList.size() > 0);
-	}
-
-//	@Test
-	public void searchAnnotationByLanguage() throws Exception {
-
-		AnnotationSearchApiImpl annotationSearchApi = new AnnotationSearchApiImpl();
-		
-		AnnotationPage annotationPage = 
-				annotationSearchApi.searchAnnotations(VALUE, START_ON, LIMIT, FIELD, LANGUAGE);
-		
-		assertNotNull(annotationPage);
-		//assertTrue(annotationList.size() > 0);
-	}
-	
-	
 }
