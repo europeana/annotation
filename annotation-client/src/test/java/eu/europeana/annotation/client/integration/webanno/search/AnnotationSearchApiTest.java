@@ -36,7 +36,7 @@ import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 
 	static final String VALUE_ALL = "*:*";
-	static final String VALUE_TESTSET = "generator_name: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
+	static final String VALUE_TESTSET = "generator_id: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 
 	static final int TOTAL_IN_PAGE = 10;
 	static final int TOTAL_IN_COLLECTION = 21;
