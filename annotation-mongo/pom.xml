@@ -75,7 +75,10 @@
 			<scope>test</scope>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<!-- 
 			<version>${version.springCore}</version>
+			 -->
+			<version>${version.spring}</version>
 		</dependency>
 
 		<dependency>
@@ -94,4 +97,5 @@
 		<name>Europeana Foundation</name>
 	</organization>
 	
+	<version>${version.annotationApi}</version>
 </project>

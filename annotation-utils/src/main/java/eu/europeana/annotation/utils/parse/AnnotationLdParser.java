@@ -130,7 +130,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @throws JsonParseException
 	 */
 	// @SuppressWarnings("deprecation")
-	private void parseJsonObject(JSONObject jo, Annotation annoLd, int bnodeCount, String profile)
+	protected void parseJsonObject(JSONObject jo, Annotation annoLd, int bnodeCount, String profile)
 			throws JsonParseException {
 
 		try {

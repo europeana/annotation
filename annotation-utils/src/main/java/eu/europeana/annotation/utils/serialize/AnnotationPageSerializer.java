@@ -1,10 +1,8 @@
 package eu.europeana.annotation.utils.serialize;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
@@ -22,25 +20,20 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationPageSerializer extends JsonLd {
 
-	// private static final Logger logger =
-	// LoggerFactory.getLogger(AnnotationLd.class);
-	//ResultSet<? extends AnnotationView> annotationSet;
-	
 	TypeUtils typeHelper = new TypeUtils();
 	AnnotationPage protocolPage;
 
-	public  AnnotationPageSerializer(AnnotationPage protocolPage) {
+	public AnnotationPageSerializer(AnnotationPage protocolPage) {
 		this.protocolPage = protocolPage;
 	}
 
 	public TypeUtils getTypeHelper() {
 		return typeHelper;
 	}
-	
+
 	private ResultSet<? extends AnnotationView> getPageItems() {
 		return protocolPage.getItems();
 	}
-	
 
 	/**
 	 * Adds the given annotation to this JsonLd object using the resource's
@@ -63,171 +56,106 @@ public class AnnotationPageSerializer extends JsonLd {
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
 		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, ContextTypes.ANNO.getJsonValue());
-		//annotation page
+		// annotation page
 		jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
 		jsonLdResource.putProperty(WebAnnotationFields.TYPE, "AnnotationPage");
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInPage());
-		
-		//collection
+
+		// collection
 		JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
 		JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
-		collectionPropValue.putProperty(
-				new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
-		collectionPropValue.putProperty(
-				new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
+		collectionPropValue.putProperty(new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
+		collectionPropValue
+				.putProperty(new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
 		collectionProp.addValue(collectionPropValue);
-		
+
 		jsonLdResource.putProperty(collectionProp);
-		
-		//items
+
+		// items
 		serializeItems(jsonLdResource, profile);
 		serializeFacets(jsonLdResource, profile);
-		
-		//nagivation
-		if(protocolPage.getPrevPageUri() != null)
+
+		// nagivation
+		if (protocolPage.getPrevPageUri() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.PREV, protocolPage.getPrevPageUri());
-		if(protocolPage.getNextPageUri() != null)
+		if (protocolPage.getNextPageUri() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.NEXT, protocolPage.getNextPageUri());
-		
+
 		put(jsonLdResource);
 
 		return toString(4);
 	}
 
 	protected void serializeFacets(JsonLdResource jsonLdResource, SearchProfiles profile) {
-		if(getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
+		if (getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
 			return;
-		
+
 		JsonLdProperty facetsProperty = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS);
-//		JsonLdPropertyValue facetsPropertyValue = new JsonLdPropertyValue();
-		//JsonLdProperty facetViewProperty = new JsonLdProperty(null);
-		
-		for (FacetFieldView view : getPageItems().getFacetFields()) 
+
+		for (FacetFieldView view : getPageItems().getFacetFields())
 			facetsProperty.addValue(buildFacetPropertyValue(view));
-		
-		jsonLdResource.putProperty(facetsProperty);
-				
+
+		if (facetsProperty.getValues() != null && !facetsProperty.getValues().isEmpty())
+			jsonLdResource.putProperty(facetsProperty);
+
 	}
 
 	private JsonLdPropertyValue buildFacetPropertyValue(FacetFieldView view) {
-		
+
 		JsonLdPropertyValue facetViewEntry = new JsonLdPropertyValue();
-		
+
 		facetViewEntry.putProperty(new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_FIELD, view.getName()));
-		
-		JsonLdProperty values = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
-		JsonLdPropertyValue labelCountValue;
-		Map<String, String> valueMap;
-		
-		for (Map.Entry<String, Long> valueCount : view.getValueCountMap().entrySet()) {
-			labelCountValue = new JsonLdPropertyValue();
-			valueMap = new TreeMap<String, String>();
-			valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_LABEL, valueCount.getKey());
-			valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_COUNT, valueCount.getValue().toString());
-			labelCountValue.setValues(valueMap);
-			
-			values.addValue(labelCountValue);
+
+		//only if values for facet count are available
+		if (view.getValueCountMap() != null && view.getValueCountMap().isEmpty()) {
+
+			JsonLdProperty values = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
+			JsonLdPropertyValue labelCountValue;
+			Map<String, String> valueMap;
+
+			for (Map.Entry<String, Long> valueCount : view.getValueCountMap().entrySet()) {
+				labelCountValue = new JsonLdPropertyValue();
+				valueMap = new TreeMap<String, String>();
+				valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_LABEL, valueCount.getKey());
+				valueMap.put(WebAnnotationFields.SEARCH_RESP_FACETS_COUNT, valueCount.getValue().toString());
+				labelCountValue.setValues(valueMap);
+
+				values.addValue(labelCountValue);
+			}
+
+			facetViewEntry.putProperty(values);
 		}
-		
-		facetViewEntry.putProperty(values);
-		
+
 		return facetViewEntry;
 	}
 
 	protected void serializeItems(JsonLdResource jsonLdResource, SearchProfiles profile) {
 
-		if (SearchProfiles.FACET.equals(profile))
-			return;
+		switch (profile) {
+		case FACET:
+			// do not serialize items
+			break;
 
-		// switch(profile)
-		if (SearchProfiles.STANDARD.equals(profile)) {
+		case STANDARD:
+			putItemsProperty(jsonLdResource);
 
-			String[] items = new String[(int) getPageItems().getResults().size()];
-			int i = 0;
-			for (AnnotationView anno : getPageItems().getResults()) {
-				items[i++] = anno.getId();
-			}
-			
-			if(items.length > 0 )
-				jsonLdResource.putProperty(buildArrayProperty(WebAnnotationFields.ITEMS, items));
-			
-			return;//needs until updated to switch construct
-		}
-		
-		throw new SearchRuntimeException("Unsupported search profile: " + profile);
-	}
+			break;
 
-	/**
-	 * TODO: move this to base class build appropriate property representation
-	 * for string arrays
-	 * 
-	 * @param propertyName
-	 * @param valueList
-	 * @return
-	 */
-	protected JsonLdProperty buildArrayProperty(String propertyName, String[] values) {
-
-		if (values == null)
-			return null;
-
-		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-		JsonLdPropertyValue propertyValue;
-		for (int i = 0; i < values.length; i++) {
-			propertyValue = new JsonLdPropertyValue();
-			propertyValue.setValue(values[i]);
-			arrProperty.addValue(propertyValue);
+		default:
+			throw new SearchRuntimeException("Unsupported search profile: " + profile);
 		}
 
-		return arrProperty;
 	}
-	
-	
-	/**
-	 * TODO: move this to base class build appropriate property representation
-	 * for string arrays
-	 * 
-	 * @param propertyName
-	 * @param valueList
-	 * @return
-	 */
-	protected JsonLdProperty buildValueArrayProperty(String propertyName, String[] values) {
 
-		if (values == null)
-			return null;
-
-		JsonLdProperty arrProperty = new JsonLdProperty(propertyName);
-		JsonLdPropertyValue propertyValue;
-		for (int i = 0; i < values.length; i++) {
-			propertyValue = new JsonLdPropertyValue();
-			propertyValue.setValue(values[i]);
-			arrProperty.addValue(propertyValue);
+	protected void putItemsProperty(JsonLdResource jsonLdResource) {
+		String[] items = new String[(int) getPageItems().getResults().size()];
+		int i = 0;
+		for (AnnotationView anno : getPageItems().getResults()) {
+			items[i++] = anno.getId();
 		}
 
-		return arrProperty;
+		if (items.length > 0)
+			putStringArrayProperty(WebAnnotationFields.ITEMS, items, jsonLdResource);
 	}
-	
-	/**
-	 * @param map
-	 * @param propertyValue
-	 * @param field
-	 */
-	private void addMapToProperty(Map<String, String> map, JsonLdPropertyValue propertyValue, String field) {
-        JsonLdProperty fieldProperty = new JsonLdProperty(field);
-        JsonLdPropertyValue fieldPropertyValue = new JsonLdPropertyValue();
-        
-	    Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
-	        String curValue = pairs.getValue();
-        	if (!StringUtils.isBlank(curValue)) 
-        		fieldPropertyValue.getValues().put(pairs.getKey(), pairs.getValue());
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-        if (fieldPropertyValue.getValues().size() != 0) {
-         	fieldProperty.addValue(fieldPropertyValue);        
-         	propertyValue.putProperty(fieldProperty);
-    	}
-	}
-	
 
 }

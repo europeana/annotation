@@ -121,7 +121,7 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 	protected MultiValueMap<String, String> buildHeadersMap() {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.add(HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_TYPE_JSON_UTF8);
 		// headers.add(HttpHeaders.ETAG, "" +
 		// storedAnnotation.getLastUpdate().hashCode());
 		// headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);

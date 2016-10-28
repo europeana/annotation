@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -20,11 +21,15 @@ import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
+import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
 
 /**
@@ -626,20 +631,37 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * This method returns a list of Annotation objects for the passed query.
      * E.g. /annotation-web/annotations/search?
      *     wskey=key&profile=webtest&value=vlad&field=all&language=en&startOn=0&limit=&search=search	 
-     * @param query The query string
+     * @param query The query string 
+     * @param page Start page
+     * @param pageSize Page size
 	 * @return annotation operation response
 	 * @throws IOException
+	 * @throws JsonParseException 
 	 */
-	public AnnotationSearchResults search(String query, String startOn, String limit) 
-			throws IOException {
-		String url = buildUrl(query, startOn, limit, ModelConst.ANNOTATION);
+	public AnnotationPage search(String query, String page, String pageSize) 
+			throws IOException, JsonParseException {
+		String url = buildUrl(query, page, pageSize, ModelConst.STANDARD); // TODO: ModelConst.ANNOTATION replaced by ModelConst.STANDARD, should this be AnnotationProfiles.STANDARD? (shsdev)
 		
 		/**
 		 * Execute Europeana API request
 		 */
 		String json = getJSONResult(url);
 		
-		return getAnnotationSearchResults(json);
+		return getAnnotationPage(json);
+	}
+	
+
+
+	/**
+	 * This method converts json response in AnnotationSearchResults.
+	 * @param json
+	 * @return AnnotationSearchResults
+	 * @throws JsonParseException 
+	 */
+	public AnnotationPage getAnnotationPage(String json) throws JsonParseException {
+		AnnotationPageParser apParser = new AnnotationPageParser();
+		AnnotationPage ap = apParser.parseAnnotationPage(json);
+		return ap;
 	}
 
 	/**
@@ -671,36 +693,31 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 	/**
-	 * This method consturcts url dependent on search parameter.
-	 * @param query
-	 * @param startOn
-	 * @param limit
-	 * @param type The type of the object. E.g. annotation or tag
-	 * @return query
+	 * This method constructs the url dependent on search parameters.
+	 * @param query Query
+	 * @param page Start page
+	 * @param pageSize Page size
+	 * @param profile Query profile
+	 * @return query Query URL
 	 */
-	private String buildUrl(String query, String startOn, String limit, String type) {
+	private String buildUrl(String query, String page, String pageSize, String profile)  throws IOException {
 		String url = getAnnotationServiceUri();
-		url += "/search?wsKey=" + getApiKey() + "&profile=" + type;
+		url += "/search?wskey=" + getApiKey() + "&profile=" + profile;
 		if (StringUtils.isNotEmpty(query)) {
-//			url += "&query=" + query;
-			url += "&value=" + query;
-			if (!query.contains("field"))
-				url += "&field=" + "all";
-			if (!query.contains("language"))
-				url += "&language=en";
+			url += "&query=" + encodeUrl(query);
 		}
-		if (StringUtils.isNotEmpty(startOn))
-			url += "&startOn=" + startOn;
+		if (StringUtils.isNotEmpty(page))
+			url += "&page=" + page;
 		else
-			url += "&startOn=0";
-		if (StringUtils.isNotEmpty(limit))
-			url += "&limit=" + limit;
+			url += "&page=0";
+		if (StringUtils.isNotEmpty(pageSize))
+			url += "&pageSize=" + pageSize;
 		else
-			url += "&limit=10";
+			url += "&pageSize=10";
 		return url;
 	}
 
-	public AnnotationSearchResults search(String query) throws IOException {
+	public AnnotationPage search(String query) throws IOException, JsonParseException {
 		return search(query, null, null);
 	}
 
@@ -1143,6 +1160,39 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		// Execute Whitelist API request
 		return deleteURL(url);
 	}
+	
+	
+	/**
+	 * Sample HTTP request
+	 * 	   curl -X DELETE --header 'Accept: application/ld+json' 'http://localhost:8080/admin/annotation/delete?wskey=apiadmin&provider=webanno&identifier=19&userToken=admin'
+	 * @return ResponseEntity<String>
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteAnnotation(Integer numericId) throws IOException {
+		
+		String action = "delete";
+		
+		
+		
+		logger.debug("Annotation service URI: " +getAnnotationServiceUri());	
+		String adminAnnotationServiceUri = getAnnotationServiceUri().replace("annotation", "admin/annotation");
+		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
+		
+		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
+		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
+		url += WebAnnotationFields.AND + WebAnnotationFields.PROVIDER +"=webanno";
+		url += WebAnnotationFields.AND + WebAnnotationFields.IDENTIFIER +"="+Integer.toString(numericId);
+		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
+		
+		logger.trace("Delete Annotation request URL: " + url);
+		// Execute Annotation delete request
+		ResponseEntity<String> re = deleteURL(url);
+		logger.trace(re.toString());
+
+		return re;
+	}
+	
+	
 
 
 }

@@ -14,6 +14,8 @@ public class ModelConst {
 	public static final String SERIALIZED_AT      = "serializedAt";
 	public static final String ANNOTATED_AT       = "annotatedAt";
 	public static final String EUROPEANA_ID       = "europeanaId";
+	
+	public static final String STANDARD           = "standard";
 
 	/**
 	 * Deserialization

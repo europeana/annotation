@@ -4,6 +4,7 @@ import java.util.List;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 
 public interface AnnotationSearchApi {
 
@@ -12,7 +13,7 @@ public interface AnnotationSearchApi {
 	 * @param query
 	 * @return
 	 */
-	public List<? extends Annotation> searchAnnotations(String query);
+	public AnnotationPage searchAnnotations(String query);
 	
 	/**
 	 * Search for annotations by the given text query, row start position and rows limit. 	 
@@ -21,7 +22,7 @@ public interface AnnotationSearchApi {
 	 * @param limit
 	 * @return
 	 */
-	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit, String field, String language);
+	public AnnotationPage searchAnnotations(String query, String startOn, String limit, String field, String language);
 	
 	/**
 	 * Search for tags by the given text query.

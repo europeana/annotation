@@ -44,14 +44,20 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
+			<!-- 
 			<version>${version.springCore}</version>
+			 -->
+			<version>${version.spring}</version>
 		</dependency>
 		<!-- Other -->
 		<dependency>
 			<scope>test</scope>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<!-- 
 			<version>${version.springCore}</version>
+			 -->
+			<version>${version.spring}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

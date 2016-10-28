@@ -14,6 +14,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import io.swagger.annotations.Api;
@@ -31,8 +32,8 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Web Annotation Protocol", description=" ")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
-	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, produces = {
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation", nickname = "createAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
@@ -46,8 +47,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
 
-	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, produces = {
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
@@ -72,8 +73,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return storeAnnotation(wskey, motivation, provider, identifier, indexOnCreate, annotation, userToken);
 	}
 	
-	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.GET, produces = { 
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.GET, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Retrieve annotation", nickname = "getAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> getAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
@@ -87,8 +88,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	}
 	
 	
-	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.PUT, produces = { 
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.PUT, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "Update annotation", nickname = "updateAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> updateAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
@@ -102,8 +103,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	}
 	
 	
-	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.DELETE, produces = {
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.DELETE, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Delete annotation", nickname = "deleteAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,

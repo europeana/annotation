@@ -24,6 +24,7 @@ import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
+import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
@@ -51,8 +52,8 @@ public class ManagementRest extends BaseRest {
 		this.adminService = adminService;
 	}
 
-	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = {
-			"application/ld+json", MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
 	@ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotationById(
 			// public ModelAndView deleteAnnotationById(
@@ -71,7 +72,7 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
-	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
 	@ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", 
 	notes=SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotationSet(
@@ -128,7 +129,7 @@ public class ManagementRest extends BaseRest {
 	}
 
 
-	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
 	@ApiOperation(value = "Reindex by annotation id", nickname = "reindexAnnotationByAnnotationId", response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAnnotationByAnnotationId(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
@@ -174,7 +175,7 @@ public class ManagementRest extends BaseRest {
 		return (apiKey.equals("apiadmin") && userToken.equals("admin"));
 	}
 
-	@RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
 	@ApiOperation(value = "Reindex a set of annotations defined by selection criteria", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = "reindexAnnotationBySelection", response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAnnotationSelection(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
@@ -201,7 +202,7 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
-	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.POST, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
 	@ApiOperation(value = "Reindex a set of annotations", nickname = "reindexAnnotationByAnnotationId",  
 	notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAnnotationSet(
@@ -232,7 +233,7 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
 	
-	@RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
 	@ApiOperation(value = "Reindex all annotations", nickname = "reindexAll", response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAll(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,

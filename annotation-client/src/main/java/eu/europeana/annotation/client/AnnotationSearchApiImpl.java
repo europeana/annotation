@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.stanbol.commons.exception.JsonParseException;
 
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
@@ -12,9 +14,12 @@ import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationSearchApiImpl extends BaseAnnotationApi implements AnnotationSearchApi {
+	
+	protected final Logger logger = Logger.getLogger(this.getClass());
 
 	public AnnotationSearchApiImpl(ClientConfiguration configuration,
 			AnnotationApiConnection apiConnection) {
@@ -26,33 +31,33 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	}
 
 	@Override
-	public List<? extends Annotation> searchAnnotations(String query) {
+	public AnnotationPage searchAnnotations(String query) {
 //		List<? extends Annotation> res;
-		AnnotationSearchResults res;
+		AnnotationPage res;
 		try {
 //			query = addFieldToQuery(query, null, null);
 			res = apiConnection.search(query);
-		} catch (IOException e) {
+		} catch (IOException | JsonParseException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}
 
-		return res.getItems();
+		return res;
 	}
 
 	@Override
-	public List<? extends Annotation> searchAnnotations(
-			String query, String startOn, String limit, String field, String language) {
+	public AnnotationPage searchAnnotations(
+			String query, String page, String pageSize, String field, String language) {
 		
-		AnnotationSearchResults res;
+		AnnotationPage res;
 		try {
 			if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) 
 				query = addFieldToQuery(query, field, language);
-			res = apiConnection.search(query, startOn, limit);
-		} catch (IOException e) {
+			res = apiConnection.search(query, page, pageSize);
+		} catch (IOException | JsonParseException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}
 
-		return res.getItems();
+		return res;
 	}
 
 	@Override

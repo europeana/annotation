@@ -41,7 +41,8 @@ import io.swagger.annotations.ApiOperation;
 public class WebAnnotationSearchRest extends BaseRest {
 
 	@RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, 
-			method = {RequestMethod.GET}, produces = { "application/ld+json", MediaType.APPLICATION_JSON_VALUE }
+			method = {RequestMethod.GET},
+			produces = {  HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 }
 //			,consumes = "application/ld+json"
 					)
 	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "Search annotations", nickname = "search", response = java.lang.Void.class)
@@ -109,7 +110,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_CONSTRAINTS);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GOH);
-			headers.add(HttpHeaders.CONTENT_TYPE, "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\"");
+			headers.add(HttpHeaders.CONTENT_TYPE, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
