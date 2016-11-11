@@ -42,32 +42,31 @@ import eu.europeana.annotation.web.service.controller.BaseRest;
 
 public class BaseJsonldRest extends BaseRest {
 
-	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation,  String provider, String identifier, boolean indexOnCreate,
-			String annotation, String userToken) throws HttpException {
+	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation, String provider,
+			String identifier, boolean indexOnCreate, String annotation, String userToken) throws HttpException {
 		try {
 
-			//SET DEFAULTS 
+			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
-			
-			if(provider == null)
+
+			if (provider == null)
 				provider = app.getProvider();
-			
+
 			// 0. annotation id
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
-			
+
 			// 1. authorize user
 			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
-			
-			//SET DEFAULTS 
-			if(webAnnotation.getGenerator() == null)
+
+			// SET DEFAULTS
+			if (webAnnotation.getGenerator() == null)
 				webAnnotation.setGenerator(buildDefaultGenerator(app));
-			
-			if(webAnnotation.getCreator() == null)
+
+			if (webAnnotation.getCreator() == null)
 				webAnnotation.setCreator(user);
-			
 
 			// 2. validate
 			// check whether annotation with the given provider and identifier
@@ -75,20 +74,19 @@ public class BaseJsonldRest extends BaseRest {
 			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
 						"/provider/identifier", annoId.toUri());
-			//2.1 validate annotation properties
+			// 2.1 validate annotation properties
 			getAnnotationService().validateWebAnnotation(webAnnotation);
-			
-			
+
 			// 3-6 create ID and annotation + backend validation
 			webAnnotation.setAnnotationId(annoId);
-			
-			
-			//validate api key ... and request limit only if the request is correct (avoid useless DB requests)
-			//Done in authorize user
-			//validateApiKey(wsKey);
+
+			// validate api key ... and request limit only if the request is
+			// correct (avoid useless DB requests)
+			// Done in authorize user
+			// validateApiKey(wsKey);
 
 			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
-			
+
 			// serialize to jsonld
 			JsonLd annotationLd = new AnnotationLdSerializer(storedAnnotation);
 			String jsonLd = annotationLd.toString(4);
@@ -110,14 +108,15 @@ public class BaseJsonldRest extends BaseRest {
 
 		} catch (JsonParseException e) {
 			throw new RequestBodyValidationException(annotation, e);
-		} catch(AnnotationValidationException e){ //TODO: transform to checked annotation type
+		} catch (AnnotationValidationException e) { // TODO: transform to
+													// checked annotation type
 			throw new RequestBodyValidationException(annotation, e);
-		} catch(AnnotationAttributeInstantiationException e){
-			throw new RequestBodyValidationException(annotation, e); 
-		} catch(HttpException e){
+		} catch (AnnotationAttributeInstantiationException e) {
+			throw new RequestBodyValidationException(annotation, e);
+		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			throw e;
-		} catch(Exception e){
+		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
 
@@ -211,6 +210,66 @@ public class BaseJsonldRest extends BaseRest {
 		}
 	}
 
+	/**
+	 * 
+	 * @param wskey
+	 * @param provider
+	 * @param identifier
+	 * @param userToken
+	 * @return
+	 */
+	protected ResponseEntity<String> optionsForCorsPreflight(String wsKey, String userToken, String provider,
+			String identifier) throws HttpException {
+		// Similar behaviour as GET method but different response code
+		try {
+
+			// 2. Check client access (a valid “wskey” must be provided)
+			validateApiKey(wsKey);
+
+			// CHECK user autorization
+			getAuthorizationService().authorizeUser(userToken, wsKey, Operations.RETRIEVE);
+
+			// SET DEFAULTS
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+
+			if (provider == null)
+				provider = app.getProvider();
+
+			if (identifier != null) {
+				// if OPTIONS /annotation/provider/identifier request
+				// 3. Retrieve an annotation based on its identifier;
+				AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider,
+						identifier);
+
+				// 4. If annotation doesn’t exist respond with HTTP 404 (if
+				// provided
+				// annotation id doesn’t exists )
+				if (!getAnnotationService().existsInDb(annoId))
+					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND,
+							annoId.toUri());
+			}
+
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_PGDOHP);
+			headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, HttpHeaders.ALLOW_PGDOHP);
+			headers.add(HttpHeaders.ACCEPT_POST, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
+
+			ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
+
+			return response;
+
+		} catch (RuntimeException e) {
+			// not found ..
+			throw new InternalServerException(e);
+		} catch (HttpException e) {
+			// avoid wrapping http exception
+			throw e;
+		} catch (Exception e) {
+			throw new InternalServerException(e);
+		}
+	}
+
 	protected ResponseEntity<String> getModerationReportSummary(String wsKey, String provider, String identifier,
 			String action) throws HttpException {
 
@@ -231,7 +290,7 @@ public class BaseJsonldRest extends BaseRest {
 			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 			// moderation id doesn’t exists )
 			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
-			if(moderationRecord == null)
+			if (moderationRecord == null)
 				moderationRecord = buildNewModerationRecord(annoId, null);
 
 			Gson gsonObj = new Gson();

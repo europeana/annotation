@@ -26,7 +26,6 @@ import io.swagger.annotations.ApiOperation;
  * <annotation-web>/search.jsonld
  */
 
-//@Api(value = "web-annotation-protocol", description = "Web Annotation Protocol API")
 @Controller
 @SwaggerSelect
 @Api(tags = "Web Annotation Protocol", description=" ")
@@ -46,7 +45,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
-
+	
 	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
@@ -87,6 +86,29 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 	
+	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.OPTIONS, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@ApiOperation(notes = "TODO", value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
+	public ResponseEntity<String> options(
+			@PathVariable(value = WebAnnotationFields.PROVIDER) String provider, 
+			@PathVariable(value = WebAnnotationFields.IDENTIFIER) String identifier,
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, defaultValue="apiKey") String wskey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, defaultValue="userToken") String userToken)
+					throws HttpException {
+
+		return optionsForCorsPreflight(wskey, provider, identifier, userToken);
+	}
+	
+	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@ApiOperation(notes = "TODO", value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
+	public ResponseEntity<String> options(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken)
+					throws HttpException {
+
+		return optionsForCorsPreflight(wskey, null, null, userToken);
+	}
 	
 	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.PUT, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
