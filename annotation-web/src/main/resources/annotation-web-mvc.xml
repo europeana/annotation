@@ -48,11 +48,10 @@
 		<mvc:mapping path="/api-docs" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
 		<mvc:mapping path="/api-docs/**" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
 		
-		<mvc:mapping path="/annotation" allowed-origins="*" allowed-methods="POST,GET,OPTIONS,HEAD" 
+		<mvc:mapping path="/annotation/" allowed-origins="*" allowed-methods="POST,GET,OPTIONS,HEAD" 
 			exposed-headers="Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers"/>
 		<mvc:mapping path="/annotation/**" allowed-origins="*" allowed-methods="PUT,GET,DELETE,OPTIONS,HEAD,PATCH" 
 			exposed-headers="Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers"/>
-		
 	</mvc:cors>
 
 	<import resource="./annotation-web-context.xml" />

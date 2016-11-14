@@ -92,8 +92,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> options(
 			@PathVariable(value = WebAnnotationFields.PROVIDER) String provider, 
 			@PathVariable(value = WebAnnotationFields.IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, defaultValue="apiKey") String wskey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, defaultValue="userToken") String userToken)
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required=false) String wskey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required=false) String userToken)
 					throws HttpException {
 
 		return optionsForCorsPreflight(wskey, provider, identifier, userToken);
@@ -103,7 +103,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = "TODO", value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
 	public ResponseEntity<String> options(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken)
 					throws HttpException {
 
