@@ -101,8 +101,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			object.setGenerated(now);
 
 		// check creator
-		if (object.getCreator() == null || object.getCreator().getName() == null)
-			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATED_BY);
+		if (object.getCreator() == null)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_CREATOR);
 
 		// check Europeana ID
 		if (generateId && object.getId() != null)
@@ -216,7 +216,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			try {
 				tag = tagService.find(query);
 				if (tag == null) {
-					query.setCreator(object.getCreator().getName() + " : " + object.getCreator().getOpenId());
+					query.setCreator(object.getCreator().getName() + " : " + object.getCreator().getHttpUrl());
 					tag = tagService.create(query);
 				}
 

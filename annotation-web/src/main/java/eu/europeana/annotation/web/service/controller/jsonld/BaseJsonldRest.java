@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.net.URL;
 import java.util.Date;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -27,6 +28,7 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
+import eu.europeana.annotation.utils.StringUtils;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -39,8 +41,11 @@ import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import org.apache.log4j.Logger;
 
 public class BaseJsonldRest extends BaseRest {
+	
+	Logger logger = Logger.getLogger(getClass());
 
 	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation, String provider,
 			String identifier, boolean indexOnCreate, String annotation, String userToken) throws HttpException {
@@ -125,9 +130,16 @@ public class BaseJsonldRest extends BaseRest {
 	Agent buildDefaultGenerator(Application app) {
 		Agent serializer = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.SOFTWARE);
 		serializer.setName(app.getName());
+				
 		serializer.setHomepage(app.getHomepage());
-		serializer.setOpenId(app.getOpenId());
-
+		
+		// Set "id" attribute of Agent only if it is a valid URL
+		String agentId = app.getOpenId();
+		if(StringUtils.isUrl(agentId)) {
+			logger.warn("The agent's 'id' attribute value is not set because the value is not a valid URL: " + agentId);
+			serializer.setHttpUrl(agentId);
+		}
+		
 		return serializer;
 	}
 
@@ -636,7 +648,7 @@ public class BaseJsonldRest extends BaseRest {
 	protected Vote buildVote(Agent user, Date reportDate) {
 		Vote vote = new BaseVote();
 		vote.setCreated(reportDate);
-		vote.setUserId(user.getOpenId());
+		vote.setUserId(user.getHttpUrl());
 		return vote;
 	}
 

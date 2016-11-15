@@ -227,7 +227,7 @@ public class AnnotationTestObjectBuilder {
 //		agent.addType(WebAnnotationFields.EU_TYPE + ":"
 //				+ AgentTypes.SOFTWARE.name());
 		agent.setName("annonymous web user");
-		agent.setOpenId("open_id_1");
+		agent.setHttpUrl("open_id_1");
 		//		agent.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
 		return agent;
 	}
@@ -242,7 +242,7 @@ public class AnnotationTestObjectBuilder {
 //				+ AgentTypes.SOFTWARE.name());
 		agent.setName("Annotorious");
 		agent.setHomepage("http://annotorious.github.io/");
-		agent.setOpenId("open_id_2");
+		agent.setHttpUrl("open_id_2");
 		return agent;
 	}
 	 

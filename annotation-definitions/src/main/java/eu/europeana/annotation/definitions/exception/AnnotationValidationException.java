@@ -16,7 +16,7 @@ public class AnnotationValidationException extends RuntimeException{
 	public static final String ERROR_NULL_BODY = "Annotation Body must not be null";
 	public static final String ERROR_NULL_TAG_ID = "TAG_ID must not be null in TAG Bodys";
 	public static final String ERROR_NULL_TARGET = "Annotation Target must not be null";
-	public static final String ERROR_NULL_ANNOTATED_BY = "Annotated By must not be null";
+	public static final String ERROR_NULL_CREATOR = "Creator must not be null";
 	public static final String ERROR_NULL_ANNOTATION_ID = "Annotation ID must not be null";
 	public static final String ERROR_INVALID_MOTIVATION = "Annotation Motivation not provided or invalid!";
 	public static final String ERROR_INVALID_BODY = "Invalid values in annotation body!";

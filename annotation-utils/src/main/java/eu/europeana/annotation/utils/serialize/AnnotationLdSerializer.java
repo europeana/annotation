@@ -407,18 +407,22 @@ public class AnnotationLdSerializer extends JsonLd {
 
 	private void addAgentByProperty(JsonLdPropertyValue propertyValue, Agent agent) {
 
-		boolean showOpenId = false;
-		if (agent.getOpenId() != null && showOpenId)
-			propertyValue.getValues().put(WebAnnotationFields.ID, agent.getOpenId());
+		if (!StringUtils.isBlank(agent.getHttpUrl()))
+			propertyValue.getValues().put(WebAnnotationFields.ID, agent.getHttpUrl());
 
-		if (!StringUtils.isBlank(agent.getType())) // convert internal type to
-													// json value
+		if (!StringUtils.isBlank(agent.getType())) // convert internal type to json value
 			propertyValue.getValues().put(WebAnnotationFields.TYPE,
 					AgentTypes.valueOf(agent.getInternalType()).getJsonValue());
 		if (!StringUtils.isBlank(agent.getName()))
 			propertyValue.getValues().put(WebAnnotationFields.NAME, agent.getName());
 		if (!StringUtils.isBlank(agent.getHomepage()))
 			propertyValue.getValues().put(WebAnnotationFields.HOMEPAGE, agent.getHomepage());
+		if (!StringUtils.isBlank(agent.getNickname()))
+			propertyValue.getValues().put(WebAnnotationFields.NICKNAME, agent.getNickname());
+		if (!StringUtils.isBlank(agent.getEmail()))
+			propertyValue.getValues().put(WebAnnotationFields.EMAIL, agent.getEmail());
+		if (!StringUtils.isBlank(agent.getEmail_Sha1()))
+			propertyValue.getValues().put(WebAnnotationFields.EMAIL_SHA1, agent.getEmail_Sha1());
 	}
 
 	private JsonLdProperty addCreator(Annotation annotation) {
