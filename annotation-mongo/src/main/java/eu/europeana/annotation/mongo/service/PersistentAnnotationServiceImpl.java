@@ -44,6 +44,7 @@ import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
+//@Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 

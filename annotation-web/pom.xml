@@ -51,7 +51,12 @@
 			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-
+		<!-- aspectj /profiling -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${version.aspectj}</version>
+		</dependency>
 		<!-- swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>

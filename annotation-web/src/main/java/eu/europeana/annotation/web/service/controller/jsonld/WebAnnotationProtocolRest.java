@@ -1,8 +1,8 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @SwaggerSelect
 @Api(tags = "Web Annotation Protocol", description=" ")
+@Component
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 

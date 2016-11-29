@@ -27,7 +27,7 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
-
+//@Component
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
 	SolrServer solrServer;

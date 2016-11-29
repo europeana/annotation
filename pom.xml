@@ -52,6 +52,7 @@
 		<version.spring.tx>4.0.9.RELEASE</version.spring.tx>
 -->		
 		<version.spring>4.2.5.RELEASE</version.spring>
+		<version.aspectj>1.8.8</version.aspectj>
 		
 		<version.corelib>2.1</version.corelib>
 		<version.log4j>1.2.12</version.log4j>
