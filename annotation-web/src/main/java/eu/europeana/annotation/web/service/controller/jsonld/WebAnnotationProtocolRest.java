@@ -97,7 +97,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required=false) String userToken)
 					throws HttpException {
 
-		return optionsForCorsPreflight(wskey, provider, identifier, userToken);
+		//the content response is delivered automatically by spring
+		return null;
+//		return optionsForCorsPreflight(wskey, provider, identifier, userToken);
 	}
 	
 	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 
@@ -108,7 +110,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken)
 					throws HttpException {
 
-		return optionsForCorsPreflight(wskey, null, null, userToken);
+		//the content response is delivered automatically by spring
+				return null;
+//				return optionsForCorsPreflight(wskey, provider, identifier, userToken);
 	}
 	
 	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.PUT, 
