@@ -15,7 +15,9 @@ import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.mongo.model.PersistentProviderImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentProvider;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PersistentProviderServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentProvider, String> implements
 		PersistentProviderService {

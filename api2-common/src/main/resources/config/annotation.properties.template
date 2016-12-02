@@ -38,6 +38,12 @@ annotation.whitelist.default=/config/default_whitelist.json
 #available values: pivotal, a9s 
 annotation.environment.vcap.provider = pivotal
 
+# Profiling configurations (enabling/disabling through profiler.expression property)
+# disable profiling
+# profiler.expression=within(none.*)
+# profile all service method invocations
+profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..)) 
+
 # mongoDB settings
 ### annotation database ###
 mongodb.annotation.dbname=annotation_test

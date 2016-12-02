@@ -26,11 +26,13 @@
         xmlns:util="http://www.springframework.org/schema/util"
         xmlns:context="http://www.springframework.org/schema/context"
 		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xmlns:aop="http://www.springframework.org/schema/aop"
     	xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         ">
     
     <!-- USING OTHER MODULES -->
@@ -89,5 +91,26 @@
     	<beans:property name="authenticationService" ref="annotation_authenticationService"/> 	
     	 -->
     </beans:bean>
+    
+    <!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
+    <context:component-scan base-package="eu.europeana.annotation.web.service" />
+    <!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
+    <context:annotation-config />
+ 
+    <!-- Profiling -->
+ 
+    <!-- Simple profiler. -->
+    <beans:bean id="profiler" class="eu.europeana.annotation.web.profiling.SimpleProfiler" />
+    
+    <!-- Spring AOP profiler configuration -->
+    <aop:config>
+        <aop:aspect ref="profiler">
+            <!-- Catch all method in the service package through AOP. -->
+            <aop:pointcut id="serviceMethod"
+                expression="#{annotationProperties['profiler.expression']}" />
+            <!-- For these methods use the profile named method in the profiler class we defined below. -->
+            <aop:around pointcut-ref="serviceMethod" method="profile" />
+        </aop:aspect>
+    </aop:config>
    
 </beans:beans>

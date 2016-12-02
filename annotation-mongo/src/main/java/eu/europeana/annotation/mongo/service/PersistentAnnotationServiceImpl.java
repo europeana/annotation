@@ -44,7 +44,9 @@ import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
-//@Component
+import org.springframework.stereotype.Component;
+
+@Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 
@@ -147,15 +149,16 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			getGeoPlaceValidator().validate(((PlaceBody)object.getBody()).getPlace());
 		
 		// check if TAG
-		if (hasTagBody(object)) {
-			TagBody body = (TagBody) object.getBody();
-			if (body.getTagId() == null) {
-				//TODO: validation must not change the database state. create tag must not be invoked here
-				PersistentTag tag = findOrCreateTag(object, body);
-				// set tagId
-				body.setTagId(tag.getId());
-			}
-		}
+		// tag management deactivated in this version
+//		if (hasTagBody(object)) {
+//			TagBody body = (TagBody) object.getBody();
+//			if (body.getTagId() == null) {
+//				//TODO: validation must not change the database state. create tag must not be invoked here
+//				PersistentTag tag = findOrCreateTag(object, body);
+//				// set tagId
+//				body.setTagId(tag.getId());
+//			}
+//		}
 	}
 
 	

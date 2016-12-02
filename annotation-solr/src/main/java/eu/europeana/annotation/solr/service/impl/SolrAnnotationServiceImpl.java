@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 import org.apache.commons.lang.StringUtils;
 //import org.apache.log4j.Logger;
@@ -27,7 +28,8 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
-//@Component
+
+@Component
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
 	SolrServer solrServer;
