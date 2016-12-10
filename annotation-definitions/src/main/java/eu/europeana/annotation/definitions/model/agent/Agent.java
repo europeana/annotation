@@ -3,6 +3,12 @@ package eu.europeana.annotation.definitions.model.agent;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 
 public interface Agent {
+	
+
+
+	public abstract void setHttpUrl(String httpUrl);
+	public abstract String getHttpUrl();
+	
 
 //	public abstract void setAgentType(List<String> agentType);
 	public abstract void setType(String agentTypeStr);
@@ -24,13 +30,23 @@ public interface Agent {
 
 	public abstract String getHomepage();
 
-	public abstract void setOpenId(String openId);
+	//@deprecated
+//	public abstract void setOpenId(String openId);
+//
+	//@deprecated
+//	public abstract String getOpenId();
 
-	public abstract String getOpenId();
+	public abstract void setEmail(String email);
 
-	public abstract void setMbox(String mbox);
+	public abstract String getEmail();
 
-	public abstract String getMbox();
+	public abstract void setEmail_Sha1(String email_sha1);
+
+	public abstract String getEmail_Sha1();
+
+	public abstract void setNickname(String nickname);
+
+	public abstract String getNickname();
 
 	public abstract void setName(String name);
 

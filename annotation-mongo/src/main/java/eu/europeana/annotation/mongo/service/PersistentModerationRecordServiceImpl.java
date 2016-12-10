@@ -21,7 +21,9 @@ import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceImpl<PersistentModerationRecord, String>
 		implements PersistentModerationRecordService {
 

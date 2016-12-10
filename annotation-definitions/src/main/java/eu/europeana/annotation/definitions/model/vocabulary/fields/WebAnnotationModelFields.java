@@ -32,6 +32,7 @@ public interface WebAnnotationModelFields {
 	public static final String ACCOUNT = "account";
 	public static final String EMAIL = "email";
 	public static final String EMAIL_SHA1 = "email_sha1";
+	public static final String NICKNAME = "nickname";
 	public static final String HOMEPAGE = "homepage";
 	
 	//** Resource fields **/

@@ -18,7 +18,9 @@ import eu.europeana.annotation.mongo.exception.InvalidStatusLogException;
 import eu.europeana.annotation.mongo.model.PersistentStatusLogImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PersistentStatusLogServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentStatusLog, String> implements
 		PersistentStatusLogService {

@@ -15,7 +15,9 @@ import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import com.google.common.base.Strings;
+ 
 
+import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
@@ -48,7 +50,9 @@ import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
@@ -163,14 +167,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr)
-			throws JsonParseException {
+			throws JsonParseException, HttpException {
 
 		/**
 		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
 		 * -> JsonLd object
 		 */
-		AnnotationLdParser europeanaParser = new AnnotationLdParser();
-		return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
+		try{
+			AnnotationLdParser europeanaParser = new AnnotationLdParser();
+			return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
+		}catch(AnnotationAttributeInstantiationException e){
+			throw new RequestBodyValidationException(annotationJsonLdStr, e);
+		}
 	}
 
 	@Override
@@ -540,7 +548,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// not match to the 'annotatedBy' user ("
 		// + res.getAnnotatedBy().getName() + ").");
 		// TODO update when the authorization concept is specified
-		if (annotation.isPrivate() && !annotation.getCreator().getOpenId().equals(user))
+		if (annotation.isPrivate() && !annotation.getCreator().getHttpUrl().equals(user))
 			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
 					AnnotationStates.PRIVATE);
 
@@ -663,12 +671,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 					"tag.body.source", body.getSource());
 
 		// source must be an URL
-		if (!isUrl(body.getSource()))
+		if (!eu.europeana.annotation.utils.StringUtils.isUrl(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
 					"tag.format", body.getSource());
 
 		// id is not a mandatory field but if exists it must be an URL
-		if (body.getHttpUri() != null && !isUrl(body.getHttpUri()))
+		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.StringUtils.isUrl(body.getHttpUri()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 					"tag.body.httpUri", body.getHttpUri());
 	}
@@ -696,7 +704,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 		int MAX_TAG_LENGTH = 64;
 
-		if (isUrl(value))
+		if (eu.europeana.annotation.utils.StringUtils.isUrl(value))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format",
 					value);
 		else if (value.length() > MAX_TAG_LENGTH)
@@ -710,17 +718,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	}
 
-	private boolean isUrl(String value) {
-
-		// if (value.startsWith("http://") || value.startsWith("ftp://") ||
-		// value.startsWith("https://")) {
-		try {
-			new URL(value);
-		} catch (MalformedURLException e) {
-			return false;
-		}
-		return true;
-	}
 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {

@@ -5,16 +5,28 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 
 public abstract class BaseAgent implements Agent {
 
+	private String httpUrl;
 //	private AgentTypes agentType;
 	private String agentType;
 //	private List<String> agentType = new ArrayList<String>(2);
 	private String internalType;
 	private String name;
-	private String mbox;
-	private String openId;
+	private String email;
+	private String email_sha1;
+	private String nickname;
+
 	private String homepage;
 	private String inputString;
 	private String userGroup;
+	
+	@Override
+	public String getHttpUrl() {
+		return httpUrl;
+	}
+	@Override
+	public void setHttpUrl(String httpUrl) {
+		this.httpUrl = httpUrl;
+	}
 	
 //	public void addType(String newType) {
 //		if (!agentType.contains(newType)) {
@@ -63,20 +75,28 @@ public abstract class BaseAgent implements Agent {
 		this.name = name;
 	}
 	@Override
-	public String getMbox() {
-		return mbox;
+	public String getEmail() {
+		return email;
 	}
 	@Override
-	public void setMbox(String mbox) {
-		this.mbox = mbox;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	@Override
-	public String getOpenId() {
-		return openId;
+	public String getEmail_Sha1() {
+		return email_sha1;
 	}
 	@Override
-	public void setOpenId(String openId) {
-		this.openId = openId;
+	public void setEmail_Sha1(String email_sha1) {
+		this.email_sha1 = email_sha1;
+	}
+	@Override
+	public String getNickname() {
+		return nickname;
+	}
+	@Override
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	@Override
 	public String getHomepage() {

@@ -290,7 +290,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		if (valueObject instanceof String)
 			return parseAgent(defaultAgentType, (String) valueObject);
 		else if (valueObject instanceof JSONObject)
-			return parseAgent((JSONObject) valueObject);
+			return parseAgent(defaultAgentType, (JSONObject) valueObject);
 		else
 			throw new JsonParseException("unsupported agent deserialization for: " + valueObject);
 	}
@@ -382,33 +382,41 @@ public class AnnotationLdParser extends JsonLdParser {
 		return agent;
 	}
 
-	private Agent parseAgent(JSONObject valueObject) throws JsonParseException {
+	private Agent parseAgent(AgentTypes defaultAgentType, JSONObject valueObject) throws JsonParseException {
 		try {
-
-			String webType = parseStringTypeValue(valueObject);
-			AgentTypes agentType = AgentTypes.getByJsonValue(webType);
+			
+			AgentTypes agentType = null;
+			if (valueObject.has(WebAnnotationFields.TYPE)){
+				String webType = parseStringTypeValue(valueObject);
+				agentType = AgentTypes.getByJsonValue(webType);
+			} else {
+				agentType = defaultAgentType;
+			}
+			
 			Agent agent = AgentObjectFactory.getInstance().createObjectInstance(agentType);
 			agent.setInputString(valueObject.toString());
 
-			// TODO: consider using the WAPropEnum
-			if (valueObject.has(WebAnnotationFields.ID))
-				agent.setOpenId(valueObject.getString(WebAnnotationFields.ID));
-
-			// agent.setHomepage(valueObject);
+			
+			if (valueObject.has(WebAnnotationFields.ID)) {
+				String idVal = valueObject.getString(WebAnnotationFields.ID);
+				try {
+				    URL url = new URL(idVal);
+				    agent.setHttpUrl(url.toString());
+				} catch (MalformedURLException e) {
+				    throw new AnnotationAttributeInstantiationException(AnnotationAttributeInstantiationException.MESSAGE_ID_NOT_URL + ": " + idVal);
+				} 
+			}
 			if (valueObject.has(WebAnnotationFields.NAME))
 				agent.setName(valueObject.getString(WebAnnotationFields.NAME));
 
 			if (valueObject.has(WebAnnotationFields.HOMEPAGE))
 				agent.setHomepage(valueObject.getString(WebAnnotationFields.HOMEPAGE));
-			
-			
-//			if (valueObject.has(WebAnnotationFields))
-//				agent.setHomepage(valueObject.getString(WebAnnotationFields.HOMEPAGE));
-//			
-//			agent.setMbox(mbox);
-//			
-//			agent.setUserGroup(mbox);
-//			
+
+			if (valueObject.has(WebAnnotationFields.EMAIL))
+				agent.setEmail(valueObject.getString(WebAnnotationFields.EMAIL));
+
+			if (valueObject.has(WebAnnotationFields.EMAIL_SHA1))
+				agent.setEmail_Sha1(valueObject.getString(WebAnnotationFields.EMAIL_SHA1));
 
 			return agent;
 		} catch (JSONException e) {

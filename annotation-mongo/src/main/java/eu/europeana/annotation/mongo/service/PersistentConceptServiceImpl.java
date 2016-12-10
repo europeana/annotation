@@ -16,7 +16,10 @@ import eu.europeana.annotation.mongo.exception.InvalidConceptException;
 import eu.europeana.annotation.mongo.model.PersistentConceptImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentConcept;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class PersistentConceptServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentConcept, String> implements
 		PersistentConceptService {

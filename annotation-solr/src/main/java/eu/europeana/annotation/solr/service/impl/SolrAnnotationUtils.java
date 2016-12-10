@@ -111,7 +111,7 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setGenerated(annotation.getGenerated());
 		if(annotation.getGenerator() != null){
 			solrAnnotationImpl.setGenerator(annotation.getGenerator());
-			solrAnnotationImpl.setGeneratorId(annotation.getGenerator().getOpenId());
+			solrAnnotationImpl.setGeneratorId(annotation.getGenerator().getHttpUrl());
 			solrAnnotationImpl.setGeneratorName(annotation.getGenerator().getName());
 		}
 		

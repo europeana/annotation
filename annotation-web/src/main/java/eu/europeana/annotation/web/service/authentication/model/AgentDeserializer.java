@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.agent.impl.Person;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AgentDeserializer extends BaseDeserializer implements JsonDeserializer<Agent>
 {
@@ -19,11 +20,11 @@ public class AgentDeserializer extends BaseDeserializer implements JsonDeseriali
     {
         final JsonObject jsonObject = je.getAsJsonObject();
 
-        final String homepage = deserializeStringField(jsonObject, "homepage");
-        final String internalType = deserializeStringField(jsonObject, "internalType");
-        final String name = deserializeStringField(jsonObject, "name");
+        final String homepage = deserializeStringField(jsonObject, WebAnnotationFields.HOMEPAGE);
+        final String internalType = deserializeStringField(jsonObject, WebAnnotationFields.INTERNAL_TYPE);
+        final String name = deserializeStringField(jsonObject, WebAnnotationFields.NAME);
         final String userGroup = deserializeStringField(jsonObject, "userGroup");
-        final String type = deserializeStringField(jsonObject, "type");
+        final String type = deserializeStringField(jsonObject, WebAnnotationFields.TYPE);
         final String openId = deserializeStringField(jsonObject, "openId");
         final String mbox = deserializeStringField(jsonObject, "mbox");
         final String agentTypeStr = deserializeStringField(jsonObject, "agentType");
@@ -34,9 +35,10 @@ public class AgentDeserializer extends BaseDeserializer implements JsonDeseriali
         agent.setName(name);
         agent.setUserGroup(userGroup);
         agent.setType(type);
-        agent.setOpenId(openId);
-        agent.setMbox(mbox);
-        agent.setAgentTypeAsString(agentTypeStr);
+        //TODO: fix openId-httpUrl when the centralized API key management will be integrated
+        agent.setHttpUrl(openId);
+        agent.setEmail(mbox);
+        agent.setInternalType(agentTypeStr);
         return agent;    	
     }
 }

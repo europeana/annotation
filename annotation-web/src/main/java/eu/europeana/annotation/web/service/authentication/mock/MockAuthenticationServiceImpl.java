@@ -154,7 +154,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		Agent collectionsUser = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		String username = "Europeana Collections Curator";
 		collectionsUser.setName(applicationName + "-" + username);
-		collectionsUser.setOpenId(username + "@" + applicationName);
+		collectionsUser.setHttpUrl(username + "@" + applicationName);
 		collectionsUser.setUserGroup(UserGroups.USER.name());
 
 		app.addAuthenticatedUser(COLLECTIONS_USER_TOKEN, collectionsUser);
@@ -182,7 +182,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	protected Agent createTesterUser(String username, String applicationName) {
 		Agent tester1 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		tester1.setName(applicationName + "-" + username);
-		tester1.setOpenId(username + "@" + applicationName);
+		tester1.setHttpUrl(username + "@" + applicationName);
 		tester1.setUserGroup(UserGroups.TESTER.name());
 		return tester1;
 	}

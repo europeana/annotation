@@ -44,6 +44,9 @@ import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 
@@ -101,8 +104,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			object.setGenerated(now);
 
 		// check creator
-		if (object.getCreator() == null || object.getCreator().getName() == null)
-			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATED_BY);
+		if (object.getCreator() == null)
+			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_CREATOR);
 
 		// check Europeana ID
 		if (generateId && object.getId() != null)
@@ -146,15 +149,16 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			getGeoPlaceValidator().validate(((PlaceBody)object.getBody()).getPlace());
 		
 		// check if TAG
-		if (hasTagBody(object)) {
-			TagBody body = (TagBody) object.getBody();
-			if (body.getTagId() == null) {
-				//TODO: validation must not change the database state. create tag must not be invoked here
-				PersistentTag tag = findOrCreateTag(object, body);
-				// set tagId
-				body.setTagId(tag.getId());
-			}
-		}
+		// tag management deactivated in this version
+//		if (hasTagBody(object)) {
+//			TagBody body = (TagBody) object.getBody();
+//			if (body.getTagId() == null) {
+//				//TODO: validation must not change the database state. create tag must not be invoked here
+//				PersistentTag tag = findOrCreateTag(object, body);
+//				// set tagId
+//				body.setTagId(tag.getId());
+//			}
+//		}
 	}
 
 	
@@ -216,7 +220,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			try {
 				tag = tagService.find(query);
 				if (tag == null) {
-					query.setCreator(object.getCreator().getName() + " : " + object.getCreator().getOpenId());
+					query.setCreator(object.getCreator().getName() + " : " + object.getCreator().getHttpUrl());
 					tag = tagService.create(query);
 				}
 
