@@ -163,30 +163,23 @@ public class AnnotationLdSerializer extends JsonLd {
 	protected void putCreator(Annotation annotation, JsonLdResource jsonLdResource) {
 		if (annotation.getCreator().getInputString() == null
 				|| isJsonObjectInput(annotation.getCreator().getInputString())) {
-			// TODO: why reset?
-//			annotation.getCreator().setInputString(null);
 			JsonLdProperty annotatedByProperty = addCreator(annotation);
 			if (annotatedByProperty != null)
 				jsonLdResource.putProperty(annotatedByProperty);
 		} else {
 			putStringProperty(WebAnnotationFields.CREATOR, annotation.getCreator().getInputString(), jsonLdResource);
-//			jsonLdResource.putProperty(WebAnnotationFields.CREATOR, annotation.getCreator().getInputString());
 		}
 	}
 
 	protected void putGenerator(Annotation annotation, JsonLdResource jsonLdResource) {
 		if (annotation.getGenerator().getInputString() == null
 				|| isJsonObjectInput(annotation.getGenerator().getInputString())) {
-			// user input string provided
-			// TODO: why reset?
-//			annotation.getGenerator().setInputString(null);
 			JsonLdProperty serializedByProperty = addGeneratorProperty(annotation);
 			if (serializedByProperty != null)
 				jsonLdResource.putProperty(serializedByProperty);
 		} else {
 			// input string is a single value
 			putStringProperty(WebAnnotationFields.GENERATOR, annotation.getGenerator().getInputString(), jsonLdResource);
-//			jsonLdResource.putProperty(WebAnnotationFields.GENERATOR, annotation.getGenerator().getInputString());
 		}
 	}
 
@@ -209,7 +202,6 @@ public class AnnotationLdSerializer extends JsonLd {
 						annotation.getTarget().getContentType());
 			if (!StringUtils.isBlank(annotation.getTarget().getHttpUri()))
 				propertyValue.getValues().put(WebAnnotationFields.ID, annotation.getTarget().getHttpUri());
-//				propertyValue.getValues().put(WebAnnotationFields.HTTP_URI, annotation.getTarget().getHttpUri());
 
 			if (annotation.getTarget().getSourceResource() != null) {
 				addSourceProperty(annotation, propertyValue);
@@ -236,9 +228,6 @@ public class AnnotationLdSerializer extends JsonLd {
 		if (!StringUtils.isBlank(annotation.getTarget().getSelector().getSelectorType()))
 			selectorPropertyValue.getValues().put(WebAnnotationFields.TYPE,
 					annotation.getTarget().getSelector().getSelectorType());
-//		else
-//			selectorPropertyValue.setType(""); // if property is empty - set
-//										// empty type
 
 		if (annotation.getTarget().getSelector() != null
 				&& !StringUtils.isBlank(annotation.getTarget().getSelector().getDimensionMap().toString()))
@@ -385,11 +374,6 @@ public class AnnotationLdSerializer extends JsonLd {
 	}
 
 	protected void putTypeProperty(JsonLdPropertyValue propertyValue, List<String> types) {
-//TODO: remove when tested
-		//		if(types.size() == 1)
-//			propertyValue.getValues().put(WebAnnotationFields.TYPE,
-//				types.get(0));
-//		else
 			propertyValue.putProperty(
 					buildListProperty(WebAnnotationFields.TYPE, types, true));
 	}
