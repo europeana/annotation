@@ -53,6 +53,7 @@ mongodb.annotation.username=europeana
 mongodb.annotation.password=culture
 #Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
 #USER, PASSWORD are optional (in local environment) 
+#VCAP environment will overwrite configurations only if the connectionUrl is empty
 mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
 
 # solr connection settings
