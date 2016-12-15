@@ -41,8 +41,14 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 		try {
 
 			Properties serverProperties = new Properties();
+			
 			loadProperties(serverProperties);
 
+			//Do not update mongo configurations if the connectionUrl is already provided in the properties
+			if(serverProperties.containsKey("mongodb.annotation.connectionUrl") 
+					&& StringUtils.isNotBlank(serverProperties.getProperty("mongodb.annotation.connectionUrl")))
+				return;
+			
 			updateProps(serverProperties, vcapProvider, mongoServiceName);
 
 			writePropsToFile(serverProperties, getPropertiesFile());
@@ -152,21 +158,6 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 		logger.info("mongodb.annotation.connectionUrl: " + builder.toString());
 		props.put("mongodb.annotation.connectionUrl", builder.toString());
 	}
-
-//	@Override
-//	protected String getMongoServiceName(String vcapProvider) throws FileNotFoundException, IOException {
-////		String defaultMongoServiceName = "";
-////		if (isPivotalProvider(vcapProvider))
-////			defaultMongoServiceName = MONGO_SERVICE_PIVOTAL;
-////		if (isA9sProvider(vcapProvider))
-////			defaultMongoServiceName = MONGO_SERVICE;
-////
-////		String mongoServiceName = getOriginalProperties().getProperty("annotation.environment.vcap.mongoservice",
-////				defaultMongoServiceName);
-////		logger.info("Loading VCAP properties for mongo service: " + vcapProvider + " - " + mongoServiceName);
-//
-//		
-//	}
 
 	@Override
 	protected boolean isValidVcapEnvironment(String vcapProvider, String mongoServiceName) {

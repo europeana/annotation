@@ -267,7 +267,7 @@ public class BaseJsonldRest extends BaseRest {
 			headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
 //			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_PGDOHP);
 //			headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, HttpHeaders.ALLOW_PGDOHP);
-			headers.add(HttpHeaders.ACCEPT_POST, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
+//			headers.add(HttpHeaders.ACCEPT_POST, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
 
