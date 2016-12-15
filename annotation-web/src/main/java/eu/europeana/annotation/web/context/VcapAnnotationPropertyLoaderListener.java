@@ -41,8 +41,14 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 		try {
 
 			Properties serverProperties = new Properties();
+			
 			loadProperties(serverProperties);
 
+			//Do not update mongo configurations if the connectionUrl is already provided in the properties
+			if(serverProperties.containsKey("mongodb.annotation.connectionUrl") 
+					&& StringUtils.isNotBlank(serverProperties.getProperty("mongodb.annotation.connectionUrl")))
+				return;
+			
 			updateProps(serverProperties, vcapProvider, mongoServiceName);
 
 			writePropsToFile(serverProperties, getPropertiesFile());
