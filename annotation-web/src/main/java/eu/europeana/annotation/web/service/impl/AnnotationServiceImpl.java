@@ -558,12 +558,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
 		switch (annoId.getProvider()) {
 		case WebAnnotationFields.PROVIDER_HISTORY_PIN:
-			if (annoId.getIdentifier() == null || Long.parseLong(annoId.getIdentifier()) < 1)
+			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
 						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;
 		case WebAnnotationFields.PROVIDER_PUNDIT:
-			if (annoId.getIdentifier() == null || Long.parseLong(annoId.getIdentifier()) < 1)
+			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
 						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
 			break;

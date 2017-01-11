@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public interface AnnotationId extends Serializable {
 
+	String NOT_INITIALIZED_LONG_ID = "-1";
+	
 	/**
 	 * unanbiguous identifier of the resource for a given provider
 	 * @return

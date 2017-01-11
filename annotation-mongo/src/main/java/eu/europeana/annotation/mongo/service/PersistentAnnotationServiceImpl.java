@@ -127,9 +127,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		}
 
 		// validate annotation NR
-		// TODO: update this condition when specification is available
-		if (Long.parseLong(object.getAnnotationId().getIdentifier()) < 1)
-			throw new AnnotationValidationException("Annotaion.AnnotationId.identifier must be a positive number!");
+		if (StringUtils.isBlank(object.getAnnotationId().getIdentifier()) 
+				|| AnnotationId.NOT_INITIALIZED_LONG_ID.equals(object.getAnnotationId().getIdentifier()))
+				throw new AnnotationValidationException("Annotaion.AnnotationId.identifier must be a valid alpha-numeric value or a positive number!");
 	}
 
 	protected void validateTarget(PersistentAnnotation object) {
