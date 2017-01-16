@@ -129,9 +129,8 @@ public class BaseJsonldRest extends BaseRest {
 
 	Agent buildDefaultGenerator(Application app) {
 		Agent serializer = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.SOFTWARE);
-		serializer.setName(app.getName());
-				
-		serializer.setHomepage(app.getHomepage());
+		serializer.setName(app.getName() + "- client");
+		serializer.setHomepage(app.getHomepage() + "/#europeanaAnnotationClient");
 		
 		// Set "id" attribute of Agent only if it is a valid URL
 		String agentId = app.getOpenId();
@@ -142,17 +141,6 @@ public class BaseJsonldRest extends BaseRest {
 		
 		return serializer;
 	}
-
-	// Agent buildDefaultCreator(Application app, Agent user) {
-	// Agent annotator =
-	// AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-	//
-	// annotator.setName(app.getAnonymousUser().getName());
-	// annotator.setHomepage(app.getAnonymousUser().getHomepage());
-	// annotator.setOpenId(app.getAnonymousUser().getOpenId());
-	//
-	// return annotator;
-	// }
 
 	protected ResponseEntity<String> getAnnotationById(String wsKey, String provider, String identifier, String action)
 			throws HttpException {
