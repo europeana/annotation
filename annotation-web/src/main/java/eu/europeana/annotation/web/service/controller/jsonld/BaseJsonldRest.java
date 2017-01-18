@@ -451,11 +451,11 @@ public class BaseJsonldRest extends BaseRest {
 		if (updatedWebAnnotation.getType() != null)
 			storedAnnotation.setType(updatedWebAnnotation.getType());
 
-		// Motivation must not be changed at least for now
-		if (updatedWebAnnotation.getMotivationType() != null
-				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
-			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
-					+ " to: " + updatedWebAnnotation.getMotivationType());
+		// Motivation can be changed see #122
+//		if (updatedWebAnnotation.getMotivationType() != null
+//				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
+//			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
+//					+ " to: " + updatedWebAnnotation.getMotivationType());
 		// if (updatedWebAnnotation.getMotivation() != null)
 		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
 		if (updatedWebAnnotation.getCreated() != null)
