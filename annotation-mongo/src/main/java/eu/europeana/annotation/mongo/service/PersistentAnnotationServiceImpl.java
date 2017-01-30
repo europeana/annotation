@@ -669,4 +669,15 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return geoPlaceValidator;
 	}
 
+	@Override
+	public List<? extends Annotation> getAnnotationList(List<String> annotationIds) {
+		
+		Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
+		
+		searchQuery.filter("annotationId.httpUrl in", annotationIds);
+		
+//		CriteriaContainer criteriaContainer = searchQuery.criteria();
+		return getAnnotationDao().find(searchQuery).asList();		
+	}
+
 }

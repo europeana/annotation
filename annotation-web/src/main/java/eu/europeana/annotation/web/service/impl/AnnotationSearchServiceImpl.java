@@ -1,5 +1,8 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,14 +13,20 @@ import org.springframework.security.web.util.UrlUtils;
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
@@ -36,9 +45,18 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	SolrAnnotationService solrService;
 
 	@Resource
+	PersistentAnnotationService mongoPersistance;
+
+	@Resource
 	AuthenticationService authenticationService;
 
 	Logger logger = Logger.getLogger(getClass());
+	
+	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
+
+	public AnnotationIdHelper getAnnotationIdHelper() {
+		return annotationIdHelper;
+	}
 
 	public AuthenticationService getAuthenticationService() {
 		return authenticationService;
@@ -86,6 +104,20 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		// process resultset into protocol output
 
 		protocol.setItems(resultSet);
+		
+		if(isIncludeAnnotationsSearch(query)){
+			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
+			//parse annotation urls to AnnotationId objects
+			for (AnnotationView annotationView : resultSet.getResults()) {
+				annotationIds.add(annotationView.getId());		
+			}
+			
+			//fetch annotation objects
+			List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
+			protocol.setAnnotations(annotations);
+		}
+		
+		
 		protocol.setTotalInPage(resultSet.getResults().size());
 		protocol.setTotalInCollection(resultSet.getResultSize());
 
@@ -109,6 +141,10 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		}
 		
 		return protocol;
+	}
+
+	private boolean isIncludeAnnotationsSearch(Query query) {
+		return SearchProfiles.STANDARD.equals(query.getSearchProfile());
 	}
 
 	private String buildPageUrl(String collectionUrl, int page, int pageSize) {

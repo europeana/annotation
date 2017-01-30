@@ -134,14 +134,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
 		return null;
-		// return getSolrService().search(query);
+//		// return getSolrService().search(query);
 	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
 			throws AnnotationServiceException {
 		return null;
-		// return getSolrService().search(query, startOn, limit);
+//		// return getSolrService().search(query, startOn, limit);
 	}
 
 	@Override

@@ -43,11 +43,17 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public List<? extends Annotation> getFilteredAnnotationList (
 			String europeanaId, String provider, String startOn, String limit, boolean isDisabled);
 
+	public List<? extends Annotation> getAnnotationList (List<String> annotationIds);
+	
+//	public List<? extends Annotation> getAnnotationListByUrl (List<String> annotationIds);
+		
+	
 	//public PersistentAnnotation find(String provider, String identifier);
 	
 	//public PersistentAnnotation find(String europeanaId, String provider, String identifier);
 	
 	public PersistentAnnotation find(AnnotationId annoId);
+	
 	
 //	/**
 //	 * @param baseUrl

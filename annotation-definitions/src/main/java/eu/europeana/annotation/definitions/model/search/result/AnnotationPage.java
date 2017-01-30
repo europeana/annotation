@@ -1,5 +1,8 @@
 package eu.europeana.annotation.definitions.model.search.result;
 
+import java.util.List;
+
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 
@@ -40,5 +43,9 @@ public interface AnnotationPage {
 	void setTotalInPage(long totalInPage);
 
 	long getTotalInPage();
+
+	void setAnnotations(List<? extends Annotation> annotations);
+
+	List<? extends Annotation> getAnnotations();
 
 }

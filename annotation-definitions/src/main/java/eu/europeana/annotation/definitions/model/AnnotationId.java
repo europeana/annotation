@@ -41,5 +41,9 @@ public interface AnnotationId extends Serializable {
 	String getBaseUrl();
 
 	void copyFrom(AnnotationId volatileObject);
+
+	void setHttpUrl(String httpUrl);
+
+	String getHttpUrl();
 	
 }

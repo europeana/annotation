@@ -1,5 +1,8 @@
 package eu.europeana.annotation.definitions.model.search.result.impl;
 
+import java.util.List;
+
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
@@ -12,6 +15,7 @@ public class AnnotationPageImpl implements AnnotationPage{
 	
 	//Results
 	ResultSet<? extends AnnotationView> items;
+	List<? extends Annotation> annotations;
 	private long totalInPage;
 	private long totalInCollection;
 	
@@ -46,6 +50,17 @@ public class AnnotationPageImpl implements AnnotationPage{
 	public void setItems(ResultSet<? extends AnnotationView> items) {
 		this.items = items;
 	}
+	
+	@Override
+	public List<? extends Annotation> getAnnotations() {
+		return annotations;
+	}
+
+	@Override
+	public void setAnnotations(List<? extends Annotation> annotations) {
+		this.annotations = annotations;
+	}
+	
 	@Override
 	public int getCurrentPage() {
 		return currentPage;
