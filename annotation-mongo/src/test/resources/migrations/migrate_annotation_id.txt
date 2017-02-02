@@ -31,13 +31,18 @@ db.annotation.aggregate(    [
 	{ $out : "annotation_new" }
 ])
 
+#verify number of objects in collection
+db.annotation_new.count();
+
+#inspect the first object
+db.annotation_new.find().limit(1);
+
+#rename annotation to annotation_old. 
+#optional .. if not 100% sure of the previous operations
+#db.annotation.renameCollection("annotation_old");
+
 #drop annotation collection
 db.annotation.drop();
 
 #rename annotation_new to annotation
 db.annotation_new.renameCollection("annotation");
-
-#verify number of objects in collection
-db.annotation.count();
-
-
