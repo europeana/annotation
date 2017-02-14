@@ -105,7 +105,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
 		protocol.setItems(resultSet);
 		
-		if(isIncludeAnnotationsSearch(query)){
+		if(isIncludeAnnotationsSearch(query) && resultSet.getResultSize() > 0){
 			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
@@ -116,6 +116,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
 			protocol.setAnnotations(annotations);
 		}
+		
 		
 		
 		protocol.setTotalInPage(resultSet.getResults().size());
@@ -165,7 +166,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 //		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE_SIZE, queryString);
-		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
+//		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
 		
 		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(),
 				request.getRequestURI(), queryString);
