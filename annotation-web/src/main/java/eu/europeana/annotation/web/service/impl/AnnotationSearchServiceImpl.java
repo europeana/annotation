@@ -122,7 +122,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		protocol.setTotalInPage(resultSet.getResults().size());
 		protocol.setTotalInCollection(resultSet.getResultSize());
 
-		String collectionUrl = buildCollectionUrl(request);
+		String collectionUrl = buildCollectionUrl(query, request);
 		protocol.setCollectionUri(collectionUrl);
 		
 		int currentPage = query.getPageNr();
@@ -159,14 +159,21 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		return builder.toString();
 	}
 
-	private String buildCollectionUrl(HttpServletRequest request) {
+	private String buildCollectionUrl(Query query, HttpServletRequest request) {
 
 		String queryString = request.getQueryString();
 		
 //		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
+		
+		//remove out of scope parameters
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE_SIZE, queryString);
-//		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
+		
+		//avoid duplication of query parameters
+		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
+		
+		//add mandatory parameters
+		queryString += ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString()); 
 		
 		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(),
 				request.getRequestURI(), queryString);

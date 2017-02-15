@@ -24,6 +24,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.http.AnnotationProfiles;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
@@ -109,9 +110,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT + ", "+ HttpHeaders.PREFER);
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_CONSTRAINTS);
+			headers.add(HttpHeaders.LINK, AnnotationHttpHeaders.VALUE_CONSTRAINTS);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-			headers.add(HttpHeaders.CONTENT_TYPE, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
+			headers.add(HttpHeaders.CONTENT_TYPE, AnnotationHttpHeaders.VALUE_LDP_CONTENT_TYPE);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
@@ -143,11 +144,11 @@ public class WebAnnotationSearchRest extends BaseRest {
 			logger.trace("'Prefer' header value: " + preferHeader);
 			preferHeader = preferHeader.replaceAll("\\s+","");
 			logger.trace("Normalized 'Prefer' header value: " + preferHeader);
-			if(preferHeader.equalsIgnoreCase(HttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
-				logger.trace("MINIMAL Profile set by 'Prefer' header value: " + HttpHeaders.VALUE_PREFER_CONTAINEDIRIS);
+			if(preferHeader.equalsIgnoreCase(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
+				logger.trace("MINIMAL Profile set by 'Prefer' header value: " + AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS);
 				return SearchProfiles.MINIMAL;
-			} else if(preferHeader.equalsIgnoreCase(HttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
-				logger.trace("STANDARD Profile set by 'Prefer' header value: " + HttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS);
+			} else if(preferHeader.equalsIgnoreCase(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
+				logger.trace("STANDARD Profile set by 'Prefer' header value: " + AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS);
 				return SearchProfiles.STANDARD;
 			} 
 		}
