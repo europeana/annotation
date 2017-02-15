@@ -105,6 +105,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
 		protocol.setItems(resultSet);
 		
+		//if mongo query is needed
 		if(isIncludeAnnotationsSearch(query) && resultSet.getResultSize() > 0){
 			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
@@ -244,8 +245,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			// searchQuery.setRows(0);
 			break;
 
-		case STANDARD:
+		case MINIMAL:
 			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNOTATION_ID_URL });
+			break;
+	
+		case STANDARD:
 			break;
 
 		default:

@@ -52,6 +52,7 @@ public class SolrAnnotationUtils {
 		if (searchQuery.getFacetFields() != null) {
 			solrQuery.setFacet(true);
 			solrQuery.addFacetField(searchQuery.getFacetFields());
+			solrQuery.setFacetMinCount(1);
 			solrQuery.setFacetLimit(SolrAnnotationConstants.DEFAULT_FACET_LIMIT);
 		}
 

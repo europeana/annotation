@@ -116,7 +116,7 @@ public class AnnotationPageSerializer extends JsonLd {
 		facetViewEntry.putProperty(new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_FIELD, view.getName()));
 
 		// only if values for facet count are available
-		if (view.getValueCountMap() != null && view.getValueCountMap().isEmpty()) {
+		if (view.getValueCountMap() != null && !view.getValueCountMap().isEmpty()) {
 
 			JsonLdProperty values = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
 			JsonLdPropertyValue labelCountValue;
