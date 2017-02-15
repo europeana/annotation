@@ -143,10 +143,10 @@ public class WebAnnotationSearchRest extends BaseRest {
 			logger.trace("'Prefer' header value: " + preferHeader);
 			preferHeader = preferHeader.replaceAll("\\s+","");
 			logger.trace("Normalized 'Prefer' header value: " + preferHeader);
-			if(preferHeader.equals(HttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
+			if(preferHeader.equalsIgnoreCase(HttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
 				logger.trace("MINIMAL Profile set by 'Prefer' header value: " + HttpHeaders.VALUE_PREFER_CONTAINEDIRIS);
 				return SearchProfiles.MINIMAL;
-			} else if(preferHeader.equals(HttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
+			} else if(preferHeader.equalsIgnoreCase(HttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
 				logger.trace("STANDARD Profile set by 'Prefer' header value: " + HttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS);
 				return SearchProfiles.STANDARD;
 			} 
