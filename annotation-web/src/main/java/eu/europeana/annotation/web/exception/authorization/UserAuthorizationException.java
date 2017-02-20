@@ -34,11 +34,15 @@ public class UserAuthorizationException extends HttpException{
 
 	public UserAuthorizationException(String message, String paramValue, HttpStatus status, Throwable th){
 		super(message + " " + paramValue, status, th);
-		this.paramValue = paramValue;
+		this.setParamValue(paramValue);
 	}
 	
 	public String getParamValue() {
 		return paramValue;
+	}
+
+	public void setParamValue(String paramValue) {
+		this.paramValue = paramValue;
 	}
 
 }

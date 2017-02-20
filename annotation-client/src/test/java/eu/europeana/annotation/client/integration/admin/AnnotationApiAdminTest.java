@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
@@ -26,7 +28,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 
 	@Test
-	public void createAndDeleteAnnotation() throws JsonParseException {
+	public void createAndDeleteAnnotation() throws JsonParseException, IOException {
 		
 		// create
 		Annotation annotation = this.createTestAnnotation();

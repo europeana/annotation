@@ -14,11 +14,13 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
@@ -34,13 +36,13 @@ public interface AnnotationService {
 	 */
 	public List<? extends Annotation> getAnnotationList (String resourceId);
 	
-	/**
-	 * This method retrieves all not disabled annotations for given provider.
-	 * @param resourceId
-	 * @param provider
-	 * @return the list of not disabled annotations
-	 */
-	public List<? extends Annotation> getAnnotationListByProvider (String resourceId, String provider);
+//	/**
+//	 * This method retrieves all not disabled annotations for given provider.
+//	 * @param resourceId
+//	 * @param provider
+//	 * @return the list of not disabled annotations
+//	 */
+//	public List<? extends Annotation> getAnnotationListByProvider (String resourceId, String provider);
 	
 	/**
 	 * This method retrieves all not disabled annotations for given target.
@@ -126,10 +128,12 @@ public interface AnnotationService {
 	public Annotation storeAnnotation(Annotation annotation, boolean indexing);
 
 	/**
-	 * @param newAnnotation
+	 * update (stored) <code>persistentAnnotation</code> with values from <code>webAnnotation</code>
+	 * @param persistentAnnotation
+	 * @param webAnnotation
 	 * @return
 	 */
-	public Annotation updateAnnotation(Annotation newAnnotation);
+	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -153,7 +157,7 @@ public interface AnnotationService {
 	 * @param
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException;
+	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	/**
 	 * Search for annotations by the given text query.

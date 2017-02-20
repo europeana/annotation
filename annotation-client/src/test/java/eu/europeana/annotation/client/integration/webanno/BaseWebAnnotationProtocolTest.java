@@ -2,7 +2,6 @@ package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,14 +16,12 @@ import org.junit.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -39,12 +36,17 @@ public class BaseWebAnnotationProtocolTest {
 
 	public static final String LINK_MINIMAL = "/link/minimal.json";
 	public static final String LINK_STANDARD = "/link/standard.json";
-
+	public static final String TAG_STANDARD = "/tag/standard.json";
+	public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
+	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
+	public static final String TAG_STANDARD_TEST_VALUE_TARGET = "http://data.europeana.eu/item/09102/_UEDIN_214";
+	
 	String START = "{";
 	String END = "}";
 	String TYPE = "\"@context\": \"" + WebAnnotationModelKeywords.WA_CONTEXT + "\","
 			+ "\"type\": \"oa:Annotation\",";
 
+	//TODO: migrate old test cases to use annotations from test files
 	String ANNOTATED_SERIALIZED = "\"creator\": {" + "\"id\": \"https://www.historypin.org/en/person/55376/\","
 			+ "\"type\": \"Person\"," + "\"name\": \"John Smith\"" + "},"
 			+ "\"created\": \"2015-02-27T12:00:43Z\"," + "\"generated\": \"2015-02-28T13:00:34Z\","
@@ -73,17 +75,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String LINK_JSON_BY_TYPE_JSONLD = START + LINK_CORE + END;
 
-	public String TAG_JSON = START + TAG_CORE + "\"motivation\": \"oa:tagging\"," + END;
-
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
-
-	public String UPDATE_BODY = "\"bodyValue\": \"Buccin Trombone\"";
-
-	public String UPDATE_TARGET = "\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\"";
-
-	public String UPDATE_JSON = START + UPDATE_BODY + "," + UPDATE_TARGET + END;
-
-	// public String TEST_WSKEY = "apidemo";
 
 	public String TEST_USER_TOKEN = "tester1";
 	public String ANONYMOUS_USER_TOKEN = "anonymous";
@@ -104,14 +96,17 @@ public class BaseWebAnnotationProtocolTest {
 	 * 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
+	 * @throws IOException 
 	 */
-	protected ResponseEntity<String> storeTestAnnotation() {
+	protected ResponseEntity<String> storeTestAnnotation() throws IOException {
 
+		String requestBody = getJsonStringInput(TAG_STANDARD);
+		
 		/**
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(),
-				WebAnnotationFields.PROVIDER_WEBANNO, null, TAG_JSON, TEST_USER_TOKEN, null);
+				WebAnnotationFields.PROVIDER_WEBANNO, null, requestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 
@@ -167,8 +162,9 @@ public class BaseWebAnnotationProtocolTest {
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws JsonParseException
+	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation() throws JsonParseException {
+	protected Annotation createTestAnnotation() throws JsonParseException, IOException {
 
 		/**
 		 * store annotation
@@ -185,6 +181,20 @@ public class BaseWebAnnotationProtocolTest {
 	}
 	
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+		assertEquals(""+status.value(), ""+response.getStatusCode().value());
+
+		Annotation annotation = getApiClient().parseResponseBody(response);
+
+		assertEquals(WebAnnotationFields.PROVIDER_WEBANNO, annotation.getAnnotationId().getProvider());
+		return annotation;
+	}
+	
+	protected Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response) throws JsonParseException {
+		
+		return parseAndVerifyTestAnnotation(response, HttpStatus.OK);
+	}
+	
+	protected Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
 		assertEquals(""+status.value(), ""+response.getStatusCode().value());
 
 		Annotation annotation = getApiClient().parseResponseBody(response);
@@ -284,7 +294,7 @@ public class BaseWebAnnotationProtocolTest {
 		return numericId;
 	}
 	
-	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException {
+	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
 		
 		Annotation[] testAnnotations = new Annotation[numTestAnno];
 		for( int i = 0; i < numTestAnno; i++) {

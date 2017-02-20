@@ -3,6 +3,8 @@ package eu.europeana.annotation.web.service.impl;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
@@ -375,14 +378,79 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	public Annotation updateAnnotation(Annotation annotation) {
+	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
 
-		Annotation res = getMongoPersistence().update(annotation);
+		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
+		
+		Annotation res = getMongoPersistence().update(persistentAnnotation);
 
+		//reindex annotation
 		if (getConfiguration().isIndexingEnabled())
 			reindexAnnotation(res, res.getLastUpdate());
 
 		return res;
+	}
+
+	private void mergeAnnotationProperties(PersistentAnnotation annotation, Annotation updatedWebAnnotation) {
+		if (updatedWebAnnotation.getType() != null)
+			annotation.setType(updatedWebAnnotation.getType());
+
+//		So my decision for the moment would be to only keep the "id" and "created" immutable.
+//
+//		With regards to the logic when each of the fields is missing:
+//		- If modified is missing, update with the current timestamp, otherwise overwrite.
+//		- if creator is missing, keep the previous creator, otherwise overwrite.
+//		- if generator is missing, keep the previous generator, otherwise overwrite.
+//		- the generated should always be determined by the server.
+//		- motivation, body and target are overwritten.
+		
+		// Motivation can be changed see #122
+//		if (updatedWebAnnotation.getMotivationType() != null
+//				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
+//			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
+//					+ " to: " + updatedWebAnnotation.getMotivationType());
+		// if (updatedWebAnnotation.getMotivation() != null)
+		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
+		
+		if (updatedWebAnnotation.getLastUpdate() != null) {
+			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+		} else {
+			Date timeStamp = new java.util.Date();
+			annotation.setLastUpdate(timeStamp);
+		}
+		
+		if (updatedWebAnnotation.getCreator() != null)
+			annotation.setCreator(updatedWebAnnotation.getCreator());
+		
+		if (updatedWebAnnotation.getGenerator() != null)
+			annotation.setGenerator(updatedWebAnnotation.getGenerator());
+		
+		if (updatedWebAnnotation.getCreated() != null)
+			annotation.setCreated(updatedWebAnnotation.getCreated());
+//		if (updatedWebAnnotation.getCreator() != null)
+//			annotation.setCreator(updatedWebAnnotation.getCreator());
+		if (updatedWebAnnotation.getGenerated() != null)
+			annotation.setGenerated(updatedWebAnnotation.getGenerated());
+//		if (updatedWebAnnotation.getGenerator() != null)
+//			annotation.setGenerator(updatedWebAnnotation.getGenerator());
+		if (updatedWebAnnotation.getBody() != null)
+			annotation.setBody(updatedWebAnnotation.getBody());
+		if (updatedWebAnnotation.getTarget() != null)
+			annotation.setTarget(updatedWebAnnotation.getTarget());
+		if (annotation.isDisabled() != updatedWebAnnotation.isDisabled())
+			annotation.setDisabled(updatedWebAnnotation.isDisabled());
+		if (updatedWebAnnotation.getEquivalentTo() != null)
+			annotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
+		if (updatedWebAnnotation.getInternalType() != null)
+			annotation.setInternalType(updatedWebAnnotation.getInternalType());
+//		if (updatedWebAnnotation.getLastUpdate() != null)
+//			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+		if (updatedWebAnnotation.getSameAs() != null)
+			annotation.setSameAs(updatedWebAnnotation.getSameAs());
+		if (updatedWebAnnotation.getStatus() != null)
+			annotation.setStatus(updatedWebAnnotation.getStatus());
+		if (updatedWebAnnotation.getStyledBy() != null)
+			annotation.setStyledBy(updatedWebAnnotation.getStyledBy());
 	}
 
 	@Override
@@ -406,10 +474,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public Annotation disableAnnotation(Annotation annotation) {
-		Annotation res;
+		PersistentAnnotation persistentAnnotation;
 		try {
-			annotation.setDisabled(true);
-			res = getMongoPersistence().update(annotation);
+			if(annotation instanceof PersistentAnnotation)
+				persistentAnnotation = (PersistentAnnotation)annotation;
+			else
+				persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
+			
+			persistentAnnotation.setDisabled(true);
+			persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -417,7 +490,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (getConfiguration().isIndexingEnabled())
 			removeFromIndex(annotation);
 
-		return res;
+		return persistentAnnotation;
 	}
 
 	protected void removeFromIndex(Annotation annotation) {
@@ -448,11 +521,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public List<? extends Annotation> getAnnotationListByProvider(String resourceId, String provider) {
-		return getMongoPersistence().getAnnotationListByProvider(resourceId, provider);
 	}
 
 	@Override
@@ -524,36 +592,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		statusLog.setAnnotationId(annotation.getAnnotationId());
 		getMongoStatusLogPersistence().store(statusLog);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.europeana.annotation.web.service.AnnotationService#checkVisibility(eu.
-	 * europeana.annotation.definitions.model.Annotation, java.lang.String)
-	 */
-	public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException {
-		// Annotation res = null;
-		// res =
-		// getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
-		// annotation.getAnnotationId().getIdentifier());
-		if (annotation.isDisabled())
-			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
-					AnnotationStates.DISABLED);
-
-		// if (annotation.
-		// StringUtils.isNotEmpty(user) && !user.equals("null") &&
-		// !res.getAnnotatedBy().getName().equals(user))
-		// throw new AnnotationStateException("Given user (" + user + ") does
-		// not match to the 'annotatedBy' user ("
-		// + res.getAnnotatedBy().getName() + ").");
-		// TODO update when the authorization concept is specified
-		if (annotation.isPrivate() && !annotation.getCreator().getHttpUrl().equals(user))
-			throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
-					AnnotationStates.PRIVATE);
-
-	}
-
+	
 	@Override
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
 		switch (annoId.getProvider()) {
