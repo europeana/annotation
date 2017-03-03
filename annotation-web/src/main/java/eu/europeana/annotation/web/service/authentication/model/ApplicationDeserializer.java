@@ -29,7 +29,7 @@ public class ApplicationDeserializer extends BaseDeserializer implements JsonDes
         final String homepage = deserializeStringField(jsonObject, "homepage");
         // add agents
         final Agent anonymousUser = deserializeAgent("anonymousUser", je);
-        final Agent adminUser = deserializeAgent("admin", je);
+        final Agent adminUser = deserializeAgent("adminUser", je);
         
         // build application object
         final Application app = new ClientApplicationImpl();

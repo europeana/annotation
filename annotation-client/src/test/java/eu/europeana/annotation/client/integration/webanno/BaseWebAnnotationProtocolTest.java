@@ -251,9 +251,15 @@ public class BaseWebAnnotationProtocolTest {
 			}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
+		String provider = WebAnnotationFields.PROVIDER_WEBANNO;
+		String userToken = TEST_USER_TOKEN;
+		return createTag(requestBody, provider, getApiKey(), userToken);
+	}
+
+	protected Annotation createTag(String requestBody, String provider, String apiKey, String userToken) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createTag(
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
-				TEST_USER_TOKEN);
+				provider, null, false, requestBody, 
+				apiKey, userToken);
 		
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
@@ -284,7 +290,7 @@ public class BaseWebAnnotationProtocolTest {
 	protected void deleteAnnotation(Integer numericId) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
-		assertEquals(re.getStatusCode(), HttpStatus.OK);
+		assertEquals(HttpStatus.OK, re.getStatusCode());
 		log.trace("Annotation deleted: " + numericId);
 	}
 	
