@@ -18,7 +18,6 @@ import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
-import eu.europeana.annotation.client.integration.webanno.tag.BaseTaggingTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
@@ -29,7 +28,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 
 	@Test
-	public void createAndDeleteAnnotation() throws JsonParseException {
+	public void createAndDeleteAnnotation() throws JsonParseException, IOException {
 		
 		// create
 		Annotation annotation = this.createTestAnnotation();
@@ -44,7 +43,5 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 		// delete
 		this.deleteAnnotation(numericId);
 	}
-	
-	// TODO #502: Unit test
 
 }
