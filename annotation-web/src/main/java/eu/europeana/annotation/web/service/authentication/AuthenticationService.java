@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.authentication;
 
+import java.util.Map;
+
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
@@ -12,4 +14,9 @@ public interface AuthenticationService {
 	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException;
 
 	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException;
+
+	public Application parseApplication(String jsonData);
+
+	void loadApiKeysFromFiles() throws ApplicationAuthenticationException;
+
 }

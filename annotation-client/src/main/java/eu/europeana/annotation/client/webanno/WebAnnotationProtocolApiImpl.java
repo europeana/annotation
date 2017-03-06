@@ -81,10 +81,17 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	@Override
 	public ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate,
 			String annotation, String userToken) {
-		return createAnnotation(getConfiguration().getApiKey(), provider, identifier, indexOnCreate, annotation,
-				userToken, WebAnnotationFields.TAG);
+		return createTag(provider, identifier, indexOnCreate, annotation,
+				getConfiguration().getApiKey(), userToken);
 	}
 
+	@Override
+	public ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate,
+			String annotation, String apiKey, String userToken) {
+		return createAnnotation(apiKey, provider, identifier, indexOnCreate, annotation,
+				userToken, WebAnnotationFields.TAG);
+	}
+	
 	@Override
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException{
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();

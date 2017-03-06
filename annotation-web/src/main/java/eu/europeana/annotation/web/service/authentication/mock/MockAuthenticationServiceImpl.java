@@ -8,8 +8,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -21,9 +19,12 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.model.internal.PersistentClient;
+import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
@@ -40,14 +41,19 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	private static final String COLLECTIONS_API_KEY = "phVKTQ8g9F";
 	private static final String COLLECTIONS_USER_TOKEN = "pyU4HCDWfS";
 
-	@Resource
 	AnnotationConfiguration configuration;
-	
+	PersistentClientService clientService;
+
 	Logger logger = Logger.getLogger(getClass());
+
+	public MockAuthenticationServiceImpl(AnnotationConfiguration configuration, PersistentClientService clientService) {
+		this.configuration = configuration;
+		this.clientService = clientService;
+	}
 
 	public Logger getLogger() {
 		return logger;
-	} 
+	}
 
 	public static final String EUROPEANA_FOUNDATION = "Europeana Foundation";
 	public static final String EUROPEANA_COLLECTIONS = "Europeana Collections";
@@ -61,56 +67,79 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		return cachedClients;
 	}
 
-	public Application readApplicationConfigFromFile(String path)
-			throws ApplicationAuthenticationException {
+	// TODO: 524 read authentication config from file
+	public Application readApplicationConfigFromFile(String path) throws ApplicationAuthenticationException {
 
 		Application app;
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
-
-			BaseDeserializer deserializer = new BaseDeserializer();
-			
-			Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
 			String jsonData = br.readLine();
-			app = gson.fromJson(jsonData, Application.class);
+
+			app = parseApplication(jsonData);
 			br.close();
 
 			getLogger().debug("Loaded Api Key: " + app.getApiKey());
 		} catch (IOException e) {
 			throw new ApplicationAuthenticationException(
-					ApplicationAuthenticationException.MESSAGE_APIKEY_FILE_NOT_FOUND, path , e);
+					ApplicationAuthenticationException.MESSAGE_APIKEY_FILE_NOT_FOUND, path, e);
 		}
 		return app;
 	}
 
 	@Override
-	public void loadApiKeys() throws ApplicationAuthenticationException {
+	public Application parseApplication(String jsonData) {
+		Application app;
+		BaseDeserializer deserializer = new BaseDeserializer();
+		Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
+		app = gson.fromJson(jsonData, Application.class);
+		return app;
+	}
+
+	@Override
+	public void loadApiKeysFromFiles() throws ApplicationAuthenticationException {
+
+		// read from MongoDB
 
 		URL authenticationConfigFolder = getClass().getResource(API_KEY_CONFIG_FOLDER + API_KEY_STORAGE_FOLDER);
-		
+
 		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
-		
+
 		File folder = new File(authenticationConfigFolder.getFile());
 		File[] listOfFiles = folder.listFiles();
-		
-		if(!(listOfFiles.length > 0))
-			logger.warn("No authentication configurations found!");
-		
-		
-		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
-		
 
+		if (!(listOfFiles.length > 0))
+			logger.warn("No authentication configurations found!");
+
+		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
+
+		// TODO: 524 get authentication config files
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				String fileName = listOfFiles[i].getAbsolutePath();
-				
+
 				getLogger().info("Loading api keys from file: " + fileName);
 				Application application = readApplicationConfigFromFile(fileName);
-					
-				//put app in the cache
-				getCachedClients().put(application.getApiKey(), application);				
+
+				// put app in the cache
+				getCachedClients().put(application.getApiKey(), application);
 			}
+		}
+	}
+
+	@Override
+	public void loadApiKeys() throws ApplicationAuthenticationException {
+
+		// read from MongoDB
+		Iterable<PersistentClient> allStoredClients = clientService.findAll();
+
+		Application application;
+
+		for (PersistentClient storedClient : allStoredClients) {
+			System.out.println(storedClient.getAuthenticationConfigJson());
+			application = parseApplication(storedClient.getAuthenticationConfigJson());
+			// put app in the cache
+			getCachedClients().put(application.getApiKey(), application);
 		}
 	}
 
@@ -205,22 +234,52 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException {
 		Agent user = null;
 
+		// read user from cache
 		try {
 			Application clientApp = getByApiKey(apiKey);
-			if (WebAnnotationFields.USER_ANONYMOUNS.equals(userToken))
-				user = clientApp.getAnonymousUser();
-			else if (WebAnnotationFields.USER_ADMIN.equals(userToken))
-				user = clientApp.getAdminUser();
-			else
-				user = clientApp.getAuthenticatedUsers().get(userToken);
+			user = getUserByToken(userToken, clientApp);
 
 		} catch (ApplicationAuthenticationException e) {
 			throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_INVALID_TOKEN, userToken, e);
 		}
 
+		// refresh cache - add specific api key if found in MongoDB
+		if (user == null) {
+			// read from MongoDB
+			Application application = loadApiKey(apiKey);
+			if (application != null) {
+				user = getUserByToken(userToken, application);
+			}
+		}
+
+		// unknown user
 		if (user == null)
 			throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_INVALID_TOKEN, userToken);
 
+		return user;
+
+	}
+
+	Application loadApiKey(String apiKey) {
+		Client apiClient = clientService.findByApiKey(apiKey);
+		Application application = null;
+
+		if (apiClient != null) {
+			application = parseApplication(apiClient.getAuthenticationConfigJson());
+			// put app in the cache
+			getCachedClients().put(application.getApiKey(), application);
+		}
+		return application;
+	}
+
+	private Agent getUserByToken(String userToken, Application application) {
+		Agent user;
+		if (WebAnnotationFields.USER_ANONYMOUNS.equals(userToken))
+			user = application.getAnonymousUser();
+		else if (WebAnnotationFields.USER_ADMIN.equals(userToken))
+			user = application.getAdminUser();
+		else
+			user = application.getAuthenticatedUsers().get(userToken);
 		return user;
 	}
 
@@ -230,10 +289,14 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		Application app = null;
 
 		if (getCachedClients().isEmpty())
-			loadApiKeys(); 
-		
+			loadApiKeys();
+
 		app = getCachedClients().get(apiKey);
-				
+
+		// reload from database
+		if (app == null)
+			app = loadApiKey(apiKey);
+
 		if (app == null)
 			throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY,
 					apiKey);
@@ -262,4 +325,11 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		return null;
 	}
 
+	public PersistentClientService getClientService() {
+		return clientService;
+	}
+
+	public void setClientService(PersistentClientService clientService) {
+		this.clientService = clientService;
+	}
 }

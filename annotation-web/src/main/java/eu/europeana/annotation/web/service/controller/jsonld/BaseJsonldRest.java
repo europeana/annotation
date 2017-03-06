@@ -27,7 +27,7 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.utils.StringUtils;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
@@ -164,21 +164,22 @@ public class BaseJsonldRest extends BaseRest {
 
 			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 			// annotation id doesn’t exists )
+			// 4.or 410 (if the user is not allowed to access the annotation);
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
 
-			// 4.or 410 (if the user is not allowed to access the annotation);
-			try {
-				// check visibility
-				getAnnotationService().checkVisibility(annotation, null);
-			} catch (AnnotationStateException e) {
-				if (annotation.isDisabled())
-					throw new UserAuthorizationException(
-							UserAuthorizationException.MESSAGE_ANNOTATION_STATE_NOT_ACCESSIBLE, annotation.getStatus(),
-							HttpStatus.GONE, e);
-				else
-					throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wsKey,
-							e);
-			}
+			//TODO: move to service.getAnnotationById
+//			try {
+//				// check visibility
+//				getAnnotationService().checkVisibility(annotation, null);
+//			} catch (AnnotationStateException e) {
+//				if (annotation.isDisabled())
+//					throw new UserAuthorizationException(
+//							UserAuthorizationException.MESSAGE_ANNOTATION_STATE_NOT_ACCESSIBLE, annotation.getStatus(),
+//							HttpStatus.GONE, e);
+//				else
+//					throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wsKey,
+//							e);
+//			}
 
 			JsonLd annotationLd = new AnnotationLdSerializer(annotation);
 			String jsonLd = annotationLd.toString(4);
@@ -386,30 +387,29 @@ public class BaseJsonldRest extends BaseRest {
 
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
 
-			// 5. authorize user
+			// 1. authorize user
 			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
 
+			// 2. check time stamp
+			
+			// 3. validate new description for format and fields
+			
+			// 4. generate new and replace existing time stamp for annotation
+			
 			// Retrieve an annotation based on its identifier;
-			Annotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
-					identifier);
+			PersistentAnnotation storedAnnotation = (PersistentAnnotation) getAnnotationService().getAnnotationById(annoId);
+			
+//			PersistentAnnotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
+//					identifier);
 
-			// 6. extract and check current annotation type and motivation
-			MotivationTypes currentMotivation = storedAnnotation.getMotivationType();
+			//TODO: #431 update specification steps performed here
+			// 5. parse updated annotation
+			Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(null, annotation);
 
-			// TODO: the motivation should be verified during parsing. If
-			// motivation is provided within the annotation object it must match
-			// the provided one
-			Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(currentMotivation, annotation);
-
-			// // 7. parse updated annotation
-			// if (updatedMotivation != null)
-			// currentMotivation = updatedMotivation;
-			//
-			// 8. apply updates - merge current and updated annotation
-			updateValues(storedAnnotation, updateWebAnnotation);
-
-			// 9. call database update method
-			Annotation updatedAnnotation = getAnnotationService().updateAnnotation(storedAnnotation);
+			
+			// 6. apply updates - merge current and updated annotation
+			// 7. and call database update method
+			Annotation updatedAnnotation = getAnnotationService().updateAnnotation(storedAnnotation, updateWebAnnotation);
 
 			// serialize to jsonld
 			JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation);
@@ -428,11 +428,12 @@ public class BaseJsonldRest extends BaseRest {
 
 		} catch (JsonParseException e) {
 			throw new RequestBodyValidationException(annotation, e);
-		} catch (AnnotationValidationException e) { // TODO: transform to
-													// checked annotation type
+		} catch (AnnotationValidationException e) { 
 			throw new RequestBodyValidationException(annotation, e);
 		} catch (HttpException e) {
-			// avoid wrapping HttpExceptions
+			//TODO: change this when OAUTH is implemented and the user information is available in service
+			if(e instanceof UserAuthorizationException)
+				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
 		} catch (Exception e) {
 			throw new InternalServerException(e);
@@ -446,6 +447,7 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param storedAnnotation
 	 * @param updatedWebAnnotation
 	 */
+	@Deprecated
 	private void updateValues(Annotation storedAnnotation, Annotation updatedWebAnnotation) {
 
 		if (updatedWebAnnotation.getType() != null)
@@ -514,8 +516,7 @@ public class BaseJsonldRest extends BaseRest {
 			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
 
 			// Retrieve an annotation based on its id;
-			Annotation annotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
-					identifier);
+			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
 
 			// TODO: Verify if user is allowed to perform the deletion.
 
@@ -532,24 +533,13 @@ public class BaseJsonldRest extends BaseRest {
 
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
+			//TODO: change this when OAUTH is implemented and the user information is available in service
+			if(e instanceof UserAuthorizationException)
+				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
-	}
-
-	protected Annotation getAnnotationForUpdate(String baseUrl, String provider, String identifier)
-			throws ParamValidationException, AnnotationNotFoundException {
-		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
-		Annotation annotation = getAnnotationService().getAnnotationById(annoId);
-		if (annotation == null)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
-					"/provider/identifier", annoId.toUri(), HttpStatus.NOT_FOUND, null);
-
-		if (annotation.isDisabled())
-			throw new AnnotationNotFoundException("The Annotation is known to have existed in the past and was deleted",
-					annoId.toUri(), HttpStatus.GONE, null);
-		return annotation;
 	}
 
 	/**

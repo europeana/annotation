@@ -21,8 +21,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +37,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.gson.Gson;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.model.PersistentClientImpl;
+import eu.europeana.annotation.mongo.model.internal.PersistentClient;
+import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 import eu.europeana.corelib.logging.Logger;
@@ -50,14 +62,29 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
 	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
 	public final String USER_ADMIN = "admin";
 	public final String TEST_IDENTIFIER = null;//"http://data.europeana.eu/annotation/webanno/494";
+	public static final String KEY_APIADMIN = "apiadmin";
 	
     private static final Map<String, String> apyKeyMap = new HashMap<String, String>();
     
-    private static void initApiKeyMap() {
-    	apyKeyMap.put("apiadmin", WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
+    @Resource
+    PersistentClientService clientService;
+    
+    @Resource
+    AnnotationConfiguration configuration;
+    
+    public PersistentClientService getClientService() {
+		return clientService;
+	}
+
+	public void setClientService(PersistentClientService clientService) {
+		this.clientService = clientService;
+	}
+
+	private static void initApiKeyMap() {
+    	apyKeyMap.put(KEY_APIADMIN, WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
     	apyKeyMap.put("apidemo", WebAnnotationFields.PROVIDER_WEBANNO);
     	apyKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
-    	apyKeyMap.put("punditdemo", WebAnnotationFields.PROVIDER_PUNDIT);
+    	apyKeyMap.put("pMFSDInF22", WebAnnotationFields.PROVIDER_PUNDIT);
     	apyKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
     	apyKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
     }
@@ -88,7 +115,7 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
 	 * @throws ApplicationAuthenticationException 
      */
     @Test
-    public void testFindApiKeyApplicationFromJsonFile() throws ApplicationAuthenticationException {
+    public void testFindApiKey() throws ApplicationAuthenticationException {
     	  	
     	Application app = getAuthenticationService().getByApiKey("hpdemo");
     	assertNotNull(app);
@@ -97,7 +124,7 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
     }
    
     
-    @Test
+//    @Test
     public void testStoreApiKeysAsJson() {
     	  	
     	for (Map.Entry<String, String> entry : apyKeyMap.entrySet()) {
@@ -129,6 +156,68 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
 		} catch (ApplicationAuthenticationException e) {
 			e.printStackTrace();
 		}
+    }
+    
+
+//    @Test
+    public void storeApiKeysToMongo() throws ApplicationAuthenticationException, AnnotationMongoException{
+    	
+    	// create list of all existing IDs, to avoid creating duplicates
+//    	Iterable<PersistentClient> existingClients = clientService.findAll();
+//    	List<String> existingIDs = new ArrayList<String>();
+//    	for (PersistentClient storedClient : existingClients) {
+//    		existingIDs.add(storedClient.getClientId());
+//    	}
+    	
+    	getAuthenticationService().loadApiKeysFromFiles();
+    	
+    	Application app;
+    	for (String key : apyKeyMap.keySet()) {
+    		// create new entry only if its not a duplicate
+//    		if (!existingIDs.contains(key)) {
+	    		app = getAuthenticationService().getByApiKey(key);
+	        	String json = getGson().toJson(app);
+	        	
+	        	Date creationDate = new java.util.Date();    	
+	        	PersistentClient user = new PersistentClientImpl();       	
+	        	        	
+				// credentials
+	        	user.setClientId(key);
+	        	user.setAuthenticationConfigJson(json);
+	        	user.setCreationDate(creationDate);
+	        	user.setLastUpdate(creationDate);
+	        	        	
+	        	// write to MongoDB
+	        	clientService.create(user);
+//    		}
+		}
+    	
+    	// check if successful
+    	Iterable<PersistentClient> all = clientService.findAll();
+
+    	Client webanno = null;
+    	for (PersistentClient storedClient : all) {
+    		if(KEY_APIADMIN.equals(storedClient.getClientId()));
+    			webanno = storedClient;
+    	}
+    	
+    	assertNotNull(webanno);
+    	System.out.println(webanno.getAuthenticationConfigJson());
+    	
+    	MockAuthenticationServiceImpl authenticationService = new MockAuthenticationServiceImpl(configuration, clientService);
+    	
+    	app = authenticationService.parseApplication(webanno.getAuthenticationConfigJson());
+    	assertNotNull(app);
+    	
+    	
+    	
+//    	assertNotNull(app.getAnonymousUser());
+//    	assertNotNull(app.getAdminUser());
+//    	assertNotNull(app.getAuthenticatedUsers());
+    	
+//    	System.out.println(fileJSON);
+//    	assertTrue(fileJSON.equals(webanno.getAuthenticationConfigJson()));
+    	    	
     }
     
 }

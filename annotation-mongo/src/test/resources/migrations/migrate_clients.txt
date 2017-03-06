@@ -1,0 +1,4 @@
+# manual commands to export/import collections from MongoDB
+# need to use AnnotationApiKeyToJsonTest.java -> storeApiKeysToMongo() to write the JSON files to MongoDB
+mongoexport --db annotation_test --collection client --out client_export.json
+mongoimport --db annotation_test --collection client --file client_export.json

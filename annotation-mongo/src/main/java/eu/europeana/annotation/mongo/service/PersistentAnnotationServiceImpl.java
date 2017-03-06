@@ -14,7 +14,6 @@ import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
 import com.google.code.morphia.query.WhereCriteria;
-import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
@@ -41,7 +40,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
-import eu.europeana.corelib.logging.Log;
 
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
@@ -594,11 +592,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			// public List<? extends Annotation> filterByTimestamp(
 			String startTimestamp, String endTimestamp) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		if (!Strings.isNullOrEmpty(startTimestamp)) {
+		if (StringUtils.isNotBlank(startTimestamp)) {
 			Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
 			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(start);
 		}
-		if (!Strings.isNullOrEmpty(endTimestamp)) {
+		if (StringUtils.isNotBlank(endTimestamp)) {
 			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}

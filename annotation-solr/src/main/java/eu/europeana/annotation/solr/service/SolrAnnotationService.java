@@ -117,7 +117,6 @@ public interface SolrAnnotationService {
 	/**
 	 * This method searches in all fields that are defined in schema for that purpose.
 	 * @param text
-	 * @param profile TODO
 	 * @return
 	 * @throws AnnotationServiceException
 	 */

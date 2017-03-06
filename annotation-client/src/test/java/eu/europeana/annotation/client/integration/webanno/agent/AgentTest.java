@@ -29,6 +29,8 @@ public class AgentTest extends BaseTaggingTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
+		//but ignore generated timestamp which is always set by the server
+		inputAnno.setGenerated(storedAnno.getGenerated());
 		validateOutputAgainstInput(storedAnno, inputAnno);
 	}
 

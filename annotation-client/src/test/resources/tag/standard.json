@@ -1,7 +1,7 @@
 {
     "@context": "http://www.europeana.eu/annotation/context.jsonld",
     "type": "oa:Annotation",
-    "motivation": "oa:Tagging",	
+    "motivation": "tagging",	
     "creator": {
         "id": "https://www.historypin.org/en/person/55376/",
         "type": "Person",
