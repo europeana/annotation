@@ -58,7 +58,7 @@ public interface WebAnnotationModelFields {
 	
 	/** internal fields */
 	public static final String INTERNAL_TYPE = "internalType";
-	public static final String LAST_INDEXED_TIMESTAMP = "lastIndexedTimestamp";
+	public static final String LAST_INDEXED = "lastIndexed";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String ANNOTATION_ID = "annotationId";
 	

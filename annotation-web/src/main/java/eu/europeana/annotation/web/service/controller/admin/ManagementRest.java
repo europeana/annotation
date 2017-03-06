@@ -258,4 +258,33 @@ public class ManagementRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		return buildResponseEntityForJsonString(jsonStr);
 	}
+	
+	@RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+	@ApiOperation(value = "Index new and reindex outdated annotations", nickname = "reindexOutdated", response = java.lang.Void.class)
+	public ResponseEntity<String> reindexOutdated(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+					throws UserAuthorizationException, HttpException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+
+		BatchProcessingStatus status = getAdminService().reindexOutdated();
+		
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
+		response.setStatus("Outdated annotations reindexed. " + status.toString());
+		response.success = true;
+
+		// return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		// TODO #502: log output
+		return buildResponseEntityForJsonString(jsonStr);
+	}
+
+
 }

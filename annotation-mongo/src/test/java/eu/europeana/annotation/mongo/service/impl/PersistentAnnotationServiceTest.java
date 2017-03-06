@@ -328,7 +328,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		Logger.getLogger(getClass().getName()).info(
 				"testCreatePersistentAnnotation persistent annotation after update: " + persistentAnnotation.toString());
 
-		assertNotNull(persistentAnnotation.getLastIndexedTimestamp());
+		assertNotNull(persistentAnnotation.getLastIndexed());
 		annotationService.remove(persistentAnnotation.getAnnotationId());
 	}
 	

@@ -104,5 +104,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 
+	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
+
 }
 

@@ -1,5 +1,7 @@
 package eu.europeana.annotation.mongo.model.internal;
 
+import java.util.Date;
+
 import org.bson.types.ObjectId;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -17,6 +19,7 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	public final static String FIELD_BASEURL = "annotationId.baseUrl";
 	public final static String FIELD_PROVIDER = "annotationId.provider";
 	public final static String FIELD_IDENTIFIER = "annotationId.identifier";
+	public final static String FIELD_HTTPURL = "annotationId.httpUrl";
 	public final static String FIELD_DISABLED = "disabled";
 	public final static String FIELD_VALUE = "value";
 	public final static String FIELD_VALUES = "values";
@@ -46,9 +49,9 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 //	public abstract String[] getVisibility();
 //
 //	public abstract void setVisibility(String[] visibility);
+	
+	public abstract void setLastIndexed(Date lastIndexedDate);
 
-	public abstract void setLastIndexedTimestamp(Long lastIndexedTimestamp);
-
-	public abstract Long getLastIndexedTimestamp();
+	public abstract Date getLastIndexed();
 	
 }

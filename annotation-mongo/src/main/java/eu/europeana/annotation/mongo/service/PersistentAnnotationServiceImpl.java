@@ -13,6 +13,7 @@ import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
 import com.google.code.morphia.query.UpdateResults;
+import com.google.code.morphia.query.WhereCriteria;
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
@@ -43,6 +44,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import eu.europeana.corelib.logging.Log;
 
 import org.springframework.stereotype.Component;
 
@@ -537,9 +539,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		// if (persistentAnnotation.getInternalType() != null)
 		// updateOperations.set(WebAnnotationFields.INTERNAL_TYPE,
 		// persistentAnnotation.getInternalType());
-		if (persistentAnnotation.getLastIndexedTimestamp() != null)
-			updateOperations.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP,
-					persistentAnnotation.getLastIndexedTimestamp());
+		if (persistentAnnotation.getLastIndexed() != null)
+			updateOperations.set(WebAnnotationFields.LAST_INDEXED,
+					persistentAnnotation.getLastIndexed());
 		if (persistentAnnotation.getLastUpdate() != null)
 			updateOperations.set(WebAnnotationFields.LAST_UPDATE, persistentAnnotation.getLastUpdate());
 		if (persistentAnnotation.getSameAs() != null)
@@ -567,9 +569,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			throw new AnnotationMongoRuntimeException(
 					AnnotationMongoRuntimeException.INVALID_LAST_INDEXING + lastIndexing);
 
-		annotation.setLastIndexedTimestamp(lastIndexing.getTime());
+		annotation.setLastIndexed(lastIndexing);
+		
 		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
-				.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, lastIndexing.getTime());
+				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing.getTime()).set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
 		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id")
 				.equal(annotation.getId());
 		getAnnotationDao().update(updateQuery, ops);
@@ -579,10 +582,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	private boolean isValidLastIndexingTimestamp(PersistentAnnotation annotation, Date lastIndexing) {
 		// if never indexed
-		if (lastIndexing != null && annotation.getLastIndexedTimestamp() == null)
+		if (lastIndexing != null && annotation.getLastIndexed() == null)
 			return true;
 
-		return lastIndexing.getTime() > annotation.getLastIndexedTimestamp();
+		return lastIndexing.after(annotation.getLastIndexed());
 	}
 
 	/**
@@ -680,4 +683,23 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return getAnnotationDao().find(searchQuery).asList();		
 	}
 
+	@Override
+	public List<String> filterByLastUpdateGreaterThanLastIndexTimestamp() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+				
+		// Morphia query
+		query.where("this." + WebAnnotationFields.DISABLED + " == false && "
+			  + "(this." +WebAnnotationFields.LAST_UPDATE + "> this." + WebAnnotationFields.LAST_INDEXED + " || "
+			  + " this." + WebAnnotationFields.LAST_INDEXED + " == null)");
+		
+		//Actually this is a list of Objects
+		List<String> res = getAnnotationDao().findIds(query);		
+		
+		//convert the list
+		List<String> response = new ArrayList<String>(res.size());
+		for (Object id : res){ response.add(id.toString()); }
+		
+		return response;
+	}
+	
 }
