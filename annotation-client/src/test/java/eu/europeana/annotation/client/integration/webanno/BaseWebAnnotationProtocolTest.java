@@ -99,14 +99,50 @@ public class BaseWebAnnotationProtocolTest {
 	 * @throws IOException 
 	 */
 	protected ResponseEntity<String> storeTestAnnotation() throws IOException {
+		
+		return storeTestAnnotation(TAG_STANDARD);
 
-		String requestBody = getJsonStringInput(TAG_STANDARD);
+	}
+	
+
+
+	/**
+	 * This method creates test annotation object
+	 * 
+	 * @return response entity that contains response body, headers and status
+	 *         code.
+	 * @throws IOException 
+	 */
+	protected ResponseEntity<String> storeTestAnnotation(String tag) throws IOException {
+
+		String requestBody = getJsonStringInput(tag);
 		
 		/**
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(),
 				WebAnnotationFields.PROVIDER_WEBANNO, null, requestBody, TEST_USER_TOKEN, null);
+		return storedResponse;
+	}
+	
+
+
+	/**
+	 * This method creates test annotation object and allows choosing if it should be indexed or not.
+	 * 
+	 * @return response entity that contains response body, headers and status
+	 *         code.
+	 * @throws IOException 
+	 */
+	protected ResponseEntity<String> storeTestAnnotation(String tag, boolean indexOnCreate) throws IOException {
+
+		String requestBody = getJsonStringInput(tag);
+		
+		/**
+		 * store annotation
+		 */
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
+				WebAnnotationFields.PROVIDER_WEBANNO, null, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 
@@ -165,15 +201,44 @@ public class BaseWebAnnotationProtocolTest {
 	 * @throws IOException 
 	 */
 	protected Annotation createTestAnnotation() throws JsonParseException, IOException {
+		return createTestAnnotation(TAG_STANDARD);
+	}
+	
 
-		/**
-		 * store annotation
-		 */
-		ResponseEntity<String> response = storeTestAnnotation();
+
+	/**
+	 * This method creates test annotation object
+	 * 
+	 * @return response entity that contains response body, headers and status
+	 *         code.
+	 * @throws JsonParseException
+	 * @throws IOException 
+	 */
+	protected Annotation createTestAnnotation(String tag) throws JsonParseException, IOException {
+
+		return createTestAnnotation(tag, true);
+		
+	}
+
+	/**
+	 * This method creates test annotation object allowing to decide if it should be indexed or not.
+	 * 
+	 * @param tag Annotation tag
+	 * @param indexOnCreate Flag to decide if the test annotation should be indexed or not
+	 * @return response entity that contains response body, headers and status
+	 *         code.
+	 * @throws JsonParseException
+	 * @throws IOException 
+	 */
+	protected Annotation createTestAnnotation(String tag, boolean indexOnCreate) throws JsonParseException, IOException {
+
+		ResponseEntity<String> response = storeTestAnnotation(tag, indexOnCreate);
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 
 		return annotation;
+		
 	}
+	
 
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response) throws JsonParseException {
 		
