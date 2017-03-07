@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
@@ -31,7 +32,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 
 	
 	@Test
-	public void createAnnotationReport() throws JsonParseException {
+	public void createAnnotationReport() throws JsonParseException, IOException {
 		
 		ResponseEntity<String> response = storeTestAnnotation();
 		validateResponse(response);
@@ -49,7 +50,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 	@Test
 	public void getModerationSummary() 
 			throws JsonParseException, IllegalAccessException, IllegalArgumentException, 
-				   InvocationTargetException, JSONException {
+				   InvocationTargetException, JSONException, IOException {
 		
 		ResponseEntity<String> response = storeTestAnnotation();
 		validateResponse(response);

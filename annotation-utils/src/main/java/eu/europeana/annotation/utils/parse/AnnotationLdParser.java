@@ -107,9 +107,10 @@ public class AnnotationLdParser extends JsonLdParser {
 			// incorrect motivation value
 			if (verifiedMotivationType == null || MotivationTypes.UNKNOWN.equals(verifiedMotivationType))
 				invalidMotivation = true;
+			//changing the motivation must be allowed see  #133
 			// motivation doesn't match
-			else if (motivationType != null && !motivationType.equals(verifiedMotivationType))
-				invalidMotivation = true;
+//			else if (motivationType != null && !motivationType.equals(verifiedMotivationType))
+//				invalidMotivation = true;
 		}
 
 		if (invalidMotivation)
@@ -687,7 +688,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			// specific resource - minimal or extended;
 			// in any case SemanticTag
 			// support both @id and id in input
-			if(hasType(valueObject, ResourceTypes.PLACE))
+			if(valueObject.has(WebAnnotationFields.GRAPH))
+				return BodyInternalTypes.GRAPH;
+			else if(hasType(valueObject, ResourceTypes.PLACE))
 				return BodyInternalTypes.GEO_TAG;
 			else if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
 				return BodyInternalTypes.SEMANTIC_TAG;

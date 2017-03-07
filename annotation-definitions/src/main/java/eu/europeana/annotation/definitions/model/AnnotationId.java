@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public interface AnnotationId extends Serializable {
 
+	String NOT_INITIALIZED_LONG_ID = "-1";
+	
 	/**
 	 * unanbiguous identifier of the resource for a given provider
 	 * @return
@@ -39,5 +41,9 @@ public interface AnnotationId extends Serializable {
 	String getBaseUrl();
 
 	void copyFrom(AnnotationId volatileObject);
+
+	void setHttpUrl(String httpUrl);
+
+	String getHttpUrl();
 	
 }

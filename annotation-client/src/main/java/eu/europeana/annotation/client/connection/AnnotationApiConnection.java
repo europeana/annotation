@@ -640,16 +640,29 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 */
 	public AnnotationPage search(String query, String page, String pageSize) 
 			throws IOException, JsonParseException {
-		String url = buildUrl(query, page, pageSize, ModelConst.STANDARD); // TODO: ModelConst.ANNOTATION replaced by ModelConst.STANDARD, should this be AnnotationProfiles.STANDARD? (shsdev)
 		
-		/**
-		 * Execute Europeana API request
-		 */
+		return search(query, page, pageSize, SearchProfiles.STANDARD); 
+		
+	}
+	
+
+	/**
+	 * This method returns a list of Annotation objects for the passed query according to the given search profile.
+     * E.g. /annotation-web/annotations/search?wskey=key&profile=webtest&value=vlad&field=all&language=en&startOn=0&limit=&search=search	 
+     * @param query The query string 
+	 * @return AnnotationPage object
+	 * @throws IOException
+	 * @throws JsonParseException 
+	 */
+	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile) 
+			throws IOException, JsonParseException {
+		String url = buildUrl(query, page, pageSize, searchProfile.toString()); 
+		
+		// Execute Europeana API request
 		String json = getJSONResult(url);
 		
 		return getAnnotationPage(json);
 	}
-	
 
 
 	/**
@@ -1192,7 +1205,32 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return re;
 	}
 	
-	
-
-
+	/**
+	 * Sample HTTP request
+	 *     curl -X GET --header 'Accept: application/ld+json' 'http://localhost:8080/admin/annotation/reindexoutdated?wskey=apidemo&userToken=admin'
+	 * @return ResponseEntity<String>
+	 * @throws IOException
+	 */
+	public AnnotationOperationResponse reindexOutdated() throws IOException {
+		
+		String action = "reindexoutdated";
+		
+		logger.debug("Annotation service URI: " +getAnnotationServiceUri());	
+		String adminAnnotationServiceUri = getAnnotationServiceUri().replace("annotation", "admin/annotation");
+		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
+		
+		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
+		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
+		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
+		
+		logger.trace("(Re)index outdated annotations request URL: " + url);
+		String json = getJSONResult(url);
+		logger.trace("(Re)index outdated annotations result: " + json);
+		
+		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+		aor.setSuccess("true");
+		aor.setAction("get:/annotations/check/visibility/object.json");
+		aor.setJson(json);
+		return aor;
+	}
 }

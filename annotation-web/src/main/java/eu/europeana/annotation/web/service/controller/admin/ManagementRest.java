@@ -35,11 +35,15 @@ import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.log4j.Logger;
+
 
 @Controller
 @SwaggerSelect
 @Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
+	
+	protected final Logger logger = getLogger();
 
 	@Resource
 	private AdminService adminService;
@@ -69,6 +73,7 @@ public class ManagementRest extends BaseRest {
 		deleteAnnotationForGood(provider, identifier, apiKey, userToken);
 		response.success = true;
 		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Delete Annotation for good result: " + jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
@@ -99,6 +104,7 @@ public class ManagementRest extends BaseRest {
 
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Delete a set of Annotations for good result: " + jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
@@ -160,6 +166,7 @@ public class ManagementRest extends BaseRest {
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/reindex");
 
 		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Reindex by annotation id result: " + jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
@@ -199,6 +206,7 @@ public class ManagementRest extends BaseRest {
 
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Reindex a set of annotations defined by selection criteria result: " + jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
@@ -230,6 +238,7 @@ public class ManagementRest extends BaseRest {
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;  
+		logger.info("Reindex a set of annotations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
 		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
 	
@@ -256,6 +265,35 @@ public class ManagementRest extends BaseRest {
 
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Reindex all annotations result: " + jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 	}
+	
+	@RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+	@ApiOperation(value = "Index new and reindex outdated annotations", nickname = "reindexOutdated", response = java.lang.Void.class)
+	public ResponseEntity<String> reindexOutdated(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+					throws UserAuthorizationException, HttpException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+
+		BatchProcessingStatus status = getAdminService().reindexOutdated();
+		
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
+		response.setStatus("Outdated annotations reindexed. " + status.toString());
+		response.success = true;
+
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Index new and reindex outdated annotations result: " + jsonStr);
+		return buildResponseEntityForJsonString(jsonStr);
+	}
+
+
 }

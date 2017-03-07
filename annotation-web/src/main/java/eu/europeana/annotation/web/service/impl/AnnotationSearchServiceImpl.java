@@ -1,5 +1,8 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,14 +13,20 @@ import org.springframework.security.web.util.UrlUtils;
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
@@ -36,9 +45,18 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	SolrAnnotationService solrService;
 
 	@Resource
+	PersistentAnnotationService mongoPersistance;
+
+	@Resource
 	AuthenticationService authenticationService;
 
 	Logger logger = Logger.getLogger(getClass());
+	
+	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
+
+	public AnnotationIdHelper getAnnotationIdHelper() {
+		return annotationIdHelper;
+	}
 
 	public AuthenticationService getAuthenticationService() {
 		return authenticationService;
@@ -86,10 +104,26 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		// process resultset into protocol output
 
 		protocol.setItems(resultSet);
+		
+		//if mongo query is needed
+		if(isIncludeAnnotationsSearch(query) && resultSet.getResultSize() > 0){
+			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
+			//parse annotation urls to AnnotationId objects
+			for (AnnotationView annotationView : resultSet.getResults()) {
+				annotationIds.add(annotationView.getId());		
+			}
+			
+			//fetch annotation objects
+			List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
+			protocol.setAnnotations(annotations);
+		}
+		
+		
+		
 		protocol.setTotalInPage(resultSet.getResults().size());
 		protocol.setTotalInCollection(resultSet.getResultSize());
 
-		String collectionUrl = buildCollectionUrl(request);
+		String collectionUrl = buildCollectionUrl(query, request);
 		protocol.setCollectionUri(collectionUrl);
 		
 		int currentPage = query.getPageNr();
@@ -111,6 +145,10 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		return protocol;
 	}
 
+	private boolean isIncludeAnnotationsSearch(Query query) {
+		return SearchProfiles.STANDARD.equals(query.getSearchProfile());
+	}
+
 	private String buildPageUrl(String collectionUrl, int page, int pageSize) {
 		StringBuilder builder = new StringBuilder(collectionUrl);
 		builder.append(WebAnnotationFields.AND).append(WebAnnotationFields.PARAM_PAGE)
@@ -122,14 +160,21 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		return builder.toString();
 	}
 
-	private String buildCollectionUrl(HttpServletRequest request) {
+	private String buildCollectionUrl(Query query, HttpServletRequest request) {
 
 		String queryString = request.getQueryString();
 		
 //		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
+		
+		//remove out of scope parameters
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
 		queryString = removeParam(WebAnnotationFields.PARAM_PAGE_SIZE, queryString);
+		
+		//avoid duplication of query parameters
 		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
+		
+		//add mandatory parameters
+		queryString += ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString()); 
 		
 		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(),
 				request.getRequestURI(), queryString);
@@ -200,8 +245,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			// searchQuery.setRows(0);
 			break;
 
-		case STANDARD:
+		case MINIMAL:
 			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNOTATION_ID_URL });
+			break;
+	
+		case STANDARD:
 			break;
 
 		default:

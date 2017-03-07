@@ -35,4 +35,13 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 		}
 	}
 
+	@Override
+	public void reindexOutdated() {
+		try {
+			apiConnection.reindexOutdated();
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
+		}
+	}
+
 }

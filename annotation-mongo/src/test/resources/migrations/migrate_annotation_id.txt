@@ -1,0 +1,48 @@
+#please execute manually the following commands  using mongo V3.x (see  #123)
+#verify number of objects in collection
+db.annotation.count();
+
+#aggregate objects into annotation_new collections
+db.annotation.aggregate(    [
+     { $project: { 
+	    _id: 1,
+		"annotationId.baseUrl": 1, 
+		"annotationId.provider": 1,
+		"annotationId.identifier": 1,
+		"annotationId.httpUrl":  { $concat: [ "$annotationId.baseUrl", "/",  "$annotationId.provider", "/", "$annotationId.identifier" ] } ,
+		type: 1,
+		internalType: 1,
+		creator: 1,
+		generator: 1,
+		created: 1,
+		generated: 1,
+		body: 1,
+		target: 1,
+		motivation: 1,
+		styledBy: 1,
+		lastIndexedTimestamp: 1,
+		disabled: 1,
+		sameAs: 1,
+		equivalentTo: 1,
+		status: 1,
+		lastUpdate: 1
+		}
+	},
+	{ $out : "annotation_new" }
+])
+
+#verify number of objects in collection
+db.annotation_new.count();
+
+#inspect the first object
+db.annotation_new.find().limit(1);
+
+#rename annotation to annotation_old. 
+#optional .. if not 100% sure of the previous operations
+#db.annotation.renameCollection("annotation_old");
+
+#drop annotation collection
+db.annotation.drop();
+
+#rename annotation_new to annotation
+db.annotation_new.renameCollection("annotation");

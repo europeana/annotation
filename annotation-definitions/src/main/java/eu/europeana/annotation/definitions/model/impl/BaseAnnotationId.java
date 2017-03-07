@@ -13,6 +13,19 @@ public class BaseAnnotationId implements AnnotationId{
 	private String baseUrl;
 	private String identifier = null;
 	private String provider;
+	private String httpUrl;
+
+	@Override
+	public String getHttpUrl() {
+		if(httpUrl == null)
+			httpUrl = toHttpUrl();
+		return httpUrl;
+	}
+
+	@Override
+	public void setHttpUrl(String httpUrl) {
+		this.httpUrl = httpUrl;
+	}
 
 	/**
 	 * this constructor is used by factory methods and automatic instantiation of this class
@@ -29,6 +42,7 @@ public class BaseAnnotationId implements AnnotationId{
 		this.baseUrl = baseUrl;
 		this.provider = provider;
 		this.identifier = identifier;
+		this.httpUrl = toHttpUrl();
 	}
 	
 

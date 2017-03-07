@@ -9,7 +9,7 @@
         "homepage": "http://test.ait.ac.at/homepage/creator2",
         "nickname": "speedtagger",
         "email": "creator-test@data.europeana.eu",
-        "email_sha1": "cad3e369f63fa7ba5f691d6b09a1216e0e42726e",
+        "email_sha1": "cad3e369f63fa7ba5f691d6b09a1216e0e42726e"
     },
     "created": "2016-11-14T08:00:00Z",
     "generated": "2016-11-14T08:00:00Z",
@@ -20,6 +20,6 @@
         "name": "Code v2.1",
         "nickname": "sw1",
         "email": "generator-test@data.europeana.eu",
-        "email_sha1": "3c65cba57d541edda0ac635ecea9b76358144b9f",
-    },
+        "email_sha1": "3c65cba57d541edda0ac635ecea9b76358144b9f"
+    }
 }

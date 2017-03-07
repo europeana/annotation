@@ -63,4 +63,10 @@ public interface AdminService {
 	 */
 	public BatchProcessingStatus reindexAll();
 
+	/**
+	 * this method is used to index new and reindex outdated annotations available in the database 
+	 * @return
+	 */
+	public BatchProcessingStatus reindexOutdated();
+
 }

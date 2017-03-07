@@ -8,21 +8,18 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.stereotype.Component;
 
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.google.common.base.Strings;
+import com.google.code.morphia.query.WhereCriteria;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
-import eu.europeana.annotation.definitions.exception.AnnotationUpdateException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.ImageAnnotation;
-import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
@@ -43,8 +40,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
@@ -78,13 +73,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	@Override
 	public PersistentAnnotation store(PersistentAnnotation object) {
 		Date now = new Date();
-		validatePersistentAnnotation(object, now);
+		validatePersistentAnnotation(object, now, true);
 		object.setLastUpdate(now);
 		return super.store(object);
-	}
-
-	private void validatePersistentAnnotation(PersistentAnnotation object, Date now) {
-		validatePersistentAnnotationExt(object, now, true);
 	}
 
 	/**
@@ -93,22 +84,25 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * 
 	 * @param object
 	 * @param now
-	 * @param generateId
+	 * @param isNew
 	 */
-	private void validatePersistentAnnotationExt(PersistentAnnotation object, Date now, boolean generateId) {
+	private void validatePersistentAnnotation(PersistentAnnotation object, Date now, boolean isNew) {
 
-		if (object.getCreated() == null)
+		if (object.getCreated() == null && isNew)
 			object.setCreated(now);
+		//TODO: what to check for update?
+//		else if(object.getCreated() == null && isNew)
 
-		if (object.getGenerated() == null)
-			object.setGenerated(now);
+		//always overwrite generated field	
+//		if (object.getGenerated() == null)
+		object.setGenerated(now);
 
 		// check creator
 		if (object.getCreator() == null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_CREATOR);
 
 		// check Europeana ID
-		if (generateId && object.getId() != null)
+		if (isNew && object.getId() != null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 
 		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider()))
@@ -121,15 +115,15 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		// checkBody
 		validateBody(object);
 
-		if (generateId) {
+		if (isNew) {
 			MongoAnnotationId embeddedId = initializeAnnotationId(object);
 			object.setAnnotationId(embeddedId);
 		}
 
 		// validate annotation NR
-		// TODO: update this condition when specification is available
-		if (Long.parseLong(object.getAnnotationId().getIdentifier()) < 1)
-			throw new AnnotationValidationException("Annotaion.AnnotationId.identifier must be a positive number!");
+		if (StringUtils.isBlank(object.getAnnotationId().getIdentifier()) 
+				|| AnnotationId.NOT_INITIALIZED_LONG_ID.equals(object.getAnnotationId().getIdentifier()))
+				throw new AnnotationValidationException("Annotaion.AnnotationId.identifier must be a valid alpha-numeric value or a positive number!");
 	}
 
 	protected void validateTarget(PersistentAnnotation object) {
@@ -250,30 +244,31 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	}
 
-	@Override
-	public Annotation update(Annotation object) {
+	//TODO: remove old code
+//	@Override
+//	public Annotation update(Annotation object) {
+//
+//		// reset last update timestamp
+//		object.setLastUpdate(new Date());
+//
+//		if (object instanceof PersistentAnnotation)
+//			return this.update((PersistentAnnotation) object);
+//		else {
+//			PersistentAnnotation persistentObject = copyIntoPersistentAnnotation(object);
+//			return this.update(persistentObject);
+//		}
+//
+//	}
 
-		// reset last update timestamp
-		object.setLastUpdate(new Date());
+//	@Override
+//	public ObjectTag store(ObjectTag object) {
+//		return (ObjectTag) this.store((PersistentAnnotation) object);
+//	}
 
-		if (object instanceof PersistentAnnotation)
-			return this.update((PersistentAnnotation) object);
-		else {
-			PersistentAnnotation persistentObject = copyIntoPersistentAnnotation(object);
-			return this.update(persistentObject);
-		}
-
-	}
-
-	@Override
-	public ObjectTag store(ObjectTag object) {
-		return (ObjectTag) this.store((PersistentAnnotation) object);
-	}
-
-	@Override
-	public ImageAnnotation store(ImageAnnotation object) {
-		return (ImageAnnotation) this.store((PersistentAnnotation) object);
-	}
+//	@Override
+//	public ImageAnnotation store(ImageAnnotation object) {
+//		return (ImageAnnotation) this.store((PersistentAnnotation) object);
+//	}
 
 	protected PersistentAnnotationDao<PersistentAnnotation, String> getAnnotationDao() {
 		return (PersistentAnnotationDao<PersistentAnnotation, String>) getDao();
@@ -284,10 +279,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return getFilteredAnnotationList(europeanaId, null, null, null, false);
 	}
 
-	@Override
-	public List<? extends Annotation> getAnnotationListByProvider(String europeanaId, String provider) {
-		return getFilteredAnnotationList(europeanaId, provider, null, null, false);
-	}
+//	@Override
+//	public List<? extends Annotation> getAnnotationListByProvider(String europeanaId, String provider) {
+//		return getFilteredAnnotationList(europeanaId, provider, null, null, false);
+//	}
 
 	@Override
 	public List<? extends Annotation> getAnnotationListByTarget(String target) {
@@ -452,55 +447,52 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		getDao().deleteByQuery(query);
 	}
 
-	public PersistentAnnotation update(PersistentAnnotation object) {
+	/**
+	 * use store() instead
+	 * @param persistentAnnotation
+	 * @return
+	 */
+	public PersistentAnnotation update(PersistentAnnotation persistentAnnotation) {
 
 		PersistentAnnotation res = null;
 
-		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) object;
-
 		if (persistentAnnotation != null && persistentAnnotation.getAnnotationId() != null) {
-			/*
-			 * remove(//persistentAnnotation.getAnnotationId().getResourceId(),
-			 * persistentAnnotation.getAnnotationId().getProvider(),
-			 * persistentAnnotation.getAnnotationId().getIdentifier());
-			 * //MongoDB object id - not annotation id
-			 * persistentAnnotation.setId(null); if
-			 * (persistentAnnotation.getBody() != null) { ((TagBody)
-			 * persistentAnnotation.getBody()).setTagId(null); } res =
-			 * store(persistentAnnotation);
-			 */
-			PersistentAnnotation dbAnnotation = find(persistentAnnotation.getAnnotationId());
-			persistentAnnotation.setId(dbAnnotation.getId());
-
 			// generate new and replace existing timestamp for the Annotation
 			Date now = new Date();
 			// validate mandatory fields
-			validatePersistentAnnotationExt(persistentAnnotation, now, false);
 			persistentAnnotation.setLastUpdate(now);
-
-			res = updateAnnotation(persistentAnnotation);
+			validatePersistentAnnotation(persistentAnnotation, now, false);
+			
+			res = super.store(persistentAnnotation);
 		} else {
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_ANNOTATION_ID);
 		}
 
 		return res;
 	}
+	
 
-	protected PersistentAnnotation updateAnnotation(PersistentAnnotation persistentAnnotation) {
-		PersistentAnnotation res;
-		Query<PersistentAnnotation> findByIdQuery = buildFindByIdQuery(persistentAnnotation);
-		// TODO: reimplement by using the following line
-		// getDao().save(persistentAnnotation)
-
-		UpdateOperations<PersistentAnnotation> updateOperations = buildUpdateOperations(persistentAnnotation);
-		UpdateResults<PersistentAnnotation> key = getAnnotationDao().update(findByIdQuery, updateOperations);
-		int numOfUpdatedEntries = key.getWriteResult().getN();
-
-		if (numOfUpdatedEntries != 1)
-			throw new AnnotationUpdateException(persistentAnnotation.getAnnotationId().toString());
-		res = find(persistentAnnotation.getAnnotationId());
-		return res;
-	}
+	/**
+	 * use store() instead
+	 * @param persistentAnnotation
+	 * @return
+	 */
+//	@Deprecated 
+//	protected PersistentAnnotation updateAnnotation(PersistentAnnotation persistentAnnotation) {
+//		PersistentAnnotation res;
+//		Query<PersistentAnnotation> findByIdQuery = buildFindByIdQuery(persistentAnnotation);
+//		// TODO: reimplement by using the following line
+//		// getDao().save(persistentAnnotation)
+//
+//		UpdateOperations<PersistentAnnotation> updateOperations = buildUpdateOperations(persistentAnnotation);
+//		UpdateResults<PersistentAnnotation> key = getAnnotationDao().update(findByIdQuery, updateOperations);
+//		int numOfUpdatedEntries = key.getWriteResult().getN();
+//
+//		if (numOfUpdatedEntries != 1)
+//			throw new AnnotationUpdateException(persistentAnnotation.getAnnotationId().toString());
+//		res = find(persistentAnnotation.getAnnotationId());
+//		return res;
+//	}
 
 	protected Query<PersistentAnnotation> buildFindByIdQuery(PersistentAnnotation persistentAnnotation) {
 		Query<PersistentAnnotation> findByIdQuery = super.getDao().createQuery();
@@ -537,9 +529,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		// if (persistentAnnotation.getInternalType() != null)
 		// updateOperations.set(WebAnnotationFields.INTERNAL_TYPE,
 		// persistentAnnotation.getInternalType());
-		if (persistentAnnotation.getLastIndexedTimestamp() != null)
-			updateOperations.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP,
-					persistentAnnotation.getLastIndexedTimestamp());
+		if (persistentAnnotation.getLastIndexed() != null)
+			updateOperations.set(WebAnnotationFields.LAST_INDEXED,
+					persistentAnnotation.getLastIndexed());
 		if (persistentAnnotation.getLastUpdate() != null)
 			updateOperations.set(WebAnnotationFields.LAST_UPDATE, persistentAnnotation.getLastUpdate());
 		if (persistentAnnotation.getSameAs() != null)
@@ -567,9 +559,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			throw new AnnotationMongoRuntimeException(
 					AnnotationMongoRuntimeException.INVALID_LAST_INDEXING + lastIndexing);
 
-		annotation.setLastIndexedTimestamp(lastIndexing.getTime());
+		annotation.setLastIndexed(lastIndexing);
+		
 		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
-				.set(WebAnnotationFields.LAST_INDEXED_TIMESTAMP, lastIndexing.getTime());
+				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing.getTime()).set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
 		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id")
 				.equal(annotation.getId());
 		getAnnotationDao().update(updateQuery, ops);
@@ -579,10 +572,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	private boolean isValidLastIndexingTimestamp(PersistentAnnotation annotation, Date lastIndexing) {
 		// if never indexed
-		if (lastIndexing != null && annotation.getLastIndexedTimestamp() == null)
+		if (lastIndexing != null && annotation.getLastIndexed() == null)
 			return true;
 
-		return lastIndexing.getTime() > annotation.getLastIndexedTimestamp();
+		return lastIndexing.after(annotation.getLastIndexed());
 	}
 
 	/**
@@ -599,11 +592,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			// public List<? extends Annotation> filterByTimestamp(
 			String startTimestamp, String endTimestamp) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		if (!Strings.isNullOrEmpty(startTimestamp)) {
+		if (StringUtils.isNotBlank(startTimestamp)) {
 			Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
 			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(start);
 		}
-		if (!Strings.isNullOrEmpty(endTimestamp)) {
+		if (StringUtils.isNotBlank(endTimestamp)) {
 			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}
@@ -669,4 +662,34 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return geoPlaceValidator;
 	}
 
+	@Override
+	public List<? extends Annotation> getAnnotationList(List<String> annotationIds) {
+		
+		Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
+		
+		searchQuery.filter("annotationId.httpUrl in", annotationIds);
+		
+//		CriteriaContainer criteriaContainer = searchQuery.criteria();
+		return getAnnotationDao().find(searchQuery).asList();		
+	}
+
+	@Override
+	public List<String> filterByLastUpdateGreaterThanLastIndexTimestamp() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+				
+		// Morphia query
+		query.where("this." + WebAnnotationFields.DISABLED + " == false && "
+			  + "(this." +WebAnnotationFields.LAST_UPDATE + "> this." + WebAnnotationFields.LAST_INDEXED + " || "
+			  + " this." + WebAnnotationFields.LAST_INDEXED + " == null)");
+		
+		//Actually this is a list of Objects
+		List<String> res = getAnnotationDao().findIds(query);		
+		
+		//convert the list
+		List<String> response = new ArrayList<String>(res.size());
+		for (Object id : res){ response.add(id.toString()); }
+		
+		return response;
+	}
+	
 }

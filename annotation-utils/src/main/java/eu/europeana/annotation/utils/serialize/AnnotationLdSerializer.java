@@ -33,6 +33,10 @@ public class AnnotationLdSerializer extends JsonLd {
 		setAnnotation(annotation);
 	}
 
+	public AnnotationLdSerializer() {
+		
+	}
+
 	/**
 	 * Adds the given annotation to this JsonLd object using the resource's
 	 * subject as key. If the key is NULL and there does not exist a resource
@@ -41,7 +45,7 @@ public class AnnotationLdSerializer extends JsonLd {
 	 * 
 	 * @param annotation
 	 */
-	public void setAnnotation(Annotation annotation) {
+	public JsonLdResource setAnnotation(Annotation annotation) {
 
 		setUseTypeCoercion(false);
 		setUseCuries(true);
@@ -78,8 +82,10 @@ public class AnnotationLdSerializer extends JsonLd {
 		putStyledBy(annotation, jsonLdResource);
 
 		putExtensions(annotation, jsonLdResource);
-
+		
 		put(jsonLdResource);
+		
+		return jsonLdResource;
 	}
 
 	/**

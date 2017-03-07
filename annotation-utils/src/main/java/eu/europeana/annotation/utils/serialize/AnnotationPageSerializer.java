@@ -1,5 +1,8 @@
 package eu.europeana.annotation.utils.serialize;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -7,6 +10,7 @@ import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
+import org.codehaus.jettison.json.JSONArray;
 
 import eu.europeana.annotation.definitions.exception.search.SearchRuntimeException;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -14,6 +18,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -33,6 +38,10 @@ public class AnnotationPageSerializer extends JsonLd {
 
 	private ResultSet<? extends AnnotationView> getPageItems() {
 		return protocolPage.getItems();
+	}
+
+	private List<Annotation> getAnnotations() {
+		return (List<Annotation>) protocolPage.getAnnotations();
 	}
 
 	/**
@@ -106,8 +115,8 @@ public class AnnotationPageSerializer extends JsonLd {
 
 		facetViewEntry.putProperty(new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_FIELD, view.getName()));
 
-		//only if values for facet count are available
-		if (view.getValueCountMap() != null && view.getValueCountMap().isEmpty()) {
+		// only if values for facet count are available
+		if (view.getValueCountMap() != null && !view.getValueCountMap().isEmpty()) {
 
 			JsonLdProperty values = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
 			JsonLdPropertyValue labelCountValue;
@@ -137,7 +146,12 @@ public class AnnotationPageSerializer extends JsonLd {
 			break;
 
 		case STANDARD:
-			putItemsProperty(jsonLdResource);
+			putStandardItemsProperty(jsonLdResource);
+
+			break;
+
+		case MINIMAL:
+			putMinimalItemsProperty(jsonLdResource);
 
 			break;
 
@@ -147,7 +161,7 @@ public class AnnotationPageSerializer extends JsonLd {
 
 	}
 
-	protected void putItemsProperty(JsonLdResource jsonLdResource) {
+	protected void putMinimalItemsProperty(JsonLdResource jsonLdResource) {
 		String[] items = new String[(int) getPageItems().getResults().size()];
 		int i = 0;
 		for (AnnotationView anno : getPageItems().getResults()) {
@@ -156,6 +170,27 @@ public class AnnotationPageSerializer extends JsonLd {
 
 		if (items.length > 0)
 			putStringArrayProperty(WebAnnotationFields.ITEMS, items, jsonLdResource);
+	}
+
+	protected void putStandardItemsProperty(JsonLdResource jsonLdResource) {
+		
+		if(protocolPage.getAnnotations() == null || protocolPage.getAnnotations().isEmpty())
+			return;
+		
+		JsonLdProperty itemsProp = new JsonLdProperty(WebAnnotationFields.ITEMS);
+		AnnotationLdSerializer annoLdSerializer;
+		for(Annotation annotation: protocolPage.getAnnotations()) {
+			//transform annotation object to json-ld
+			annoLdSerializer = new AnnotationLdSerializer();
+			JsonLdResource annotationLd = annoLdSerializer.setAnnotation(annotation);
+			
+			//build property value for the given annotation
+			JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
+			propertyValue.getPropertyMap().putAll(annotationLd.getPropertyMap());
+			itemsProp.addValue(propertyValue);
+		}
+		jsonLdResource.putProperty(itemsProp);
+
 	}
 
 }

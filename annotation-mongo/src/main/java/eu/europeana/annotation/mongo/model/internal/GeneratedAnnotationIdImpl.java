@@ -60,6 +60,7 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 		super(null, provider, null);
 		this.id=provider;
 		this.annotationNr = annotationNr;
+		this.setHttpUrl(toHttpUrl());
 	}
 	
 	@Override
@@ -71,6 +72,5 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 	public void setIdentifier(String identifier) {
 		setAnnotationNr(Long.parseLong(identifier));
 	}
-
 	
 }

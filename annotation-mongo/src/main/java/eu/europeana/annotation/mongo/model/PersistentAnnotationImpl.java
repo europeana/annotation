@@ -25,8 +25,8 @@ import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 @Polymorphic
 @Entity("annotation")
 
-@Indexes({@Index(PersistentAnnotation.FIELD_BASEURL + ", "+ PersistentAnnotation.FIELD_PROVIDER + ", " + PersistentAnnotation.FIELD_IDENTIFIER), 
-	@Index("provider, identifier")})
+@Indexes({@Index(PersistentAnnotation.FIELD_HTTPURL), 
+	@Index(PersistentAnnotation.FIELD_PROVIDER+", "+PersistentAnnotation.FIELD_IDENTIFIER)})
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id
@@ -54,8 +54,8 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private String motivation;
 	private Style styledBy;
 
-	private Long lastIndexedTimestamp;
-	
+	private Date lastIndexed;
+
 	private boolean disabled;
 	private String sameAs;
 	private String equivalentTo;
@@ -180,14 +180,14 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	public void setAnnotatedAtTs(Long annotatedAtTs) {
 		this.created = new Date(annotatedAtTs);
 	}
-
-    @Override
-	public void setLastIndexedTimestamp(Long lastIndexedTimestamp) {
-		this.lastIndexedTimestamp = lastIndexedTimestamp;
-	}
 	
-	public Long getLastIndexedTimestamp() {
-		return lastIndexedTimestamp;
+	@Override
+	public Date getLastIndexed() {
+		return lastIndexed;
+	}
+
+	public void setLastIndexed(Date lastIndexed) {
+		this.lastIndexed = lastIndexed;
 	}
 	
 	@Override
@@ -201,7 +201,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	public String toString() {
 		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", created:" + getCreated() + 
-				", Id:" + getId() + ", last update: " + getLastIndexedTimestamp() + ", disabled: " + isDisabled() + "]";
+				", Id:" + getId() + ", last update: " + getLastIndexed() + ", disabled: " + isDisabled() + "]";
 	}
 
 	@Override

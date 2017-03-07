@@ -14,6 +14,7 @@ import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
@@ -48,17 +49,25 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	public AnnotationPage searchAnnotations(
 			String query, String page, String pageSize, String field, String language) {
 		
+		return searchAnnotations(query, page, pageSize, field, language, SearchProfiles.STANDARD);
+	}
+	
+	@Override
+	public AnnotationPage searchAnnotations(
+			String query, String page, String pageSize, String field, String language, SearchProfiles searchProfile) {
+		
 		AnnotationPage res;
 		try {
 			if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) 
 				query = addFieldToQuery(query, field, language);
-			res = apiConnection.search(query, page, pageSize);
+			res = apiConnection.search(query, page, pageSize, searchProfile);
 		} catch (IOException | JsonParseException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}
 
 		return res;
 	}
+	
 
 	@Override
 	public List<? extends TagResource> searchTags(String query) {
@@ -114,5 +123,6 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 		}
 		return query;
 	}
+	
 				
 }

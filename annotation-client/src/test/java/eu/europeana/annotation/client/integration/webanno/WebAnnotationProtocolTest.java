@@ -24,7 +24,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 
 		
 	@Test
-	public void createWebannoAnnotationTag() throws JsonParseException {
+	public void createWebannoAnnotationTag() throws JsonParseException, IOException {
 		
 		ResponseEntity<String> response = storeTestAnnotation();
 
@@ -141,7 +141,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 		
 
 	@Test
-	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		ResponseEntity<String> createResponse = storeTestAnnotation(); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
@@ -161,48 +161,46 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	
 					
 	@Test
-	public void updateAnnotation() throws JsonParseException {
+	public void updateAnnotation() throws JsonParseException, IOException {
 				
-		/**
-		 * store annotation
-		 */
+		
+//		store annotation
 		Annotation anno = createTestAnnotation();
-		/**
-		 * update annotation by identifier URL
-		 */
+		
+//		updated annotation value
+		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
+		
+		
+		
+//		update annotation by identifier URL
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
 				getApiKey()
 				, anno.getAnnotationId().getProvider()
 				, anno.getAnnotationId().getIdentifier()
-				, UPDATE_JSON
+				, requestBody
 				, TEST_USER_TOKEN
 				);
+		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(response);
 		
 		assertNotNull(response.getBody());
-		assertTrue(response.getBody().contains(UPDATE_BODY.replace("\""+WebAnnotationFields.BODY_VALUE+"\": ", "")));
-		assertTrue(response.getBody().contains(UPDATE_TARGET));
+		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
+		assertEquals(TAG_STANDARD_TEST_VALUE_TARGET, updatedAnnotation.getTarget().getHttpUri());
 		assertEquals( HttpStatus.OK, response.getStatusCode());
 	}
 			
 				
 	@Test
-	public void deleteAnnotation() throws JsonParseException {
+	public void deleteAnnotation() throws JsonParseException, IOException {
 				
-		/**
-		 * store annotation and retrieve its identifier URL
-		 */
+//		store annotation and retrieve its identifier URL
 		Annotation anno = createTestAnnotation();
 		
-		/**
-		 * delete annotation by identifier URL
-		 */
+//		delete annotation by identifier URL
 		ResponseEntity<String> response = getApiClient().deleteAnnotation(
 				getApiKey(), anno.getAnnotationId().getProvider(),
 				anno.getAnnotationId().getIdentifier(), TEST_USER_TOKEN, null
 				);
 		
-	//	assertTrue(response.getBody().equals(""));
-	//	System.out.println(response.getBody());
 		log.debug("Response body: " + response.getBody());
 		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
 			log.error("Wrong status code: " + response.getStatusCode());

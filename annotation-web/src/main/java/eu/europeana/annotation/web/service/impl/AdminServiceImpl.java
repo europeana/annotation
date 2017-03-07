@@ -141,4 +141,16 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	public BatchProcessingStatus reindexAll() {
 		return reindexAnnotationSelection( "0", ""+System.currentTimeMillis());
 	}
+
+	@Override
+	public BatchProcessingStatus reindexOutdated() {
+		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
+		
+		BatchProcessingStatus status = new BatchProcessingStatus();
+		status.incrementSuccessCount();
+		//return status;
+		
+		return reindexAnnotationSet(res, true);
+	}
+	
 }

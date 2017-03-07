@@ -67,7 +67,7 @@ public interface WebAnnotationProtocolApi {
 	 */
 	public ResponseEntity<String> createTag(
 			String provider, String identifier, Boolean indexOnCreate, 
-			String requestBody, String userToken);
+			String requestBody, String apiKey, String userToken);
 	
 	
 	/**
@@ -111,6 +111,9 @@ public interface WebAnnotationProtocolApi {
 	 * @throws JsonParseException
 	 */
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException;
+
+	ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate, String annotation,
+			String userToken);
 		
 
 }

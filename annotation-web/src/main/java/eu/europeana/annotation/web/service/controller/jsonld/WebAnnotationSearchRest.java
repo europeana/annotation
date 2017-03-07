@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.http.AnnotationProfiles;
 import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
@@ -39,6 +41,8 @@ import io.swagger.annotations.ApiOperation;
 @SwaggerSelect
 @Api(tags = "Web Annotation Search", description = " ")
 public class WebAnnotationSearchRest extends BaseRest {
+	
+	private static Logger logger = Logger.getRootLogger();
 
 	@RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, 
 			method = {RequestMethod.GET},
@@ -57,7 +61,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 					+ Query.DEFAULT_PAGE_SIZE) int pageSize,
 			// @RequestParam(value = WebAnnotationFields.PARAM_LIMIT) long
 			// limit,
-			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, defaultValue = AnnotationProfiles.STANDARD) String profile,
+			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
 			HttpServletRequest request) throws HttpException {
 
 		String action = "get:/annotation/search{.format}";
@@ -89,9 +93,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 			if (sortOrder != null)
 				sortOrderField = sortOrder.toString();
 			
-			SearchProfiles searchProfile = null;
-			if(profile != null)
-				searchProfile = SearchProfiles.valueOf(profile.toUpperCase());
+			SearchProfiles searchProfile = getProfile(profile, request);
 
 			//** build search query
 			Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
@@ -108,9 +110,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT + ", "+ HttpHeaders.PREFER);
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_CONSTRAINTS);
-			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GOH);
-			headers.add(HttpHeaders.CONTENT_TYPE, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
+			headers.add(HttpHeaders.LINK, AnnotationHttpHeaders.VALUE_CONSTRAINTS);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+			headers.add(HttpHeaders.CONTENT_TYPE, AnnotationHttpHeaders.VALUE_LDP_CONTENT_TYPE);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
@@ -125,6 +127,36 @@ public class WebAnnotationSearchRest extends BaseRest {
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
+	}
+	
+	private SearchProfiles getProfile(String profile, HttpServletRequest request) {
+		
+		
+		
+		// if the profile parameter is given, the header preference is ignored
+		if(profile != null) {
+			logger.trace("Profile set by profile parameter: " + profile);
+			return SearchProfiles.valueOf(profile.toUpperCase());
+		}
+		
+		String preferHeader = request.getHeader(HttpHeaders.PREFER);
+		if(preferHeader != null) {
+			logger.trace("'Prefer' header value: " + preferHeader);
+			preferHeader = preferHeader.replaceAll("\\s+","");
+			logger.trace("Normalized 'Prefer' header value: " + preferHeader);
+			if(preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
+				logger.trace("MINIMAL Profile set by 'Prefer' header value: " + AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS);
+				return SearchProfiles.MINIMAL;
+			} else if(preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
+				logger.trace("STANDARD Profile set by 'Prefer' header value: " + AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS);
+				return SearchProfiles.STANDARD;
+			} 
+		}
+		
+		logger.trace("STANDARD Profile set by default");
+		return SearchProfiles.STANDARD;
+		
+			
 	}
 
 }

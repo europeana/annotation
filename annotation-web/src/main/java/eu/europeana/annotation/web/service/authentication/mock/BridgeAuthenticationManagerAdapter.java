@@ -1,12 +1,16 @@
 package eu.europeana.annotation.web.service.authentication.mock;
 
+import javax.annotation.Resource;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -21,7 +25,29 @@ import eu.europeana.api.commons.oauth2.service.impl.BridgeAuthenticationManager;
  */
 public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationManager implements AuthenticationService, ClientDetailsService {
 
-	AuthenticationService mockOauthService;
+	MockAuthenticationServiceImpl mockOauthService;
+	
+	@Resource
+	PersistentClientService clientService;
+	
+	@Resource
+	AnnotationConfiguration configuration;
+	
+	public AnnotationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(AnnotationConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+	public PersistentClientService getClientService() {
+		return clientService;
+	}
+
+	public void setClientService(PersistentClientService clientService) {
+		this.clientService = clientService;
+	}
 	
 	public BridgeAuthenticationManagerAdapter(){
 		super();
@@ -34,13 +60,10 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 		setTokenServices((MockAuthenticationServiceImpl)getMockOauthService());
 	}
 	
-//	@Resource
-//	AnnotationConfiguration configuration;
-	
 	@Override
 	public void loadApiKeys() throws ApplicationAuthenticationException {
+		
 		getMockOauthService().loadApiKeys();
-
 	}
 
 	@Override
@@ -64,13 +87,22 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 	}
 
 	public AuthenticationService getMockOauthService() {
-		if(mockOauthService == null)
-			mockOauthService = new MockAuthenticationServiceImpl();
+		//avoid NPE at bean initialization
+		if(mockOauthService == null){
+			mockOauthService = new MockAuthenticationServiceImpl(getConfiguration(), getClientService());
+		}
+		
+		//ensure proper initialization of mockOauthService
+		if(mockOauthService.getConfiguration() == null)
+			mockOauthService.setConfiguration(getConfiguration());
+		
+		if(mockOauthService.getClientService() == null)
+			mockOauthService.setClientService(getClientService());
 		
 		return mockOauthService;
 	}
 
-	public void setMockOauthService(AuthenticationService mockOauthService) {
+	public void setMockOauthService(MockAuthenticationServiceImpl mockOauthService) {
 		this.mockOauthService = mockOauthService;
 	}
 
@@ -80,6 +112,17 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 		
 		//getMockOauthService().
 	}
+
+	public Application parseApplication(String jsonData) {
+		return null;
+	}
+
+	@Override
+	public void loadApiKeysFromFiles() throws ApplicationAuthenticationException {
+		getMockOauthService().loadApiKeysFromFiles();
+		
+	}
+
 	
 	
 }
