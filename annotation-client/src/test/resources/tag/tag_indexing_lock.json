@@ -1,0 +1,22 @@
+{
+    "@context": "http://www.europeana.eu/annotation/context.jsonld",
+    "type": "oa:Annotation",
+    "motivation": "tagging",	
+    "creator": {
+        "id": "http://www.historypin.org/en/person/31446/",
+        "type": "Person",
+        "name": "Test Europeana"
+    },
+    "created": "2015-02-27T12:00:43Z",
+    "generated": "2015-02-28T13:00:34Z",
+    "generator": {
+    	"id" : "http://test.europeana.org/55e6e056-d28e-4fa4-86f1-4381af0b31ce",
+    	"name" : "test_generator",
+    	"type": "Software"
+    },
+    "body": {
+		"value": "test",
+		"language": "en"
+    },
+    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+}

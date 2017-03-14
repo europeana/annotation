@@ -33,10 +33,28 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-utils</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${version.junit}</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<!--  overwrite   -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${version.spring}</version>
 		</dependency>
 		
 		<dependency>
@@ -53,7 +71,15 @@
             		<artifactId>spring-boot</artifactId>
             		<groupId>org.springframework.boot</groupId>
             	</exclusion>
-            </exclusions>
+				<exclusion>
+					<artifactId>harvester-persistence</artifactId>
+					<groupId>eu.europeana</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>xml-apis</artifactId>
+					<groupId>xml-apis</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<dependency>
@@ -81,21 +107,10 @@
 			<version>${version.spring}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApi}</version>
-		</dependency>
-		<dependency>
-			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>api2-common</artifactId>
-			<version>${version.annotationApi}</version>
-		</dependency>
 	</dependencies>
 	
 	<organization>
 		<name>Europeana Foundation</name>
 	</organization>
 	
-	<version>${version.annotationApi}</version>
 </project>

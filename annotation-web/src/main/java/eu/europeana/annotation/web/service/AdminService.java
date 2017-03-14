@@ -4,7 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.mongo.exception.IndexingJobServiceException;
+import eu.europeana.annotation.mongo.model.internal.PersistentIndexingJob;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 
@@ -30,9 +34,12 @@ public interface AdminService {
 	 * @param startTimestamp
 	 * @param endTimestamp
 	 * @return status of reindexing
+	 * @throws IndexingJobServiceException 
+	 * @throws IndexingJobLockedException 
+	 * @throws HttpException 
 	 */
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
-			String endTimestamp);
+			String endTimestamp) throws HttpException, IndexingJobServiceException;
 
 	
 	/**
@@ -54,19 +61,29 @@ public interface AdminService {
 	 * This methods reindexes the set of annotations identified by their uris or objectIds
 	 * @param uriList
 	 * @return
+	 * @throws IndexingJobServiceException 
+	 * @throws IndexingJobLockedException 
+	 * @throws HttpException 
 	 */
-	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList, boolean isObjectId);
+	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList, boolean isObjectId, String action) throws HttpException, IndexingJobServiceException;
 
 	/**
 	 * this method is used to reindex all annotations available in the database 
 	 * @return
+	 * @throws IndexingJobServiceException 
+	 * @throws IndexingJobLockedException 
 	 */
-	public BatchProcessingStatus reindexAll();
+	public BatchProcessingStatus reindexAll() throws HttpException, IndexingJobServiceException;
 
 	/**
+	 * @throws IndexingJobServiceException 
+	 * @throws HttpException 
+	 * @throws IndexingJobLockedException 
+	 * @throws IndexingJobServiceException 
 	 * this method is used to index new and reindex outdated annotations available in the database 
 	 * @return
+	 * @throws  
 	 */
-	public BatchProcessingStatus reindexOutdated();
+	public BatchProcessingStatus reindexOutdated() throws HttpException, IndexingJobServiceException;
 
 }
