@@ -70,7 +70,7 @@
 		<version.corelib>2.1</version.corelib>
 		<version.log4j>1.2.12</version.log4j>
 		<version.commonsLang3>3.0</version.commonsLang3>
-		<version.annotationld>1.1.0</version.annotationld>
+		<version.annotationld>1.1.1</version.annotationld>
 		
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.6.5</version.jackson>

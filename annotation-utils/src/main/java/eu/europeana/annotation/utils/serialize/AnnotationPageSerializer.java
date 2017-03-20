@@ -174,6 +174,8 @@ public class AnnotationPageSerializer extends JsonLd {
 
 	protected void putStandardItemsProperty(JsonLdResource jsonLdResource) {
 		
+		registerContainerProperty(WebAnnotationFields.ITEMS);
+		
 		if(protocolPage.getAnnotations() == null || protocolPage.getAnnotations().isEmpty())
 			return;
 		
