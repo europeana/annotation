@@ -12,7 +12,6 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
@@ -83,9 +82,25 @@ public class AnnotationLdSerializer extends JsonLd {
 
 		putExtensions(annotation, jsonLdResource);
 		
+		//TODO #404
+		putCanonical(annotation, jsonLdResource);
+		putVia(annotation, jsonLdResource);
+		
 		put(jsonLdResource);
 		
 		return jsonLdResource;
+	}
+	
+	//TODO #404
+	protected void putCanonical(Annotation annotation, JsonLdResource jsonLdResource) {
+		if (annotation.getCanonical() != null)
+			jsonLdResource.putProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical());
+	}
+	
+	//TODO #404 - is this handled correctly? check also for conditions above
+	protected void putVia(Annotation annotation, JsonLdResource jsonLdResource) {
+		if (annotation.getVia() != null)
+			jsonLdResource.putProperty(WebAnnotationFields.VIA, annotation.getVia());
 	}
 
 	/**
@@ -447,4 +462,5 @@ public class AnnotationLdSerializer extends JsonLd {
 		return styledByProperty;
 	}
 
+	
 }

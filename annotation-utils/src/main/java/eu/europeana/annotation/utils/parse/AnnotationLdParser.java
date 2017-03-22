@@ -2,8 +2,10 @@ package eu.europeana.annotation.utils.parse;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -272,11 +274,45 @@ public class AnnotationLdParser extends JsonLdParser {
 		case (WebAnnotationFields.EQUIVALENT_TO):
 			anno.setEquivalentTo((String) valueObject);
 			break;
+		//TODO #404 - add canonical, via
+		case (WebAnnotationFields.CANONICAL):
+			anno.setCanonical((String) valueObject);
+			break;
+		case (WebAnnotationFields.VIA):
+			String[] via = parseVia(valueObject);
+			anno.setVia(via);
+			break;
 		default:
 			//throw new JsonParseException("Unsupported Property: " + property);
 			logger.warn("Unsupported Property: " + property);
 			break;
 		}
+	}
+
+	//TODO #404
+	private String[] parseVia(Object valueObject) throws JsonParseException, JSONException {
+		if (valueObject instanceof String) {
+			return new String[]{valueObject.toString()};
+		}
+		else if (valueObject instanceof JSONArray) {
+			return jsonArrayToStringArray((JSONArray) valueObject);
+		}
+		else {
+			throw new JsonParseException("unsupported deserialization for: " + valueObject);
+		}
+	}
+	
+	protected String[] jsonArrayToStringArray(JSONArray valueObject) throws JSONException {
+		List<String> list = new ArrayList<String>();
+		for(int i = 0; i < valueObject.length(); i++){
+			// if a key is passed
+//		    list.add(valueObject.getJSONObject(i).getString(key));
+		    // without keys? {"via":["http://www.google.at", "http://www.google.com"]}
+		    list.add(valueObject.getString(i));
+		}
+		String[] stringArray = list.toArray(new String[0]);
+		
+		return stringArray;
 	}
 
 	protected String serializeBodyText(String valueObject) {

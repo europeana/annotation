@@ -448,45 +448,57 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param updatedWebAnnotation
 	 */
 	@Deprecated
-	private void updateValues(Annotation storedAnnotation, Annotation updatedWebAnnotation) {
-
-		if (updatedWebAnnotation.getType() != null)
-			storedAnnotation.setType(updatedWebAnnotation.getType());
-
-		// Motivation can be changed see #122
-//		if (updatedWebAnnotation.getMotivationType() != null
-//				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
-//			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
-//					+ " to: " + updatedWebAnnotation.getMotivationType());
-		// if (updatedWebAnnotation.getMotivation() != null)
-		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-		if (updatedWebAnnotation.getCreated() != null)
-			storedAnnotation.setCreated(updatedWebAnnotation.getCreated());
-		if (updatedWebAnnotation.getCreator() != null)
-			storedAnnotation.setCreator(updatedWebAnnotation.getCreator());
-		if (updatedWebAnnotation.getGenerated() != null)
-			storedAnnotation.setGenerated(updatedWebAnnotation.getGenerated());
-		if (updatedWebAnnotation.getGenerator() != null)
-			storedAnnotation.setGenerator(updatedWebAnnotation.getGenerator());
-		if (updatedWebAnnotation.getBody() != null)
-			storedAnnotation.setBody(updatedWebAnnotation.getBody());
-		if (updatedWebAnnotation.getTarget() != null)
-			storedAnnotation.setTarget(updatedWebAnnotation.getTarget());
-		if (storedAnnotation.isDisabled() != updatedWebAnnotation.isDisabled())
-			storedAnnotation.setDisabled(updatedWebAnnotation.isDisabled());
-		if (updatedWebAnnotation.getEquivalentTo() != null)
-			storedAnnotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
-		if (updatedWebAnnotation.getInternalType() != null)
-			storedAnnotation.setInternalType(updatedWebAnnotation.getInternalType());
-		if (updatedWebAnnotation.getLastUpdate() != null)
-			storedAnnotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
-		if (updatedWebAnnotation.getSameAs() != null)
-			storedAnnotation.setSameAs(updatedWebAnnotation.getSameAs());
-		if (updatedWebAnnotation.getStatus() != null)
-			storedAnnotation.setStatus(updatedWebAnnotation.getStatus());
-		if (updatedWebAnnotation.getStyledBy() != null)
-			storedAnnotation.setStyledBy(updatedWebAnnotation.getStyledBy());
-	}
+	//TODO #404 - this is not referenced anywhere
+//	private void updateValues(Annotation storedAnnotation, Annotation updatedWebAnnotation) {
+//
+//		if (updatedWebAnnotation.getType() != null)
+//			storedAnnotation.setType(updatedWebAnnotation.getType());
+//
+//		// Motivation can be changed see #122
+////		if (updatedWebAnnotation.getMotivationType() != null
+////				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
+////			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
+////					+ " to: " + updatedWebAnnotation.getMotivationType());
+//		// if (updatedWebAnnotation.getMotivation() != null)
+//		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
+//		if (updatedWebAnnotation.getCreated() != null)
+//			storedAnnotation.setCreated(updatedWebAnnotation.getCreated());
+//		if (updatedWebAnnotation.getCreator() != null)
+//			storedAnnotation.setCreator(updatedWebAnnotation.getCreator());
+//		if (updatedWebAnnotation.getGenerated() != null)
+//			storedAnnotation.setGenerated(updatedWebAnnotation.getGenerated());
+//		if (updatedWebAnnotation.getGenerator() != null)
+//			storedAnnotation.setGenerator(updatedWebAnnotation.getGenerator());
+//		if (updatedWebAnnotation.getBody() != null)
+//			storedAnnotation.setBody(updatedWebAnnotation.getBody());
+//		if (updatedWebAnnotation.getTarget() != null)
+//			storedAnnotation.setTarget(updatedWebAnnotation.getTarget());
+//		if (storedAnnotation.isDisabled() != updatedWebAnnotation.isDisabled())
+//			storedAnnotation.setDisabled(updatedWebAnnotation.isDisabled());
+//		if (updatedWebAnnotation.getEquivalentTo() != null)
+//			storedAnnotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
+//		if (updatedWebAnnotation.getInternalType() != null)
+//			storedAnnotation.setInternalType(updatedWebAnnotation.getInternalType());
+//		if (updatedWebAnnotation.getLastUpdate() != null)
+//			storedAnnotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+//		if (updatedWebAnnotation.getSameAs() != null)
+//			storedAnnotation.setSameAs(updatedWebAnnotation.getSameAs());
+//		if (updatedWebAnnotation.getStatus() != null)
+//			storedAnnotation.setStatus(updatedWebAnnotation.getStatus());
+//		if (updatedWebAnnotation.getStyledBy() != null)
+//			storedAnnotation.setStyledBy(updatedWebAnnotation.getStyledBy());
+//		
+//		//TODO #404 - do it here or elsewhere?
+//		if (updatedWebAnnotation.getCanonical() != null)
+//			// must never be overwritten
+//			if (storedAnnotation.getCanonical() == null)
+//				storedAnnotation.setCanonical(updatedWebAnnotation.getCanonical());
+////			else
+////				throw new HttpException("Must not edit existing canonical value!", HttpStatus.FORBIDDEN);
+//		
+//		if (updatedWebAnnotation.getVia() != null)
+//			storedAnnotation.setVia(updatedWebAnnotation.getVia());
+//	}
 
 	/**
 	 * This method validates input values, retrieves annotation object and
