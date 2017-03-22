@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.WhereCriteria;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
@@ -94,7 +93,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 //		else if(object.getCreated() == null && isNew)
 
 		//always overwrite generated field	
-//		if (object.getGenerated() == null)
 		object.setGenerated(now);
 
 		// check creator
@@ -108,7 +106,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider()))
 			throw new AnnotationValidationException(
 					"AnnotationId must not be null. AnnotationId.provider attribute is required");
-				// }
 
 		// check target
 		validateTarget(object);
@@ -142,24 +139,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		if(object.getBody() instanceof PlaceBody)
 			getGeoPlaceValidator().validate(((PlaceBody)object.getBody()).getPlace());
 		
-		// check if TAG
-		// tag management deactivated in this version
-//		if (hasTagBody(object)) {
-//			TagBody body = (TagBody) object.getBody();
-//			if (body.getTagId() == null) {
-//				//TODO: validation must not change the database state. create tag must not be invoked here
-//				PersistentTag tag = findOrCreateTag(object, body);
-//				// set tagId
-//				body.setTagId(tag.getId());
-//			}
-//		}
 	}
 
-	
-
-	
-
-	
+		
 	protected boolean isBodyMandatory(PersistentAnnotation object) {
 		return !object.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name());
 	}
@@ -244,31 +226,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	}
 
-	//TODO: remove old code
-//	@Override
-//	public Annotation update(Annotation object) {
-//
-//		// reset last update timestamp
-//		object.setLastUpdate(new Date());
-//
-//		if (object instanceof PersistentAnnotation)
-//			return this.update((PersistentAnnotation) object);
-//		else {
-//			PersistentAnnotation persistentObject = copyIntoPersistentAnnotation(object);
-//			return this.update(persistentObject);
-//		}
-//
-//	}
-
-//	@Override
-//	public ObjectTag store(ObjectTag object) {
-//		return (ObjectTag) this.store((PersistentAnnotation) object);
-//	}
-
-//	@Override
-//	public ImageAnnotation store(ImageAnnotation object) {
-//		return (ImageAnnotation) this.store((PersistentAnnotation) object);
-//	}
 
 	protected PersistentAnnotationDao<PersistentAnnotation, String> getAnnotationDao() {
 		return (PersistentAnnotationDao<PersistentAnnotation, String>) getDao();
@@ -279,10 +236,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return getFilteredAnnotationList(europeanaId, null, null, null, false);
 	}
 
-//	@Override
-//	public List<? extends Annotation> getAnnotationListByProvider(String europeanaId, String provider) {
-//		return getFilteredAnnotationList(europeanaId, provider, null, null, false);
-//	}
 
 	@Override
 	public List<? extends Annotation> getAnnotationListByTarget(String target) {
@@ -353,8 +306,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	public List<? extends Annotation> getFilteredAnnotationList(String europeanaId, String provider, String startOn,
 			String limit, boolean isDisabled) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		// if (StringUtils.isNotEmpty(europeanaId))
-		// query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, europeanaId);
 		if (StringUtils.isNotEmpty(provider))
 			query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
 		query.filter(PersistentAnnotation.FIELD_DISABLED, isDisabled);
@@ -378,9 +329,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	public PersistentAnnotation find(AnnotationId annoId) {
 
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
-		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
-		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
+		query.filter(PersistentAnnotation.FIELD_HTTPURL, annoId.getHttpUrl());
+//		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
+//		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
+//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
 
 		return getAnnotationDao().findOne(query);
@@ -388,7 +340,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	@Override
 	public PersistentAnnotation findByID(String id) {
-		return getDao().findOne("_id", new ObjectId(id));
+		return getDao().findOne( WebAnnotationFields.MONGO_ID, new ObjectId(id));
 	}
 
 	@Override
@@ -399,50 +351,16 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	}
 
-	// @Override
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// eu.europeana.annotation.mongo.service.PersistentAnnotationService#remove
-	// * (java.lang.String, java.lang.Integer)
-	// */
-	//// public void remove(String resourceId, String provider, Long
-	// annotationNr) {
-	// public void remove(String baseUrl, String provider, String identifier) {
-	// // String objectId = findObjectId(resourceId, annotationNr);
-	// Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-	//// query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
-	// query.filter(PersistentAnnotation.FIELD_BASEURL, baseUrl);
-	// query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-	// query.filter(PersistentAnnotation.FIELD_IDENTIFIER, identifier);
-	//
-	// getDao().deleteByQuery(query);
-	// }
-
-	// private String findObjectId(String resourceId, Integer annotationNr) {
-	// Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-	// query.filter(PersistentAnnotation.FIELD_EUROPEANA_ID, resourceId);
-	// query.filter(PersistentAnnotation.FIELD_ANNOTATION_NR, annotationNr);
-	// @SuppressWarnings("rawtypes")
-	// List ids = getDao().findIds();
-	// if(ids.size() != 1)
-	// throw new
-	// AnnotationMongoRuntimeException("Expected one object but found:" +
-	// ids.size());
-	//
-	// ObjectId id = (ObjectId)ids.get(0);
-	// return id.toString();
-	// }
 
 	@Override
 	public void remove(AnnotationId annoId) {
 
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
-		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
-		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
+		query.filter(PersistentAnnotation.FIELD_HTTPURL, annoId.getHttpUrl());
+		
+//		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
+//		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
+//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
 
 		getDao().deleteByQuery(query);
 	}
@@ -470,29 +388,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 		return res;
 	}
-	
-
-	/**
-	 * use store() instead
-	 * @param persistentAnnotation
-	 * @return
-	 */
-//	@Deprecated 
-//	protected PersistentAnnotation updateAnnotation(PersistentAnnotation persistentAnnotation) {
-//		PersistentAnnotation res;
-//		Query<PersistentAnnotation> findByIdQuery = buildFindByIdQuery(persistentAnnotation);
-//		// TODO: reimplement by using the following line
-//		// getDao().save(persistentAnnotation)
-//
-//		UpdateOperations<PersistentAnnotation> updateOperations = buildUpdateOperations(persistentAnnotation);
-//		UpdateResults<PersistentAnnotation> key = getAnnotationDao().update(findByIdQuery, updateOperations);
-//		int numOfUpdatedEntries = key.getWriteResult().getN();
-//
-//		if (numOfUpdatedEntries != 1)
-//			throw new AnnotationUpdateException(persistentAnnotation.getAnnotationId().toString());
-//		res = find(persistentAnnotation.getAnnotationId());
-//		return res;
-//	}
 
 	protected Query<PersistentAnnotation> buildFindByIdQuery(PersistentAnnotation persistentAnnotation) {
 		Query<PersistentAnnotation> findByIdQuery = super.getDao().createQuery();
@@ -563,7 +458,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
 				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing.getTime()).set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
-		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id")
+		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(WebAnnotationFields.MONGO_ID)
 				.equal(annotation.getId());
 		getAnnotationDao().update(updateQuery, ops);
 
@@ -620,7 +515,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			annotation.setStatus(newAnnotation.getStatus());
 			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
 					.set(WebAnnotationFields.STATUS, annotation.getStatus());
-			Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field("_id")
+			Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(WebAnnotationFields.MONGO_ID)
 					.equal(annotation.getId());
 			getAnnotationDao().update(updateQuery, ops);
 			res = annotation;
@@ -667,9 +562,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
 		
-		searchQuery.filter("annotationId.httpUrl in", annotationIds);
+		searchQuery.filter(PersistentAnnotation.FIELD_HTTPURL + " in", annotationIds);
 		
-//		CriteriaContainer criteriaContainer = searchQuery.criteria();
 		return getAnnotationDao().find(searchQuery).asList();		
 	}
 
@@ -678,7 +572,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 				
 		// Morphia query
-		query.where("this." + WebAnnotationFields.DISABLED + " == false && "
+		query.where("this." + PersistentAnnotation.FIELD_DISABLED + " == false && "
 			  + "(this." +WebAnnotationFields.LAST_UPDATE + "> this." + WebAnnotationFields.LAST_INDEXED + " || "
 			  + " this." + WebAnnotationFields.LAST_INDEXED + " == null)");
 		
