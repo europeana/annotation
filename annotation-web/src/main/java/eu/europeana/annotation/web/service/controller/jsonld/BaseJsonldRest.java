@@ -448,7 +448,7 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param updatedWebAnnotation
 	 */
 	@Deprecated
-	//TODO #404 - this is not referenced anywhere
+	//TODO this is not referenced anywhere
 //	private void updateValues(Annotation storedAnnotation, Annotation updatedWebAnnotation) {
 //
 //		if (updatedWebAnnotation.getType() != null)
@@ -488,7 +488,6 @@ public class BaseJsonldRest extends BaseRest {
 //		if (updatedWebAnnotation.getStyledBy() != null)
 //			storedAnnotation.setStyledBy(updatedWebAnnotation.getStyledBy());
 //		
-//		//TODO #404 - do it here or elsewhere?
 //		if (updatedWebAnnotation.getCanonical() != null)
 //			// must never be overwritten
 //			if (storedAnnotation.getCanonical() == null)

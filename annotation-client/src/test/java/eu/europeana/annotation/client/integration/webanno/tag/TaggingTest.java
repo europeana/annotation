@@ -5,8 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,6 +117,52 @@ public class TaggingTest extends BaseTaggingTest {
 				TEST_USER_TOKEN);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+	}
+
+	@Test
+	public void createCanonicalTag() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException {
+			
+		createAndValidateTag(TAG_CANONICAL);
+	}
+	
+	@Test
+	public void createViaTagString() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
+		
+		String requestBody = getJsonStringInput(TAG_VIA_STRING);
+
+		ResponseEntity<String> response = getApiClient().createTag(WebAnnotationFields.PROVIDER_WEBANNO, null, false,
+				requestBody, TEST_USER_TOKEN);
+
+		assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value());
+		
+		JSONObject jRequestBody = new JSONObject(requestBody);
+		String requestVia = jRequestBody.getString("via");
+		String[] storedVia = getApiClient().parseResponseBody(response).getVia();
+		
+		assertEquals(requestVia, storedVia[0]);
+	}
+	
+	@Test
+	public void createViaTagArray() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
+		
+		String requestBody = getJsonStringInput(TAG_VIA_ARRAY);
+
+		ResponseEntity<String> response = getApiClient().createTag(WebAnnotationFields.PROVIDER_WEBANNO, null, false,
+				requestBody, TEST_USER_TOKEN);
+
+		assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value());
+		
+		JSONObject jRequestBody = new JSONObject(requestBody);
+		JSONArray jViaArray = (JSONArray) jRequestBody.get("via");
+		
+		List<String> list = new ArrayList<String>();
+		for(int i = 0; i < jViaArray.length(); i++){
+		    list.add(jViaArray.getString(i));
+		}
+		String[] requestVia = list.toArray(new String[0]);
+		String[] storedVia = getApiClient().parseResponseBody(response).getVia();
+		
+		assertEquals(requestVia, storedVia);
 	}
 
 	

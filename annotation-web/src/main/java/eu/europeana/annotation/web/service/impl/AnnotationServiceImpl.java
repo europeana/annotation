@@ -451,9 +451,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			annotation.setStatus(updatedWebAnnotation.getStatus());
 		if (updatedWebAnnotation.getStyledBy() != null)
 			annotation.setStyledBy(updatedWebAnnotation.getStyledBy());
-		//TODO #404 - is this the correct place?
 		if (updatedWebAnnotation.getCanonical() != null)
-			// must never be overwritten
+			// #404 must never be overwritten
 			if (annotation.getCanonical() == null || StringUtils.isEmpty(annotation.getCanonical()))
 				annotation.setCanonical(updatedWebAnnotation.getCanonical());
 		if (updatedWebAnnotation.getVia() != null)

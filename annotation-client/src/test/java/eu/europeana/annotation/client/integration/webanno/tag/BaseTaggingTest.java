@@ -3,6 +3,9 @@ package eu.europeana.annotation.client.integration.webanno.tag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,40 +28,59 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
 	public static final String SEMANTICTAG_SPECIFIC_STANDARD = "/semantictag/specific_standard.json";
-	
-	
-	
-	protected Annotation parseTag(String jsonString) throws JsonParseException {
-		MotivationTypes motivationType = MotivationTypes.TAGGING;
-		return parseAnnotation(jsonString, motivationType);		
+	public static final String TAG_CANONICAL = "/tag/canonical.json";
+	public static final String TAG_VIA_STRING = "/tag/via_string.json";
+	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
+
+	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		System.out.println("Input File: " + inputFile);
+
+		String requestBody = getJsonStringInput(inputFile);
+
+		Annotation storedAnno = createTag(requestBody);
+
+		Annotation inputAnno = parseTag(requestBody);
+
+		// validate the reflection of input in output!
+		validateOutputAgainstInput(storedAnno, inputAnno);
+
+		return storedAnno;
 	}
 
-//	protected Annotation createTag(String requestBody) throws JsonParseException {
-//		ResponseEntity<String> response = getApiClient().createTag(
-//				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
-//				TEST_USER_TOKEN);
-//		
-//		assertNotNull(response.getBody());
-//		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-//		
-//		Annotation storedAnno = getApiClient().parseResponseBody(response);
-//		assertNotNull(storedAnno.getCreator());
-//		assertNotNull(storedAnno.getGenerator());
-//		return storedAnno;
-//	}
-	
-	
-//	protected Annotation createTagWithProviderAndUserToken(
-//			String requestBody, String provider, String userToken) throws JsonParseException {
-//		ResponseEntity<String> response = getApiClient().createTag(
-//				provider, null, false, requestBody, userToken);
-//		
-//		assertNotNull(response.getBody());
-//		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-//		
-//		Annotation storedAnno = getApiClient().parseResponseBody(response);
-//		assertNotNull(storedAnno.getCreator());
-//		assertNotNull(storedAnno.getGenerator());
-//		return storedAnno;
-//	}
+	protected Annotation parseTag(String jsonString) throws JsonParseException {
+		MotivationTypes motivationType = MotivationTypes.TAGGING;
+		return parseAnnotation(jsonString, motivationType);
+	}
+
+	// protected Annotation createTag(String requestBody) throws
+	// JsonParseException {
+	// ResponseEntity<String> response = getApiClient().createTag(
+	// WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody,
+	// TEST_USER_TOKEN);
+	//
+	// assertNotNull(response.getBody());
+	// assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	//
+	// Annotation storedAnno = getApiClient().parseResponseBody(response);
+	// assertNotNull(storedAnno.getCreator());
+	// assertNotNull(storedAnno.getGenerator());
+	// return storedAnno;
+	// }
+
+	// protected Annotation createTagWithProviderAndUserToken(
+	// String requestBody, String provider, String userToken) throws
+	// JsonParseException {
+	// ResponseEntity<String> response = getApiClient().createTag(
+	// provider, null, false, requestBody, userToken);
+	//
+	// assertNotNull(response.getBody());
+	// assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+	//
+	// Annotation storedAnno = getApiClient().parseResponseBody(response);
+	// assertNotNull(storedAnno.getCreator());
+	// assertNotNull(storedAnno.getGenerator());
+	// return storedAnno;
+	// }
 }

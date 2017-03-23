@@ -280,7 +280,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	}
 
 	@Override
-	//TODO #404 should this be done here?
 	public void setVia(String[] via) {
 		this.via = via;
 	}

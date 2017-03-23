@@ -274,7 +274,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		case (WebAnnotationFields.EQUIVALENT_TO):
 			anno.setEquivalentTo((String) valueObject);
 			break;
-		//TODO #404 - add canonical, via
 		case (WebAnnotationFields.CANONICAL):
 			anno.setCanonical((String) valueObject);
 			break;
@@ -289,7 +288,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		}
 	}
 
-	//TODO #404
 	private String[] parseVia(Object valueObject) throws JsonParseException, JSONException {
 		if (valueObject instanceof String) {
 			return new String[]{valueObject.toString()};
@@ -305,9 +303,6 @@ public class AnnotationLdParser extends JsonLdParser {
 	protected String[] jsonArrayToStringArray(JSONArray valueObject) throws JSONException {
 		List<String> list = new ArrayList<String>();
 		for(int i = 0; i < valueObject.length(); i++){
-			// if a key is passed
-//		    list.add(valueObject.getJSONObject(i).getString(key));
-		    // without keys? {"via":["http://www.google.at", "http://www.google.com"]}
 		    list.add(valueObject.getString(i));
 		}
 		String[] stringArray = list.toArray(new String[0]);

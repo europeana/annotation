@@ -190,8 +190,6 @@ public abstract class AbstractAnnotation implements Annotation {
 	    	res = false;
 	    }
 	    
-	    //TODO #404 - how to handle this?
-	    
 	    return res;
 	}
 	
@@ -417,8 +415,6 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "annotationId:" + annotationId.toString() + "\n";
 		if (type != null) 
 			res = res + "\t" + "type:" + type + "\n";
-		//TODO #404 - check for null or isNotEmpty?
-//		if (canonical != null)
 		if (StringUtils.isNotEmpty(canonical))
 			res = res + "\t" + "canonical:" + canonical + "\n";
 		if (via != null)

@@ -82,7 +82,6 @@ public class AnnotationLdSerializer extends JsonLd {
 
 		putExtensions(annotation, jsonLdResource);
 		
-		//TODO #404
 		putCanonical(annotation, jsonLdResource);
 		putVia(annotation, jsonLdResource);
 		
@@ -91,13 +90,11 @@ public class AnnotationLdSerializer extends JsonLd {
 		return jsonLdResource;
 	}
 	
-	//TODO #404
 	protected void putCanonical(Annotation annotation, JsonLdResource jsonLdResource) {
 		if (annotation.getCanonical() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical());
 	}
 	
-	//TODO #404 - is this handled correctly? check also for conditions above
 	protected void putVia(Annotation annotation, JsonLdResource jsonLdResource) {
 		if (annotation.getVia() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.VIA, annotation.getVia());

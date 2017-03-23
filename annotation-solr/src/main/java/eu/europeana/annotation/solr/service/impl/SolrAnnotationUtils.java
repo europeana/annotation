@@ -125,7 +125,6 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setCreatedTimestamp(annotation.getCreated().getTime());
 		solrAnnotationImpl.setGeneratedTimestamp(annotation.getGenerated().getTime());
 		
-		//TODO #404
 		solrAnnotationImpl.setCanonical(annotation.getCanonical());
 		solrAnnotationImpl.setVia(annotation.getVia());
 

@@ -1,0 +1,8 @@
+{
+	"motivation":"tagging",
+	"via": ["http://www.google.at", "http://www.google.com"],
+	"body": {
+		"value": "trombone"
+	},
+	"target": "http://data.europeana.eu/item/000002/_UEDIN_214"
+}
