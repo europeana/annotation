@@ -1,10 +1,8 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +10,11 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import com.google.common.base.Strings;
- 
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -34,7 +31,6 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -47,11 +43,11 @@ import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
+import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -451,6 +447,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			annotation.setStatus(updatedWebAnnotation.getStatus());
 		if (updatedWebAnnotation.getStyledBy() != null)
 			annotation.setStyledBy(updatedWebAnnotation.getStyledBy());
+		if (updatedWebAnnotation.getCanonical() != null)
+			// #404 must never be overwritten
+			if (StringUtils.isEmpty(annotation.getCanonical()))
+				annotation.setCanonical(updatedWebAnnotation.getCanonical());
+		if (updatedWebAnnotation.getVia() != null)
+			annotation.setVia(updatedWebAnnotation.getVia());
 	}
 
 	@Override
@@ -710,12 +712,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 					"tag.body.source", body.getSource());
 
 		// source must be an URL
-		if (!eu.europeana.annotation.utils.StringUtils.isUrl(body.getSource()))
+		if (!eu.europeana.annotation.utils.UriUtils.isUrl(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
 					"tag.format", body.getSource());
 
 		// id is not a mandatory field but if exists it must be an URL
-		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.StringUtils.isUrl(body.getHttpUri()))
+		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.UriUtils.isUrl(body.getHttpUri()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 					"tag.body.httpUri", body.getHttpUri());
 	}
@@ -743,7 +745,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 		int MAX_TAG_LENGTH = 64;
 
-		if (eu.europeana.annotation.utils.StringUtils.isUrl(value))
+		if (eu.europeana.annotation.utils.UriUtils.isUrl(value))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format",
 					value);
 		else if (value.length() > MAX_TAG_LENGTH)
@@ -761,6 +763,28 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
 
+		//validate canonical to be an absolute URI
+		if (webAnnotation.getCanonical() != null) {
+			try {
+				URI cannonicalUri = URI.create(webAnnotation.getCanonical());
+				if (!cannonicalUri.isAbsolute())
+					throw new ParamValidationException("The canonical URI is not absolute:",
+							WebAnnotationFields.CANONICAL, webAnnotation.getCanonical());
+			} catch (IllegalArgumentException e) {
+				throw new ParamValidationException("Error when validating canonical URI:", WebAnnotationFields.CANONICAL, webAnnotation.getCanonical(), e);
+			}
+		}
+		
+		//validate via to be valid URL(s)
+		if (webAnnotation.getVia() != null) {
+			if (webAnnotation.getVia() instanceof String[]) {
+				for (String via : webAnnotation.getVia()) {
+					if(!(UriUtils.isUrl(via)))
+						throw new ParamValidationException("This is not a valid URL:", WebAnnotationFields.VIA, via);
+				}
+			}
+		}
+			
 		switch (webAnnotation.getMotivationType()) {
 		case LINKING:
 			// validate target URLs against whitelist

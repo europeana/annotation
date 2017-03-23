@@ -20,7 +20,6 @@ import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -125,6 +124,9 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
 		solrAnnotationImpl.setCreatedTimestamp(annotation.getCreated().getTime());
 		solrAnnotationImpl.setGeneratedTimestamp(annotation.getGenerated().getTime());
+		
+		solrAnnotationImpl.setCanonical(annotation.getCanonical());
+		solrAnnotationImpl.setVia(annotation.getVia());
 
 		if (summary != null) {
 			solrAnnotationImpl.setModerationScore((long) summary.getScore());

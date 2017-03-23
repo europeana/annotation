@@ -435,6 +435,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			updateOperations.set(WebAnnotationFields.STATUS, persistentAnnotation.getStatus());
 		if (persistentAnnotation.getStyledBy() != null)
 			updateOperations.set(WebAnnotationFields.STYLED_BY, persistentAnnotation.getStyledBy());
+		if (persistentAnnotation.getCanonical() != null)
+			//#404 check if this correct, since it must not be changed once set
+			updateOperations.set(WebAnnotationFields.CANONICAL, persistentAnnotation.getCanonical());
+		if (persistentAnnotation.getVia() != null)
+			updateOperations.set(WebAnnotationFields.VIA, persistentAnnotation.getVia());
 		return updateOperations;
 	}
 

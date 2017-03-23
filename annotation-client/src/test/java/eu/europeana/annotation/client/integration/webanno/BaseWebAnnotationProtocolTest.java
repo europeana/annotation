@@ -2,6 +2,7 @@ package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -308,7 +309,11 @@ public class BaseWebAnnotationProtocolTest {
 						//compare non null fields only
 						if(inputProp != null){
 							storedProp = currentMethod.invoke(storedAnno, (Object[])null);
-							assertEquals(inputProp, storedProp);
+							
+							if(inputProp instanceof String[])
+								assertArrayEquals((String[])inputProp, (String[])storedProp);
+							else
+								assertEquals(inputProp, storedProp);
 						}			
 					}			
 				}

@@ -3,7 +3,7 @@ package eu.europeana.annotation.utils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class StringUtils {
+public class UriUtils {
 
 	/**
 	 * Check if a string is a valid URL

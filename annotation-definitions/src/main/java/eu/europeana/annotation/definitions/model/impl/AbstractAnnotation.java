@@ -33,6 +33,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	private String equivalentTo;
 	private String status;
 	private Date lastUpdate;
+	private String canonical;
+	private String[] via;
 	
 	
 	public AbstractAnnotation(){
@@ -389,6 +391,22 @@ public abstract class AbstractAnnotation implements Annotation {
 	public void setLastUpdate(Date lastUpdateTimestamp){
 		this.lastUpdate = lastUpdateTimestamp;
 	}
+	
+	public String getCanonical() {
+		return canonical;
+	}
+	
+	public void setCanonical(String canonical) {
+		this.canonical = canonical;
+	}
+	
+	public String[] getVia() {
+		return via;
+	}
+	
+	public void setVia(String[] via) {
+		this.via = via;
+	}
 
 	@Override
 	public String toString() {
@@ -397,6 +415,10 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "annotationId:" + annotationId.toString() + "\n";
 		if (type != null) 
 			res = res + "\t" + "type:" + type + "\n";
+		if (StringUtils.isNotEmpty(canonical))
+			res = res + "\t" + "canonical:" + canonical + "\n";
+		if (via != null)
+			res = res + "\t" + "via:" + via + "\n";
 		if (created != null) 
 			res = res + "\t" + "annotatedAt:" + created + "\n";
 		if (creator != null) 
