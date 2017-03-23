@@ -1,0 +1,2 @@
+#create index for anntotationId
+db.annotation.createIndex({"annotationId.httpUrl" : 1}, {unique : true})

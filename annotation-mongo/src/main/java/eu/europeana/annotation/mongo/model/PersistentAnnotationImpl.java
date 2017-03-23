@@ -9,7 +9,6 @@ import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
-import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.Polymorphic;
 //import com.google.code.morphia.annotations.Reference;
 
@@ -26,8 +25,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 @Polymorphic
 @Entity("annotation")
 
-@Indexes({@Index(PersistentAnnotation.FIELD_HTTPURL), 
-	@Index(PersistentAnnotation.FIELD_PROVIDER+", "+PersistentAnnotation.FIELD_IDENTIFIER)})
+@Index(PersistentAnnotation.FIELD_HTTPURL)
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id

@@ -1,8 +1,8 @@
 {
 	"motivation":"tagging",
-	"via": ["http://www.google.at", "http://www.google.com"],
+	"via": ["https://archive.org/details/PhilLeshandFriends", "https://www.wikidata.org/wiki/Q2085676"],
 	"body": {
-		"value": "trombone"
+		"value": "psychedelic rock"
 	},
-	"target": "http://data.europeana.eu/item/000002/_UEDIN_214"
+	"target": "http://data.europeana.eu/item/2059210/data_sounds_plf2014_07_30"
 }

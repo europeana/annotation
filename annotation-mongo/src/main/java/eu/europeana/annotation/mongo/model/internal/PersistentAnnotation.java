@@ -40,15 +40,6 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	 */
 	public void setId(ObjectId id);
 
-//	public abstract Long getCreationTimestamp();
-//
-//	public abstract void setCreationTimestamp(Long creationTimestamp);
-//
-	
-//	
-//	public abstract String[] getVisibility();
-//
-//	public abstract void setVisibility(String[] visibility);
 	
 	public abstract void setLastIndexed(Date lastIndexedDate);
 
