@@ -17,17 +17,25 @@ public class AnnotationAttributeInstantiationException extends RuntimeException{
 	public static final String MESSAGE_UNKNOWN_KEYWORD = "Unknown/unsurported keyword. Cannot instantiate value of the annotation attribute using the keyword: ";
 	public static final String MESSAGE_ID_NOT_URL = "ID value must be a valid URL";
 	
+	String propertyName;
+	String propertyValue;
 	
-	public AnnotationAttributeInstantiationException(String attributeType){
-		this(attributeType, DEFAULT_MESSAGE);
+	public AnnotationAttributeInstantiationException(String propertyName){
+		this(propertyName, DEFAULT_MESSAGE);
 	}
 	
-	public AnnotationAttributeInstantiationException(String attributeType, String message){
-		this(attributeType, message, null);
+	public AnnotationAttributeInstantiationException(String propertyName, String message){
+		this(propertyName, null, message);
 	}
 	
-	public AnnotationAttributeInstantiationException(String attributeType, String message, Throwable th){
-		super(message + attributeType, th);
+	public AnnotationAttributeInstantiationException(String propertyName, String propertyValue, String message){
+		this(propertyName, propertyValue, message, null);
+	}
+	
+	public AnnotationAttributeInstantiationException(String propertyName, String propertyValue, String message, Throwable th){
+		super(message + propertyName, th);
+		this.propertyName = propertyName;
+		this.propertyValue = propertyValue;
 	}
 	
 }

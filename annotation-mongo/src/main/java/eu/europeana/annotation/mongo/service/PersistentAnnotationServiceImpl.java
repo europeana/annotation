@@ -314,10 +314,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				query.offset(Integer.parseInt(startOn));
 			if (StringUtils.isNotEmpty(limit))
 				query.limit(Integer.parseInt(limit));
-		} catch (Exception e) {
-			throw new AnnotationAttributeInstantiationException(
-					"Unexpected exception occured when searching annotations. "
-							+ AnnotationAttributeInstantiationException.BASE_MESSAGE,
+		} catch (NumberFormatException e) {
+			throw new AnnotationMongoRuntimeException(
+					"Invalid startOn/limit params. "+						
 					"startOn: " + startOn + ", limit: " + limit + ". ", e);
 		}
 

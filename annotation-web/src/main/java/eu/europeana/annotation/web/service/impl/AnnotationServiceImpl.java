@@ -124,11 +124,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getMongoPersistence().getAnnotationList(resourceId);
 	}
 
-	@Override
-	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
-			boolean isDisabled) {
-		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
-	}
+//	@Override
+//	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
+//			boolean isDisabled) {
+//		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
+//	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {

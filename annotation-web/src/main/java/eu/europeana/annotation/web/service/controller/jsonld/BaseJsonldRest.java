@@ -13,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
+import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -437,6 +438,8 @@ public class BaseJsonldRest extends BaseRest {
 			if(e instanceof UserAuthorizationException)
 				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
+		} catch (AnnotationInstantiationException e) {
+			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e);
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}

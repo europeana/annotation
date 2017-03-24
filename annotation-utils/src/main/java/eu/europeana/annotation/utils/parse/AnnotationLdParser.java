@@ -17,6 +17,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
+import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -471,7 +472,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			String stringValue = (String)valueObject;
 			//the input string must be an URL .. semantic tagging
 			if(!isUrl(stringValue))
-				throw new AnnotationAttributeInstantiationException(WebAnnotationFields.BODY,
+				throw new AnnotationAttributeInstantiationException(WebAnnotationFields.BODY, stringValue,
 					"Invalid representation body=\"<text>\". Text bodies must be formated using TextualBody types!");
 			return parseBody(stringValue, motivation);
 		
@@ -540,8 +541,8 @@ public class AnnotationLdParser extends JsonLdParser {
 					try{
 						context = ContextTypes.valueOfJsonValue(value.toString());
 					}catch(Throwable th){
-						throw new AnnotationAttributeInstantiationException(
-								AnnotationAttributeInstantiationException.BASE_MESSAGE, localContextProp);
+						throw new AnnotationAttributeInstantiationException(localContextProp, value.toString(),
+								AnnotationAttributeInstantiationException.BASE_MESSAGE, th);
 					}
 					body.setContext(context.getJsonValue());
 					break;
@@ -591,7 +592,11 @@ public class AnnotationLdParser extends JsonLdParser {
 			}
 		} catch (JSONException e) {
 			throw new JsonParseException(
-					"unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+					"unsupported body deserialization for json representation: " + valueObject + " " + e.getMessage());
+		} catch (AnnotationInstantiationException e) {
+			// cannot instantiate the expected body type
+			throw new AnnotationAttributeInstantiationException("body", valueObject.toString(),
+					"unsupported body deserialization for motivation: " + motivation.getJsonValue(), e);
 		}
 
 		return body;
