@@ -246,7 +246,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			break;
 
 		case MINIMAL:
-			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNOTATION_ID_URL });
+			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNO_URI });
 			break;
 	
 		case STANDARD:

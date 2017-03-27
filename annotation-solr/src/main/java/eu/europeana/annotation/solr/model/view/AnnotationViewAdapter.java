@@ -9,7 +9,7 @@ public class AnnotationViewAdapter extends SolrAnnotationImpl implements Annotat
 
 	@Override
 	public String getId() {
-		return getAnnotationIdUrl();
+		return getAnnoUri();
 	}
 
 	@Override

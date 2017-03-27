@@ -79,7 +79,7 @@ public class BaseJsonldRest extends BaseRest {
 			// already exist in the database
 			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
-						"/provider/identifier", annoId.toUri());
+						"/provider/identifier", annoId.toRelativeUri());
 			// 2.1 validate annotation properties
 			getAnnotationService().validateWebAnnotation(webAnnotation);
 
@@ -248,7 +248,7 @@ public class BaseJsonldRest extends BaseRest {
 				// annotation id doesn’t exists )
 				if (!getAnnotationService().existsInDb(annoId))
 					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND,
-							annoId.toUri());
+							annoId.toRelativeUri());
 			}
 
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -360,7 +360,7 @@ public class BaseJsonldRest extends BaseRest {
 		// already exist in the database
 		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-					"/provider/identifier", annoId.toUri(), HttpStatus.NOT_FOUND, null);
+					"/provider/identifier", annoId.toRelativeUri(), HttpStatus.NOT_FOUND, null);
 
 		return annoId;
 	}

@@ -68,15 +68,12 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	private void processSolrBeanProperties(SolrAnnotation solrAnnotation) {
 		// <!-- @Field("annotationIdUrl") -->
-		solrAnnotation.setAnnotationIdUrl(solrAnnotation.getAnnotationId().toHttpUrl());
-
-		// <!-- @Field("targetInternalTypeKey") -->
-		solrAnnotation.setTargetInternalTypeKey(solrAnnotation.getTarget().getInternalType());
+		solrAnnotation.setAnnoUri(solrAnnotation.getAnnotationId().toHttpUrl());
 
 		// <!-- @Field("target_id") -->
 		// <!-- @Field("target_record_id") -->
 		//if target URLs were not extracted yet 
-		if (solrAnnotation.getTargetUrls() == null) {
+		if (solrAnnotation.getTargetUris() == null) {
 			List<String> targetUrls = null;
 
 			if (solrAnnotation.getTarget().getValues() != null && !solrAnnotation.getTarget().getValues().isEmpty())
@@ -84,7 +81,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 			else
 				targetUrls = Arrays.asList(new String[] { solrAnnotation.getTarget().getValue() });
 
-			solrAnnotation.setTargetUrls(targetUrls);
+			solrAnnotation.setTargetUris(targetUrls);
 
 			List<String> recordIds = extractRecordIds(targetUrls);
 			solrAnnotation.setTargetRecordIds(recordIds);
@@ -226,7 +223,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 		//Construct a SolrQuery
 		SolrQuery query = new SolrQuery();
-		query.setParam(SolrAnnotationConstants.ANNOTATION_ID_URL, new String[] { annoIdUrl });
+		query.setParam(SolrAnnotationConstants.ANNO_URI, new String[] { annoIdUrl });
 		// setFieldList(query);
 
 		getLogger().debug("query: " + query);

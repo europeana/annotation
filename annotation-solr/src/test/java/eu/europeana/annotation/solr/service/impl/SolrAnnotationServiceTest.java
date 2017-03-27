@@ -102,8 +102,8 @@ public class SolrAnnotationServiceTest {
 	public void testSolrAnnotationIdGeneration() throws MalformedURLException, IOException, AnnotationServiceException {
 		
 		SolrAnnotation solrAnnotation = new SolrAnnotationImpl();
-		solrAnnotation.setAnnotationIdUrl(TEST_ANNOTATION_ID_STR);
-		assertTrue(solrAnnotation.getAnnotationIdUrl().equals(TEST_ANNOTATION_ID_STR));
+		solrAnnotation.setAnnoUri(TEST_ANNOTATION_ID_STR);
+		assertTrue(solrAnnotation.getAnnoUri().equals(TEST_ANNOTATION_ID_STR));
 	}
 	
 	@Test
@@ -139,7 +139,7 @@ public class SolrAnnotationServiceTest {
 	
 	private SolrAnnotationImpl storeTestObject(int anoNr) throws AnnotationServiceException {
 		SolrAnnotationImpl solrAnnotation = new SolrAnnotationImpl();
-		solrAnnotation.setAnnotationIdUrl("/testCollection/TestObject/"+anoNr);
+		solrAnnotation.setAnnoUri("/testCollection/TestObject/"+anoNr);
 //		solrAnnotation.setLanguage(TEST_LANGUAGE);
 		solrAnnotation.setBodyValue(TEST_VALUE);
 
@@ -152,7 +152,7 @@ public class SolrAnnotationServiceTest {
 	
 	private SolrAnnotation storeTestObject(int anoNr, String label) throws AnnotationServiceException {
 		SolrAnnotation solrAnnotation = new SolrAnnotationImpl();
-		solrAnnotation.setAnnotationIdUrl("/testCollection/TestObject/"+anoNr);
+		solrAnnotation.setAnnoUri("/testCollection/TestObject/"+anoNr);
 //		solrAnnotation.setLanguage(TEST_LANGUAGE);
 		solrAnnotation.setBodyValue(label);
 

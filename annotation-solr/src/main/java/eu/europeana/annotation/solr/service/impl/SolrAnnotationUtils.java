@@ -90,48 +90,54 @@ public class SolrAnnotationUtils {
 		solrAnnotationImpl.setInternalTypeKey(annotation.getInternalType());
 		// solrAnnotationImpl.setInternalType(annotation.getInternalType());
 		solrAnnotationImpl.setCreator(annotation.getCreator());
+		solrAnnotationImpl.setCreatorName(annotation.getCreator().getName());
+		solrAnnotationImpl.setCreatorUri(annotation.getCreator().getHttpUrl());
+		
 		Body body = annotation.getBody();
 
 		if (body != null) {
 			solrAnnotationImpl.setBody(body);
 			solrAnnotationImpl.setBodyValue(body.getValue());
 			solrAnnotationImpl.setBodyTagId(solrAnnotationImpl.getBodyTagId());
-			solrAnnotationImpl.setBodyInternalTypeKey(body.getInternalType());
+//			solrAnnotationImpl.setBodyInternalTypeKey(body.getInternalType());
 			if (withMultilingual)
 				body = convertToSolrMultilingual(body);
 		}
 
 		solrAnnotationImpl.setCreated(annotation.getCreated());
-		solrAnnotationImpl.setCreatorString(annotation.getCreator().getName());
 		solrAnnotationImpl.setTarget(annotation.getTarget());
+		
 		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
+		solrAnnotationImpl.setAnnoUri(annotation.getAnnotationId().getHttpUrl());
+		solrAnnotationImpl.setAnnoId(annotation.getAnnotationId().toRelativeUri());
+		
 
 		// solrAnnotationImpl.setLanguage(body.getLanguage());
 		solrAnnotationImpl.setMotivation(annotation.getMotivation());
 		solrAnnotationImpl.setGenerated(annotation.getGenerated());
 		if(annotation.getGenerator() != null){
 			solrAnnotationImpl.setGenerator(annotation.getGenerator());
-			solrAnnotationImpl.setGeneratorId(annotation.getGenerator().getHttpUrl());
+			solrAnnotationImpl.setGeneratorUri(annotation.getGenerator().getHttpUrl());
 			solrAnnotationImpl.setGeneratorName(annotation.getGenerator().getName());
 		}
 		
 		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
-		solrAnnotationImpl.setAnnotationIdUrl(annotation.getAnnotationId().toHttpUrl());
+		solrAnnotationImpl.setAnnoUri(annotation.getAnnotationId().toHttpUrl());
 
 		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
 		// TODO: add the equivalent to solr configs
 		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
-		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
-		solrAnnotationImpl.setCreatedTimestamp(annotation.getCreated().getTime());
-		solrAnnotationImpl.setGeneratedTimestamp(annotation.getGenerated().getTime());
+		solrAnnotationImpl.setLastUpdate(annotation.getLastUpdate());
+		solrAnnotationImpl.setCreated(annotation.getCreated());
+		solrAnnotationImpl.setGenerated(annotation.getGenerated());
 		
 		solrAnnotationImpl.setCanonical(annotation.getCanonical());
 		solrAnnotationImpl.setVia(annotation.getVia());
 
 		if (summary != null) {
-			solrAnnotationImpl.setModerationScore((long) summary.getScore());
+			solrAnnotationImpl.setModerationScore(summary.getScore());
 		} else {
-			solrAnnotationImpl.setModerationScore((long) 0);
+			solrAnnotationImpl.setModerationScore(0);
 		}
 
 		return solrAnnotationImpl;

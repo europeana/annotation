@@ -48,9 +48,9 @@ public interface Annotation {
 	
 	public abstract Date getGenerated();
 
-	void setGenerated(Date serializedAt);
+	void setGenerated(Date generated);
 
-	void setCreated(Date annotatedAt);
+	void setCreated(Date created);
 	
 	public abstract void setType(String type);
 
@@ -74,7 +74,7 @@ public interface Annotation {
 	
 	public abstract Date getLastUpdate();
 
-	public abstract void setLastUpdate(Date lastUpdateTimestamp);
+	public abstract void setLastUpdate(Date lastUpdate);
 
 	public boolean isPrivate();
 
