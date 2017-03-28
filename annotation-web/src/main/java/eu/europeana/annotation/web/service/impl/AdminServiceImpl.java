@@ -9,8 +9,10 @@ import com.google.common.base.Strings;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -153,4 +155,50 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return reindexAnnotationSet(res, true);
 	}
 	
+	//TODO #552
+	@Override
+	public BatchProcessingStatus updateRecordId(String oldId, String newId) {
+		BatchProcessingStatus status = new BatchProcessingStatus();
+		
+		// find annotation by oldId
+		List<? extends Annotation> annotations = getMongoPersistence().getAnnotationListByResourceId(oldId);
+		System.out.println(annotations.size());
+		for (Annotation anno : annotations) {
+			if (!anno.isDisabled()) {
+//				System.out.println(anno.getAnnotationId());
+				Target annoTarget = anno.getTarget();
+				
+				// update resourceId
+				annoTarget.setResourceId(newId);
+				
+				//update fields: httpUri, value, inputString
+				if (annoTarget.getHttpUri() != null) {
+					String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
+					annoTarget.setHttpUri(newHttpUri);
+				}
+				
+				if (annoTarget.getValue() != null) {
+					String newValue = annoTarget.getValue().replace(oldId, newId);
+					annoTarget.setValue(newValue);
+				}
+				
+				String newInputString = annoTarget.getInputString().replace(oldId, newId);
+				annoTarget.setInputString(newInputString);
+				
+				// replace target
+				anno.setTarget(annoTarget);
+				
+				// update mongo
+				try {
+					getMongoPersistence().update((PersistentAnnotation) anno);	
+					status.incrementSuccessCount();			
+				} catch (Exception e) {
+					status.incrementFailureCount();
+//					throw e;
+				}
+			}
+		}
+		
+		return status;
+	}
 }
