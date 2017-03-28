@@ -82,24 +82,14 @@ public class AnnotationLdSerializer extends JsonLd {
 
 		putExtensions(annotation, jsonLdResource);
 		
-		putCanonical(annotation, jsonLdResource);
-		putVia(annotation, jsonLdResource);
+		putStringProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical(), jsonLdResource);
+		putStringArrayProperty(WebAnnotationFields.VIA, annotation.getVia(), jsonLdResource, true);
 		
 		put(jsonLdResource);
 		
 		return jsonLdResource;
 	}
-	
-	protected void putCanonical(Annotation annotation, JsonLdResource jsonLdResource) {
-		if (annotation.getCanonical() != null)
-			jsonLdResource.putProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical());
-	}
-	
-	protected void putVia(Annotation annotation, JsonLdResource jsonLdResource) {
-		if (annotation.getVia() != null)
-			jsonLdResource.putProperty(WebAnnotationFields.VIA, annotation.getVia());
-	}
-
+		
 	/**
 	 * the sameAs and equivalentTo are not in the context these properties need
 	 * to be removed.
