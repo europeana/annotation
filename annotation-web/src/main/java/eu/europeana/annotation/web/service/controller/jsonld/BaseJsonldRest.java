@@ -119,6 +119,8 @@ public class BaseJsonldRest extends BaseRest {
 			throw new RequestBodyValidationException(annotation, e);
 		} catch (AnnotationAttributeInstantiationException e) {
 			throw new RequestBodyValidationException(annotation, e);
+		} catch (AnnotationInstantiationException e) {
+			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			throw e;
