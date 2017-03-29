@@ -6,14 +6,17 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
+import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
- * Change the implementation to use an adapter pattern.
- * @Deprecated 
+ * TODO: Change the implementation to use an adapter pattern.
+ *  
  * @author GordeaS
  *
  */
@@ -22,22 +25,69 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String annoUri;
 	private String annoId;
 	
-	private List<String> targetUris;
-	private List<String> targetRecordIds;
-	private String motivationKey;
-	private String generatorName;
 	private String generatorUri;
-	private String bodyValue;
+	private String generatorName;
+	
 	private String creatorUri;
 	private String creatorName;
 	
-	private String internalTypeKey;
-	private String bodyTagId;
-	private Integer moderationScore;
+	private Integer moderationScore = 0;
+	private String motivationKey;
+	
+	private List<String> targetUris;
+	private List<String> targetRecordIds;
 	
 	private String linkResourceUri;
 	private String linkRelation;
 	
+	private String bodyValue;
+	private List<String> bodyUris;
+	
+	/**
+	 * public default constructor
+	 */
+	public SolrAnnotationImpl(){
+		
+	}
+	
+	/**
+	 * Constructor using web annotation and moderation summary
+	 */
+	public SolrAnnotationImpl(Annotation annotation, Summary summary){
+		
+		this.setInternalType(annotation.getInternalType());
+		this.setMotivation(annotation.getMotivation());
+		
+		this.setAnnotationId(annotation.getAnnotationId());
+		this.setAnnoUri(annotation.getAnnotationId().getHttpUrl());
+		this.setAnnoId(annotation.getAnnotationId().toRelativeUri());
+		
+		if(annotation.getGenerator() != null){
+			this.setGenerator(annotation.getGenerator());
+			this.setGeneratorUri(annotation.getGenerator().getHttpUrl());
+			this.setGeneratorName(annotation.getGenerator().getName());
+		}
+		
+		this.setGenerated(annotation.getGenerated());
+		
+		this.setCreator(annotation.getCreator());
+		this.setCreatorName(annotation.getCreator().getName());
+		this.setCreatorUri(annotation.getCreator().getHttpUrl());
+		
+		this.setCreated(annotation.getCreated());
+		//modified is alias to lastUpdate
+		this.setLastUpdate(annotation.getLastUpdate());
+		
+		if (summary != null)
+			this.setModerationScore(summary.getScore());
+		
+		this.setTarget(annotation.getTarget());
+		this.setBody(annotation.getBody());
+		
+//		this.setStyledBy(annotation.getStyledBy());
+//		this.setCanonical(annotation.getCanonical());
+//		this.setVia(annotation.getVia());
+	}
 	
 	@Override
 	@Field(CREATED)
@@ -92,19 +142,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public String getAnnoUri() {
 		return annoUri;
 	}
-
-	
-	@Override
-	@Field(BODY_TAG_ID)
-	public void setBodyTagId(String id) {
-		this.bodyTagId = id;
-	}
-
-	@Override
-	public String getBodyTagId() {
-		return bodyTagId;
-	}
-
 	
 	@Override
 	@Field(BODY_VALUE)
@@ -151,18 +188,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public void setAnnoUri(String annotationIdUrl) {
 		this.annoUri = annotationIdUrl;
 	}
-
-	@Override
-	@Field(SolrAnnotationConstants.INTERNAL_TYPE)
-	public void setInternalTypeKey(String internalTypeKey) {
-		this.internalTypeKey = internalTypeKey;
-	}
-
-	@Override
-	public String getInternalTypeKey() {
-		return internalTypeKey;
-	}
-
 	
 	@Override
 	@Field(MODERATION_SCORE)
@@ -265,6 +290,17 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field(LINK_RELATION)
 	public void setLinkRelation(String linkRelation) {
 		this.linkRelation = linkRelation;
+	}
+
+	@Override
+	public List<String> getBodyUris() {
+		return bodyUris;
+	}
+
+	@Override
+	@Field(BODY_URI)
+	public void setBodyUris(List<String> bodyUris) {
+		this.bodyUris = bodyUris;
 	}
 
 }

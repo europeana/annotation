@@ -22,6 +22,7 @@ public interface SolrAnnotationConstants {
 
 	public static final String LINK_RESOURCE_URI = "link_resource_uri";
 	public static final String LINK_RELATION = "link_relation";
+	public static final String BODY_URI = "body_uri";
 	
 	
 	//user friendly field names

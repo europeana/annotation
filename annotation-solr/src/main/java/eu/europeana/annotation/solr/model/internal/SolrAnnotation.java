@@ -3,17 +3,11 @@ package eu.europeana.annotation.solr.model.internal;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.solr.client.solrj.beans.Field;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
 public interface SolrAnnotation extends Annotation {
 
-	
-	public void setInternalTypeKey(String annotation_type);
-	
-	public String getInternalTypeKey();
 	
 	Date getCreated();
 
@@ -24,10 +18,6 @@ public interface SolrAnnotation extends Annotation {
 	void setBodyValue(String bodyValue);
 
 	String getBodyValue();
-
-	String getBodyTagId();
-
-	void setBodyTagId(String id);
 
 	String getAnnoUri();
 
@@ -78,5 +68,9 @@ public interface SolrAnnotation extends Annotation {
 	void setLinkResourceUri(String linkResourceUri);
 
 	String getLinkResourceUri();
+
+	void setBodyUris(List<String> bodyUris);
+
+	List<String> getBodyUris();
 	
 }

@@ -58,12 +58,27 @@ public interface Annotation {
 
 	public abstract boolean isDisabled();
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public abstract void setSameAs(String sameAs);
-
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public abstract String getSameAs();
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public abstract void setEquivalentTo(String equivalentTo);
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public abstract String getEquivalentTo();
 
 	public void setInternalType(String internalType);
