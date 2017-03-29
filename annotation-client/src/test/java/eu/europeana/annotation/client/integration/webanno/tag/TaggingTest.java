@@ -5,15 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class TaggingTest extends BaseTaggingTest {
@@ -112,6 +116,24 @@ public class TaggingTest extends BaseTaggingTest {
 				TEST_USER_TOKEN);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+	}
+
+	@Test
+	public void createCanonicalTag() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException {
+			
+		createAndValidateTag(TAG_CANONICAL);
+	}
+	
+	@Test
+	public void createViaTagString() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
+		
+		createAndValidateTag(TAG_VIA_STRING);
+	}
+	
+	@Test
+	public void createViaTagArray() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
+
+		createAndValidateTag(TAG_VIA_ARRAY);
 	}
 
 	

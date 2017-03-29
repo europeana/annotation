@@ -13,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
+import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -28,7 +29,7 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.utils.StringUtils;
+import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -118,6 +119,8 @@ public class BaseJsonldRest extends BaseRest {
 			throw new RequestBodyValidationException(annotation, e);
 		} catch (AnnotationAttributeInstantiationException e) {
 			throw new RequestBodyValidationException(annotation, e);
+		} catch (AnnotationInstantiationException e) {
+			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			throw e;
@@ -134,7 +137,7 @@ public class BaseJsonldRest extends BaseRest {
 		
 		// Set "id" attribute of Agent only if it is a valid URL
 		String agentId = app.getOpenId();
-		if(StringUtils.isUrl(agentId)) {
+		if(UriUtils.isUrl(agentId)) {
 			logger.warn("The agent's 'id' attribute value is not set because the value is not a valid URL: " + agentId);
 			serializer.setHttpUrl(agentId);
 		}
@@ -406,6 +409,8 @@ public class BaseJsonldRest extends BaseRest {
 			// 5. parse updated annotation
 			Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(null, annotation);
 
+			//validate annotation
+			getAnnotationService().validateWebAnnotation(updateWebAnnotation);
 			
 			// 6. apply updates - merge current and updated annotation
 			// 7. and call database update method
@@ -435,6 +440,8 @@ public class BaseJsonldRest extends BaseRest {
 			if(e instanceof UserAuthorizationException)
 				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
+		} catch (AnnotationInstantiationException e) {
+			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e);
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
@@ -448,45 +455,56 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param updatedWebAnnotation
 	 */
 	@Deprecated
-	private void updateValues(Annotation storedAnnotation, Annotation updatedWebAnnotation) {
-
-		if (updatedWebAnnotation.getType() != null)
-			storedAnnotation.setType(updatedWebAnnotation.getType());
-
-		// Motivation can be changed see #122
-//		if (updatedWebAnnotation.getMotivationType() != null
-//				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
-//			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
-//					+ " to: " + updatedWebAnnotation.getMotivationType());
-		// if (updatedWebAnnotation.getMotivation() != null)
-		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-		if (updatedWebAnnotation.getCreated() != null)
-			storedAnnotation.setCreated(updatedWebAnnotation.getCreated());
-		if (updatedWebAnnotation.getCreator() != null)
-			storedAnnotation.setCreator(updatedWebAnnotation.getCreator());
-		if (updatedWebAnnotation.getGenerated() != null)
-			storedAnnotation.setGenerated(updatedWebAnnotation.getGenerated());
-		if (updatedWebAnnotation.getGenerator() != null)
-			storedAnnotation.setGenerator(updatedWebAnnotation.getGenerator());
-		if (updatedWebAnnotation.getBody() != null)
-			storedAnnotation.setBody(updatedWebAnnotation.getBody());
-		if (updatedWebAnnotation.getTarget() != null)
-			storedAnnotation.setTarget(updatedWebAnnotation.getTarget());
-		if (storedAnnotation.isDisabled() != updatedWebAnnotation.isDisabled())
-			storedAnnotation.setDisabled(updatedWebAnnotation.isDisabled());
-		if (updatedWebAnnotation.getEquivalentTo() != null)
-			storedAnnotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
-		if (updatedWebAnnotation.getInternalType() != null)
-			storedAnnotation.setInternalType(updatedWebAnnotation.getInternalType());
-		if (updatedWebAnnotation.getLastUpdate() != null)
-			storedAnnotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
-		if (updatedWebAnnotation.getSameAs() != null)
-			storedAnnotation.setSameAs(updatedWebAnnotation.getSameAs());
-		if (updatedWebAnnotation.getStatus() != null)
-			storedAnnotation.setStatus(updatedWebAnnotation.getStatus());
-		if (updatedWebAnnotation.getStyledBy() != null)
-			storedAnnotation.setStyledBy(updatedWebAnnotation.getStyledBy());
-	}
+	//TODO this is not referenced anywhere
+//	private void updateValues(Annotation storedAnnotation, Annotation updatedWebAnnotation) {
+//
+//		if (updatedWebAnnotation.getType() != null)
+//			storedAnnotation.setType(updatedWebAnnotation.getType());
+//
+//		// Motivation can be changed see #122
+////		if (updatedWebAnnotation.getMotivationType() != null
+////				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
+////			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
+////					+ " to: " + updatedWebAnnotation.getMotivationType());
+//		// if (updatedWebAnnotation.getMotivation() != null)
+//		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
+//		if (updatedWebAnnotation.getCreated() != null)
+//			storedAnnotation.setCreated(updatedWebAnnotation.getCreated());
+//		if (updatedWebAnnotation.getCreator() != null)
+//			storedAnnotation.setCreator(updatedWebAnnotation.getCreator());
+//		if (updatedWebAnnotation.getGenerated() != null)
+//			storedAnnotation.setGenerated(updatedWebAnnotation.getGenerated());
+//		if (updatedWebAnnotation.getGenerator() != null)
+//			storedAnnotation.setGenerator(updatedWebAnnotation.getGenerator());
+//		if (updatedWebAnnotation.getBody() != null)
+//			storedAnnotation.setBody(updatedWebAnnotation.getBody());
+//		if (updatedWebAnnotation.getTarget() != null)
+//			storedAnnotation.setTarget(updatedWebAnnotation.getTarget());
+//		if (storedAnnotation.isDisabled() != updatedWebAnnotation.isDisabled())
+//			storedAnnotation.setDisabled(updatedWebAnnotation.isDisabled());
+//		if (updatedWebAnnotation.getEquivalentTo() != null)
+//			storedAnnotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
+//		if (updatedWebAnnotation.getInternalType() != null)
+//			storedAnnotation.setInternalType(updatedWebAnnotation.getInternalType());
+//		if (updatedWebAnnotation.getLastUpdate() != null)
+//			storedAnnotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+//		if (updatedWebAnnotation.getSameAs() != null)
+//			storedAnnotation.setSameAs(updatedWebAnnotation.getSameAs());
+//		if (updatedWebAnnotation.getStatus() != null)
+//			storedAnnotation.setStatus(updatedWebAnnotation.getStatus());
+//		if (updatedWebAnnotation.getStyledBy() != null)
+//			storedAnnotation.setStyledBy(updatedWebAnnotation.getStyledBy());
+//		
+//		if (updatedWebAnnotation.getCanonical() != null)
+//			// must never be overwritten
+//			if (storedAnnotation.getCanonical() == null)
+//				storedAnnotation.setCanonical(updatedWebAnnotation.getCanonical());
+////			else
+////				throw new HttpException("Must not edit existing canonical value!", HttpStatus.FORBIDDEN);
+//		
+//		if (updatedWebAnnotation.getVia() != null)
+//			storedAnnotation.setVia(updatedWebAnnotation.getVia());
+//	}
 
 	/**
 	 * This method validates input values, retrieves annotation object and

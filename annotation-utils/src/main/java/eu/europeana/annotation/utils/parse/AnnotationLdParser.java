@@ -2,8 +2,10 @@ package eu.europeana.annotation.utils.parse;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -15,6 +17,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
+import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -272,11 +275,40 @@ public class AnnotationLdParser extends JsonLdParser {
 		case (WebAnnotationFields.EQUIVALENT_TO):
 			anno.setEquivalentTo((String) valueObject);
 			break;
+		case (WebAnnotationFields.CANONICAL):
+			anno.setCanonical((String) valueObject);
+			break;
+		case (WebAnnotationFields.VIA):
+			String[] via = parseVia(valueObject);
+			anno.setVia(via);
+			break;
 		default:
 			//throw new JsonParseException("Unsupported Property: " + property);
 			logger.warn("Unsupported Property: " + property);
 			break;
 		}
+	}
+
+	private String[] parseVia(Object valueObject) throws JsonParseException, JSONException {
+		if (valueObject instanceof String) {
+			return new String[]{valueObject.toString()};
+		}
+		else if (valueObject instanceof JSONArray) {
+			return jsonArrayToStringArray((JSONArray) valueObject);
+		}
+		else {
+			throw new JsonParseException("unsupported deserialization for: " + valueObject);
+		}
+	}
+	
+	protected String[] jsonArrayToStringArray(JSONArray valueObject) throws JSONException {
+		List<String> list = new ArrayList<String>();
+		for(int i = 0; i < valueObject.length(); i++){
+		    list.add(valueObject.getString(i));
+		}
+		String[] stringArray = list.toArray(new String[0]);
+		
+		return stringArray;
 	}
 
 	protected String serializeBodyText(String valueObject) {
@@ -440,7 +472,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			String stringValue = (String)valueObject;
 			//the input string must be an URL .. semantic tagging
 			if(!isUrl(stringValue))
-				throw new AnnotationAttributeInstantiationException(WebAnnotationFields.BODY,
+				throw new AnnotationAttributeInstantiationException(WebAnnotationFields.BODY, stringValue,
 					"Invalid representation body=\"<text>\". Text bodies must be formated using TextualBody types!");
 			return parseBody(stringValue, motivation);
 		
@@ -509,8 +541,8 @@ public class AnnotationLdParser extends JsonLdParser {
 					try{
 						context = ContextTypes.valueOfJsonValue(value.toString());
 					}catch(Throwable th){
-						throw new AnnotationAttributeInstantiationException(
-								AnnotationAttributeInstantiationException.BASE_MESSAGE, localContextProp);
+						throw new AnnotationAttributeInstantiationException(localContextProp, value.toString(),
+								AnnotationAttributeInstantiationException.BASE_MESSAGE, th);
 					}
 					body.setContext(context.getJsonValue());
 					break;
@@ -560,7 +592,11 @@ public class AnnotationLdParser extends JsonLdParser {
 			}
 		} catch (JSONException e) {
 			throw new JsonParseException(
-					"unsupported body deserialization for json represetnation: " + valueObject + " " + e.getMessage());
+					"unsupported body deserialization for json representation: " + valueObject + " " + e.getMessage());
+		} catch (AnnotationInstantiationException e) {
+			// cannot instantiate the expected body type
+			throw new AnnotationAttributeInstantiationException("body", valueObject.toString(),
+					"unsupported body deserialization for motivation: " + motivation.getJsonValue(), e);
 		}
 
 		return body;

@@ -45,6 +45,9 @@ public interface WebAnnotationModelFields {
 	public static final String STYLE_CLASS = "styleClass";
 //	public static final String TEXT = "text";
 	public static final String PAGE = "page";
+
+	public static final String CANONICAL = "canonical";
+	public static final String VIA = "via";
 	
 	public static final String ITEMS = "items";
 	public static final String PURPOSE = "purpose";

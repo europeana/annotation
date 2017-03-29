@@ -2,13 +2,13 @@ package eu.europeana.annotation.mongo.model;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
-import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.Polymorphic;
 //import com.google.code.morphia.annotations.Reference;
 
@@ -25,8 +25,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 @Polymorphic
 @Entity("annotation")
 
-@Indexes({@Index(PersistentAnnotation.FIELD_HTTPURL), 
-	@Index(PersistentAnnotation.FIELD_PROVIDER+", "+PersistentAnnotation.FIELD_IDENTIFIER)})
+@Index(PersistentAnnotation.FIELD_HTTPURL)
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id
@@ -59,6 +58,9 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private boolean disabled;
 	private String sameAs;
 	private String equivalentTo;
+	
+	private String canonical;
+	private String[] via;
 	
 	private String status;
 	private Date lastUpdate;
@@ -263,6 +265,26 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Override
 	public boolean equalsContent(Object other) {
 		throw new RuntimeException("Operation not supported yet");
+	}
+
+	@Override
+	public void setCanonical(String canonical) {
+		this.canonical = canonical;		
+	}
+
+	@Override
+	public String getCanonical() {
+		return canonical;
+	}
+
+	@Override
+	public void setVia(String[] via) {
+		this.via = via;
+	}
+
+	@Override
+	public String[] getVia() {
+		return via;
 	}
 	
 }

@@ -12,7 +12,6 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
@@ -83,11 +82,14 @@ public class AnnotationLdSerializer extends JsonLd {
 
 		putExtensions(annotation, jsonLdResource);
 		
+		putStringProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical(), jsonLdResource);
+		putStringArrayProperty(WebAnnotationFields.VIA, annotation.getVia(), jsonLdResource, true);
+		
 		put(jsonLdResource);
 		
 		return jsonLdResource;
 	}
-
+		
 	/**
 	 * the sameAs and equivalentTo are not in the context these properties need
 	 * to be removed.
@@ -447,4 +449,5 @@ public class AnnotationLdSerializer extends JsonLd {
 		return styledByProperty;
 	}
 
+	
 }

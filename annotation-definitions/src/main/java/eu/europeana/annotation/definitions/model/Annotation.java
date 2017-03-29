@@ -79,6 +79,13 @@ public interface Annotation {
 	public boolean isPrivate();
 
 	boolean equalsContent(Object other);
-
+	
+	public abstract void setCanonical(String canonical);
+	
+	public abstract String getCanonical();
+	
+	public abstract void setVia(String[] via);
+	
+	public abstract String[] getVia();
 	
 }
