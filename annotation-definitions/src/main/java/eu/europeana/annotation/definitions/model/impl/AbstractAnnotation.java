@@ -18,7 +18,7 @@ public abstract class AbstractAnnotation implements Annotation {
 
 	protected AnnotationId annotationId = null;
 	private String type;
-	private String internalType;
+	protected String internalType;
 	private Agent creator;
 	private Agent generator;
 	private Date created;

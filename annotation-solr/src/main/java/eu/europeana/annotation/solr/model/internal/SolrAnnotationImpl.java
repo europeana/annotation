@@ -189,6 +189,14 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.annoUri = annotationIdUrl;
 	}
 	
+
+
+	@Override
+	@Field(INTERNAL_TYPE)
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
+	}
+	
 	@Override
 	@Field(MODERATION_SCORE)
 	public void setModerationScore(Integer moderationScore) {
@@ -222,7 +230,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(GENERATOR_ID)
+	@Field(GENERATOR_URI)
 	public void setGeneratorUri(String generatorId) {
 		this.generatorUri = generatorId;
 	}
@@ -232,6 +240,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		return annoId;
 	}
 
+	@Field(ANNO_ID)
 	@Override
 	public void setAnnoId(String annoId) {
 		this.annoId = annoId;

@@ -168,7 +168,8 @@
 	</fields>
 
 	<!-- default properties -->
-	<uniqueKey>annotation_id_url</uniqueKey>
+<!-- 	<uniqueKey>annotation_id_url</uniqueKey> -->
+	<uniqueKey>anno_uri</uniqueKey>
 	<solrQueryParser defaultOperator="AND" />
 	<defaultSearchField>text</defaultSearchField>
 

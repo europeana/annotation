@@ -12,7 +12,7 @@ public interface SolrAnnotationConstants {
 	public static final String MODERATION_SCORE = "moderation_score";
 	public static final String BODY_TAG_ID = "body_tag_id";
 	public static final String MOTIVATION = "motivation";
-	public static final String GENERATOR_ID = "generator_id";
+	public static final String GENERATOR_URI = "generator_uri";
 	public static final String GENERATOR_NAME = "generator_name";
 	public static final String CREATOR_URI = "creator_uri";
 	public static final String CREATOR_NAME = "creator_name";
