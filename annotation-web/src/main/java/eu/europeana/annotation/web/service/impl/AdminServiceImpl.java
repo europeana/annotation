@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -76,9 +77,9 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
 			String endTimestamp) {
-		
-//		int successCount = 0;
-//		int failureCount = 0;
+
+		// int successCount = 0;
+		// int failureCount = 0;
 		if (!Strings.isNullOrEmpty(startDate)) {
 			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
 		}
@@ -96,9 +97,9 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	@Override
-	//TODO:reimplement using database cursors for higher scalability
+	// TODO:reimplement using database cursors for higher scalability
 	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
-		
+
 		BatchProcessingStatus status = new BatchProcessingStatus();
 		AnnotationId annoId = null;
 		Annotation annotation;
@@ -106,31 +107,30 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		for (String id : ids) {
 			try {
 				count++;
-				if(count % 1000 == 0)
+				if (count % 1000 == 0)
 					getLogger().info("Processing object: " + count);
-				//check
-				if(isObjectId){
+				// check
+				if (isObjectId) {
 					annotation = getMongoPersistence().findByID(id);
-				}else{
+				} else {
 					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
 					annotation = getMongoPersistence().find(annoId);
 				}
-				
+
 				if (annotation == null)
 					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
 				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
-				if (success) 
+				if (success)
 					status.incrementSuccessCount();
-				else 
-					status.incrementFailureCount();			
+				else
+					status.incrementFailureCount();
 			} catch (IllegalArgumentException iae) {
 				String msg = "id: " + id + ". " + iae.getMessage();
 				getLogger().error(msg);
 				// throw new RuntimeException(iae);
 				status.incrementFailureCount();
 			} catch (Exception e) {
-				String msg = "Error when reindexing annotation: "+ annoId
-						+ e.getMessage();
+				String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
 				getLogger().error(msg);
 				status.incrementFailureCount();
 				// throw new RuntimeException(e);
@@ -141,37 +141,53 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 	@Override
 	public BatchProcessingStatus reindexAll() {
-		return reindexAnnotationSelection( "0", ""+System.currentTimeMillis());
+		return reindexAnnotationSelection("0", "" + System.currentTimeMillis());
 	}
 
 	@Override
 	public BatchProcessingStatus reindexOutdated() {
 		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-		
+
 		BatchProcessingStatus status = new BatchProcessingStatus();
 		status.incrementSuccessCount();
-		//return status;
-		
+		// return status;
+
 		return reindexAnnotationSet(res, true);
 	}
-	
-	//TODO #552
+
+	// TODO #552
 	@Override
 	public BatchProcessingStatus updateRecordId(String oldId, String newId) {
 		BatchProcessingStatus status = new BatchProcessingStatus();
-		
+
 		// find annotation by oldId
 		List<? extends Annotation> annotations = getMongoPersistence().getAnnotationListByResourceId(oldId);
-		System.out.println(annotations.size());
+		
 		for (Annotation anno : annotations) {
 			if (!anno.isDisabled()) {
-//				System.out.println(anno.getAnnotationId());
+				System.out.println(anno.getAnnotationId());
 				Target annoTarget = anno.getTarget();
-				
+
 				// update resourceId
+				//TODO: delete resourceId, only use resourceIds
 				annoTarget.setResourceId(newId);
-				
-				//update fields: httpUri, value, inputString
+
+				// update resourceIds
+				if(annoTarget.getResourceIds() != null) {
+					List<String> currentResourceIds = annoTarget.getResourceIds();
+					List<String> updatedResourceIds = new ArrayList<String>();
+					for (String id : currentResourceIds) {
+						if (id.equals(oldId)) {
+							String updatedId = newId;
+							updatedResourceIds.add(updatedId);
+						} else {
+							updatedResourceIds.add(id);							
+						}
+					}
+					annoTarget.setResourceIds(updatedResourceIds);
+				}
+
+				// update fields: httpUri, value(s) + inputString
 				if (annoTarget.getHttpUri() != null) {
 					String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
 					annoTarget.setHttpUri(newHttpUri);
@@ -180,25 +196,37 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 				if (annoTarget.getValue() != null) {
 					String newValue = annoTarget.getValue().replace(oldId, newId);
 					annoTarget.setValue(newValue);
+					// inputString depends on value(s)
+					annoTarget.setInputString(newValue);
 				}
 				
-				String newInputString = annoTarget.getInputString().replace(oldId, newId);
-				annoTarget.setInputString(newInputString);
+				//TODO: change "value" and "values" fields, so we only have one of them
+				if(annoTarget.getValues() != null) {
+					List<String> currentValues = annoTarget.getValues();
+					List<String> updatedValues = new ArrayList<String>();
+					for (String value : currentValues) {
+						String updatedValue = value.replace(oldId, newId);
+						updatedValues.add(updatedValue);
+					}
+					annoTarget.setValues(updatedValues);
+					// inputString depends on value(s)
+					annoTarget.setInputString(updatedValues.toString());
+				}
 				
 				// replace target
 				anno.setTarget(annoTarget);
-				
+
 				// update mongo
 				try {
-					getMongoPersistence().update((PersistentAnnotation) anno);	
-					status.incrementSuccessCount();			
+					getMongoPersistence().update((PersistentAnnotation) anno);
+					status.incrementSuccessCount();
 				} catch (Exception e) {
 					status.incrementFailureCount();
-//					throw e;
+					throw e;
 				}
 			}
 		}
-		
+
 		return status;
 	}
 }
