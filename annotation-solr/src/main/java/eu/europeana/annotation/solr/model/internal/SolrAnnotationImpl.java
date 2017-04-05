@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.solr.client.solrj.beans.Field;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -192,7 +191,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 
 
 	@Override
-	@Field(INTERNAL_TYPE)
+//	@Field(INTERNAL_TYPE)
 	public void setInternalType(String internalType) {
 		this.internalType = internalType;
 	}
