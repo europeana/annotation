@@ -75,11 +75,11 @@
 		<!-- @Field("anno_id") New -->
 		<field name="anno_id" type="keyword" indexed="true" required="true"
 			multiValued="false" stored="true" />
-
 		<!-- @Field("internalTypeKey") -->
+<!--
 		<field name="internal_type" type="keyword" indexed="false"
 			required="true" multiValued="false" stored="true" />
-
+-->
 		<!-- @Field("bodyInternalTypeKey") -->
 		<field name="body_internal_type" type="keyword" indexed="false"
 			required="false" multiValued="false" stored="true" />

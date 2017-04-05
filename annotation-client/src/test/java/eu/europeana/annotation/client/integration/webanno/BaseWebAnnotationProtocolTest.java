@@ -357,6 +357,10 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 	
+	/**
+	 * @deprecated numericId is ambiguous, use relative_uri or full uri (annotationId) when deleting annotations 
+	 * @param numericId
+	 */
 	protected void deleteAnnotation(Integer numericId) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
