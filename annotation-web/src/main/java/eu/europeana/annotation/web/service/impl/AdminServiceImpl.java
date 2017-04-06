@@ -155,7 +155,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return reindexAnnotationSet(res, true);
 	}
 
-	// TODO #552
 	@Override
 	public BatchProcessingStatus updateRecordId(String oldId, String newId) {
 		BatchProcessingStatus status = new BatchProcessingStatus();
@@ -166,10 +165,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		for (Annotation anno : annotations) {
 			if (!anno.isDisabled()) {
 				Target annoTarget = anno.getTarget();
-
-				// update resourceId
-				//TODO: delete resourceId, only use resourceIds
-//				annoTarget.setResourceId(newId);
 
 				// update resourceIds
 				if(annoTarget.getResourceIds() != null) {
@@ -199,9 +194,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 					annoTarget.setInputString(newValue);
 				}
 				
-				//TODO: change "value" and "values" fields, so we only have one of them
-				//TODO: getValues() returns an empty list, even if "target.values" is not present in mongo!
-				if(!annoTarget.getValues().isEmpty()) {
+				// change "value" and "values" fields, so we only have one of them
+				if(annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
 					List<String> currentValues = annoTarget.getValues();
 					List<String> updatedValues = new ArrayList<String>();
 					for (String value : currentValues) {

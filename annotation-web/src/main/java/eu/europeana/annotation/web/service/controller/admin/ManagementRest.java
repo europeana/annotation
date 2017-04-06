@@ -297,7 +297,6 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
-	// TODO #552
 	@RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
 	@ApiOperation(value = "Update record identifiers with new ones", nickname = "updateRecordId", response = java.lang.Void.class)
