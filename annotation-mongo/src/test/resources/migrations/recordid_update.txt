@@ -1,0 +1,15 @@
+#check resource idsdb.annotation.find({"target.resourceIds":{$size: 1}}).count();
+#check resource iddb.annotation.find({"target.resourceId":{$exists: true}}).count();#check value and values
+db.getCollection('annotation').find({"target.values":{$exists: true}, "target.value":{$exists: true}})
+#migrate resourceId to resourceIds and remove fielddb.annotation.find({"target.resourceId":{$exists: true}}).forEach(function(doc){
+    db.annotation.update({        "target.resourceId":{$exists: true}},        {
+            $addToSet: {"target.resourceIds": doc.target.resourceId},            $unset: {"target.resourceId": null}
+        });
+});
+#remove value when values existdb.annotation.updateMany(
+        {"target.values":{$exists: true}},        {            $unset: {"target.value": null}        });
+#post migration checkdb.getCollection('annotation').find({"target.values":{$exists: true}, "target.value":{$exists: true}})#post migration check
+db.annotation.find({"target.resourceIds":{$size: 1}}).count();
+#post migration check
+db.annotation.find({"target.resourceId":{$exists: true}}).count();
+
