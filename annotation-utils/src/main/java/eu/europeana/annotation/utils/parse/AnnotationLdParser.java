@@ -343,8 +343,8 @@ public class AnnotationLdParser extends JsonLdParser {
 			throw new JsonParseException("unsupported target+- deserialization for: " + valueObject);
 	}
 
-	private Target parseTarget(String defaultType, String valueObject) {
-		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(defaultType);
+	private Target parseTarget(String targetType, String valueObject) {
+		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(targetType);
 		target.setValue((String) valueObject);
 		target.setResourceId(
 				getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));

@@ -165,12 +165,11 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		
 		for (Annotation anno : annotations) {
 			if (!anno.isDisabled()) {
-				System.out.println(anno.getAnnotationId());
 				Target annoTarget = anno.getTarget();
 
 				// update resourceId
 				//TODO: delete resourceId, only use resourceIds
-				annoTarget.setResourceId(newId);
+//				annoTarget.setResourceId(newId);
 
 				// update resourceIds
 				if(annoTarget.getResourceIds() != null) {
@@ -201,7 +200,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 				}
 				
 				//TODO: change "value" and "values" fields, so we only have one of them
-				if(annoTarget.getValues() != null) {
+				//TODO: getValues() returns an empty list, even if "target.values" is not present in mongo!
+				if(!annoTarget.getValues().isEmpty()) {
 					List<String> currentValues = annoTarget.getValues();
 					List<String> updatedValues = new ArrayList<String>();
 					for (String value : currentValues) {
