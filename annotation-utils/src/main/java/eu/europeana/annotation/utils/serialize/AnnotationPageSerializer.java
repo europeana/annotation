@@ -55,12 +55,11 @@ public class AnnotationPageSerializer extends JsonLd {
 	public String serialize(SearchProfiles profile) {
 
 		setUseTypeCoercion(false);
-		setUseCuries(true);
-		// addNamespacePrefix(WebAnnotationFields.OA_CONTEXT,
-		// WebAnnotationFields.OA);
-		// TODO: verify if the following check is needed
+		setUseCuries(false);
+		setApplyNamespaces(false);
 		// if(isApplyNamespaces())
-		setUsedNamespaces(namespacePrefixMap);
+		//setUsedNamespaces(namespacePrefixMap);
+		
 
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");

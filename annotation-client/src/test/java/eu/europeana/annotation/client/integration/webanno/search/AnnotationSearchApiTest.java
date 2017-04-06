@@ -14,6 +14,7 @@ import org.junit.Test;
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationDataSetTest;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.QueryUtils;
@@ -51,6 +52,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	 */
 	@After
 	public void deleteAnnotationDataSet() {
+		//TODO delete all annotations for this generator, including old annotations
 		deleteAnnotations(annotations);
 	}
 
@@ -82,8 +84,9 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET);
+		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET, SearchProfiles.MINIMAL);
 		assertNotNull("AnnotationPage must not be null", annPg);
+		//TODO: improve assert condition. there might be old annotations of failing tests in the database
 		assertEquals(TOTAL_IN_COLLECTION, annPg.getTotalInCollection());
 		assertEquals(annPg.getCurrentPage(), 0);
 		assertEquals(TOTAL_IN_PAGE, annPg.getTotalInPage());
