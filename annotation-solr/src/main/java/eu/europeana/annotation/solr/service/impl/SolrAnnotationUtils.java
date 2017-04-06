@@ -195,7 +195,7 @@ public class SolrAnnotationUtils {
 	
 	protected void processSolrBeanProperties(SolrAnnotation solrAnnotation) {
 		
-		solrAnnotation.setMotivationKey(solrAnnotation.getMotivationType().name());
+		solrAnnotation.setMotivationKey(solrAnnotation.getMotivationType().getJsonValue());
 
 		processBody(solrAnnotation);
 		
@@ -241,7 +241,7 @@ public class SolrAnnotationUtils {
 	}
 
 	protected String extractTextValues(Body body) {
-		String value = " ";
+		String value = "";
 		if (body.getValue() != null)
 			value += body.getValue();
 		else if (body.getValues() != null)
