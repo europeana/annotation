@@ -193,6 +193,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PAR_CHAR = "?";
 	public static final String COLLECTION = "collection";
 	public static final String OBJECT = "object";
+	public static final String OLD_RECORD_ID = "old";
+	public static final String NEW_RECORD_ID = "new";
 
 	/**
 	 * Error messages

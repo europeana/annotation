@@ -9,12 +9,14 @@ import eu.europeana.annotation.definitions.model.resource.style.Style;
 public class BaseInternetResource extends AbstractResource implements InternetResource{
 
 	private String mediaType;
-	private List<String> values = new ArrayList<String>(2);
+	private List<String> values;
 
 	public void addValue(String value) {
-		if (!values.contains(value)) {
-			values.add(value);
-		}
+		if( values==null)
+			values = new ArrayList<String>(4);
+			
+		if (!values.contains(value))
+			values.add(value);	
 	}
 	
 	public List<String> getValues() {
