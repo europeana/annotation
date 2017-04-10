@@ -303,7 +303,7 @@ public class BaseWebAnnotationProtocolTest {
 				
 				for (int i = 0; i < methods.length; i++) {
 					currentMethod = methods[i];
-					if(currentMethod.getName().startsWith("get")){
+					if(currentMethod.getName().startsWith("get") && !isTechnicalMethod(currentMethod.getName())){
 						inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
 						
 						//compare non null fields only
@@ -319,6 +319,10 @@ public class BaseWebAnnotationProtocolTest {
 				}
 				
 			}
+
+	private boolean isTechnicalMethod(String name) {
+		return "getIdAsString".equals(name);
+	}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
 		String provider = WebAnnotationFields.PROVIDER_WEBANNO;

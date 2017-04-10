@@ -59,12 +59,10 @@ public interface Annotation {
 	public abstract boolean isDisabled();
 
 	/**
-	 * @deprecated
-	 * @return
+	 *  @return
 	 */
 	public abstract void setSameAs(String sameAs);
 	/**
-	 * @deprecated
 	 * @return
 	 */
 	public abstract String getSameAs();

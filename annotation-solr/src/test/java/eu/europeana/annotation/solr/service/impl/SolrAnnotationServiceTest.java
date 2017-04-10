@@ -286,7 +286,7 @@ public class SolrAnnotationServiceTest {
 		/**
 		 * delete the SolrAnnotation object from SOLR
 		 */
-		solrAnnotationService.delete(solrAnnotations.getResults().get(0).getId());
+		solrAnnotationService.delete(solrAnnotations.getResults().get(0).getIdAsString());
 		
 //		printList(solrAnnotationService.getAll(), "list after delete method ...");
 

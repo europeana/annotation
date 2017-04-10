@@ -1,6 +1,5 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -11,7 +10,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import com.google.common.base.Strings;
@@ -288,7 +286,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			try {
 				getSolrService().store(res);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName())
+				getLogger()
 						.warn("The annotation was stored correctly into the Mongo, but it was not indexed yet. ", e);
 				// throw new RuntimeException(e);
 			}
@@ -299,7 +297,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				// SolrTag indexedTag = copyIntoSolrTag(res.getBody());
 				// getSolrTagService().findOrStore(indexedTag);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName()).warn(
+				getLogger().warn(
 						"The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. ",
 						e);
 			}
@@ -327,7 +325,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				Annotation annotation = getMongoPersistance().find(res.getAnnotationId());
 				reindexAnnotation(annotation, lastindexing);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName()).warn(
+				getLogger().warn(
 						"The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ",
 						e);
 			}
@@ -377,12 +375,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
 
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
-		
-		Annotation res = getMongoPersistence().update(persistentAnnotation);
-
-		//reindex annotation
-		if (getConfiguration().isIndexingEnabled())
-			reindexAnnotation(res, res.getLastUpdate());
+		Annotation res = updateAndReindex(persistentAnnotation);
 
 		return res;
 	}
@@ -458,9 +451,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	public Annotation updateAnnotationStatus(Annotation annotation) {
 
-		Annotation res = getMongoPersistence().updateStatus(annotation);
-
-		return res;
+		return getMongoPersistence().updateStatus(annotation);
 	}
 
 	@Override
@@ -499,7 +490,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		try {
 			getSolrService().delete(annotation.getAnnotationId());
 		} catch (Exception e) {
-			logger.error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toRelativeUri(), e);
+			getLogger().error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toRelativeUri(), e);
 		}
 	}
 
