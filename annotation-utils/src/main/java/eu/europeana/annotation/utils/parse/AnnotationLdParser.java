@@ -639,10 +639,10 @@ public class AnnotationLdParser extends JsonLdParser {
 		//set node
 		Object jsonNode = jsonGraph.get(relationName);
 		if(jsonNode instanceof String)
-			graphBody.getGraph().setNodeUri((String)jsonNode);
+			graphBody.getGraph().setLinkedResourceUri((String)jsonNode);
 		else if(jsonNode instanceof JSONObject){
 			InternetResource resource = parseResource((JSONObject)jsonNode);
-			graphBody.getGraph().setNode(resource);
+			graphBody.getGraph().setLinkedResource(resource);
 		} else
 			throw new JsonParseException("Cannot parse json to graph body! Parse of json type not supported: "+jsonNode.getClass() + "\njson value: " + jsonNode);
 			

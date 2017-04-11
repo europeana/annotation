@@ -218,7 +218,7 @@ public class SolrAnnotationUtils {
 			break;
 		case GRAPH:
 			GraphBody gb = (GraphBody) body;
-			solrAnnotation.setLinkResourceUri(gb.getGraph().getNodeUri());
+			solrAnnotation.setLinkResourceUri(gb.getGraph().getLinkedResourceUri());
 			solrAnnotation.setLinkRelation(gb.getGraph().getRelationName());
 			break;
 		case LINK:
