@@ -164,7 +164,7 @@ public class AnnotationPageSerializer extends JsonLd {
 		String[] items = new String[(int) getPageItems().getResults().size()];
 		int i = 0;
 		for (AnnotationView anno : getPageItems().getResults()) {
-			items[i++] = anno.getId();
+			items[i++] = anno.getIdAsString();
 		}
 
 		if (items.length > 0)

@@ -110,7 +110,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
-				annotationIds.add(annotationView.getId());		
+				annotationIds.add(annotationView.getIdAsString());		
 			}
 			
 			//fetch annotation objects

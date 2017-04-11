@@ -16,9 +16,4 @@ public class BaseImageAnnotation extends AbstractAnnotation implements ImageAnno
 		
 		return getTarget().getHttpUri();
 	}
-	
-	
-	
-
-	
 }

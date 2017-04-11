@@ -124,8 +124,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 					status.incrementSuccessCount();
 				else
 					status.incrementFailureCount();
-			} catch (IllegalArgumentException iae) {
-				String msg = "id: " + id + ". " + iae.getMessage();
+			} catch (RuntimeException ex) {
+				String msg = "id: " + id + ". " + ex.getMessage();
 				getLogger().error(msg);
 				// throw new RuntimeException(iae);
 				status.incrementFailureCount();
@@ -133,7 +133,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 				String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
 				getLogger().error(msg);
 				status.incrementFailureCount();
-				// throw new RuntimeException(e);
 			}
 		}
 		return status;
@@ -161,13 +160,13 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 		// find annotation by oldId
 		List<? extends Annotation> annotations = getMongoPersistence().getAnnotationListByResourceId(oldId);
-		
+
 		for (Annotation anno : annotations) {
 			if (!anno.isDisabled()) {
 				Target annoTarget = anno.getTarget();
 
 				// update resourceIds
-				if(annoTarget.getResourceIds() != null) {
+				if (annoTarget.getResourceIds() != null) {
 					List<String> currentResourceIds = annoTarget.getResourceIds();
 					List<String> updatedResourceIds = new ArrayList<String>();
 					for (String id : currentResourceIds) {
@@ -175,7 +174,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 							String updatedId = newId;
 							updatedResourceIds.add(updatedId);
 						} else {
-							updatedResourceIds.add(id);							
+							updatedResourceIds.add(id);
 						}
 					}
 					annoTarget.setResourceIds(updatedResourceIds);
@@ -186,16 +185,17 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 					String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
 					annoTarget.setHttpUri(newHttpUri);
 				}
-				
+
 				if (annoTarget.getValue() != null) {
 					String newValue = annoTarget.getValue().replace(oldId, newId);
 					annoTarget.setValue(newValue);
 					// inputString depends on value(s)
 					annoTarget.setInputString(newValue);
 				}
-				
-				// change "value" and "values" fields, so we only have one of them
-				if(annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
+
+				// change "value" and "values" fields, so we only have one of
+				// them
+				if (annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
 					List<String> currentValues = annoTarget.getValues();
 					List<String> updatedValues = new ArrayList<String>();
 					for (String value : currentValues) {
@@ -206,14 +206,20 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 					// inputString depends on value(s)
 					annoTarget.setInputString(updatedValues.toString());
 				}
-				
+
 				// replace target
 				anno.setTarget(annoTarget);
 
 				// update mongo
 				try {
-					getMongoPersistence().update((PersistentAnnotation) anno);
-					status.incrementSuccessCount();
+					PersistentAnnotation storedAnno = (PersistentAnnotation) updateAndReindex(
+							(PersistentAnnotation) anno);
+
+					// if not re-indexed or not indexed at all
+					if (isIndexInSync(storedAnno))
+						status.incrementSuccessCount();
+					else
+						status.incrementIndexingFailureCount();
 				} catch (Exception e) {
 					status.incrementFailureCount();
 					throw e;
@@ -222,5 +228,9 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		}
 
 		return status;
+	}
+
+	protected boolean isIndexInSync(PersistentAnnotation storedAnno) {
+		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
 }

@@ -213,12 +213,15 @@ public class AnnotationPageParser extends JsonLdParser {
 		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
 		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
 		for (int i = 0, size = jsonArr.length(); i < size; i++) {
+			//TODO parse minimal and standard profiles, depending on the content
+			
 			String resourceId = (String) jsonArr.get(i);
 			AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
 			avrItem.setId(resourceId);
 			avrItem.setTimestampUpdated(new Date(0));
 			avItemList.add(avrItem);
 		}
+		
 		resAvItemList.setResultSize(jsonArr.length());
 		return resAvItemList.setResults(avItemList);
 	}

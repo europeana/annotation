@@ -26,7 +26,7 @@ public interface IdBean {
 	 * 
 	 * @return The Europeana object UniqueID
 	 */
-	String getId();
+	String getIdAsString();
 	
 //	/**
 //	 * The date the record was created
@@ -38,5 +38,5 @@ public interface IdBean {
 	 * The date the record was updated
 	 * @return 
 	 */
-	Date getTimestampUpdated();
+	Date getLastUpdate();
 }
