@@ -218,8 +218,7 @@ public class SolrAnnotationUtils {
 			break;
 		case GRAPH:
 			GraphBody gb = (GraphBody) body;
-			solrAnnotation.setLinkResourceUri(gb.getGraph().getNodeUri());
-			solrAnnotation.setLinkRelation(gb.getGraph().getRelationName());
+			processGraphBody(solrAnnotation, gb);
 			break;
 		case LINK:
 			//no body or Graph
@@ -237,6 +236,16 @@ public class SolrAnnotationUtils {
 			break;
 			
 				
+		}
+	}
+
+	protected void processGraphBody(SolrAnnotation solrAnnotation, GraphBody gb) {
+		solrAnnotation.setLinkRelation(gb.getGraph().getRelationName());
+		if(gb.getGraph().getNodeUri() != null)
+			solrAnnotation.setLinkResourceUri(gb.getGraph().getNodeUri());
+		else if(gb.getGraph().getNode() != null){
+			String linkedResourceUri = gb.getGraph().getNode().getHttpUri();
+			solrAnnotation.setLinkResourceUri(linkedResourceUri);
 		}
 	}
 
