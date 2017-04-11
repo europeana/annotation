@@ -364,13 +364,13 @@ public class AnnotationLdSerializer extends JsonLd {
 			if(StringUtils.isNotBlank(graph.getContext()))
 				graphValue.getValues().put(WebAnnotationFields.AT_CONTEXT, graph.getContext());
 			
-			if(graph.getLinkedResourceUri() != null)//the node has only the id
-				graphValue.getValues().put(graph.getRelationName(), graph.getLinkedResourceUri());
+			if(graph.getNodeUri() != null)//the node has only the id
+				graphValue.getValues().put(graph.getRelationName(), graph.getNodeUri());
 			else{ // the node is a resource{
 				JsonLdProperty nodeProperty = new JsonLdProperty(graph.getRelationName());
 				JsonLdPropertyValue nodeValue = new JsonLdPropertyValue();
 				//nodeValue.getValues().put(WebAnnotationFields.ID, graph.getNode());
-				putResourceDescriptionProps(graph.getLinkedResource(), nodeValue);
+				putResourceDescriptionProps(graph.getNode(), nodeValue);
 				nodeProperty.addValue(nodeValue);
 				graphValue.putProperty(nodeProperty);
 			}

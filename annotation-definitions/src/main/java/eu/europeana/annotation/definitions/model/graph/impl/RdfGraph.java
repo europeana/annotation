@@ -8,8 +8,8 @@ public class RdfGraph implements Graph{
 	String resourceUri;
 	//aka rdf predicate
 	String relationName;
-	String linkedResourceUri;
-	InternetResource linkedResource;
+	String nodeUri;
+	InternetResource node;
 	String context;
 	
 	@Override
@@ -29,20 +29,20 @@ public class RdfGraph implements Graph{
 		this.relationName = relationName;
 	}
 	@Override
-	public String getLinkedResourceUri() {
-		return linkedResourceUri;
+	public String getNodeUri() {
+		return nodeUri;
 	}
 	@Override
-	public void setLinkedResourceUri(String nodeUri) {
-		this.linkedResourceUri = nodeUri;
+	public void setNodeUri(String nodeUri) {
+		this.nodeUri = nodeUri;
 	}
 	@Override
-	public InternetResource getLinkedResource() {
-		return linkedResource;
+	public InternetResource getNode() {
+		return node;
 	}
 	@Override
-	public void setLinkedResource(InternetResource node) {
-		this.linkedResource = node;
+	public void setNode(InternetResource node) {
+		this.node = node;
 	}
 	@Override
 	public String getContext() {
