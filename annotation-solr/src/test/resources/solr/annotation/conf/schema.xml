@@ -56,10 +56,21 @@
 					protected="protwords.txt" />
 			</analyzer>
 		</fieldType>
-		<fieldType name="keyword" class="solr.TextField">
+		<fieldType name="keyword_lower_case" class="solr.TextField">
 			<analyzer>
 				<tokenizer class="solr.KeywordTokenizerFactory" />
 				<filter class="solr.LowerCaseFilterFactory" />
+				<!-- <filter class="solr.PatternReplaceFilterFactory" pattern="([.^:;()\\[\\],])" 
+					replacement="" replace="all" /> <filter class="solr.PatternReplaceFilterFactory" 
+					pattern="([-+])" replacement=" " replace="all" /> -->
+			</analyzer>
+		</fieldType>
+		<fieldType name="keyword" class="solr.TextField">
+			<analyzer>
+				<tokenizer class="solr.KeywordTokenizerFactory" />
+				<!-- 
+				<filter class="solr.LowerCaseFilterFactory" />
+				 -->
 				<!-- <filter class="solr.PatternReplaceFilterFactory" pattern="([.^:;()\\[\\],])" 
 					replacement="" replace="all" /> <filter class="solr.PatternReplaceFilterFactory" 
 					pattern="([-+])" replacement=" " replace="all" /> -->
