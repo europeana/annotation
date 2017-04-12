@@ -329,6 +329,9 @@ public class ManagementRest extends BaseRest {
 		response.setStatus("Updated record IDs. " + status.toString());
 		response.success = true;
 		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Update record ID operation result. \n Old ID: " + oldId +  
+				"\nnewId : " + newId + 
+				"\nResult: "+ jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 
 	}
