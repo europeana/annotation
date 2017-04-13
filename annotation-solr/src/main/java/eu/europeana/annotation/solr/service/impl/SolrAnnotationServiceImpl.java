@@ -36,7 +36,12 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	}
 
 	@Override
-	public void store(Annotation anno) throws AnnotationServiceException {
+	public boolean store(Annotation anno) throws AnnotationServiceException {
+		if(anno.isDisabled()){
+			getLogger().warn("Annotation with the following id was not stored in solr index, annotation diabled: " + anno.toString());
+			return false;
+		}
+		
 		try {
 			getLogger().debug("store: " + anno.toString());
 			SolrAnnotation indexedAnno = null;
@@ -61,6 +66,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 			throw new AnnotationServiceException(
 					"Unexpected IO exception occured when storing annotations for: " + anno.getAnnotationId(), ex);
 		}
+		
+		return true;
 	}
 
 	
@@ -328,11 +335,18 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		update(anno, null);
 	}
 
-	public void update(Annotation anno, Summary summary) throws AnnotationServiceException {
-		getLogger().debug("update log: " + anno.toString());
+	public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException {
+		getLogger().debug("update solr annotation: " + anno.toString());
+		boolean ret = false;
+		
 		delete(anno.getAnnotationId());
-		Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
-		store(indexedAnnotation);
+		//index annotation only if not disabled
+		//disabled annotations 
+		if(!anno.isDisabled()){
+			Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
+			ret = store(indexedAnnotation);
+		}
+		return ret;
 	}
 
 	public void delete(AnnotationId annotationId) throws AnnotationServiceException {

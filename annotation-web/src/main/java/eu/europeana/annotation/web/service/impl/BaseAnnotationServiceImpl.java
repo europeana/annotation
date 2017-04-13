@@ -147,15 +147,15 @@ public abstract class BaseAnnotationServiceImpl{
 
 	}
 
-	public void indexAnnotation(AnnotationId annoId) {
-		try {
-			Annotation res = getAnnotationById(annoId);
-			getSolrService().delete(res.getAnnotationId());
-			getSolrService().store(res);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	public void indexAnnotation(AnnotationId annoId) {
+//		try {
+//			Annotation res = getAnnotationById(annoId);
+//			getSolrService().delete(res.getAnnotationId());
+//			getSolrService().store(res);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 	
 	/**
 	 * Returns true by successful reindexing.

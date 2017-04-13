@@ -119,7 +119,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 				if (annotation == null)
 					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
+				boolean success = reindexAnnotation(annotation, new Date());
 				if (success)
 					status.incrementSuccessCount();
 				else
@@ -146,9 +146,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	@Override
 	public BatchProcessingStatus reindexOutdated() {
 		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-
-		BatchProcessingStatus status = new BatchProcessingStatus();
-		status.incrementSuccessCount();
+		//BatchProcessingStatus status = new BatchProcessingStatus();
+		//status.incrementSuccessCount();
 		// return status;
 
 		return reindexAnnotationSet(res, true);

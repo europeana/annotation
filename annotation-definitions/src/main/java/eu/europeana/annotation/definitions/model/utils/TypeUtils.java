@@ -98,9 +98,9 @@ public class TypeUtils {
     	return res;
     }
     
-    public static Date convertUnixTimestampStrToDate(String unixTimestamp) {
-    	return new Date(Long.valueOf(unixTimestamp)*1000);
-    }
+//    public static Date convertUnixTimestampStrToDate(String unixTimestamp) {
+//    	return new Date(Long.valueOf(unixTimestamp)*1000);
+//    }
     
     /**
      * This method performs a conversion of date in string format 'dd-MM-yyyy' to unix date without 
@@ -175,31 +175,31 @@ public class TypeUtils {
     	return res;
     }
       
-	public static String validateDates(String jsonPost) {
-		String res = jsonPost;
-		res = validateDate(ModelConst.ANNOTATED_AT, res);
-		res = validateDate(ModelConst.SERIALIZED_AT, res);
-		return res;
-	}
+//	public static String validateDates(String jsonPost) {
+//		String res = jsonPost;
+//		res = validateDate(ModelConst.ANNOTATED_AT, res);
+//		res = validateDate(ModelConst.SERIALIZED_AT, res);
+//		return res;
+//	}
 
-	public static String validateDate(String fieldName, String jsonPost) {
-		String res = jsonPost;
-		String annotatedDateStr = getDateFromJsonString(fieldName, jsonPost);
-		Date normalizedDate = TypeUtils.convertStrToDate(annotatedDateStr); 
-		String unixDateStr = TypeUtils.getUnixDateStringFromDate(normalizedDate);
-		if (StringUtils.isNotBlank(annotatedDateStr)) 
-			res = res.replace(annotatedDateStr, unixDateStr);
-		return res;
-	}
+//	public static String validateDate(String fieldName, String jsonPost) {
+//		String res = jsonPost;
+//		String annotatedDateStr = getDateFromJsonString(fieldName, jsonPost);
+//		Date normalizedDate = TypeUtils.convertStrToDate(annotatedDateStr); 
+//		String unixDateStr = TypeUtils.getUnixDateStringFromDate(normalizedDate);
+//		if (StringUtils.isNotBlank(annotatedDateStr)) 
+//			res = res.replace(annotatedDateStr, unixDateStr);
+//		return res;
+//	}
     
-	public static String validateDateExt(String fieldName, String jsonPost) {
-		String res = jsonPost;
-		String unixDateStr = getDateFromJsonStringExt(fieldName, jsonPost);
-		String normalizedDate = TypeUtils.getDateFromUnixDateExt(unixDateStr); //convertUnixTimestampStrToDate(unixDateStr); 
-		if (StringUtils.isNotBlank(unixDateStr)) 
-			res = res.replace(unixDateStr, normalizedDate);
-		return res;
-	}
+//	public static String validateDateExt(String fieldName, String jsonPost) {
+//		String res = jsonPost;
+//		String unixDateStr = getDateFromJsonStringExt(fieldName, jsonPost);
+//		String normalizedDate = TypeUtils.getDateFromUnixDateExt(unixDateStr); //convertUnixTimestampStrToDate(unixDateStr); 
+//		if (StringUtils.isNotBlank(unixDateStr)) 
+//			res = res.replace(unixDateStr, normalizedDate);
+//		return res;
+//	}
     
 	/**
 	 * This method extracts date value from the JSON string for particular date field.
@@ -208,29 +208,29 @@ public class TypeUtils {
 	 * @param jsonStr
 	 * @return
 	 */
-	public static String getDateFromJsonString(String fieldName, String jsonStr) {
-		String res = "";
-		if (StringUtils.isNotEmpty(fieldName) && StringUtils.isNotEmpty(jsonStr) && jsonStr.contains(fieldName)) {
-			Pattern pattern = Pattern.compile(fieldName + "\":\"(.*?)\",");
-			Matcher matcher = pattern.matcher(jsonStr);
-			if (matcher.find()) {
-			    res = matcher.group(1);
-			}		
-		}
-		return res;
-	}
+//	public static String getDateFromJsonString(String fieldName, String jsonStr) {
+//		String res = "";
+//		if (StringUtils.isNotEmpty(fieldName) && StringUtils.isNotEmpty(jsonStr) && jsonStr.contains(fieldName)) {
+//			Pattern pattern = Pattern.compile(fieldName + "\":\"(.*?)\",");
+//			Matcher matcher = pattern.matcher(jsonStr);
+//			if (matcher.find()) {
+//			    res = matcher.group(1);
+//			}		
+//		}
+//		return res;
+//	}
 	
-	public static String getDateFromJsonStringExt(String fieldName, String jsonStr) {
-		String res = "";
-		if (StringUtils.isNotEmpty(fieldName) && StringUtils.isNotEmpty(jsonStr) && jsonStr.contains(fieldName)) {
-			Pattern pattern = Pattern.compile(fieldName + "\":(.*?),");
-			Matcher matcher = pattern.matcher(jsonStr);
-			if (matcher.find()) {
-			    res = matcher.group(1);
-			}		
-		}
-		return res;
-	}
+//	public static String getDateFromJsonStringExt(String fieldName, String jsonStr) {
+//		String res = "";
+//		if (StringUtils.isNotEmpty(fieldName) && StringUtils.isNotEmpty(jsonStr) && jsonStr.contains(fieldName)) {
+//			Pattern pattern = Pattern.compile(fieldName + "\":(.*?),");
+//			Matcher matcher = pattern.matcher(jsonStr);
+//			if (matcher.find()) {
+//			    res = matcher.group(1);
+//			}		
+//		}
+//		return res;
+//	}
 	
 	
 	/**
