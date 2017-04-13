@@ -16,23 +16,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class SemanticTaggingTest extends BaseTaggingTest {
 
-	public Annotation createAndValidateTag(String inputType) throws IOException, JsonParseException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
-		System.out.println("Input File: " + inputType);
-		
-		String requestBody = getJsonStringInput(inputType);
-
-		Annotation storedAnno = createTag(requestBody);
-
-		Annotation inputAnno = parseTag(requestBody);
-
-		// validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
-
-		return storedAnno;
-	}
-
+	
 	@Test
 	public void createSemanticTagSimpleMinimal() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {

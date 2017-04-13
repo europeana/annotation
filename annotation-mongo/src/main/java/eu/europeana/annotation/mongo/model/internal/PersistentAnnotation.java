@@ -23,7 +23,6 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	public final static String FIELD_DISABLED = "disabled";
 	public final static String FIELD_VALUE = "value";
 	public final static String FIELD_VALUES = "values";
-	public final static String FIELD_RESOURCE_ID = "resourceId";
 	public final static String FIELD_RESOURCE_IDS = "resourceIds";
 	public final static String FIELD_TARGET = "target.";
 	
@@ -40,15 +39,6 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	 */
 	public void setId(ObjectId id);
 
-//	public abstract Long getCreationTimestamp();
-//
-//	public abstract void setCreationTimestamp(Long creationTimestamp);
-//
-	
-//	
-//	public abstract String[] getVisibility();
-//
-//	public abstract void setVisibility(String[] visibility);
 	
 	public abstract void setLastIndexed(Date lastIndexedDate);
 

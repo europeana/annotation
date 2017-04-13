@@ -37,6 +37,8 @@ public class AnnotationBuilder {
 		to.setEquivalentTo(annotation.getEquivalentTo());
 		to.setStatus(annotation.getStatus());
 		to.setLastUpdate(annotation.getLastUpdate());
+		to.setCanonical(annotation.getCanonical());
+		to.setVia(annotation.getVia());
 	}
 
 	/**

@@ -185,7 +185,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	}
 
 	protected String getBaseUrl() {
-		return ((AnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
+		return ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
 	}
 
 	@Test

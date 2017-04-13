@@ -1,6 +1,7 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +14,15 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
+import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -70,68 +72,10 @@ public class SolrAnnotationUtils {
 		return solrQuery;
 	}
 
-	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation) {
-
-		return copyIntoSolrAnnotation(annotation, false, null);
-	}
-
-	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual) {
-
-		return copyIntoSolrAnnotation(annotation, withMultilingual, null);
-	}
-
 	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual, Summary summary) {
 
-		SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl();
-		// solrAnnotationImpl.setType(annotation.getType());
-		// TODO: update this to store the internal type instead of the oa type
-		// in the index
-		// TODO: add the internal type solr configs
-		solrAnnotationImpl.setInternalType(annotation.getInternalType());
-		solrAnnotationImpl.setInternalTypeKey(annotation.getInternalType());
-		// solrAnnotationImpl.setInternalType(annotation.getInternalType());
-		solrAnnotationImpl.setCreator(annotation.getCreator());
-		Body body = annotation.getBody();
-
-		if (body != null) {
-			solrAnnotationImpl.setBody(body);
-			solrAnnotationImpl.setBodyValue(body.getValue());
-			solrAnnotationImpl.setBodyTagId(solrAnnotationImpl.getBodyTagId());
-			solrAnnotationImpl.setBodyInternalTypeKey(body.getInternalType());
-			if (withMultilingual)
-				body = convertToSolrMultilingual(body);
-		}
-
-		solrAnnotationImpl.setCreated(annotation.getCreated());
-		solrAnnotationImpl.setCreatorString(annotation.getCreator().getName());
-		solrAnnotationImpl.setTarget(annotation.getTarget());
-		solrAnnotationImpl.setAnnotationId(annotation.getAnnotationId());
-
-		// solrAnnotationImpl.setLanguage(body.getLanguage());
-		solrAnnotationImpl.setMotivation(annotation.getMotivation());
-		solrAnnotationImpl.setGenerated(annotation.getGenerated());
-		if(annotation.getGenerator() != null){
-			solrAnnotationImpl.setGenerator(annotation.getGenerator());
-			solrAnnotationImpl.setGeneratorId(annotation.getGenerator().getHttpUrl());
-			solrAnnotationImpl.setGeneratorName(annotation.getGenerator().getName());
-		}
-		
-		solrAnnotationImpl.setStyledBy(annotation.getStyledBy());
-		solrAnnotationImpl.setAnnotationIdUrl(annotation.getAnnotationId().toHttpUrl());
-
-		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getSameAs());
-		// TODO: add the equivalent to solr configs
-		solrAnnotationImpl.setSameAs(solrAnnotationImpl.getEquivalentTo());
-		solrAnnotationImpl.setUpdatedTimestamp(annotation.getLastUpdate().getTime());
-		solrAnnotationImpl.setCreatedTimestamp(annotation.getCreated().getTime());
-		solrAnnotationImpl.setGeneratedTimestamp(annotation.getGenerated().getTime());
-
-		if (summary != null) {
-			solrAnnotationImpl.setModerationScore((long) summary.getScore());
-		} else {
-			solrAnnotationImpl.setModerationScore((long) 0);
-		}
-
+		//TODO: 
+		SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary);
 		return solrAnnotationImpl;
 
 	}
@@ -140,7 +84,7 @@ public class SolrAnnotationUtils {
 	 * This method converts a multilingual part of the Annotation Body in a
 	 * multilingual value that is conform for Solr. E.g. 'en' in
 	 * 'EN_multilingual'
-	 * 
+	 * @deprecated - update when requirements for multilingual bodies are available 
 	 * @param body
 	 * @return converted body
 	 */
@@ -172,6 +116,11 @@ public class SolrAnnotationUtils {
 		return bodyRes;
 	}
 
+	/**
+	 * @deprecated - update when requirements for multilingual bodies are available 
+	 * @param body
+	 * @param bodyRes
+	 */
 	protected void setMultilingualMap(Body body, Body bodyRes) {
 		if ((body instanceof SkosConceptBody) && (bodyRes instanceof SkosConceptBody)) {
 			SkosConceptBody skosBody = (SkosConceptBody) body;
@@ -191,7 +140,7 @@ public class SolrAnnotationUtils {
 
 	/**
 	 * This method converts Body object in SolrTag object.
-	 * 
+	 * @deprecated - update when requirements for multilingual bodies are available 
 	 * @param tag
 	 *            The body object
 	 * @return the SolrTag object
@@ -243,4 +192,118 @@ public class SolrAnnotationUtils {
 
 		return resultSet;
 	}
+	
+	protected void processSolrBeanProperties(SolrAnnotation solrAnnotation) {
+		
+		solrAnnotation.setMotivationKey(solrAnnotation.getMotivationType().getJsonValue());
+
+		processBody(solrAnnotation);
+		
+		processTargetUris(solrAnnotation);
+		
+	}
+
+	protected void processBody(SolrAnnotation solrAnnotation) {
+		Body body = solrAnnotation.getBody();
+		if(body == null)
+			return;
+		
+		switch (BodyInternalTypes.valueOf(body.getInternalType())){
+			case TEXT:
+				solrAnnotation.setBodyValue(extractTextValues(body));
+			break;
+		case GEO_TAG:
+			//no text payload specified yet 
+//			solrAnnotation.setBodyValue(extractTextValues(body));
+			break;
+		case GRAPH:
+			GraphBody gb = (GraphBody) body;
+			processGraphBody(solrAnnotation, gb);
+			break;
+		case LINK:
+			//no body or Graph
+			break;
+		case SEMANTIC_LINK:
+			//not specified yet
+			break;
+		case SEMANTIC_TAG:
+			solrAnnotation.setBodyUris(extractResourceUris(body)); 
+			break;
+		case TAG:
+			solrAnnotation.setBodyValue(extractTextValues(body));
+			break;
+		default:
+			break;
+			
+				
+		}
+	}
+
+	protected void processGraphBody(SolrAnnotation solrAnnotation, GraphBody gb) {
+		solrAnnotation.setLinkRelation(gb.getGraph().getRelationName());
+		if(gb.getGraph().getNodeUri() != null)
+			solrAnnotation.setLinkResourceUri(gb.getGraph().getNodeUri());
+		else if(gb.getGraph().getNode() != null){
+			String linkedResourceUri = gb.getGraph().getNode().getHttpUri();
+			solrAnnotation.setLinkResourceUri(linkedResourceUri);
+		}
+	}
+
+	protected String extractTextValues(Body body) {
+		String value = "";
+		if (body.getValue() != null)
+			value += body.getValue();
+		else if (body.getValues() != null)
+			value += Arrays.toString(body.getValues().toArray());
+		return value;
+	}
+
+	protected void processTargetUris(SolrAnnotation solrAnnotation) {
+		
+		InternetResource internetResource = solrAnnotation.getTarget();
+		List<String> resourceUris = extractResourceUris(internetResource);
+
+		solrAnnotation.setTargetUris(resourceUris);
+		
+		List<String> recordIds = extractRecordIds(resourceUris);
+		solrAnnotation.setTargetRecordIds(recordIds);
+	}
+
+	protected List<String> extractResourceUris(InternetResource internetResource) {
+		List<String> resourceUrls;
+		if (internetResource.getValues() != null && !internetResource.getValues().isEmpty())
+			resourceUrls = internetResource.getValues();
+		else
+			resourceUrls = Arrays.asList(new String[] { internetResource.getValue() });
+		return resourceUrls;
+	}
+	
+	private List<String> extractRecordIds(List<String> targetUrls) {
+
+		List<String> recordIds = new ArrayList<String>(targetUrls.size());
+		String target;
+		for (int i = 0; i < targetUrls.size(); i++) {
+			target = targetUrls.get(i);
+			
+			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_ITEM);	
+			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_RECORD);	
+		}
+
+		return recordIds;
+	}
+
+	protected void addToRecordIds(List<String> recordIds, String target, String markup) {
+		String recordId = extractRecordId(target, markup); 
+		if (recordId != null)
+			recordIds.add(recordId);
+	}
+
+	protected String extractRecordId(String target, String markup) {
+		int pos;
+		pos = target.indexOf(markup);
+		if (pos > 0) 
+			return target.substring(pos + markup.length());
+		return null;
+	}
+
 }

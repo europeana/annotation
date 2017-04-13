@@ -10,15 +10,16 @@ import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
-public abstract class AbstractAnnotation implements Annotation {
+public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 
 	protected AnnotationId annotationId = null;
 	private String type;
-	private String internalType;
+	protected String internalType;
 	private Agent creator;
 	private Agent generator;
 	private Date created;
@@ -33,6 +34,8 @@ public abstract class AbstractAnnotation implements Annotation {
 	private String equivalentTo;
 	private String status;
 	private Date lastUpdate;
+	private String canonical;
+	private String[] via;
 	
 	
 	public AbstractAnnotation(){
@@ -336,13 +339,13 @@ public abstract class AbstractAnnotation implements Annotation {
 	}
 
 	@Override
-	public void setCreated(Date annotatedAt) {
-		this.created = annotatedAt;
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 	
 	@Override
-	public void setGenerated(Date serializedAt) {
-		this.generated = serializedAt;
+	public void setGenerated(Date generated) {
+		this.generated = generated;
 	}
 	
 	public void setAnnotationId(AnnotationId annotationId) {
@@ -386,8 +389,24 @@ public abstract class AbstractAnnotation implements Annotation {
 		return this.lastUpdate;
 	}
 
-	public void setLastUpdate(Date lastUpdateTimestamp){
-		this.lastUpdate = lastUpdateTimestamp;
+	public void setLastUpdate(Date lastUpdate){
+		this.lastUpdate = lastUpdate;
+	}
+	
+	public String getCanonical() {
+		return canonical;
+	}
+	
+	public void setCanonical(String canonical) {
+		this.canonical = canonical;
+	}
+	
+	public String[] getVia() {
+		return via;
+	}
+	
+	public void setVia(String[] via) {
+		this.via = via;
 	}
 
 	@Override
@@ -397,6 +416,10 @@ public abstract class AbstractAnnotation implements Annotation {
 			res = res + "\t" + "annotationId:" + annotationId.toString() + "\n";
 		if (type != null) 
 			res = res + "\t" + "type:" + type + "\n";
+		if (StringUtils.isNotEmpty(canonical))
+			res = res + "\t" + "canonical:" + canonical + "\n";
+		if (via != null)
+			res = res + "\t" + "via:" + via + "\n";
 		if (created != null) 
 			res = res + "\t" + "annotatedAt:" + created + "\n";
 		if (creator != null) 
@@ -424,5 +447,10 @@ public abstract class AbstractAnnotation implements Annotation {
 	public boolean isPrivate() {
 		//TODO: change the usage of status to the usage of visibility when the specification is complete
 		return AnnotationStates.PRIVATE.equals(getStatus());
+	}
+	
+	@Override
+	public String getIdAsString() {
+		return getAnnotationId().toHttpUrl();
 	}
 }

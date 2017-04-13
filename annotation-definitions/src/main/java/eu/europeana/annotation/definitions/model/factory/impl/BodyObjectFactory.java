@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
+import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
@@ -63,9 +64,11 @@ public class BodyObjectFactory extends
 		case GRAPH:
 			returnType = RdfGraphBody.class; 
 			break;
+		case LINK:
+			throw new AnnotationInstantiationException("Bodies of type LINK must be empty!");
 		
 		default:
-			throw new AnnotationInstantiationException("unsupported body type: " + modelType);
+			throw new AnnotationInstantiationException("unsupported (internal) body type: " + modelType);
 
 		}
 

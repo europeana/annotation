@@ -56,6 +56,8 @@ public interface AnnotationSearchApi {
 	 */
 	public List<? extends TagResource> searchTags(String query, String startOn, String limit, String field, String language);
 
+	AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile);
+
 
 
 

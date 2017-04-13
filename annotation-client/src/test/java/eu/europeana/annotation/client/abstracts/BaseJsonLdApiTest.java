@@ -176,7 +176,7 @@ public class BaseJsonLdApiTest {
 	protected void validateAnnotation(String provider, long annotationNr, Annotation annotation)
 			throws JsonParseException {
 		
-		System.out.println("Annotation URI: " + annotation.getAnnotationId().toUri());
+		System.out.println("Annotation URI: " + annotation.getAnnotationId().toRelativeUri());
 		
 		assertEquals(provider, annotation.getAnnotationId().getProvider());
 		if (provider.equals(WebAnnotationFields.PROVIDER_WEBANNO))

@@ -8,9 +8,9 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
  */
 public enum SortFields implements MappedSolrField {
 
-	  created(SolrAnnotationConstants.CREATED,  SolrAnnotationConstants.CREATED_TIMESTAMP)
-	, generated(SolrAnnotationConstants.GENERATED, SolrAnnotationConstants.GENERATED_TIMESTAMP)
-	, modified(SolrAnnotationConstants.MODIFIED, SolrAnnotationConstants.UPDATED_TIMESTAMP); 
+	  created(SolrAnnotationConstants.CREATED,  SolrAnnotationConstants.CREATED)
+	, generated(SolrAnnotationConstants.GENERATED, SolrAnnotationConstants.GENERATED)
+	, modified(SolrAnnotationConstants.MODIFIED, SolrAnnotationConstants.MODIFIED); 
 
 	
 	private String modelField;
@@ -24,7 +24,7 @@ public enum SortFields implements MappedSolrField {
 		return modelField;
 	}
 
-	
+	//TODO: after #135 this mapping is not needed anymore.  A simple enumeration of strings can be used
 	SortFields(String modelField, String solrField){
 		this.modelField = modelField;
 		this.solrField = solrField;
