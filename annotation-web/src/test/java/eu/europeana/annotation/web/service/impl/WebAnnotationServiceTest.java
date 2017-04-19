@@ -335,8 +335,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Reindex Annotation.
 		 */
-		webAnnotationService.indexAnnotation(
-				storedAnnotation.getAnnotationId());
+		//to do use store or update for reindexing
+//		webAnnotationService.up  (
+//				storedAnnotation.getAnnotationId());
 		
 		/**
 		 * Search Annotation.

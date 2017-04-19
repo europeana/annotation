@@ -15,7 +15,6 @@ import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateOperations;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -492,11 +491,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			String startTimestamp, String endTimestamp) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotBlank(startTimestamp)) {
-			Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+			//Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+			Date start = new Date(Long.parseLong(startTimestamp));
 			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(start);
 		}
 		if (StringUtils.isNotBlank(endTimestamp)) {
-			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
+			//Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
+			Date end = new Date(Long.parseLong(endTimestamp));
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}
 		//Actually this is a list of Objects

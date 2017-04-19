@@ -293,7 +293,7 @@ public interface AnnotationService {
 	 */
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
 
-	void indexAnnotation(AnnotationId annoId);
+//	void indexAnnotation(AnnotationId annoId);
 
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
 

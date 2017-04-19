@@ -1,14 +1,0 @@
-#check resource idsdb.annotation.find({"target.resourceIds":{$size: 1}}).count();
-#check resource iddb.annotation.find({"target.resourceId":{$exists: true}}).count();#check resource ids and resource iddb.annotation.find({"target.resourceIds":{$exists: true}, "target.resourceId":{$exists: true}});#check value and values
-db.annotation.find({"target.values":{$exists: true}, "target.value":{$exists: true}})
-#migrate resourceId to resourceIds and remove fielddb.annotation.find({"target.resourceId":{$exists: true}}).forEach(function(doc){    var count;    if(count < 0)    	count = 0;    count++;		print( "Migrating: " + doc.annotationId.httpUrl );    print( "Migrating: resourceId" + doc.resourceId );    print( "Migration count: " + count);    
-    db.annotation.update({        "target.resourceId":{$exists: true}},        {
-            $addToSet: {"target.resourceIds": doc.target.resourceId},            $unset: {"target.resourceId": null}
-        });	
-});
-#remove value when values existdb.annotation.updateMany(
-        {"target.values":{$exists: true}},        {            $unset: {"target.value": null}        });
-#post migration checkdb.annotation.find({"target.values":{$exists: true}, "target.value":{$exists: true}})#post migration check
-db.annotation.find({"target.resourceIds":{$size: 1}}).count();
-#post migration check
-db.annotation.find({"target.resourceId":{$exists: true}}).count();#post migration checkdb.annotation.find({"target.resourceIds":{$exists: true}}).count();
