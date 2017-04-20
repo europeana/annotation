@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,8 +13,10 @@ import com.google.common.base.Strings;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.exception.IndexingJobServiceException;
 import eu.europeana.annotation.mongo.model.internal.PersistentIndexingJob;
 import eu.europeana.annotation.mongo.service.PersistentIndexingJobService;
@@ -111,7 +114,49 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 	@Override
 	// TODO:reimplement using database cursors for higher scalability
-	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+	@Deprecated 
+  //TODO: #131 switch to reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
+
+		BatchProcessingStatus status = new BatchProcessingStatus();
+		AnnotationId annoId = null;
+		Annotation annotation;
+		int count = 0;
+		for (String id : ids) {
+			try {
+				count++;
+				if (count % 1000 == 0)
+					getLogger().info("Processing object: " + count);
+				// check
+				if (isObjectId) {
+					annotation = getMongoPersistence().findByID(id);
+				} else {
+					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+					annotation = getMongoPersistence().find(annoId);
+				}
+
+				if (annotation == null)
+					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+				boolean success = reindexAnnotation(annotation, new Date());
+				if (success)
+					status.incrementSuccessCount();
+				else
+					status.incrementFailureCount();
+			} catch (RuntimeException ex) {
+				String msg = "id: " + id + ". " + ex.getMessage();
+				getLogger().error(msg);
+				// throw new RuntimeException(iae);
+				status.incrementFailureCount();
+			} catch (Exception e) {
+				String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
+				getLogger().error(msg);
+				status.incrementFailureCount();
+      }
+    }
+  }
+
+  @Override
+  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
 			throws HttpException, IndexingJobServiceException {
 
 		if (indexingJobService.getLastRunningJob() != null)
@@ -178,9 +223,87 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	public BatchProcessingStatus reindexOutdated() throws HttpException, IndexingJobServiceException {
 
 		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-
 		return reindexAnnotationSet(res, true, "reindexOutdated");
-
 	}
 
+	@Override
+	public BatchProcessingStatus updateRecordId(String oldId, String newId) {
+		BatchProcessingStatus status = new BatchProcessingStatus();
+
+		// find annotation by oldId
+		List<? extends Annotation> annotations = getMongoPersistence().getAnnotationListByResourceId(oldId);
+
+		for (Annotation anno : annotations) {
+			if (!anno.isDisabled()) {
+				Target annoTarget = anno.getTarget();
+
+				// update resourceIds
+				if (annoTarget.getResourceIds() != null) {
+					List<String> currentResourceIds = annoTarget.getResourceIds();
+					List<String> updatedResourceIds = new ArrayList<String>();
+					for (String id : currentResourceIds) {
+						if (id.equals(oldId)) {
+							String updatedId = newId;
+							updatedResourceIds.add(updatedId);
+						} else {
+							updatedResourceIds.add(id);
+						}
+					}
+					annoTarget.setResourceIds(updatedResourceIds);
+				}
+
+				// update fields: httpUri, value(s) + inputString
+				if (annoTarget.getHttpUri() != null) {
+					String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
+					annoTarget.setHttpUri(newHttpUri);
+				}
+
+				if (annoTarget.getValue() != null) {
+					String newValue = annoTarget.getValue().replace(oldId, newId);
+					annoTarget.setValue(newValue);
+					// inputString depends on value(s)
+					annoTarget.setInputString(newValue);
+				}
+
+				// change "value" and "values" fields, so we only have one of
+				// them
+				if (annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
+					List<String> currentValues = annoTarget.getValues();
+					List<String> updatedValues = new ArrayList<String>();
+					for (String value : currentValues) {
+						String updatedValue = value.replace(oldId, newId);
+						updatedValues.add(updatedValue);
+					}
+					annoTarget.setValues(updatedValues);
+					// inputString depends on value(s)
+					annoTarget.setInputString(updatedValues.toString());
+				}
+
+				// replace target
+				anno.setTarget(annoTarget);
+
+				// update mongo
+				try {
+					PersistentAnnotation storedAnno = (PersistentAnnotation) updateAndReindex(
+							(PersistentAnnotation) anno);
+
+					// if not re-indexed or not indexed at all
+					if (isIndexInSync(storedAnno))
+						status.incrementSuccessCount();
+					else
+						status.incrementIndexingFailureCount();
+				} catch (Exception e) {
+					status.incrementFailureCount();
+					throw e;
+				}
+			}
+		}
+
+		return status;
+	}
+
+	protected boolean isIndexInSync(PersistentAnnotation storedAnno) {
+		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
+	}
 }
+  

@@ -2,6 +2,7 @@ package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -302,18 +303,26 @@ public class BaseWebAnnotationProtocolTest {
 				
 				for (int i = 0; i < methods.length; i++) {
 					currentMethod = methods[i];
-					if(currentMethod.getName().startsWith("get")){
+					if(currentMethod.getName().startsWith("get") && !isTechnicalMethod(currentMethod.getName())){
 						inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
 						
 						//compare non null fields only
 						if(inputProp != null){
 							storedProp = currentMethod.invoke(storedAnno, (Object[])null);
-							assertEquals(inputProp, storedProp);
+							
+							if(inputProp instanceof String[])
+								assertArrayEquals((String[])inputProp, (String[])storedProp);
+							else
+								assertEquals(inputProp, storedProp);
 						}			
 					}			
 				}
 				
 			}
+
+	private boolean isTechnicalMethod(String name) {
+		return "getIdAsString".equals(name);
+	}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
 		String provider = WebAnnotationFields.PROVIDER_WEBANNO;
@@ -352,6 +361,10 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 	
+	/**
+	 * @deprecated numericId is ambiguous, use relative_uri or full uri (annotationId) when deleting annotations 
+	 * @param numericId
+	 */
 	protected void deleteAnnotation(Integer numericId) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);

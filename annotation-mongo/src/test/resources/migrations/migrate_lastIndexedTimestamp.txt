@@ -2,6 +2,13 @@
 //verify number of objects in collection
 //db.annotation.count();
 
+//how many items need to be migrated
+db.annotation.find({"lastIndexedTimestamp":{$exists : true}}).count();
+
+//how many items were already migrated
+db.annotation.find({"lastIndexed":{$exists : true}}).count();
+
+
 //aggregate objects into annotation_new collections
 db.annotation.aggregate(    [
      { $project: { 

@@ -27,11 +27,11 @@ public interface AnnotationId extends Serializable {
 	 * @see also {@link AnnotationId#toHttpUrl(String)}
 	 * 
 	 */
-	public String toUri();
+	public String toRelativeUri();
 	
 	/**
 	 * returns the HTTP URL where the annotation can be accessed  ({baseUrl}/toUri())
-	 * @see also {@link AnnotationId#toUri()}
+	 * @see also {@link AnnotationId#toRelativeUri()}
 	 * 
 	 */
 	public String toHttpUrl();

@@ -1,0 +1,7 @@
+db.getCollection('annotation').find({
+    "body.graph.linkedResource": {$exists:true}
+})
+
+db.getCollection('annotation').find({
+    "body.graph.linkedResourceUri": {$exists:true}
+})

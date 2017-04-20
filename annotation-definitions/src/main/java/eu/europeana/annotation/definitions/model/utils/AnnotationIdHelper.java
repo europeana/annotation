@@ -271,7 +271,7 @@ public class AnnotationIdHelper {
 		annotationId.setIdentifier(id);
 
 		if(includeBaseUrl){
-			String baseUrl = StringUtils.remove(uri, annotationId.toUri());
+			String baseUrl = StringUtils.remove(uri, annotationId.toRelativeUri());
 			annotationId.setBaseUrl(baseUrl); 
 		}
 		

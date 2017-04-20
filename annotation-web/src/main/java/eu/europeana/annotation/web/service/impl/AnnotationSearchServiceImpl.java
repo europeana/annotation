@@ -110,7 +110,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
-				annotationIds.add(annotationView.getId());		
+				annotationIds.add(annotationView.getIdAsString());		
 			}
 			
 			//fetch annotation objects
@@ -246,7 +246,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			break;
 
 		case MINIMAL:
-			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNOTATION_ID_URL });
+			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNO_URI });
 			break;
 	
 		case STANDARD:

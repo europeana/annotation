@@ -81,7 +81,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	protected void createTestAnnoInEnvironment(String environment)
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		AnnotationConfigurationImpl config = (AnnotationConfigurationImpl) ((AnnotationServiceImpl)webAnnotationService).getConfiguration();
+		AnnotationConfigurationImpl config = (AnnotationConfigurationImpl) ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration();
 		config.getAnnotationProperties().put(AnnotationConfigurationImpl.ANNOTATION_ENVIRONMENT, environment);
 		
 		Annotation anno = testCreateAnnotationWebanno();

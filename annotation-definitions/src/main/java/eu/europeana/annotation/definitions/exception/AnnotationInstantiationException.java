@@ -14,11 +14,13 @@ public class AnnotationInstantiationException extends RuntimeException{
 	public static final String DEFAULT_MESSAGE = "Cannot instantiate annotation attribute: ";
 	
 	public AnnotationInstantiationException(String attributeName){
-		super(DEFAULT_MESSAGE + attributeName);
+//		super(DEFAULT_MESSAGE + attributeName);
+		super(attributeName);
 	}
 	
 	public AnnotationInstantiationException(String attributeName , Throwable th){
-		super(DEFAULT_MESSAGE + attributeName, th);
+//		super(DEFAULT_MESSAGE + attributeName, th);
+		super(attributeName, th);
 	}
 	
 }

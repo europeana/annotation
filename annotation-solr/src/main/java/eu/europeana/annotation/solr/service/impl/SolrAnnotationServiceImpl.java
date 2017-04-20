@@ -1,11 +1,8 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.springframework.stereotype.Component;
 
 import org.apache.commons.lang.StringUtils;
 //import org.apache.log4j.Logger;
@@ -14,6 +11,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.springframework.stereotype.Component;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -22,12 +20,11 @@ import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrAnnotation;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 @Component
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
@@ -39,7 +36,12 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	}
 
 	@Override
-	public void store(Annotation anno) throws AnnotationServiceException {
+	public boolean store(Annotation anno) throws AnnotationServiceException {
+		if(anno.isDisabled()){
+			getLogger().warn("Annotation with the following id was not stored in solr index, annotation diabled: " + anno.toString());
+			return false;
+		}
+		
 		try {
 			getLogger().debug("store: " + anno.toString());
 			SolrAnnotation indexedAnno = null;
@@ -48,7 +50,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 				indexedAnno = (SolrAnnotation) anno;
 			else{
 				boolean withMultilingual = false;
-				indexedAnno = copyIntoSolrAnnotation(anno, withMultilingual);
+				indexedAnno = copyIntoSolrAnnotation(anno, withMultilingual, null);
 			}
 			
 			processSolrBeanProperties(indexedAnno);
@@ -64,73 +66,11 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 			throw new AnnotationServiceException(
 					"Unexpected IO exception occured when storing annotations for: " + anno.getAnnotationId(), ex);
 		}
+		
+		return true;
 	}
 
-	private void processSolrBeanProperties(SolrAnnotation solrAnnotation) {
-		// <!-- @Field("annotationIdUrl") -->
-		solrAnnotation.setAnnotationIdUrl(solrAnnotation.getAnnotationId().toHttpUrl());
-
-		// <!-- @Field("targetInternalTypeKey") -->
-		solrAnnotation.setTargetInternalTypeKey(solrAnnotation.getTarget().getInternalType());
-
-		// <!-- @Field("target_id") -->
-		// <!-- @Field("target_record_id") -->
-		//if target URLs were not extracted yet 
-		if (solrAnnotation.getTargetUrls() == null) {
-			List<String> targetUrls = null;
-
-			if (solrAnnotation.getTarget().getValues() != null && !solrAnnotation.getTarget().getValues().isEmpty())
-				targetUrls = solrAnnotation.getTarget().getValues();
-			else
-				targetUrls = Arrays.asList(new String[] { solrAnnotation.getTarget().getValue() });
-
-			solrAnnotation.setTargetUrls(targetUrls);
-
-			List<String> recordIds = extractRecordIds(targetUrls);
-			solrAnnotation.setTargetRecordIds(recordIds);
-		}
-
-		// <!-- @Field("motivationKey") -->
-		solrAnnotation.setMotivationKey(solrAnnotation.getMotivationType().name());
-
-		// <!-- @Field("body_tag_id") -->
-		// solrAnnotation.setBodyTagId(solrAnnotation.getBody().get);
-
-		// <!-- @Field("bodyValue") -->
-		if (solrAnnotation.getBody() != null){
-			solrAnnotation.setBodyValue(solrAnnotation.getBody().getValue());
-		}
-
-	}
-
-	private List<String> extractRecordIds(List<String> targetUrls) {
-
-		List<String> recordIds = new ArrayList<String>(targetUrls.size());
-		String target;
-		for (int i = 0; i < targetUrls.size(); i++) {
-			target = targetUrls.get(i);
-			
-			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_ITEM);	
-			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_RECORD);	
-		}
-
-		return recordIds;
-	}
-
-	protected void addToRecordIds(List<String> recordIds, String target, String markup) {
-		String recordId = extractRecordId(target, markup); 
-		if (recordId != null)
-			recordIds.add(recordId);
-	}
-
-	protected String extractRecordId(String target, String markup) {
-		int pos;
-		pos = target.indexOf(markup);
-		if (pos > 0) 
-			return target.substring(pos + markup.length());
-		return null;
-	}
-
+	
 	@Override
 	public ResultSet<? extends AnnotationView> search(String term) throws AnnotationServiceException {
 
@@ -226,7 +166,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 		//Construct a SolrQuery
 		SolrQuery query = new SolrQuery();
-		query.setParam(SolrAnnotationConstants.ANNOTATION_ID_URL, new String[] { annoIdUrl });
+		query.setParam(SolrAnnotationConstants.ANNO_URI, new String[] { annoIdUrl });
 		// setFieldList(query);
 
 		getLogger().debug("query: " + query);
@@ -318,31 +258,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		return res;
 	}
 
-	protected SolrQuery buildSearchQuery(AnnotationView queryObject) {
-		/**
-		 * Construct a SolrQuery
-		 */
-		SolrQuery query = new SolrQuery();
-		String queryStr = "";
-
-		// TODO: proper implementation
-
-		// if (queryObject.getLabel() != null) {
-		// queryStr = queryStr +
-		// SolrAnnotationFields.LABEL.getSolrAnnotationField()
-		// + ":" + queryObject.getLabel();
-		// }
-		// if (queryObject.getLanguage() != null) {
-		// queryStr = queryStr + " AND " +
-		// SolrAnnotationFields.LANGUAGE.getSolrAnnotationField()
-		// + ":" + queryObject.getLanguage();
-		// }
-		getLogger().info("queryStr: " + queryStr);
-		query.setQuery(queryStr);
-		// setFieldList(query, profile);
-		return query;
-	}
-
 	@Override
 	public ResultSet<? extends AnnotationView> searchByLabel(String searchTerm) throws AnnotationServiceException {
 
@@ -420,11 +335,18 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		update(anno, null);
 	}
 
-	public void update(Annotation anno, Summary summary) throws AnnotationServiceException {
-		getLogger().debug("update log: " + anno.toString());
+	public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException {
+		getLogger().debug("update solr annotation: " + anno.toString());
+		boolean ret = false;
+		
 		delete(anno.getAnnotationId());
-		Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
-		store(indexedAnnotation);
+		//index annotation only if not disabled
+		//disabled annotations 
+		if(!anno.isDisabled()){
+			Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
+			ret = store(indexedAnnotation);
+		}
+		return ret;
 	}
 
 	public void delete(AnnotationId annotationId) throws AnnotationServiceException {

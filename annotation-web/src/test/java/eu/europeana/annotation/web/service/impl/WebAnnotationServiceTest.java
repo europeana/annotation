@@ -185,7 +185,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	}
 
 	protected String getBaseUrl() {
-		return ((AnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
+		return ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
 	}
 
 	@Test
@@ -335,8 +335,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Reindex Annotation.
 		 */
-		webAnnotationService.indexAnnotation(
-				storedAnnotation.getAnnotationId());
+		//to do use store or update for reindexing
+//		webAnnotationService.up  (
+//				storedAnnotation.getAnnotationId());
 		
 		/**
 		 * Search Annotation.

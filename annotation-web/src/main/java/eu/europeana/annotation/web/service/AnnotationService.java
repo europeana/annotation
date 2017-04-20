@@ -58,7 +58,7 @@ public interface AnnotationService {
 	 */
 	public List<? extends Annotation> getAnnotationListByResourceId (String resourceId);
 	
-	/**
+	/*
 	 * This method retrieves annotations applying filters.
 	 * @param resourceId
 	 * @param startOn
@@ -66,8 +66,8 @@ public interface AnnotationService {
 	 * @param isDisabled
 	 * @return the list of annotations
 	 */
-	public List<? extends Annotation> getFilteredAnnotationList (
-			String resourceId, String startOn, String limit, boolean isDisabled);
+//	public List<? extends Annotation> getFilteredAnnotationList (
+//			String resourceId, String startOn, String limit, boolean isDisabled);
 	
 	/**
 	 * This method creates Europeana Annotation object from a JsonLd string.
@@ -293,7 +293,7 @@ public interface AnnotationService {
 	 */
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
 
-	void indexAnnotation(AnnotationId annoId);
+//	void indexAnnotation(AnnotationId annoId);
 
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
 

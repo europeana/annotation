@@ -86,4 +86,9 @@ public interface AdminService {
 	 */
 	public BatchProcessingStatus reindexOutdated() throws HttpException, IndexingJobServiceException;
 
+	/**
+	 * this method is used to update record ids
+	 * @return
+	 */
+	public BatchProcessingStatus updateRecordId(String oldId, String newId);
 }
