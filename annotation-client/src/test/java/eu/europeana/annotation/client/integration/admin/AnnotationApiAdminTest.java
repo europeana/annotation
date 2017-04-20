@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
