@@ -55,12 +55,11 @@ public class AnnotationPageSerializer extends JsonLd {
 	public String serialize(SearchProfiles profile) {
 
 		setUseTypeCoercion(false);
-		setUseCuries(true);
-		// addNamespacePrefix(WebAnnotationFields.OA_CONTEXT,
-		// WebAnnotationFields.OA);
-		// TODO: verify if the following check is needed
+		setUseCuries(false);
+		setApplyNamespaces(false);
 		// if(isApplyNamespaces())
-		setUsedNamespaces(namespacePrefixMap);
+		//setUsedNamespaces(namespacePrefixMap);
+		
 
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
@@ -165,7 +164,7 @@ public class AnnotationPageSerializer extends JsonLd {
 		String[] items = new String[(int) getPageItems().getResults().size()];
 		int i = 0;
 		for (AnnotationView anno : getPageItems().getResults()) {
-			items[i++] = anno.getId();
+			items[i++] = anno.getIdAsString();
 		}
 
 		if (items.length > 0)

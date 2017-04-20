@@ -44,6 +44,11 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 
 		return res;
 	}
+	
+	@Override
+	public AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile) {
+		return searchAnnotations(query, null, null, null, null, searchProfile);
+	}
 
 	@Override
 	public AnnotationPage searchAnnotations(

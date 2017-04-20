@@ -182,11 +182,15 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				);
 		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(response);
 		
+		assertEquals( HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
 		assertEquals(TAG_STANDARD_TEST_VALUE_TARGET, updatedAnnotation.getTarget().getHttpUri());
-		assertEquals( HttpStatus.OK, response.getStatusCode());
+		
+		//TODO: search annotation in solr and verify body and target values.
 	}
+	
+	
 			
 				
 	@Test

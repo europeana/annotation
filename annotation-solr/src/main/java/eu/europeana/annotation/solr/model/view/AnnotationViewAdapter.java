@@ -8,12 +8,12 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 public class AnnotationViewAdapter extends SolrAnnotationImpl implements AnnotationView {
 
 	@Override
-	public String getId() {
-		return getAnnotationIdUrl();
+	public String getIdAsString() {
+		return getAnnoUri();
 	}
 
 	@Override
-	public Date getTimestampUpdated() {
+	public Date getLastUpdate() {
 		return null;
 	}
 

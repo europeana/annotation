@@ -12,11 +12,13 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.service.SolrTagService;
+import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -145,23 +147,30 @@ public abstract class BaseAnnotationServiceImpl{
 
 	}
 
-	public void indexAnnotation(AnnotationId annoId) {
-		try {
-			Annotation res = getAnnotationById(annoId);
-			getSolrService().delete(res.getAnnotationId());
-			getSolrService().store(res);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	public void indexAnnotation(AnnotationId annoId) {
+//		try {
+//			Annotation res = getAnnotationById(annoId);
+//			getSolrService().delete(res.getAnnotationId());
+//			getSolrService().store(res);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 	
 	/**
 	 * Returns true by successful reindexing.
 	 * @param res
 	 * @return reindexing success status
+	 * @throws AnnotationIndexingException 
 	 */
-	protected boolean reindexAnnotation(Annotation res, Date lastIndexing) {
+	protected boolean reindexAnnotation(Annotation res, Date lastIndexing) throws AnnotationIndexingException {
 		boolean success = false;
+		
+		if (!getConfiguration().isIndexingEnabled()){
+			getLogger().warn("Annotation was not reindexed, indexing is disabled. See configuration properties!");
+			return false;
+		}
+			
 		try {
 			Summary summary = getMongoModerationRecordPersistence().getModerationSummaryByAnnotationId(res.getAnnotationId());			
 			getSolrService().update(res, summary);
@@ -169,9 +178,9 @@ public abstract class BaseAnnotationServiceImpl{
 			
 			success = true;
 		} catch (Exception e) {
-			Logger.getLogger(getClass().getName()).error("Error by reindexing of annotation: "
-					+ res.getAnnotationId().toString() + ". " + e.getMessage());
-			throw new RuntimeException(e);
+//			Logger.getLogger(getClass().getName()).error("Error by reindexing of annotation: "
+//					+ res.getAnnotationId().toString() + ". " + e.getMessage());
+			throw new AnnotationIndexingException("cannot reindex annotation with ID: " + res.getAnnotationId(), e);
 		}
 		
 		// check if the tag is already indexed
@@ -200,8 +209,8 @@ public abstract class BaseAnnotationServiceImpl{
 			Annotation res = getAnnotationById(annoId);
 			success = reindexAnnotation(res, lastIndexing);
 		} catch (Exception e) {
-			Logger.getLogger(getClass().getName()).error(e.getMessage());
-			throw new RuntimeException(e);
+			logger.error(e.getMessage());
+			return false;
 		}
 		return success;
 	}
@@ -209,6 +218,7 @@ public abstract class BaseAnnotationServiceImpl{
 	protected void updateLastIndexingTime(Annotation res, Date lastIndexing) {
 		try {
 			getMongoPersistence().updateIndexingTime(res.getAnnotationId(), lastIndexing);
+			((PersistentAnnotation)res).setLastIndexed(lastIndexing);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName())
 					.warn("The time of the last SOLR indexing could not be saved. " , e);
@@ -225,6 +235,18 @@ public abstract class BaseAnnotationServiceImpl{
 
 	public PersistentAnnotationService getMongoPersistance() {
 		return mongoPersistance;
+	}
+
+	protected Annotation updateAndReindex(PersistentAnnotation persistentAnnotation) {
+		Annotation res = getMongoPersistence().update(persistentAnnotation);
+	
+		//reindex annotation
+		try {
+			reindexAnnotation(res, res.getLastUpdate());	
+		} catch (AnnotationIndexingException e) {
+		   getLogger().warn("The annotation could not be reindexed successfully: " + persistentAnnotation.getAnnotationId(), e);		
+		}
+		return res;
 	}
 	
 }
