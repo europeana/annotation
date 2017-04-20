@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
 
 import com.google.common.base.Strings;
 
@@ -14,14 +17,22 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.exception.IndexingJobServiceException;
+import eu.europeana.annotation.mongo.model.internal.PersistentIndexingJob;
+import eu.europeana.annotation.mongo.service.PersistentIndexingJobService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.service.AdminService;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
+
+	@Resource(name = "annotation_db_jobService")
+	PersistentIndexingJobService indexingJobService;
 
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
@@ -76,7 +87,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
-			String endTimestamp) {
+			String endTimestamp) throws HttpException, IndexingJobServiceException {
 
 		// int successCount = 0;
 		// int failureCount = 0;
@@ -91,14 +102,21 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return reindexAnnotationSelection(startTimestamp, endTimestamp);
 	}
 
-	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp) {
+	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp)
+			throws HttpException {
 		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
-		return reindexAnnotationSet(res, true);
+		try {
+			return reindexAnnotationSet(res, true, "reindexAnnotationSelection");
+		} catch (IndexingJobServiceException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}
 	}
 
 	@Override
 	// TODO:reimplement using database cursors for higher scalability
-	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
+	@Deprecated 
+  //TODO: #131 switch to reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
 
 		BatchProcessingStatus status = new BatchProcessingStatus();
 		AnnotationId annoId = null;
@@ -133,24 +151,79 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 				String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
 				getLogger().error(msg);
 				status.incrementFailureCount();
+      }
+    }
+  }
+
+  @Override
+  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+			throws HttpException, IndexingJobServiceException {
+
+		if (indexingJobService.getLastRunningJob() != null)
+			throw new IndexingJobLockedException(action);
+		
+		PersistentIndexingJob pij = null;
+		try {
+			pij = indexingJobService.lock(action);
+
+			synchronized (this) {
+				BatchProcessingStatus status = new BatchProcessingStatus();
+				AnnotationId annoId = null;
+				Annotation annotation;
+				int count = 0;
+
+				for (String id : ids) {
+					try {
+						count++;
+						if (count % 1000 == 0)
+							getLogger().info("Processing object: " + count);
+						// check
+						if (isObjectId) {
+							annotation = getMongoPersistence().findByID(id);
+						} else {
+							annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+							annotation = getMongoPersistence().find(annoId);
+						}
+						if (annotation == null)
+							throw new AnnotationNotFoundException(
+									AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
+						if (success)
+							status.incrementSuccessCount();
+						else
+							status.incrementFailureCount();
+					} catch (IllegalArgumentException iae) {
+						String msg = "id: " + id + ". " + iae.getMessage();
+						getLogger().error(msg);
+						// throw new RuntimeException(iae);
+						status.incrementFailureCount();
+					} catch (Throwable e) {
+						String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
+						getLogger().error(msg);
+						status.incrementFailureCount();
+						// throw new RuntimeException(e);
+					}
+				}
+				return status;
 			}
-		}
-		return status;
+		}finally{
+			//unlock the index
+			indexingJobService.unlock(pij);
+			
+		} 
+
 	}
 
 	@Override
-	public BatchProcessingStatus reindexAll() {
+	public BatchProcessingStatus reindexAll() throws HttpException, IndexingJobServiceException {
 		return reindexAnnotationSelection("0", "" + System.currentTimeMillis());
 	}
 
 	@Override
-	public BatchProcessingStatus reindexOutdated() {
-		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-		//BatchProcessingStatus status = new BatchProcessingStatus();
-		//status.incrementSuccessCount();
-		// return status;
+	public BatchProcessingStatus reindexOutdated() throws HttpException, IndexingJobServiceException {
 
-		return reindexAnnotationSet(res, true);
+		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
+		return reindexAnnotationSet(res, true, "reindexOutdated");
 	}
 
 	@Override
@@ -233,3 +306,4 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
 }
+  

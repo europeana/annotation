@@ -74,4 +74,8 @@
 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentClientImpl" />
 	</bean>
 	
+	<bean id="annotation_db_jobDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentIndexingJobDaoImpl">
+		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentIndexingJobImpl" />
+	</bean>
+	
 </beans>

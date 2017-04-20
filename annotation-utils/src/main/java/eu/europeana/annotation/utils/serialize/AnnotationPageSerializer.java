@@ -179,6 +179,7 @@ public class AnnotationPageSerializer extends JsonLd {
 			return;
 		
 		JsonLdProperty itemsProp = new JsonLdProperty(WebAnnotationFields.ITEMS);
+		itemsProp.setForceMultivalued(true);
 		AnnotationLdSerializer annoLdSerializer;
 		for(Annotation annotation: protocolPage.getAnnotations()) {
 			//transform annotation object to json-ld

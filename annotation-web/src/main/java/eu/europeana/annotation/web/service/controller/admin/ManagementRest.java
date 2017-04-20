@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.exception.IndexingJobServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
@@ -193,7 +195,7 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "startTimestamp", required = false) String startTimestamp,
 			@RequestParam(value = "endTimestamp", required = false) String endTimestamp,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
-			throws UserAuthorizationException {
+			throws UserAuthorizationException, IndexingJobServiceException, IndexingJobLockedException, HttpException {
 
 		if (!isAdmin(apiKey, userToken))
 			throw new UserAuthorizationException("User not authorized. Must use the admin apikey and token:",
@@ -227,7 +229,12 @@ public class ManagementRest extends BaseRest {
 
 		List<String> uriList = BaseJsonParser.toStringList(uris, true);
 
-		BatchProcessingStatus status = getAdminService().reindexAnnotationSet(uriList, false);
+		BatchProcessingStatus status;
+		try{
+			status = getAdminService().reindexAnnotationSet(uriList, false,"/admin/annotation/reindexset");
+		} catch (IndexingJobServiceException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
@@ -257,7 +264,12 @@ public class ManagementRest extends BaseRest {
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
-		BatchProcessingStatus status = getAdminService().reindexAll();
+		BatchProcessingStatus status;
+		try{
+			status = getAdminService().reindexAll();
+		}catch (IndexingJobServiceException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}	
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
@@ -284,18 +296,34 @@ public class ManagementRest extends BaseRest {
 
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
-
+//TODO: check and remove
+/*
 		BatchProcessingStatus status = getAdminService().reindexOutdated();
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
 		response.setStatus("Outdated annotations reindexed. " + status.toString());
+    */
+		
+		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
+		BatchProcessingStatus status; 
+		try{
+			status = getAdminService().reindexOutdated();
+		
+		}catch (IndexingJobServiceException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}
+		
+		String successMsg = "Outdated annotations reindexed. " + status.toString();
+		response.setStatus(successMsg);
 		response.success = true;
-
+		HttpStatus httpStatus = HttpStatus.OK;
+		logger.info(successMsg);
+		
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		logger.info("Index new and reindex outdated annotations result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
+	
 
 	@RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
