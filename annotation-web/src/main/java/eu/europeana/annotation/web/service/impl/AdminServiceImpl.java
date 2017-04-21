@@ -15,10 +15,10 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
-import eu.europeana.annotation.mongo.exception.IndexingJobServiceException;
+import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentIndexingJob;
-import eu.europeana.annotation.mongo.service.PersistentIndexingJobService;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.HttpException;
@@ -30,8 +30,8 @@ import eu.europeana.annotation.web.service.AdminService;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
-	@Resource(name = "annotation_db_jobService")
-	PersistentIndexingJobService indexingJobService;
+	@Resource(name = "annotation_db_apilockService")
+	PersistentApiWriteLockService indexingJobService;
 
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
@@ -86,7 +86,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
-			String endTimestamp) throws HttpException, IndexingJobServiceException {
+			String endTimestamp) throws HttpException, ApiWriteLockException {
 
 		// int successCount = 0;
 		// int failureCount = 0;
@@ -106,7 +106,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
 		try {
 			return reindexAnnotationSet(res, true, "reindexAnnotationSelection");
-		} catch (IndexingJobServiceException e) {
+		} catch (ApiWriteLockException e) {
 			throw new InternalServerException("Cannot reindex annotation selection", e);
 		}
 	}
@@ -155,12 +155,12 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
   @Override
   public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
-			throws HttpException, IndexingJobServiceException {
+			throws HttpException, ApiWriteLockException {
 
-		if (indexingJobService.getLastRunningJob() != null)
+		if (indexingJobService.getLastActiveLock() != null)
 			throw new IndexingJobLockedException(action);
 		
-		PersistentIndexingJob pij = null;
+		PersistentApiWriteLock pij = null;
 		try {
 			pij = indexingJobService.lock(action);
 
@@ -213,12 +213,12 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	@Override
-	public BatchProcessingStatus reindexAll() throws HttpException, IndexingJobServiceException {
+	public BatchProcessingStatus reindexAll() throws HttpException, ApiWriteLockException {
 		return reindexAnnotationSelection("0", "" + System.currentTimeMillis());
 	}
 
 	@Override
-	public BatchProcessingStatus reindexOutdated() throws HttpException, IndexingJobServiceException {
+	public BatchProcessingStatus reindexOutdated() throws HttpException, ApiWriteLockException {
 
 		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
 		return reindexAnnotationSet(res, true, "reindexOutdated");

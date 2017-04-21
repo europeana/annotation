@@ -2,11 +2,15 @@ package eu.europeana.annotation.web.service.authorization;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
@@ -16,6 +20,8 @@ import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 
 public class AuthorizationServiceImpl implements AuthorizationService {
+	
+	protected final Logger logger = Logger.getLogger(getClass());
 
 	@Resource
 	AuthenticationService authenticationService;
@@ -39,8 +45,20 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		this.authenticationService = authenticationService;
 	}
 	
+
+	@Resource(name = "annotation_db_apilockService")
+	private PersistentApiWriteLockService apiWriteLockService;
+	
+
+	public PersistentApiWriteLockService getPersistentIndexingJobService() {
+		return apiWriteLockService;
+	}
+
+	public void setPersistentIndexingJobService(PersistentApiWriteLockService apiWriteLockService) {
+		this.apiWriteLockService = apiWriteLockService;
+	}
+	
 	@Override
-	@Deprecated
 	/**
 	 * use authorizeUser(String userToken, String apiKey, String operationName) instead
 	 * @param userToken
@@ -54,6 +72,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
 		// throws exception if user is not found
 		//TODO: add userToken to agent
+		
+		checkWriteLockInEffect(userToken, operationName);
+		
+		
 		Application app = getAuthenticationService().getByApiKey(apiKey);
 		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
 		
@@ -78,6 +100,26 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 		//user is not authorized to perform operation
 		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName(), HttpStatus.FORBIDDEN);			
+	}
+
+	/**
+	 * Check if a write lock is in effect. Returns HttpStatus.LOCKED for change operations in case the write lock is active.
+	 * @param userToken
+	 * @param operationName
+	 * @throws UserAuthorizationException
+	 */
+	private void checkWriteLockInEffect(String userToken, String operationName) throws UserAuthorizationException {
+		PersistentApiWriteLock runningJob;
+		try {
+			runningJob = getPersistentIndexingJobService().getLastActiveLock();
+			// refuse operation if a write lock is effective (allow only unlock and retrieve operations)
+			if(!(operationName.equals(Operations.ADMIN_UNLOCK) || operationName.endsWith(Operations.RETRIEVE) ) 
+					&& runningJob != null && runningJob.getName().equals("lockWriteOperations") && runningJob.getEnded() == null) {
+				throw new UserAuthorizationException("Server is locked for maintenance: no changes can be made to the data ("+operationName+")", HttpStatus.LOCKED);
+			}
+		} catch (ApiWriteLockException e) {
+			throw new UserAuthorizationException("Authentication procedure failed.", userToken, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	//verify client app privileges 
