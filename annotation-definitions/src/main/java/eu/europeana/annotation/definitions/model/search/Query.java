@@ -51,8 +51,6 @@ public interface Query {
 	 */
 	public static final int DEFAULT_PAGE_SIZE = 10;
 	
-	public static final Integer MAX_PAGE_SIZE = 100;
-	
 	/**
 	 * Use these instead of the ones provided in the apache Solr package
 	 * in order to avoid introducing a dependency to that package in all modules
