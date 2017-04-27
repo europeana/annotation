@@ -111,48 +111,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		}
 	}
 
-	// TODO:reimplement using database cursors for higher scalability
-//	@Deprecated 
-  //TODO: #131 switch to reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
-//  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
-//
-//		BatchProcessingStatus status = new BatchProcessingStatus();
-//		AnnotationId annoId = null;
-//		Annotation annotation;
-//		int count = 0;
-//		for (String id : ids) {
-//			try {
-//				count++;
-//				if (count % 1000 == 0)
-//					getLogger().info("Processing object: " + count);
-//				// check
-//				if (isObjectId) {
-//					annotation = getMongoPersistence().findByID(id);
-//				} else {
-//					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
-//					annotation = getMongoPersistence().find(annoId);
-//				}
-//
-//				if (annotation == null)
-//					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-//				boolean success = reindexAnnotation(annotation, new Date());
-//				if (success)
-//					status.incrementSuccessCount();
-//				else
-//					status.incrementFailureCount();
-//			} catch (RuntimeException ex) {
-//				String msg = "id: " + id + ". " + ex.getMessage();
-//				getLogger().error(msg);
-//				// throw new RuntimeException(iae);
-//				status.incrementFailureCount();
-//			} catch (Exception e) {
-//				String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
-//				getLogger().error(msg);
-//				status.incrementFailureCount();
-//      }
-//    }
-//  }
-
   @Override
   public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
 			throws HttpException, ApiWriteLockException {
