@@ -21,5 +21,9 @@ public interface Operations {
 	
 	//whitelist
 	public static final String WHITELIST_ALL = "whitelist_all";
+	public static final String WHITELIST_RETRIEVE = "whitelist_retrieve";
+	public static final String WHITELIST_CREATE = "whitelist_create";
+	public static final String WHITELIST_UPDATE = "whitelist_update";
+	public static final String WHITELIST_DELETE = "whitelist_delete";
 	
 }

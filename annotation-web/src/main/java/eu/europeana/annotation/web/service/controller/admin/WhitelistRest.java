@@ -71,7 +71,7 @@ public class WhitelistRest extends BaseRest {
 		
 		validateApiKey(apiKey);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
 		WhitelistEntry whitelist = getWhitelistService().getWhitelistEntryByUrl(url);
 
@@ -106,7 +106,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
 		List<? extends WhitelistEntry> whitelist = getWhitelistService().getWhitelist();
 
@@ -130,7 +130,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_CREATE);
 		
 		String action = "post:/whitelist/create";
 		
@@ -163,7 +163,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
 		List<? extends WhitelistEntry> whitelist = getWhitelistService().loadWhitelistFromResources();
 
@@ -189,7 +189,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
@@ -223,7 +223,7 @@ public class WhitelistRest extends BaseRest {
 
 		validateApiKey(apiKey);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
