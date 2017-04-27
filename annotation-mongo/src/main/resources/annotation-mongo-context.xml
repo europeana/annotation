@@ -64,8 +64,8 @@
 	<bean name="annotation_db_clientService" class="eu.europeana.annotation.mongo.service.PersistentClientServiceImpl"
 		p:dao-ref="annotation_db_clientDao"/>
 		
-	<bean name="annotation_db_jobService" class="eu.europeana.annotation.mongo.service.PersistentIndexingJobServiceImpl"
-		p:dao-ref="annotation_db_jobDao"/>
+	<bean name="annotation_db_apilockService" class="eu.europeana.annotation.mongo.service.PersistentApiWriteLockServiceImpl"
+		p:dao-ref="annotation_db_lockDao"/>
 	
 			
 </beans>

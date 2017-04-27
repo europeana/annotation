@@ -6,7 +6,7 @@ import org.bson.types.ObjectId;
 
 import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
 
-public interface PersistentIndexingJob extends NoSqlEntity {	
+public interface PersistentApiWriteLock extends NoSqlEntity {	
 	
 	public ObjectId getId();
 

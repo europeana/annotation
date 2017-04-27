@@ -7,11 +7,11 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
-import eu.europeana.annotation.mongo.model.internal.PersistentIndexingJob;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
-@Entity("indexingjob")
-public class PersistentIndexingJobImpl implements PersistentObject, PersistentIndexingJob {
+@Entity("apiwritelock")
+public class PersistentApiWriteLockImpl implements PersistentObject, PersistentApiWriteLock {
 
 	@Id
 	private ObjectId id;
@@ -19,9 +19,9 @@ public class PersistentIndexingJobImpl implements PersistentObject, PersistentIn
 	private Date started;
 	private Date ended;
 	
-	public PersistentIndexingJobImpl() {}
+	public PersistentApiWriteLockImpl() {}
 	
-	public PersistentIndexingJobImpl(String name) {
+	public PersistentApiWriteLockImpl(String name) {
 		this.name = name;
 		this.started = new Date();
 	}
@@ -68,7 +68,7 @@ public class PersistentIndexingJobImpl implements PersistentObject, PersistentIn
 
 	@Override
 	public String toString() {
-		return "PersistentIndexingJobImpl [" 
+		return "PersistentApiWriteLockImplImpl [" 
 				+ "id:" + getId() + ", " 
 				+ "name:" + getName() + ","
 				+ "started:" + getStarted().toString() + ", " 

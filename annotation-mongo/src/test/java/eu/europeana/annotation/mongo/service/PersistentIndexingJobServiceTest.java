@@ -13,10 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
-import eu.europeana.annotation.mongo.exception.IndexingJobServiceException;
-import eu.europeana.annotation.mongo.model.internal.PersistentIndexingJob;
-import eu.europeana.annotation.mongo.service.PersistentIndexingJobService;
-import eu.europeana.annotation.mongo.service.PersistentIndexingJobServiceImpl;
+import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockServiceImpl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -32,16 +32,16 @@ import static org.junit.Assert.assertNull;;
 	})
 public class PersistentIndexingJobServiceTest {
 	
-	@Resource(name = "annotation_db_jobService")
-	private PersistentIndexingJobService indexingJobService;
+	@Resource(name = "annotation_db_apilockService")
+	private PersistentApiWriteLockService indexingJobService;
 
 
-	public void setIndexingJobService(PersistentIndexingJobService indexingJobService) {
+	public void setIndexingJobService(PersistentApiWriteLockService indexingJobService) {
 		this.indexingJobService = indexingJobService;
 	}
 
-	private PersistentIndexingJobServiceImpl getIndexingJobService() {
-		return (PersistentIndexingJobServiceImpl) indexingJobService;	
+	private PersistentApiWriteLockServiceImpl getIndexingJobService() {
+		return (PersistentApiWriteLockServiceImpl) indexingJobService;	
 	}
 	
 	/**
@@ -63,37 +63,37 @@ public class PersistentIndexingJobServiceTest {
 	}
 	
 	@Test
-	public void getJobById() throws AnnotationMongoException, IndexingJobServiceException{
+	public void getJobById() throws AnnotationMongoException, ApiWriteLockException{
 		
 		// create job
-		PersistentIndexingJob newJob = indexingJobService.lock("testaction");
+		PersistentApiWriteLock newJob = indexingJobService.lock("testaction");
 		
 		// id of the job
 		String id = newJob.getId().toString();
 		
 		// get indexing job just created by its id
-		PersistentIndexingJob newJobRetrieved = getIndexingJobService().getJobById(id);
+		PersistentApiWriteLock newJobRetrieved = getIndexingJobService().getLockById(id);
 		
 		// check if the retrieved object exists and if the id is correct
 		assertNotNull(newJobRetrieved);
 		assertEquals(id, newJobRetrieved.getId().toString());
 		
 		// remove test job object
-		getIndexingJobService().deleteJob(newJob); 
+		getIndexingJobService().deleteLock(newJob); 
 		
 	}
 	
 	
 
 	@Test
-	public void jobLockedAndInStatusRunning() throws AnnotationMongoException, IndexingJobServiceException{
+	public void jobLockedAndInStatusRunning() throws AnnotationMongoException, ApiWriteLockException{
 		
 		// lock job indicating the action 
-		PersistentIndexingJob newJob = indexingJobService.lock("testaction");
+		PersistentApiWriteLock newJob = indexingJobService.lock("testaction");
 		assertNotNull(newJob);
 
 		// get last indexing job and check if start date is correct and end date does not exist
-		PersistentIndexingJob newRunningJob = getIndexingJobService().getLastRunningJob();
+		PersistentApiWriteLock newRunningJob = getIndexingJobService().getLastActiveLock();
 		assertTrue(newRunningJob.getStarted() instanceof Date);
 		assertNull(newRunningJob.getEnded());
 		
@@ -102,7 +102,7 @@ public class PersistentIndexingJobServiceTest {
 		assertTrue(newRunningJob.getEnded() instanceof Date);	
 		
 		// remove test job object
-		getIndexingJobService().deleteJob(newJob); 
+		getIndexingJobService().deleteLock(newJob); 
 		
 	}
 	
