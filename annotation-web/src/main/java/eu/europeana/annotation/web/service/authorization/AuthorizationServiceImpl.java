@@ -111,11 +111,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	private void checkWriteLockInEffect(String userToken, String operationName) throws UserAuthorizationException {
 		PersistentApiWriteLock runningJob;
 		try {
-			runningJob = getPersistentIndexingJobService().getLastActiveLock();
+			runningJob = getPersistentIndexingJobService().getLastActiveLock("lockWriteOperations");
 			// refuse operation if a write lock is effective (allow only unlock and retrieve operations)
 			if(!(operationName.equals(Operations.ADMIN_UNLOCK) || operationName.endsWith(Operations.RETRIEVE) ) 
 					&& runningJob != null && runningJob.getName().equals("lockWriteOperations") && runningJob.getEnded() == null) {
-				throw new UserAuthorizationException("Server is locked for maintenance: no changes can be made to the data ("+operationName+")", HttpStatus.LOCKED);
+				throw new UserAuthorizationException("Server is locked for maintenance: no changes can be made to the data", HttpStatus.LOCKED);
 			}
 		} catch (ApiWriteLockException e) {
 			throw new UserAuthorizationException("Authentication procedure failed.", userToken, HttpStatus.INTERNAL_SERVER_ERROR);
