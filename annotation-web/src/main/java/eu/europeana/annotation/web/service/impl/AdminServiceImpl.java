@@ -31,7 +31,7 @@ import eu.europeana.annotation.web.service.AdminService;
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
 	@Resource(name = "annotation_db_apilockService")
-	PersistentApiWriteLockService indexingJobService;
+	PersistentApiWriteLockService apiWriteLockService;
 
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
@@ -115,12 +115,12 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
   public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
 			throws HttpException, ApiWriteLockException {
 
-		if (indexingJobService.getLastActiveLock() != null)
+		if (apiWriteLockService.getLastActiveLock() != null)
 			throw new IndexingJobLockedException(action);
 		
 		PersistentApiWriteLock pij = null;
 		try {
-			pij = indexingJobService.lock(action);
+			pij = apiWriteLockService.lock(action);
 
 			synchronized (this) {
 				BatchProcessingStatus status = new BatchProcessingStatus();
@@ -164,7 +164,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 			}
 		}finally{
 			//unlock the index
-			indexingJobService.unlock(pij);
+			apiWriteLockService.unlock(pij);
 			
 		} 
 

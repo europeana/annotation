@@ -1,9 +1,5 @@
 package eu.europeana.annotation.web.service.controller.admin;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.List;
 
@@ -402,7 +398,7 @@ public class ManagementRest extends BaseRest {
 		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
 
 		// get last active lock check if start date is correct and end date does not exist
-		PersistentApiWriteLock lastActiveLock = getApiWriteLockService().getLastActiveLock();
+		PersistentApiWriteLock lastActiveLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 		boolean success = (lastActiveLock.getStarted() instanceof Date && lastActiveLock.getEnded() == null);
 		
 
@@ -437,11 +433,11 @@ public class ManagementRest extends BaseRest {
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/unlock");
 		
-		PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock();
+		PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 		if(activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
 			getApiWriteLockService().unlock(activeLock);
-			activeLock = getApiWriteLockService().getLastActiveLock();
-			if(activeLock == null) {
+			PersistentApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+			if(lock == null) {
 				response.setStatus("Server is now unlocked for changes");
 				response.success = true;
 			} else {

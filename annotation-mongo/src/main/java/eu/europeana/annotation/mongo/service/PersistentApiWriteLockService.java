@@ -14,8 +14,10 @@ public interface PersistentApiWriteLockService extends AbstractNoSqlService<Pers
 	
 	public void unlock(PersistentApiWriteLock pij) throws ApiWriteLockException;
 	
-	public PersistentApiWriteLock getLastActiveLock() throws ApiWriteLockException;
+	public PersistentApiWriteLock getLastActiveLock(String name) throws ApiWriteLockException;
 	
 	public PersistentApiWriteLock getLockById(String id) throws ApiWriteLockException;
+
+	public PersistentApiWriteLock getLastActiveLock() throws ApiWriteLockException;
 	
 }
