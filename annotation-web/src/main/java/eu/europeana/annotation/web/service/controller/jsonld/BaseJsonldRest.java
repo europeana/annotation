@@ -26,10 +26,12 @@ import eu.europeana.annotation.definitions.model.moderation.Vote;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -119,6 +121,86 @@ public class BaseJsonldRest extends BaseRest {
 			throw new RequestBodyValidationException(annotation, e);
 		} catch (AnnotationAttributeInstantiationException e) {
 			throw new RequestBodyValidationException(annotation, e);
+		} catch (AnnotationInstantiationException e) {
+			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
+		} catch (HttpException e) {
+			// avoid wrapping HttpExceptions
+			throw e;
+		} catch (Exception e) {
+			throw new InternalServerException(e);
+		}
+
+	}
+	
+	
+	protected ResponseEntity<String> storeAnnotations(String wsKey, String annotationPageIn, String userToken) throws HttpException {
+		try {
+
+			// SET DEFAULTS
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			logger.debug(annotationPageIn);
+			
+			AnnotationPageParser annoPageParser = new AnnotationPageParser();
+			AnnotationPage annotationPage = annoPageParser.parseAnnotationPage(annotationPageIn);
+
+//			if (provider == null)
+//				provider = app.getProvider();
+
+			// 0. annotation id
+//			AnnotationId annoId = buildAnnotationId(provider, identifier);
+
+			// 1. authorize user
+//			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+
+			// parse
+//			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
+
+			// SET DEFAULTS
+//			if (webAnnotation.getGenerator() == null)
+//				webAnnotation.setGenerator(buildDefaultGenerator(app));
+//
+//			if (webAnnotation.getCreator() == null)
+//				webAnnotation.setCreator(user);
+
+			// 2. validate
+			// check whether annotation with the given provider and identifier
+			// already exist in the database
+//			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
+//				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
+//						"/provider/identifier", annoId.toUri());
+			// 2.1 validate annotation properties
+//			getAnnotationService().validateWebAnnotation(webAnnotation);
+
+			// 3-6 create ID and annotation + backend validation
+//			webAnnotation.setAnnotationId(annoId);
+
+			// validate api key ... and request limit only if the request is
+			// correct (avoid useless DB requests)
+			// Done in authorize user
+			// validateApiKey(wsKey);
+
+//			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
+
+			// serialize to jsonld
+//			JsonLd annotationLd = new AnnotationLdSerializer(storedAnnotation);
+//			String jsonLd = annotationLd.toString(4);
+			// return JsonWebUtils.toJson(jsonLd, null);
+
+			// build response entity with headers
+			// TODO: clarify serialization ETag: "_87e52ce126126"
+			// TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
+
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+//			headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
+
+			ResponseEntity<String> response = new ResponseEntity<String>("{ \"status\": \"ok\" }", headers, HttpStatus.CREATED);
+
+			return response;
+
 		} catch (AnnotationInstantiationException e) {
 			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
 		} catch (HttpException e) {

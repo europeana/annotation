@@ -16,6 +16,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import eu.europeana.annotation.definitions.exception.AnnotationPageValidationException;
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
@@ -50,12 +51,12 @@ public class AnnotationPageParser extends JsonLdParser {
 		try {
 			jo = parseJson(jsonLdString);
 		} catch (JSONException e) {
-			throw new JsonParseException("Cannot parse json string: " + jsonLdString, e);
+			throw new JsonParseException("Invalid serialization of AnnotationPage (json): " + jsonLdString, e);
 		}
 		try {
 			annotationPage = parseAnnotationPageJsonLd(jo);
 		} catch (RuntimeException e) {
-			throw new AnnotationPageValidationException("cannot instantiate AnnotationPage! " + e.getMessage(), e);
+			throw new AnnotationPageValidationException("Cannot parse AnnotationPage! " + e.getMessage(), e);
 		}
 
 		return annotationPage;
@@ -81,8 +82,9 @@ public class AnnotationPageParser extends JsonLdParser {
 	 * @param jo
 	 *            JSONObject
 	 * @return Annotation page object
+	 * @throws JsonParseException 
 	 */
-	private AnnotationPage parseAnnotationPageJsonLd(JSONObject jo) {
+	private AnnotationPage parseAnnotationPageJsonLd(JSONObject jo) throws JsonParseException {
 		AnnotationPage ap = new AnnotationPageImpl();
 
 		try {
@@ -135,9 +137,10 @@ public class AnnotationPageParser extends JsonLdParser {
 	 *            Property name
 	 * @throws JSONException
 	 * @throws MalformedURLException
+	 * @throws JsonParseException 
 	 */
 	private void handleProperty(AnnotationPage ap, JSONObject jo, String property)
-			throws JSONException, MalformedURLException {
+			throws JSONException, MalformedURLException, JsonParseException {
 
 		Object valueObject = jo.get(property);
 
@@ -176,9 +179,7 @@ public class AnnotationPageParser extends JsonLdParser {
 			
 			ResultSet<? extends AnnotationView> annViewResSet = null;
 		    JSONArray itemsJsonArr = (JSONArray)items;
-		    annViewResSet = parseItems(itemsJsonArr);
-					
-			ap.setItems(annViewResSet);
+		    parseItems(ap, itemsJsonArr);
 			break;
 
 		case WebAnnotationFields.PART_OF:
@@ -209,30 +210,49 @@ public class AnnotationPageParser extends JsonLdParser {
 		}
 	}
 
-	private ResultSet<? extends AnnotationView> parseItems(JSONArray jsonArr) throws JSONException {
-		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
+	/**
+	 * Parse items and set either the items list or the annotations list depending on the profile.
+	 * In case of the minimal profile, the AnnotationPage object holds a list of resource IDs, and
+	 * if the standard profile is used, it holds a list of annotations. 
+	 * 
+	 * @param annoPage AnnotationPage object holding a list of items or the annotations depending on the profile.
+	 * @param jsonArr List of items
+	 * @throws JSONException 
+	 * @throws JsonParseException 
+	 */
+	private void parseItems(AnnotationPage annoPage, JSONArray jsonArr) throws JSONException, JsonParseException {
 		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
+		List<Annotation> annoList = new ArrayList<Annotation>();
+		
+		AnnotationViewResourceListItem avrItem;
+		Annotation annotation;
+		JSONObject annoJson;
 		for (int i = 0, size = jsonArr.length(); i < size; i++) {
-			String resourceId = (String) jsonArr.get(i);
-			AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
-			avrItem.setId(resourceId);
-			avrItem.setTimestampUpdated(new Date(0));
-			avItemList.add(avrItem);
+			Object item = jsonArr.get(i);
+			if(item instanceof String) {
+				//minimal profile
+				avrItem = new AnnotationViewResourceListItem();
+				avrItem.setId((String)item);
+				//avrItem.setTimestampUpdated(new Date(0));
+				avItemList.add(avrItem);
+			} else {
+				//standard profile
+				annoJson = (JSONObject)item;
+				annotation = (new AnnotationLdParser()).parseAnnotation(null, annoJson);
+				annoList.add(annotation);
+			}
+			
 		}
-		resAvItemList.setResultSize(jsonArr.length());
-		return resAvItemList.setResults(avItemList);
+		//if minimal profile build items (ResultSet)
+		if(! avItemList.isEmpty()){
+			ResultSet<AnnotationViewResourceListItem> items = new ResultSet<AnnotationViewResourceListItem>();
+			items.setResultSize(avItemList.size());
+			annoPage.setItems(items);		
+		}
+		//if standard profile set annotations list
+		if(! annoList.isEmpty()){
+			annoPage.setAnnotations(annoList);
+		}
 	}
-
-//	private ResultSet<? extends AnnotationView> parseItems(JSONObject jsonObj) throws JSONException {
-//		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
-//		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
-//		String resourceId = (String) jsonObj.toString();
-//		AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
-//		avrItem.setId(resourceId);
-//		avrItem.setTimestampUpdated(new Date(0));
-//		avItemList.add(avrItem);
-//		resAvItemList.setResultSize(1);
-//		return resAvItemList.setResults(avItemList);
-//	}
 
 }

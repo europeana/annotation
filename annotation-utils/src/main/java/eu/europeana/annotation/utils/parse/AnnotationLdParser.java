@@ -65,24 +65,31 @@ public class AnnotationLdParser extends JsonLdParser {
 	protected Map<String, String> usedNamespaces = new HashMap<String, String>();
 
 	public Annotation parseAnnotation(MotivationTypes motivationType, String jsonLdString) throws JsonParseException {
-		Annotation annotaion = null;
-
+		
 		JSONObject jo;
 		try {
 			jo = parseJson(jsonLdString);
 		} catch (JSONException e) {
 			throw new JsonParseException("Cannot parse json string: " + jsonLdString, e);
 		}
+		
+		return parseAnnotation(motivationType, jo);
+	}
+
+
+	public Annotation parseAnnotation(MotivationTypes motivationType, JSONObject jo) throws JsonParseException {
+		Annotation annotation = null;
 		try {
-			annotaion = createAnnotationInstance(motivationType, jo);
+			annotation = createAnnotationInstance(motivationType, jo);
 		} catch (RuntimeException e) {
 			throw new AnnotationValidationException("cannot instantiate Annotation! " + e.getMessage(), e);
 		}
-		parseJsonObject(jo, annotaion, 1, null);
+		parseJsonObject(jo, annotation, 1, null);
 
-		return annotaion;
+		return annotation;
 	}
-
+	
+	
 	protected Annotation createAnnotationInstance(MotivationTypes motivationType, JSONObject jo)
 			throws JsonParseException {
 
