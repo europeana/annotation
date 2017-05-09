@@ -14,11 +14,16 @@ public interface Operations {
 	
 	//admin
 	public static final String ADMIN_ALL = "admin_all";
+	public static final String ADMIN_UNLOCK = "admin_unlock";
 	
 	//moderation
 	public static final String MODERATION_ALL = "moderation_all";
 	
 	//whitelist
 	public static final String WHITELIST_ALL = "whitelist_all";
+	public static final String WHITELIST_RETRIEVE = "whitelist_retrieve";
+	public static final String WHITELIST_CREATE = "whitelist_create";
+	public static final String WHITELIST_UPDATE = "whitelist_update";
+	public static final String WHITELIST_DELETE = "whitelist_delete";
 	
 }

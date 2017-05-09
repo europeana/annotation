@@ -46,4 +46,9 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 		return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
 	}
 
+	public int getMaxPageSize(String profile) {
+		String key = PREFIX_MAX_PAGE_SIZE + profile;
+		return Integer.parseInt(getAnnotationProperties().getProperty(key));
+	}
+	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Strings;
@@ -13,15 +15,23 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.service.AdminService;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
+
+	@Resource(name = "annotation_db_apilockService")
+	PersistentApiWriteLockService apiWriteLockService;
 
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
@@ -76,7 +86,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
-			String endTimestamp) {
+			String endTimestamp) throws HttpException, ApiWriteLockException {
 
 		// int successCount = 0;
 		// int failureCount = 0;
@@ -91,66 +101,85 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return reindexAnnotationSelection(startTimestamp, endTimestamp);
 	}
 
-	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp) {
+	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp)
+			throws HttpException {
 		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
-		return reindexAnnotationSet(res, true);
-	}
-
-	@Override
-	// TODO:reimplement using database cursors for higher scalability
-	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
-
-		BatchProcessingStatus status = new BatchProcessingStatus();
-		AnnotationId annoId = null;
-		Annotation annotation;
-		int count = 0;
-		for (String id : ids) {
-			try {
-				count++;
-				if (count % 1000 == 0)
-					getLogger().info("Processing object: " + count);
-				// check
-				if (isObjectId) {
-					annotation = getMongoPersistence().findByID(id);
-				} else {
-					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
-					annotation = getMongoPersistence().find(annoId);
-				}
-
-				if (annotation == null)
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-				boolean success = reindexAnnotation(annotation, new Date());
-				if (success)
-					status.incrementSuccessCount();
-				else
-					status.incrementFailureCount();
-			} catch (RuntimeException ex) {
-				String msg = "id: " + id + ". " + ex.getMessage();
-				getLogger().error(msg);
-				// throw new RuntimeException(iae);
-				status.incrementFailureCount();
-			} catch (Exception e) {
-				String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
-				getLogger().error(msg);
-				status.incrementFailureCount();
-			}
+		try {
+			return reindexAnnotationSet(res, true, "reindexAnnotationSelection");
+		} catch (ApiWriteLockException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
 		}
-		return status;
+	}
+
+  @Override
+  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+			throws HttpException, ApiWriteLockException {
+
+		if (apiWriteLockService.getLastActiveLock() != null)
+			throw new IndexingJobLockedException(action);
+		
+		PersistentApiWriteLock pij = null;
+		try {
+			pij = apiWriteLockService.lock(action);
+
+			synchronized (this) {
+				BatchProcessingStatus status = new BatchProcessingStatus();
+				AnnotationId annoId = null;
+				Annotation annotation;
+				int count = 0;
+
+				for (String id : ids) {
+					try {
+						count++;
+						if (count % 1000 == 0)
+							getLogger().info("Processing object: " + count);
+						// check
+						if (isObjectId) {
+							annotation = getMongoPersistence().findByID(id);
+						} else {
+							annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+							annotation = getMongoPersistence().find(annoId);
+						}
+						if (annotation == null)
+							throw new AnnotationNotFoundException(
+									AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
+						if (success)
+							status.incrementSuccessCount();
+						else
+							status.incrementFailureCount();
+					} catch (IllegalArgumentException iae) {
+						String msg = "id: " + id + ". " + iae.getMessage();
+						getLogger().error(msg);
+						// throw new RuntimeException(iae);
+						status.incrementFailureCount();
+					} catch (Throwable e) {
+						String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
+						getLogger().error(msg);
+						status.incrementFailureCount();
+						// throw new RuntimeException(e);
+					}
+				}
+				return status;
+			}
+		}finally{
+			//unlock the index
+			apiWriteLockService.unlock(pij);
+			
+		} 
+
 	}
 
 	@Override
-	public BatchProcessingStatus reindexAll() {
+	public BatchProcessingStatus reindexAll() throws HttpException, ApiWriteLockException {
 		return reindexAnnotationSelection("0", "" + System.currentTimeMillis());
 	}
 
 	@Override
-	public BatchProcessingStatus reindexOutdated() {
-		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-		//BatchProcessingStatus status = new BatchProcessingStatus();
-		//status.incrementSuccessCount();
-		// return status;
+	public BatchProcessingStatus reindexOutdated() throws HttpException, ApiWriteLockException {
 
-		return reindexAnnotationSet(res, true);
+		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
+		return reindexAnnotationSet(res, true, "reindexOutdated");
 	}
 
 	@Override
@@ -233,3 +262,4 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
 }
+  

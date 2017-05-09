@@ -14,8 +14,6 @@ import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -25,7 +23,6 @@ import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPa
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -214,11 +211,13 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			searchQuery.setPageNr(Query.DEFAULT_PAGE);
 		else
 			searchQuery.setPageNr(pageNr);
-		
-		if(pageSize < 0)
-			searchQuery.setPageSize(Query.DEFAULT_PAGE_SIZE);
-		else
-			searchQuery.setPageSize(pageSize);
+
+		searchQuery.setPageSize(pageSize);
+		int maxPageSize = configuration.getMaxPageSize(profile.toString());
+		if (pageSize > maxPageSize)
+			searchQuery.setPageSize(maxPageSize);
+		else if (pageSize == 0)
+			searchQuery.setPageSize(maxPageSize);
 		
 		if (isFacetsRequested)
 			searchQuery.setFacetFields(normalizedFacets);

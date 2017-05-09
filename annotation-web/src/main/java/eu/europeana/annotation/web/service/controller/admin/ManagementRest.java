@@ -17,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
@@ -54,6 +58,19 @@ public class ManagementRest extends BaseRest {
 	public void setAdminService(AdminService adminService) {
 		this.adminService = adminService;
 	}
+	
+	@Resource(name = "annotation_db_apilockService")
+	private PersistentApiWriteLockService indexingJobService;
+	
+
+	public PersistentApiWriteLockService getApiWriteLockService() {
+		return indexingJobService;
+	}
+
+	public void setPersistentIndexingJobService(PersistentApiWriteLockService indexingJobService) {
+		this.indexingJobService = indexingJobService;
+	}
+	
 
 	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
@@ -193,7 +210,7 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "startTimestamp", required = false) String startTimestamp,
 			@RequestParam(value = "endTimestamp", required = false) String endTimestamp,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
-			throws UserAuthorizationException {
+			throws UserAuthorizationException, ApiWriteLockException, IndexingJobLockedException, HttpException {
 
 		if (!isAdmin(apiKey, userToken))
 			throw new UserAuthorizationException("User not authorized. Must use the admin apikey and token:",
@@ -227,7 +244,12 @@ public class ManagementRest extends BaseRest {
 
 		List<String> uriList = BaseJsonParser.toStringList(uris, true);
 
-		BatchProcessingStatus status = getAdminService().reindexAnnotationSet(uriList, false);
+		BatchProcessingStatus status;
+		try{
+			status = getAdminService().reindexAnnotationSet(uriList, false,"/admin/annotation/reindexset");
+		} catch (ApiWriteLockException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
@@ -257,7 +279,12 @@ public class ManagementRest extends BaseRest {
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
-		BatchProcessingStatus status = getAdminService().reindexAll();
+		BatchProcessingStatus status;
+		try{
+			status = getAdminService().reindexAll();
+		}catch (ApiWriteLockException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}	
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
@@ -284,18 +311,34 @@ public class ManagementRest extends BaseRest {
 
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
-
+//TODO: check and remove
+/*
 		BatchProcessingStatus status = getAdminService().reindexOutdated();
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
 		response.setStatus("Outdated annotations reindexed. " + status.toString());
+    */
+		
+		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
+		BatchProcessingStatus status; 
+		try{
+			status = getAdminService().reindexOutdated();
+		
+		}catch (ApiWriteLockException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}
+		
+		String successMsg = "Outdated annotations reindexed. " + status.toString();
+		response.setStatus(successMsg);
 		response.success = true;
-
+		HttpStatus httpStatus = HttpStatus.OK;
+		logger.info(successMsg);
+		
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		logger.info("Index new and reindex outdated annotations result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
+	
 
 	@RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
@@ -334,6 +377,83 @@ public class ManagementRest extends BaseRest {
 				"\nResult: "+ jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 
+	}
+	
+	
+	@RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+	@ApiOperation(value = "Lock write operations", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+	public ResponseEntity<String> lockWriteOperations(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		
+		// lock write operations
+		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
+
+		// get last active lock check if start date is correct and end date does not exist
+		PersistentApiWriteLock lastActiveLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+		boolean success = (lastActiveLock.getStarted() instanceof Date && lastActiveLock.getEnded() == null);
+		
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/lock");
+		
+		response.setStatus(success ? "Server is now locked for changes" : "Unable to set lock");
+		response.success = success;
+
+		// return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+		logger.info("Lock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
+		return buildResponseEntityForJsonString(jsonStr, httpStatus);
+	}
+	
+
+	@RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+	@ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+	public ResponseEntity<String> unlockWriteOperations(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_UNLOCK);
+		
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/unlock");
+		
+		PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+		if(activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
+			getApiWriteLockService().unlock(activeLock);
+			PersistentApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+			if(lock == null) {
+				response.setStatus("Server is now unlocked for changes");
+				response.success = true;
+			} else {
+				response.setStatus("Unlocking write operations failed");
+				response.success = false;
+			}
+		} else {
+			response.setStatus("No write lock in effect (remains unlocked)");
+			response.success = true;
+		}
+
+		// return JsonWebUtils.toJson(response, null);
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+		logger.info("Unlock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
+		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
 
 }

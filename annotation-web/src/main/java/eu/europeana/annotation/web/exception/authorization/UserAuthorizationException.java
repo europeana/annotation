@@ -28,12 +28,16 @@ public class UserAuthorizationException extends HttpException{
 		this(message, paramValue, HttpStatus.UNAUTHORIZED, th);
 	}
 	
+	public UserAuthorizationException(String message, HttpStatus status){
+		this(message, null, status, null);
+	}
+	
 	public UserAuthorizationException(String message, String paramValue, HttpStatus status){
 		this(message, paramValue, status, null);
 	}
 
 	public UserAuthorizationException(String message, String paramValue, HttpStatus status, Throwable th){
-		super(message + " " + paramValue, status, th);
+		super(message + (paramValue != null ? " " + paramValue : ""), status, th);
 		this.setParamValue(paramValue);
 	}
 	

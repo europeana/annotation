@@ -10,6 +10,7 @@ import eu.europeana.annotation.client.BaseAnnotationApi;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
+import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 
 public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebAnnotationAdminApi {
@@ -36,9 +37,9 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 	}
 
 	@Override
-	public void reindexOutdated() {
+	public ResponseEntity<String> reindexOutdated() {
 		try {
-			apiConnection.reindexOutdated();
+			return apiConnection.reindexOutdated();
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}
