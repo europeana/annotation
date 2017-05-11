@@ -13,7 +13,7 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
-import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -324,6 +324,6 @@ public interface AnnotationService {
 
 	public List<? extends Annotation> getExisting(List<String> annotationHttpUrls);
 
-	public void updateExistingAnnotations(AnnotationsList annotationsWithId);
+	public void updateExistingAnnotations(AnnotationHttpUrls annotationsWithId);
 
 }

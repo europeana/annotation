@@ -23,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 
 /**
  * Annotation API Batch Upload Test class
@@ -70,7 +70,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * 
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void successfulBatchUploadTest() throws Exception {
 
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE), "httpurl");
@@ -144,7 +144,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * 
 	 * @throws Exception
 	 */
-	// @Test
+	@Test
 	public void validationError() throws Exception {
 
 		// annotation page string which contains two annotations which do not
@@ -185,7 +185,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * @throws IOException
 	 */
 	private String replaceIdentifiers(String template, String varPrefix) throws IOException {
-		AnnotationsList annoList = new AnnotationsList(testAnnotations);
+		AnnotationHttpUrls annoList = new AnnotationHttpUrls(testAnnotations);
 
 		String[] httpUrls = new String[annoList.size()];
 		httpUrls = annoList.getHttpUrls().toArray(httpUrls);

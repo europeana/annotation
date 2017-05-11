@@ -1,59 +1,39 @@
 package eu.europeana.annotation.definitions.model.utils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 
 public class AnnotationsList {
-
-	private List<Annotation> annotations;
 	
-	// HTTP URLs (note that annotations do not necessarily have an identifier, the size
-	// of the HTTP URLs list might therefore be smaller than the annotations list.
-	private List<String> httpUrls;
-
-	protected AnnotationsList() {
-		annotations = new ArrayList<Annotation>();
-		httpUrls = new ArrayList<String>();
-	}
-
+	private List<? extends Annotation> annotations;
+	
 	public AnnotationsList(List<? extends Annotation> annotations) {
-		this.annotations = (List<Annotation>) annotations;
-		httpUrls = new ArrayList<String>();
-		updateHttpUrls();
+		this.annotations = annotations;
 	}
-
-	public List<Annotation> getAnnotations() { 
-		return annotations;
-	}
-
-	public Integer size() {
-		return annotations.size();
-	}
-
-	public void add(Annotation anno) {
-		annotations.add(anno);
-		addHttpUrl(anno);
-	}
-
+	
 	public List<String> getHttpUrls() {
+		List<String> httpUrls = new ArrayList<String>();
+		for(Annotation anno : annotations)
+			if (anno.hasHttpUrl())
+				httpUrls.add(anno.getHttpUrl());
 		return httpUrls;
 	}
 	
-	private void updateHttpUrls() {
-		for (Annotation anno : annotations) {
-			addHttpUrl(anno);
-		}
+	public int size() {
+		return annotations.size();
 	}
 	
-	private void addHttpUrl(Annotation anno) {
-		if (anno.hasHttpUrl())
-			httpUrls.add(anno.getAnnotationId().getHttpUrl());
-	}
+//	public AnnotationHttpUrls getAnnotationsWithoutID() {
+//		AnnotationHttpUrls annotationsWithoutId = new AnnotationHttpUrls();
+//		for(Annotation anno : annotations.getAnnotations())
+//			if (!anno.hasHttpUrl())
+//				annotationsWithoutId.add(anno.getHttpUrl());
+//		return annotationsWithoutId;
+//	}
 
 }

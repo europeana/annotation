@@ -29,8 +29,8 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationR
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
-import eu.europeana.annotation.definitions.model.utils.AnnotationsFilter;
 import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -168,27 +168,25 @@ public class BaseJsonldRest extends BaseRest {
 			
 			// split annotations into those with identifier (assumed updates) and those without
 			// identifier (new annotations which should be created)
-			AnnotationsFilter annoFilter = new AnnotationsFilter(annotations);
-			AnnotationsList annotationsWithId = annoFilter.getAnnotationsWithID();
-			uploadStatus.setNumberOfAnnotationsWithId(annotationsWithId.size());
-			AnnotationsList annotationsWithoutId = annoFilter.getAnnotationsWithoutID();
-			uploadStatus.setNumberOfAnnotationsWithoutId(annotationsWithoutId.size());
+			AnnotationsList annoFilter = new AnnotationsList(annotationPage.getAnnotations());
+			List<String> httpUrls = annoFilter.getHttpUrls();
+			uploadStatus.setNumberOfAnnotationsWithId(httpUrls.size());
+			uploadStatus.setNumberOfAnnotationsWithoutId(annotations.size()-httpUrls.size());
 
 			// verify if the annotations with ID exist in the database
-			List<String> annotationHttpUrls = annotationsWithId.getHttpUrls();
-			AnnotationsList existing = new AnnotationsList(getAnnotationService().getExisting(annotationHttpUrls));
+			AnnotationsList existing = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
 			
 			// annotations with identifier must match existing annotations
 			uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
-			if(annotationsWithId.size() != existing.size()) {
+			if(httpUrls.size() != existing.size()) {
 				// remove existing HTTP URLs, the remaining list contains only missing HTTP URLs
-				annotationHttpUrls.removeAll(existing.getHttpUrls());
-				getAnnotationService().reportNonExisting(annotations, uploadStatus, annotationHttpUrls);
+				httpUrls.removeAll(existing.getHttpUrls());
+				getAnnotationService().reportNonExisting(annotations, uploadStatus, httpUrls);
 				throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
 			}
 			
 			// not yet implemented
-			getAnnotationService().updateExistingAnnotations(annotationsWithId);
+			//getAnnotationService().updateExistingAnnotations(httpUrls);
 			
 			// serialize upload status
 			Gson gsonObj = new Gson();
