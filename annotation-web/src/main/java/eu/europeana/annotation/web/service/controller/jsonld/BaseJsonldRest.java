@@ -1,6 +1,8 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -27,6 +29,8 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationR
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsFilter;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -40,8 +44,11 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
+import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.annotation.web.model.BatchOperationStep;
+import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -139,66 +146,62 @@ public class BaseJsonldRest extends BaseRest {
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
 			
-			logger.debug(annotationPageIn);
+			// TODO #152 Authorization
+			//Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, Operations.CREATE);
 			
+			// parse annotation page
 			AnnotationPageParser annoPageParser = new AnnotationPageParser();
 			AnnotationPage annotationPage = annoPageParser.parseAnnotationPage(annotationPageIn);
+			List<? extends Annotation> annotations = annotationPage.getAnnotations();
+			
+			// initialise upload status
+			BatchUploadStatus uploadStatus = new BatchUploadStatus();
+			uploadStatus.setTotalNumberOfAnnotations(annotations.size());
+			
+			// validate annotations
+			uploadStatus.setStep(BatchOperationStep.VALIDATION);
+			getAnnotationService().validateWebAnnotations(annotations, uploadStatus);
+			
+			// in case of validation errors, return error report
+			if(uploadStatus.getFailureCount() > 0) 
+				throw new BatchUploadException(uploadStatus.toString(), uploadStatus);
+			
+			// split annotations into those with identifier (assumed updates) and those without
+			// identifier (new annotations which should be created)
+			AnnotationsFilter annoFilter = new AnnotationsFilter(annotations);
+			AnnotationsList annotationsWithId = annoFilter.getAnnotationsWithID();
+			uploadStatus.setNumberOfAnnotationsWithId(annotationsWithId.size());
+			AnnotationsList annotationsWithoutId = annoFilter.getAnnotationsWithoutID();
+			uploadStatus.setNumberOfAnnotationsWithoutId(annotationsWithoutId.size());
 
-//			if (provider == null)
-//				provider = app.getProvider();
-
-			// 0. annotation id
-//			AnnotationId annoId = buildAnnotationId(provider, identifier);
-
-			// 1. authorize user
-//			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
-
-			// parse
-//			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
-
-			// SET DEFAULTS
-//			if (webAnnotation.getGenerator() == null)
-//				webAnnotation.setGenerator(buildDefaultGenerator(app));
-//
-//			if (webAnnotation.getCreator() == null)
-//				webAnnotation.setCreator(user);
-
-			// 2. validate
-			// check whether annotation with the given provider and identifier
-			// already exist in the database
-//			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
-//				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
-//						"/provider/identifier", annoId.toUri());
-			// 2.1 validate annotation properties
-//			getAnnotationService().validateWebAnnotation(webAnnotation);
-
-			// 3-6 create ID and annotation + backend validation
-//			webAnnotation.setAnnotationId(annoId);
-
-			// validate api key ... and request limit only if the request is
-			// correct (avoid useless DB requests)
-			// Done in authorize user
-			// validateApiKey(wsKey);
-
-//			Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
-
-			// serialize to jsonld
-//			JsonLd annotationLd = new AnnotationLdSerializer(storedAnnotation);
-//			String jsonLd = annotationLd.toString(4);
-			// return JsonWebUtils.toJson(jsonLd, null);
-
-			// build response entity with headers
-			// TODO: clarify serialization ETag: "_87e52ce126126"
-			// TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
+			// verify if the annotations with ID exist in the database
+			List<String> annotationHttpUrls = annotationsWithId.getHttpUrls();
+			AnnotationsList existing = new AnnotationsList(getAnnotationService().getExisting(annotationHttpUrls));
+			
+			// annotations with identifier must match existing annotations
+			uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
+			if(annotationsWithId.size() != existing.size()) {
+				// remove existing HTTP URLs, the remaining list contains only missing HTTP URLs
+				annotationHttpUrls.removeAll(existing.getHttpUrls());
+				getAnnotationService().reportNonExisting(annotations, uploadStatus, annotationHttpUrls);
+				throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
+			}
+			
+			// not yet implemented
+			getAnnotationService().updateExistingAnnotations(annotationsWithId);
+			
+			// serialize upload status
+			Gson gsonObj = new Gson();
+			String jsonString = gsonObj.toJson(uploadStatus);
 
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-//			headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
-			ResponseEntity<String> response = new ResponseEntity<String>("{ \"status\": \"ok\" }", headers, HttpStatus.CREATED);
-
+			// build response
+			ResponseEntity<String> response = new ResponseEntity<String>(jsonString, headers, HttpStatus.CREATED);
+			
 			return response;
 
 		} catch (AnnotationInstantiationException e) {

@@ -447,4 +447,20 @@ public abstract class AbstractAnnotation implements Annotation {
 		//TODO: change the usage of status to the usage of visibility when the specification is complete
 		return AnnotationStates.PRIVATE.equals(getStatus());
 	}
+
+	@Override
+	public boolean hasHttpUrl() {
+		return (this.getAnnotationId() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
+	}
+	
+
+
+	@Override
+	public String getHttpUrl() {
+		if(this.hasHttpUrl())
+			return this.getAnnotationId().getHttpUrl();
+		else
+		 return null;
+	}
+	
 }

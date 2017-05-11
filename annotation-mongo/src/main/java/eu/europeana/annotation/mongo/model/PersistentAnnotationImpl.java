@@ -286,5 +286,20 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	public String[] getVia() {
 		return via;
 	}
+
+	@Override
+	public boolean hasHttpUrl() {
+		return (this.getAnnotationId() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
+	}
+	
+
+
+	@Override
+	public String getHttpUrl() {
+		if(this.hasHttpUrl())
+			return this.getAnnotationId().getHttpUrl();
+		else
+		 return null;
+	}
 	
 }

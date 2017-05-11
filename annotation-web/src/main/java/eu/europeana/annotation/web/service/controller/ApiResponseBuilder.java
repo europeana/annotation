@@ -5,7 +5,9 @@ import java.io.StringWriter;
 
 import org.apache.log4j.Logger;
 
+import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
+import eu.europeana.annotation.web.model.BatchReportable;
 
 public class ApiResponseBuilder {
 
@@ -56,6 +58,10 @@ public class ApiResponseBuilder {
 		
 		if(includeErrorStack && th != null)
 			response.setStackTrace(getStackTraceAsString(th));
+		
+		if(th instanceof BatchUploadException) {
+			response.setOperationReport(((BatchUploadException)th).getOperationReport());
+		}
 
 		return response;
 	}

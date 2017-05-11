@@ -77,6 +77,8 @@ public interface Annotation {
 	public abstract void setLastUpdate(Date lastUpdateTimestamp);
 
 	public boolean isPrivate();
+	
+	public boolean hasHttpUrl();
 
 	boolean equalsContent(Object other);
 	
@@ -87,5 +89,7 @@ public interface Annotation {
 	public abstract void setVia(String[] via);
 	
 	public abstract String[] getVia();
+
+	public String getHttpUrl();
 	
 }
