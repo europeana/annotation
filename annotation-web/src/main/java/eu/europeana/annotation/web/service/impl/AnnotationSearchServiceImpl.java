@@ -234,7 +234,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
 	protected int buildRealPageSize(int pageSize, SearchProfiles profile) {
 		int rows = 0;
-		int maxPageSize = configuration.getMaxPageSize(profile.toString());
+		int maxPageSize = getConfiguration().getMaxPageSize(profile.toString());
 		if(pageSize < 0)
 			rows = Query.DEFAULT_PAGE_SIZE;
 		else if(pageSize > maxPageSize)
