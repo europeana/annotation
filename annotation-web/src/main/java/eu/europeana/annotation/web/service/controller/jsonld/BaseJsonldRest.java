@@ -168,8 +168,8 @@ public class BaseJsonldRest extends BaseRest {
 			
 			// split annotations into those with identifier (assumed updates) and those without
 			// identifier (new annotations which should be created)
-			AnnotationsList annoFilter = new AnnotationsList(annotationPage.getAnnotations());
-			List<String> httpUrls = annoFilter.getHttpUrls();
+			AnnotationsList annoList = new AnnotationsList(annotationPage.getAnnotations());
+			List<String> httpUrls = annoList.getHttpUrls();
 			uploadStatus.setNumberOfAnnotationsWithId(httpUrls.size());
 			uploadStatus.setNumberOfAnnotationsWithoutId(annotations.size()-httpUrls.size());
 
@@ -186,7 +186,8 @@ public class BaseJsonldRest extends BaseRest {
 			}
 			
 			// not yet implemented
-			//getAnnotationService().updateExistingAnnotations(httpUrls);
+			uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
+			getAnnotationService().updateExistingAnnotations(uploadStatus, existing.getAnnotations(), annotations);
 			
 			// serialize upload status
 			Gson gsonObj = new Gson();

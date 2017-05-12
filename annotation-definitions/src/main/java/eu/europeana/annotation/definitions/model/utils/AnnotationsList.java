@@ -27,13 +27,9 @@ public class AnnotationsList {
 	public int size() {
 		return annotations.size();
 	}
-	
-//	public AnnotationHttpUrls getAnnotationsWithoutID() {
-//		AnnotationHttpUrls annotationsWithoutId = new AnnotationHttpUrls();
-//		for(Annotation anno : annotations.getAnnotations())
-//			if (!anno.hasHttpUrl())
-//				annotationsWithoutId.add(anno.getHttpUrl());
-//		return annotationsWithoutId;
-//	}
+
+	public List<? extends Annotation> getAnnotations() {
+		return annotations;
+	}
 
 }

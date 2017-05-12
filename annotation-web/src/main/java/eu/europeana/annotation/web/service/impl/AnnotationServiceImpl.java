@@ -31,6 +31,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -860,7 +861,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	public void updateExistingAnnotations(AnnotationHttpUrls annotationsWithId) {
+	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, List<? extends Annotation> newAnnos) {
 		// TODO Auto-generated method stub
 		
 	}
