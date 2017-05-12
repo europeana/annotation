@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.corelib.db.dao.NosqlDao;
+import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 /**
  * This dao is used for generating AnnotationIds automatically

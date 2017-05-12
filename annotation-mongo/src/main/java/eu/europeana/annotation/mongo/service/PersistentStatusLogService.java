@@ -7,7 +7,7 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentStatusLogService  extends AbstractNoSqlService<PersistentStatusLog, String> {
 

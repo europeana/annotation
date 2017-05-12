@@ -4,13 +4,12 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
-
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Index;
-import com.google.code.morphia.annotations.Polymorphic;
-//import com.google.code.morphia.annotations.Reference;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -25,7 +24,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 @Polymorphic
 @Entity("annotation")
 
-@Index(PersistentAnnotation.FIELD_HTTPURL)
+@Indexes(@Index(PersistentAnnotation.FIELD_HTTPURL))
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id

@@ -46,7 +46,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
-import eu.europeana.corelib.db.dao.NosqlDao;
+import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

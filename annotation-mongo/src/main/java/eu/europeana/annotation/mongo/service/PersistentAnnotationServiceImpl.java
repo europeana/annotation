@@ -8,14 +8,12 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
+import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryResults;
-import com.google.code.morphia.query.UpdateOperations;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -38,7 +36,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>

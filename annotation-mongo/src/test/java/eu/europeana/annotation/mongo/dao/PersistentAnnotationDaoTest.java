@@ -1,6 +1,6 @@
 package eu.europeana.annotation.mongo.dao;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 

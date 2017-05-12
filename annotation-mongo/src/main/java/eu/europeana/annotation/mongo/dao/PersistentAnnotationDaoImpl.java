@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 import javax.annotation.Resource;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.UpdateOperations;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.corelib.db.dao.impl.NosqlDaoImpl;
+import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
 public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
 		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {

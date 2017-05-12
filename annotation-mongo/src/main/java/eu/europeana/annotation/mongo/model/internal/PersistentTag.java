@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
-import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
+import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 public interface PersistentTag extends TagResource, NoSqlEntity{
 

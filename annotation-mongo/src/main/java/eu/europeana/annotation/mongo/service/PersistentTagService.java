@@ -5,7 +5,7 @@ import java.util.List;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentTagService  extends AbstractNoSqlService<PersistentTag, String> {
 

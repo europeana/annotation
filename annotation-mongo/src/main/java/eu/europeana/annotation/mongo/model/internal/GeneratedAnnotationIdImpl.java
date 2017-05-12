@@ -1,7 +1,7 @@
 package eu.europeana.annotation.mongo.model.internal;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;

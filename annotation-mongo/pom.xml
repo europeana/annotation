@@ -33,12 +33,19 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<version>0.2.2-SNAPSHOT</version>
+			<artifactId>commons-nosql</artifactId>
+		</dependency>
+		
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 		
+		<!--
 		<dependency>
 			<groupId>eu.europeana.corelib</groupId>
 			<artifactId>corelib-db</artifactId>
@@ -48,7 +55,6 @@
 					<artifactId>corelib-search</artifactId>
 					<groupId>eu.europeana.corelib</groupId>
 				</exclusion>
-				<!--  the next exclusion is redundant. just tried to fix some deploy issues -->
 				<exclusion>
             		<artifactId>spring-boot</artifactId>
             		<groupId>org.springframework.boot</groupId>
@@ -67,7 +73,15 @@
 			<artifactId>corelib-logging</artifactId>
 			<version>${version.corelib}</version>
 		</dependency>
-
+ 		-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<!-- 
+			<version>${version.springCore}</version>
+			 -->
+			<version>${version.spring}</version>
+		</dependency>
 		
 		<!-- TESTING PURPOSES -->
 		

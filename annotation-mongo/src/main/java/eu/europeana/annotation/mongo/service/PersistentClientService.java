@@ -5,7 +5,7 @@ import java.util.List;
 import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentClientService extends AbstractNoSqlService<PersistentClient, String> {
 

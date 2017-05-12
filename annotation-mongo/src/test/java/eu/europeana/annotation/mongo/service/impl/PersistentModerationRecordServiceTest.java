@@ -1,7 +1,6 @@
 package eu.europeana.annotation.mongo.service.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -20,9 +19,8 @@ import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
-import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
-import eu.europeana.corelib.db.dao.NosqlDao;
+import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",
