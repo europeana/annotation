@@ -16,8 +16,9 @@ public interface BatchReportable {
 	
 	public void addError(int pos, String msg);
 	
+	public boolean hasErrors();
+	
 	public String toString();
-
 	
 }
 

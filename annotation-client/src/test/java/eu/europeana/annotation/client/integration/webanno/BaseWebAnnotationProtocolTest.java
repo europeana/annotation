@@ -432,4 +432,8 @@ public class BaseWebAnnotationProtocolTest {
 			assertEquals(re.getStatusCode(), HttpStatus.OK);
 		}
 	}
+	
+	protected ResponseEntity<String> getAnnotation(Annotation anno) {
+		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getProvider(), anno.getAnnotationId().getIdentifier());
+	}
 }

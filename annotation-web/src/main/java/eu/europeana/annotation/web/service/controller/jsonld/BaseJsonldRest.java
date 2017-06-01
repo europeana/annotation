@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -166,28 +167,88 @@ public class BaseJsonldRest extends BaseRest {
 			if(uploadStatus.getFailureCount() > 0) 
 				throw new BatchUploadException(uploadStatus.toString(), uploadStatus);
 			
-			// split annotations into those with identifier (assumed updates) and those without
-			// identifier (new annotations which should be created)
-			AnnotationsList annoList = new AnnotationsList(annotationPage.getAnnotations());
-			List<String> httpUrls = annoList.getHttpUrls();
-			uploadStatus.setNumberOfAnnotationsWithId(httpUrls.size());
-			uploadStatus.setNumberOfAnnotationsWithoutId(annotations.size()-httpUrls.size());
+			AnnotationsList webAnnotations = new AnnotationsList(annotationPage.getAnnotations());
+
+			// annotations are separated into those with identifier (assumed updates) 
+			// and those without identifier (new annotations which should be created);
+			// first annotations with identifier (assumed updates) 
+			AnnotationsList annosWithId = webAnnotations.getAnnotationsWithId();
+			uploadStatus.setNumberOfAnnotationsWithId(annosWithId.size());
 
 			// verify if the annotations with ID exist in the database
-			AnnotationsList existing = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
+			List<String> httpUrls = annosWithId.getHttpUrls();
+			AnnotationsList existingInDb = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
 			
-			// annotations with identifier must match existing annotations
+			// consistency (annotations with identifier must match existing annotations)
 			uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
-			if(httpUrls.size() != existing.size()) {
+			if(annosWithId.size() != existingInDb.size()) {
 				// remove existing HTTP URLs, the remaining list contains only missing HTTP URLs
-				httpUrls.removeAll(existing.getHttpUrls());
+				httpUrls.removeAll(existingInDb.getHttpUrls());
 				getAnnotationService().reportNonExisting(annotations, uploadStatus, httpUrls);
 				throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
-			}
+			}			
 			
-			// not yet implemented
+			// update existing annotations
+			HashMap<String, ? extends Annotation> updateAnnos = annosWithId.getHttpUrlAnnotationsMap();
 			uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
-			getAnnotationService().updateExistingAnnotations(uploadStatus, existing.getAnnotations(), annotations);
+			getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(), updateAnnos);
+			
+			
+			// insert new: not yet implemented
+			
+			//AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
+			
+			
+			// annotations are separated into those with identifier (assumed updates) 
+			// and those without identifier (new annotations which should be created);
+			// second annotations without (assumed inserts) 
+			AnnotationsList annosWithoutId = webAnnotations.getAnnotationsWithoutId();
+			uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
+			
+
+			getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations());
+			
+			
+			// TODO #152 This happens in the service, not here!!!!!!!!11
+			//AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
+			
+			//AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
+			
+			
+//			// 0. annotation id
+//			AnnotationId annoId = buildAnnotationId(provider, identifier);
+//
+//			// 1. authorize user
+//			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+//
+//			// parse
+//			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
+//
+//			// SET DEFAULTS
+//			if (webAnnotation.getGenerator() == null)
+//				webAnnotation.setGenerator(buildDefaultGenerator(app));
+//
+//			if (webAnnotation.getCreator() == null)
+//				webAnnotation.setCreator(user);
+//
+//			// 2. validate
+//			// check whether annotation with the given provider and identifier
+//			// already exist in the database
+//			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
+//				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
+//						"/provider/identifier", annoId.toUri());
+//			// 2.1 validate annotation properties
+//			getAnnotationService().validateWebAnnotation(webAnnotation);
+//
+//			// 3-6 create ID and annotation + backend validation
+//			webAnnotation.setAnnotationId(annoId);
+//
+//			// validate api key ... and request limit only if the request is
+//			// correct (avoid useless DB requests)
+//			// Done in authorize user
+//			UPLOADSTATUS.SETSTEP(BATCHOPERATIONSTEP.INSERT_NEW_ANNOTATIONS);
+//			GETANNOTATIONSERVICE().CREATENEWANNOTATIONS(UPLOADSTATUS, EXISTING.GETANNOTATIONS(), ANNOTATIONS);
+			
 			
 			// serialize upload status
 			Gson gsonObj = new Gson();

@@ -16,7 +16,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 //	public abstract ImageAnnotation store(ImageAnnotation object) throws AnnotationValidationException;
 
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
-
+	
 //	public abstract ObjectTag store(ObjectTag object) throws AnnotationValidationException;
 
 	public List<? extends Annotation> getAnnotationList(String europeanaId);
@@ -88,6 +88,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public Annotation updateStatus(Annotation newAnnotation);
 	
 	public abstract AnnotationId generateAnnotationId(String provider);
+	
+	public abstract List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength);
 //	public abstract AnnotationId generateAnnotationId(String resourceId);
 
 	public abstract Annotation findByTagId(String tagId);
@@ -101,6 +103,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
+
+	void store(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, AnnotationMongoException;
 
 }
 

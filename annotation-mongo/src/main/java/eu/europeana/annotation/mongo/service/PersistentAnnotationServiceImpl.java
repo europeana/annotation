@@ -8,10 +8,18 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.stereotype.Component;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteError;
+import com.mongodb.BulkWriteException;
+import com.mongodb.BulkWriteOperation;
+import com.mongodb.DBObject;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -158,6 +166,25 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 
 		return new MongoAnnotationId(annoId);
+	}
+
+	/**
+	 * Generate sequence of annotation ids of given length
+	 * 
+	 * @param provider Provider for which the sequence is created
+	 * @param seqLength Sequence length
+	 * @return List of annotation ids
+	 */
+	@Override
+	public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
+		List<AnnotationId> annoIdSeq = new ArrayList<AnnotationId>(seqLength);
+		AnnotationId annoId = null;
+		for(int i = 0; i < seqLength; i++) {
+			annoId = getAnnotationDao().generateNextAnnotationId(provider);
+			annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
+			annoIdSeq.add(annoId);
+		}
+		return annoIdSeq;
 	}
 
 	public static String extractResoureIdFromHttpUri(String httpUri) {
@@ -587,5 +614,68 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		return response;
 	}
+
+	@Override
+	public void store(List<? extends Annotation> existingAnnos)
+			throws AnnotationValidationException, AnnotationMongoException {
+		Class<PersistentAnnotation> entityClass = getDao().getEntityClass();
+		//DBCollection table = this.getDao().getDatastore().getCollection(BasicDBObject.class);
+		
+		BulkWriteOperation bulkWrite = this.getDao().getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
+		Morphia morphia = new Morphia();  
+		//List<WriteModel<BasicDBObject>> updates = new ArrayList<WriteModel<BasicDBObject>>();
+		
+		DBObject dbObject;
+		DBObject query;
+		for (Annotation existingAnno : existingAnnos) {
+          dbObject = morphia.toDBObject(existingAnno);
+          query = new BasicDBObject();
+          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
+          
+          bulkWrite.find(query).replaceOne(dbObject);
+
+		}
+		
+		try {
+			  bulkWrite.execute();
+		} catch (BulkWriteException e) {
+		  	List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
+		      for (BulkWriteError bulkWriteError : bulkWriteErrors) {
+		          int failedIndex = bulkWriteError.getIndex();
+		          Annotation failedEntity = existingAnnos.get(failedIndex);
+		          System.out.println("Failed record: " + failedEntity);
+		    }
+		} catch (Exception e) {
+			throw new AnnotationMongoException("Cannot execute bulk update", e);
+		}
+	}
+
+		
+		
+		
+	
+
+//	@Override
+//	public void store(List<? extends Annotation> updateAnnos) throws AnnotationValidationException {
+//		Class<PersistentAnnotation> entityClass = getDao().getEntityClass();
+//		BulkWriteOperation bulkWrite = this.getDao().getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
+//		for (Annotation existingAnno : updateAnnos) {
+//        	Morphia morphia = new Morphia();        	
+//        	        	
+//            DBObject dbObject = morphia.toDBObject(existingAnno);
+//            bulkWrite.find(dbObject).upsert().updateOne(dbObject);
+//        }
+//        try {
+//            bulkWrite.execute();
+//        } catch (BulkWriteException e) {
+//        	List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
+//            for (BulkWriteError bulkWriteError : bulkWriteErrors) {
+//                int failedIndex = bulkWriteError.getIndex();
+//                Annotation failedEntity = updateAnnos.get(failedIndex);
+//                System.out.println("Failed record: " + failedEntity);
+//                // rollback
+//            }
+//        }
+//	}
 	
 }

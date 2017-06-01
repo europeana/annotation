@@ -52,6 +52,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotations(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
 			@RequestBody String annotationPage,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
 					throws HttpException {

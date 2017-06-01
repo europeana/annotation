@@ -46,4 +46,9 @@ public class BatchProcessingStatus implements BatchReportable {
 	public void addError(int pos, String msg) {
 		errors.put(pos, msg);
 	}
+
+	@Override
+	public boolean hasErrors() {
+		return this.errors.size() > 0;
+	}
 }

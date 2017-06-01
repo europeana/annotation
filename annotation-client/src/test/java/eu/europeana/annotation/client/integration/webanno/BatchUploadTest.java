@@ -86,6 +86,16 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		assertEquals(5, jsonObj.get(BATCH_NUM_ANNOATIONS_FIELD));
 		assertEquals(2, jsonObj.get(BATCH_NUM_ANNOATIONS_WITHID_FIELD));
 		assertEquals(3, jsonObj.get(BATCH_NUM_ANNOATIONS_WITHOUTID_FIELD));
+		// check if test annotations which have been created previously in the database 
+		// have been updated correctly
+		for (Annotation anno : testAnnotations) {
+			response = getAnnotation(anno);
+			jsonObj = new JSONObject(response.getBody());
+			JSONObject bodyObj = jsonObj.getJSONObject(BODY_FIELD);
+			String value = bodyObj.getString(VALUE_FIELD);
+			// updated tags must start with tag ("tag3", "tag5")
+			assertTrue(value.startsWith("tag"));			
+		}
 	}
 
 	/**
@@ -93,8 +103,8 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Test
-	public void tryingToUpdateNonExistingAnnotationsError() throws Exception {
+//	@Test
+	public void updateNonExistingAnnotationsError() throws Exception {
 
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE_NONEXISTING_ERROR), "httpurl");
 
@@ -144,7 +154,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Test
+//	@Test
 	public void validationError() throws Exception {
 
 		// annotation page string which contains two annotations which do not
@@ -196,8 +206,11 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		return StringUtils.replaceEach(template, replacementVars, httpUrls);
 	}
 	
+	/**
+	 * Pretty print json output helper method
+	 * @param jsonStr JSON string
+	 */
 	private void jsonPrettyPrint(String jsonStr) {
-
 		JsonParser parser = new JsonParser();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		JsonElement el = parser.parse(jsonStr);
