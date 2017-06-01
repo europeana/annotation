@@ -104,7 +104,22 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 
-	void store(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, AnnotationMongoException;
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param annos List of annotations
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	public void store(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, AnnotationMongoException;
+
+	/**
+	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
+	 * @param annos List of annotations
+	 * @param update Update mode: true if existing annotations should be updated
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	public void store(List<? extends Annotation> annos, boolean update) throws AnnotationValidationException, AnnotationMongoException;
 
 }
 

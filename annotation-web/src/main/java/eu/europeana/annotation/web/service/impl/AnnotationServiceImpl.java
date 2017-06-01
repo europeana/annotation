@@ -1,9 +1,11 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +14,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.HttpStatus;
 
@@ -59,6 +62,7 @@ import eu.europeana.annotation.web.exception.request.RequestBodyValidationExcept
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
+import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
@@ -865,7 +869,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos) throws AnnotationValidationException, AnnotationMongoException {
+	public void updateExistingAnnotations(BatchReportable batchReportable, 
+			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos) 
+			throws AnnotationValidationException, AnnotationMongoException {
 		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
 		if(existingAnnos.size() != updateAnnos.size())
 			throw new IllegalArgumentException("The existing and update lists must be of equal size");
@@ -875,19 +881,24 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			Annotation updateAnno = updateAnnos.get(existingHttpUrl);			
 			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
 		}
-		getMongoPersistence().store(existingAnnos);
+		getMongoPersistence().store(existingAnnos, true);
 	}
 
 	@Override
-	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations) {
-		
-		
-		//AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
-		
-		//getMongoPersistence().generateAnnotationIdSequence(provider);
-		
-		// TODO Auto-generated method stub
-		
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
+			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults) 
+			throws AnnotationValidationException, AnnotationMongoException {
+		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(annoDefaults.getProvider(), annotations.size());
+		if(annotations.size() != annoIdSequence.size())
+			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
+		Iterator<? extends Annotation> annosIt = annotations.iterator();
+		Iterator<AnnotationId> annoIdsIt = annoIdSequence.iterator();
+		while (annosIt.hasNext() && annoIdsIt.hasNext()) {
+			Annotation anno = annosIt.next();
+			anno.setAnnotationId(annoIdsIt.next());
+			annoDefaults.putAnnotationDefaultValues(anno);
+		}
+		getMongoPersistence().store(annotations);
 	}
 
 }

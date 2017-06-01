@@ -57,7 +57,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
 					throws HttpException {
 
-		return storeAnnotations(wskey, annotationPage, userToken);
+		return storeAnnotations(wskey, provider, annotationPage, userToken);
 	}
 	
 	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, 

@@ -450,7 +450,7 @@ public abstract class AbstractAnnotation implements Annotation {
 
 	@Override
 	public boolean hasHttpUrl() {
-		return (this.getAnnotationId() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
+		return (this.getAnnotationId() != null && this.getAnnotationId().getHttpUrl() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
 	}
 	
 

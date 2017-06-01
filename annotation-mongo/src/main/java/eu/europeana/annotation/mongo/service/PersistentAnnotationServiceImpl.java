@@ -614,68 +614,57 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		return response;
 	}
+	
 
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param annos List of annotations
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
 	@Override
-	public void store(List<? extends Annotation> existingAnnos)
+	public void store(List<? extends Annotation> annos)
+			throws AnnotationValidationException, AnnotationMongoException {
+		store(annos, false);
+	}
+
+	/**
+	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
+	 * @param annos List of annotations
+	 * @param update Update mode: true if existing annotations should be updated
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	@Override
+	public void store(List<? extends Annotation> annos, boolean update)
 			throws AnnotationValidationException, AnnotationMongoException {
 		Class<PersistentAnnotation> entityClass = getDao().getEntityClass();
-		//DBCollection table = this.getDao().getDatastore().getCollection(BasicDBObject.class);
-		
 		BulkWriteOperation bulkWrite = this.getDao().getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
 		Morphia morphia = new Morphia();  
-		//List<WriteModel<BasicDBObject>> updates = new ArrayList<WriteModel<BasicDBObject>>();
-		
 		DBObject dbObject;
 		DBObject query;
-		for (Annotation existingAnno : existingAnnos) {
-          dbObject = morphia.toDBObject(existingAnno);
-          query = new BasicDBObject();
-          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
-          
-          bulkWrite.find(query).replaceOne(dbObject);
-
+		for (Annotation anno : annos) {
+          dbObject = morphia.toDBObject(anno);
+          if(update) {
+	          query = new BasicDBObject();
+	          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
+	          bulkWrite.find(query).replaceOne(dbObject);
+          } else {
+        	  bulkWrite.insert(dbObject);
+          }
 		}
-		
 		try {
 			  bulkWrite.execute();
 		} catch (BulkWriteException e) {
 		  	List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
 		      for (BulkWriteError bulkWriteError : bulkWriteErrors) {
 		          int failedIndex = bulkWriteError.getIndex();
-		          Annotation failedEntity = existingAnnos.get(failedIndex);
+		          Annotation failedEntity = annos.get(failedIndex);
 		          System.out.println("Failed record: " + failedEntity);
 		    }
 		} catch (Exception e) {
 			throw new AnnotationMongoException("Cannot execute bulk update", e);
 		}
 	}
-
-		
-		
-		
-	
-
-//	@Override
-//	public void store(List<? extends Annotation> updateAnnos) throws AnnotationValidationException {
-//		Class<PersistentAnnotation> entityClass = getDao().getEntityClass();
-//		BulkWriteOperation bulkWrite = this.getDao().getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
-//		for (Annotation existingAnno : updateAnnos) {
-//        	Morphia morphia = new Morphia();        	
-//        	        	
-//            DBObject dbObject = morphia.toDBObject(existingAnno);
-//            bulkWrite.find(dbObject).upsert().updateOne(dbObject);
-//        }
-//        try {
-//            bulkWrite.execute();
-//        } catch (BulkWriteException e) {
-//        	List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
-//            for (BulkWriteError bulkWriteError : bulkWriteErrors) {
-//                int failedIndex = bulkWriteError.getIndex();
-//                Annotation failedEntity = updateAnnos.get(failedIndex);
-//                System.out.println("Failed record: " + failedEntity);
-//                // rollback
-//            }
-//        }
-//	}
 	
 }

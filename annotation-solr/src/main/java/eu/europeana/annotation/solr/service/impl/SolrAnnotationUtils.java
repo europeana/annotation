@@ -101,6 +101,7 @@ public class SolrAnnotationUtils {
 				body = convertToSolrMultilingual(body);
 		}
 
+		
 		solrAnnotationImpl.setCreated(annotation.getCreated());
 		solrAnnotationImpl.setCreatorString(annotation.getCreator().getName());
 		solrAnnotationImpl.setTarget(annotation.getTarget());

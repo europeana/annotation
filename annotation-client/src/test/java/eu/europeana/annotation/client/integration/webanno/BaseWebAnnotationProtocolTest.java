@@ -80,6 +80,7 @@ public class BaseWebAnnotationProtocolTest {
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
 	public String TEST_USER_TOKEN = "tester1";
+	public String ADMIN_USER_TOKEN = "admin";
 	public String ANONYMOUS_USER_TOKEN = "anonymous";
 
 	private WebAnnotationProtocolApi apiClient;

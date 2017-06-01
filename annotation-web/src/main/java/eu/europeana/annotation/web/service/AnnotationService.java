@@ -330,6 +330,6 @@ public interface AnnotationService {
 
 	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos) throws AnnotationValidationException, AnnotationMongoException;
 
-	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations);
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults) throws AnnotationValidationException, AnnotationMongoException;
 
 }

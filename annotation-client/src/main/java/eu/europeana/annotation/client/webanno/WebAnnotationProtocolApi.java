@@ -115,7 +115,7 @@ public interface WebAnnotationProtocolApi {
 	ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate, String annotation,
 			String userToken);
 		
-	public ResponseEntity<String> uploadAnnotations(String wskey, String userToken, String tag);
+	public ResponseEntity<String> uploadAnnotations(String wskey, String userToken, String tag, Boolean indexOnCreate);
 
 
 }
