@@ -179,9 +179,7 @@ public class AnnotationPageParser extends JsonLdParser {
 			
 			ResultSet<? extends AnnotationView> annViewResSet = null;
 		    JSONArray itemsJsonArr = (JSONArray)items;
-		    annViewResSet = parseItems(itemsJsonArr);
-					
-			ap.setItems(annViewResSet);
+		    parseItems(ap, itemsJsonArr);
 			break;	
 
 		case WebAnnotationFields.PART_OF:
@@ -222,21 +220,39 @@ public class AnnotationPageParser extends JsonLdParser {
 	 * @throws JSONException 
 	 * @throws JsonParseException 
 	 */
-	private ResultSet<? extends AnnotationView> parseItems(JSONArray jsonArr) throws JSONException {
-		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
+	private void parseItems(AnnotationPage annoPage, JSONArray jsonArr) throws JSONException, JsonParseException {
 		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
-		for (int i = 0, size = jsonArr.length(); i < size; i++) {
-			//TODO parse minimal and standard profiles, depending on the content
-			
-			String resourceId = (String) jsonArr.get(i);
-			AnnotationViewResourceListItem avrItem = new AnnotationViewResourceListItem();
-			avrItem.setId(resourceId);
-			avrItem.setTimestampUpdated(new Date(0));
-			avItemList.add(avrItem);
-		}
+		List<Annotation> annoList = new ArrayList<Annotation>();
 		
-		resAvItemList.setResultSize(jsonArr.length());
-		return resAvItemList.setResults(avItemList);
+		AnnotationViewResourceListItem avrItem;
+		Annotation annotation;
+		JSONObject annoJson;
+		for (int i = 0, size = jsonArr.length(); i < size; i++) {
+			Object item = jsonArr.get(i);
+			if(item instanceof String) {
+				//minimal profile
+				avrItem = new AnnotationViewResourceListItem();
+				avrItem.setId((String)item);
+				//avrItem.setTimestampUpdated(new Date(0));
+				avItemList.add(avrItem);
+			} else {
+				//standard profile
+				annoJson = (JSONObject)item;
+				annotation = (new AnnotationLdParser()).parseAnnotation(null, annoJson);
+				annoList.add(annotation);
+			}
+			
+		}
+		//if minimal profile build items (ResultSet)
+		if(! avItemList.isEmpty()){
+			ResultSet<AnnotationViewResourceListItem> items = new ResultSet<AnnotationViewResourceListItem>();
+			items.setResultSize(avItemList.size());
+			annoPage.setItems(items);		
+		}
+		//if standard profile set annotations list
+		if(! annoList.isEmpty()){
+			annoPage.setAnnotations(annoList);
+		}
 	}
 
 }
