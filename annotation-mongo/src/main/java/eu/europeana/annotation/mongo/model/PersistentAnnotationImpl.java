@@ -19,6 +19,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
+import org.apache.commons.lang.StringUtils;
 
 @Polymorphic
 @Entity("annotation")

@@ -6,7 +6,7 @@ import java.util.List;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentApiWriteLockService extends AbstractNoSqlService<PersistentApiWriteLock, String> {
 

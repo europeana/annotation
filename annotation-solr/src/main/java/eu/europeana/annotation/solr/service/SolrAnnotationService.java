@@ -24,7 +24,7 @@ public interface SolrAnnotationService {
 	 * @return 
 	 */
 
-	public void store(Annotation anno) throws AnnotationServiceException ;
+	public boolean store(Annotation anno) throws AnnotationServiceException ;
 
 
 	/**
