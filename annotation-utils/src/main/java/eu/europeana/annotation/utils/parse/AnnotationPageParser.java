@@ -179,8 +179,10 @@ public class AnnotationPageParser extends JsonLdParser {
 			
 			ResultSet<? extends AnnotationView> annViewResSet = null;
 		    JSONArray itemsJsonArr = (JSONArray)items;
-		    parseItems(ap, itemsJsonArr);
-			break;
+		    annViewResSet = parseItems(itemsJsonArr);
+					
+			ap.setItems(annViewResSet);
+			break;	
 
 		case WebAnnotationFields.PART_OF:
 			JSONObject partOfObj = jo.getJSONObject(WebAnnotationFields.PART_OF);
@@ -220,13 +222,9 @@ public class AnnotationPageParser extends JsonLdParser {
 	 * @throws JSONException 
 	 * @throws JsonParseException 
 	 */
-	private void parseItems(AnnotationPage annoPage, JSONArray jsonArr) throws JSONException, JsonParseException {
+	private ResultSet<? extends AnnotationView> parseItems(JSONArray jsonArr) throws JSONException {
+		ResultSet<AnnotationViewResourceListItem> resAvItemList = new ResultSet<AnnotationViewResourceListItem>();
 		List<AnnotationViewResourceListItem> avItemList = new ArrayList<AnnotationViewResourceListItem>();
-		List<Annotation> annoList = new ArrayList<Annotation>();
-		
-		AnnotationViewResourceListItem avrItem;
-		Annotation annotation;
-		JSONObject annoJson;
 		for (int i = 0, size = jsonArr.length(); i < size; i++) {
 			//TODO parse minimal and standard profiles, depending on the content
 			

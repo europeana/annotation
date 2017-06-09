@@ -84,7 +84,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 					"Unexpected IO exception occured when storing annotations for: " + anno.getAnnotationId(), ex);
 		}
 		
-		return true;
 	}
 
 	
