@@ -111,13 +111,13 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * 
 	 * @throws Exception
 	 */
-//	@Test
+	@Test
 	public void updateNonExistingAnnotationsError() throws Exception {
 
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE_NONEXISTING_ERROR), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), TEST_USER_TOKEN, requestBody, false);
+		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, false);
 
 		// response status must be 404 NOT FOUND
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -162,7 +162,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * 
 	 * @throws Exception
 	 */
-//	@Test
+	@Test
 	public void validationError() throws Exception {
 
 		// annotation page string which contains two annotations which do not
@@ -170,7 +170,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VALIDATION_ERROR);
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), TEST_USER_TOKEN, requestBody, false);
+		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, false);
 
 		// response status must be 400 BAD_REQUEST
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
