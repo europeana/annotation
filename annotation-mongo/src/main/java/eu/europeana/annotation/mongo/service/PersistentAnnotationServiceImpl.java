@@ -8,11 +8,18 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.Mapper;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
+import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryResults;
-import com.google.code.morphia.query.UpdateOperations;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteError;
+import com.mongodb.BulkWriteException;
+import com.mongodb.BulkWriteOperation;
+import com.mongodb.DBObject;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -37,7 +44,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
@@ -159,6 +166,25 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 
 		return new MongoAnnotationId(annoId);
+	}
+
+	/**
+	 * Generate sequence of annotation ids of given length
+	 * 
+	 * @param provider Provider for which the sequence is created
+	 * @param seqLength Sequence length
+	 * @return List of annotation ids
+	 */
+	@Override
+	public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
+		List<AnnotationId> annoIdSeq = new ArrayList<AnnotationId>(seqLength);
+		AnnotationId annoId = null;
+		for(int i = 0; i < seqLength; i++) {
+			annoId = getAnnotationDao().generateNextAnnotationId(provider);
+			annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
+			annoIdSeq.add(annoId);
+		}
+		return annoIdSeq;
 	}
 
 	public static String extractResoureIdFromHttpUri(String httpUri) {
@@ -589,6 +615,58 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		for (Object id : res){ response.add(id.toString()); }
 		
 		return response;
+	}
+	
+
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param annos List of annotations
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	@Override
+	public void store(List<? extends Annotation> annos)
+			throws AnnotationValidationException, AnnotationMongoException {
+		store(annos, false);
+	}
+
+	/**
+	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
+	 * @param annos List of annotations
+	 * @param update Update mode: true if existing annotations should be updated
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	@Override
+	public void store(List<? extends Annotation> annos, boolean update)
+			throws AnnotationValidationException, AnnotationMongoException {
+		Class<PersistentAnnotation> entityClass = getDao().getEntityClass();
+		BulkWriteOperation bulkWrite = this.getDao().getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
+		Morphia morphia = new Morphia();  
+		DBObject dbObject;
+		DBObject query;
+		for (Annotation anno : annos) {
+          dbObject = morphia.toDBObject(anno);
+          if(update) {
+	          query = new BasicDBObject();
+	          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
+	          bulkWrite.find(query).replaceOne(dbObject);
+          } else {
+        	  bulkWrite.insert(dbObject);
+          }
+		}
+		try {
+			  bulkWrite.execute();
+		} catch (BulkWriteException e) {
+		  	List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
+		      for (BulkWriteError bulkWriteError : bulkWriteErrors) {
+		          int failedIndex = bulkWriteError.getIndex();
+		          Annotation failedEntity = annos.get(failedIndex);
+		          System.out.println("Failed record: " + failedEntity);
+		    }
+		} catch (Exception e) {
+			throw new AnnotationMongoException("Cannot execute bulk update", e);
+		}
 	}
 	
 }

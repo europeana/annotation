@@ -1,8 +1,12 @@
 package eu.europeana.annotation.web.service.impl;
 
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +14,10 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.http.HttpStatus;
 
 import com.google.common.base.Strings;
 
@@ -29,10 +36,13 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
@@ -50,6 +60,10 @@ import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.exception.response.BatchUploadException;
+import eu.europeana.annotation.web.model.BatchReportable;
+import eu.europeana.annotation.web.model.BatchUploadStatus;
+import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
@@ -122,23 +136,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getMongoPersistence().getAnnotationList(resourceId);
 	}
 
-//	@Override
-//	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
-//			boolean isDisabled) {
-//		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
-//	}
+	// @Override
+	// public List<? extends Annotation> getFilteredAnnotationList(String
+	// resourceId, String startOn, String limit,
+	// boolean isDisabled) {
+	// return getMongoPersistence().getFilteredAnnotationList(resourceId, null,
+	// startOn, limit, isDisabled);
+	// }
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
 		return null;
-//		// return getSolrService().search(query);
+		// // return getSolrService().search(query);
 	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
 			throws AnnotationServiceException {
 		return null;
-//		// return getSolrService().search(query, startOn, limit);
+		// // return getSolrService().search(query, startOn, limit);
 	}
 
 	@Override
@@ -170,10 +186,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
 		 * -> JsonLd object
 		 */
-		try{
+		try {
 			AnnotationLdParser europeanaParser = new AnnotationLdParser();
 			return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
-		}catch(AnnotationAttributeInstantiationException e){
+		} catch (AnnotationAttributeInstantiationException e) {
 			throw new RequestBodyValidationException(annotationJsonLdStr, e);
 		}
 	}
@@ -373,10 +389,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
-
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		Annotation res = updateAndReindex(persistentAnnotation);
-
 		return res;
 	}
 
@@ -384,44 +398,50 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (updatedWebAnnotation.getType() != null)
 			annotation.setType(updatedWebAnnotation.getType());
 
-//		So my decision for the moment would be to only keep the "id" and "created" immutable.
-//
-//		With regards to the logic when each of the fields is missing:
-//		- If modified is missing, update with the current timestamp, otherwise overwrite.
-//		- if creator is missing, keep the previous creator, otherwise overwrite.
-//		- if generator is missing, keep the previous generator, otherwise overwrite.
-//		- the generated should always be determined by the server.
-//		- motivation, body and target are overwritten.
-		
+		// So my decision for the moment would be to only keep the "id" and
+		// "created" immutable.
+		//
+		// With regards to the logic when each of the fields is missing:
+		// - If modified is missing, update with the current timestamp,
+		// otherwise overwrite.
+		// - if creator is missing, keep the previous creator, otherwise
+		// overwrite.
+		// - if generator is missing, keep the previous generator, otherwise
+		// overwrite.
+		// - the generated should always be determined by the server.
+		// - motivation, body and target are overwritten.
+
 		// Motivation can be changed see #122
-//		if (updatedWebAnnotation.getMotivationType() != null
-//				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
-//			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
-//					+ " to: " + updatedWebAnnotation.getMotivationType());
+		// if (updatedWebAnnotation.getMotivationType() != null
+		// && updatedWebAnnotation.getMotivationType() !=
+		// storedAnnotation.getMotivationType())
+		// throw new RuntimeException("Cannot change motivation type from: " +
+		// storedAnnotation.getMotivationType()
+		// + " to: " + updatedWebAnnotation.getMotivationType());
 		// if (updatedWebAnnotation.getMotivation() != null)
 		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-		
+
 		if (updatedWebAnnotation.getLastUpdate() != null) {
 			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
 		} else {
 			Date timeStamp = new java.util.Date();
 			annotation.setLastUpdate(timeStamp);
 		}
-		
+
 		if (updatedWebAnnotation.getCreator() != null)
 			annotation.setCreator(updatedWebAnnotation.getCreator());
-		
+
 		if (updatedWebAnnotation.getGenerator() != null)
 			annotation.setGenerator(updatedWebAnnotation.getGenerator());
-		
+
 		if (updatedWebAnnotation.getCreated() != null)
 			annotation.setCreated(updatedWebAnnotation.getCreated());
-//		if (updatedWebAnnotation.getCreator() != null)
-//			annotation.setCreator(updatedWebAnnotation.getCreator());
+		// if (updatedWebAnnotation.getCreator() != null)
+		// annotation.setCreator(updatedWebAnnotation.getCreator());
 		if (updatedWebAnnotation.getGenerated() != null)
 			annotation.setGenerated(updatedWebAnnotation.getGenerated());
-//		if (updatedWebAnnotation.getGenerator() != null)
-//			annotation.setGenerator(updatedWebAnnotation.getGenerator());
+		// if (updatedWebAnnotation.getGenerator() != null)
+		// annotation.setGenerator(updatedWebAnnotation.getGenerator());
 		if (updatedWebAnnotation.getBody() != null)
 			annotation.setBody(updatedWebAnnotation.getBody());
 		if (updatedWebAnnotation.getTarget() != null)
@@ -432,8 +452,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			annotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
 		if (updatedWebAnnotation.getInternalType() != null)
 			annotation.setInternalType(updatedWebAnnotation.getInternalType());
-//		if (updatedWebAnnotation.getLastUpdate() != null)
-//			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+		// if (updatedWebAnnotation.getLastUpdate() != null)
+		// annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
 		if (updatedWebAnnotation.getSameAs() != null)
 			annotation.setSameAs(updatedWebAnnotation.getSameAs());
 		if (updatedWebAnnotation.getStatus() != null)
@@ -469,11 +489,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public Annotation disableAnnotation(Annotation annotation) {
 		PersistentAnnotation persistentAnnotation;
 		try {
-			if(annotation instanceof PersistentAnnotation)
-				persistentAnnotation = (PersistentAnnotation)annotation;
+			if (annotation instanceof PersistentAnnotation)
+				persistentAnnotation = (PersistentAnnotation) annotation;
 			else
 				persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
-			
+
 			persistentAnnotation.setDisabled(true);
 			persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 		} catch (Exception e) {
@@ -544,6 +564,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return res;
 	}
 
+	@Override
+	public List<? extends Annotation> getExisting(List<String> annotationHttpUrls) {
+		try {
+			List<? extends Annotation> dbRes = getMongoPersistence().getAnnotationList(annotationHttpUrls);
+			return dbRes;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public boolean existsModerationInDb(AnnotationId annoId) {
 		boolean res = false;
 		try {
@@ -585,7 +615,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		statusLog.setAnnotationId(annotation.getAnnotationId());
 		getMongoStatusLogPersistence().store(statusLog);
 	}
-	
+
 	@Override
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
 		switch (annoId.getProvider()) {
@@ -681,15 +711,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	private void validateGeoTag(Body body) throws ParamValidationException {
 		if (!(body instanceof PlaceBody))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.class", body.getClass().toString());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.class",
+					body.getClass().toString());
 
 		Place place = ((PlaceBody) body).getPlace();
-		
-		if(StringUtils.isEmpty(place.getLatitude()))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.latitude", null);
-				
-		if(StringUtils.isEmpty(place.getLongitude()))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.longitude", null);
+
+		if (StringUtils.isEmpty(place.getLatitude()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					"tag.body.latitude", null);
+
+		if (StringUtils.isEmpty(place.getLongitude()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.longitude",
+					null);
 
 	}
 
@@ -750,11 +783,42 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	}
 
+	@Override
+	public void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) {
+		int position = 1;
+		for (Annotation webanno : webAnnotations) {
+			try {
+				validateWebAnnotation(webanno);
+				batchReportable.incrementSuccessCount();
+			} catch (ParamValidationException e) {
+				batchReportable.incrementFailureCount();
+				batchReportable.addError(position, e.getMessage());
+			}
+			position++;
+		}
+	}
+
+	@Override
+	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
+			List<String> missingHttpUrls) {
+		int position = 1;
+		for (Annotation anno : annotations) {
+			String httpUrl = anno.getHttpUrl();
+			if (httpUrl != null) {
+				if (missingHttpUrls.contains(httpUrl)) {
+					batchReportable.incrementFailureCount();
+					batchReportable.addError(position, "Annotation does not exist: " + httpUrl);
+				} else
+					batchReportable.incrementSuccessCount();
+			}
+			position++;
+		}
+	}
 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
 
-		//validate canonical to be an absolute URI
+		// validate canonical to be an absolute URI
 		if (webAnnotation.getCanonical() != null) {
 			try {
 				URI cannonicalUri = URI.create(webAnnotation.getCanonical());
@@ -762,20 +826,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 					throw new ParamValidationException("The canonical URI is not absolute:",
 							WebAnnotationFields.CANONICAL, webAnnotation.getCanonical());
 			} catch (IllegalArgumentException e) {
-				throw new ParamValidationException("Error when validating canonical URI:", WebAnnotationFields.CANONICAL, webAnnotation.getCanonical(), e);
+				throw new ParamValidationException("Error when validating canonical URI:",
+						WebAnnotationFields.CANONICAL, webAnnotation.getCanonical(), e);
 			}
 		}
-		
-		//validate via to be valid URL(s)
+
+		// validate via to be valid URL(s)
 		if (webAnnotation.getVia() != null) {
 			if (webAnnotation.getVia() instanceof String[]) {
 				for (String via : webAnnotation.getVia()) {
-					if(!(UriUtils.isUrl(via)))
+					if (!(UriUtils.isUrl(via)))
 						throw new ParamValidationException("This is not a valid URL:", WebAnnotationFields.VIA, via);
 				}
 			}
 		}
-			
+
 		switch (webAnnotation.getMotivationType()) {
 		case LINKING:
 			// validate target URLs against whitelist
@@ -794,5 +859,38 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			break;
 		}
 	}
-	
+
+	@Override
+	public void updateExistingAnnotations(BatchReportable batchReportable, 
+			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos) 
+			throws AnnotationValidationException, AnnotationMongoException {
+		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
+		if(existingAnnos.size() != updateAnnos.size())
+			throw new IllegalArgumentException("The existing and update lists must be of equal size");
+		for(int i = 0; i < existingAnnos.size(); i++) {
+			Annotation existingAnno = existingAnnos.get(i);
+			String existingHttpUrl = existingAnno.getHttpUrl();
+			Annotation updateAnno = updateAnnos.get(existingHttpUrl);			
+			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
+		}
+		getMongoPersistence().store(existingAnnos, true);
+	}
+
+	@Override
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
+			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults) 
+			throws AnnotationValidationException, AnnotationMongoException {
+		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(annoDefaults.getProvider(), annotations.size());
+		if(annotations.size() != annoIdSequence.size())
+			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
+		Iterator<? extends Annotation> annosIt = annotations.iterator();
+		Iterator<AnnotationId> annoIdsIt = annoIdSequence.iterator();
+		while (annosIt.hasNext() && annoIdsIt.hasNext()) {
+			Annotation anno = annosIt.next();
+			anno.setAnnotationId(annoIdsIt.next());
+			annoDefaults.putAnnotationDefaultValues(anno);
+		}
+		getMongoPersistence().store(annotations);
+	}
+
 }

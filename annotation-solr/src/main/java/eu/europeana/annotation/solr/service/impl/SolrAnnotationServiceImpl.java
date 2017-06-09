@@ -35,13 +35,29 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		this.solrServer = solrServer;
 	}
 
+	public SolrServer getSolrServer() {
+		return solrServer;
+	}
+	
 	@Override
 	public boolean store(Annotation anno) throws AnnotationServiceException {
-		if(anno.isDisabled()){
+    if(anno.isDisabled()){
 			getLogger().warn("Annotation with the following id was not stored in solr index, annotation diabled: " + anno.toString());
 			return false;
 		}
-		
+		store(anno, true);
+    return true;
+	}
+
+	@Override
+	public void store(List<? extends Annotation> annos) throws AnnotationServiceException, SolrServerException, IOException {
+		for(Annotation anno : annos)
+			store(anno, false);
+		solrServer.commit();
+	}
+
+	@Override
+	public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException {
 		try {
 			getLogger().debug("store: " + anno.toString());
 			SolrAnnotation indexedAnno = null;
@@ -57,7 +73,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 			UpdateResponse rsp = solrServer.addBean(indexedAnno);
 			getLogger().info("store response: " + rsp.toString());
-			solrServer.commit();
+			if(doCommit)
+				solrServer.commit();
 		} catch (SolrServerException ex) {
 			throw new AnnotationServiceException(
 					"Unexpected Solr server exception occured when storing annotations for: " + anno.getAnnotationId(),
@@ -439,5 +456,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	public void index(ModerationRecord moderationRecord) {
 		
 	}
+
 
 }

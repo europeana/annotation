@@ -212,17 +212,17 @@ public class BaseRest extends ApiResponseBuilder {
 	 * @return AnnotationId
 	 * @throws ParamValidationException
 	 */
-	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
-
-		if (identifier.split(WebAnnotationFields.SLASH).length < ParamValidationException.MIN_IDENTIFIER_LEN)
-			return null;
-
-		AnnotationId annoId = getAnnotationIdHelper().parseAnnotationId(identifier);
-
-		// annotationService.validateAnnotationId(annoId);
-
-		return annoId;
-	}
+//	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
+//
+//		if (identifier.split(WebAnnotationFields.SLASH).length < ParamValidationException.MIN_IDENTIFIER_LEN)
+//			return null;
+//
+//		AnnotationId annoId = getAnnotationIdHelper().parseAnnotationId(identifier);
+//
+//		// annotationService.validateAnnotationId(annoId);
+//
+//		return annoId;
+//	}
 	
 	
 	/**

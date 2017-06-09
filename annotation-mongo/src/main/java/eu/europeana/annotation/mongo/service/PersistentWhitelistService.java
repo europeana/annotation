@@ -9,7 +9,7 @@ import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentWhitelistService  extends AbstractNoSqlService<PersistentWhitelistEntry, String> {
 

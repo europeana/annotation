@@ -29,6 +29,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +49,6 @@ import eu.europeana.annotation.web.exception.authentication.ApplicationAuthentic
 import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
-import eu.europeana.corelib.logging.Logger;
 
 /**
  * This class implements different SKOS testing scenarios.
@@ -90,8 +90,7 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
     }
 	
 	Logger logger = Logger.getLogger(getClass());
-
-
+	
 	private Gson gson = null;
 
     

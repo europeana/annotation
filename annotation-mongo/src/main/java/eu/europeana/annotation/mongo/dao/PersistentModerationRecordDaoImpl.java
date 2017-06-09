@@ -2,10 +2,10 @@ package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
 
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
-import eu.europeana.corelib.db.dao.impl.NosqlDaoImpl;
+import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
 public class PersistentModerationRecordDaoImpl <E extends PersistentModerationRecord, T extends Serializable>
 extends NosqlDaoImpl<E, T> implements PersistentModerationRecordDao<PersistentModerationRecord, String>{

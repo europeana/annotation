@@ -3,7 +3,7 @@ package eu.europeana.annotation.mongo.model.internal;
 import org.bson.types.ObjectId;
 
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
+import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 /**
  * This type is used as internal interface that binds the external interface (model.PersistentStatusLog) with the NoSql based implementation (NoSqlEntity)

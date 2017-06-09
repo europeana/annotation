@@ -28,7 +28,7 @@
 
 	<!-- MONGO DB -->
  	<!--  abstract annotation dao, reusing the corelib abstract implementation -->
-	<bean id="corelib_db_nosql_annotation_dao" abstract="true" class="eu.europeana.corelib.db.dao.impl.NosqlDaoImpl">
+	<bean id="corelib_db_nosql_annotation_dao" abstract="true" class="eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl">
 		<constructor-arg ref="annotation_db_morphia_datastore_annotation" name="datastore"/>
 	</bean>
 

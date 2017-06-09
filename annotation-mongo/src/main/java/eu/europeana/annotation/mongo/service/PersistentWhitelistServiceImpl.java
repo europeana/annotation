@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -26,7 +26,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidWhitelistException;
 import eu.europeana.annotation.mongo.model.PersistentWhitelistImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Configuration
 @EnableCaching
@@ -148,7 +148,7 @@ public class PersistentWhitelistServiceImpl extends
 			throws AnnotationMongoException {
 		int affected = res.getN();
 		if(affected != 1 )
-			throw new AnnotationMongoException("Delete operation Failed!" + res.getError(), res.getLastError().getException());
+			throw new AnnotationMongoException("Delete operation Failed!" + res);
 	}
 	
 	
