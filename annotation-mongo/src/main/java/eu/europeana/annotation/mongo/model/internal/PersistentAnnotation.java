@@ -23,7 +23,6 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	public final static String FIELD_DISABLED = "disabled";
 	public final static String FIELD_VALUE = "value";
 	public final static String FIELD_VALUES = "values";
-	public final static String FIELD_RESOURCE_ID = "resourceId";
 	public final static String FIELD_RESOURCE_IDS = "resourceIds";
 	public final static String FIELD_TARGET = "target.";
 	

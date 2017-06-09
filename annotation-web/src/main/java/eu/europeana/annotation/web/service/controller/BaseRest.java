@@ -250,6 +250,7 @@ public class BaseRest extends ApiResponseBuilder {
 		
 		return response;		
 	}
+	
 
 	protected ResponseEntity<String> buildResponseEntityForJsonString(String jsonStr, HttpStatus httpStatus) {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);

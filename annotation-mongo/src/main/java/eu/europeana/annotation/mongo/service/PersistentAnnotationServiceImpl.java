@@ -272,9 +272,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	@Override
 	public List<? extends Annotation> getAnnotationListByResourceId(String resourceId) {
-		List<? extends Annotation> results = filterAnnotationListByResourceId(resourceId, false);
-		if (results.size() == 0)
-			results = filterAnnotationListByResourceId(resourceId, true);
+		List<? extends Annotation> results = filterAnnotationListByResourceId(resourceId);
+		if (results == null)
+			results = new ArrayList<PersistentAnnotationImpl>(0);
 		return results;
 	}
 
@@ -287,7 +287,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @param multiple
 	 * @return evaluated list
 	 */
-	public List<? extends Annotation> filterAnnotationListByTarget(String target, boolean multiple) {
+	protected List<? extends Annotation> filterAnnotationListByTarget(String target, boolean multiple) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotEmpty(target)) {
 			if (multiple)
@@ -307,21 +307,21 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * 'target.resourceId' parameter 'multiple' is false. By searching in
 	 * 'target.resourceId' parameter 'multiple' is true.
 	 * 
-	 * @param target
+	 * @param resourceId
 	 * @param multiple
 	 * @return evaluated list
 	 */
-	public List<? extends Annotation> filterAnnotationListByResourceId(String target, boolean multiple) {
+	protected List<? extends Annotation> filterAnnotationListByResourceId(String resourceId) {
+		//ensure not empty resourceID
+		if(StringUtils.isBlank(resourceId))
+			return null;
+		
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		if (StringUtils.isNotEmpty(target)) {
-			if (multiple)
-				query.disableValidation()
-						.field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS)
-						.equal(target);
-			else
-				query.disableValidation()
-						.filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_ID, target);
-		}
+		//add resourceID filter
+		query.disableValidation()
+					.field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS)
+						.equal(resourceId);
+			
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
@@ -517,11 +517,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			String startTimestamp, String endTimestamp) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotBlank(startTimestamp)) {
-			Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+			//Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+			Date start = new Date(Long.parseLong(startTimestamp));
 			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(start);
 		}
 		if (StringUtils.isNotBlank(endTimestamp)) {
-			Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
+			//Date end = TypeUtils.convertUnixTimestampStrToDate(endTimestamp);
+			Date end = new Date(Long.parseLong(endTimestamp));
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}
 		//Actually this is a list of Objects

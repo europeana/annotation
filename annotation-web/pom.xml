@@ -145,6 +145,7 @@
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java-jena</artifactId>
+			<!--  TODO: move exclusion to correct project and use managed library version -->
 			<version>0.2</version>
 			<exclusions>
 				<exclusion>

@@ -8,14 +8,14 @@ public class AnnotationViewResourceListItem implements AnnotationView {
 	
 	private String id;
 	
-	private Date timestampUpdated;
+	private Date lastUpdate;
 	
 	/**
 	 * Getter for timestampUpdated 
 	 * @param id the id to set
 	 */
 	@Override
-	public String getId() {
+	public String getIdAsString() {
 		return this.id;
 	}
 
@@ -24,8 +24,8 @@ public class AnnotationViewResourceListItem implements AnnotationView {
 	 * @param id the id to set
 	 */
 	@Override
-	public Date getTimestampUpdated() {
-		return this.timestampUpdated;
+	public Date getLastUpdate() {
+		return this.lastUpdate;
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class AnnotationViewResourceListItem implements AnnotationView {
 	 * @param timestampUpdated the timestampUpdated to set
 	 */
 	public void setTimestampUpdated(Date timestampUpdated) {
-		this.timestampUpdated = timestampUpdated;
+		this.lastUpdate = timestampUpdated;
 	}
 
 }

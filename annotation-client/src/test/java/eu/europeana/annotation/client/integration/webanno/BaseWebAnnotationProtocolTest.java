@@ -336,7 +336,7 @@ public class BaseWebAnnotationProtocolTest {
 				
 				for (int i = 0; i < methods.length; i++) {
 					currentMethod = methods[i];
-					if(currentMethod.getName().startsWith("get")){
+					if(currentMethod.getName().startsWith("get") && !isTechnicalMethod(currentMethod.getName())){
 						inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
 						
 						//compare non null fields only
@@ -352,6 +352,10 @@ public class BaseWebAnnotationProtocolTest {
 				}
 				
 			}
+
+	private boolean isTechnicalMethod(String name) {
+		return "getIdAsString".equals(name);
+	}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
 		String provider = WebAnnotationFields.PROVIDER_WEBANNO;
@@ -390,11 +394,15 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 	
+	/**
+	 * @deprecated numericId is ambiguous, use relative_uri or full uri (annotationId) when deleting annotations 
+	 * @param numericId
+	 */
 	protected void deleteAnnotation(Annotation annotation) {
 		deleteAnnotation(getNumericAnnotationId(annotation));
 	}
 	
-	protected void deleteAnnotation(Integer numericId) {
+  protected void deleteAnnotation(Integer numericId) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
 		assertEquals(HttpStatus.OK, re.getStatusCode());

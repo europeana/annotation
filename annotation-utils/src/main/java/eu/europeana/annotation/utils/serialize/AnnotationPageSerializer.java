@@ -1,24 +1,22 @@
 package eu.europeana.annotation.utils.serialize;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.stanbol.commons.jsonld.AnnotationsJsonComparator;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-import org.codehaus.jettison.json.JSONArray;
 
 import eu.europeana.annotation.definitions.exception.search.SearchRuntimeException;
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -29,6 +27,8 @@ public class AnnotationPageSerializer extends JsonLd {
 	AnnotationPage protocolPage;
 
 	public AnnotationPageSerializer(AnnotationPage protocolPage) {
+		super();
+		setPropOrderComparator(new AnnotationsJsonComparator());
 		this.protocolPage = protocolPage;
 	}
 
@@ -55,12 +55,11 @@ public class AnnotationPageSerializer extends JsonLd {
 	public String serialize(SearchProfiles profile) {
 
 		setUseTypeCoercion(false);
-		setUseCuries(true);
-		// addNamespacePrefix(WebAnnotationFields.OA_CONTEXT,
-		// WebAnnotationFields.OA);
-		// TODO: verify if the following check is needed
+		setUseCuries(false);
+		setApplyNamespaces(false);
 		// if(isApplyNamespaces())
-		setUsedNamespaces(namespacePrefixMap);
+		//setUsedNamespaces(namespacePrefixMap);
+		
 
 		JsonLdResource jsonLdResource = new JsonLdResource();
 		jsonLdResource.setSubject("");
@@ -165,7 +164,7 @@ public class AnnotationPageSerializer extends JsonLd {
 		String[] items = new String[(int) getPageItems().getResults().size()];
 		int i = 0;
 		for (AnnotationView anno : getPageItems().getResults()) {
-			items[i++] = anno.getId();
+			items[i++] = anno.getIdAsString();
 		}
 
 		if (items.length > 0)

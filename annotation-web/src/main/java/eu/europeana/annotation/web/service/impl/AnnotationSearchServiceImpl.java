@@ -14,8 +14,6 @@ import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -25,7 +23,6 @@ import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPa
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -105,11 +102,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		protocol.setItems(resultSet);
 		
 		//if mongo query is needed
-		if(isIncludeAnnotationsSearch(query) && resultSet.getResultSize() > 0){
+		if(isIncludeAnnotationsSearch(query) && resultSet.getResults().size() > 0){
 			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
-				annotationIds.add(annotationView.getId());		
+				annotationIds.add(annotationView.getIdAsString());		
 			}
 			
 			//fetch annotation objects
@@ -213,11 +210,10 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			searchQuery.setPageNr(Query.DEFAULT_PAGE);
 		else
 			searchQuery.setPageNr(pageNr);
+
 		
-		if(pageSize < 0)
-			searchQuery.setPageSize(Query.DEFAULT_PAGE_SIZE);
-		else
-			searchQuery.setPageSize(pageSize);
+		int rows = buildRealPageSize(pageSize, profile);
+		searchQuery.setPageSize(rows);
 		
 		if (isFacetsRequested)
 			searchQuery.setFacetFields(facets);
@@ -235,6 +231,18 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		return searchQuery;
 	}
 
+	protected int buildRealPageSize(int pageSize, SearchProfiles profile) {
+		int rows = 0;
+		int maxPageSize = getConfiguration().getMaxPageSize(profile.toString());
+		if(pageSize < 0)
+			rows = Query.DEFAULT_PAGE_SIZE;
+		else if(pageSize > maxPageSize)
+			rows = maxPageSize;
+		else
+			rows = pageSize;
+		return rows;
+	}
+
 	private void setSearchFields(Query searchQuery, SearchProfiles profile) {
 		switch (profile) {
 		case FACET:
@@ -245,7 +253,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			break;
 
 		case MINIMAL:
-			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNOTATION_ID_URL });
+			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNO_URI });
 			break;
 	
 		case STANDARD:

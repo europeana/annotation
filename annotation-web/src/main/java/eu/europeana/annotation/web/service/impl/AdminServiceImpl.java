@@ -1,7 +1,10 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -9,16 +12,26 @@ import com.google.common.base.Strings;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.service.AdminService;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
+
+	@Resource(name = "annotation_db_apilockService")
+	PersistentApiWriteLockService apiWriteLockService;
 
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
@@ -73,10 +86,10 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	}
 
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
-			String endTimestamp) {
-		
-//		int successCount = 0;
-//		int failureCount = 0;
+			String endTimestamp) throws HttpException, ApiWriteLockException {
+
+		// int successCount = 0;
+		// int failureCount = 0;
 		if (!Strings.isNullOrEmpty(startDate)) {
 			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
 		}
@@ -88,69 +101,165 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return reindexAnnotationSelection(startTimestamp, endTimestamp);
 	}
 
-	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp) {
+	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp)
+			throws HttpException {
 		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
-		return reindexAnnotationSet(res, true);
+		try {
+			return reindexAnnotationSet(res, true, "reindexAnnotationSelection");
+		} catch (ApiWriteLockException e) {
+			throw new InternalServerException("Cannot reindex annotation selection", e);
+		}
+	}
+
+  @Override
+  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+			throws HttpException, ApiWriteLockException {
+
+		if (apiWriteLockService.getLastActiveLock() != null)
+			throw new IndexingJobLockedException(action);
+		
+		PersistentApiWriteLock pij = null;
+		try {
+			pij = apiWriteLockService.lock(action);
+
+			synchronized (this) {
+				BatchProcessingStatus status = new BatchProcessingStatus();
+				AnnotationId annoId = null;
+				Annotation annotation;
+				int count = 0;
+
+				for (String id : ids) {
+					try {
+						count++;
+						if (count % 1000 == 0)
+							getLogger().info("Processing object: " + count);
+						// check
+						if (isObjectId) {
+							annotation = getMongoPersistence().findByID(id);
+						} else {
+							annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+							annotation = getMongoPersistence().find(annoId);
+						}
+						if (annotation == null)
+							throw new AnnotationNotFoundException(
+									AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
+						if (success)
+							status.incrementSuccessCount();
+						else
+							status.incrementFailureCount();
+					} catch (IllegalArgumentException iae) {
+						String msg = "id: " + id + ". " + iae.getMessage();
+						getLogger().error(msg);
+						// throw new RuntimeException(iae);
+						status.incrementFailureCount();
+					} catch (Throwable e) {
+						String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
+						getLogger().error(msg);
+						status.incrementFailureCount();
+						// throw new RuntimeException(e);
+					}
+				}
+				return status;
+			}
+		}finally{
+			//unlock the index
+			apiWriteLockService.unlock(pij);
+			
+		} 
+
 	}
 
 	@Override
-	//TODO:reimplement using database cursors for higher scalability
-	public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId) {
-		
+	public BatchProcessingStatus reindexAll() throws HttpException, ApiWriteLockException {
+		return reindexAnnotationSelection("0", "" + System.currentTimeMillis());
+	}
+
+	@Override
+	public BatchProcessingStatus reindexOutdated() throws HttpException, ApiWriteLockException {
+
+		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
+		return reindexAnnotationSet(res, true, "reindexOutdated");
+	}
+
+	@Override
+	public BatchProcessingStatus updateRecordId(String oldId, String newId) {
 		BatchProcessingStatus status = new BatchProcessingStatus();
-		AnnotationId annoId = null;
-		Annotation annotation;
-		int count = 0;
-		for (String id : ids) {
-			try {
-				count++;
-				if(count % 1000 == 0)
-					getLogger().info("Processing object: " + count);
-				//check
-				if(isObjectId){
-					annotation = getMongoPersistence().findByID(id);
-				}else{
-					annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
-					annotation = getMongoPersistence().find(annoId);
+
+		// find annotation by oldId
+		List<? extends Annotation> annotations = getMongoPersistence().getAnnotationListByResourceId(oldId);
+
+		for (Annotation anno : annotations) {
+			if (!anno.isDisabled()) {
+				Target annoTarget = anno.getTarget();
+
+				// update resourceIds
+				if (annoTarget.getResourceIds() != null) {
+					List<String> currentResourceIds = annoTarget.getResourceIds();
+					List<String> updatedResourceIds = new ArrayList<String>();
+					for (String id : currentResourceIds) {
+						if (id.equals(oldId)) {
+							String updatedId = newId;
+							updatedResourceIds.add(updatedId);
+						} else {
+							updatedResourceIds.add(id);
+						}
+					}
+					annoTarget.setResourceIds(updatedResourceIds);
 				}
-				
-				if (annotation == null)
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
-				boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
-				if (success) 
-					status.incrementSuccessCount();
-				else 
-					status.incrementFailureCount();			
-			} catch (IllegalArgumentException iae) {
-				String msg = "id: " + id + ". " + iae.getMessage();
-				getLogger().error(msg);
-				// throw new RuntimeException(iae);
-				status.incrementFailureCount();
-			} catch (Exception e) {
-				String msg = "Error when reindexing annotation: "+ annoId
-						+ e.getMessage();
-				getLogger().error(msg);
-				status.incrementFailureCount();
-				// throw new RuntimeException(e);
+
+				// update fields: httpUri, value(s) + inputString
+				if (annoTarget.getHttpUri() != null) {
+					String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
+					annoTarget.setHttpUri(newHttpUri);
+				}
+
+				if (annoTarget.getValue() != null) {
+					String newValue = annoTarget.getValue().replace(oldId, newId);
+					annoTarget.setValue(newValue);
+					// inputString depends on value(s)
+					annoTarget.setInputString(newValue);
+				}
+
+				// change "value" and "values" fields, so we only have one of
+				// them
+				if (annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
+					List<String> currentValues = annoTarget.getValues();
+					List<String> updatedValues = new ArrayList<String>();
+					for (String value : currentValues) {
+						String updatedValue = value.replace(oldId, newId);
+						updatedValues.add(updatedValue);
+					}
+					annoTarget.setValues(updatedValues);
+					// inputString depends on value(s)
+					annoTarget.setInputString(updatedValues.toString());
+				}
+
+				// replace target
+				anno.setTarget(annoTarget);
+
+				// update mongo
+				try {
+					PersistentAnnotation storedAnno = (PersistentAnnotation) updateAndReindex(
+							(PersistentAnnotation) anno);
+
+					// if not re-indexed or not indexed at all
+					if (isIndexInSync(storedAnno))
+						status.incrementSuccessCount();
+					else
+						status.incrementIndexingFailureCount();
+				} catch (Exception e) {
+					status.incrementFailureCount();
+					throw e;
+				}
 			}
 		}
+
 		return status;
 	}
 
-	@Override
-	public BatchProcessingStatus reindexAll() {
-		return reindexAnnotationSelection( "0", ""+System.currentTimeMillis());
+	protected boolean isIndexInSync(PersistentAnnotation storedAnno) {
+		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
-
-	@Override
-	public BatchProcessingStatus reindexOutdated() {
-		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-		
-		BatchProcessingStatus status = new BatchProcessingStatus();
-		status.incrementSuccessCount();
-		//return status;
-		
-		return reindexAnnotationSet(res, true);
-	}
-	
 }
+  

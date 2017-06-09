@@ -3,58 +3,23 @@ package eu.europeana.annotation.solr.model.internal;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.solr.client.solrj.beans.Field;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
 public interface SolrAnnotation extends Annotation {
 
 	
-
-//	void setResourceId(String resourceId);
-//	
-//	String getResourceId();
-
-//	public void setLanguage(String language);
-//
-//	public String getLanguage();
-//
-//	public void setHttpUri(String httpUri);
-//
-//	public String getHttpUri();
-	
-	public void setInternalTypeKey(String annotation_type);
-	
-	public String getInternalTypeKey();
-	
 	Date getCreated();
 
 	void setCreated(Date annotatedAt);
 
-	String getCreatorString();
-
-	void setCreatorString(String annotatedBy);
-
-	void setAnnotationIdUrl(String annotationIdUrl);
+	void setAnnoUri(String annoUri);
 
 	void setBodyValue(String bodyValue);
 
 	String getBodyValue();
 
-	String getBodyTagId();
-
-	void setBodyTagId(String id);
-
-	String getAnnotationIdUrl();
-
-	void setTargetInternalTypeKey(String targetInternalTypeKey);
-
-	String getTargetInternalTypeKey();
-
-	void setBodyInternalTypeKey(String bodyInternalTypeKey);
-
-	String getBodyInternalTypeKey();
+	String getAnnoUri();
 
 	void setMotivationKey(String motivationKey);
 
@@ -64,32 +29,48 @@ public interface SolrAnnotation extends Annotation {
 
 	List<String> getTargetRecordIds();
 
-	void setTargetUrls(List<String> targetUrls);
+	void setTargetUris(List<String> targetUris);
 
-	List<String> getTargetUrls();
+	List<String> getTargetUris();
 
-	void setUpdatedTimestamp(Long updatedTimestamp);
-
-	Long getUpdatedTimestamp();
-
-	void setGeneratedTimestamp(Long serializedAtTimestamp);
-
-	Long getGeneratedTimestamp();
-
-	void setCreatedTimestamp(Long annotatedAtTimestamp);
-
-	Long getCreatedTimestamp();
-
-	public void setModerationScore(Long moderationScore);
+	public void setModerationScore(Integer moderationScore);
 	
-	public Long getModerationScore();
+	public Integer getModerationScore();
 
-	void setGeneratorId(String generatorId);
+	void setGeneratorUri(String generatorUri);
 
-	String getGeneratorId();
+	String getGeneratorUri();
 
 	void setGeneratorName(String generatorName);
 
 	String getGeneratorName();
+
+	void setCreatorName(String creatorName);
+
+	String getCreatorName();
+
+	void setCreatorUri(String creatorUri);
+
+	String getCreatorUri();
+
+	void setAnnoId(String annoId);
+
+	String getAnnoId();
+
+	void setModified(Date modified);
+
+	Date getModified();
+
+	void setLinkRelation(String linkRelation);
+
+	String getLinkRelation();
+
+	void setLinkResourceUri(String linkResourceUri);
+
+	String getLinkResourceUri();
+
+	void setBodyUris(List<String> bodyUris);
+
+	List<String> getBodyUris();
 	
 }

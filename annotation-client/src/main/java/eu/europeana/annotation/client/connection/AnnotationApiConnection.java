@@ -1211,7 +1211,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @return ResponseEntity<String>
 	 * @throws IOException
 	 */
-	public AnnotationOperationResponse reindexOutdated() throws IOException {
+	public ResponseEntity<String> reindexOutdated() throws IOException {
 		
 		String action = "reindexoutdated";
 		
@@ -1224,14 +1224,15 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
 		
 		logger.trace("(Re)index outdated annotations request URL: " + url);
-		String json = getJSONResult(url);
-		logger.trace("(Re)index outdated annotations result: " + json);
+		ResponseEntity<String> res = getHttpConnection().getURL(url);
+		logger.trace("(Re)index outdated annotations HTTP status: " + res.getStatusCode().toString());
 		
-		AnnotationOperationResponse aor = new AnnotationOperationResponse();
-		aor.setSuccess("true");
-		aor.setAction("get:/annotations/check/visibility/object.json");
-		aor.setJson(json);
-		return aor;
+//		AnnotationOperationResponse aor = new AnnotationOperationResponse();
+//		aor.setSuccess("true");
+//		aor.setAction("get:/annotations/check/visibility/object.json");
+//		aor.setJson(json);
+		
+		return res;
 	}
 	
 	

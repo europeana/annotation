@@ -12,6 +12,7 @@ public interface AnnotationConfiguration {
 	
 	public static final String DEFAULT_WHITELIST_RESOURCE_PATH = "annotation.whitelist.default";
 	
+	public static final String PREFIX_MAX_PAGE_SIZE = "annotation.search.maxpagesize.";
 	
 	public String getComponentName();
 	
@@ -41,4 +42,5 @@ public interface AnnotationConfiguration {
 	 */
 	public String getDefaultWhitelistResourcePath();
 	
+	public int getMaxPageSize(String profile);
 }

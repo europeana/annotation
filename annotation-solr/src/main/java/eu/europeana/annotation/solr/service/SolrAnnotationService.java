@@ -21,7 +21,9 @@ public interface SolrAnnotationService {
 	/**
 	 * This method stores a SolrAnnotation object in SOLR.
 	 * @param anno
+	 * @return 
 	 */
+
 	public void store(Annotation anno) throws AnnotationServiceException ;
 
 
@@ -38,8 +40,7 @@ public interface SolrAnnotationService {
 	 * @param anno
 	 * @param doCommit commit
 	 */
-	public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException ;
-	
+	public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException ;	
 	
 	/**
 	 * This method updates a SolrAnnotation object in SOLR.
@@ -52,7 +53,7 @@ public interface SolrAnnotationService {
 	 * @param summary
 	 * @throws AnnotationServiceException
 	 */
-	public void update(Annotation anno, Summary summary) throws AnnotationServiceException;
+	public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException;
 
 	/**
 	 * This method removes a SolrAnnotation object from SOLR.

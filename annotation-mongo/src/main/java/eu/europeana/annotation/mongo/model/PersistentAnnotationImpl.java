@@ -2,7 +2,6 @@ package eu.europeana.annotation.mongo.model;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;

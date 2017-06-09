@@ -83,11 +83,11 @@ public class BaseAnnotationId implements AnnotationId{
 	
 	@Override
 	public String toString() {
-		return toUri();
+		return toRelativeUri();
 	}
 
 	@Override
-	public String toUri() {
+	public String toRelativeUri() {
 		return WebAnnotationFields.SLASH
 				+ getProvider() + WebAnnotationFields.SLASH
 				+ getIdentifier();
@@ -95,7 +95,7 @@ public class BaseAnnotationId implements AnnotationId{
 	
 	@Override
 	public String toHttpUrl() {
-		return getBaseUrl() + toUri(); 
+		return getBaseUrl() + toRelativeUri(); 
 	}
 
 	@Override

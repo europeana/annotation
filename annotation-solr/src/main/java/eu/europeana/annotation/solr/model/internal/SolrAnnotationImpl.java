@@ -1,61 +1,103 @@
 package eu.europeana.annotation.solr.model.internal;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
+import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
- * Change the implementation to use an adapter pattern.
- * @Deprecated 
+ * TODO: Change the implementation to use an adapter pattern.
+ *  
  * @author GordeaS
  *
  */
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation, SolrAnnotationConstants {
 
-	private String annotationIdUrl;
-	private List<String> targetUrls;
-	private List<String> targetRecordIds;
-	private String motivationKey;
+	private String annoUri;
+	private String annoId;
+	
+	private String generatorUri;
 	private String generatorName;
-	private String generatorId;
+	
+	private String creatorUri;
+	private String creatorName;
+	
+	private Integer moderationScore = 0;
+	private String motivationKey;
+	
+	private List<String> targetUris;
+	private List<String> targetRecordIds;
+	
+	private String linkResourceUri;
+	private String linkRelation;
+	
 	private String bodyValue;
-	private String bodyInternalTypeKey;
-	private String targetInternalTypeKey;
-	private String creatorString;
-	private String internalTypeKey;
-	private String bodyTagId;
-	private Long updatedTimestamp;
-	private Long createdTimestamp;
-	private Long generatedTimestamp;
-	private Long moderationScore;
+	private List<String> bodyUris;
 	
+	/**
+	 * public default constructor
+	 */
+	public SolrAnnotationImpl(){
+		
+	}
+	
+	/**
+	 * Constructor using web annotation and moderation summary
+	 */
+	public SolrAnnotationImpl(Annotation annotation, Summary summary){
+		
+		this.setInternalType(annotation.getInternalType());
+		this.setMotivation(annotation.getMotivation());
+		
+		this.setAnnotationId(annotation.getAnnotationId());
+		this.setAnnoUri(annotation.getAnnotationId().getHttpUrl());
+		this.setAnnoId(annotation.getAnnotationId().toRelativeUri());
+		
+		if(annotation.getGenerator() != null){
+			this.setGenerator(annotation.getGenerator());
+			this.setGeneratorUri(annotation.getGenerator().getHttpUrl());
+			this.setGeneratorName(annotation.getGenerator().getName());
+		}
+		
+		this.setGenerated(annotation.getGenerated());
+		
+		this.setCreator(annotation.getCreator());
+		this.setCreatorName(annotation.getCreator().getName());
+		this.setCreatorUri(annotation.getCreator().getHttpUrl());
+		
+		this.setCreated(annotation.getCreated());
+		//modified is alias to lastUpdate
+		this.setLastUpdate(annotation.getLastUpdate());
+		
+		if (summary != null)
+			this.setModerationScore(summary.getScore());
+		
+		this.setTarget(annotation.getTarget());
+		this.setBody(annotation.getBody());
+		
+//		this.setStyledBy(annotation.getStyledBy());
+//		this.setCanonical(annotation.getCanonical());
+//		this.setVia(annotation.getVia());
+	}
 	
 	@Override
-	public Long getCreatedTimestamp() {
-		return createdTimestamp;
+	@Field(CREATED)
+	public void setCreated(Date created) {
+		super.setCreated(created);
 	}
-
+	
 	@Override
-	@Field(CREATED_TIMESTAMP)
-	public void setCreatedTimestamp(Long annotatedAtTimestamp) {
-		this.createdTimestamp = annotatedAtTimestamp;
-	}
-
-	@Override
-	public Long getGeneratedTimestamp() {
-		return generatedTimestamp;
-	}
-
-	@Override
-	@Field(GENERATED_TIMESTAMP)
-	public void setGeneratedTimestamp(Long serializedAtTimestamp) {
-		this.generatedTimestamp = serializedAtTimestamp;
+	@Field(GENERATED)
+	public void setGenerated(Date generated) {
+		super.setGenerated(generated);
 	}
 
 	public String getBodyValue() {
@@ -63,14 +105,14 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	public List<String> getTargetUrls() {
-		return targetUrls;
+	public List<String> getTargetUris() {
+		return targetUris;
 	}
 
 	@Override
-	@Field(TARGET_ID)
-	public void setTargetUrls(List<String> targetUrls) {
-		this.targetUrls = targetUrls;
+	@Field(TARGET_URI)
+	public void setTargetUris(List<String> targetUris) {
+		this.targetUris = targetUris;
 	}
 
 	@Override
@@ -96,44 +138,9 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	public String getBodyInternalTypeKey() {
-		return bodyInternalTypeKey;
+	public String getAnnoUri() {
+		return annoUri;
 	}
-
-	@Override
-	@Field(BODY_INTERNAL_TYPE)
-	public void setBodyInternalTypeKey(String bodyInternalTypeKey) {
-		this.bodyInternalTypeKey = bodyInternalTypeKey;
-	}
-
-	@Override
-	public String getTargetInternalTypeKey() {
-		return targetInternalTypeKey;
-	}
-
-	@Override
-	@Field(TARGET_INTERNAL_TYPE)
-	public void setTargetInternalTypeKey(String targetInternalTypeKey) {
-		this.targetInternalTypeKey = targetInternalTypeKey;
-	}
-
-	@Override
-	public String getAnnotationIdUrl() {
-		return annotationIdUrl;
-	}
-
-	
-	@Override
-	@Field(BODY_TAG_ID)
-	public void setBodyTagId(String id) {
-		this.bodyTagId = id;
-	}
-
-	@Override
-	public String getBodyTagId() {
-		return bodyTagId;
-	}
-
 	
 	@Override
 	@Field(BODY_VALUE)
@@ -176,59 +183,33 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	@Field(ANNOTATION_ID_URL)
-	public void setAnnotationIdUrl(String annotationIdUrl) {
-		this.annotationIdUrl = annotationIdUrl;
+	@Field(ANNO_URI)
+	public void setAnnoUri(String annotationIdUrl) {
+		this.annoUri = annotationIdUrl;
 	}
+	
+
 
 	@Override
-	//@Field("creator_string")
-	public void setCreatorString(String annotatedBy) {
-		this.creatorString = annotatedBy;
+//	@Field(INTERNAL_TYPE)
+	public void setInternalType(String internalType) {
+		this.internalType = internalType;
 	}
-
-	@Override
-	public String getCreatorString() {
-		return creatorString;
-	}
-
-	@Override
-	@Field(SolrAnnotationConstants.INTERNAL_TYPE)
-	public void setInternalTypeKey(String internalTypeKey) {
-		this.internalTypeKey = internalTypeKey;
-	}
-
-	@Override
-	public String getInternalTypeKey() {
-		return internalTypeKey;
-	}
-
-	@Override
-	public Long getUpdatedTimestamp() {
-		return updatedTimestamp;
-	}
-
-	@Override
-	@Field(UPDATED_TIMESTAMP)
-	public void setUpdatedTimestamp(Long updatedTimestamp) {
-		this.updatedTimestamp = updatedTimestamp;
-	}
-
+	
 	@Override
 	@Field(MODERATION_SCORE)
-	public void setModerationScore(Long moderationScore) {
+	public void setModerationScore(Integer moderationScore) {
 		this.moderationScore = moderationScore;
 	}
 
 	@Override
-	public Long getModerationScore() {
+	public Integer getModerationScore() {
 		return moderationScore;
 	}
 
 		
 	public String toString() {
-		return "SolrAnnotation [annotationIdUrl:" + getAnnotationIdUrl() + ", annotationIdUrl:" + getAnnotationIdUrl()
-				+ ", annotatedAt:" + getCreated() + ", bodyValue:" + getBodyValue() + "]";
+		return "SolrAnnotation [anno_uri:" + getAnnoUri() + ", created:" + getCreated() + ", bodyValue:" + getBodyValue() + "]";
 	}
 
 	@Override
@@ -243,14 +224,91 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	public String getGeneratorId() {
-		return generatorId;
+	public String getGeneratorUri() {
+		return generatorUri;
 	}
 
 	@Override
-	@Field(GENERATOR_ID)
-	public void setGeneratorId(String generatorId) {
-		this.generatorId = generatorId;
+	@Field(GENERATOR_URI)
+	public void setGeneratorUri(String generatorId) {
+		this.generatorUri = generatorId;
+	}
+
+	@Override
+	public String getAnnoId() {
+		return annoId;
+	}
+
+	@Field(ANNO_ID)
+	@Override
+	public void setAnnoId(String annoId) {
+		this.annoId = annoId;
+	}
+	
+	@Override
+	public String getCreatorUri() {
+		return creatorUri;
+	}
+
+	@Override
+	@Field(CREATOR_URI)
+	public void setCreatorUri(String creatorUri) {
+		this.creatorUri = creatorUri;
+	}
+
+	@Override
+	public String getCreatorName() {
+		return creatorName;
+	}
+
+	@Override
+	@Field(CREATOR_NAME)
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
+	}
+
+	@Override
+	public Date getModified() {
+		return getLastUpdate();
+	}
+
+	@Override
+	@Field(MODIFIED)
+	public void setModified(Date modified) {
+		setLastUpdate(modified);
+	}
+
+	@Override
+	public String getLinkResourceUri() {
+		return linkResourceUri;
+	}
+
+	@Override
+	@Field(LINK_RESOURCE_URI)
+	public void setLinkResourceUri(String linkResourceUri) {
+		this.linkResourceUri = linkResourceUri;
+	}
+
+	@Override
+	public String getLinkRelation() {
+		return linkRelation;
+	}
+
+	@Override
+	@Field(LINK_RELATION)
+	public void setLinkRelation(String linkRelation) {
+		this.linkRelation = linkRelation;
+	}
+
+	@Override
+	public List<String> getBodyUris() {
+		return bodyUris;
+	}
+
+	@Override
+	@Field(BODY_URI)
+	public void setBodyUris(List<String> bodyUris) {
+		this.bodyUris = bodyUris;
 	}
 
 }

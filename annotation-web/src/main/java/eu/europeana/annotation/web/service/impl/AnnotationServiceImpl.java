@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -301,7 +302,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			try {
 				getSolrService().store(res);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName())
+				getLogger()
 						.warn("The annotation was stored correctly into the Mongo, but it was not indexed yet. ", e);
 				// throw new RuntimeException(e);
 			}
@@ -312,7 +313,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				// SolrTag indexedTag = copyIntoSolrTag(res.getBody());
 				// getSolrTagService().findOrStore(indexedTag);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName()).warn(
+				getLogger().warn(
 						"The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. ",
 						e);
 			}
@@ -340,7 +341,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				Annotation annotation = getMongoPersistance().find(res.getAnnotationId());
 				reindexAnnotation(annotation, lastindexing);
 			} catch (Exception e) {
-				Logger.getLogger(getClass().getName()).warn(
+				getLogger().warn(
 						"The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ",
 						e);
 			}
@@ -388,15 +389,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
-
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
-
-		Annotation res = getMongoPersistence().update(persistentAnnotation);
-
-		// reindex annotation
-		if (getConfiguration().isIndexingEnabled())
-			reindexAnnotation(res, res.getLastUpdate());
-
+		Annotation res = updateAndReindex(persistentAnnotation);
 		return res;
 	}
 
@@ -477,9 +471,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	public Annotation updateAnnotationStatus(Annotation annotation) {
 
-		Annotation res = getMongoPersistence().updateStatus(annotation);
-
-		return res;
+		return getMongoPersistence().updateStatus(annotation);
 	}
 
 	@Override
@@ -518,7 +510,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		try {
 			getSolrService().delete(annotation.getAnnotationId());
 		} catch (Exception e) {
-			logger.error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toUri(), e);
+			getLogger().error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toRelativeUri(), e);
 		}
 	}
 
@@ -630,37 +622,37 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		case WebAnnotationFields.PROVIDER_HISTORY_PIN:
 			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 		case WebAnnotationFields.PROVIDER_PUNDIT:
 			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 		case WebAnnotationFields.PROVIDER_BASE:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 		case WebAnnotationFields.PROVIDER_WEBANNO:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 		case WebAnnotationFields.PROVIDER_COLLECTIONS:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 		case WebAnnotationFields.PROVIDER_WITH:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toUri());
+						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
 			break;
 
 		default:

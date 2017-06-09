@@ -6,6 +6,14 @@ import java.util.List;
 public class BatchProcessingStatus implements BatchReportable {
 	int failureCount = 0;
 	int successCount = 0;
+	int indexingFailureCount = 0;
+		
+	public int getIndexingFailureCount() {
+		return indexingFailureCount;
+	}
+	public void incrementIndexingFailureCount() {
+		this.indexingFailureCount++;
+	}
 	HashMap<Integer, String> errors;
 	
 	public BatchProcessingStatus() {
@@ -34,7 +42,9 @@ public class BatchProcessingStatus implements BatchReportable {
 	
 	@Override
 	public String toString() {
-		return "success count: " + String.valueOf(successCount) + ", failure count: " + String.valueOf(failureCount);	
+		return "success count: " + String.valueOf(successCount) 
+		+ ", failure count: " + String.valueOf(failureCount) 
+		+ ", indexingFailure count: " + String.valueOf(indexingFailureCount);	
 	}
 
 	@Override
