@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +45,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
@@ -65,6 +67,7 @@ import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -862,7 +865,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public void updateExistingAnnotations(BatchReportable batchReportable, 
-			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos) 
+			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos,
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
 			throws AnnotationValidationException, AnnotationMongoException {
 		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
 		if(existingAnnos.size() != updateAnnos.size())
@@ -872,25 +876,43 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			String existingHttpUrl = existingAnno.getHttpUrl();
 			Annotation updateAnno = updateAnnos.get(existingHttpUrl);			
 			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
+			
+			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
+			// of submitted annotations.
+			webAnnoStoredAnnoAnnoMap.put(updateAnno, existingAnno);
 		}
 		getMongoPersistence().store(existingAnnos, true);
 	}
 
 	@Override
 	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
-			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults) 
+			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
 			throws AnnotationValidationException, AnnotationMongoException {
-		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(annoDefaults.getProvider(), annotations.size());
+		String provider = annoDefaults.getProvider();
+		int count = annotations.size();
+		List<AnnotationId> annoIdSequence = generateAnnotationIds(provider, count);
 		if(annotations.size() != annoIdSequence.size())
 			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
-		Iterator<? extends Annotation> annosIt = annotations.iterator();
-		Iterator<AnnotationId> annoIdsIt = annoIdSequence.iterator();
-		while (annosIt.hasNext() && annoIdsIt.hasNext()) {
-			Annotation anno = annosIt.next();
-			anno.setAnnotationId(annoIdsIt.next());
+		AnnotationId newAnnoId;
+		Annotation anno;
+		AnnotationId genAnnoId;
+		for(int i = 0; i < annotations.size(); i++) {
+			genAnnoId = annoIdSequence.get(i);
+			newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
+			anno = annotations.get(i);
+			anno.setAnnotationId(newAnnoId);
 			annoDefaults.putAnnotationDefaultValues(anno);
+			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
+			// of submitted annotations.
+			webAnnoStoredAnnoAnnoMap.put(anno, anno);
 		}
 		getMongoPersistence().store(annotations);
+	}
+
+	public List<AnnotationId> generateAnnotationIds(String provider, int count) {
+		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(provider, count);
+		return annoIdSequence;
 	}
 
 }

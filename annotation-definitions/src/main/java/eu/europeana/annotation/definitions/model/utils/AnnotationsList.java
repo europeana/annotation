@@ -2,6 +2,7 @@ package eu.europeana.annotation.definitions.model.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -54,6 +55,19 @@ public class AnnotationsList {
 				annosMapWithHttpUrlKey.put(anno.getHttpUrl(), anno);
 		return annosMapWithHttpUrlKey;
 	}
+	
+	
+
+	
+	public LinkedHashMap<Annotation, Annotation> getAnnotationsMap() {
+		LinkedHashMap<Annotation, Annotation> annosMap = new LinkedHashMap<Annotation, Annotation>();
+		for (Annotation anno : annotations)
+				annosMap.put(anno, null);
+		return annosMap;
+	}
+	
+	
+	
 
 	public HashMap<String, ? extends Annotation> getHttpUrlAnnotationsMap() {
 		return getHttpUrlAnnotationsMap(this);

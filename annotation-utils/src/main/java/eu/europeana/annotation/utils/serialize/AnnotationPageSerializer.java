@@ -65,19 +65,21 @@ public class AnnotationPageSerializer extends JsonLd {
 		jsonLdResource.setSubject("");
 		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, ContextTypes.ANNO.getJsonValue());
 		// annotation page
-		jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
+		if (protocolPage.getCurrentPageUri() != null)
+			jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
 		jsonLdResource.putProperty(WebAnnotationFields.TYPE, "AnnotationPage");
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInPage());
 
 		// collection
-		JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
-		JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
-		collectionPropValue.putProperty(new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
-		collectionPropValue
-				.putProperty(new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
-		collectionProp.addValue(collectionPropValue);
-
-		jsonLdResource.putProperty(collectionProp);
+		if (protocolPage.getCurrentPageUri() != null) {
+			JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
+			JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
+			collectionPropValue.putProperty(new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
+			collectionPropValue
+					.putProperty(new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
+			collectionProp.addValue(collectionPropValue);
+			jsonLdResource.putProperty(collectionProp);
+		}
 
 		// items
 		serializeItems(jsonLdResource, profile);
@@ -95,7 +97,7 @@ public class AnnotationPageSerializer extends JsonLd {
 	}
 
 	protected void serializeFacets(JsonLdResource jsonLdResource, SearchProfiles profile) {
-		if (getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
+		if (getPageItems() == null || getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
 			return;
 
 		JsonLdProperty facetsProperty = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS);
