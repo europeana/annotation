@@ -53,6 +53,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 				ds.save(nextAnnotationId);
 			}else{
 				nextAnnotationId.setProvider(provider);
+				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 			}
 		}
 

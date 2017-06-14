@@ -40,6 +40,7 @@ import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
+import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
@@ -181,7 +182,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		AnnotationId annoId = null;
 		for(int i = 0; i < seqLength; i++) {
 			annoId = getAnnotationDao().generateNextAnnotationId(provider);
-			annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 			annoIdSeq.add(annoId);
 		}
 		return annoIdSeq;

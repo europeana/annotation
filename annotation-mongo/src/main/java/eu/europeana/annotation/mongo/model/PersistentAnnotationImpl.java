@@ -288,11 +288,16 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 
 	@Override
 	public boolean hasHttpUrl() {
+		
+		
 		return (this.getAnnotationId() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
+		
+		
+		
 	}
 	
 
-
+	// TODO #152 remove!
 	@Override
 	public String getHttpUrl() {
 		if(this.hasHttpUrl())

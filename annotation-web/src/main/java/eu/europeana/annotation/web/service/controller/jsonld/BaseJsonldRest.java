@@ -1,7 +1,9 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +32,11 @@ import eu.europeana.annotation.definitions.model.moderation.Vote;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
+import eu.europeana.annotation.definitions.model.search.Query;
+import eu.europeana.annotation.definitions.model.search.QueryImpl;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
+import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
 import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
@@ -40,6 +46,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
+import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
@@ -191,11 +198,15 @@ public class BaseJsonldRest extends BaseRest {
 				throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
 			}			
 			
+
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap = webAnnotations.getAnnotationsMap();
+			
 			// update existing annotations
 			HashMap<String, ? extends Annotation> updateAnnos = annosWithId.getHttpUrlAnnotationsMap();
-			uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
-			getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(), updateAnnos);
-			
+			if(updateAnnos.size() > 0) {
+				uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
+				getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(), updateAnnos, webAnnoStoredAnnoAnnoMap);
+			}
 			// annotations are separated into those with identifier (assumed updates) 
 			// and those without identifier (new annotations which should be created);
 			// second annotations without (assumed inserts) 
@@ -203,24 +214,35 @@ public class BaseJsonldRest extends BaseRest {
 			uploadStatus.setStep(BatchOperationStep.INSERT_NEW_ANNOTATIONS);
 			uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
 			// default values
-			AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder()
-					.setProvider(provider)
-					.setGenerator(buildDefaultGenerator(app))
-					.setUser(user)
-					.build();
-			getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults);
+			if(annosWithoutId.size() > 0) {
+				AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder()
+						.setProvider(provider)
+						.setGenerator(buildDefaultGenerator(app))
+						.setUser(user)
+						.build();
+				getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults, webAnnoStoredAnnoAnnoMap);
+			}
 			
-			// serialize upload status
-			Gson gsonObj = new Gson();
-			String jsonString = gsonObj.toJson(uploadStatus);
+			// create result annotation page
+			AnnotationPage apRes = new AnnotationPageImpl();
+			List<Annotation> resList = new ArrayList<Annotation>();
+			// the "web annotation - stored annotation" map has preserved the order of submitted annotations
+			for (Annotation ann : webAnnoStoredAnnoAnnoMap.keySet()) 
+			    resList.add(ann);
+			apRes.setAnnotations(resList);
+			apRes.setTotalInCollection(resList.size());
+			apRes.setTotalInPage(resList.size());
+//			apRes.setCurrentPageUri("http://UNDEFINED");
+			
+			String jsonLd = (new AnnotationPageSerializer(apRes)).serialize(SearchProfiles.STANDARD);
 
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(3);
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
 			// build response
-			ResponseEntity<String> response = new ResponseEntity<String>(jsonString, headers, HttpStatus.CREATED);
+			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
 			
 			return response;
 
