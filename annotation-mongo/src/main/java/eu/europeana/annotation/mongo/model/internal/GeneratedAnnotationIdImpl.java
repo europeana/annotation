@@ -22,8 +22,6 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 	 */
 	private static final long serialVersionUID = -4554805997975526594L;
 	
-//	private String resourceId;
-//	private String identifier;
 	@Id
 	private String id;
 	private Long annotationNr;

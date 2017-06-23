@@ -220,6 +220,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	/**
 	 * Batch upload fields
 	 */
+	public static final String BATCH_TOTAL_FIELD = "total";
 	public static final String BATCH_NUM_ANNOATIONS_FIELD = "totalNumberOfAnnotations";
 	public static final String BATCH_NUM_ANNOATIONS_WITHID_FIELD = "numberOfAnnotationsWithId";
 	public static final String BATCH_NUM_ANNOATIONS_WITHOUTID_FIELD = "numberOfAnnotationsWithoutId";

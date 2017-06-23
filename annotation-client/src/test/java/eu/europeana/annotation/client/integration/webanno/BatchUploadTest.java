@@ -87,9 +87,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 
 		// check response
 		JSONObject jsonObj = new JSONObject(response.getBody());
-		assertEquals(5, jsonObj.get(BATCH_NUM_ANNOATIONS_FIELD));
-		assertEquals(2, jsonObj.get(BATCH_NUM_ANNOATIONS_WITHID_FIELD));
-		assertEquals(3, jsonObj.get(BATCH_NUM_ANNOATIONS_WITHOUTID_FIELD));
+		assertEquals(5, jsonObj.get(BATCH_TOTAL_FIELD));
 		// check if test annotations which have been created previously in the database 
 		// have been updated correctly
 		for (Annotation anno : testAnnotations) {
@@ -100,10 +98,6 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 			// updated tags must start with tag ("tag3", "tag5")
 			assertTrue(value.startsWith("tag"));			
 		}
-		
-//		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
-//		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_BATCH_TESTSET);
-//		assertEquals(3, annPg.getTotalInCollection());
 	}
 
 	/**
