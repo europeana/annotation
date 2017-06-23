@@ -19,11 +19,11 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AnnotationService {
 

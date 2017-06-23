@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,24 +22,26 @@ import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
-import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.config.i18n.I18nService;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.api.commons.web.model.ApiResponse;
 import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.log4j.Logger;
 
 @Controller
 @SwaggerSelect
@@ -213,8 +215,8 @@ public class ManagementRest extends BaseRest {
 			throws UserAuthorizationException, ApiWriteLockException, IndexingJobLockedException, HttpException {
 
 		if (!isAdmin(apiKey, userToken))
-			throw new UserAuthorizationException("User not authorized. Must use the admin apikey and token:",
-					apiKey + "_" + userToken);
+			throw new UserAuthorizationException("Must use the admin apikey and token.", I18nConstants.USER_NOT_AUTHORIZED, 
+					new String[]{apiKey, userToken});
 
 		BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp,
 				endTimestamp);
@@ -351,11 +353,12 @@ public class ManagementRest extends BaseRest {
 			throws HttpException {
 
 		if (!isAdmin(apiKey, userToken))
-			throw new UserAuthorizationException("User not authorized. Must use the admin apikey and token:",
-					apiKey + "_" + userToken);
+			throw new UserAuthorizationException("Must use the admin apikey and token.", I18nConstants.USER_NOT_AUTHORIZED, 
+					new String[]{apiKey, userToken});
+
 		
 		if (oldId.isEmpty() || newId.isEmpty()) {
-			throw new HttpException("Both newId and oldId parameters must be provided!", HttpStatus.BAD_REQUEST);
+			throw new HttpException("Both newId and oldId parameters must be provided!", null, null, HttpStatus.BAD_REQUEST);
 		}
 
 		// SET DEFAULTS

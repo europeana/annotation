@@ -22,6 +22,7 @@ import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
+import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationServiceImpl{
 
@@ -98,7 +99,7 @@ public abstract class BaseAnnotationServiceImpl{
 	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException {
 		Annotation annotation = getMongoPersistence().find(annoId);
 		if(annotation == null)
-			throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, annoId.toHttpUrl());
+			throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{annoId.toHttpUrl()});
 		
 		String user = (String)null;
 		try {
@@ -106,13 +107,11 @@ public abstract class BaseAnnotationServiceImpl{
 			checkVisibility(annotation, user);
 		} catch (AnnotationStateException e) {
 			if (annotation.isDisabled())
-				throw new UserAuthorizationException(
-						UserAuthorizationException.MESSAGE_ANNOTATION_STATE_NOT_ACCESSIBLE, annotation.getStatus(),
-						HttpStatus.GONE, e);
+				throw new UserAuthorizationException(null, I18nConstants.ANNOTATION_NOT_ACCESSIBLE, 
+						new String[]{annotation.getStatus()}, HttpStatus.GONE, e);
 			else
 				// TODO: either change method parameters to accept wsKey or return different exception
-				throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, user,
-						e);
+				throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[]{user}, e);
 		}		
 		
 		return annotation;

@@ -73,6 +73,7 @@
 		<version.annotationld>1.1.2</version.annotationld>	
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.6.5</version.jackson>
+		<version.commonsApi>0.2.2-SNAPSHOT</version.commonsApi>
 		
 	</properties>
 	<modules>

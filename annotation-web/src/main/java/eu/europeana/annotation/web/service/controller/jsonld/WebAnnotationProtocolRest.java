@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
-import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -67,8 +68,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		
 		MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 		if(motivation == null)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE, 
-					WebAnnotationFields.PATH_PARAM_ANNO_TYPE, annoType, HttpStatus.NOT_ACCEPTABLE, null);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+					I18nConstants.ANNOTATION_VALIDATION,
+					new String[]{WebAnnotationFields.PATH_PARAM_ANNO_TYPE, annoType},
+					HttpStatus.NOT_ACCEPTABLE, 
+					null);
 		
 		return storeAnnotation(wskey, motivation, provider, identifier, indexOnCreate, annotation, userToken);
 	}
