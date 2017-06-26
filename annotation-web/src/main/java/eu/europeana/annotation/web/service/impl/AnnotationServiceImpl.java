@@ -59,7 +59,6 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
@@ -68,6 +67,9 @@ import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.config.i18n.I18nService;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -85,6 +87,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
+	
+	@Resource
+	I18nService i18nService;
 
 	AnnotationBuilder annotationBuilder;
 
@@ -139,25 +144,23 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getMongoPersistence().getAnnotationList(resourceId);
 	}
 
-	// @Override
-	// public List<? extends Annotation> getFilteredAnnotationList(String
-	// resourceId, String startOn, String limit,
-	// boolean isDisabled) {
-	// return getMongoPersistence().getFilteredAnnotationList(resourceId, null,
-	// startOn, limit, isDisabled);
-	// }
+//	@Override
+//	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
+//			boolean isDisabled) {
+//		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
+//	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
 		return null;
-		// // return getSolrService().search(query);
+//		// return getSolrService().search(query);
 	}
 
 	@Override
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
 			throws AnnotationServiceException {
 		return null;
-		// // return getSolrService().search(query, startOn, limit);
+//		// return getSolrService().search(query, startOn, limit);
 	}
 
 	@Override
@@ -193,7 +196,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			AnnotationLdParser europeanaParser = new AnnotationLdParser();
 			return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
 		} catch (AnnotationAttributeInstantiationException e) {
-			throw new RequestBodyValidationException(annotationJsonLdStr, e);
+			throw new RequestBodyValidationException(annotationJsonLdStr, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		}
 	}
 
@@ -394,6 +397,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		Annotation res = updateAndReindex(persistentAnnotation);
+
 		return res;
 	}
 
@@ -401,50 +405,44 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (updatedWebAnnotation.getType() != null)
 			annotation.setType(updatedWebAnnotation.getType());
 
-		// So my decision for the moment would be to only keep the "id" and
-		// "created" immutable.
-		//
-		// With regards to the logic when each of the fields is missing:
-		// - If modified is missing, update with the current timestamp,
-		// otherwise overwrite.
-		// - if creator is missing, keep the previous creator, otherwise
-		// overwrite.
-		// - if generator is missing, keep the previous generator, otherwise
-		// overwrite.
-		// - the generated should always be determined by the server.
-		// - motivation, body and target are overwritten.
-
+//		So my decision for the moment would be to only keep the "id" and "created" immutable.
+//
+//		With regards to the logic when each of the fields is missing:
+//		- If modified is missing, update with the current timestamp, otherwise overwrite.
+//		- if creator is missing, keep the previous creator, otherwise overwrite.
+//		- if generator is missing, keep the previous generator, otherwise overwrite.
+//		- the generated should always be determined by the server.
+//		- motivation, body and target are overwritten.
+		
 		// Motivation can be changed see #122
-		// if (updatedWebAnnotation.getMotivationType() != null
-		// && updatedWebAnnotation.getMotivationType() !=
-		// storedAnnotation.getMotivationType())
-		// throw new RuntimeException("Cannot change motivation type from: " +
-		// storedAnnotation.getMotivationType()
-		// + " to: " + updatedWebAnnotation.getMotivationType());
+//		if (updatedWebAnnotation.getMotivationType() != null
+//				&& updatedWebAnnotation.getMotivationType() != storedAnnotation.getMotivationType())
+//			throw new RuntimeException("Cannot change motivation type from: " + storedAnnotation.getMotivationType()
+//					+ " to: " + updatedWebAnnotation.getMotivationType());
 		// if (updatedWebAnnotation.getMotivation() != null)
 		// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-
+		
 		if (updatedWebAnnotation.getLastUpdate() != null) {
 			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
 		} else {
 			Date timeStamp = new java.util.Date();
 			annotation.setLastUpdate(timeStamp);
 		}
-
+		
 		if (updatedWebAnnotation.getCreator() != null)
 			annotation.setCreator(updatedWebAnnotation.getCreator());
-
+		
 		if (updatedWebAnnotation.getGenerator() != null)
 			annotation.setGenerator(updatedWebAnnotation.getGenerator());
-
+		
 		if (updatedWebAnnotation.getCreated() != null)
 			annotation.setCreated(updatedWebAnnotation.getCreated());
-		// if (updatedWebAnnotation.getCreator() != null)
-		// annotation.setCreator(updatedWebAnnotation.getCreator());
+//		if (updatedWebAnnotation.getCreator() != null)
+//			annotation.setCreator(updatedWebAnnotation.getCreator());
 		if (updatedWebAnnotation.getGenerated() != null)
 			annotation.setGenerated(updatedWebAnnotation.getGenerated());
-		// if (updatedWebAnnotation.getGenerator() != null)
-		// annotation.setGenerator(updatedWebAnnotation.getGenerator());
+//		if (updatedWebAnnotation.getGenerator() != null)
+//			annotation.setGenerator(updatedWebAnnotation.getGenerator());
 		if (updatedWebAnnotation.getBody() != null)
 			annotation.setBody(updatedWebAnnotation.getBody());
 		if (updatedWebAnnotation.getTarget() != null)
@@ -455,8 +453,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			annotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
 		if (updatedWebAnnotation.getInternalType() != null)
 			annotation.setInternalType(updatedWebAnnotation.getInternalType());
-		// if (updatedWebAnnotation.getLastUpdate() != null)
-		// annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+//		if (updatedWebAnnotation.getLastUpdate() != null)
+//			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
 		if (updatedWebAnnotation.getSameAs() != null)
 			annotation.setSameAs(updatedWebAnnotation.getSameAs());
 		if (updatedWebAnnotation.getStatus() != null)
@@ -496,7 +494,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				persistentAnnotation = (PersistentAnnotation) annotation;
 			else
 				persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
-
+			
 			persistentAnnotation.setDisabled(true);
 			persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 		} catch (Exception e) {
@@ -618,49 +616,59 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		statusLog.setAnnotationId(annotation.getAnnotationId());
 		getMongoStatusLogPersistence().store(statusLog);
 	}
-
+	
 	@Override
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
 		switch (annoId.getProvider()) {
 		case WebAnnotationFields.PROVIDER_HISTORY_PIN:
 			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_PUNDIT:
 			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_BASE:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_WEBANNO:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_COLLECTIONS:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_WITH:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 
 		default:
-			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER,
-					annoId.getProvider());
+//			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER,
+//					annoId.getProvider());
+			throw new ParamValidationException("Invalid provider!", 
+					I18nConstants.INVALID_PROVIDER, 
+					new String[]{WebAnnotationFields.PROVIDER, annoId.getProvider()});
 		}
 
 	}
@@ -673,9 +681,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
 			if (!domains.contains(domainName))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-						"target.value", url);
+						I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
+						new String[]{"target.value", url});
 		} catch (URISyntaxException e) {
-			throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID, "target.value", url);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID, 
+					I18nConstants.MESSAGE_URL_NOT_VALID,
+					new String[]{"target.value", url});
 		}
 
 		return true;
@@ -714,18 +725,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	private void validateGeoTag(Body body) throws ParamValidationException {
 		if (!(body instanceof PlaceBody))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.class",
-					body.getClass().toString());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+					I18nConstants.MESSAGE_WRONG_CLASS,
+					new String[]{"tag.body.class", body.getClass().toString()});
 
 		Place place = ((PlaceBody) body).getPlace();
-
-		if (StringUtils.isEmpty(place.getLatitude()))
+		
+		if(StringUtils.isEmpty(place.getLatitude()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-					"tag.body.latitude", null);
-
-		if (StringUtils.isEmpty(place.getLongitude()))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.longitude",
-					null);
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.latitude"});
+				
+		if(StringUtils.isEmpty(place.getLongitude()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+					I18nConstants.MESSAGE_WRONG_CLASS,
+					new String[]{"tag.body.longitude"});
 
 	}
 
@@ -733,20 +747,24 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// check mandatory fields
 		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-					"tag.body.type", body.getType().toString());
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.type", body.getType().toString()});
 		if (Strings.isNullOrEmpty(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-					"tag.body.source", body.getSource());
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.source", body.getSource()});
 
 		// source must be an URL
 		if (!eu.europeana.annotation.utils.UriUtils.isUrl(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-					"tag.format", body.getSource());
+					I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+					new String[]{"tag.format", body.getSource()});
 
 		// id is not a mandatory field but if exists it must be an URL
 		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.UriUtils.isUrl(body.getHttpUri()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
-					"tag.body.httpUri", body.getHttpUri());
+					I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
+					new String[]{"tag.body.httpUri", body.getHttpUri()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
@@ -773,12 +791,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		int MAX_TAG_LENGTH = 64;
 
 		if (eu.europeana.annotation.utils.UriUtils.isUrl(value))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format",
-					value);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG,
+					I18nConstants.MESSAGE_INVALID_SIMPLE_TAG,
+					new String[]{value});
 		else if (value.length() > MAX_TAG_LENGTH)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size",
-					"" + value.length());
-
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE,
+					I18nConstants.MESSAGE_INVALID_TAG_SIZE,
+					new String[]{String.valueOf(value.length())});
 	}
 
 	protected void validateSemanticTagUrl(Body body) {
@@ -795,7 +814,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				batchReportable.incrementSuccessCount();
 			} catch (ParamValidationException e) {
 				batchReportable.incrementFailureCount();
-				batchReportable.addError(position, e.getMessage());
+				String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
+				batchReportable.addError(position, message);
 			}
 			position++;
 		}
@@ -821,29 +841,34 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
 
-		// validate canonical to be an absolute URI
+		//validate canonical to be an absolute URI
 		if (webAnnotation.getCanonical() != null) {
 			try {
 				URI cannonicalUri = URI.create(webAnnotation.getCanonical());
 				if (!cannonicalUri.isAbsolute())
 					throw new ParamValidationException("The canonical URI is not absolute:",
-							WebAnnotationFields.CANONICAL, webAnnotation.getCanonical());
+							I18nConstants.ANNOTATION_VALIDATION,
+							new String[]{WebAnnotationFields.CANONICAL, webAnnotation.getCanonical()});
 			} catch (IllegalArgumentException e) {
 				throw new ParamValidationException("Error when validating canonical URI:",
-						WebAnnotationFields.CANONICAL, webAnnotation.getCanonical(), e);
+						I18nConstants.ANNOTATION_VALIDATION,
+						new String[]{WebAnnotationFields.CANONICAL, webAnnotation.getCanonical()},
+						e);
 			}
 		}
-
-		// validate via to be valid URL(s)
+		
+		//validate via to be valid URL(s)
 		if (webAnnotation.getVia() != null) {
 			if (webAnnotation.getVia() instanceof String[]) {
 				for (String via : webAnnotation.getVia()) {
-					if (!(UriUtils.isUrl(via)))
-						throw new ParamValidationException("This is not a valid URL:", WebAnnotationFields.VIA, via);
+					if(!(UriUtils.isUrl(via)))
+						throw new ParamValidationException("This is not a valid URL:", 
+								I18nConstants.ANNOTATION_VALIDATION,
+								new String[]{WebAnnotationFields.VIA, via});
 				}
 			}
 		}
-
+			
 		switch (webAnnotation.getMotivationType()) {
 		case LINKING:
 			// validate target URLs against whitelist

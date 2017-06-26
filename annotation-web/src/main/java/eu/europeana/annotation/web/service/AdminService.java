@@ -7,10 +7,10 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AdminService {
 

@@ -36,4 +36,10 @@
 		<beans:property name="annotationProperties" ref="annotationProperties"/> 	
     </beans:bean>
    
+   <!-- configurable error messages bean -->
+   <beans:bean id="annotation_i18n_messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basename" value="classpath:messages"/>	
+		<beans:property name="defaultEncoding" value="utf-8"/>	 	
+    </beans:bean>
+   
 </beans:beans>

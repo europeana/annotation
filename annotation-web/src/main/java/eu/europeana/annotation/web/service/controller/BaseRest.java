@@ -28,7 +28,10 @@ import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
-import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.api.commons.config.i18n.I18nService;
+import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
+import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.api.commons.web.model.ApiResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
@@ -53,6 +56,20 @@ public class BaseRest extends ApiResponseBuilder {
 
 	@Resource
 	AnnotationSearchService annotationSearchService;
+	
+	@Resource
+	I18nService i18nService;
+
+	@Override
+	protected I18nService getI18nService() {
+		return i18nService;
+	}
+
+	@Override
+	public ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	Logger logger = Logger.getLogger(getClass());
 

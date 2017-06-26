@@ -21,12 +21,13 @@ import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.service.AdminService;
+import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
@@ -141,8 +142,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 							annotation = getMongoPersistence().find(annoId);
 						}
 						if (annotation == null)
-							throw new AnnotationNotFoundException(
-									AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND, id);
+							throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{id});
 						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
 						if (success)
 							status.incrementSuccessCount();

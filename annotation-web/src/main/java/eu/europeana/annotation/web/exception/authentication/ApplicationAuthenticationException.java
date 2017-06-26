@@ -2,7 +2,7 @@ package eu.europeana.annotation.web.exception.authentication;
 
 import org.springframework.http.HttpStatus;
 
-import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class ApplicationAuthenticationException extends HttpException{
 
@@ -13,8 +13,6 @@ public class ApplicationAuthenticationException extends HttpException{
 	/**
 	 * 
 	 */
-	public static final String MESSAGE_NO_APPLICATION_FOR_APIKEY = "No client application registered for the given apiKey!";
-	public static final String MESSAGE_INVALID_APIKEY = "Invalid apiKey! ";
 	public static final String MESSAGE_APIKEY_FILE_NOT_FOUND = 
 			"No apiKey file found in /config/authentication_templates folder! ";
 		
@@ -24,13 +22,16 @@ public class ApplicationAuthenticationException extends HttpException{
 		this(message, paramValue, null);
 	}
 	
-	public ApplicationAuthenticationException(String message, String paramValue, Throwable th){
-		this(message, paramValue, HttpStatus.UNAUTHORIZED, th);
+	public ApplicationAuthenticationException(String message, String i18nKey, String[] i18nParams) {
+		this(message, i18nKey, i18nParams, HttpStatus.UNAUTHORIZED, null);
+	}
+	
+	public ApplicationAuthenticationException(String message, String i18nKey, String[] i18nParams, Throwable th) {
+		this(message, i18nKey, i18nParams, HttpStatus.UNAUTHORIZED, th);
 	}
 
-	public ApplicationAuthenticationException(String message, String paramValue, HttpStatus status, Throwable th){
-		super(message + " " + paramValue, status, th);
-		this.paramValue = paramValue;
+	public ApplicationAuthenticationException(String message, String i18nKey, String[] i18nParams, HttpStatus status, Throwable th){
+		super(message, i18nKey, i18nParams, status, th);
 	}
 	
 	public String getParamValue() {

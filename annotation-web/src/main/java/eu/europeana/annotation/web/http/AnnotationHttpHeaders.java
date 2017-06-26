@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.http;
 
+import eu.europeana.api.commons.web.http.HttpHeaders;
+
 public interface AnnotationHttpHeaders extends HttpHeaders {
 
 	public static final String ALLOW_GPuDOH = "GET,PUT,DELETE,OPTIONS,HEAD";

@@ -47,22 +47,22 @@ import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
-import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.BatchOperationStep;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseJsonldRest extends BaseRest {
 	
@@ -99,7 +99,8 @@ public class BaseJsonldRest extends BaseRest {
 			// already exist in the database
 			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
-						"/provider/identifier", annoId.toRelativeUri());
+						I18nConstants.ANNOTATION_VALIDATION,
+						new String[]{"/provider/identifier", annoId.toRelativeUri()});
 			// 2.1 validate annotation properties
 			getAnnotationService().validateWebAnnotation(webAnnotation);
 
@@ -133,14 +134,14 @@ public class BaseJsonldRest extends BaseRest {
 			return response;
 
 		} catch (JsonParseException e) {
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationValidationException e) { // TODO: transform to
 													// checked annotation type
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationAttributeInstantiationException e) {
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationInstantiationException e) {
-			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
+			throw new HttpException(null, I18nConstants.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e); 
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			throw e;
@@ -247,7 +248,7 @@ public class BaseJsonldRest extends BaseRest {
 			return response;
 
 		} catch (AnnotationInstantiationException e) {
-			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
+			throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e); 
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			throw e;
@@ -376,8 +377,7 @@ public class BaseJsonldRest extends BaseRest {
 				// provided
 				// annotation id doesn’t exists )
 				if (!getAnnotationService().existsInDb(annoId))
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND,
-							annoId.toRelativeUri());
+					throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{annoId.toRelativeUri()});
 			}
 
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -470,7 +470,10 @@ public class BaseJsonldRest extends BaseRest {
 		// check identifier
 		if (provider == null || identifier == null)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
-					"/provider/identifier", identifier, HttpStatus.NOT_FOUND, null);
+					I18nConstants.ANNOTATION_VALIDATION,
+					new String[]{"/provider/identifier", identifier},
+					HttpStatus.NOT_FOUND,
+					null);
 
 		// 1. build annotation id object
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -489,7 +492,10 @@ public class BaseJsonldRest extends BaseRest {
 		// already exist in the database
 		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-					"/provider/identifier", annoId.toRelativeUri(), HttpStatus.NOT_FOUND, null);
+					I18nConstants.ANNOTATION_VALIDATION,
+					new String[]{"/provider/identifier", annoId.toRelativeUri()},
+					HttpStatus.NOT_FOUND, 
+					null);
 
 		return annoId;
 	}
@@ -559,16 +565,14 @@ public class BaseJsonldRest extends BaseRest {
 			return response;
 
 		} catch (JsonParseException e) {
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationValidationException e) { 
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (HttpException e) {
 			//TODO: change this when OAUTH is implemented and the user information is available in service
-			if(e instanceof UserAuthorizationException)
-				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
 		} catch (AnnotationInstantiationException e) {
-			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e);
+			throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION, null, HttpStatus.BAD_REQUEST, e);
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
@@ -679,8 +683,6 @@ public class BaseJsonldRest extends BaseRest {
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			//TODO: change this when OAUTH is implemented and the user information is available in service
-			if(e instanceof UserAuthorizationException)
-				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
 		} catch (Exception e) {
 			throw new InternalServerException(e);
@@ -750,9 +752,8 @@ public class BaseJsonldRest extends BaseRest {
 	private void validateVote(ModerationRecord moderationRecord, Vote vote) throws OperationAuthorizationException {
 		for (Vote existingVote : moderationRecord.getReportList()) {
 			if (vote.getUserId().equals(existingVote.getUserId()))
-				throw new OperationAuthorizationException(
-						OperationAuthorizationException.MESSAGE_OPERATION_NOT_AUTHORIZED,
-						"A report from the same users exists in database!" + vote.getUserId());
+				throw new OperationAuthorizationException("A report from the same users exists in database!",
+						I18nConstants.OPERATION_NOT_AUTHORIZED, new String[]{vote.getUserId()});
 		}
 	}
 

@@ -18,6 +18,7 @@ import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.model.Application;
+import eu.europeana.api.common.config.I18nConstants;
 
 public class AuthorizationServiceImpl implements AuthorizationService {
 	
@@ -80,11 +81,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
 		
 		if (user== null || user.getName() == null || user.getUserGroup() == null)
-			throw new UserAuthorizationException("Invalid User (Token): ", userToken, HttpStatus.FORBIDDEN);
+			throw new UserAuthorizationException("Invalid User (Token)", I18nConstants.INVALID_TOKEN, new String[]{userToken}, HttpStatus.FORBIDDEN);
 		
 		if(!isAdmin(user) && !hasPermission(app, annoId, operationName))
-			throw new OperationAuthorizationException(OperationAuthorizationException.MESSAGE_CLIENT_NOT_AUTHORIZED, 
-					"client app provider: " + app.getProvider() + "; annotation id: "+ annoId, HttpStatus.FORBIDDEN);
+			throw new OperationAuthorizationException(null, I18nConstants.CLIENT_NOT_AUTHORIZED, 
+					new String[]{"client app provider: " + app.getProvider() + "; annotation id: "+ annoId},
+					HttpStatus.FORBIDDEN);
 				
 		//check permissions
 		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
@@ -92,14 +94,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			return user;
 		else if(isTester(user) && configuration.isProductionEnvironment()){
 			//#20 testers not allowed in production environment
-			throw new UserAuthorizationException("Test users are not authorized to perform operations in production environments", user.getName(), HttpStatus.FORBIDDEN);
+			throw new UserAuthorizationException(null, I18nConstants.TEST_USER_FORBIDDEN, new String[]{user.getName()}, HttpStatus.FORBIDDEN);
 		} else	if(hasPermission(user, operationName)){
 			//user is authorized
 			return user;
 		}
 
 		//user is not authorized to perform operation
-		throw new UserAuthorizationException("User not authorized to perform this operation: ", user.getName(), HttpStatus.FORBIDDEN);			
+		throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[]{user.getName()}, HttpStatus.FORBIDDEN);	
 	}
 
 	/**
@@ -115,10 +117,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			// refuse operation if a write lock is effective (allow only unlock and retrieve operations)
 			if(!(operationName.equals(Operations.ADMIN_UNLOCK) || operationName.endsWith(Operations.RETRIEVE) ) 
 					&& runningJob != null && runningJob.getName().equals("lockWriteOperations") && runningJob.getEnded() == null) {
-				throw new UserAuthorizationException("Server is locked for maintenance: no changes can be made to the data", HttpStatus.LOCKED);
+				throw new UserAuthorizationException(null, I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED);
 			}
 		} catch (ApiWriteLockException e) {
-			throw new UserAuthorizationException("Authentication procedure failed.", userToken, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new UserAuthorizationException(null, I18nConstants.AUTHENTICATION_FAIL, new String[]{userToken}, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

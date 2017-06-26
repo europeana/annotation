@@ -2,7 +2,7 @@ package eu.europeana.annotation.web.exception.request;
 
 import org.springframework.http.HttpStatus;
 
-import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class RequestBodyValidationException extends HttpException{
 
@@ -15,21 +15,11 @@ public class RequestBodyValidationException extends HttpException{
 	
 	public static String MESSAGE_PARSE_BODY = " Cannot parse body to annotation! ";
 	
-	
-	public RequestBodyValidationException(String message, String bodyValue){
-		this(message, bodyValue, null);
+	public RequestBodyValidationException(String message, String i18nKey, Throwable th){
+		super(message, i18nKey, null, HttpStatus.BAD_REQUEST, th);
+		this.bodyValue = message;
 	}
-	public RequestBodyValidationException(String message, String bodyValue, Throwable th){
-		super(message + bodyValue, HttpStatus.BAD_REQUEST, th);
-		this.bodyValue = bodyValue;
-	}
-	
-	public RequestBodyValidationException(String bodyValue, Throwable th){
-		super(MESSAGE_PARSE_BODY + "\n" + bodyValue, HttpStatus.BAD_REQUEST, th);
-		this.bodyValue = bodyValue;
-	}
-	
-	
+		
 	public String getBodyValue() {
 		return bodyValue;
 	}

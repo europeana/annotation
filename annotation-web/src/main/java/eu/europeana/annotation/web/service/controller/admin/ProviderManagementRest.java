@@ -1,7 +1,5 @@
 package eu.europeana.annotation.web.service.controller.admin;
 
-import java.util.List;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 
@@ -11,19 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import eu.europeana.annotation.definitions.model.Provider;
-import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
-import eu.europeana.annotation.definitions.model.impl.BaseProvider;
-import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
-import eu.europeana.annotation.web.model.ProviderOperationResponse;
-import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
-import eu.europeana.api2.utils.JsonWebUtils;
 
 
 //@Controller
