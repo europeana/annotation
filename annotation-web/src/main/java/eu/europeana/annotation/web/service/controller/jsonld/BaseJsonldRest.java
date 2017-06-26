@@ -228,7 +228,7 @@ public class BaseJsonldRest extends BaseRest {
 			List<Annotation> resList = new ArrayList<Annotation>();
 			// the "web annotation - stored annotation" map has preserved the order of submitted annotations
 			for (Annotation ann : webAnnoStoredAnnoAnnoMap.keySet()) 
-			    resList.add(ann);
+			    resList.add(webAnnoStoredAnnoAnnoMap.get(ann));
 			apRes.setAnnotations(resList);
 			apRes.setTotalInCollection(resList.size());
 			apRes.setTotalInPage(resList.size());

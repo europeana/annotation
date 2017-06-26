@@ -189,7 +189,8 @@ public class AnnotationPageSerializer extends JsonLd {
 			
 			//build property value for the given annotation
 			JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
-			propertyValue.getPropertyMap().putAll(annotationLd.getPropertyMap());
+			Map<String, JsonLdProperty> propertyMap = propertyValue.getPropertyMap();
+			propertyMap.putAll(annotationLd.getPropertyMap());
 			itemsProp.addValue(propertyValue);
 		}
 		jsonLdResource.putProperty(itemsProp);

@@ -1,6 +1,8 @@
 package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -59,5 +61,37 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 
 		return nextAnnotationId;
 	}
+	
+
+
+//	public AnnotationId generateNextAnnotationId(String provider) {
+//		
+////		List<AnnotationId> nextAnnotationIds = new ArrayList<AnnotationId>(sequence);
+//
+//		GeneratedAnnotationIdImpl nextAnnotationId = null;
+//
+//		synchronized (provider) {
+//			
+//			Query<GeneratedAnnotationIdImpl> q = getDatastore().createQuery(GeneratedAnnotationIdImpl.class);
+//			q.filter("_id", provider);
+//			
+//			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
+//					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
+//					.inc(GeneratedAnnotationIdImpl.SEQUENCE_COLUMN_NAME);
+//			// search annotationId and get incremented annotation number 
+//			nextAnnotationId = getDatastore().findAndModify(q, uOps);
+//			
+//			if (nextAnnotationId == null) {
+//				// if first annotationId
+//				nextAnnotationId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+1L);
+//				ds.save(nextAnnotationId);
+//			}else{
+//				nextAnnotationId.setProvider(provider);
+//				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
+//			}
+//		}
+//
+//		return nextAnnotationId;
+//	}
 
 }
