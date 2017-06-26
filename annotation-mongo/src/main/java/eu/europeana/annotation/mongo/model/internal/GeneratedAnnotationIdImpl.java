@@ -1,7 +1,7 @@
 package eu.europeana.annotation.mongo.model.internal;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
@@ -22,8 +22,6 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 	 */
 	private static final long serialVersionUID = -4554805997975526594L;
 	
-//	private String resourceId;
-//	private String identifier;
 	@Id
 	private String id;
 	private Long annotationNr;

@@ -1234,4 +1234,33 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		return res;
 	}
+	
+	
+	
+	/**
+	 * This method uploads annotations passed as annotations page json.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotations/?wskey=apidemo&userToken=tester1
+	 * @param wskey
+	 * @param userToken
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> uploadAnnotations(
+			String wskey, String userToken, String tag, Boolean indexOnCreate) throws IOException {
+		String url = getAnnotationServiceUri()+"s";
+		if(!url.endsWith(WebAnnotationFields.SLASH))
+			url +=  WebAnnotationFields.SLASH;
+		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
+		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;
+		
+		logger.debug("Upload annotations request URL: " + url);
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return postURL(url, tag);		
+	}
+
 }

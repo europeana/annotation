@@ -1,10 +1,9 @@
 package eu.europeana.annotation.mongo.model;
 
 import org.bson.types.ObjectId;
-
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Polymorphic;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.authentication.impl.BaseClientImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;

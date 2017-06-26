@@ -453,4 +453,18 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	public String getIdAsString() {
 		return getAnnotationId().toHttpUrl();
 	}
+
+	@Override
+	public boolean hasHttpUrl() {
+		return (this.getAnnotationId() != null && this.getAnnotationId().getHttpUrl() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
+	}
+
+	@Override
+	public String getHttpUrl() {
+		if(this.hasHttpUrl())
+			return this.getAnnotationId().getHttpUrl();
+		else
+		 return null;
+	}
+	
 }

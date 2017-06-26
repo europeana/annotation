@@ -104,7 +104,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		protocol.setItems(resultSet);
 		
 		//if mongo query is needed
-		if(isIncludeAnnotationsSearch(query) && resultSet.getResultSize() > 0){
+		if(isIncludeAnnotationsSearch(query) && resultSet.getResults().size() > 0){
 			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
@@ -203,8 +203,8 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			int pageNr, int pageSize, SearchProfiles profile) {
 
 		// TODO: check if needed
-		String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
-		boolean isFacetsRequested = isFacetsRequest(normalizedFacets);
+		//String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
+		boolean isFacetsRequested = isFacetsRequest(facets);
 
 		Query searchQuery = new QueryImpl();
 		searchQuery.setQuery(queryString);
@@ -213,15 +213,12 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		else
 			searchQuery.setPageNr(pageNr);
 
-		searchQuery.setPageSize(pageSize);
-		int maxPageSize = configuration.getMaxPageSize(profile.toString());
-		if (pageSize > maxPageSize)
-			searchQuery.setPageSize(maxPageSize);
-		else if (pageSize == 0)
-			searchQuery.setPageSize(maxPageSize);
+		
+		int rows = buildRealPageSize(pageSize, profile);
+		searchQuery.setPageSize(rows);
 		
 		if (isFacetsRequested)
-			searchQuery.setFacetFields(normalizedFacets);
+			searchQuery.setFacetFields(facets);
 
 		translateSearchFilters(filters);
 		searchQuery.setFilters(filters);
@@ -234,6 +231,18 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		}
 
 		return searchQuery;
+	}
+
+	protected int buildRealPageSize(int pageSize, SearchProfiles profile) {
+		int rows = 0;
+		int maxPageSize = getConfiguration().getMaxPageSize(profile.toString());
+		if(pageSize < 0)
+			rows = Query.DEFAULT_PAGE_SIZE;
+		else if(pageSize > maxPageSize)
+			rows = maxPageSize;
+		else
+			rows = pageSize;
+		return rows;
 	}
 
 	private void setSearchFields(Query searchQuery, SearchProfiles profile) {

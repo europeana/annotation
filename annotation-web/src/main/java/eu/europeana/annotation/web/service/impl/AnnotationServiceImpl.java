@@ -1,8 +1,13 @@
 package eu.europeana.annotation.web.service.impl;
 
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +15,10 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.http.HttpStatus;
 
 import com.google.common.base.Strings;
 
@@ -29,11 +37,15 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
@@ -49,7 +61,12 @@ import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.exception.response.BatchUploadException;
+import eu.europeana.annotation.web.model.BatchReportable;
+import eu.europeana.annotation.web.model.BatchUploadStatus;
+import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 
@@ -171,10 +188,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
 		 * -> JsonLd object
 		 */
-		try{
+		try {
 			AnnotationLdParser europeanaParser = new AnnotationLdParser();
 			return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
-		}catch(AnnotationAttributeInstantiationException e){
+		} catch (AnnotationAttributeInstantiationException e) {
 			throw new RequestBodyValidationException(annotationJsonLdStr, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		}
 	}
@@ -374,7 +391,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
-
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		Annotation res = updateAndReindex(persistentAnnotation);
 
@@ -470,8 +486,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public Annotation disableAnnotation(Annotation annotation) {
 		PersistentAnnotation persistentAnnotation;
 		try {
-			if(annotation instanceof PersistentAnnotation)
-				persistentAnnotation = (PersistentAnnotation)annotation;
+			if (annotation instanceof PersistentAnnotation)
+				persistentAnnotation = (PersistentAnnotation) annotation;
 			else
 				persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
 			
@@ -543,6 +559,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new RuntimeException(e);
 		}
 		return res;
+	}
+
+	@Override
+	public List<? extends Annotation> getExisting(List<String> annotationHttpUrls) {
+		try {
+			List<? extends Annotation> dbRes = getMongoPersistence().getAnnotationList(annotationHttpUrls);
+			return dbRes;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public boolean existsModerationInDb(AnnotationId annoId) {
@@ -776,6 +802,37 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	}
 
+	@Override
+	public void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) {
+		int position = 1;
+		for (Annotation webanno : webAnnotations) {
+			try {
+				validateWebAnnotation(webanno);
+				batchReportable.incrementSuccessCount();
+			} catch (ParamValidationException e) {
+				batchReportable.incrementFailureCount();
+				batchReportable.addError(position, e.getMessage());
+			}
+			position++;
+		}
+	}
+
+	@Override
+	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
+			List<String> missingHttpUrls) {
+		int position = 1;
+		for (Annotation anno : annotations) {
+			String httpUrl = anno.getHttpUrl();
+			if (httpUrl != null) {
+				if (missingHttpUrls.contains(httpUrl)) {
+					batchReportable.incrementFailureCount();
+					batchReportable.addError(position, "Annotation does not exist: " + httpUrl);
+				} else
+					batchReportable.incrementSuccessCount();
+			}
+			position++;
+		}
+	}
 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
@@ -826,5 +883,57 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			break;
 		}
 	}
-	
+
+	@Override
+	public void updateExistingAnnotations(BatchReportable batchReportable, 
+			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos,
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
+			throws AnnotationValidationException, AnnotationMongoException {
+		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
+		if(existingAnnos.size() != updateAnnos.size())
+			throw new IllegalArgumentException("The existing and update lists must be of equal size");
+		for(int i = 0; i < existingAnnos.size(); i++) {
+			Annotation existingAnno = existingAnnos.get(i);
+			String existingHttpUrl = existingAnno.getHttpUrl();
+			Annotation updateAnno = updateAnnos.get(existingHttpUrl);			
+			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
+			
+			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
+			// of submitted annotations.
+			webAnnoStoredAnnoAnnoMap.put(updateAnno, existingAnno);
+		}
+		getMongoPersistence().store(existingAnnos, true);
+	}
+
+	@Override
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
+			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
+			throws AnnotationValidationException, AnnotationMongoException {
+		String provider = annoDefaults.getProvider();
+		int count = annotations.size();
+		List<AnnotationId> annoIdSequence = generateAnnotationIds(provider, count);
+		if(annotations.size() != annoIdSequence.size())
+			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
+		AnnotationId newAnnoId;
+		Annotation anno;
+		AnnotationId genAnnoId;
+		for(int i = 0; i < annotations.size(); i++) {
+			genAnnoId = annoIdSequence.get(i);
+			newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
+			anno = annotations.get(i);
+			anno.setAnnotationId(newAnnoId);
+			annoDefaults.putAnnotationDefaultValues(anno);
+			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
+			// of submitted annotations.
+			webAnnoStoredAnnoAnnoMap.put(anno, anno);
+		}
+		getMongoPersistence().store(annotations);
+	}
+
+	public List<AnnotationId> generateAnnotationIds(String provider, int count) {
+		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(provider, count);
+		return annoIdSequence;
+	}
+
 }

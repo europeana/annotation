@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
-import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
+import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 public interface PersistentApiWriteLock extends NoSqlEntity {	
 	

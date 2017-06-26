@@ -1,18 +1,20 @@
 package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.UpdateOperations;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.corelib.db.dao.impl.NosqlDaoImpl;
+import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
 public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
 		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {
@@ -53,10 +55,43 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 				ds.save(nextAnnotationId);
 			}else{
 				nextAnnotationId.setProvider(provider);
+				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 			}
 		}
 
 		return nextAnnotationId;
 	}
+	
+
+
+//	public AnnotationId generateNextAnnotationId(String provider) {
+//		
+////		List<AnnotationId> nextAnnotationIds = new ArrayList<AnnotationId>(sequence);
+//
+//		GeneratedAnnotationIdImpl nextAnnotationId = null;
+//
+//		synchronized (provider) {
+//			
+//			Query<GeneratedAnnotationIdImpl> q = getDatastore().createQuery(GeneratedAnnotationIdImpl.class);
+//			q.filter("_id", provider);
+//			
+//			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
+//					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
+//					.inc(GeneratedAnnotationIdImpl.SEQUENCE_COLUMN_NAME);
+//			// search annotationId and get incremented annotation number 
+//			nextAnnotationId = getDatastore().findAndModify(q, uOps);
+//			
+//			if (nextAnnotationId == null) {
+//				// if first annotationId
+//				nextAnnotationId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+1L);
+//				ds.save(nextAnnotationId);
+//			}else{
+//				nextAnnotationId.setProvider(provider);
+//				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
+//			}
+//		}
+//
+//		return nextAnnotationId;
+//	}
 
 }

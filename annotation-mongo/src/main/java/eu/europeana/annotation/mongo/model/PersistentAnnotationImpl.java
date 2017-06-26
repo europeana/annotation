@@ -3,13 +3,12 @@ package eu.europeana.annotation.mongo.model;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
-
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Index;
-import com.google.code.morphia.annotations.Polymorphic;
-//import com.google.code.morphia.annotations.Reference;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -20,11 +19,12 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
+import org.apache.commons.lang.StringUtils;
 
 @Polymorphic
 @Entity("annotation")
 
-@Index(PersistentAnnotation.FIELD_HTTPURL)
+@Indexes(@Index(PersistentAnnotation.FIELD_HTTPURL))
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id
@@ -284,6 +284,26 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Override
 	public String[] getVia() {
 		return via;
+	}
+
+	@Override
+	public boolean hasHttpUrl() {
+		
+		
+		return (this.getAnnotationId() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
+		
+		
+		
+	}
+	
+
+	// TODO #152 remove!
+	@Override
+	public String getHttpUrl() {
+		if(this.hasHttpUrl())
+			return this.getAnnotationId().getHttpUrl();
+		else
+		 return null;
 	}
 	
 }

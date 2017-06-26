@@ -47,6 +47,19 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
+
+	@RequestMapping(value = "/annotations/", method = RequestMethod.POST, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
+	public ResponseEntity<String> createAnnotations(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
+			@RequestBody String annotationPage,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+					throws HttpException {
+
+		return storeAnnotations(wskey, provider, annotationPage, userToken);
+	}
 	
 	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})

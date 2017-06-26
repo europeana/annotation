@@ -3,8 +3,8 @@ package eu.europeana.annotation.mongo.service;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
 
-import com.google.code.morphia.query.Query;
 import com.mongodb.WriteResult;
 
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
@@ -12,7 +12,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidTagException;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 public class PersistentTagServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentTag, String> implements
@@ -82,7 +82,7 @@ public class PersistentTagServiceImpl extends
 			throws AnnotationMongoException {
 		int affected = res.getN();
 		if(affected != 1 )
-			throw new AnnotationMongoException("Delete operation Failed!" + res.getError(), res.getLastError().getException());
+			throw new AnnotationMongoException("Delete operation Failed!" + res);
 	}
 
 	@Override

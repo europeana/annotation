@@ -73,11 +73,8 @@ public class SolrAnnotationUtils {
 	}
 
 	public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, boolean withMultilingual, Summary summary) {
-
-		//TODO: 
-		SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary);
+    SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary);
 		return solrAnnotationImpl;
-
 	}
 
 	/**
