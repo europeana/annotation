@@ -36,4 +36,6 @@ public interface I18nConstants {
 	static final String INVALID_PROVIDER = "error.invalid_provider";
 	static final String SOLR_EXCEPTION = "error.solr_exception";
 	
+	static final String BATCH_UPLOAD_FAILED = "error.batch_upload_failed";
+	
 }

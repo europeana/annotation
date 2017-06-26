@@ -68,6 +68,7 @@ import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
@@ -86,6 +87,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
+	
+	@Resource
+	I18nService i18nService;
 
 	AnnotationBuilder annotationBuilder;
 
@@ -789,12 +793,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (eu.europeana.annotation.utils.UriUtils.isUrl(value))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG,
 					I18nConstants.MESSAGE_INVALID_SIMPLE_TAG,
-					new String[]{"tag.format", value});
+					new String[]{value});
 		else if (value.length() > MAX_TAG_LENGTH)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE,
 					I18nConstants.MESSAGE_INVALID_TAG_SIZE,
-					new String[]{"tag.size", "" + value.length()});
-
+					new String[]{String.valueOf(value.length())});
 	}
 
 	protected void validateSemanticTagUrl(Body body) {
@@ -811,7 +814,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				batchReportable.incrementSuccessCount();
 			} catch (ParamValidationException e) {
 				batchReportable.incrementFailureCount();
-				batchReportable.addError(position, e.getMessage());
+				String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
+				batchReportable.addError(position, message);
 			}
 			position++;
 		}

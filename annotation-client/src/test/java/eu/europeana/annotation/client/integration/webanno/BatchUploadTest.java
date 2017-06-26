@@ -179,9 +179,9 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		// positions 1,2,4 validate successfully; 3 and 5 have errors
 		assertFalse(errors.has("1"));
 		assertFalse(errors.has("2"));
-		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size:170", errors.get("3"));
+		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("3"));
 		assertFalse(errors.has("4"));
-		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size:170", errors.get("5"));
+		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("5"));
 	}
 
 	/**
