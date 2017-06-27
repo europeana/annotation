@@ -3,6 +3,7 @@ package eu.europeana.annotation.mongo.dao;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -14,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,6 +24,8 @@ public class PersistentAnnotationDaoTest {
 
 	@Resource(name = "annotation_db_annotationDao")
 	PersistentAnnotationDao<PersistentAnnotation, AnnotationId> annotationDao;
+	
+	public final Integer SEQUENCE_LENGTH = 10;
 	
 	/**
 	 * Initialize the testing session
@@ -51,6 +55,25 @@ public class PersistentAnnotationDaoTest {
 		
 		AnnotationId id2 = annotationDao.generateNextAnnotationId(testProvider);
 		assertTrue(Long.parseLong(id1.getIdentifier()) +1 == Long.parseLong(id2.getIdentifier()));
+		
+	}
+	
+
+	@Test
+	public void testGenerateAnnotationIds(){
+		String testProvider = "test_batch_provider";
+		
+		List<AnnotationId> ids = annotationDao.generateNextAnnotationIds(testProvider, 10);
+		assertEquals(SEQUENCE_LENGTH.intValue(), ids.size());
+		
+		GeneratedAnnotationIdImpl lastAnnoInSequence = (GeneratedAnnotationIdImpl)ids.get(SEQUENCE_LENGTH-1);
+		
+		Long persistedAnnoNumber = annotationDao.getLastAnnotationNr(testProvider);
+		
+		assertTrue(persistedAnnoNumber > 0);
+		assertTrue(lastAnnoInSequence.getAnnotationNr() > 0);
+		
+		assertEquals(persistedAnnoNumber, lastAnnoInSequence.getAnnotationNr());
 		
 	}
 

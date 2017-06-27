@@ -1,6 +1,7 @@
 package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
+import java.util.List;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -23,5 +24,9 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	 * @return AnnotationId object
 	 */
 	AnnotationId generateNextAnnotationId(String provider);
+	
+	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequence);
+	
+	Long getLastAnnotationNr(String provider);
 	
 }

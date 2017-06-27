@@ -178,13 +178,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 */
 	@Override
 	public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
-		List<AnnotationId> annoIdSeq = new ArrayList<AnnotationId>(seqLength);
-		AnnotationId annoId = null;
-		for(int i = 0; i < seqLength; i++) {
-			annoId = getAnnotationDao().generateNextAnnotationId(provider);
-			annoIdSeq.add(annoId);
-		}
-		return annoIdSeq;
+		
+		return getAnnotationDao().generateNextAnnotationIds(provider, seqLength);
+
 	}
 
 	public static String extractResoureIdFromHttpUri(String httpUri) {
