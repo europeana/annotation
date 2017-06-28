@@ -44,7 +44,19 @@ annotation.environment.vcap.provider = pivotal
 #deprecated
 #Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
 #USER, PASSWORD are optional (in local environment) 
-mongodb.annotation.connectionUrl=mongodb://testusr:testpass@127.0.0.1:27017/annotation_test
+#deprecated
+mongodb.annotation.dbname=annotation_test
+#deprecated
+mongodb.annotation.host=127.0.0.1
+#deprecated
+mongodb.annotation.port=27017
+#deprecated
+mongodb.annotation.username=
+#deprecated
+mongodb.annotation.password=
+#Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
+#USER, PASSWORD are optional (in local environment) 
+mongodb.annotation.connectionUrl=
 
 # solr connection settings
 solr.annotation.url = http://localhost:8282/solr/annotation

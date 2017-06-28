@@ -112,6 +112,10 @@ public class VcapAnnotationPropertyLoaderListener extends BasePropertyLoaderList
 		logger.info("mongodb.annotation.dbname: " + databse);
 		props.put("mongodb.annotation.dbname", databse);
 
+		//remove the database name from connectionUrl
+		int databaseNamePos = connectionUrl.lastIndexOf("/"+databse);
+		
+		connectionUrl = connectionUrl.substring(0, databaseNamePos);
 		logger.info("mongodb.annotation.connectionUrl: " + connectionUrl);
 		props.put("mongodb.annotation.connectionUrl", connectionUrl);
 	}

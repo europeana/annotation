@@ -52,7 +52,7 @@ mongodb.annotation.username=europeana
 mongodb.annotation.password=culture
 #Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
 #USER, PASSWORD are optional (in local environment) 
-mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
+mongodb.annotation.connectionUrl=
 
 # solr connection settings
 #solr.annotation.url = http://148.251.139.77/solr/annotation
