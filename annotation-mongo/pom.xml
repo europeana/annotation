@@ -121,6 +121,11 @@
 			<version>${version.spring}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>api2-common</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
 	</dependencies>
 	
 	<organization>
