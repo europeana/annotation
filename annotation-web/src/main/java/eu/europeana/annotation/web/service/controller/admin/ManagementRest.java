@@ -30,6 +30,7 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
+import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -154,7 +155,7 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-	@ApiOperation(value = "Reindex by annotation id", nickname = "reindexAnnotationByAnnotationId", response = java.lang.Void.class)
+	@ApiOperation(value = "Reindex by annotation id", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAnnotationByAnnotationId(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			// public ModelAndView
@@ -169,7 +170,7 @@ public class ManagementRest extends BaseRest {
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
 
 		// if (!isAdmin(apiKey, userToken))
 		// throw new UserAuthorizationException(
@@ -202,7 +203,7 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.GET, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-	@ApiOperation(value = "Reindex a set of annotations defined by selection criteria", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = "reindexAnnotationBySelection", response = java.lang.Void.class)
+	@ApiOperation(value = "Reindex a set of annotations defined by selection criteria", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = Actions.REINDEX_ANNOTATION_SELECTION, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAnnotationSelection(
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			// public ModelAndView reindexAnnotationSet(@RequestParam(value =
@@ -219,7 +220,7 @@ public class ManagementRest extends BaseRest {
 					new String[]{apiKey, userToken});
 
 		BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp,
-				endTimestamp);
+				endTimestamp, Actions.REINDEX_ANNOTATION_SELECTION);
 
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/reindexset");
 		response.setStatus(status.toString());
@@ -242,7 +243,7 @@ public class ManagementRest extends BaseRest {
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
 
 		List<String> uriList = BaseJsonParser.toStringList(uris, true);
 
@@ -269,7 +270,7 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-	@ApiOperation(value = "Reindex all annotations", nickname = "reindexAll", response = java.lang.Void.class)
+	@ApiOperation(value = "Reindex all annotations", nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAll(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
@@ -279,7 +280,7 @@ public class ManagementRest extends BaseRest {
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
 
 		BatchProcessingStatus status;
 		try{
@@ -302,7 +303,7 @@ public class ManagementRest extends BaseRest {
 
 	@RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.GET, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-	@ApiOperation(value = "Index new and reindex outdated annotations", nickname = "reindexOutdated", response = java.lang.Void.class)
+	@ApiOperation(value = "Index new and reindex outdated annotations", nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexOutdated(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
@@ -312,15 +313,15 @@ public class ManagementRest extends BaseRest {
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
-//TODO: check and remove
-/*
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
+		//TODO: check and remove
+		/*
 		BatchProcessingStatus status = getAdminService().reindexOutdated();
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
 		response.setStatus("Outdated annotations reindexed. " + status.toString());
-    */
+		 */
 		
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
 		BatchProcessingStatus status; 

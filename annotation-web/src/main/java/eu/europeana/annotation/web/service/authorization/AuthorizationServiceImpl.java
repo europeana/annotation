@@ -115,7 +115,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		try {
 			runningJob = getPersistentIndexingJobService().getLastActiveLock("lockWriteOperations");
 			// refuse operation if a write lock is effective (allow only unlock and retrieve operations)
-			if(!(operationName.equals(Operations.ADMIN_UNLOCK) || operationName.endsWith(Operations.RETRIEVE) ) 
+			if(!(operationName.equals(Operations.ADMIN_UNLOCK) || operationName.equals(Operations.ADMIN_REINDEX) || operationName.endsWith(Operations.RETRIEVE)) 
 					&& runningJob != null && runningJob.getName().equals("lockWriteOperations") && runningJob.getEnded() == null) {
 				throw new UserAuthorizationException(null, I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED);
 			}

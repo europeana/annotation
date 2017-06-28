@@ -39,7 +39,7 @@ public interface AdminService {
 	 * @throws HttpException 
 	 */
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
-			String endTimestamp) throws HttpException, ApiWriteLockException;
+			String endTimestamp, String action) throws HttpException, ApiWriteLockException;
 
 	
 	/**
