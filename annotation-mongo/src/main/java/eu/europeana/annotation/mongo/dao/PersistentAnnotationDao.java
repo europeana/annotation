@@ -25,7 +25,7 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	 */
 	AnnotationId generateNextAnnotationId(String provider);
 	
-	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequence);
+	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceIncrement);
 	
 	Long getLastAnnotationNr(String provider);
 	
