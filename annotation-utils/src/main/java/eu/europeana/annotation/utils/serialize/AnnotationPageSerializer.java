@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.stanbol.commons.jsonld.AnnotationsJsonComparator;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;

@@ -3,7 +3,6 @@ package eu.europeana.annotation.utils.serialize;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.stanbol.commons.jsonld.AnnotationsJsonComparator;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
