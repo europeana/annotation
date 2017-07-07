@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,14 +41,17 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
+import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
-
+import java.lang.reflect.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",
@@ -76,7 +80,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	 */
 	@Before
 	public void setup() throws IOException {
-		annotationDao.getCollection().drop();
+		//annotationDao.getCollection().drop();
 		setBaseAnnotationUrl(configuration.getAnnotationBaseUrl());
 		
 	}
@@ -91,7 +95,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		// annotationDao.getCollection().drop();
 	}
 
-	@Test
+	//@Test
 	public void testStoreObjectTag() {
 
 		ObjectTag persistentObject = buildObjectTag();
@@ -106,7 +110,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		assertTrue(storedTag instanceof ObjectTag);
 	}
 	
-	@Test
+	//@Test
 	public void testStoreObjectTagWithMotivation() {
 
 		ObjectTag persistentObject = buildObjectTag();
@@ -124,7 +128,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		assertEquals(MotivationTypes.TAGGING, storedTag.getMotivationType());
 	}
 
-	@Test
+	//@Test
 	public void testStoreSemanticObjectTag() {
 
 		ObjectTag persistentObject = buildObjectTag();
@@ -142,7 +146,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		assertNotNull(((TagBody)storedTag.getBody()).getTagId());
 	}
 
-	@Test
+	//@Test
 	public void testUniqueSemanticTag() {
 
 		ObjectTag firstObject = buildObjectTag();
@@ -178,7 +182,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 	}
 
-	@Test
+	//@Test
 	public void testGetObjectList(){
 		//*** STORE OBJECTS ****
 		ObjectTag firstObject = buildObjectTag();
@@ -215,7 +219,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testDeleteObjectTag() throws AnnotationMongoException{
 				//*** STORE OBJECTS ****
 				ObjectTag firstObject = buildObjectTag();
@@ -242,7 +246,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				
 	}
 	
-	 @Test
+	//@Test
 	public void testStoreSimpleImageAnnotation() {
 		
 		 ImageAnnotation annotation = createSimpleAnnotationInstance();
@@ -314,8 +318,9 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setAnnotationId(new BaseAnnotationId(configuration.getAnnotationBaseUrl(), "webanno", null));
 		return persistentObject;
 	}
+	
 	 
-	@Test
+	//@Test
 	public void testCreateAndUpdatePersistanceAnnotation() throws AnnotationMongoException {
 		
 		Annotation initialPersistentAnnotation = createPersistentAnnotationInstance();
@@ -443,4 +448,79 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	// }
 	//
 	//
+	
+
+	protected List<Annotation> getTestAnnotationList(Integer numAnnotations) {
+		List<AnnotationId> annoIdSequence = annotationService.generateAnnotationIdSequence("rollbacktest", numAnnotations);
+		List<Annotation> annoList = new ArrayList<Annotation>(numAnnotations);
+		AnnotationId newAnnoId;
+		Annotation anno;
+		AnnotationId genAnnoId;
+		MongoAnnotationId mongoAnnoId;
+		for(int i = 0; i < numAnnotations; i++) {
+			anno = createPersistentAnnotationInstance();
+			genAnnoId = annoIdSequence.get(i);
+			newAnnoId = new BaseAnnotationId("http://localhost:8080/annotation", "rollbacktest", genAnnoId.getIdentifier());
+			mongoAnnoId = new MongoAnnotationId(newAnnoId);			
+			anno.setAnnotationId(newAnnoId);
+			annoList.add(i, anno);
+		}
+		return annoList;
+	}
+	
+	@Test
+	public void testRollback() throws AnnotationMongoException {
+		
+		int annotationListSize = 5;		
+//		Annotation initialPersistentAnnotation = createPersistentAnnotationInstance();
+//		assertNotNull(initialPersistentAnnotation);
+//		Annotation storedAnnotation = annotationService.store(initialPersistentAnnotation);
+//		assertNotNull(initialPersistentAnnotation);
+		
+		List<Annotation> annoList = getTestAnnotationList(annotationListSize);
+		
+		// failed index: 3
+		//
+		// annotation[0]: random 					(inserted)
+		// annotation[1]: random  					(inserted)
+		// annotation[2]: id 999999999  			(inserted)
+		// annotation[3]: id 999999999 				(not inserted, duplicate error!)
+		// annotation[4]: random 					(not inserted)
+
+		annoList.get(annotationListSize-3).getAnnotationId().setIdentifier("999999999");
+		annoList.get(annotationListSize-3).getAnnotationId().setHttpUrl("http://localhost:8080/annotation/999999999");
+		
+		annoList.get(annotationListSize-2).getAnnotationId().setIdentifier("999999999");		
+		annoList.get(annotationListSize-2).getAnnotationId().setHttpUrl("http://localhost:8080/annotation/999999999");
+		
+		assertNotNull(annoList);
+		assertEquals(annotationListSize, annoList.size());
+		
+		try {
+			annotationService.create(annoList);
+        } catch (BulkOperationException e) {
+        	assertEquals(1, e.getFailedIndices().size());
+        	Integer failedIndex = e.getFailedIndices().get(0);
+        	assertTrue(failedIndex == 3);
+        	assertEquals("Bulk write operation failed", e.getMessage());
+        }
+		
+	}
+	
+//	@Test
+//	public void testCreateDuplicate() throws AnnotationMongoException {
+//		Annotation anno = createPersistentAnnotationInstance();
+//		anno.getAnnotationId().setIdentifier("1");		
+//		anno.getAnnotationId().setBaseUrl("http://localhost:8080/annotation");
+//		anno.getAnnotationId().setProvider("rollbacktest");
+//		anno.getAnnotationId().setHttpUrl("http://localhost:8080/annotation/1");
+//		assertNotNull(anno);
+//		annotationService.store(anno);
+//	}
+	
+	
+	
+	
+	
+	
 }

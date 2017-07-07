@@ -46,7 +46,7 @@ public class AnnotationBuilder {
 	 * @param annotation
 	 * @param to
 	 */
-	void copyAnnotationId(Annotation annotation, Annotation to) {
+	public void copyAnnotationId(Annotation annotation, Annotation to) {
 		to.setAnnotationId(annotation.getAnnotationId());
 	}
 

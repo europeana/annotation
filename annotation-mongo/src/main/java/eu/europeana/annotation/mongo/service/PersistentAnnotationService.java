@@ -6,8 +6,10 @@ import java.util.List;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
@@ -111,7 +113,15 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @throws AnnotationValidationException
 	 * @throws AnnotationMongoException
 	 */
-	public void store(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, AnnotationMongoException;
+	public void create(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, BulkOperationException;
+	
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param annos List of annotations
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	public void update(List<? extends Annotation> existingAnnos, List<? extends Annotation> backupAnnos) throws AnnotationValidationException, BulkOperationException;
 
 	/**
 	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
@@ -120,7 +130,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @throws AnnotationValidationException
 	 * @throws AnnotationMongoException
 	 */
-	public void store(List<? extends Annotation> annos, boolean update) throws AnnotationValidationException, AnnotationMongoException;
+	public void store(List<? extends Annotation> annos, List<? extends Annotation> backupAnnos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException;
 
 }
 

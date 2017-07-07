@@ -6,21 +6,37 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteError;
+import com.mongodb.BulkWriteException;
+import com.mongodb.BulkWriteOperation;
+import com.mongodb.DBObject;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
+import org.apache.log4j.Logger;
+
 
 public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
 		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {
 
 	@Resource
 	private AnnotationConfiguration configuration;
+	
+	protected final Logger logger = Logger.getLogger(this.getClass());
 	
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;
@@ -102,6 +118,65 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 			}
 		}
 		return nextAnnotationIds;
+	}
+	
+	public void applyBulkOperation(List<? extends Annotation> annos, List<Integer> exceptIndices, BulkOperationMode bulkOpMode) throws BulkOperationException {
+		List<Annotation> filteredList = new ArrayList<Annotation>();
+		
+		for(int i = 0; i < annos.size(); i++) {
+			if(!exceptIndices.contains(i))
+				filteredList.add(annos.get(i));
+		}
+		applyBulkOperation(filteredList, bulkOpMode);
+	}
+	
+
+	/**
+	 * Apply Create/Update/Delete bulk operations.
+	 * @param annos List of annotations
+	 * @param bulkOpMode Update mode: Create/Update/Delete
+	 * @throws BulkOperationException
+	 */
+	public void applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
+		@SuppressWarnings("unchecked")
+		Class<PersistentAnnotation> entityClass = (Class<PersistentAnnotation>) this.getEntityClass();
+		BulkWriteOperation bulkWrite = getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
+		Morphia morphia = new Morphia();  
+		DBObject dbObject;
+		DBObject query;
+		for (Annotation anno : annos) {
+          dbObject = morphia.toDBObject(anno);
+          switch(bulkOpMode) {
+          case INSERT:
+        	  bulkWrite.insert(dbObject);
+        	  break;
+          case UPDATE:
+        	  query = new BasicDBObject();
+	          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
+	          bulkWrite.find(query).replaceOne(dbObject);
+        	  break;
+          case DELETE:
+        	  query = new BasicDBObject();
+	          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
+	          bulkWrite.find(query).removeOne();
+        	  break;
+          }
+		}
+		try {
+			  bulkWrite.execute();
+		} catch (BulkWriteException e) {
+			List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
+			List<Integer> failedIndices = new ArrayList<Integer>();
+			for (BulkWriteError bulkWriteError : bulkWriteErrors) {
+				int failedIndex = bulkWriteError.getIndex();
+				failedIndices.add(failedIndex);
+				Annotation failedEntity = annos.get(failedIndex);
+				logger.error("Batch upload failed: " + failedEntity);
+			}
+			throw new BulkOperationException("Bulk write operation failed", failedIndices, e);
+		} catch (Exception e) {
+			throw new BulkOperationException("Bulk operation failed", e);
+		}
 	}
 	
 	/**

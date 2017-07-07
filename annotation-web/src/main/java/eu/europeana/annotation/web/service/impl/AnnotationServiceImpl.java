@@ -4,6 +4,7 @@ package eu.europeana.annotation.web.service.impl;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,8 +44,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
@@ -892,28 +896,41 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public void updateExistingAnnotations(BatchReportable batchReportable, 
 			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos,
 			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
-			throws AnnotationValidationException, AnnotationMongoException {
+			throws AnnotationValidationException, BulkOperationException {
 		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
 		if(existingAnnos.size() != updateAnnos.size())
 			throw new IllegalArgumentException("The existing and update lists must be of equal size");
+		Annotation backupAnno;
+		List<Annotation> backupAnnotations = new ArrayList<Annotation>(existingAnnos.size());
 		for(int i = 0; i < existingAnnos.size(); i++) {
 			Annotation existingAnno = existingAnnos.get(i);
 			String existingHttpUrl = existingAnno.getHttpUrl();
-			Annotation updateAnno = updateAnnos.get(existingHttpUrl);			
+			Annotation updateAnno = updateAnnos.get(existingHttpUrl);
+			
+			backupAnno = new PersistentAnnotationImpl();
+			
+			// create a backup copy of annotations in order to be able to restore the original state 
+			AnnotationBuilder ab = new AnnotationBuilder();
+			ab.copyAnnotationAttributes(existingAnno, backupAnno);
+			ab.copyAnnotationId(existingAnno, backupAnno);
+			backupAnno = ab.copyIntoWebAnnotation(existingAnno);
+			backupAnnotations.add(backupAnno);
+			
+			// merge update annotation (web anno) into existing annotation (db anno)
 			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
 			
 			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
 			// of submitted annotations.
 			webAnnoStoredAnnoAnnoMap.put(updateAnno, existingAnno);
 		}
-		getMongoPersistence().store(existingAnnos, true);
+		getMongoPersistence().update(existingAnnos, backupAnnotations);
 	}
 
 	@Override
 	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
 			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,
 			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
-			throws AnnotationValidationException, AnnotationMongoException {
+			throws AnnotationValidationException, BulkOperationException {
 		String provider = annoDefaults.getProvider();
 		int count = annotations.size();
 		List<AnnotationId> annoIdSequence = generateAnnotationIds(provider, count);
@@ -932,7 +949,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			// of submitted annotations.
 			webAnnoStoredAnnoAnnoMap.put(anno, anno);
 		}
-		getMongoPersistence().store(annotations);
+		getMongoPersistence().create(annotations);
 	}
 
 	public List<AnnotationId> generateAnnotationIds(String provider, int count) {
