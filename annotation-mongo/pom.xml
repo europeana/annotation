@@ -40,7 +40,7 @@
     
     <dependency>
       <groupId>eu.europeana.api.commons</groupId>
-			<version>0.2.2-SNAPSHOT</version>
+			<version>${version.commonsApi}</version>
 			<artifactId>commons-nosql</artifactId>
 		</dependency>
 		
