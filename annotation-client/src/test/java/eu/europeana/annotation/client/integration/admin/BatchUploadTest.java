@@ -1,10 +1,13 @@
-package eu.europeana.annotation.client.integration.webanno;
+package eu.europeana.annotation.client.integration.admin;
 
 import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
@@ -80,23 +84,28 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, true);
+		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, true);
 
 		// response status must be 201 CREATED
-		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
 
 		// check response
-		JSONObject jsonObj = new JSONObject(response.getBody());
+		JSONObject jsonObj = new JSONObject(uploadResponse.getBody());
 		assertEquals(5, jsonObj.get(BATCH_TOTAL_FIELD));
 		// check if test annotations which have been created previously in the database 
 		// have been updated correctly
-		for (Annotation anno : testAnnotations) {
-			response = getAnnotation(anno);
-			jsonObj = new JSONObject(response.getBody());
-			JSONObject bodyObj = jsonObj.getJSONObject(BODY_FIELD);
-			String value = bodyObj.getString(VALUE_FIELD);
-			// updated tags must start with tag ("tag3", "tag5")
-			assertTrue(value.startsWith("tag"));			
+		ResponseEntity<String> response;
+		Annotation storedAnnotation;
+		for (int i = 0; i < testAnnotations.size(); i++) {
+			response =  getAnnotation(testAnnotations.get(i));
+			storedAnnotation = getApiClient().parseResponseBody(response);
+			String value = storedAnnotation.getBody().getValue();
+			assertTrue(value.startsWith("tag"));
+			// assuming equal order of test annotations and updated annotations
+			assertEquals(testAnnotations.get(i).getAnnotationId().getHttpUrl(), 
+					storedAnnotation.getAnnotationId().getHttpUrl());
+//			assertNull(testAnnotations.get(i).getLastUpdate());
+//			assertNotNull(storedAnnotation.getLastUpdate());
 		}
 	}
 
@@ -145,7 +154,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	@After
 	public void deleteTestAnnotations() throws JsonParseException, IOException {
 		for (Annotation anno : testAnnotations) {
-			deleteAnnotation(anno);
+			//deleteAnnotation(anno);
 		}
 	}
 

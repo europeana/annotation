@@ -892,6 +892,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		}
 	}
 
+	/**
+	 * Update existing annotations
+	 * @param batchReportable Reportable object for collecting information to be reported
+	 * @param existingAnnos Existing annotations
+	 * @param updateAnnos Update annotations
+	 * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting of annotations when returned as response
+	 */
 	@Override
 	public void updateExistingAnnotations(BatchReportable batchReportable, 
 			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos,
@@ -900,32 +907,36 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
 		if(existingAnnos.size() != updateAnnos.size())
 			throw new IllegalArgumentException("The existing and update lists must be of equal size");
-		Annotation backupAnno;
-		List<Annotation> backupAnnotations = new ArrayList<Annotation>(existingAnnos.size());
+			
+		// Backup 
+		getMongoPersistence().createBackupCopy(existingAnnos);
+		
+		// merge update annotations (web anno) into existing annotations (db anno) 
 		for(int i = 0; i < existingAnnos.size(); i++) {
 			Annotation existingAnno = existingAnnos.get(i);
-			String existingHttpUrl = existingAnno.getHttpUrl();
+			String existingHttpUrl = existingAnno.getAnnotationId().getHttpUrl();
 			Annotation updateAnno = updateAnnos.get(existingHttpUrl);
-			
-			backupAnno = new PersistentAnnotationImpl();
-			
-			// create a backup copy of annotations in order to be able to restore the original state 
-			AnnotationBuilder ab = new AnnotationBuilder();
-			ab.copyAnnotationAttributes(existingAnno, backupAnno);
-			ab.copyAnnotationId(existingAnno, backupAnno);
-			backupAnno = ab.copyIntoWebAnnotation(existingAnno);
-			backupAnnotations.add(backupAnno);
 			
 			// merge update annotation (web anno) into existing annotation (db anno)
 			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
+			
+			// set last update
+			existingAnno.setLastUpdate(new Date());
 			
 			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
 			// of submitted annotations.
 			webAnnoStoredAnnoAnnoMap.put(updateAnno, existingAnno);
 		}
-		getMongoPersistence().update(existingAnnos, backupAnnotations);
+		getMongoPersistence().update(existingAnnos);
 	}
 
+	/**
+	 * Update existing annotations
+	 * @param batchReportable Reportable object for collecting information to be reported
+	 * @param existingAnnos Existing annotations
+	 * @param updateAnnos Update annotations
+	 * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting of annotations when returned as response
+	 */
 	@Override
 	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
 			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,

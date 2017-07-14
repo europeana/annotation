@@ -2,6 +2,8 @@ package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,6 +19,9 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteError;
 import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
+import com.mongodb.BulkWriteResult;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
@@ -26,8 +31,8 @@ import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
-import org.apache.log4j.Logger;
 
 
 public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
@@ -120,14 +125,14 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		return nextAnnotationIds;
 	}
 	
-	public void applyBulkOperation(List<? extends Annotation> annos, List<Integer> exceptIndices, BulkOperationMode bulkOpMode) throws BulkOperationException {
+	public BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, List<Integer> exceptIndices, BulkOperationMode bulkOpMode) throws BulkOperationException {
 		List<Annotation> filteredList = new ArrayList<Annotation>();
 		
 		for(int i = 0; i < annos.size(); i++) {
 			if(!exceptIndices.contains(i))
 				filteredList.add(annos.get(i));
 		}
-		applyBulkOperation(filteredList, bulkOpMode);
+		return applyBulkOperation(filteredList, bulkOpMode);
 	}
 	
 
@@ -137,7 +142,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 * @param bulkOpMode Update mode: Create/Update/Delete
 	 * @throws BulkOperationException
 	 */
-	public void applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
+	public BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
 		@SuppressWarnings("unchecked")
 		Class<PersistentAnnotation> entityClass = (Class<PersistentAnnotation>) this.getEntityClass();
 		BulkWriteOperation bulkWrite = getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
@@ -145,6 +150,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		DBObject dbObject;
 		DBObject query;
 		for (Annotation anno : annos) {
+			//anno.setLastUpdate(new Date());
           dbObject = morphia.toDBObject(anno);
           switch(bulkOpMode) {
           case INSERT:
@@ -163,7 +169,13 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
           }
 		}
 		try {
-			  bulkWrite.execute();
+			  BulkWriteResult result = bulkWrite.execute();
+			  if(bulkOpMode.equals(BulkOperationMode.UPDATE) 
+					  && (result.getModifiedCount() < annos.size() || result.getMatchedCount() < annos.size())) {
+				  String errMsg = "Bulk write operation failed (%d out of $d succeeded)";
+				  throw new BulkOperationException(String.format(errMsg, result.getMatchedCount(), annos.size()), null);
+			  }
+			  return result;
 		} catch (BulkWriteException e) {
 			List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
 			List<Integer> failedIndices = new ArrayList<Integer>();
@@ -193,6 +205,26 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 			return genAnnoId.getAnnotationNr();
 		} else
 			return 0L;
+	}
+
+	/**
+	 * Copy annotations from a source collection to a target collection
+	 * @param existingAnnos Annotations to be copied
+	 * @param sourceCollection Source collection
+	 * @param targetCollection Target collection
+	 */
+	@SuppressWarnings("deprecation")
+	@Override
+	public void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String targetCollection) {
+		List<DBObject> ops = new ArrayList<DBObject>();
+		@SuppressWarnings("unchecked")
+		Query<PersistentAnnotation> query = (Query<PersistentAnnotation>) createQuery();
+		List<String> httpUrls = AnnotationListUtils.getHttpUrls(existingAnnos);
+		query.filter(PersistentAnnotation.FIELD_HTTPURL + " in", httpUrls);
+		ops.add(new BasicDBObject("$match", query.getQueryObject()));
+		ops.add(new BasicDBObject("$out", targetCollection));
+		DBCollection source = getDatastore().getDB().getCollection(sourceCollection);
+		source.aggregate(ops);
 	}
 
 }

@@ -113,15 +113,15 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @throws AnnotationValidationException
 	 * @throws AnnotationMongoException
 	 */
-	public void create(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, BulkOperationException;
+	public void create(List<? extends Annotation> annos) throws AnnotationValidationException, BulkOperationException;
 	
 	/**
 	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
-	 * @param annos List of annotations
+	 * @param existingAnnos List of existing annotations
 	 * @throws AnnotationValidationException
 	 * @throws AnnotationMongoException
 	 */
-	public void update(List<? extends Annotation> existingAnnos, List<? extends Annotation> backupAnnos) throws AnnotationValidationException, BulkOperationException;
+	public void update(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, BulkOperationException;
 
 	/**
 	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
@@ -130,7 +130,9 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @throws AnnotationValidationException
 	 * @throws AnnotationMongoException
 	 */
-	public void store(List<? extends Annotation> annos, List<? extends Annotation> backupAnnos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException;
+	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException;
+
+	public void createBackupCopy(List<? extends Annotation> existingAnnos);
 
 }
 

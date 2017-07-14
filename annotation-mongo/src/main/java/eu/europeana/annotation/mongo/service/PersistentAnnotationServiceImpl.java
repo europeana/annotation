@@ -50,6 +50,7 @@ import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import org.apache.log4j.Logger;
+import eu.europeana.annotation.mongo.config.AnnotationMongoConfiguration;
 
 
 @Component
@@ -627,9 +628,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @throws AnnotationMongoException
 	 */
 	@Override
-	public void update(List<? extends Annotation> annos, List<? extends Annotation> backupAnnos)
+	public void update(List<? extends Annotation> annos)
 			throws AnnotationValidationException, BulkOperationException {
-		store(annos, backupAnnos, BulkOperationMode.UPDATE);
+		store(annos, BulkOperationMode.UPDATE);
 	}
 
 	/**
@@ -641,7 +642,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	@Override
 	public void create(List<? extends Annotation> annos)
 			throws AnnotationValidationException, BulkOperationException {
-		store(annos, null, BulkOperationMode.INSERT);
+		store(annos, BulkOperationMode.INSERT);
 	}
 
 	/**
@@ -652,11 +653,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @throws BulkOperationException
 	 */
 	@Override
-	public void store(List<? extends Annotation> annos, List<? extends Annotation> backupAnnos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException {
+	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException {
 		try {
 			getAnnotationDao().applyBulkOperation(annos, bulkOpMode);
 		} catch(BulkOperationException ex) {
-			rollback(annos, backupAnnos, bulkOpMode);
+			rollback(annos, bulkOpMode);
 			throw ex;
 		}
 	}
@@ -667,25 +668,33 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @param update Update mode: true if existing annotations should be updated
 	 * @throws BulkOperationException 
 	 */
-	private void rollback(List<? extends Annotation> annos, List<? extends Annotation> backupAnnos, BulkOperationMode bulkOpMode) throws BulkOperationException {
-		if(bulkOpMode == BulkOperationMode.INSERT) {
-			logger.info("Rollback of annotation inserts due to failed bulk operation");
-			try {
-				List<String> httpUrls = AnnotationListUtils.getHttpUrls(annos);
-				Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
-				searchQuery.filter(PersistentAnnotation.FIELD_HTTPURL + " in", httpUrls);
-				List<PersistentAnnotation> filteredAnnotations = getAnnotationDao().find(searchQuery).asList();
-				getAnnotationDao().applyBulkOperation(filteredAnnotations, BulkOperationMode.DELETE);
-			} catch(BulkOperationException ex) {
-				throw ex;
+	private void rollback(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
+		logger.info("Rollback of annotation inserts due to failed bulk operation");
+		try {
+			List<String> httpUrls = AnnotationListUtils.getHttpUrls(annos);
+			Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
+			searchQuery.filter(PersistentAnnotation.FIELD_HTTPURL + " in", httpUrls);
+			List<PersistentAnnotation> filteredAnnotations = getAnnotationDao().find(searchQuery).asList();
+			getAnnotationDao().applyBulkOperation(filteredAnnotations, BulkOperationMode.DELETE);
+			if(bulkOpMode == BulkOperationMode.UPDATE) {
+				getAnnotationDao().copyAnnotations(annos, 
+						AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME, 
+						AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME);
 			}
-		} else if(bulkOpMode == BulkOperationMode.UPDATE) {
-			if(backupAnnos != null) {
-				// TODO: How to restore annotations from backup? Similar to  AnnotationServiceImpl.mergeAnnotationProperties?
-			} else {
-				throw new IllegalStateException("Unable to restore annotations after update failure due to missing backup copies.");
-			}
+		} catch(BulkOperationException ex) {
+			throw ex;
 		}
+	}
+
+	/**
+	 * Create a backup copy of existing annotations
+	 * existingAnnos Existing annotations
+	 */
+	@Override
+	public void createBackupCopy(List<? extends Annotation> existingAnnos) {
+		getAnnotationDao().copyAnnotations(existingAnnos, 
+				AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME, 
+				AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME);
 	}
 	
 	
