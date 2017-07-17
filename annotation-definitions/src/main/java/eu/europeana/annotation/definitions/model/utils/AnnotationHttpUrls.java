@@ -46,8 +46,11 @@ public class AnnotationHttpUrls {
 	private void updateHttpUrlsFromAnnotations() {
 		httpUrls = new ArrayList<String>();
 		for (Annotation anno : annotations) {
-			if(anno.hasHttpUrl())
-				add(anno.getHttpUrl());
+			if(anno.getAnnotationId() != null) {
+				String httpUrl = anno.getAnnotationId().getHttpUrl();
+				if(httpUrl != null && StringUtils.isNotEmpty(httpUrl))
+					add(httpUrl);
+			}
 		}
 	}
 

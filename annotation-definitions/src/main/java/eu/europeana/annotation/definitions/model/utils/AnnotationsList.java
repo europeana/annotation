@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 
 public class AnnotationsList {
@@ -14,16 +16,28 @@ public class AnnotationsList {
 	}
 
 	private List<? extends Annotation> annotations;
+	private List<String> httpUrls;
 
 	public AnnotationsList(List<? extends Annotation> annotations) {
 		this.annotations = annotations;
 	}
-
+	
+	
 	public List<String> getHttpUrls() {
-		List<String> httpUrls = new ArrayList<String>();
-		for (Annotation anno : annotations)
-			if (anno.hasHttpUrl())
-				httpUrls.add(anno.getHttpUrl());
+		if(httpUrls == null)
+			this.httpUrls = getHttpUrlsFromAnnotations();
+		return httpUrls;
+	}
+	
+	public List<String> getHttpUrlsFromAnnotations() {
+		httpUrls = new ArrayList<String>();
+		for (Annotation anno : annotations) {
+			if(anno.getAnnotationId() != null) {
+				String httpUrl = anno.getAnnotationId().getHttpUrl();
+				if(httpUrl != null && StringUtils.isNotEmpty(httpUrl))
+					httpUrls.add(httpUrl);
+			}
+		}
 		return httpUrls;
 	}
 
@@ -51,13 +65,13 @@ public class AnnotationsList {
 		List<? extends Annotation> annos = annoList.getAnnotations();
 		HashMap<String, Annotation> annosMapWithHttpUrlKey = new HashMap<String, Annotation>();
 		for (Annotation anno : annos)
-			if (anno.hasHttpUrl())
-				annosMapWithHttpUrlKey.put(anno.getHttpUrl(), anno);
+			if (anno.getAnnotationId() != null) {
+				String httpUrl = anno.getAnnotationId().getHttpUrl();
+				if(httpUrl != null && StringUtils.isNotEmpty(httpUrl))
+					annosMapWithHttpUrlKey.put(httpUrl, anno);
+			}	
 		return annosMapWithHttpUrlKey;
 	}
-	
-	
-
 	
 	public LinkedHashMap<Annotation, Annotation> getAnnotationsMap() {
 		LinkedHashMap<Annotation, Annotation> annosMap = new LinkedHashMap<Annotation, Annotation>();
@@ -66,17 +80,18 @@ public class AnnotationsList {
 		return annosMap;
 	}
 	
-	
-	
-
 	public HashMap<String, ? extends Annotation> getHttpUrlAnnotationsMap() {
 		return getHttpUrlAnnotationsMap(this);
 	}
 	
 	protected void putAnnotationsDependingOnIdAvailability(List<? super Annotation> dest, List<? extends Annotation> src,
 			idFilterType filter) {
+		Annotation anno = null;
 		for (int i = 0; i < src.size(); i++) {
-			boolean hasHttpUrl = src.get(i).hasHttpUrl();
+			anno = src.get(i);
+			boolean hasHttpUrl = anno.getAnnotationId() != null 
+					&& anno.getAnnotationId().getHttpUrl() != null 
+					&&  StringUtils.isNotEmpty(anno.getAnnotationId().getHttpUrl()) ;
 			if ((filter == idFilterType.ID_AVAILABLE && hasHttpUrl)
 					|| (filter == idFilterType.ID_MISSING && !hasHttpUrl))
 				dest.add(src.get(i));

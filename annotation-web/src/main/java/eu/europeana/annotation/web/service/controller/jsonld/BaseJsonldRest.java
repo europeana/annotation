@@ -199,7 +199,6 @@ public class BaseJsonldRest extends BaseRest {
 				throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
 			}			
 			
-
 			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap = webAnnotations.getAnnotationsMap();
 			
 			// update existing annotations

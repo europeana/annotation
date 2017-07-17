@@ -26,6 +26,7 @@ public class MongoAnnotationId extends BaseAnnotationId implements PersistentObj
 	public MongoAnnotationId(AnnotationId volatileObject){
 		super();
 		copyFrom(volatileObject);
+		//TODO:remove
 		setHttpUrl(toHttpUrl());
 	}
 }

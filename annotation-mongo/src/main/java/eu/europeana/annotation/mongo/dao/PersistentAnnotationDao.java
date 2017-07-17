@@ -3,7 +3,12 @@ package eu.europeana.annotation.mongo.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import com.mongodb.BulkWriteResult;
+
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
@@ -28,5 +33,12 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceIncrement);
 	
 	Long getLastAnnotationNr(String provider);
+
+	BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode delete) throws BulkOperationException;
 	
+	BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, List<Integer> exceptIndices, BulkOperationMode delete) throws BulkOperationException;
+
+	void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String backupCollection);
+
+
 }

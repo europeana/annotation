@@ -36,6 +36,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
@@ -45,13 +46,20 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
+import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
+import org.apache.log4j.Logger;
+import eu.europeana.annotation.mongo.config.AnnotationMongoConfiguration;
+
 
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 
 	GeoPlaceValidator geoPlaceValidator;
+	
+	protected final Logger logger = Logger.getLogger(this.getClass());
 	
 	@Resource
 	private PersistentTagService tagService;
@@ -612,7 +620,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		return response;
 	}
-	
 
 	/**
 	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
@@ -621,48 +628,74 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @throws AnnotationMongoException
 	 */
 	@Override
-	public void store(List<? extends Annotation> annos)
-			throws AnnotationValidationException, AnnotationMongoException {
-		store(annos, false);
+	public void update(List<? extends Annotation> annos)
+			throws AnnotationValidationException, BulkOperationException {
+		store(annos, BulkOperationMode.UPDATE);
+	}
+
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param annos List of annotations
+	 * @throws AnnotationValidationException
+	 * @throws BulkOperationException
+	 */
+	@Override
+	public void create(List<? extends Annotation> annos)
+			throws AnnotationValidationException, BulkOperationException {
+		store(annos, BulkOperationMode.INSERT);
 	}
 
 	/**
 	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
 	 * @param annos List of annotations
-	 * @param update Update mode: true if existing annotations should be updated
+	 * @param bulkOpMode Update mode: Create/Update/Delete
 	 * @throws AnnotationValidationException
-	 * @throws AnnotationMongoException
+	 * @throws BulkOperationException
 	 */
 	@Override
-	public void store(List<? extends Annotation> annos, boolean update)
-			throws AnnotationValidationException, AnnotationMongoException {
-		Class<PersistentAnnotation> entityClass = getDao().getEntityClass();
-		BulkWriteOperation bulkWrite = this.getDao().getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
-		Morphia morphia = new Morphia();  
-		DBObject dbObject;
-		DBObject query;
-		for (Annotation anno : annos) {
-          dbObject = morphia.toDBObject(anno);
-          if(update) {
-	          query = new BasicDBObject();
-	          query.put(Mapper.ID_KEY, dbObject.get(Mapper.ID_KEY));
-	          bulkWrite.find(query).replaceOne(dbObject);
-          } else {
-        	  bulkWrite.insert(dbObject);
-          }
-		}
+	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException {
 		try {
-			  bulkWrite.execute();
-		} catch (BulkWriteException e) {
-		  	List<BulkWriteError> bulkWriteErrors = e.getWriteErrors();
-		      for (BulkWriteError bulkWriteError : bulkWriteErrors) {
-		          int failedIndex = bulkWriteError.getIndex();
-		          Annotation failedEntity = annos.get(failedIndex);
-		          System.out.println("Failed record: " + failedEntity);
-		    }
-		} catch (Exception e) {
-			throw new AnnotationMongoException("Cannot execute bulk update", e);
+			getAnnotationDao().applyBulkOperation(annos, bulkOpMode);
+		} catch(BulkOperationException ex) {
+			rollback(annos, bulkOpMode);
+			throw ex;
 		}
 	}
+	
+	/**
+	 * Rollback bulk write operation.
+	 * @param annos List of annotations
+	 * @param update Update mode: true if existing annotations should be updated
+	 * @throws BulkOperationException 
+	 */
+	private void rollback(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
+		logger.info("Rollback of annotation inserts due to failed bulk operation");
+		try {
+			List<String> httpUrls = AnnotationListUtils.getHttpUrls(annos);
+			Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
+			searchQuery.filter(PersistentAnnotation.FIELD_HTTPURL + " in", httpUrls);
+			List<PersistentAnnotation> filteredAnnotations = getAnnotationDao().find(searchQuery).asList();
+			getAnnotationDao().applyBulkOperation(filteredAnnotations, BulkOperationMode.DELETE);
+			if(bulkOpMode == BulkOperationMode.UPDATE) {
+				getAnnotationDao().copyAnnotations(annos, 
+						AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME, 
+						AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME);
+			}
+		} catch(BulkOperationException ex) {
+			throw ex;
+		}
+	}
+
+	/**
+	 * Create a backup copy of existing annotations
+	 * existingAnnos Existing annotations
+	 */
+	@Override
+	public void createBackupCopy(List<? extends Annotation> existingAnnos) {
+		getAnnotationDao().copyAnnotations(existingAnnos, 
+				AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME, 
+				AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME);
+	}
+	
 	
 }
