@@ -39,10 +39,10 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
-import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseJsonldRest extends BaseRest {
 	

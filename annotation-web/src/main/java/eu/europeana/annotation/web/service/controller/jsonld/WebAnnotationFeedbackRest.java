@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.HttpException;
-import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
