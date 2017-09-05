@@ -220,7 +220,7 @@ public class BaseJsonldRest extends BaseRest {
 						.setGenerator(buildDefaultGenerator(app))
 						.setUser(user)
 						.build();
-				getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults, webAnnoStoredAnnoAnnoMap);
+				getAnnotationService().insertNewAnnotations(provider, uploadStatus, annosWithoutId.getAnnotations(), annoDefaults, webAnnoStoredAnnoAnnoMap);
 			}
 			
 			// create result annotation page

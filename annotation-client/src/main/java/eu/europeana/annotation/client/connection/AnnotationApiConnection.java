@@ -1247,12 +1247,13 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> uploadAnnotations(
-			String wskey, String userToken, String tag, Boolean indexOnCreate) throws IOException {
+			String wskey, String userToken, String tag, Boolean indexOnCreate, String provider) throws IOException {
 		String url = getAnnotationServiceUri()+"s";
 		if(!url.endsWith(WebAnnotationFields.SLASH))
 			url +=  WebAnnotationFields.SLASH;
 		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
 		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;
 		
 		logger.debug("Upload annotations request URL: " + url);

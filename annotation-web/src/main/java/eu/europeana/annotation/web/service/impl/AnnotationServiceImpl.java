@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 
 import com.google.common.base.Strings;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
@@ -39,6 +40,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
@@ -93,9 +95,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	PersistentStatusLogService mongoStatusLogPersistence;
 	
 	@Resource
+	private AnnotationConfiguration configuration;
+	
+	
+	
+	@Resource
 	I18nService i18nService;
 
 	AnnotationBuilder annotationBuilder;
+	
+	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
+	
+
+	public AnnotationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public AnnotationIdHelper getAnnotationIdHelper() {
+		return annotationIdHelper;
+	}
 
 	public AnnotationBuilder getAnnotationHelper() {
 		if (annotationBuilder == null)
@@ -815,6 +833,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		for (Annotation webanno : webAnnotations) {
 			try {
 				validateWebAnnotation(webanno);
+				// TODO: validate via, size must be 1
 				batchReportable.incrementSuccessCount();
 			} catch (ParamValidationException e) {
 				batchReportable.incrementFailureCount();
@@ -938,21 +957,45 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	 * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting of annotations when returned as response
 	 */
 	@Override
-	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
+	public void insertNewAnnotations(String provider, BatchUploadStatus uploadStatus, 
 			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,
 			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
 			throws AnnotationValidationException, BulkOperationException {
-		String provider = annoDefaults.getProvider();
+		if(provider == null || StringUtils.isEmpty(provider))
+			provider = annoDefaults.getProvider();
+		
 		int count = annotations.size();
-		List<AnnotationId> annoIdSequence = generateAnnotationIds(provider, count);
-		if(annotations.size() != annoIdSequence.size())
+		
+		// 
+		boolean hasViaId = (provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_HISTORY_PIN) 
+				|| provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_PUNDIT));
+		
+		List<AnnotationId> annoIdSequence = null;
+		if(!hasViaId)
+			annoIdSequence = generateAnnotationIds(provider, count);
+		
+		// number of ids must equal number of annotations - not applicable in case the id is provided by the via field
+		if(!hasViaId && (annotations.size() != annoIdSequence.size()))
 			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
 		AnnotationId newAnnoId;
 		Annotation anno;
 		AnnotationId genAnnoId;
 		for(int i = 0; i < annotations.size(); i++) {
-			genAnnoId = annoIdSequence.get(i);
-			newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
+			// default: use the annotation id from the sequence generated above 
+			if(!hasViaId) {
+				genAnnoId = annoIdSequence.get(i);
+				newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
+			// for some providers, the id must be provided by the via field 
+			} else {
+				String[] via = annotations.get(i).getVia();
+				if(via == null || via.length == 0)
+					throw new AnnotationValidationException("The annotation id must be provided by the via field for the provider: '"+provider+"'");
+				if(via.length > 1)
+					logger.warn("Multiple URLS provided in via field");
+				String viaUrl = via[0];
+				newAnnoId = getAnnotationIdHelper().getAnnotationIdBasedOnVia(getConfiguration().getAnnotationBaseUrl(), 
+						provider, viaUrl);
+			}
 			anno = annotations.get(i);
 			anno.setAnnotationId(newAnnoId);
 			annoDefaults.putAnnotationDefaultValues(anno);

@@ -332,6 +332,6 @@ public interface AnnotationService {
 
 	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
-	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+	public void insertNewAnnotations(String provider, BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
 }

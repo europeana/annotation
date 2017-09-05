@@ -30,6 +30,7 @@ import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProto
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
  * Annotation API Batch Upload Test class
@@ -40,6 +41,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 
 	// annotation page test resources
 	public static final String TAG_ANNO_PAGE = "/tag/batch/annotation_page.json";
+	public static final String TAG_ANNO_PAGE_VIA = "/tag/batch/annotation_page_via.json";
 	public static final String TAG_ANNO_PAGE_VALIDATION_ERROR = "/tag/wrong/batch/annotation_page_validation_error.json";
 	public static final String TAG_ANNO_PAGE_NONEXISTING_ERROR = "/tag/wrong/batch/annotation_page_nonexisting_ids.json";
 	
@@ -84,7 +86,8 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, true);
+		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
+				requestBody, true, WebAnnotationFields.PROVIDER_WEBANNO);
 
 		// response status must be 201 CREATED
 		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
@@ -104,13 +107,39 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 			// assuming equal order of test annotations and updated annotations
 			assertEquals(testAnnotations.get(i).getAnnotationId().getHttpUrl(), 
 					storedAnnotation.getAnnotationId().getHttpUrl());
-//			assertNull(testAnnotations.get(i).getLastUpdate());
-//			assertNotNull(storedAnnotation.getLastUpdate());
 		}
+	}
+	
+	
+
+	/**
+	 * Testing batch upload of annotations where the ID is provided by the via field.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void viaBatchUploadTest() throws Exception {
+		
+		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VIA);
+		
+		assertNotNull(requestBody);
+
+		// batch upload request (using pundit provider, ID must be provided by via field)
+		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
+				requestBody, true, WebAnnotationFields.PROVIDER_PUNDIT);
+
+		// response status must be 201 CREATED
+		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
+		
+		// get response body properties
+		JSONObject jsonObj = new JSONObject(uploadResponse.getBody());
+		Integer total = (Integer) jsonObj.get(BATCH_TOTAL_FIELD);
+		assertEquals(new Integer(1), total);
+
 	}
 
 	/**
-	 * Testing successful batch upload of annotations.
+	 * Error when trying to update non existing annotations
 	 * 
 	 * @throws Exception
 	 */
@@ -120,7 +149,8 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE_NONEXISTING_ERROR), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, false);
+		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
+				requestBody, false, WebAnnotationFields.PROVIDER_WEBANNO);
 
 		// response status must be 404 NOT FOUND
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -154,7 +184,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	@After
 	public void deleteTestAnnotations() throws JsonParseException, IOException {
 		for (Annotation anno : testAnnotations) {
-			//deleteAnnotation(anno);
+			deleteAnnotation(anno);
 		}
 	}
 
@@ -173,7 +203,8 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VALIDATION_ERROR);
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, requestBody, false);
+		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
+				requestBody, false, WebAnnotationFields.PROVIDER_WEBANNO);
 
 		// response status must be 400 BAD_REQUEST
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
