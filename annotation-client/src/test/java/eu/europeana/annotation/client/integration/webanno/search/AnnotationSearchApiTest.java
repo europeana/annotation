@@ -2,6 +2,7 @@ package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -86,8 +87,8 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		// first page
 		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET, SearchProfiles.MINIMAL);
 		assertNotNull("AnnotationPage must not be null", annPg);
-		//TODO: improve assert condition. there might be old annotations of failing tests in the database
-		assertEquals(TOTAL_IN_COLLECTION, annPg.getTotalInCollection());
+		//there might be old annotations of failing tests in the database
+		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
 		assertEquals(annPg.getCurrentPage(), 0);
 		assertEquals(TOTAL_IN_PAGE, annPg.getTotalInPage());
 		assertEquals(TOTAL_IN_PAGE, annPg.getItems().getResultSize());
