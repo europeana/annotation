@@ -967,26 +967,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		int count = annotations.size();
 		
 		// 
-		boolean hasViaId = (provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_HISTORY_PIN) 
-				|| provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_PUNDIT));
+		boolean reuseViaIdentifier = mustProvideIdentifier(provider);
 		
 		List<AnnotationId> annoIdSequence = null;
-		if(!hasViaId)
+		if(!reuseViaIdentifier)
 			annoIdSequence = generateAnnotationIds(provider, count);
 		
 		// number of ids must equal number of annotations - not applicable in case the id is provided by the via field
-		if(!hasViaId && (annotations.size() != annoIdSequence.size()))
+		if(!reuseViaIdentifier && (annotations.size() != annoIdSequence.size()))
 			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
+		
 		AnnotationId newAnnoId;
 		Annotation anno;
 		AnnotationId genAnnoId;
 		for(int i = 0; i < annotations.size(); i++) {
 			// default: use the annotation id from the sequence generated above 
-			if(!hasViaId) {
+			if(!reuseViaIdentifier) {
 				genAnnoId = annoIdSequence.get(i);
 				newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
-			// for some providers, the id must be provided by the via field 
-			} else {
+			} else {// for some providers, the id must be provided by the via field 
 				String[] via = annotations.get(i).getVia();
 				if(via == null || via.length == 0)
 					throw new AnnotationValidationException("The annotation id must be provided by the via field for the provider: '"+provider+"'");
@@ -1004,6 +1003,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			webAnnoStoredAnnoAnnoMap.put(anno, anno);
 		}
 		getMongoPersistence().create(annotations);
+	}
+
+	protected boolean mustProvideIdentifier(String provider) {
+		return provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_HISTORY_PIN) 
+				|| provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_PUNDIT);
 	}
 
 	public List<AnnotationId> generateAnnotationIds(String provider, int count) {
