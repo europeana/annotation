@@ -17,7 +17,7 @@
 	             "language": "it"
 	    },
     	"target": "http://data.europeana.eu/item/123/xyz",
-    	"via": "https://www.historypin.org/en/item/456"
+    	"via": "https://www.historypin.org/en/item/batch456"
     }
   ]
 }
