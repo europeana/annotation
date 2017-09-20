@@ -25,6 +25,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
+import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -188,8 +189,13 @@ public class BaseJsonldRest extends BaseRest {
 
 			// verify if the annotations with ID exist in the database
 			List<String> httpUrls = annosWithId.getHttpUrls();
-			AnnotationsList existingInDb = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
+			AnnotationsList existingInDb;
 			
+			if(!httpUrls.isEmpty())
+				existingInDb = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
+			else
+				existingInDb = new AnnotationsList(new ArrayList<AbstractAnnotation>(0));
+				
 			// consistency (annotations with identifier must match existing annotations)
 			uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
 			if(annosWithId.size() != existingInDb.size()) {

@@ -43,7 +43,6 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
@@ -54,7 +53,6 @@ import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
-import java.lang.reflect.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",

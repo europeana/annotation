@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.QueryImpl;
 import org.mongodb.morphia.query.QueryResults;
 import org.springframework.stereotype.Component;
 

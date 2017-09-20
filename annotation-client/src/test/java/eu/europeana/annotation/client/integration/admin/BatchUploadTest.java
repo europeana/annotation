@@ -1,16 +1,19 @@
 package eu.europeana.annotation.client.integration.admin;
 
-import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.*;
+import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.BATCH_TOTAL_FIELD;
+import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_ERRORS_FIELD;
+import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_FAILURECOUNT_FIELD;
+import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_FIELD;
+import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
@@ -25,10 +28,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
@@ -119,6 +120,13 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 */
 	@Test
 	public void viaBatchUploadTest() throws Exception {
+		
+		//delete old entries in case they exist
+		try{
+			deleteAnnotation(WebAnnotationFields.PROVIDER_PUNDIT, "batchvia456");
+		}catch(Exception e){
+			//do nothing, we just avoid duplicate key exception
+		}
 		
 		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VIA);
 		

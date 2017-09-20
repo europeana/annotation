@@ -119,18 +119,18 @@ public class BaseWebAnnotationDataSetTest {
 		return annotation;
 	}
 
-	/**
-	 * Get numeric annotation id
-	 * 
-	 * @param annotation
-	 *            Annotation object
-	 * @return Numeric annotation id
-	 */
-	private Integer getNumericAnnotationId(Annotation annotation) {
-		String annotIdUriStr = annotation.getAnnotationId().toString();
-		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
-		return numericId;
-	}
+//	/**
+//	 * Get numeric annotation id
+//	 * 
+//	 * @param annotation
+//	 *            Annotation object
+//	 * @return Numeric annotation id
+//	 */
+//	private Integer getNumericAnnotationId(Annotation annotation) {
+//		String annotIdUriStr = annotation.getAnnotationId().toString();
+//		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
+//		return numericId;
+//	}
 
 	/**
 	 * Delete annotations
@@ -140,8 +140,9 @@ public class BaseWebAnnotationDataSetTest {
 	protected void deleteAnnotations(Annotation[] annotations) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		for (Annotation annotation : annotations) {
-			Integer numericId = getNumericAnnotationId(annotation);
-			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
+			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
+					annotation.getAnnotationId().getProvider(), 
+					annotation.getAnnotationId().getIdentifier());
 			assertEquals(re.getStatusCode(), HttpStatus.OK);
 		}
 	}

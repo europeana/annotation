@@ -3,15 +3,12 @@ package eu.europeana.annotation.client.admin;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.BaseAnnotationApi;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
-import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
-import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 
 public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebAnnotationAdminApi {
 	
@@ -27,10 +24,9 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 	}
 
 	@Override
-	public ResponseEntity<String> deleteAnnotation(Integer id) {
-		AnnotationPage res;
+	public ResponseEntity<String> deleteAnnotation(String provider, String identifier) {
 		try {
-			return apiConnection.deleteAnnotation(id);
+			return apiConnection.deleteAnnotation(provider, identifier);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}

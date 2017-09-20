@@ -7,19 +7,12 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.stereotype.Component;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.BulkWriteError;
-import com.mongodb.BulkWriteException;
-import com.mongodb.BulkWriteOperation;
-import com.mongodb.DBObject;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -28,11 +21,12 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
+import eu.europeana.annotation.mongo.config.AnnotationMongoConfiguration;
 import eu.europeana.annotation.mongo.dao.PersistentAnnotationDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -41,16 +35,12 @@ import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
-import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
-import eu.europeana.annotation.mongo.batch.BulkOperationMode;
-import org.apache.log4j.Logger;
-import eu.europeana.annotation.mongo.config.AnnotationMongoConfiguration;
 
 
 @Component

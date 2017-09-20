@@ -7,7 +7,6 @@ import java.util.Iterator;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.Ignore;
-import org.junit.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;

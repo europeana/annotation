@@ -1181,20 +1181,20 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @return ResponseEntity<String>
 	 * @throws IOException
 	 */
-	public ResponseEntity<String> deleteAnnotation(Integer numericId) throws IOException {
+	public ResponseEntity<String> deleteAnnotation(String provider, String identifier) throws IOException {
 		
 		String action = "delete";
-		
-		
 		
 		logger.debug("Annotation service URI: " +getAnnotationServiceUri());	
 		String adminAnnotationServiceUri = getAnnotationServiceUri().replace("annotation", "admin/annotation");
 		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
 		
+		String prov = (provider != null)? provider: "webanno";
+		
 		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
 		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
-		url += WebAnnotationFields.AND + WebAnnotationFields.PROVIDER +"=webanno";
-		url += WebAnnotationFields.AND + WebAnnotationFields.IDENTIFIER +"="+Integer.toString(numericId);
+		url += WebAnnotationFields.AND + WebAnnotationFields.PROVIDER +"=" +  prov;
+		url += WebAnnotationFields.AND + WebAnnotationFields.IDENTIFIER +"="+identifier;
 		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
 		
 		logger.trace("Delete Annotation request URL: " + url);

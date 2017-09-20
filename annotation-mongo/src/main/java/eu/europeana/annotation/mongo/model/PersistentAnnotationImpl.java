@@ -2,6 +2,7 @@ package eu.europeana.annotation.mongo.model;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -19,7 +20,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
-import org.apache.commons.lang.StringUtils;
 
 @Polymorphic
 @Entity("annotation")

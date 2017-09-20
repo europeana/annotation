@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 

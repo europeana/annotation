@@ -2,8 +2,6 @@ package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -20,7 +18,6 @@ import com.mongodb.BulkWriteError;
 import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 

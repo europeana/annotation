@@ -1,16 +1,10 @@
 package eu.europeana.annotation.client.integration.webanno.link;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class BaseLinkingTest extends BaseWebAnnotationProtocolTest {
 

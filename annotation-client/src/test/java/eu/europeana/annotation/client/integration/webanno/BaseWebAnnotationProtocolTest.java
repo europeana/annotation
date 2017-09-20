@@ -395,25 +395,26 @@ public class BaseWebAnnotationProtocolTest {
 	}
 	
 	/**
-	 * @deprecated numericId is ambiguous, use relative_uri or full uri (annotationId) when deleting annotations 
-	 * @param numericId
+	 * @param annotation
 	 */
 	protected void deleteAnnotation(Annotation annotation) {
-		deleteAnnotation(getNumericAnnotationId(annotation));
+		deleteAnnotation(
+				annotation.getAnnotationId().getProvider(), 
+				annotation.getAnnotationId().getIdentifier());
 	}
 	
-  protected void deleteAnnotation(Integer numericId) {
+  protected void deleteAnnotation(String provider, String identifier) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
-		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
+		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(provider, identifier);
 		assertEquals(HttpStatus.OK, re.getStatusCode());
-		log.trace("Annotation deleted: " + numericId);
+		log.trace("Annotation deleted: /" + provider + "/" + identifier);
 	}
 	
-	protected Integer getNumericAnnotationId(Annotation annotation) {
-		String annotIdUriStr = annotation.getAnnotationId().toString();
-		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
-		return numericId;
-	}
+//	protected Integer getNumericAnnotationId(Annotation annotation) {
+//		String annotIdUriStr = annotation.getAnnotationId().toString();
+//		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
+//		return numericId;
+//	}
 	
 	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
 		
@@ -426,21 +427,21 @@ public class BaseWebAnnotationProtocolTest {
 		return testAnnotations;
 	}
 	
-	protected Integer[] getNumericAnnotationIds(Annotation[] annotations) {
-		Integer[] annotationIds = new Integer[annotations.length];
-		for(int i = 0; i < annotations.length; i++) {
-			annotationIds[i] = getNumericAnnotationId(annotations[i]);
-		}
-		return annotationIds;
-	}
+//	protected Integer[] getNumericAnnotationIds(Annotation[] annotations) {
+//		Integer[] annotationIds = new Integer[annotations.length];
+//		for(int i = 0; i < annotations.length; i++) {
+//			annotationIds[i] = getNumericAnnotationId(annotations[i]);
+//		}
+//		return annotationIds;
+//	}
 	
-	protected void deleteAnnotations(Integer[] numericIds) {
-		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
-		for(int i = 0; i < numericIds.length; i++) {
-			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericIds[i]);
-			assertEquals(re.getStatusCode(), HttpStatus.OK);
-		}
-	}
+//	protected void deleteAnnotations(Integer[] numericIds) {
+//		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+//		for(int i = 0; i < numericIds.length; i++) {
+//			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(null, ""+numericIds[i]);
+//			assertEquals(re.getStatusCode(), HttpStatus.OK);
+//		}
+//	}
 	
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
 		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getProvider(), anno.getAnnotationId().getIdentifier());

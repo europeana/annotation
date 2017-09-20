@@ -1,9 +1,5 @@
 package eu.europeana.annotation.mongo.service;
 
-import java.util.Date;
-import java.util.List;
-
-import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
