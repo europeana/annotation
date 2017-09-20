@@ -14,7 +14,9 @@
  		<param-value>classpath:/annotation-web-context.xml</param-value>
     </context-param>
 
-
+	<listener>
+        <listener-class>eu.europeana.annotation.web.context.ApplicationLoaderListener</listener-class>
+    </listener>
     <listener>
         <listener-class>eu.europeana.annotation.web.context.VcapAnnotationPropertyLoaderListener</listener-class>
     </listener>
