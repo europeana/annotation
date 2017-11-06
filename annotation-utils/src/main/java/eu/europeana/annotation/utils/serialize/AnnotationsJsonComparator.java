@@ -22,13 +22,11 @@ import java.util.HashMap;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 
 /**
- * This class is specific to annotations must be moved to (europeana) annotation repository
  * A comparator for JSON-LD maps to ensure the order of certain key elements
  * like '#', '@', 'a' in JSON-LD output.
  *
  * @author Jan Roerden
  */
-@Deprecated
 public class AnnotationsJsonComparator implements Comparator<Object> {
     
     public static final String CREATED = "created";
