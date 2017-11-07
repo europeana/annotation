@@ -81,6 +81,7 @@
 		<module>annotation-mongo</module>
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
+		<module>annotation-client</module>
 		
 		
 	</modules>
