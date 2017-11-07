@@ -38,8 +38,9 @@
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
 			<version>${version.annotationApi}</version>
-			<classifier>test</classifier>
+			<classifier>tests</classifier>
 			<scope>test</scope>
+			<type>test-jar</type>
 		</dependency>
 
 		<dependency>
