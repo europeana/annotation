@@ -394,6 +394,23 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 	
+	protected Annotation createTranscription(String requestBody) throws JsonParseException {
+		ResponseEntity<String> response = getApiClient().createAnnotation(
+				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
+				TEST_USER_TOKEN, 
+				null 
+				);
+				
+				
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getCreator());
+		assertNotNull(storedAnno.getGenerator());
+		return storedAnno;
+	}
+	
 	/**
 	 * @param annotation
 	 */

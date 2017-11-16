@@ -7,6 +7,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectLinking;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
+import eu.europeana.annotation.definitions.model.impl.BaseTranscriptionAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
@@ -63,6 +64,9 @@ public class AnnotationObjectFactory
 			// i.e. all targets are europeana objects or not ...
 			annoType = AnnotationTypes.OBJECT_LINKING;
 			break;
+		case TRANSCRIBING:
+			annoType = AnnotationTypes.OBJECT_TRANSCRIPTION;
+			break;
 		default:
 			break;
 		}
@@ -98,6 +102,9 @@ public class AnnotationObjectFactory
 			break;
 		case OBJECT_LINKING:
 			ret = BaseObjectLinking.class;
+			break;
+		case OBJECT_TRANSCRIPTION:
+			ret = BaseTranscriptionAnnotation.class;
 			break;
 		default:
 			throw new RuntimeException(

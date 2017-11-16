@@ -15,6 +15,7 @@ import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
@@ -208,15 +209,7 @@ public class AnnotationLdSerializer extends JsonLd {
 			if (types != null && !types.isEmpty())
 				putTypeProperty(propertyValue, types);		
 			
-			if (!StringUtils.isBlank(annotation.getTarget().getContentType()))
-				propertyValue.getValues().put(WebAnnotationFields.FORMAT,
-						annotation.getTarget().getContentType());
-			if (!StringUtils.isBlank(annotation.getTarget().getHttpUri()))
-				propertyValue.getValues().put(WebAnnotationFields.ID, annotation.getTarget().getHttpUri());
-
-			if (annotation.getTarget().getSourceResource() != null) {
-				addSourceProperty(annotation, propertyValue);
-			}
+			putSpecificResourceProps(annotation.getTarget(), propertyValue);
 
 			if (annotation.getTarget().getSelector() != null) {
 				addSelectorProperty(annotation, propertyValue);
@@ -309,8 +302,7 @@ public class AnnotationLdSerializer extends JsonLd {
 			putTypeProperty(propertyValue, types);		
 		}
 
-		putResourceDescriptionProps(annotation.getBody(), propertyValue);
-		putSpecificResourceProps(annotation, propertyValue);
+		putSpecificResourceProps(annotation.getBody(), propertyValue);
 
 		if(annotation.getBody() instanceof PlaceBody)
 			putPlaceProperties(annotation, propertyValue);
@@ -322,13 +314,17 @@ public class AnnotationLdSerializer extends JsonLd {
 		return bodyProperty;
 	}
 
-	protected void putSpecificResourceProps(Annotation annotation, JsonLdPropertyValue propertyValue) {
-		if (!StringUtils.isBlank(annotation.getBody().getSource()))
-			propertyValue.getValues().put(WebAnnotationFields.SOURCE, annotation.getBody().getSource());
-		if (annotation.getBody().getSourceResource() != null)
+	protected void putSpecificResourceProps(SpecificResource specificResource, JsonLdPropertyValue propertyValue) {
+		putResourceDescriptionProps(specificResource, propertyValue);
+		
+		if (!StringUtils.isBlank(specificResource.getSource()))
+			propertyValue.getValues().put(WebAnnotationFields.SOURCE, specificResource.getSource());
+		if (specificResource.getSourceResource() != null)
 			;// TODO add serialization of resource
-		if (!StringUtils.isBlank(annotation.getBody().getPurpose()))
-			propertyValue.getValues().put(WebAnnotationFields.PURPOSE, annotation.getBody().getPurpose());
+		if (!StringUtils.isBlank(specificResource.getPurpose()))
+			propertyValue.getValues().put(WebAnnotationFields.PURPOSE, specificResource.getPurpose());
+		if (!StringUtils.isBlank(specificResource.getScope()))
+			propertyValue.getValues().put(WebAnnotationFields.SCOPE, specificResource.getScope());
 	}
 
 	protected void putResourceDescriptionProps(ResourceDescription resourceDescription, JsonLdPropertyValue propertyValue) {

@@ -20,6 +20,7 @@ import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
@@ -257,7 +258,7 @@ public class SolrAnnotationUtils {
 
 	protected void processTargetUris(SolrAnnotation solrAnnotation) {
 		
-		InternetResource internetResource = solrAnnotation.getTarget();
+		SpecificResource internetResource = solrAnnotation.getTarget();
 		List<String> resourceUris = extractResourceUris(internetResource);
 
 		solrAnnotation.setTargetUris(resourceUris);
@@ -266,12 +267,17 @@ public class SolrAnnotationUtils {
 		solrAnnotation.setTargetRecordIds(recordIds);
 	}
 
-	protected List<String> extractResourceUris(InternetResource internetResource) {
-		List<String> resourceUrls;
-		if (internetResource.getValues() != null && !internetResource.getValues().isEmpty())
-			resourceUrls = internetResource.getValues();
-		else
-			resourceUrls = Arrays.asList(new String[] { internetResource.getValue() });
+	protected List<String> extractResourceUris(SpecificResource specificResource) {
+		List<String> resourceUrls = null;
+		//internet resource
+		if (specificResource.getValues() != null && !specificResource.getValues().isEmpty())
+			resourceUrls = specificResource.getValues();
+		else if(specificResource.getValue() != null)
+			resourceUrls = Arrays.asList(new String[] { specificResource.getValue() });
+		//specific resource - scope 
+		else if(specificResource.getScope() != null)
+			resourceUrls = Arrays.asList(new String[] { specificResource.getScope() });
+		
 		return resourceUrls;
 	}
 	
@@ -281,7 +287,6 @@ public class SolrAnnotationUtils {
 		String target;
 		for (int i = 0; i < targetUrls.size(); i++) {
 			target = targetUrls.get(i);
-			
 			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_ITEM);	
 			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_RECORD);	
 		}
@@ -299,7 +304,7 @@ public class SolrAnnotationUtils {
 		int pos;
 		pos = target.indexOf(markup);
 		if (pos > 0) 
-			return target.substring(pos + markup.length());
+			return target.substring(pos + markup.length() -1);// do not eliminate last /
 		return null;
 	}
 

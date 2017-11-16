@@ -23,6 +23,9 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 		setTypeEnum(targetType);
 	}
 	
+	/**
+	 * TODO: refactor - buggy implementation it doesn't verify this.a=null vs. that.a=not_null 
+	 */
 	@Override
 	public boolean equals(Object other) {
 	    if (!(other instanceof Target)) {
@@ -68,7 +71,18 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 	    	res = false;
 	    }
 
-	    if ((this.getSource() != null) && (that.getSource() != null)) {
+	    if ((this.getScope() != null) && (that.getScope() != null) && !this.getScope().equals(that.getScope())) {
+	    	System.out.println("Target objects have different scope values.");
+    		res = false;
+	    }
+	    	
+	    if ((this.getSource() != null) && (that.getSource() != null) && !this.getSource().equals(that.getSource())) {
+	    	System.out.println("Target objects have different source values.");
+    		res = false;
+	    }
+	    	
+	    
+	    if ((this.getSourceResource() != null) && (that.getSourceResource() != null)) {
 		    if ((this.getSourceResource().getContentType() != null) && (that.getSourceResource().getContentType() != null) &&
 		    		(!this.getSourceResource().getContentType().equals(that.getSourceResource().getContentType()))) {
 		    	System.out.println("Target objects have different content types.");
@@ -119,7 +133,7 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 		String res = "\t### Target ###\n";
 		
 		if (getType() != null) 
-			res = res + "\t\t" + "targetType:" + getType().toString() + "\n";
+			res = res + "\t\t" + "type:" + getType() + "\n";
 		if (getContentType() != null) 
 			res = res + "\t\t" + "contentType:" + getContentType().toString() + "\n";
 		if (getHttpUri() != null) 
@@ -132,6 +146,8 @@ public class BaseTarget extends BaseSpecificResource implements Target {
 			res = res + "\t\t" + "Selector:" + getSelector().toString() + "\n";
 		if (getSource() != null) 
 			res = res + "\t\t" + "Source:" + getSource().toString() + "\n";
+		if (getScope() != null) 
+			res = res + "\t\t" + "Scope:" + getScope().toString() + "\n";
 		return res;
 	}	
 }

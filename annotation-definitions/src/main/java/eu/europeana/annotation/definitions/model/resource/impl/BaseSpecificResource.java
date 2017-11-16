@@ -15,7 +15,15 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	private State state;
 	private String styleClass;
 	protected String purpose;
+	private String scope = "";
 	
+	
+	public String getScope() {
+		return scope;
+	}
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 	public String getSource() {
 		return sourceUri;
 	}
