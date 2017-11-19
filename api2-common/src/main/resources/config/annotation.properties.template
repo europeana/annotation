@@ -67,7 +67,7 @@ mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/ann
 #SSL truststore
 #the name of the truststore. Must be available in the classpath in the /config folder
 mongodb.annotation.truststore=
-#password required ot access the truststore
+#password required to access the truststore
 mongodb.annotation.truststorepass=
 
 # solr connection settings
