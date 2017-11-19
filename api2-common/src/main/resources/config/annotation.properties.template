@@ -64,6 +64,11 @@ mongodb.annotation.password=culture
 #USER, PASSWORD are optional (in local environment) 
 #VCAP environment will overwrite configurations only if the connectionUrl is empty
 mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
+#SSL truststore
+#the name of the truststore. Must be available in the classpath in the /config folder
+mongodb.annotation.truststore=
+#password required ot access the truststore
+mongodb.annotation.truststorepass=
 
 # solr connection settings
 solr.annotation.url = http://localhost:8282/solr/annotation
