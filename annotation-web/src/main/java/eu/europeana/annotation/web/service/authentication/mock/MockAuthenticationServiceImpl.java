@@ -137,8 +137,11 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 		for (PersistentClient storedClient : allStoredClients) {
 //			System.out.println(storedClient.getAuthenticationConfigJson());
-//			application = parseApplication(storedClient.getAuthenticationConfigJson());
-			application = storedClient.getClientApplication();
+			//TODO allow both until the databases are migrated
+			if(storedClient.getClientApplication() != null)
+				application = storedClient.getClientApplication();
+			else
+				application = parseApplication(storedClient.getAuthenticationConfigJson());
 			
 			// put app in the cache
 			getCachedClients().put(application.getApiKey(), application);

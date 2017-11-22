@@ -6,6 +6,10 @@ public interface Client {
 
 	void setAuthenticationConfigJson(String authenticationConfigJson);
 
+	/**
+	 * @deprecated EA-760 to be removed in follow up versions
+	 * @return
+	 */
 	String getAuthenticationConfigJson();
 
 	void setClientId(String clientId);
