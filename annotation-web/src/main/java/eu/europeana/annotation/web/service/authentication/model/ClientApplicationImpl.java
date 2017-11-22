@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 
 public class ClientApplicationImpl implements Application{
 

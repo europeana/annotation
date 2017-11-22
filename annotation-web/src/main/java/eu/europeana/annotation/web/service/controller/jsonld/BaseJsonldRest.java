@@ -24,6 +24,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
@@ -59,7 +60,6 @@ import eu.europeana.annotation.web.model.BatchOperationStep;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;

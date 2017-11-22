@@ -20,6 +20,14 @@ public interface PersistentClientService extends AbstractNoSqlService<Persistent
 	 */
 	public PersistentClient create(PersistentClient client) throws AnnotationMongoException;
 
+	/**
+	 * 
+	 * @param Client
+	 * @return
+	 * @throws AnnotationMongoException
+	 */
+	public PersistentClient update(PersistentClient client) throws AnnotationMongoException;
+
 	public Client findByApiKey(String apiKey);
 	
 }

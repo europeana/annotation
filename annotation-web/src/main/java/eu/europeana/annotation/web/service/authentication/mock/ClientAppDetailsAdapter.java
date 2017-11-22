@@ -1,6 +1,6 @@
 package eu.europeana.annotation.web.service.authentication.mock;
 
-import eu.europeana.annotation.web.service.authentication.model.Application;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.api.commons.oauth2.model.impl.ClientDetailsAdapter;
 
 public class ClientAppDetailsAdapter extends ClientDetailsAdapter {

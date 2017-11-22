@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
@@ -29,7 +30,6 @@ import eu.europeana.annotation.web.exception.authentication.ApplicationAuthentic
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.authentication.model.ApplicationDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
@@ -64,7 +64,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 	private Map<String, Application> cachedClients = new HashMap<String, Application>();
 
-	protected Map<String, Application> getCachedClients() {
+	public Map<String, Application> getCachedClients() {
 		return cachedClients;
 	}
 
@@ -136,8 +136,10 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		Application application;
 
 		for (PersistentClient storedClient : allStoredClients) {
-			System.out.println(storedClient.getAuthenticationConfigJson());
-			application = parseApplication(storedClient.getAuthenticationConfigJson());
+//			System.out.println(storedClient.getAuthenticationConfigJson());
+//			application = parseApplication(storedClient.getAuthenticationConfigJson());
+			application = storedClient.getClientApplication();
+			
 			// put app in the cache
 			getCachedClients().put(application.getApiKey(), application);
 		}

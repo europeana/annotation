@@ -14,6 +14,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
+
 @Configuration
 @EnableCaching
 @Component
@@ -45,6 +46,11 @@ public class PersistentClientServiceImpl extends
 		return super.store(client);
 	}
 	
+	@Override
+	public PersistentClient update(PersistentClient client) throws AnnotationMongoException {
+		return super.store(client);
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected PersistentClientDao<PersistentClient, String> getClientDao() {
 		return (PersistentClientDao<PersistentClient, String>) getDao();
@@ -67,4 +73,5 @@ public class PersistentClientServiceImpl extends
 //			return null;
 //		return whitelistList.get(whitelistList.size() - 1);
 //	}
+	
 }

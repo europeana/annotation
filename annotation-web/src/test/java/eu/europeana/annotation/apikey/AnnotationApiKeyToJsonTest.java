@@ -39,6 +39,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
@@ -47,7 +48,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 
 /**

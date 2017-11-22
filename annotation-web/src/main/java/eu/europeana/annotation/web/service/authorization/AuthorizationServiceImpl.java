@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
@@ -17,7 +18,6 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.api.common.config.I18nConstants;
 
 public class AuthorizationServiceImpl implements AuthorizationService {
