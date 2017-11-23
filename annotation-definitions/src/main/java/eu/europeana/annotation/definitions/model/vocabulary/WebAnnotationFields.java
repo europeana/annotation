@@ -146,11 +146,14 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
 	public static final String HTTP = "http://";
 
+	public static final String SCOPE = "scope";
+	public static final String SOURCE = "source";
+
 	/**
 	 * Markup
 	 */
-	public static final String MARKUP_ITEM = "/item";
-	public static final String MARKUP_RECORD = "/record";
+	public static final String MARKUP_ITEM = "/item/";
+	public static final String MARKUP_RECORD = "/record/";
 	
 	
 	

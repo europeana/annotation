@@ -31,7 +31,9 @@ import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
+import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -65,17 +67,16 @@ public class AnnotationLdParser extends JsonLdParser {
 	protected Map<String, String> usedNamespaces = new HashMap<String, String>();
 
 	public Annotation parseAnnotation(MotivationTypes motivationType, String jsonLdString) throws JsonParseException {
-		
+
 		JSONObject jo;
 		try {
 			jo = parseJson(jsonLdString);
 		} catch (JSONException e) {
 			throw new JsonParseException("Cannot parse json string: " + jsonLdString, e);
 		}
-		
+
 		return parseAnnotation(motivationType, jo);
 	}
-
 
 	public Annotation parseAnnotation(MotivationTypes motivationType, JSONObject jo) throws JsonParseException {
 		Annotation annotation = null;
@@ -88,8 +89,7 @@ public class AnnotationLdParser extends JsonLdParser {
 
 		return annotation;
 	}
-	
-	
+
 	protected Annotation createAnnotationInstance(MotivationTypes motivationType, JSONObject jo)
 			throws JsonParseException {
 
@@ -199,14 +199,13 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	/**
-	 * Adds a new namespace and its prefix to the list of used namespaces for
-	 * this JSON-LD instance.
+	 * Adds a new namespace and its prefix to the list of used namespaces for this
+	 * JSON-LD instance.
 	 * 
 	 * @param namespace
 	 *            A namespace IRI.
 	 * @param prefix
-	 *            A prefix to use and identify this namespace in serialized
-	 *            JSON-LD.
+	 *            A prefix to use and identify this namespace in serialized JSON-LD.
 	 */
 	public void addNamespacePrefix(String namespace, String prefix) {
 		namespacePrefixMap.put(namespace, prefix);
@@ -377,12 +376,31 @@ public class AnnotationLdParser extends JsonLdParser {
 		return target;
 	}
 
-	private Target parseTarget(JSONObject jo) throws JsonParseException {
+	private Target parseTarget(JSONObject valueObject) throws JsonParseException {
+		
+		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(TargetTypes.WEB_PAGE.name());
+		
 		try {
-			return parseTarget(jo.get(WebAnnotationFields.TARGET));
+			// return parseTarget(jo.get(WebAnnotationFields.TARGET));
+			// parse base properties of specific resources
+			String key;
+			Object value;
+
+			@SuppressWarnings({ "rawtypes" })
+			Iterator iterator = (valueObject).keys();
+			while (iterator.hasNext()) {
+				key = (String) iterator.next();
+				value = (valueObject).get(key);
+
+				parseSpecificResourceProperty(target, key, value);
+			}
+
 		} catch (JSONException e) {
 			throw new JsonParseException("cannot parse target", e);
 		}
+		
+		return target;
+		
 	}
 
 	private AnnotationId parseId(Object valueObject, JSONObject jo) throws JsonParseException {
@@ -531,6 +549,10 @@ public class AnnotationLdParser extends JsonLdParser {
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 				Object value = (valueObject).get(key);
+
+				// parse base properties of specific resources
+				parseSpecificResourceProperty((SpecificResource) body, key, value);
+
 				switch (key) {
 				// GRAPH-(linking)
 				case WebAnnotationFields.GRAPH:
@@ -555,35 +577,11 @@ public class AnnotationLdParser extends JsonLdParser {
 					body.setContext(context.getJsonValue());
 					break;
 
-				// Resource Description
-				case WebAnnotationFields.ID:
-					// need to align with target.
-					// body.setValue(value.toString());
-					body.setHttpUri(value.toString());
-					break;
-				case WebAnnotationFields.LANGUAGE:
-					body.setLanguage(value.toString());
-					break;
-				case WebAnnotationFields.FORMAT:
-					body.setContentType(value.toString());
-					break;
 				// Textual Body
 				case WebAnnotationFields.VALUE:
 					body.setValue(value.toString());
 					// add implications of TEXT field
 					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
-					break;
-				// Specific Resource
-				case WebAnnotationFields.SOURCE:
-					if (value instanceof String)
-						body.setSource(value.toString());
-					else
-						throw new JsonParseException(
-								"source as internet resource is not supported in this version of the parser!");
-					break;
-
-				case WebAnnotationFields.PURPOSE:
-					body.setPurpose(value.toString());
 					break;
 				// TODO: separate specific fields for parsing the whole specific
 				// object
@@ -609,6 +607,45 @@ public class AnnotationLdParser extends JsonLdParser {
 		}
 
 		return body;
+	}
+
+	private void parseSpecificResourceProperty(SpecificResource specificResource, String property, Object value)
+			throws JsonParseException {
+		switch (property) {
+		// Resource Description
+		case WebAnnotationFields.ID:
+			// need to align with target.
+			// body.setValue(value.toString());
+			specificResource.setHttpUri(value.toString());
+			break;
+		case WebAnnotationFields.LANGUAGE:
+			specificResource.setLanguage(value.toString());
+			break;
+		case WebAnnotationFields.FORMAT:
+			specificResource.setContentType(value.toString());
+			break;
+
+		// Specific Resource
+		case WebAnnotationFields.SOURCE:
+			if (value instanceof String)
+				specificResource.setSource(value.toString());
+			else
+				throw new JsonParseException(
+						"source as internet resource is not supported in this version of the parser!");
+			break;
+
+		case WebAnnotationFields.PURPOSE:
+			specificResource.setPurpose(value.toString());
+			break;
+		
+		case WebAnnotationFields.SCOPE:
+			specificResource.setScope(value.toString());
+			break;
+
+		default:
+			break;
+
+		}
 	}
 
 	private void parseGraphElement(Body body, JSONObject valueObject) throws JSONException, JsonParseException {
@@ -731,6 +768,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.GRAPH;
 			else
 				return BodyInternalTypes.LINK;
+		case TRANSCRIBING:
+			return BodyInternalTypes.TRANSCRIBING;
 		case TAGGING:
 			// simple resource (semantic) tag - extended
 			// specific resource - minimal or extended;

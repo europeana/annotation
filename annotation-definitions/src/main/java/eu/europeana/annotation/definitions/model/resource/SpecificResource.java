@@ -37,6 +37,11 @@ public interface SpecificResource extends InternetResource{
 
 	public abstract String getPurpose();
 	
+	public abstract void setScope(String scope);
+
+	public abstract String getScope();
+
+	
 	
 	
 }
