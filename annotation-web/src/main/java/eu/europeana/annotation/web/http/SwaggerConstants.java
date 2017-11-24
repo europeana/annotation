@@ -37,4 +37,6 @@ public interface SwaggerConstants {
 	public static final String DATE_FORMAT_HELP_NOTE = "Valid date format is: " + ModelConst.DATE_FORMAT;
 
 	public static final String URIS_HELP_NOTE = "uris parameter needs to be provided as a an (json) array of annotation ids";
+	public static final String UPDATE_CLIENT_APPLICATION = "Please find JSON samples for client application in <a href=\"../jsp/template/json.jsp\" target=\"_blank\">templates</a>. " +
+			"Please create your JSON update request using selected fields you are going to update.";
 }

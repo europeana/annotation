@@ -62,7 +62,6 @@
     	 --> 	
     </beans:bean>
     
-	
     
     <!--  java api bean -->
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
