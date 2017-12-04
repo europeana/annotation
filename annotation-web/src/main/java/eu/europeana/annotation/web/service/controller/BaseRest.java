@@ -1,10 +1,13 @@
 package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +26,35 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
-import eu.europeana.api.commons.config.i18n.I18nService;
-import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
-import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api.commons.web.model.ApiResponse;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
+import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
+import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.config.i18n.I18nService;
+import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
+import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.api.commons.web.model.ApiResponse;
+import eu.europeana.apikey.client.ValidationRequest;
+
 
 public class BaseRest extends ApiResponseBuilder {
+
+    /**
+     * API key cache map contains apiKeys as a key and last response time as a value.
+     * We only add keys if API key client responded with "204" - valid apikey.
+     */
+    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
+    
+    private static long STORAGE_TIME = 1800000L; // 30 minutes
 
 	@Resource
 	AnnotationConfiguration configuration;
@@ -56,6 +70,17 @@ public class BaseRest extends ApiResponseBuilder {
 
 	@Resource
 	AnnotationSearchService annotationSearchService;
+	
+	@Resource
+	private AdminService adminService;
+
+	public AdminService getAdminService() {
+		return adminService;
+	}
+
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+	}
 	
 	@Resource
 	I18nService i18nService;
@@ -253,8 +278,51 @@ public class BaseRest extends ApiResponseBuilder {
 
 		return getAnnotationIdHelper().extractProviderFromUri(identifier);
 	}
+	
+    /**
+     * This method employs API key client library for API key validation
+     * @param apiKey The API key e.g. ApiKey1
+     * @param method The method e.g. read, write, delete...
+     * @return true if API key is valid
+     * @throws ApplicationAuthenticationException 
+     */
+    public boolean validateApiKeyUsingClient(String apiKey, String method) throws ApplicationAuthenticationException {
+    	
+    	boolean res = false;
+    	
+    	// check in cache if there is a valid value
+    	long currentTime = System.currentTimeMillis();
+    	Long cacheTime = apyKeyCache.get(apiKey);
+    	if (cacheTime != null) {
+    	    long diff = currentTime - cacheTime.longValue();
+    	    if (diff < STORAGE_TIME) 
+    	    	return true; // we already have recent positive response from the client 
+    	} 
+    	
+        ValidationRequest request = new ValidationRequest(
+        		getConfiguration().getValidationAdminApiKey() // the admin API key
+        		, getConfiguration().getValidationAdminSecretKey() // the admin secret key
+        		, apiKey
+        		, getConfiguration().getValidationApi() // the name of API e.g. search, entity, annotation...
+        		);
+        
+        if (StringUtils.isNotBlank(method)) request.setMethod(method);
+        res = getAdminService().validateApiKey(request, method);
+        if (res) {
+        	apyKeyCache.put(apiKey, currentTime);
+        } else {
+        	Long value = apyKeyCache.get(apiKey);
+        	if (value != null) 
+        		apyKeyCache.remove(apiKey);
+   			throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
+        }
+        return res;
+    }
 
-	protected void validateApiKey(String wsKey) throws ApplicationAuthenticationException {
+	protected void validateApiKey(String wsKey, String method) throws ApplicationAuthenticationException {
+		
+		validateApiKeyUsingClient(wsKey, method);
+		
 		// throws exception if the wskey is not found
 		getAuthenticationService().getByApiKey(wsKey);
 	}

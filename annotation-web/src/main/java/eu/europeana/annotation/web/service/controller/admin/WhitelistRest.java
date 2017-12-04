@@ -69,7 +69,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 		
-		validateApiKey(apiKey);
+		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
@@ -104,7 +104,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
 				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
-		validateApiKey(apiKey);
+		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
@@ -128,7 +128,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 		@RequestBody String whitelist) throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
-		validateApiKey(apiKey);
+		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_CREATE);
 		
@@ -161,7 +161,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
 				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException{
 
-		validateApiKey(apiKey);
+		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
@@ -187,7 +187,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
 				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
-		validateApiKey(apiKey);
+		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
 
@@ -221,7 +221,7 @@ public class WhitelistRest extends BaseRest {
 		@RequestParam(value = "url", required = true) String url
 		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
-		validateApiKey(apiKey);
+		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
 
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
 

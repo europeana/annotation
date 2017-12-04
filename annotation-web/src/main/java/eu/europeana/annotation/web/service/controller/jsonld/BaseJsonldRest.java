@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -34,13 +32,10 @@ import eu.europeana.annotation.definitions.model.moderation.Vote;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
-import eu.europeana.annotation.definitions.model.search.Query;
-import eu.europeana.annotation.definitions.model.search.QueryImpl;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
 import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
-import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -284,7 +279,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
+			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
@@ -361,7 +356,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
+			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// CHECK user autorization
 			getAuthorizationService().authorizeUser(userToken, wsKey, Operations.RETRIEVE);
@@ -414,7 +409,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
+			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
@@ -470,7 +465,7 @@ public class BaseJsonldRest extends BaseRest {
 			String userToken) throws HttpException {
 
 		// First check the API key as prio 0 check
-		validateApiKey(wsKey);
+		validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 		// check identifier
 		if (provider == null || identifier == null)

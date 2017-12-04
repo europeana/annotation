@@ -1,7 +1,5 @@
 package eu.europeana.annotation.web.service.authentication;
 
-import java.util.Map;
-
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
@@ -18,5 +16,5 @@ public interface AuthenticationService {
 	public Application parseApplication(String jsonData);
 
 	void loadApiKeysFromFiles() throws ApplicationAuthenticationException;
-
+	
 }
