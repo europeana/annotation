@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 
@@ -119,7 +120,19 @@ public class BaseJsonldRest extends BaseRest {
 			// TODO: clarify serialization ETag: "_87e52ce126126"
 			// TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
 
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(10);
+			
+			headers.add(AnnotationHttpHeaders.ALLOW_ORIGIN, AnnotationHttpHeaders.ALL);
+			String allowedMethods = RequestMethod.GET.name() + "," + RequestMethod.POST.name() + "," + 
+					RequestMethod.PUT.name() + "," + RequestMethod.DELETE.name() + "," + 
+					RequestMethod.HEAD.name() + "," + RequestMethod.OPTIONS.name();
+			headers.add(AnnotationHttpHeaders.ALLOW_METHODS, allowedMethods);
+			headers.add(AnnotationHttpHeaders.ALLOW_HEADERS, HttpHeaders.AUTHORIZATION);
+			String exposeHeaders = HttpHeaders.ALLOW + "," + HttpHeaders.VARY + "," + 
+					HttpHeaders.LINK + "," + HttpHeaders.ETAG;
+			headers.add(AnnotationHttpHeaders.EXPOSE_HEADERS, exposeHeaders);
+			headers.add(AnnotationHttpHeaders.MAX_AGE, AnnotationHttpHeaders.MAX_AGE_VALUE);
+			
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
@@ -321,7 +334,19 @@ public class BaseJsonldRest extends BaseRest {
 			else
 				etag = annotation.getGenerated().hashCode();
 
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(10);
+			
+			headers.add(AnnotationHttpHeaders.ALLOW_ORIGIN, AnnotationHttpHeaders.ALL);
+			String allowedMethods = RequestMethod.GET.name() + "," + RequestMethod.POST.name() + "," + 
+					RequestMethod.PUT.name() + "," + RequestMethod.DELETE.name() + "," + 
+					RequestMethod.HEAD.name() + "," + RequestMethod.OPTIONS.name();
+			headers.add(AnnotationHttpHeaders.ALLOW_METHODS, allowedMethods);
+			headers.add(AnnotationHttpHeaders.ALLOW_HEADERS, HttpHeaders.AUTHORIZATION);
+			String exposeHeaders = HttpHeaders.ALLOW + "," + HttpHeaders.VARY + "," + 
+					HttpHeaders.LINK + "," + HttpHeaders.ETAG;
+			headers.add(AnnotationHttpHeaders.EXPOSE_HEADERS, exposeHeaders);
+			headers.add(AnnotationHttpHeaders.MAX_AGE, AnnotationHttpHeaders.MAX_AGE_VALUE);
+			
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + etag);
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
@@ -380,7 +405,21 @@ public class BaseJsonldRest extends BaseRest {
 					throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{annoId.toRelativeUri()});
 			}
 
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(10);
+			
+			// TODO Swagger and Spring settings are required to enable Options method
+			headers.add(AnnotationHttpHeaders.ALLOW_ORIGIN, AnnotationHttpHeaders.ALL);
+			String allowedMethods = RequestMethod.GET.name() + "," + RequestMethod.POST.name() + "," + 
+					RequestMethod.PUT.name() + "," + RequestMethod.DELETE.name() + "," + 
+					RequestMethod.HEAD.name() + "," + RequestMethod.OPTIONS.name();
+			headers.add(AnnotationHttpHeaders.ALLOW_METHODS, allowedMethods);
+			String allowedHeaders = HttpHeaders.AUTHORIZATION + "," + HttpHeaders.IF_MATCH;
+			headers.add(AnnotationHttpHeaders.ALLOW_HEADERS, allowedHeaders);
+			String exposeHeaders = HttpHeaders.ALLOW + "," + HttpHeaders.VARY + "," + 
+					HttpHeaders.LINK + "," + HttpHeaders.ETAG;
+			headers.add(AnnotationHttpHeaders.EXPOSE_HEADERS, exposeHeaders);
+			headers.add(AnnotationHttpHeaders.MAX_AGE, AnnotationHttpHeaders.MAX_AGE_VALUE);			
+			
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			
 			headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
@@ -554,7 +593,20 @@ public class BaseJsonldRest extends BaseRest {
 			String jsonLd = annotationLd.toString(4);
 
 			// build response entity with headers
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(10);
+			
+			headers.add(AnnotationHttpHeaders.ALLOW_ORIGIN, AnnotationHttpHeaders.ALL);
+			String allowedMethods = RequestMethod.GET.name() + "," + RequestMethod.POST.name() + "," + 
+					RequestMethod.PUT.name() + "," + RequestMethod.DELETE.name() + "," + 
+					RequestMethod.HEAD.name() + "," + RequestMethod.OPTIONS.name();
+			headers.add(AnnotationHttpHeaders.ALLOW_METHODS, allowedMethods);
+			String allowedHeaders = HttpHeaders.AUTHORIZATION + "," + HttpHeaders.IF_MATCH;
+			headers.add(AnnotationHttpHeaders.ALLOW_HEADERS, allowedHeaders);
+			String exposeHeaders = HttpHeaders.ALLOW + "," + HttpHeaders.VARY + "," + 
+					HttpHeaders.LINK + "," + HttpHeaders.ETAG;
+			headers.add(AnnotationHttpHeaders.EXPOSE_HEADERS, exposeHeaders);
+			headers.add(AnnotationHttpHeaders.MAX_AGE, AnnotationHttpHeaders.MAX_AGE_VALUE);
+			
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 			headers.add(HttpHeaders.ETAG, "" + updatedAnnotation.getLastUpdate().hashCode());
 			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
@@ -673,7 +725,19 @@ public class BaseJsonldRest extends BaseRest {
 			// in Mongo
 			getAnnotationService().disableAnnotation(annotation);
 
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(10);
+			
+			headers.add(AnnotationHttpHeaders.ALLOW_ORIGIN, AnnotationHttpHeaders.ALL);
+			String allowedMethods = RequestMethod.GET.name() + "," + RequestMethod.POST.name() + "," + 
+					RequestMethod.PUT.name() + "," + RequestMethod.DELETE.name() + "," + 
+					RequestMethod.HEAD.name() + "," + RequestMethod.OPTIONS.name();
+			headers.add(AnnotationHttpHeaders.ALLOW_METHODS, allowedMethods);
+			String allowedHeaders = HttpHeaders.AUTHORIZATION + "," + HttpHeaders.IF_MATCH;
+			headers.add(AnnotationHttpHeaders.ALLOW_HEADERS, allowedHeaders);
+			String exposeHeaders = HttpHeaders.VARY;
+			headers.add(AnnotationHttpHeaders.EXPOSE_HEADERS, exposeHeaders);
+			headers.add(AnnotationHttpHeaders.MAX_AGE, AnnotationHttpHeaders.MAX_AGE_VALUE);
+			
 			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 
 			ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
