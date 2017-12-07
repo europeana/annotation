@@ -35,6 +35,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	
 	private List<String> targetUris;
 	private List<String> targetRecordIds;
+	private List<String> targetSources;
 	
 	private String linkResourceUri;
 	private String linkRelation;
@@ -113,6 +114,17 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field(TARGET_URI)
 	public void setTargetUris(List<String> targetUris) {
 		this.targetUris = targetUris;
+	}
+
+	@Override
+	public List<String> getTargetSources() {
+		return targetSources;
+	}
+
+	@Override
+	@Field(TARGET_SOURCE)
+	public void setTargetSources(List<String> targetSources) {
+		this.targetSources = targetSources;
 	}
 
 	@Override

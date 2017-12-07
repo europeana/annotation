@@ -33,6 +33,10 @@ public interface SolrAnnotation extends Annotation {
 
 	List<String> getTargetUris();
 
+	void setTargetSources(List<String> targetSources);
+
+	List<String> getTargetSources();
+
 	public void setModerationScore(Integer moderationScore);
 	
 	public Integer getModerationScore();

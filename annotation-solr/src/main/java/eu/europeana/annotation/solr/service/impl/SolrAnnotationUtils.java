@@ -19,7 +19,6 @@ import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
-import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
@@ -265,6 +264,10 @@ public class SolrAnnotationUtils {
 		
 		List<String> recordIds = extractRecordIds(resourceUris);
 		solrAnnotation.setTargetRecordIds(recordIds);
+		
+		List<String> sourceUris = extractSourceUris(internetResource);
+		if (sourceUris != null)
+			solrAnnotation.setTargetSources(sourceUris);
 	}
 
 	protected List<String> extractResourceUris(SpecificResource specificResource) {
@@ -279,6 +282,15 @@ public class SolrAnnotationUtils {
 			resourceUrls = Arrays.asList(new String[] { specificResource.getScope() });
 		
 		return resourceUrls;
+	}
+	
+	protected List<String> extractSourceUris(SpecificResource specificResource) {
+		List<String> sourceUrls = null;
+		//internet resource
+		if (specificResource.getSource() != null)
+			sourceUrls = Arrays.asList(new String[] { specificResource.getSource() });
+		
+		return sourceUrls;
 	}
 	
 	private List<String> extractRecordIds(List<String> targetUrls) {
