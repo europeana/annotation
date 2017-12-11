@@ -4,7 +4,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstanti
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
-import eu.europeana.annotation.definitions.model.body.impl.EdmTranscriptionBody;
+import eu.europeana.annotation.definitions.model.body.impl.SpecificResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.RdfGraphBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticLinkBody;
@@ -65,8 +65,8 @@ public class BodyObjectFactory extends
 		case GRAPH:
 			returnType = RdfGraphBody.class; 
 			break;
-		case TRANSCRIBING:
-			returnType = EdmTranscriptionBody.class;
+		case SPECIFIC_RESOURCE:
+			returnType = SpecificResourceBody.class;
 			break;
 		case LINK:
 			throw new AnnotationInstantiationException("Bodies of type LINK must be empty!");
