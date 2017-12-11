@@ -9,7 +9,7 @@ public enum ResourceTypes implements JsonKeyword{
 	EXTERNAL_VIDEO(WebAnnotationModelKeywords.CLASS_VIDEO),
 	EXTERNAL_SOUND(WebAnnotationModelKeywords.CLASS_SOUND) , 
 	EXTERNAL_TEXT(WebAnnotationModelKeywords.CLASS_TEXT), 
-	SPECIFIC (WebAnnotationModelKeywords.CLASS_SPECIFIC_RESOURCE), 
+	SPECIFIC_RESOURCE (WebAnnotationModelKeywords.CLASS_SPECIFIC_RESOURCE), 
 	GRAPH (WebAnnotationModelKeywords.CLASS_GRAPH), 
 	PLACE (WebAnnotationModelKeywords.CLASS_EDM_PLACE);
 	
