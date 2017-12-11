@@ -75,7 +75,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 		try {
 
 			//** 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wskey);
+			validateApiKey(wskey, WebAnnotationFields.READ_METHOD);
 
 			//** Process input params
 			queryString = queryString.trim();

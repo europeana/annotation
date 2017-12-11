@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${version.annotationApi}</version>		
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
@@ -204,6 +204,19 @@
 			<artifactId>commons-web</artifactId>
 			<version>${version.commonsApi}</version>
 		</dependency>		
+	
+		<dependency>
+			<groupId>eu.europeana</groupId>
+			<artifactId>apikeyclient</artifactId>
+			<version>0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	
 	</dependencies>
 
 	<build>

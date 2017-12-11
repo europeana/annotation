@@ -8,8 +8,10 @@ import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.apikey.client.ValidationRequest;
 
 public interface AdminService {
 
@@ -100,4 +102,13 @@ public interface AdminService {
 	 * @return
 	 */
 	public BatchProcessingStatus updateRecordId(String oldId, String newId);
+	
+    /**
+     * This method employs API key client library for API key validation
+     * @param request The validation request containing API key e.g. ApiKey1
+     * @param method The method e.g. read, write, delete...
+     * @return true if API key is valid
+     */
+	public boolean validateApiKey(ValidationRequest request, String method) throws ApplicationAuthenticationException;
+	
 }

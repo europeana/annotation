@@ -125,6 +125,24 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 
+	@RequestMapping(value = "/admin/annotation/validate", method = RequestMethod.GET, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+	@ApiOperation(value = "Validate Annotation API key", nickname = "validateApiKey", response = java.lang.Void.class)
+	public ResponseEntity<String> validateApiKey(
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey)
+			throws HttpException {
+
+		AnnotationOperationResponse response;
+		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/validate");
+
+		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
+
+		response.success = true;
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Delete Annotation for good result: " + jsonStr);
+		return buildResponseEntityForJsonString(jsonStr);
+	}
+
 	protected void deleteAnnotationForGood(String provider, String identifier, String apiKey, String userToken)
 			throws HttpException {
 
