@@ -10,10 +10,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
 public interface WebAnnotationFields extends WebAnnotationModelFields{
 
 	//AnnotationPage
-	public static final String PART_OF = "partOf";
+	public static final String PART_OF = "isPartOf";
 	public static final String TOTAL = "total";
 	public static final String NEXT = "next";
 	public static final String PREV = "prev";
+	public static final String LAST = "last";
 		
 	
 	public static final String SPLITTER = "#";

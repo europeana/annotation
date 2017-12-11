@@ -36,10 +36,8 @@ import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
-import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api.commons.web.model.ApiResponse;
 import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -458,6 +456,33 @@ public class ManagementRest extends BaseRest {
 		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
 		logger.info("Unlock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
 		return buildResponseEntityForJsonString(jsonStr, httpStatus);
+	}
+
+	@RequestMapping(value = "/admin/clientApplicationUpdate", method = RequestMethod.PUT, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+	@ApiOperation(notes = SwaggerConstants.UPDATE_CLIENT_APPLICATION, value = "Update client application", nickname = Actions.UPDATE_CLIENT_APPLICATION, response = java.lang.Void.class)
+	public ResponseEntity<String> migrateAuthenticationConfig(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "appKey", required = true) String appKey,
+			@RequestBody String appConfigJson,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
+			throws UserAuthorizationException, HttpException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+
+		boolean success = getAdminService().migrateAuthenticationConfig(appKey, appConfigJson);
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(
+				apiKey, "/admin/clientApplicationUpdate");
+
+		response.success = success;
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.info("Update client application result: " + jsonStr);
+		return buildResponseEntityForJsonString(jsonStr);
 	}
 
 }

@@ -2,6 +2,7 @@ package eu.europeana.annotation.definitions.model.authentication.impl;
 
 import java.util.Date;
 
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.authentication.Client;
 
 public class BaseClientImpl implements Client{
@@ -10,7 +11,7 @@ public class BaseClientImpl implements Client{
 	String authenticationConfigJson;
 	private Date creationDate;
 	private Date lastUpdate;
-	
+
 	
 	@Override
 	public Date getCreationDate() {
@@ -44,5 +45,14 @@ public class BaseClientImpl implements Client{
 	public void setAuthenticationConfigJson(String authenticationConfigJson) {
 		this.authenticationConfigJson = authenticationConfigJson;
 	}
+	@Override
+	public void setClientApplication(Application clientApplication) {
+//		this.clientApplication = clientApplication;
+	}
+	@Override
+	public Application getClientApplication() {
+		return null; //clientApplication;
+	}
+	
 	
 }

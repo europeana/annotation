@@ -10,10 +10,13 @@ import org.springframework.http.HttpStatus;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -22,6 +25,7 @@ import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
+import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
 import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationServiceImpl{
@@ -43,6 +47,9 @@ public abstract class BaseAnnotationServiceImpl{
 
 	@Resource
 	PersistentModerationRecordService mongoModerationRecordPersistance;
+	
+	@Resource
+    PersistentClientService clientService;
 	
 	Logger logger = Logger.getLogger(getClass());
 
@@ -214,6 +221,40 @@ public abstract class BaseAnnotationServiceImpl{
 		return success;
 	}
 
+	/**
+	 * @param appKey
+	 * @param appConfigJson
+	 * @return
+	 */
+	public boolean migrateAuthenticationConfig(String appKey, String appConfigJson) {
+		boolean success = false;
+		try {
+		  	MockAuthenticationServiceImpl authenticationService = new MockAuthenticationServiceImpl(
+		  			configuration, clientService);
+
+		  	// read client from MongoDB
+			PersistentClient storedClient = (PersistentClient) clientService.findByApiKey(appKey);
+			
+			if (storedClient == null) {
+				getLogger().warn("Client was not updated. No client found in database for key: " + appKey);
+				return false;
+			}
+			
+			Application clientApplication = authenticationService.parseApplication(appConfigJson);
+
+			// put application in the client
+			storedClient.setClientApplication(clientApplication);
+				
+	    	// write to MongoDB
+	    	clientService.update(storedClient);		
+			success = true;
+		} catch (Exception e) {
+			getLogger().error(e.getMessage());
+			return false;
+		}
+		return success;
+	}
+	
 	protected void updateLastIndexingTime(Annotation res, Date lastIndexing) {
 		try {
 			getMongoPersistence().updateIndexingTime(res.getAnnotationId(), lastIndexing);

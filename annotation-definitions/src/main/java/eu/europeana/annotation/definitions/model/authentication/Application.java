@@ -1,4 +1,4 @@
-package eu.europeana.annotation.web.service.authentication.model;
+package eu.europeana.annotation.definitions.model.authentication;
 
 import java.util.Map;
 

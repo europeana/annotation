@@ -5,7 +5,6 @@ import java.util.List;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -25,6 +24,16 @@ public interface AdminService {
 	 */
 	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing);
 
+	/**
+	 * This method migrates client application from JSON string format
+	 * to Application object and updates the content in database
+	 * identifying client by a given application key.
+	 * @param appKey
+	 * @param appConfigJson
+	 * @return success of migration operation
+	 */
+	public boolean migrateAuthenticationConfig(String appKey, String appConfigJson);
+	
 	/**
 	 * This method performs Solr reindexing for all annotation objects stored in
 	 * database between start and end date or timestamp.
