@@ -82,6 +82,10 @@ solr.facetLimit=750
 #solr.username=europeana
 #solr.rowLimit=12
 
+#API Key validation
+api=annotation
+adminapikey=Key1
+adminsecretkey=Key2
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
