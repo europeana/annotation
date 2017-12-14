@@ -311,10 +311,11 @@ public class BaseRest extends ApiResponseBuilder {
         if (res) {
         	apyKeyCache.put(apiKey, currentTime);
         } else {
-        	Long value = apyKeyCache.get(apiKey);
-        	if (value != null) 
+        	//remove invalid from cache if exists
+        	if (apyKeyCache.containsKey(apiKey)) 
         		apyKeyCache.remove(apiKey);
-   			throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
+   			
+        	throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
         }
         return res;
     }
