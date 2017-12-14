@@ -18,7 +18,6 @@ public interface SolrAnnotationConstants {
 	public static final String CREATOR_NAME = "creator_name";
 	public static final String TARGET_RECORD_ID = "target_record_id";
 	public static final String TARGET_URI = "target_uri";
-	public static final String TARGET_SOURCE = "target_source";
 	public static final String MODERATIONSCORE = "moderationScore";
 
 	public static final String LINK_RESOURCE_URI = "link_resource_uri";

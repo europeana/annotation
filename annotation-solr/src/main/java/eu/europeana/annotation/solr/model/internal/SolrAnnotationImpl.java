@@ -117,17 +117,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	public List<String> getTargetSources() {
-		return targetSources;
-	}
-
-	@Override
-	@Field(TARGET_SOURCE)
-	public void setTargetSources(List<String> targetSources) {
-		this.targetSources = targetSources;
-	}
-
-	@Override
 	public List<String> getTargetRecordIds() {
 		return targetRecordIds;
 	}

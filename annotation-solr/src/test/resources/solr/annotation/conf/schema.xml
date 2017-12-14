@@ -103,10 +103,6 @@
 		<field name="target_uri" type="keyword" indexed="true" required="true"
 			multiValued="true" stored="true" />
 
-		<!-- @Field("target_id") -->
-		<field name="target_source" type="keyword" indexed="true" required="false"
-			multiValued="true" stored="true" />
-
 		<!-- @Field("target_record_id") renamed -->
 		<field name="target_record_id" type="keyword" indexed="true"
 			required="true" multiValued="true" stored="true" />

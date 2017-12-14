@@ -264,10 +264,6 @@ public class SolrAnnotationUtils {
 		
 		List<String> recordIds = extractRecordIds(resourceUris);
 		solrAnnotation.setTargetRecordIds(recordIds);
-		
-		List<String> sourceUris = extractSourceUris(internetResource);
-		if (sourceUris != null)
-			solrAnnotation.setTargetSources(sourceUris);
 	}
 
 	protected List<String> extractResourceUris(SpecificResource specificResource) {
