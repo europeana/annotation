@@ -206,9 +206,9 @@
 		</dependency>		
 	
 		<dependency>
-			<groupId>eu.europeana</groupId>
-			<artifactId>apikeyclient</artifactId>
-			<version>0.1-SNAPSHOT</version>
+		    <groupId>eu.europeana.apikey-utils</groupId>
+		    <artifactId>apikey-client</artifactId>
+		    <version>0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.httpcomponents</groupId>
