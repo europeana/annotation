@@ -18,6 +18,11 @@ public interface AnnotationHttpHeaders extends HttpHeaders {
 	public static final String VALUE_PREFER_CONTAINEDDESCRIPTIONS = "return=representation;include=\"http://www.w3.org/ns/oa#PreferContainedDescriptions\"";
 
 	/**
+	 * Authorization
+	 */
+	public static final String BEARER = "Bearer";
+	
+	/**
 	 * CORS definitions
 	 */
 	public static final String ALLOW_ORIGIN = "Access-Control-Allow-Origin";

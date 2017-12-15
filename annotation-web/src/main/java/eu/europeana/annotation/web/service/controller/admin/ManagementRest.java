@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -77,12 +78,14 @@ public class ManagementRest extends BaseRest {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
 	@ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotationById(
-			// public ModelAndView deleteAnnotationById(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_PROVIDER, required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request)
 			throws HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/delete");
@@ -101,7 +104,10 @@ public class ManagementRest extends BaseRest {
 			// public ModelAndView deleteAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-			@RequestBody String uris) throws HttpException {
+			@RequestBody String uris,
+			HttpServletRequest request) throws HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -179,8 +185,11 @@ public class ManagementRest extends BaseRest {
 			// required = false) String apiKey,
 			@RequestParam(value = "provider", required = true, defaultValue = WebAnnotationFields.DEFAULT_PROVIDER) String provider,
 			@RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken,
+			HttpServletRequest request)
 			throws UserAuthorizationException, HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -228,9 +237,12 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "endDate", required = false) String endDate,
 			@RequestParam(value = "startTimestamp", required = false) String startTimestamp,
 			@RequestParam(value = "endTimestamp", required = false) String endTimestamp,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken,
+			HttpServletRequest request)
 			throws UserAuthorizationException, ApiWriteLockException, IndexingJobLockedException, HttpException {
 
+		userToken = getUserToken(userToken, request);
+		
 		if (!isAdmin(apiKey, userToken))
 			throw new UserAuthorizationException("Must use the admin apikey and token.", I18nConstants.USER_NOT_AUTHORIZED, 
 					new String[]{apiKey, userToken});
@@ -253,7 +265,10 @@ public class ManagementRest extends BaseRest {
 	public ResponseEntity<String> reindexAnnotationSet(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-			@RequestBody String uris) throws UserAuthorizationException, HttpException {
+			@RequestBody String uris,
+			HttpServletRequest request) throws UserAuthorizationException, HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -289,8 +304,11 @@ public class ManagementRest extends BaseRest {
 	@ApiOperation(value = "Reindex all annotations", nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexAll(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request)
 			throws UserAuthorizationException, HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -322,8 +340,11 @@ public class ManagementRest extends BaseRest {
 	@ApiOperation(value = "Index new and reindex outdated annotations", nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
 	public ResponseEntity<String> reindexOutdated(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request)
 			throws UserAuthorizationException, HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -366,8 +387,11 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@RequestParam(value = WebAnnotationFields.OLD_RECORD_ID, required = true) String oldId,
-			@RequestParam(value = WebAnnotationFields.NEW_RECORD_ID, required = true) String newId)
+			@RequestParam(value = WebAnnotationFields.NEW_RECORD_ID, required = true) String newId,
+			HttpServletRequest request)
 			throws HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		if (!isAdmin(apiKey, userToken))
 			throw new UserAuthorizationException("Must use the admin apikey and token.", I18nConstants.USER_NOT_AUTHORIZED, 
@@ -405,8 +429,10 @@ public class ManagementRest extends BaseRest {
 	@ApiOperation(value = "Lock write operations", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
 	public ResponseEntity<String> lockWriteOperations(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
-			) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -441,8 +467,10 @@ public class ManagementRest extends BaseRest {
 	@ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
 	public ResponseEntity<String> unlockWriteOperations(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
-			) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
@@ -483,8 +511,11 @@ public class ManagementRest extends BaseRest {
 			@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "appKey", required = true) String appKey,
 			@RequestBody String appConfigJson,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken,
+			HttpServletRequest request)
 			throws UserAuthorizationException, HttpException {
+
+		userToken = getUserToken(userToken, request);
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
