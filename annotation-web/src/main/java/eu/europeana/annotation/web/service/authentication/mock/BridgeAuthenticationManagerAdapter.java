@@ -114,7 +114,7 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 	}
 
 	public Application parseApplication(String jsonData) {
-		return null;
+		return mockOauthService.parseApplication(jsonData);
 	}
 
 	@Override

@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
@@ -30,6 +32,7 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
+import eu.europeana.annotation.web.model.ClientApplicationOperationResponse;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
@@ -59,10 +62,9 @@ public class ManagementRest extends BaseRest {
 	public void setAdminService(AdminService adminService) {
 		this.adminService = adminService;
 	}
-	
+
 	@Resource(name = "annotation_db_apilockService")
 	private PersistentApiWriteLockService indexingJobService;
-	
 
 	public PersistentApiWriteLockService getApiWriteLockService() {
 		return indexingJobService;
@@ -71,7 +73,6 @@ public class ManagementRest extends BaseRest {
 	public void setPersistentIndexingJobService(PersistentApiWriteLockService indexingJobService) {
 		this.indexingJobService = indexingJobService;
 	}
-	
 
 	@RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
@@ -232,8 +233,8 @@ public class ManagementRest extends BaseRest {
 			throws UserAuthorizationException, ApiWriteLockException, IndexingJobLockedException, HttpException {
 
 		if (!isAdmin(apiKey, userToken))
-			throw new UserAuthorizationException("Must use the admin apikey and token.", I18nConstants.USER_NOT_AUTHORIZED, 
-					new String[]{apiKey, userToken});
+			throw new UserAuthorizationException("Must use the admin apikey and token.",
+					I18nConstants.USER_NOT_AUTHORIZED, new String[] { apiKey, userToken });
 
 		BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp,
 				endTimestamp, Actions.REINDEX_ANNOTATION_SELECTION);
@@ -264,8 +265,8 @@ public class ManagementRest extends BaseRest {
 		List<String> uriList = BaseJsonParser.toStringList(uris, true);
 
 		BatchProcessingStatus status;
-		try{
-			status = getAdminService().reindexAnnotationSet(uriList, false,"/admin/annotation/reindexset");
+		try {
+			status = getAdminService().reindexAnnotationSet(uriList, false, "/admin/annotation/reindexset");
 		} catch (ApiWriteLockException e) {
 			throw new InternalServerException("Cannot reindex annotation selection", e);
 		}
@@ -299,11 +300,11 @@ public class ManagementRest extends BaseRest {
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
 
 		BatchProcessingStatus status;
-		try{
+		try {
 			status = getAdminService().reindexAll();
-		}catch (ApiWriteLockException e) {
+		} catch (ApiWriteLockException e) {
 			throw new InternalServerException("Cannot reindex annotation selection", e);
-		}	
+		}
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
@@ -330,34 +331,36 @@ public class ManagementRest extends BaseRest {
 
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
-		//TODO: check and remove
+		// TODO: check and remove
 		/*
-		BatchProcessingStatus status = getAdminService().reindexOutdated();
-
-		AnnotationOperationResponse response;
-		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
-		response.setStatus("Outdated annotations reindexed. " + status.toString());
+		 * BatchProcessingStatus status = getAdminService().reindexOutdated();
+		 * 
+		 * AnnotationOperationResponse response; response = new
+		 * AnnotationOperationResponse(apiKey,
+		 * "/admin/annotation/reindexoutdated");
+		 * response.setStatus("Outdated annotations reindexed. " +
+		 * status.toString());
 		 */
-		
-		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexoutdated");
-		BatchProcessingStatus status; 
-		try{
+
+		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey,
+				"/admin/annotation/reindexoutdated");
+		BatchProcessingStatus status;
+		try {
 			status = getAdminService().reindexOutdated();
-		
-		}catch (ApiWriteLockException e) {
+
+		} catch (ApiWriteLockException e) {
 			throw new InternalServerException("Cannot reindex annotation selection", e);
 		}
-		
+
 		String successMsg = "Outdated annotations reindexed. " + status.toString();
 		response.setStatus(successMsg);
 		response.success = true;
 		HttpStatus httpStatus = HttpStatus.OK;
 		logger.info(successMsg);
-		
+
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
-	
 
 	@RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
@@ -370,12 +373,12 @@ public class ManagementRest extends BaseRest {
 			throws HttpException {
 
 		if (!isAdmin(apiKey, userToken))
-			throw new UserAuthorizationException("Must use the admin apikey and token.", I18nConstants.USER_NOT_AUTHORIZED, 
-					new String[]{apiKey, userToken});
+			throw new UserAuthorizationException("Must use the admin apikey and token.",
+					I18nConstants.USER_NOT_AUTHORIZED, new String[] { apiKey, userToken });
 
-		
 		if (oldId.isEmpty() || newId.isEmpty()) {
-			throw new HttpException("Both newId and oldId parameters must be provided!", null, null, HttpStatus.BAD_REQUEST);
+			throw new HttpException("Both newId and oldId parameters must be provided!", null, null,
+					HttpStatus.BAD_REQUEST);
 		}
 
 		// SET DEFAULTS
@@ -386,45 +389,43 @@ public class ManagementRest extends BaseRest {
 
 		// 2. update record id
 		BatchProcessingStatus status = getAdminService().updateRecordId(oldId, newId);
-		
+
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/annotation/updateRecordId");
 		response.setStatus("Updated record IDs. " + status.toString());
 		response.success = true;
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		logger.info("Update record ID operation result. \n Old ID: " + oldId +  
-				"\nnewId : " + newId + 
-				"\nResult: "+ jsonStr);
+		logger.info("Update record ID operation result. \n Old ID: " + oldId + "\nnewId : " + newId + "\nResult: "
+				+ jsonStr);
 		return buildResponseEntityForJsonString(jsonStr);
 
 	}
-	
-	
-	@RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = {
-			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+
+	@RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8,
+			HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
 	@ApiOperation(value = "Lock write operations", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
 	public ResponseEntity<String> lockWriteOperations(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
-			) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			throws UserAuthorizationException, HttpException, ApiWriteLockException {
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
-		
+
 		// lock write operations
 		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
 
-		// get last active lock check if start date is correct and end date does not exist
+		// get last active lock check if start date is correct and end date does
+		// not exist
 		PersistentApiWriteLock lastActiveLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 		boolean success = (lastActiveLock.getStarted() instanceof Date && lastActiveLock.getEnded() == null);
-		
 
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/lock");
-		
+
 		response.setStatus(success ? "Server is now locked for changes" : "Unable to set lock");
 		response.success = success;
 
@@ -434,30 +435,29 @@ public class ManagementRest extends BaseRest {
 		logger.info("Lock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
 		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
-	
 
 	@RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
-			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
 	@ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
 	public ResponseEntity<String> unlockWriteOperations(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
-			) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			throws UserAuthorizationException, HttpException, ApiWriteLockException {
 
 		// SET DEFAULTS
 		getAuthenticationService().getByApiKey(apiKey);
 
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_UNLOCK);
-		
+
 		AnnotationOperationResponse response;
 		response = new AnnotationOperationResponse(apiKey, "/admin/unlock");
-		
+
 		PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-		if(activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
+		if (activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
 			getApiWriteLockService().unlock(activeLock);
 			PersistentApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-			if(lock == null) {
+			if (lock == null) {
 				response.setStatus("Server is now unlocked for changes");
 				response.success = true;
 			} else {
@@ -476,13 +476,11 @@ public class ManagementRest extends BaseRest {
 		return buildResponseEntityForJsonString(jsonStr, httpStatus);
 	}
 
-	@RequestMapping(value = "/admin/clientApplicationUpdate", method = RequestMethod.PUT, produces = {
-			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-	@ApiOperation(notes = SwaggerConstants.UPDATE_CLIENT_APPLICATION, value = "Update client application", nickname = Actions.UPDATE_CLIENT_APPLICATION, response = java.lang.Void.class)
-	public ResponseEntity<String> migrateAuthenticationConfig(
-			@RequestParam(value = "apiKey", required = false) String apiKey,
+	@RequestMapping(value = "/admin/getClientApplication", method = RequestMethod.GET, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+	@ApiOperation(notes = SwaggerConstants.CLIENT_APPLICATION_MIGRATE, value = "Get client application", nickname = "Get client application", response = java.lang.Void.class)
+	public ResponseEntity<String> getClientApplication(@RequestParam(value = "apiKey", required = false) String apiKey,
 			@RequestParam(value = "appKey", required = true) String appKey,
-			@RequestBody String appConfigJson,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
 			throws UserAuthorizationException, HttpException {
 
@@ -492,14 +490,73 @@ public class ManagementRest extends BaseRest {
 		// 1. authorize user
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
-		boolean success = getAdminService().migrateAuthenticationConfig(appKey, appConfigJson);
+		Client clientApp = getAdminService().getClientApplicationByApiKey(appKey);
+		ClientApplicationOperationResponse response = new ClientApplicationOperationResponse(apiKey, "/admin/getClientApplication");
+		response.setClientApplication(clientApp);
+		
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.debug("Get client application result: " + jsonStr);
+		return buildResponseEntityForJsonString(jsonStr);
+	}
 
-		AnnotationOperationResponse response = new AnnotationOperationResponse(
-				apiKey, "/admin/clientApplicationUpdate");
+	@RequestMapping(value = "/admin/migrateClientApplication", method = RequestMethod.POST, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+	@ApiOperation(notes = SwaggerConstants.CLIENT_APPLICATION_MIGRATE, value = "Migrate client application", nickname = "Migrate client application", response = java.lang.Void.class)
+	public ResponseEntity<String> migrateClientAppConfig(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "appKey", required = true) String appKey,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
+			throws UserAuthorizationException, HttpException {
 
-		response.success = success;
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		Client clientApp; 
+		
+		try {
+			clientApp = getAdminService().migrateAuthenticationConfig(appKey);
+		} catch (AnnotationMongoException e) {
+			throw new InternalServerException(e);
+		}
+
+		ClientApplicationOperationResponse response = new ClientApplicationOperationResponse(apiKey, "/admin/getClientApplication");
+		response.setClientApplication(clientApp);
+		
+		String jsonStr = JsonWebUtils.toJson(response, null);
+		logger.debug("Migrate client application result: " + jsonStr);
+		return buildResponseEntityForJsonString(jsonStr);
+	}
+
+	@RequestMapping(value = "/admin/updateClientApplication", method = RequestMethod.POST, produces = {
+			HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+	@ApiOperation(notes = SwaggerConstants.CLIENT_APPLICATION_UPDATE, value = "Update client application", nickname = "Update client application", response = java.lang.Void.class)
+	public ResponseEntity<String> updateClientAppConfig(
+			@RequestParam(value = "apiKey", required = false) String apiKey,
+			@RequestParam(value = "appKey", required = true) String appKey, @RequestBody String appConfigJson,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = true) String userToken)
+			throws UserAuthorizationException, HttpException {
+
+		// SET DEFAULTS
+		getAuthenticationService().getByApiKey(apiKey);
+
+		// 1. authorize user
+		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+		Client clientApp;
+		
+		try {
+			clientApp = getAdminService().updateAuthenticationConfig(appKey, appConfigJson);
+		} catch (AnnotationMongoException e) {
+			throw new InternalServerException(e);
+		}
+
+		ClientApplicationOperationResponse response = new ClientApplicationOperationResponse(apiKey, "/admin/getClientApplication");
+		response.setClientApplication(clientApp);
+		
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Update client application result: " + jsonStr);
+
 		return buildResponseEntityForJsonString(jsonStr);
 	}
 

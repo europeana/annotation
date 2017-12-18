@@ -12,6 +12,10 @@ public interface Client {
 	 */
 	String getAuthenticationConfigJson();
 
+	/**
+	 * 
+	 * @param clientId the apiKey of the client application
+	 */
 	void setClientId(String clientId);
 
 	String getClientId();

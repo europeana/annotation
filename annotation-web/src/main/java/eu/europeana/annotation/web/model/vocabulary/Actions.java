@@ -7,6 +7,6 @@ public interface Actions {
 	public static final String REINDEX_ANNOTATION_SELECTION = "reindexAnnotationSelection";
 	public static final String REINDEX_ANNOTATION_BY_ANNOTATION_ID = "reindexAnnotationByAnnotationId";
 	
-	public static final String UPDATE_CLIENT_APPLICATION = "updateClientApplication";
+//	public static final String UPDATE_CLIENT_APPLICATION = "updateClientApplication";
 	
 }

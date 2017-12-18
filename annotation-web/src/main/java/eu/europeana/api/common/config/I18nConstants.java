@@ -38,4 +38,6 @@ public interface I18nConstants {
 	
 	static final String BATCH_UPLOAD_FAILED = "error.batch_upload_failed";
 	
+	static final String OPERATION_EXECUTION_NOT_ALLOWED = "error.operation_execution_not_allowed";
+	
 }

@@ -221,39 +221,6 @@ public abstract class BaseAnnotationServiceImpl{
 		return success;
 	}
 
-	/**
-	 * @param appKey
-	 * @param appConfigJson
-	 * @return
-	 */
-	public boolean migrateAuthenticationConfig(String appKey, String appConfigJson) {
-		boolean success = false;
-		try {
-		  	MockAuthenticationServiceImpl authenticationService = new MockAuthenticationServiceImpl(
-		  			configuration, clientService);
-
-		  	// read client from MongoDB
-			PersistentClient storedClient = (PersistentClient) clientService.findByApiKey(appKey);
-			
-			if (storedClient == null) {
-				getLogger().warn("Client was not updated. No client found in database for key: " + appKey);
-				return false;
-			}
-			
-			Application clientApplication = authenticationService.parseApplication(appConfigJson);
-
-			// put application in the client
-			storedClient.setClientApplication(clientApplication);
-				
-	    	// write to MongoDB
-	    	clientService.update(storedClient);		
-			success = true;
-		} catch (Exception e) {
-			getLogger().error(e.getMessage());
-			return false;
-		}
-		return success;
-	}
 	
 	protected void updateLastIndexingTime(Annotation res, Date lastIndexing) {
 		try {

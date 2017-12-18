@@ -12,17 +12,22 @@ import com.google.common.base.Strings;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.authentication.Application;
+import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
@@ -38,6 +43,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 	@Resource(name = "annotation_db_apilockService")
 	PersistentApiWriteLockService apiWriteLockService;
+	
+	private final String APP_CONFIG_SELF = "appConfigSelf";
 
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
@@ -310,5 +317,52 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
         return res;
     }
 	
+	/**
+	 * @param appKey
+	 * @param appConfigJson
+	 * @return
+	 * @throws AnnotationMongoException 
+	 */
+	public Client updateAuthenticationConfig(String appKey, String appConfigJson) throws AnnotationMongoException {
+		Client storedClient = getClientApplicationByApiKey(appKey);
+		Client clientApp = updateClientConfig(storedClient, appConfigJson);
+		return clientApp;
+	}
+
+	public Client getClientApplicationByApiKey(String appKey) {
+		PersistentClient storedClient = (PersistentClient) clientService.findByApiKey(appKey);
+		if(storedClient == null)
+			throw new AnnotationMongoRuntimeException("No Client Application found with the (API) Key: " + appKey);
+		return storedClient;
+	}
+
+	private Client updateClientConfig(Client storedClient, String appConfigJson) throws AnnotationMongoException {
+			
+			String newConfig = appConfigJson;
+			//support from migration of app config
+			if(APP_CONFIG_SELF.equals(appConfigJson))
+				newConfig = storedClient.getAuthenticationConfigJson();
+			
+			Application clientApplication = authenticationService.parseApplication(newConfig);
+					
+			// put application in the client
+			storedClient.setClientApplication(clientApplication);
+
+			// write to MongoDB
+			Client clientApp = clientService.update((PersistentClient) storedClient);
+			return clientApp;
+	}
+
+	@Override
+	public Client migrateAuthenticationConfig(String appKey) throws AnnotationMongoException, OperationAuthorizationException {
+		Client storedClient = getClientApplicationByApiKey(appKey);
+		if(storedClient.getClientApplication() != null)
+			throw new OperationAuthorizationException(I18nConstants.OPERATION_EXECUTION_NOT_ALLOWED, I18nConstants.OPERATION_EXECUTION_NOT_ALLOWED, 
+					new String[]{"The configuration of the client application was already migrated!"});
+			
+		Client clientApp = updateClientConfig(storedClient, APP_CONFIG_SELF);
+		return clientApp;
+	}
+
 }
   

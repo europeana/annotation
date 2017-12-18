@@ -11,8 +11,6 @@ public class AnnotationOperationResponse extends ApiResponse{
 	
 	Annotation annotation;
 	
-	String status;
-	
 	private BatchReportable operationReport;
 
 	public static String ERROR_NO_OBJECT_FOUND = "No Object Found!";
@@ -42,14 +40,6 @@ public class AnnotationOperationResponse extends ApiResponse{
 
 	public void setAnnotation(Annotation annotation) {
 		this.annotation = annotation;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public BatchReportable getOperationReport() {
