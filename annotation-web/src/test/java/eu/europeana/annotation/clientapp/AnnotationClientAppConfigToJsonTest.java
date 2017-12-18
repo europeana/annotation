@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package eu.europeana.annotation.apikey;
+package eu.europeana.annotation.clientapp;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,10 +21,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -47,8 +45,8 @@ import eu.europeana.annotation.mongo.model.PersistentClientImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
-import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 
 /**
  * This class implements different SKOS testing scenarios.
@@ -56,7 +54,7 @@ import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-web-context.xml" 
 	})
-public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
+public class AnnotationClientAppConfigToJsonTest{
 	
 	public final String API_KEY_CONFIG_FOLDER = "/config"; 
 	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
@@ -72,6 +70,9 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
     @Resource
     AnnotationConfiguration configuration;
     
+    @Resource
+	AuthenticationService authenticationService;
+    
     public PersistentClientService getClientService() {
 		return clientService;
 	}
@@ -81,12 +82,7 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
 	}
 
 	private static void initApiKeyMap() {
-    	apyKeyMap.put(KEY_APIADMIN, WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
-    	apyKeyMap.put("apidemo", WebAnnotationFields.PROVIDER_WEBANNO);
-    	apyKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
-    	apyKeyMap.put("pMFSDInF22", WebAnnotationFields.PROVIDER_PUNDIT);
     	apyKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
-    	apyKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
     }
 	
 	Logger logger = Logger.getLogger(getClass());
@@ -161,13 +157,6 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
 //    @Test
     public void storeApiKeysToMongo() throws ApplicationAuthenticationException, AnnotationMongoException{
     	
-    	// create list of all existing IDs, to avoid creating duplicates
-//    	Iterable<PersistentClient> existingClients = clientService.findAll();
-//    	List<String> existingIDs = new ArrayList<String>();
-//    	for (PersistentClient storedClient : existingClients) {
-//    		existingIDs.add(storedClient.getClientId());
-//    	}
-    	
     	getAuthenticationService().loadApiKeysFromFiles();
     	
     	Application app;
@@ -207,16 +196,15 @@ public class AnnotationApiKeyToJsonTest extends BaseJsonldRest {
     	
     	app = authenticationService.parseApplication(webanno.getAuthenticationConfigJson());
     	assertNotNull(app);
-    	
-    	
-    	
-//    	assertNotNull(app.getAnonymousUser());
-//    	assertNotNull(app.getAdminUser());
-//    	assertNotNull(app.getAuthenticatedUsers());
-    	
-//    	System.out.println(fileJSON);
-//    	assertTrue(fileJSON.equals(webanno.getAuthenticationConfigJson()));
-    	    	
+    	    	    	
     }
+
+	protected AuthenticationService getAuthenticationService() {
+		return authenticationService;
+	}
+
+	protected void setAuthenticationService(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
     
 }

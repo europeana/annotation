@@ -18,83 +18,36 @@ The json serialization available in the following box is a valid input to be use
 <br>
 <textarea rows="18" cols="120" name="json-client-application">
 {
-	"apiKey":"phVKTQ8g9F",
-	"name":"collections",
-	"provider":"collections",
-	"organization":"Europeana Collections",
-	"homepage":"",
+	"apiKey":"myapikey",
+	"name":"meandmyself",
+	"provider":"meandmyself",
+	"organization":"meandmyself ltd",
+	"homepage":"http://meandmyself.org",
 	"anonymousUser": {
 		"httpUrl":"",
-		"agentType":"",
 		"internalType":"PERSON",
-		"name":"collections-anonymous",
+		"name":"meandmyself-anonymous",
 		"email":"",
 		"homepage":"",
 		"userGroup":"ANONYMOUS"
 	},
-	"adminUser": {
+	"adminOfMeAndMyself": {
 		"httpUrl":"",
-		"agentType":"",
 		"internalType":"PERSON",
-		"name":"collections-admin",
+		"name":"meandmyself-admin",
 		"email":"",
 		"homepage":"",
 		"userGroup":"USER"
 	},
 	"authenticatedUsers": {
-		"tester3": {
-			"httpUrl":"http://labs.europeana.eu/appcategories/curation-annotation#tester3",
+		"tester": {
+			"httpUrl":"http://meandmyself.org#tester",
 			"agentType":"",
 			"internalType":"PERSON",
-			"name":"collections-tester3",
+			"name":"meandmyself-tester",
 			"email":"",
 			"homepage":"",
 			"userGroup":"TESTER"
-		},
-		"tester2": {
-			"httpUrl":"http://labs.europeana.eu/appcategories/curation-annotation#tester2",
-			"agentType":"",
-			"internalType":"PERSON",
-			"name":"collections-tester2",
-			"email":"",
-			"homepage":"",
-			"userGroup":"TESTER"
-		},
-		"tester1": {
-			"httpUrl":"http://labs.europeana.eu/appcategories/curation-annotation#tester1",
-			"agentType":"",
-			"internalType":"PERSON",
-			"name":"collections-tester1",
-			"email":"",
-			"homepage":"",
-			"userGroup":"TESTER"
-		},
-		"wdenrich": {
-			"httpUrl":"",
-			"agentType":"",
-			"internalType":"SOFTWARE",
-			"name":"Wikidata",
-			"email":"",
-			"homepage":"",
-			"userGroup":"USER"
-		},
-		"prDAHRgSDH": {
-			"httpUrl":"",
-			"agentType":"",
-			"internalType":"SOFTWARE",
-			"name":"Europeana.eu Gallery",
-			"email":"",
-			"homepage":"",
-			"userGroup":"USER"
-		},
-		"pyU4HCDWfS": {
-			"httpUrl":"http://labs.europeana.eu/appcategories/curation-annotation",
-			"agentType":"",
-			"internalType":"PERSON",
-			"name":"collections-Europeana Collections Curator",
-			"email":"",
-			"homepage":"",
-			"userGroup":"USER"
 		}
 	}
 }

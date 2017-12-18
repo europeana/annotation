@@ -71,13 +71,9 @@ public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBu
 	
     private static final Map<String, String> apyKeyMap = new HashMap<String, String>();
     
+    //TODO: load apikeys from config files, add test api key
 	private static void initApiKeyMap() {
-    	apyKeyMap.put("apiadmin", WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
-    	apyKeyMap.put("apidemo", WebAnnotationFields.PROVIDER_WEBANNO);
-    	apyKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
-    	apyKeyMap.put("pMFSDInF22", WebAnnotationFields.PROVIDER_PUNDIT);
-    	apyKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
-    	apyKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
+    	apyKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH); 	
     }
 
 	

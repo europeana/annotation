@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package eu.europeana.annotation.apikey;
+package eu.europeana.annotation.clientapp;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -37,7 +37,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
-import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 
 /**
  * This class implements conversion from annotation api key to client application.
@@ -45,7 +44,7 @@ import eu.europeana.annotation.web.service.controller.jsonld.BaseJsonldRest;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-web-context.xml" 
 	})
-public class ConvertAnnotationApiKeyToApplicationTest extends BaseJsonldRest {
+public class ConvertJsonConfigToApplicationTest{
 	
 	public final String API_KEY_CONFIG_FOLDER = "/config"; 
 	public final String API_KEY_STORAGE_FOLDER = "/authentication_templates"; 
@@ -119,8 +118,7 @@ public class ConvertAnnotationApiKeyToApplicationTest extends BaseJsonldRest {
   		System.out.println(key + "/" + entry.getValue());
     	assertNotNull(app);
 
-		// create new entry only if its not a duplicate
-    	String json = getGson().toJson(app);
+		String json = getGson().toJson(app);
     	assertNotNull(json);
   	}
   }  
