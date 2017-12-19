@@ -62,5 +62,10 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 		String key = PREFIX_MAX_PAGE_SIZE + profile;
 		return Integer.parseInt(getAnnotationProperties().getProperty(key));
 	}
+
+	@Override
+	public long getApiKeyCachingTime() {
+		return Long.parseLong(getAnnotationProperties().getProperty(API_KEY_CACHING_TIME));
+	}
 	
 }

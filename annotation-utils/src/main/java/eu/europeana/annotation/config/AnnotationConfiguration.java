@@ -18,6 +18,7 @@ public interface AnnotationConfiguration {
 	public static final String VALIDATION_ADMIN_API_KEY = "adminapikey";
 	public static final String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
 
+	public static final String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
 	
 	public String getComponentName();
 	
@@ -54,5 +55,7 @@ public interface AnnotationConfiguration {
 	public String getValidationAdminApiKey();
 
 	public String getValidationAdminSecretKey();
+	
+	public long getApiKeyCachingTime();
 	
 }
