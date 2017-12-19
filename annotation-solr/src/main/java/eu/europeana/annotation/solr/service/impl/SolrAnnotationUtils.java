@@ -225,7 +225,7 @@ public class SolrAnnotationUtils {
 			//not specified yet
 			break;
 		case SEMANTIC_TAG:
-			solrAnnotation.setBodyUris(extractResourceUris(body)); 
+			solrAnnotation.setBodyUris(extractTargetUriValues(body)); 
 			break;
 		case TAG:
 			solrAnnotation.setBodyValue(extractTextValues(body));
@@ -259,62 +259,55 @@ public class SolrAnnotationUtils {
 	protected void processTargetUris(SolrAnnotation solrAnnotation) {
 		
 		SpecificResource internetResource = solrAnnotation.getTarget();
-		List<String> resourceUris = extractResourceUris(internetResource);
-
-		solrAnnotation.setTargetUris(resourceUris);
+		//extract URIs for target_uri field
+		List<String> targetUris = extractTargetUriValues(internetResource);
+		solrAnnotation.setTargetUris(targetUris);
 		
-		List<String> recordIds = extractRecordIds(resourceUris);
+		//Extract URIs for target_record_id
+		List<String> recordIds = extractRecordIds(targetUris);
+		//specific resource - scope
+		if(internetResource.getScope() != null)
+			addRecordIdToList(internetResource.getScope(), recordIds);
+			
 		solrAnnotation.setTargetRecordIds(recordIds);
 	}
 
-	protected List<String> extractResourceUris(SpecificResource specificResource) {
+	protected List<String> extractTargetUriValues(SpecificResource specificResource) {
 		List<String> resourceUrls = null;
 		//internet resource
 		if (specificResource.getValues() != null && !specificResource.getValues().isEmpty())
 			resourceUrls = specificResource.getValues();
 		else if(specificResource.getValue() != null)
 			resourceUrls = Arrays.asList(new String[] { specificResource.getValue() });
-		//specific resource - scope 
-		else if(specificResource.getScope() != null)
-			resourceUrls = Arrays.asList(new String[] { specificResource.getScope() });
+		//specific resource - source 
+		else if(specificResource.getSource() != null)
+			resourceUrls = Arrays.asList(new String[] { specificResource.getSource() });
 		
 		return resourceUrls;
 	}
 	
-	protected List<String> extractSourceUris(SpecificResource specificResource) {
-		List<String> sourceUrls = null;
-		//internet resource
-		if (specificResource.getSource() != null)
-			sourceUrls = Arrays.asList(new String[] { specificResource.getSource() });
-		
-		return sourceUrls;
-	}
-	
-	private List<String> extractRecordIds(List<String> targetUrls) {
+	List<String> extractRecordIds(List<String> targetUrls) {
 
 		List<String> recordIds = new ArrayList<String>(targetUrls.size());
-		String target;
-		for (int i = 0; i < targetUrls.size(); i++) {
-			target = targetUrls.get(i);
-			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_ITEM);	
-			addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_RECORD);	
-		}
-
+		for (int i = 0; i < targetUrls.size(); i++)
+			addRecordIdToList(targetUrls.get(i), recordIds);	
+		
 		return recordIds;
 	}
 
-	protected void addToRecordIds(List<String> recordIds, String target, String markup) {
-		String recordId = extractRecordId(target, markup); 
-		if (recordId != null)
-			recordIds.add(recordId);
+	void addRecordIdToList(String target, List<String> recordIds) {
+		addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_ITEM);	
+		addToRecordIds(recordIds, target,  WebAnnotationFields.MARKUP_RECORD);
 	}
 
-	protected String extractRecordId(String target, String markup) {
-		int pos;
-		pos = target.indexOf(markup);
+	private void addToRecordIds(List<String> recordIds, String target, String markup) {
+		String recordId = null;
+		int pos = target.indexOf(markup);
 		if (pos > 0) 
-			return target.substring(pos + markup.length() -1);// do not eliminate last /
-		return null;
+			recordId = target.substring(pos + markup.length() -1);// do not eliminate last /
+		
+		if (recordId != null)
+			recordIds.add(recordId);
 	}
 
 }
