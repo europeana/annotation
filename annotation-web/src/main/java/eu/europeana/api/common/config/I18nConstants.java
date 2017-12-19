@@ -17,6 +17,10 @@ public interface I18nConstants {
 	static final String TEST_USER_FORBIDDEN = "error.annotation_test_user_forbidden";
 	static final String LOCKED_MAINTENANCE = "error.annotation_lock_maintenance";
 	static final String AUTHENTICATION_FAIL = "error.annotation_authentication_fail";
+	static final String BASE64_DECODING_FAIL = "error.annotation_base64_encoding_fail";
+	static final String UNSUPPORTED_TOKEN_TYPE = "error.annotation_unsupported_token_type";
+	static final String INVALID_HEADER_FORMAT = "error.annotation_invalid_format";
+	
 	
 	static final String MESSAGE_IDENTIFIER_NOT_NULL = "error.message_identifier_not_null";
 	static final String MESSAGE_IDENTIFIER_NULL = "error.message_identifier_null";

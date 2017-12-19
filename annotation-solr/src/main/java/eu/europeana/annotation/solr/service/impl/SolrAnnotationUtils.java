@@ -281,6 +281,15 @@ public class SolrAnnotationUtils {
 		return resourceUrls;
 	}
 	
+	protected List<String> extractSourceUris(SpecificResource specificResource) {
+		List<String> sourceUrls = null;
+		//internet resource
+		if (specificResource.getSource() != null)
+			sourceUrls = Arrays.asList(new String[] { specificResource.getSource() });
+		
+		return sourceUrls;
+	}
+	
 	private List<String> extractRecordIds(List<String> targetUrls) {
 
 		List<String> recordIds = new ArrayList<String>(targetUrls.size());

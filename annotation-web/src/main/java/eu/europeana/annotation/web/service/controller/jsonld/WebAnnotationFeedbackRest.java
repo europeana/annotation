@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +29,12 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider, 
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request)
 					throws HttpException {
 
+		userToken = getUserToken(userToken, request);
+		
 		String action = "post:/annotation/{provider}/{identifier}/report";
 		return storeAnnotationReport(wskey, provider, identifier, userToken, action);
 	}
@@ -41,11 +46,14 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider, 
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request
 			) throws HttpException {
 
-			String action = "get:/annotation/{provider}/{identifier}/moderationsummary";
-			return getModerationReportSummary(wskey, provider, identifier, action);		
+		userToken = getUserToken(userToken, request);
+		
+		String action = "get:/annotation/{provider}/{identifier}/moderationsummary";
+		return getModerationReportSummary(wskey, provider, identifier, action);		
 	}
 	
 }

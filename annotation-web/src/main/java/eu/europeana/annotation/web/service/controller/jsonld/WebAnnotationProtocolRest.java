@@ -1,5 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -42,9 +44,12 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
+			HttpServletRequest request)
 					throws HttpException {
 
+		userToken = getUserToken(userToken, request);
+		
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
 
@@ -55,9 +60,12 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PROVIDER, required = false) String provider, 
 			@RequestBody String annotationPage,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request)
 					throws HttpException {
 
+		userToken = getUserToken(userToken, request);
+		
 		return storeAnnotations(wskey, provider, annotationPage, userToken);
 	}
 	
@@ -70,14 +78,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType
-		
-			)
-					throws HttpException {
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType,
+			HttpServletRequest request
+			)throws HttpException {
 
-//		if(!WebAnnotationFields.FORMAT_JSONLD.equals(format))
-//			throw new ParamValidationException(ParamValidationException.MESSAGE_FORMAT_NOT_SUPPORTED, 
-//					WebAnnotationFields.PATH_PARAM_FORMAT, format, HttpStatus.NOT_ACCEPTABLE, null);
+		userToken = getUserToken(userToken, request);
 		
 		MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 		if(motivation == null)
@@ -106,12 +111,13 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	
 	@RequestMapping(value = "/annotation/{provider}/{identifier}", method = RequestMethod.OPTIONS, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-	@ApiOperation(notes = "TODO", value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
+	@ApiOperation(value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
 	public ResponseEntity<String> options(
 			@PathVariable(value = WebAnnotationFields.PROVIDER) String provider, 
 			@PathVariable(value = WebAnnotationFields.IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required=false) String wskey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required=false) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required=false) String userToken,
+			HttpServletRequest request)
 					throws HttpException {
 
 		//the content response is delivered automatically by spring
@@ -121,15 +127,18 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	
 	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-	@ApiOperation(notes = "TODO", value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
+	@ApiOperation(value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
 	public ResponseEntity<String> options(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken)
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
+			HttpServletRequest request)
 					throws HttpException {
 
 		//the content response is delivered automatically by spring
-				return null;
-//				return optionsForCorsPreflight(wskey, provider, identifier, userToken);
+//				return null;
+		userToken = getUserToken(userToken, request);
+		
+		return optionsForCorsPreflight(wskey, null, null, userToken);
 	}
 	
 	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.PUT, 
@@ -139,8 +148,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request
 			) throws HttpException {
+		
+		userToken = getUserToken(userToken, request);
 		
 		String action = "put:/annotation/{provider}/{identifier}[.{format}]";
 		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
@@ -153,9 +165,12 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> deleteAnnotation(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken
+			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			HttpServletRequest request
 			) throws HttpException {
 
+		userToken = getUserToken(userToken, request);
+		
 		String action = "delete:/annotation/{provider}/{identifier}[.{format}]";
 		return deleteAnnotation(wskey, provider, identifier, userToken, action);
 	}

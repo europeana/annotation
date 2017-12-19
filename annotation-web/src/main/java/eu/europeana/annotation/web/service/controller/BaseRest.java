@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
@@ -44,7 +47,6 @@ import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.model.ApiResponse;
 import eu.europeana.apikey.client.ValidationRequest;
-
 
 public class BaseRest extends ApiResponseBuilder {
 
@@ -357,5 +359,66 @@ public class BaseRest extends ApiResponseBuilder {
 	public void setAuthorizationService(AuthorizationService authorizationService) {
 		this.authorizationService = authorizationService;
 	}
-	
+
+	/**
+	 * This method performs decoding of base64 string
+	 * 
+	 * @param base64Str
+	 * @return decoded string
+	 * @throws ApplicationAuthenticationException
+	 */
+	public String decodeBase64(String base64Str) throws ApplicationAuthenticationException {
+		String res = null;
+		try {
+			byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
+			res = new String(decodedBase64Str);
+		} catch (Exception e) {
+			throw new ApplicationAuthenticationException(
+					I18nConstants.BASE64_DECODING_FAIL, I18nConstants.BASE64_DECODING_FAIL, null);			
+		}
+		return res;
+	}
+
+	/**
+	 * This method takes user token from a HTTP header if it exists or from the
+	 * passed request parameter.
+	 * 
+	 * @param paramUserToken
+	 *            The HTTP request parameter
+	 * @param request
+	 *            The HTTP request with headers
+	 * @return user token
+	 * @throws ApplicationAuthenticationException
+	 */
+	public String getUserToken(String paramUserToken, HttpServletRequest request)
+			throws ApplicationAuthenticationException {
+		int USER_TOKEN_TYPE_POS = 0;
+		int BASE64_ENCODED_STRING_POS = 1;
+		String userToken = null;
+		String userTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (userTokenHeader != null) {
+			logger.trace("'Authorization' header value: " + userTokenHeader);
+			String[] headerElems = userTokenHeader.split(" ");
+			if(headerElems.length < 2 )
+				throw new ApplicationAuthenticationException(
+						I18nConstants.INVALID_HEADER_FORMAT, I18nConstants.INVALID_HEADER_FORMAT, null);
+
+			String userTokenType = headerElems[USER_TOKEN_TYPE_POS];
+			if (!AnnotationHttpHeaders.BEARER.equals(userTokenType))
+				throw new ApplicationAuthenticationException(
+						I18nConstants.UNSUPPORTED_TOKEN_TYPE, I18nConstants.UNSUPPORTED_TOKEN_TYPE,
+						new String[] {userTokenType});
+
+			String encodedUserToken = headerElems[BASE64_ENCODED_STRING_POS];
+			
+			userToken = decodeBase64(encodedUserToken);
+			logger.debug("Decoded user token: " + userToken);
+
+		} else {
+			//@deprecated to be removed in the next versions
+			//fallback to URL param 
+			userToken = paramUserToken;
+		}
+		return userToken;
+	}
 }
