@@ -89,3 +89,11 @@ adminsecretkey=Key2
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
+
+# validation
+api=annotation
+adminapikey=
+adminsecretkey=
+# cache time for validation of ApiKey in milliseconds (value of type long)
+# e.g. 1800000 is 30 minutes
+annotation.apikey.caching.time=1800000 

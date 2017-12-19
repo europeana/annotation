@@ -54,7 +54,6 @@ public class BaseRest extends ApiResponseBuilder {
      */
     private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
     
-    private static long STORAGE_TIME = 1800000L; // 30 minutes
 
 	@Resource
 	AnnotationConfiguration configuration;
@@ -291,11 +290,13 @@ public class BaseRest extends ApiResponseBuilder {
     	boolean res = false;
     	
     	// check in cache if there is a valid value
+    	// if yes - return true
     	long currentTime = System.currentTimeMillis();
     	Long cacheTime = apyKeyCache.get(apiKey);
     	if (cacheTime != null) {
     	    long diff = currentTime - cacheTime.longValue();
-    	    if (diff < STORAGE_TIME) 
+    	    long configCacheTime = getConfiguration().getApiKeyCachingTime();
+    	    if (diff < configCacheTime) 
     	    	return true; // we already have recent positive response from the client 
     	} 
     	
