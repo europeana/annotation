@@ -1,8 +1,14 @@
 package eu.europeana.annotation.web.service.impl;
 
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,10 +16,14 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.http.HttpStatus;
 
 import com.google.common.base.Strings;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
@@ -29,11 +39,19 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
+import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
@@ -47,10 +65,17 @@ import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.exception.response.BatchUploadException;
+import eu.europeana.annotation.web.model.BatchReportable;
+import eu.europeana.annotation.web.model.BatchUploadStatus;
+import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.config.i18n.I18nService;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -68,8 +93,27 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Resource
 	PersistentStatusLogService mongoStatusLogPersistence;
+	
+	@Resource
+	private AnnotationConfiguration configuration;
+	
+	
+	
+	@Resource
+	I18nService i18nService;
 
 	AnnotationBuilder annotationBuilder;
+	
+	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
+	
+
+	public AnnotationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public AnnotationIdHelper getAnnotationIdHelper() {
+		return annotationIdHelper;
+	}
 
 	public AnnotationBuilder getAnnotationHelper() {
 		if (annotationBuilder == null)
@@ -170,11 +214,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		 * parse JsonLd string using JsonLdParser. JsonLd string -> JsonLdParser
 		 * -> JsonLd object
 		 */
-		try{
+		try {
 			AnnotationLdParser europeanaParser = new AnnotationLdParser();
 			return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
-		}catch(AnnotationAttributeInstantiationException e){
-			throw new RequestBodyValidationException(annotationJsonLdStr, e);
+		} catch (AnnotationAttributeInstantiationException e) {
+			throw new RequestBodyValidationException(annotationJsonLdStr, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		}
 	}
 
@@ -373,7 +417,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
-
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		Annotation res = updateAndReindex(persistentAnnotation);
 
@@ -469,8 +512,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public Annotation disableAnnotation(Annotation annotation) {
 		PersistentAnnotation persistentAnnotation;
 		try {
-			if(annotation instanceof PersistentAnnotation)
-				persistentAnnotation = (PersistentAnnotation)annotation;
+			if (annotation instanceof PersistentAnnotation)
+				persistentAnnotation = (PersistentAnnotation) annotation;
 			else
 				persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
 			
@@ -544,6 +587,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return res;
 	}
 
+	@Override
+	public List<? extends Annotation> getExisting(List<String> annotationHttpUrls) {
+		try {
+			List<? extends Annotation> dbRes = getMongoPersistence().getAnnotationList(annotationHttpUrls);
+			return dbRes;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public boolean existsModerationInDb(AnnotationId annoId) {
 		boolean res = false;
 		try {
@@ -592,42 +645,52 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		case WebAnnotationFields.PROVIDER_HISTORY_PIN:
 			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_PUNDIT:
 			if (annoId.getIdentifier() == null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_BASE:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_WEBANNO:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_COLLECTIONS:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 		case WebAnnotationFields.PROVIDER_WITH:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri());
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
 
 		default:
-			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER,
-					annoId.getProvider());
+//			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER,
+//					annoId.getProvider());
+			throw new ParamValidationException("Invalid provider!", 
+					I18nConstants.INVALID_PROVIDER, 
+					new String[]{WebAnnotationFields.PROVIDER, annoId.getProvider()});
 		}
 
 	}
@@ -640,9 +703,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
 			if (!domains.contains(domainName))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-						"target.value", url);
+						I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
+						new String[]{"target.value", url});
 		} catch (URISyntaxException e) {
-			throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID, "target.value", url);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID, 
+					I18nConstants.MESSAGE_URL_NOT_VALID,
+					new String[]{"target.value", url});
 		}
 
 		return true;
@@ -681,15 +747,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	private void validateGeoTag(Body body) throws ParamValidationException {
 		if (!(body instanceof PlaceBody))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.class", body.getClass().toString());
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+					I18nConstants.MESSAGE_WRONG_CLASS,
+					new String[]{"tag.body.class", body.getClass().toString()});
 
 		Place place = ((PlaceBody) body).getPlace();
 		
 		if(StringUtils.isEmpty(place.getLatitude()))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD, "tag.body.latitude", null);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.latitude"});
 				
 		if(StringUtils.isEmpty(place.getLongitude()))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS, "tag.body.longitude", null);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+					I18nConstants.MESSAGE_WRONG_CLASS,
+					new String[]{"tag.body.longitude"});
 
 	}
 
@@ -697,20 +769,24 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// check mandatory fields
 		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-					"tag.body.type", body.getType().toString());
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.type", body.getType().toString()});
 		if (Strings.isNullOrEmpty(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-					"tag.body.source", body.getSource());
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.source", body.getSource()});
 
 		// source must be an URL
 		if (!eu.europeana.annotation.utils.UriUtils.isUrl(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-					"tag.format", body.getSource());
+					I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+					new String[]{"tag.format", body.getSource()});
 
 		// id is not a mandatory field but if exists it must be an URL
 		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.UriUtils.isUrl(body.getHttpUri()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
-					"tag.body.httpUri", body.getHttpUri());
+					I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
+					new String[]{"tag.body.httpUri", body.getHttpUri()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
@@ -737,12 +813,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		int MAX_TAG_LENGTH = 64;
 
 		if (eu.europeana.annotation.utils.UriUtils.isUrl(value))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG, "tag.format",
-					value);
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG,
+					I18nConstants.MESSAGE_INVALID_SIMPLE_TAG,
+					new String[]{value});
 		else if (value.length() > MAX_TAG_LENGTH)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE, "tag.size",
-					"" + value.length());
-
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE,
+					I18nConstants.MESSAGE_INVALID_TAG_SIZE,
+					new String[]{String.valueOf(value.length())});
 	}
 
 	protected void validateSemanticTagUrl(Body body) {
@@ -750,6 +827,39 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	}
 
+	@Override
+	public void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) {
+		int position = 1;
+		for (Annotation webanno : webAnnotations) {
+			try {
+				validateWebAnnotation(webanno);
+				// TODO: validate via, size must be 1
+				batchReportable.incrementSuccessCount();
+			} catch (ParamValidationException e) {
+				batchReportable.incrementFailureCount();
+				String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
+				batchReportable.addError(position, message);
+			}
+			position++;
+		}
+	}
+
+	@Override
+	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
+			List<String> missingHttpUrls) {
+		int position = 1;
+		for (Annotation anno : annotations) {
+			String httpUrl = anno.getHttpUrl();
+			if (httpUrl != null) {
+				if (missingHttpUrls.contains(httpUrl)) {
+					batchReportable.incrementFailureCount();
+					batchReportable.addError(position, "Annotation does not exist: " + httpUrl);
+				} else
+					batchReportable.incrementSuccessCount();
+			}
+			position++;
+		}
+	}
 
 	@Override
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException {
@@ -760,9 +870,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				URI cannonicalUri = URI.create(webAnnotation.getCanonical());
 				if (!cannonicalUri.isAbsolute())
 					throw new ParamValidationException("The canonical URI is not absolute:",
-							WebAnnotationFields.CANONICAL, webAnnotation.getCanonical());
+							I18nConstants.ANNOTATION_VALIDATION,
+							new String[]{WebAnnotationFields.CANONICAL, webAnnotation.getCanonical()});
 			} catch (IllegalArgumentException e) {
-				throw new ParamValidationException("Error when validating canonical URI:", WebAnnotationFields.CANONICAL, webAnnotation.getCanonical(), e);
+				throw new ParamValidationException("Error when validating canonical URI:",
+						I18nConstants.ANNOTATION_VALIDATION,
+						new String[]{WebAnnotationFields.CANONICAL, webAnnotation.getCanonical()},
+						e);
 			}
 		}
 		
@@ -771,7 +885,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			if (webAnnotation.getVia() instanceof String[]) {
 				for (String via : webAnnotation.getVia()) {
 					if(!(UriUtils.isUrl(via)))
-						throw new ParamValidationException("This is not a valid URL:", WebAnnotationFields.VIA, via);
+						throw new ParamValidationException("This is not a valid URL:", 
+								I18nConstants.ANNOTATION_VALIDATION,
+								new String[]{WebAnnotationFields.VIA, via});
 				}
 			}
 		}
@@ -794,5 +910,109 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			break;
 		}
 	}
-	
+
+	/**
+	 * Update existing annotations
+	 * @param batchReportable Reportable object for collecting information to be reported
+	 * @param existingAnnos Existing annotations
+	 * @param updateAnnos Update annotations
+	 * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting of annotations when returned as response
+	 */
+	@Override
+	public void updateExistingAnnotations(BatchReportable batchReportable, 
+			List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos,
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
+			throws AnnotationValidationException, BulkOperationException {
+		// the size of existing and update lists must match (this must be checked beforehand, so a runtime exception is sufficient here) 
+		if(existingAnnos.size() != updateAnnos.size())
+			throw new IllegalArgumentException("The existing and update lists must be of equal size");
+			
+		// Backup 
+		getMongoPersistence().createBackupCopy(existingAnnos);
+		
+		// merge update annotations (web anno) into existing annotations (db anno) 
+		for(int i = 0; i < existingAnnos.size(); i++) {
+			Annotation existingAnno = existingAnnos.get(i);
+			String existingHttpUrl = existingAnno.getAnnotationId().getHttpUrl();
+			Annotation updateAnno = updateAnnos.get(existingHttpUrl);
+			
+			// merge update annotation (web anno) into existing annotation (db anno)
+			this.mergeAnnotationProperties((PersistentAnnotation)existingAnno, updateAnno);
+			
+			// set last update
+			existingAnno.setLastUpdate(new Date());
+			
+			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
+			// of submitted annotations.
+			webAnnoStoredAnnoAnnoMap.put(updateAnno, existingAnno);
+		}
+		getMongoPersistence().update(existingAnnos);
+	}
+
+	/**
+	 * Update existing annotations
+	 * @param batchReportable Reportable object for collecting information to be reported
+	 * @param existingAnnos Existing annotations
+	 * @param updateAnnos Update annotations
+	 * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting of annotations when returned as response
+	 */
+	@Override
+	public void insertNewAnnotations(String provider, BatchUploadStatus uploadStatus, 
+			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
+			throws AnnotationValidationException, BulkOperationException {
+		if(provider == null || StringUtils.isEmpty(provider))
+			provider = annoDefaults.getProvider();
+		
+		int count = annotations.size();
+		
+		// 
+		boolean reuseViaIdentifier = mustProvideIdentifier(provider);
+		
+		List<AnnotationId> annoIdSequence = null;
+		if(!reuseViaIdentifier)
+			annoIdSequence = generateAnnotationIds(provider, count);
+		
+		// number of ids must equal number of annotations - not applicable in case the id is provided by the via field
+		if(!reuseViaIdentifier && (annotations.size() != annoIdSequence.size()))
+			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
+		
+		AnnotationId newAnnoId;
+		Annotation anno;
+		AnnotationId genAnnoId;
+		for(int i = 0; i < annotations.size(); i++) {
+			// default: use the annotation id from the sequence generated above 
+			if(!reuseViaIdentifier) {
+				genAnnoId = annoIdSequence.get(i);
+				newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
+			} else {// for some providers, the id must be provided by the via field 
+				String[] via = annotations.get(i).getVia();
+				if(via == null || via.length == 0)
+					throw new AnnotationValidationException("The annotation id must be provided by the via field for the provider: '"+provider+"'");
+				if(via.length > 1)
+					logger.warn("Multiple URLS provided in via field");
+				String viaUrl = via[0];
+				newAnnoId = getAnnotationIdHelper().getAnnotationIdBasedOnVia(getConfiguration().getAnnotationBaseUrl(), 
+						provider, viaUrl);
+			}
+			anno = annotations.get(i);
+			anno.setAnnotationId(newAnnoId);
+			annoDefaults.putAnnotationDefaultValues(anno);
+			// store annotation in the "web annotation - stored annotation" map - used to preserve the order
+			// of submitted annotations.
+			webAnnoStoredAnnoAnnoMap.put(anno, anno);
+		}
+		getMongoPersistence().create(annotations);
+	}
+
+	protected boolean mustProvideIdentifier(String provider) {
+		return provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_HISTORY_PIN) 
+				|| provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_PUNDIT);
+	}
+
+	public List<AnnotationId> generateAnnotationIds(String provider, int count) {
+		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(provider, count);
+		return annoIdSequence;
+	}
+
 }

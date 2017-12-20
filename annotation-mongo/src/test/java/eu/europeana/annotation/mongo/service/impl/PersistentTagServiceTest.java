@@ -22,7 +22,7 @@ import eu.europeana.annotation.mongo.exception.InvalidTagException;
 import eu.europeana.annotation.mongo.model.PersistentTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
-import eu.europeana.corelib.db.dao.NosqlDao;
+import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",

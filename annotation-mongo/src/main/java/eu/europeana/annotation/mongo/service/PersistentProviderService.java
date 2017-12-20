@@ -5,7 +5,7 @@ import java.util.List;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.mongo.model.internal.PersistentProvider;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentProviderService extends AbstractNoSqlService<PersistentProvider, String>{
 

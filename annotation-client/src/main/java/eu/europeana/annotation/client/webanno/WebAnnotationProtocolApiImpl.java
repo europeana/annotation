@@ -128,4 +128,17 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		return res;
 	}
 
+	@Override
+	public ResponseEntity<String> uploadAnnotations(String wskey, String userToken, String tag, Boolean indexOnCreate, String provider) {
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.uploadAnnotations(wskey, userToken,tag, indexOnCreate, provider);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the uploadAnnotations method", e);
+		}
+
+		return res;
+	}
+
 }

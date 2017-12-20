@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.utils;
 
+import java.net.URL;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
@@ -302,5 +303,27 @@ public class AnnotationIdHelper {
 			res = WebAnnotationFields.SLASH + collection + WebAnnotationFields.SLASH + object;
     	return res;
     }
+    
+    /**
+     * Get ID part form URI string
+     * @param uriStr URI string
+     * @return ID part
+     */
+    public String getIdPartFromUri(String uriStr) {
+    	return uriStr.substring(uriStr.lastIndexOf('/')+1, uriStr.length());
+    }
+    
+
+    /**
+     * Create annotation ID based on via URL
+     * @param baseUrl Base URL for annotation id
+     * @param provider Provider
+     * @param via via URL
+     * @return new annotation ID
+     */
+    public BaseAnnotationId getAnnotationIdBasedOnVia(String baseUrl, String provider, String via) {
+    	return new BaseAnnotationId(baseUrl, provider, getIdPartFromUri(via));
+    }
+    
 	
 }

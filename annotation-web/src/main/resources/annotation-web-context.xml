@@ -62,7 +62,6 @@
     	 --> 	
     </beans:bean>
     
-	
     
     <!--  java api bean -->
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
@@ -120,5 +119,10 @@
             <aop:around pointcut-ref="serviceMethod" method="profile" />
         </aop:aspect>
     </aop:config>
+    
+    <!-- configurable error messages -->
+    <beans:bean id="i18nService" class="eu.europeana.api.commons.config.i18n.I18nServiceImpl">
+    	<beans:property name="messageSource" ref="annotation_i18n_messageSource"/>
+    </beans:bean>
    
 </beans:beans>

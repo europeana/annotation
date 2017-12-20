@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,15 +20,15 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.search.SortFields;
 import eu.europeana.annotation.solr.vocabulary.search.SortOrder;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
-import eu.europeana.annotation.web.http.AnnotationProfiles;
-import eu.europeana.annotation.web.http.HttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -76,13 +75,14 @@ public class WebAnnotationSearchRest extends BaseRest {
 		try {
 
 			//** 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wskey);
+			validateApiKey(wskey, WebAnnotationFields.READ_METHOD);
 
 			//** Process input params
 			queryString = queryString.trim();
 			if (StringUtils.isBlank(queryString))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_BLANK_PARAMETER_VALUE,
-						WebAnnotationFields.PARAM_QUERY, queryString);
+						I18nConstants.ANNOTATION_VALIDATION,
+						new String[]{WebAnnotationFields.PARAM_QUERY, queryString});
 
 			String sortFieldStr = null;
 			if (sortField != null)

@@ -1,6 +1,6 @@
 package eu.europeana.annotation.mongo.model;
 
-import com.google.code.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Embedded;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
@@ -26,6 +26,7 @@ public class MongoAnnotationId extends BaseAnnotationId implements PersistentObj
 	public MongoAnnotationId(AnnotationId volatileObject){
 		super();
 		copyFrom(volatileObject);
+		//TODO:remove
 		setHttpUrl(toHttpUrl());
 	}
 }

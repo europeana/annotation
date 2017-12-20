@@ -232,10 +232,10 @@ public abstract class BasePropertyLoaderListener implements ApplicationListener<
 	}
 
 	protected File getPropertiesFile() {
-		String fileName = "annotation.properties";
 		
 		if(propertiesFile == null){
-			propertiesFile = getConfigFile(fileName);
+			//if not already set, initilize with the default filename
+			propertiesFile = getConfigFile("annotation.properties");
 		}
 		return propertiesFile;
 	}

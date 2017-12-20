@@ -1,5 +1,10 @@
 package eu.europeana.annotation.mongo.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -14,15 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
-import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
-import eu.europeana.annotation.mongo.service.PersistentApiWriteLockServiceImpl;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;;
 
 
 

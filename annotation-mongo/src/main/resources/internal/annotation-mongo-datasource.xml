@@ -28,28 +28,18 @@
 		http://www.springframework.org/schema/tx/spring-tx.xsd
 	">
 
+	<bean id="annotation_db_mongoConnector" class="eu.europeana.corelib.db.wrapper.ApiMongoConnector" destroy-method="close"/>
 	
-	<bean id="annotation_db_mongoProvider" class="eu.europeana.corelib.storage.impl.MongoProviderImpl">
-		<constructor-arg value="#{annotationProperties['mongodb.annotation.host']}" type="java.lang.String"/>
-		<constructor-arg value="#{annotationProperties['mongodb.annotation.port']}" type="java.lang.String"/>
+
+	<bean id="annotation_db_morphia_datastore_annotation" factory-bean="annotation_db_mongoConnector" factory-method="createDatastore">
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.connectionUrl']}" type="java.lang.String" />
+		<!--  not used anymore, dbname taken from connection URL 
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.dbname']}" type="java.lang.String" />
+		-->
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.truststore']}" type="java.lang.String" />
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.truststorepass']}" type="java.lang.String" />
+	
 	</bean>
-	
-	<bean id="annotation_db_mongoConnector" class="eu.europeana.corelib.db.wrapper.ApiMongoConnector" />
-	
-	<!--  connection to the annotation database -->
-	<bean id="annotation_db_morphia_datastore_annotation" factory-bean="annotation_db_mongoConnector"
-			factory-method="createDatastore">
-			<constructor-arg value="Annotation" />
-			<constructor-arg value="#{annotation_db_mongoProvider.getMongo()}" />
-			<constructor-arg value="#{annotationProperties['mongodb.annotation.dbname']}"
-				type="java.lang.String" />
-			<constructor-arg
-				value="#{annotationProperties['mongodb.annotation.username']}"
-				type="java.lang.String" />
-			<constructor-arg
-				value="#{annotationProperties['mongodb.annotation.password']}"
-				type="java.lang.String" />
-		</bean>
 	
 	
 	

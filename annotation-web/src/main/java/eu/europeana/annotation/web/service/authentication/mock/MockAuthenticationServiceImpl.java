@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
@@ -29,10 +30,10 @@ import eu.europeana.annotation.web.exception.authentication.ApplicationAuthentic
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.model.Application;
 import eu.europeana.annotation.web.service.authentication.model.ApplicationDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
+import eu.europeana.api.common.config.I18nConstants;
 
 public class MockAuthenticationServiceImpl implements AuthenticationService, ResourceServerTokenServices
 // , ApiKeyService
@@ -63,7 +64,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 	private Map<String, Application> cachedClients = new HashMap<String, Application>();
 
-	protected Map<String, Application> getCachedClients() {
+	public Map<String, Application> getCachedClients() {
 		return cachedClients;
 	}
 
@@ -81,8 +82,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 			getLogger().debug("Loaded Api Key: " + app.getApiKey());
 		} catch (IOException e) {
-			throw new ApplicationAuthenticationException(
-					ApplicationAuthenticationException.MESSAGE_APIKEY_FILE_NOT_FOUND, path, e);
+			throw new ApplicationAuthenticationException(null, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, e);
 		}
 		return app;
 	}
@@ -136,8 +136,13 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		Application application;
 
 		for (PersistentClient storedClient : allStoredClients) {
-			System.out.println(storedClient.getAuthenticationConfigJson());
-			application = parseApplication(storedClient.getAuthenticationConfigJson());
+//			System.out.println(storedClient.getAuthenticationConfigJson());
+			//TODO allow both until the databases are migrated
+			if(storedClient.getClientApplication() != null)
+				application = storedClient.getClientApplication();
+			else
+				application = parseApplication(storedClient.getAuthenticationConfigJson());
+			
 			// put app in the cache
 			getCachedClients().put(application.getApiKey(), application);
 		}
@@ -240,7 +245,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 			user = getUserByToken(userToken, clientApp);
 
 		} catch (ApplicationAuthenticationException e) {
-			throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_INVALID_TOKEN, userToken, e);
+			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userToken}, e);
 		}
 
 		// refresh cache - add specific api key if found in MongoDB
@@ -254,7 +259,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 		// unknown user
 		if (user == null)
-			throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_INVALID_TOKEN, userToken);
+			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userToken});
 
 		return user;
 
@@ -298,8 +303,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 			app = loadApiKey(apiKey);
 
 		if (app == null)
-			throw new ApplicationAuthenticationException(ApplicationAuthenticationException.MESSAGE_INVALID_APIKEY,
-					apiKey);
+			throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
 
 		return app;
 	}

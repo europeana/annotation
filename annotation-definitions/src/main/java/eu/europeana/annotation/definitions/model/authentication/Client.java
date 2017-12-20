@@ -6,8 +6,16 @@ public interface Client {
 
 	void setAuthenticationConfigJson(String authenticationConfigJson);
 
+	/**
+	 * @deprecated EA-760 to be removed in follow up versions
+	 * @return
+	 */
 	String getAuthenticationConfigJson();
 
+	/**
+	 * 
+	 * @param clientId the apiKey of the client application
+	 */
 	void setClientId(String clientId);
 
 	String getClientId();
@@ -19,5 +27,9 @@ public interface Client {
 	void setCreationDate(Date creationDate);
 
 	Date getCreationDate();
+	
+	void setClientApplication(Application clientApplication);
+	
+	Application getClientApplication();
 
 }

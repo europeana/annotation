@@ -1,7 +1,10 @@
 package eu.europeana.annotation.solr.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.solr.client.solrj.SolrServerException;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -20,8 +23,24 @@ public interface SolrAnnotationService {
 	 * @param anno
 	 * @return 
 	 */
+
 	public boolean store(Annotation anno) throws AnnotationServiceException ;
+
+
+	/**
+	 * This method stores a list of SolrAnnotation objects in SOLR.
+	 * @param anno
+	 * @throws IOException 
+	 * @throws SolrServerException 
+	 */
+	public void store(List<? extends Annotation> annos) throws AnnotationServiceException, SolrServerException, IOException ;
 	
+	/**
+	 * This method stores a SolrAnnotation object in SOLR.
+	 * @param anno
+	 * @param doCommit commit
+	 */
+	public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException ;	
 	
 	/**
 	 * This method updates a SolrAnnotation object in SOLR.

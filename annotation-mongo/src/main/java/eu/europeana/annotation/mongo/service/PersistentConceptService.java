@@ -7,7 +7,7 @@ import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentConcept;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentConceptService  extends AbstractNoSqlService<PersistentConcept, String> {
 

@@ -38,6 +38,7 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String LINK_MINIMAL = "/link/minimal.json";
 	public static final String LINK_STANDARD = "/link/standard.json";
 	public static final String TAG_STANDARD = "/tag/standard.json";
+	public static final String TAG_MINIMAL = "/tag/minimal.json";
 	public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
 	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 	public static final String TAG_STANDARD_TEST_VALUE_TARGET = "http://data.europeana.eu/item/09102/_UEDIN_214";
@@ -79,6 +80,7 @@ public class BaseWebAnnotationProtocolTest {
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
 	public String TEST_USER_TOKEN = "tester1";
+	public String ADMIN_USER_TOKEN = "admin";
 	public String ANONYMOUS_USER_TOKEN = "anonymous";
 
 	private WebAnnotationProtocolApi apiClient;
@@ -144,6 +146,18 @@ public class BaseWebAnnotationProtocolTest {
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
 				WebAnnotationFields.PROVIDER_WEBANNO, null, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
+		return storedResponse;
+	}
+	
+	protected ResponseEntity<String> storeTestAnnotation(String tag, String identifier, boolean indexOnCreate) throws IOException {
+
+		String requestBody = getJsonStringInput(tag);
+		
+		/**
+		 * store annotation
+		 */
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
+				WebAnnotationFields.PROVIDER_WEBANNO, identifier, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 
@@ -234,6 +248,25 @@ public class BaseWebAnnotationProtocolTest {
 	protected Annotation createTestAnnotation(String tag, boolean indexOnCreate) throws JsonParseException, IOException {
 
 		ResponseEntity<String> response = storeTestAnnotation(tag, indexOnCreate);
+		Annotation annotation = parseAndVerifyTestAnnotation(response);
+
+		return annotation;
+		
+	}
+
+	/**
+	 * This method creates test annotation object with an identifier allowing to decide if it should be indexed or not.
+	 * 
+	 * @param tag Annotation tag
+	 * @param indexOnCreate Flag to decide if the test annotation should be indexed or not
+	 * @return response entity that contains response body, headers and status
+	 *         code.
+	 * @throws JsonParseException
+	 * @throws IOException 
+	 */
+	protected Annotation createTestAnnotation(String tag, String identifier, boolean indexOnCreate) throws JsonParseException, IOException {
+
+		ResponseEntity<String> response = storeTestAnnotation(tag, identifier, indexOnCreate);
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 
 		return annotation;
@@ -361,22 +394,44 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 	
-	/**
-	 * @deprecated numericId is ambiguous, use relative_uri or full uri (annotationId) when deleting annotations 
-	 * @param numericId
-	 */
-	protected void deleteAnnotation(Integer numericId) {
-		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
-		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericId);
-		assertEquals(HttpStatus.OK, re.getStatusCode());
-		log.trace("Annotation deleted: " + numericId);
+	protected Annotation createTranscription(String requestBody) throws JsonParseException {
+		ResponseEntity<String> response = getApiClient().createAnnotation(
+				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
+				TEST_USER_TOKEN, 
+				null 
+				);
+				
+				
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getCreator());
+		assertNotNull(storedAnno.getGenerator());
+		return storedAnno;
 	}
 	
-	protected Integer getNumericAnnotationId(Annotation annotation) {
-		String annotIdUriStr = annotation.getAnnotationId().toString();
-		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
-		return numericId;
+	/**
+	 * @param annotation
+	 */
+	protected void deleteAnnotation(Annotation annotation) {
+		deleteAnnotation(
+				annotation.getAnnotationId().getProvider(), 
+				annotation.getAnnotationId().getIdentifier());
 	}
+	
+  protected void deleteAnnotation(String provider, String identifier) {
+		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(provider, identifier);
+		assertEquals(HttpStatus.OK, re.getStatusCode());
+		log.trace("Annotation deleted: /" + provider + "/" + identifier);
+	}
+	
+//	protected Integer getNumericAnnotationId(Annotation annotation) {
+//		String annotIdUriStr = annotation.getAnnotationId().toString();
+//		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
+//		return numericId;
+//	}
 	
 	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
 		
@@ -389,19 +444,23 @@ public class BaseWebAnnotationProtocolTest {
 		return testAnnotations;
 	}
 	
-	protected Integer[] getNumericAnnotationIds(Annotation[] annotations) {
-		Integer[] annotationIds = new Integer[annotations.length];
-		for(int i = 0; i < annotations.length; i++) {
-			annotationIds[i] = getNumericAnnotationId(annotations[i]);
-		}
-		return annotationIds;
-	}
+//	protected Integer[] getNumericAnnotationIds(Annotation[] annotations) {
+//		Integer[] annotationIds = new Integer[annotations.length];
+//		for(int i = 0; i < annotations.length; i++) {
+//			annotationIds[i] = getNumericAnnotationId(annotations[i]);
+//		}
+//		return annotationIds;
+//	}
 	
-	protected void deleteAnnotations(Integer[] numericIds) {
-		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
-		for(int i = 0; i < numericIds.length; i++) {
-			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(numericIds[i]);
-			assertEquals(re.getStatusCode(), HttpStatus.OK);
-		}
+//	protected void deleteAnnotations(Integer[] numericIds) {
+//		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+//		for(int i = 0; i < numericIds.length; i++) {
+//			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(null, ""+numericIds[i]);
+//			assertEquals(re.getStatusCode(), HttpStatus.OK);
+//		}
+//	}
+	
+	protected ResponseEntity<String> getAnnotation(Annotation anno) {
+		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getProvider(), anno.getAnnotationId().getIdentifier());
 	}
 }

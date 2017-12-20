@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
-
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryResults;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
+import org.springframework.stereotype.Component;
 
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.ProviderValidationException;
@@ -14,8 +14,7 @@ import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.mongo.model.PersistentProviderImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentProvider;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
-import org.springframework.stereotype.Component;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Component
 public class PersistentProviderServiceImpl extends

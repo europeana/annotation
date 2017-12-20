@@ -6,17 +6,19 @@ import java.util.List;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlService;
+import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentAnnotationService extends AbstractNoSqlService<PersistentAnnotation, String>{
 
 //	public abstract ImageAnnotation store(ImageAnnotation object) throws AnnotationValidationException;
 
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
-
+	
 //	public abstract ObjectTag store(ObjectTag object) throws AnnotationValidationException;
 
 	public List<? extends Annotation> getAnnotationList(String europeanaId);
@@ -88,6 +90,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public Annotation updateStatus(Annotation newAnnotation);
 	
 	public abstract AnnotationId generateAnnotationId(String provider);
+	
+	public abstract List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength);
 //	public abstract AnnotationId generateAnnotationId(String resourceId);
 
 	public abstract Annotation findByTagId(String tagId);
@@ -101,6 +105,33 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
+
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param annos List of annotations
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	public void create(List<? extends Annotation> annos) throws AnnotationValidationException, BulkOperationException;
+	
+	/**
+	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
+	 * @param existingAnnos List of existing annotations
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	public void update(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, BulkOperationException;
+
+	/**
+	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
+	 * @param annos List of annotations
+	 * @param update Update mode: true if existing annotations should be updated
+	 * @throws AnnotationValidationException
+	 * @throws AnnotationMongoException
+	 */
+	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException;
+
+	public void createBackupCopy(List<? extends Annotation> existingAnnos);
 
 }
 

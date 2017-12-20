@@ -4,14 +4,14 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
+import eu.europeana.api.commons.web.model.ApiResponse;
 
 @JsonSerialize(include = Inclusion.NON_EMPTY)
 public class AnnotationOperationResponse extends ApiResponse{
 	
 	Annotation annotation;
 	
-	String status;
+	private BatchReportable operationReport;
 
 	public static String ERROR_NO_OBJECT_FOUND = "No Object Found!";
 	public static String ERROR_VISIBILITY_CHECK = "This annotation object is marked as not visible!";
@@ -28,6 +28,7 @@ public class AnnotationOperationResponse extends ApiResponse{
 	
 	public static String ERROR_STATUS_ALREADY_SET = 
 			"A given status type is already set: ";
+
 	
 	public AnnotationOperationResponse(String apiKey, String action){
 		super(apiKey, action);
@@ -41,12 +42,12 @@ public class AnnotationOperationResponse extends ApiResponse{
 		this.annotation = annotation;
 	}
 
-	public String getStatus() {
-		return status;
+	public BatchReportable getOperationReport() {
+		return operationReport;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setOperationReport(BatchReportable operationReport) {
+		this.operationReport = operationReport;
 	}
 
 }

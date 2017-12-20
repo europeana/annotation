@@ -22,6 +22,8 @@ The following properties are optional in all annotations:
 						<li><a href="#semantictag_specific">Create (Semantic) Tag - Specific Resource</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 						<li><a href="#objectlink_specificRelation">Create Object Link - by specifying a relation type</a></li>
+						<li><a href="#transcription">Create Transcription Annotation</a></li>
+						<li><a href="#tag_webResource">Create (Object) tag - web resource</a></li>
 					</ul>
 
 <h3 id="tag_bodyValue">Create (Object) Tag</h3>
@@ -217,6 +219,46 @@ The json-ld serialization available in the following box is a valid input to be 
     }
   },
   "target": "http://data.europeana.eu/item/2059207/data_sounds_T471_5"
+}
+</textarea>
+
+<h3 id="transcription">Create annotation for transcription</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Transcription annotation</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+
+<br>
+(motivation:transcribing)  
+<textarea rows="15" cols="120" name="jsonldobjecttranscription">
+{
+  <% if(!hasType){ %>    "motivation": "transcribing",<% }//endif %>
+  "body": {
+    "id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
+    "language": "de",
+    "format": "text/html"
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/2020601/contributions_20841",
+    "source": 
+    "http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"
+  }
+}
+</textarea>
+
+<h3 id="tag_webResource">Create (Object) tag - web resource </h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Web resource annotation</b>. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+
+<br>
+(motivation:tagging)  
+<textarea rows="15" cols="120" name="jsonldobjecttaggingwebresource">
+{
+  <% if(!hasType){ %>    "motivation": "tagging",<% }//endif %>
+  "bodyValue": "MyTag",
+  "target": {
+    "type": "SpecificResource",
+    "scope": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+    "source": "http://comhaltasarchive.ie/tracks/12535"
+  }
 }
 </textarea>
 

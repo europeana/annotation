@@ -1,0 +1,33 @@
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "type": "AnnotationPage",
+  "items": [
+    {
+      "bodyValue": "tag1",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "bodyValue": "tag2",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "http://data.europeana.eu/annotation/base/1",
+      "bodyValue": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "bodyValue": "tag3",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "http://data.europeana.eu/annotation/base/2",
+      "bodyValue": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    }
+  ]
+}

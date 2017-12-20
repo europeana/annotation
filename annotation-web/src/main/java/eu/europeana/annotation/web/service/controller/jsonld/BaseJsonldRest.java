@@ -1,6 +1,10 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -9,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 
@@ -18,7 +23,9 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
+import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -26,23 +33,33 @@ import eu.europeana.annotation.definitions.model.moderation.Vote;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseVote;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
+import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
-import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
+import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
-import eu.europeana.annotation.web.http.HttpHeaders;
+import eu.europeana.annotation.web.model.BatchOperationStep;
+import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
-import eu.europeana.annotation.web.service.authentication.model.Application;
+import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseJsonldRest extends BaseRest {
 	
@@ -79,7 +96,8 @@ public class BaseJsonldRest extends BaseRest {
 			// already exist in the database
 			if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
 				throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
-						"/provider/identifier", annoId.toRelativeUri());
+						I18nConstants.ANNOTATION_VALIDATION,
+						new String[]{"/provider/identifier", annoId.toRelativeUri()});
 			// 2.1 validate annotation properties
 			getAnnotationService().validateWebAnnotation(webAnnotation);
 
@@ -113,14 +131,125 @@ public class BaseJsonldRest extends BaseRest {
 			return response;
 
 		} catch (JsonParseException e) {
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationValidationException e) { // TODO: transform to
 													// checked annotation type
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationAttributeInstantiationException e) {
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationInstantiationException e) {
-			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e); 
+			throw new HttpException(null, I18nConstants.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e); 
+		} catch (HttpException e) {
+			// avoid wrapping HttpExceptions
+			throw e;
+		} catch (Exception e) {
+			throw new InternalServerException(e);
+		}
+
+	}
+	
+	
+	protected ResponseEntity<String> storeAnnotations(String wsKey, String provider, String annotationPageIn, String userToken) throws HttpException {
+		try {
+
+			// SET DEFAULTS
+			Application app = getAuthenticationService().getByApiKey(wsKey);
+			
+			// TODO #152 Authorization
+			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, Operations.CREATE);
+			
+			// parse annotation page
+			AnnotationPageParser annoPageParser = new AnnotationPageParser();
+			AnnotationPage annotationPage = annoPageParser.parseAnnotationPage(annotationPageIn);
+			List<? extends Annotation> annotations = annotationPage.getAnnotations();
+			
+			// initialise upload status
+			BatchUploadStatus uploadStatus = new BatchUploadStatus();
+			uploadStatus.setTotalNumberOfAnnotations(annotations.size());
+			
+			// validate annotations
+			uploadStatus.setStep(BatchOperationStep.VALIDATION);
+			getAnnotationService().validateWebAnnotations(annotations, uploadStatus);
+			
+			// in case of validation errors, return error report
+			if(uploadStatus.getFailureCount() > 0) 
+				throw new BatchUploadException(uploadStatus.toString(), uploadStatus);
+			
+			AnnotationsList webAnnotations = new AnnotationsList(annotationPage.getAnnotations());
+
+			// annotations are separated into those with identifier (assumed updates) 
+			// and those without identifier (new annotations which should be created);
+			// first annotations with identifier (assumed updates) 
+			AnnotationsList annosWithId = webAnnotations.getAnnotationsWithId();
+			uploadStatus.setNumberOfAnnotationsWithId(annosWithId.size());
+
+			// verify if the annotations with ID exist in the database
+			List<String> httpUrls = annosWithId.getHttpUrls();
+			AnnotationsList existingInDb;
+			
+			if(!httpUrls.isEmpty())
+				existingInDb = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
+			else
+				existingInDb = new AnnotationsList(new ArrayList<AbstractAnnotation>(0));
+				
+			// consistency (annotations with identifier must match existing annotations)
+			uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
+			if(annosWithId.size() != existingInDb.size()) {
+				// remove existing HTTP URLs, the remaining list contains only missing HTTP URLs
+				httpUrls.removeAll(existingInDb.getHttpUrls());
+				getAnnotationService().reportNonExisting(annotations, uploadStatus, httpUrls);
+				throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
+			}			
+			
+			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap = webAnnotations.getAnnotationsMap();
+			
+			// update existing annotations
+			HashMap<String, ? extends Annotation> updateAnnos = annosWithId.getHttpUrlAnnotationsMap();
+			if(updateAnnos.size() > 0) {
+				uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
+				getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(), updateAnnos, webAnnoStoredAnnoAnnoMap);
+			}
+			// annotations are separated into those with identifier (assumed updates) 
+			// and those without identifier (new annotations which should be created);
+			// second annotations without (assumed inserts) 
+			AnnotationsList annosWithoutId = webAnnotations.getAnnotationsWithoutId();
+			uploadStatus.setStep(BatchOperationStep.INSERT_NEW_ANNOTATIONS);
+			uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
+			// default values
+			if(annosWithoutId.size() > 0) {
+				AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder()
+						.setProvider(provider)
+						.setGenerator(buildDefaultGenerator(app))
+						.setUser(user)
+						.build();
+				getAnnotationService().insertNewAnnotations(provider, uploadStatus, annosWithoutId.getAnnotations(), annoDefaults, webAnnoStoredAnnoAnnoMap);
+			}
+			
+			// create result annotation page
+			AnnotationPage apRes = new AnnotationPageImpl();
+			List<Annotation> resList = new ArrayList<Annotation>();
+			// the "web annotation - stored annotation" map has preserved the order of submitted annotations
+			for (Annotation ann : webAnnoStoredAnnoAnnoMap.keySet()) 
+			    resList.add(webAnnoStoredAnnoAnnoMap.get(ann));
+			apRes.setAnnotations(resList);
+			apRes.setTotalInCollection(resList.size());
+			apRes.setTotalInPage(resList.size());
+//			apRes.setCurrentPageUri("http://UNDEFINED");
+			
+			String jsonLd = (new AnnotationPageSerializer(apRes)).serialize(SearchProfiles.STANDARD);
+
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(3);
+			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+			headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
+
+			// build response
+			ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
+			
+			return response;
+
+		} catch (AnnotationInstantiationException e) {
+			throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e); 
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			throw e;
@@ -151,7 +280,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
+			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
@@ -228,7 +357,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
+			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// CHECK user autorization
 			getAuthorizationService().authorizeUser(userToken, wsKey, Operations.RETRIEVE);
@@ -249,8 +378,7 @@ public class BaseJsonldRest extends BaseRest {
 				// provided
 				// annotation id doesn’t exists )
 				if (!getAnnotationService().existsInDb(annoId))
-					throw new AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND,
-							annoId.toRelativeUri());
+					throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{annoId.toRelativeUri()});
 			}
 
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -282,7 +410,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey);
+			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
@@ -338,12 +466,15 @@ public class BaseJsonldRest extends BaseRest {
 			String userToken) throws HttpException {
 
 		// First check the API key as prio 0 check
-		validateApiKey(wsKey);
+		validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 		// check identifier
 		if (provider == null || identifier == null)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
-					"/provider/identifier", identifier, HttpStatus.NOT_FOUND, null);
+					I18nConstants.ANNOTATION_VALIDATION,
+					new String[]{"/provider/identifier", identifier},
+					HttpStatus.NOT_FOUND,
+					null);
 
 		// 1. build annotation id object
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
@@ -362,7 +493,10 @@ public class BaseJsonldRest extends BaseRest {
 		// already exist in the database
 		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-					"/provider/identifier", annoId.toRelativeUri(), HttpStatus.NOT_FOUND, null);
+					I18nConstants.ANNOTATION_VALIDATION,
+					new String[]{"/provider/identifier", annoId.toRelativeUri()},
+					HttpStatus.NOT_FOUND, 
+					null);
 
 		return annoId;
 	}
@@ -432,16 +566,14 @@ public class BaseJsonldRest extends BaseRest {
 			return response;
 
 		} catch (JsonParseException e) {
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (AnnotationValidationException e) { 
-			throw new RequestBodyValidationException(annotation, e);
+			throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 		} catch (HttpException e) {
 			//TODO: change this when OAUTH is implemented and the user information is available in service
-			if(e instanceof UserAuthorizationException)
-				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
 		} catch (AnnotationInstantiationException e) {
-			throw new HttpException("The submitted annotation body is invalid!", HttpStatus.BAD_REQUEST, e);
+			throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION, null, HttpStatus.BAD_REQUEST, e);
 		} catch (Exception e) {
 			throw new InternalServerException(e);
 		}
@@ -552,8 +684,6 @@ public class BaseJsonldRest extends BaseRest {
 		} catch (HttpException e) {
 			// avoid wrapping HttpExceptions
 			//TODO: change this when OAUTH is implemented and the user information is available in service
-			if(e instanceof UserAuthorizationException)
-				((UserAuthorizationException) e).setParamValue(wsKey);
 			throw e;
 		} catch (Exception e) {
 			throw new InternalServerException(e);
@@ -623,9 +753,8 @@ public class BaseJsonldRest extends BaseRest {
 	private void validateVote(ModerationRecord moderationRecord, Vote vote) throws OperationAuthorizationException {
 		for (Vote existingVote : moderationRecord.getReportList()) {
 			if (vote.getUserId().equals(existingVote.getUserId()))
-				throw new OperationAuthorizationException(
-						OperationAuthorizationException.MESSAGE_OPERATION_NOT_AUTHORIZED,
-						"A report from the same users exists in database!" + vote.getUserId());
+				throw new OperationAuthorizationException("A report from the same users exists in database!",
+						I18nConstants.OPERATION_NOT_AUTHORIZED, new String[]{vote.getUserId()});
 		}
 	}
 

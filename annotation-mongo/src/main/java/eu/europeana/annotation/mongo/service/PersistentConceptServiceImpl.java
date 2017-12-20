@@ -3,9 +3,10 @@ package eu.europeana.annotation.mongo.service;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
+import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
 
 import eu.europeana.annotation.definitions.exception.ConceptValidationException;
@@ -15,8 +16,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidConceptException;
 import eu.europeana.annotation.mongo.model.PersistentConceptImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentConcept;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
-import org.springframework.stereotype.Component;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 
 @Component
@@ -78,7 +78,7 @@ public class PersistentConceptServiceImpl extends
 			throws AnnotationMongoException {
 		int affected = res.getN();
 		if(affected != 1 )
-			throw new AnnotationMongoException("Delete operation Failed!" + res.getError(), res.getLastError().getException());
+			throw new AnnotationMongoException("Delete operation Failed!" + res);
 	}
 
 	@Override

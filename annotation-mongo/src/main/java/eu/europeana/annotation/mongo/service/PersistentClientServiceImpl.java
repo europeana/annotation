@@ -2,18 +2,18 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
 
+import org.mongodb.morphia.query.Query;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.query.Query;
-
 import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.mongo.dao.PersistentClientDao;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
+
 
 @Configuration
 @EnableCaching
@@ -46,6 +46,11 @@ public class PersistentClientServiceImpl extends
 		return super.store(client);
 	}
 	
+	@Override
+	public PersistentClient update(PersistentClient client) throws AnnotationMongoException {
+		return super.store(client);
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected PersistentClientDao<PersistentClient, String> getClientDao() {
 		return (PersistentClientDao<PersistentClient, String>) getDao();
@@ -68,4 +73,5 @@ public class PersistentClientServiceImpl extends
 //			return null;
 //		return whitelistList.get(whitelistList.size() - 1);
 //	}
+	
 }

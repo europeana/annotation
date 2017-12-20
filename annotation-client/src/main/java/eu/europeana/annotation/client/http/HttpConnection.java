@@ -151,8 +151,8 @@ public class HttpConnection {
 		for (Header header : method.getResponseHeaders())
 			  headers.add(header.getName(), header.getValue());
 
-		if (method.getStatusCode() >= STATUS_OK_START && method.getStatusCode() <= STATUS_OK_END) {
-			String res = "";
+//		if (method.getStatusCode() >= STATUS_OK_START && method.getStatusCode() <= STATUS_OK_END) {
+			String res = null;
 			if (method.getResponseBody() != null && method.getResponseBody().length > 0) {
 	            byte[] byteResponse = method.getResponseBody();
 	            res = new String(byteResponse, ENCODING);
@@ -163,9 +163,9 @@ public class HttpConnection {
     				, HttpStatus.valueOf(method.getStatusCode())
     				);
     		return responseEntity;
-        } else {
-            return new ResponseEntity<String>(headers, HttpStatus.valueOf(method.getStatusCode()));
-        }		
+//        } else {
+//            return new ResponseEntity<String>(headers, HttpStatus.valueOf(method.getStatusCode()));
+//        }		
 	}
     
     

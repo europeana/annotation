@@ -1,10 +1,14 @@
 package eu.europeana.annotation.web.service;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
+import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
@@ -12,18 +16,24 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
+import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
+import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.web.exception.HttpException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.annotation.web.model.BatchReportable;
+import eu.europeana.annotation.web.model.BatchUploadStatus;
 
 public interface AnnotationService {
 
@@ -297,6 +307,11 @@ public interface AnnotationService {
 
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
 
+	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationException;
+	
+	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
+			List<String> annotationHttpUrls);
+
 	/**
 	 * This method stores moderation record in database
 	 * @param newModerationRecord
@@ -312,4 +327,11 @@ public interface AnnotationService {
 	 */
 	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
 			throws ModerationNotFoundException, ModerationMongoException;
+
+	public List<? extends Annotation> getExisting(List<String> annotationHttpUrls);
+
+	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+
+	public void insertNewAnnotations(String provider, BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+
 }

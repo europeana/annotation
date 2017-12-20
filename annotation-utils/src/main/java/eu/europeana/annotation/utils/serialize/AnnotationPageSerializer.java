@@ -1,7 +1,5 @@
 package eu.europeana.annotation.utils.serialize;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,15 +8,14 @@ import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-import org.codehaus.jettison.json.JSONArray;
 
 import eu.europeana.annotation.definitions.exception.search.SearchRuntimeException;
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -29,6 +26,8 @@ public class AnnotationPageSerializer extends JsonLd {
 	AnnotationPage protocolPage;
 
 	public AnnotationPageSerializer(AnnotationPage protocolPage) {
+		super();
+		setPropOrderComparator(new AnnotationsJsonComparator());
 		this.protocolPage = protocolPage;
 	}
 
@@ -65,19 +64,21 @@ public class AnnotationPageSerializer extends JsonLd {
 		jsonLdResource.setSubject("");
 		jsonLdResource.putProperty(WebAnnotationFields.AT_CONTEXT, ContextTypes.ANNO.getJsonValue());
 		// annotation page
-		jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
+		if (protocolPage.getCurrentPageUri() != null)
+			jsonLdResource.putProperty(WebAnnotationFields.ID, protocolPage.getCurrentPageUri());
 		jsonLdResource.putProperty(WebAnnotationFields.TYPE, "AnnotationPage");
 		jsonLdResource.putProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInPage());
 
 		// collection
-		JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
-		JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
-		collectionPropValue.putProperty(new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
-		collectionPropValue
-				.putProperty(new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
-		collectionProp.addValue(collectionPropValue);
-
-		jsonLdResource.putProperty(collectionProp);
+		if (protocolPage.getCurrentPageUri() != null) {
+			JsonLdProperty collectionProp = new JsonLdProperty(WebAnnotationFields.PART_OF);
+			JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
+			collectionPropValue.putProperty(new JsonLdProperty(WebAnnotationFields.ID, protocolPage.getCollectionUri()));
+			collectionPropValue
+					.putProperty(new JsonLdProperty(WebAnnotationFields.TOTAL, protocolPage.getTotalInCollection()));
+			collectionProp.addValue(collectionPropValue);
+			jsonLdResource.putProperty(collectionProp);
+		}
 
 		// items
 		serializeItems(jsonLdResource, profile);
@@ -95,7 +96,7 @@ public class AnnotationPageSerializer extends JsonLd {
 	}
 
 	protected void serializeFacets(JsonLdResource jsonLdResource, SearchProfiles profile) {
-		if (getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
+		if (getPageItems() == null || getPageItems().getFacetFields() == null || getPageItems().getFacetFields().isEmpty())
 			return;
 
 		JsonLdProperty facetsProperty = new JsonLdProperty(WebAnnotationFields.SEARCH_RESP_FACETS);
@@ -187,7 +188,8 @@ public class AnnotationPageSerializer extends JsonLd {
 			
 			//build property value for the given annotation
 			JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
-			propertyValue.getPropertyMap().putAll(annotationLd.getPropertyMap());
+			Map<String, JsonLdProperty> propertyMap = propertyValue.getPropertyMap();
+			propertyMap.putAll(annotationLd.getPropertyMap());
 			itemsProp.addValue(propertyValue);
 		}
 		jsonLdResource.putProperty(itemsProp);

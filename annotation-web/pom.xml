@@ -30,6 +30,13 @@
 
 	<dependencies>
 
+		<!-- europeana api commons -->
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-web</artifactId>
+			<version>${version.commonsApi}</version>
+		</dependency>
+
 		<!-- annotation projects -->
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
@@ -44,7 +51,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${version.annotationApi}</version>		
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
@@ -190,13 +197,26 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-oauth</artifactId>
-			<version>0.2.2</version>
+			<version>${version.commonsApi}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-web</artifactId>
-			<version>0.2.2</version>
+			<version>${version.commonsApi}</version>
+		</dependency>		
+	
+		<dependency>
+		    <groupId>eu.europeana.apikey-utils</groupId>
+		    <artifactId>apikey-client</artifactId>
+		    <version>0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+	
 	</dependencies>
 
 	<build>

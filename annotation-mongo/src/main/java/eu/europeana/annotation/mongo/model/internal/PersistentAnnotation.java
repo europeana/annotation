@@ -5,7 +5,7 @@ import java.util.Date;
 import org.bson.types.ObjectId;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.corelib.db.entity.nosql.abstracts.NoSqlEntity;
+import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 /**
  * This type is used as internal interface that binds the external interface (model.PersistentAnnotation) with the NoSql based implementation (NoSqlEntity)

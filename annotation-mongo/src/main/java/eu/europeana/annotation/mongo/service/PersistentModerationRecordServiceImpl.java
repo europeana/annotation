@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Key;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
+import org.springframework.stereotype.Component;
 
-import com.google.code.morphia.Key;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
 
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
@@ -20,8 +21,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
-import eu.europeana.corelib.db.service.abstracts.AbstractNoSqlServiceImpl;
-import org.springframework.stereotype.Component;
+import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Component
 public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceImpl<PersistentModerationRecord, String>
@@ -112,8 +112,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 	protected void validateDeleteResult(WriteResult res) throws AnnotationMongoException {
 		int affected = res.getN();
 		if (affected != 1)
-			throw new AnnotationMongoException("Delete operation Failed!" + res.getError(),
-					res.getLastError().getException());
+			throw new AnnotationMongoException("Delete operation Failed!" + res);
 	}
 
 	@Override

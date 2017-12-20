@@ -52,13 +52,11 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 
 		// read
 		assertNotNull(annotation);
-
-		Integer numericId = getNumericAnnotationId(annotation);
-		assertTrue(getNumericAnnotationId(annotation) > 0);
-		log.debug("Created annotation: " + numericId);
+		assertNotNull(annotation.getAnnotationId().getIdentifier());
+		log.debug("Created annotation: " + annotation.getAnnotationId().getHttpUrl());
 
 		// delete
-		this.deleteAnnotation(numericId);
+		this.deleteAnnotation(annotation);
 	}
 
 	/**
@@ -253,10 +251,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 	private void deleteAnnotations(List<Annotation> annotations) {
 		// delete test annotations
 		for(Annotation anno: annotations)  {
-			Integer numericId = getNumericAnnotationId(anno);
-			assertTrue(getNumericAnnotationId(anno) > 0);
-			log.debug("Created annotation: " + numericId);
-			this.deleteAnnotation(numericId);
+			this.deleteAnnotation(anno);
 		}
 	}
 	

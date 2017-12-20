@@ -2,7 +2,7 @@ package eu.europeana.annotation.web.exception.authorization;
 
 import org.springframework.http.HttpStatus;
 
-import eu.europeana.annotation.web.exception.HttpException;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class OperationAuthorizationException extends HttpException{
 
@@ -13,30 +13,17 @@ public class OperationAuthorizationException extends HttpException{
 	/**
 	 * 
 	 */
-	public static final String MESSAGE_OPERATION_NOT_AUTHORIZED = "The user is not allowed to perform the given operation!";
-	public static final String MESSAGE_CLIENT_NOT_AUTHORIZED = "The client application is not allowed to perform the given operation!";
 	
-	private String paramValue; 
-	
-	public OperationAuthorizationException(String message, String paramValue){
-		this(message, paramValue, HttpStatus.METHOD_NOT_ALLOWED, null);
+	public OperationAuthorizationException(String message, String i18nKey, String[] i18nParams){
+		this(message, i18nKey, i18nParams, HttpStatus.METHOD_NOT_ALLOWED, null);
 	}
 	
-	public OperationAuthorizationException(String message, String paramValue, Throwable th){
-		this(message, paramValue, HttpStatus.METHOD_NOT_ALLOWED, th);
-	}
-	
-	public OperationAuthorizationException(String message, String paramValue, HttpStatus status){
-		this(message, paramValue, status, null);
+	public OperationAuthorizationException(String message, String i18nKey, String[] i18nParams, HttpStatus status){
+		this(message, i18nKey, i18nParams, status, null);
 	}
 
-	public OperationAuthorizationException(String message, String paramValue, HttpStatus status, Throwable th){
-		super(message + " " + paramValue, status, th);
-		this.paramValue = paramValue;
+	public OperationAuthorizationException(String message, String i18nKey, String[] i18nParams, HttpStatus status, Throwable th){
+		super(message, i18nKey, i18nParams, status, th);
 	}
 	
-	public String getParamValue() {
-		return paramValue;
-	}
-
 }

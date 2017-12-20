@@ -1,0 +1,51 @@
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "type": "AnnotationPage",
+  "items": [
+    {
+      "bodyValue": "tag1",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "http://localhost:8080/annotation/webanno/nonexisting1",
+      "bodyValue": "tag2",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "bodyValue": "tag3",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "%httpurl1%",
+      "bodyValue": "tag4",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "bodyValue": "tag5",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "http://localhost:8080/annotation/webanno/nonexisting2",
+      "bodyValue": "tag6",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "%httpurl2%",
+      "bodyValue": "tag7",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    },
+    {
+      "id": "http://localhost:8080/annotation/webanno/nonexisting3",
+      "bodyValue": "tag8",
+      "motivation": "tagging",
+      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+    }
+  ]
+}

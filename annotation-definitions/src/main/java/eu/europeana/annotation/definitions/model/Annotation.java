@@ -90,6 +90,12 @@ public interface Annotation {
 	public abstract void setLastUpdate(Date lastUpdate);
 
 	public boolean isPrivate();
+	
+	/**
+	 * @deprecated should be moved to business layer (services)
+	 * @return
+	 */
+	public boolean hasHttpUrl();
 
 	boolean equalsContent(Object other);
 	
@@ -100,5 +106,11 @@ public interface Annotation {
 	public abstract void setVia(String[] via);
 	
 	public abstract String[] getVia();
+
+	/**
+	 * @deprecated should use the methods from AnnotationId directly
+	 * @return
+	 */
+	public String getHttpUrl();
 	
 }

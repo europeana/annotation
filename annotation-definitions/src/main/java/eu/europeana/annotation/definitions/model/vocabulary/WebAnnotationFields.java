@@ -10,10 +10,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
 public interface WebAnnotationFields extends WebAnnotationModelFields{
 
 	//AnnotationPage
-	public static final String PART_OF = "partOf";
+	public static final String PART_OF = "isPartOf";
 	public static final String TOTAL = "total";
 	public static final String NEXT = "next";
 	public static final String PREV = "prev";
+	public static final String LAST = "last";
 		
 	
 	public static final String SPLITTER = "#";
@@ -113,6 +114,17 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	
 	
 	/**
+	 * Validation definitions
+	 */
+	public static final String ANNOTAION_API = "annotation";
+	public static final String ENTITY_API = "entity";
+	public static final String SEARCH_API = "search";
+	public static final String READ_METHOD = "read";
+	public static final String WRITE_METHOD = "write";
+	public static final String DELETE_METHOD = "delete";
+	public static final String CLIENT_VALIDATION_API_KEY = "ApiKey1";
+	
+	/**
 	 * Query Fields
 	 */
 	public static final String FIELD_MODIFIED = "modified";
@@ -146,11 +158,14 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
 	public static final String HTTP = "http://";
 
+	public static final String SCOPE = "scope";
+	public static final String SOURCE = "source";
+
 	/**
 	 * Markup
 	 */
-	public static final String MARKUP_ITEM = "/item";
-	public static final String MARKUP_RECORD = "/record";
+	public static final String MARKUP_ITEM = "/item/";
+	public static final String MARKUP_RECORD = "/record/";
 	
 	
 	
@@ -195,6 +210,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String OBJECT = "object";
 	public static final String OLD_RECORD_ID = "old";
 	public static final String NEW_RECORD_ID = "new";
+	public static final String BODY_FIELD = "body";
+	public static final String VALUE_FIELD = "value";
 
 	/**
 	 * Error messages
@@ -203,7 +220,26 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String SUCCESS_FALSE = "\"success\":false";
 	public static final String INVALID_PROVIDER = "Invalid provider!";
 	public static final String UNNECESSARY_ANNOTATION_NR = "AnnotationNr must not be set for provider!";
-
+	
+	
+	/**
+	 * Error response fields
+	 */
+	public static final String RESP_ERROR_MSG_FIELD = "error";
+	public static final String RESP_OPERATION_REPORT_FIELD = "operationReport";
+	public static final String RESP_OPERATION_REPORT_FAILURECOUNT_FIELD = "failureCount";
+	public static final String RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD = "successCount";
+	public static final String RESP_OPERATION_REPORT_ERRORS_FIELD = "errors";
+	public static final String RESP_OPERATION_REPORT_ERRORTYPE_FIELD = "errorType";
+	
+	/**
+	 * Batch upload fields
+	 */
+	public static final String BATCH_TOTAL_FIELD = "total";
+	public static final String BATCH_NUM_ANNOATIONS_FIELD = "totalNumberOfAnnotations";
+	public static final String BATCH_NUM_ANNOATIONS_WITHID_FIELD = "numberOfAnnotationsWithId";
+	public static final String BATCH_NUM_ANNOATIONS_WITHOUTID_FIELD = "numberOfAnnotationsWithoutId";
+	
 	/**
 	 * SKOS parsing
 	 */

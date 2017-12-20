@@ -22,6 +22,10 @@ annotation.indexing.enabled=false
 #string value indicating if the application runs in "production", "test", "development" environment 
 annotation.environment=development
 
+#Socks proxy configuration. If provided it will be used for all http connections (e.g. solr.entity.url) 
+# Url Format: socks://username:password@socks_proxy_server:1080 
+socks.proxy.url = socks://socksuser:hjwP14h9oSEp423df@95.85.7.105:30080
+
 #used only in production environment
 annotation.environment.production.baseUrl=http://data.europeana.eu/annotation
 
@@ -51,15 +55,22 @@ profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..))
 
 # mongoDB settings
 ### annotation database ###
-mongodb.annotation.dbname=annotation_test
-mongodb.annotation.host=127.0.0.1
-mongodb.annotation.port=27017
-mongodb.annotation.username=europeana
-mongodb.annotation.password=culture
+#deprecated
+#mongodb.annotation.dbname=annotation_test
+#mongodb.annotation.host=127.0.0.1
+#mongodb.annotation.port=27017
+#mongodb.annotation.username=europeana
+#mongodb.annotation.password=culture
 #Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
 #USER, PASSWORD are optional (in local environment) 
+
 #VCAP environment will overwrite configurations only if the connectionUrl is empty
 mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
+#SSL truststore
+#the name of the truststore. Must be available in the classpath in the /config folder
+mongodb.annotation.truststore=
+#password required to access the truststore
+mongodb.annotation.truststorepass=
 
 # solr connection settings
 solr.annotation.url = http://localhost:8282/solr/annotation
@@ -71,6 +82,18 @@ solr.facetLimit=750
 #solr.username=europeana
 #solr.rowLimit=12
 
+#API Key validation
+api=annotation
+adminapikey=Key1
+adminsecretkey=Key2
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
+
+# validation
+api=annotation
+adminapikey=
+adminsecretkey=
+# cache time for validation of ApiKey in milliseconds (value of type long)
+# e.g. 1800000 is 30 minutes
+annotation.apikey.caching.time=1800000 

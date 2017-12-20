@@ -112,6 +112,7 @@ public class BaseAnnotationId implements AnnotationId{
 	public void copyFrom(AnnotationId volatileObject) {
 		this.setBaseUrl(((AnnotationId) volatileObject).getBaseUrl());
 		this.setProvider(((AnnotationId) volatileObject).getProvider());
-		this.setIdentifier(((AnnotationId) volatileObject).getIdentifier());			
+		this.setIdentifier(((AnnotationId) volatileObject).getIdentifier());
+		this.setHttpUrl(((AnnotationId) volatileObject).getHttpUrl());
 	}
 }
