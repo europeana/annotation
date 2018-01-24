@@ -69,6 +69,7 @@
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.6.5</version.jackson>
 		<version.commonsApi>0.2.4-RELEASE</version.commonsApi>
+		<version.apiKeyClient>1.1</version.apiKeyClient>
 		
 	</properties>
 	<modules>
