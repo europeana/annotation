@@ -24,13 +24,6 @@
 	</parent>
 	
 	<repositories>
-		<!--  added artifactory to solve restlet dependency problems in jenkins -->
-		<repository>
-			<id>restlet</id>
-			<name>restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-		
 		<repository>
 		    <id>artifactory.eanadev.org</id>
 			<name>artifactory.eanadev.org-releases (external libs)</name>
@@ -45,6 +38,13 @@
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
 			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+		</repository>
+		
+		<!--  added artifactory to solve restlet dependency problems in jenkins -->
+		<repository>
+			<id>restlet</id>
+			<name>restlet repository</name>
+			<url>http://maven.restlet.org</url>
 		</repository>
 		
 		<!--  disable ibiblio.org mirror because of corrupted jars -->
