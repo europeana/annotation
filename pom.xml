@@ -27,6 +27,12 @@
 	</parent>
 	
 	<repositories>
+		<!--  added artifactory to solve restlet dependency problems in jenkins -->
+		<repository>
+		    <id>artifactory.eanadev.org</id>
+			<name>artifactory.eanadev.org-releases (external libs)</name>
+			<url>http://artifactory.eanadev.org/artifactory/ext-release-local</url>
+		</repository>
 		<repository>
 			<id>libs-release-local</id>
 			<name>europeana-releases</name>
