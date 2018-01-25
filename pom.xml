@@ -16,10 +16,7 @@
 	<version>${version.annotationApi}</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
-	<!-- 
-	<url>http://labs.europeana.eu/api/annotations</url>
-	 -->
-	 
+	
 	<parent>
 		<artifactId>corelib</artifactId>
 		<groupId>eu.europeana</groupId>
@@ -28,6 +25,12 @@
 	
 	<repositories>
 		<!--  added artifactory to solve restlet dependency problems in jenkins -->
+		<repository>
+			<id>restlet</id>
+			<name>restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+		
 		<repository>
 		    <id>artifactory.eanadev.org</id>
 			<name>artifactory.eanadev.org-releases (external libs)</name>
