@@ -65,7 +65,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.annotationApi>0.2.8-RELEASE</version.annotationApi>
+		<version.annotationApi>0.2.9-SNAPSHOT</version.annotationApi>
 		<version.java>1.7</version.java>
 		<version.junit>4.12</version.junit>
 		<version.spring>4.2.5.RELEASE</version.spring>
