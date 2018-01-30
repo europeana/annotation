@@ -49,7 +49,7 @@
 		<mvc:mapping path="/api-docs/**" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
 		
 		<mvc:mapping path="/annotation/" allowed-origins="*" allowed-methods="POST,GET,OPTIONS,HEAD" 
-			exposed-headers="Allow, Vary, Link, Content-Type" max-age="600"/>
+			exposed-headers="Allow, Vary, Link" max-age="600"/>
 		<mvc:mapping path="/annotation/**" allowed-origins="*" allowed-methods="GET, PUT, DELETE, HEAD, OPTIONS" 
 			exposed-headers="Allow, Vary, Link, ETag" max-age="600"/>
 	</mvc:cors>

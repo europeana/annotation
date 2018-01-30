@@ -92,7 +92,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 */
 	private void validatePersistentAnnotation(PersistentAnnotation object, Date now, boolean isNew) {
 
-		if (object.getCreated() == null && isNew)
+		if (object.getCreated() == null)
 			object.setCreated(now);
 		//TODO: what to check for update?
 //		else if(object.getCreated() == null && isNew)
@@ -117,6 +117,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		// checkBody
 		validateBody(object);
 
+		//TODO: remove initialization from validation method
 		if (isNew) {
 			MongoAnnotationId embeddedId = initializeAnnotationId(object);
 			object.setAnnotationId(embeddedId);
@@ -632,7 +633,23 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	@Override
 	public void create(List<? extends Annotation> annos)
 			throws AnnotationValidationException, BulkOperationException {
-		store(annos, BulkOperationMode.INSERT);
+		
+		List<? extends Annotation> persistentAnnos = copyIntoPersistentAnnotation(annos);
+		store(persistentAnnos, BulkOperationMode.INSERT);
+	}
+
+	List<? extends Annotation> copyIntoPersistentAnnotation(List<? extends Annotation> annos) {
+		List<Annotation> persistentAnnos = new ArrayList<Annotation>(annos.size());
+		PersistentAnnotation anno;
+		Date now = new Date();
+		for (Annotation annotation : annos) {
+			anno = copyIntoPersistentAnnotation(annotation);
+			//do not generate ids
+			validatePersistentAnnotation(anno, now, false);
+			persistentAnnos.add(anno);
+		}
+		
+		return persistentAnnos;
 	}
 
 	/**
