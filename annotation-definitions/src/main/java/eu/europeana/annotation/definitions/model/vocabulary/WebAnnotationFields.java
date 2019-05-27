@@ -151,6 +151,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PROVIDER_EUROPEANA_DEV = "eanadev";
 	public static final String PROVIDER_HISTORY_PIN = "historypin";
 	public static final String PROVIDER_PUNDIT = "pundit";
+	//Europeana Media project
+	public static final String PROVIDER_EUMEDIA = "eumedia";
 	public static final String PROVIDER_WITH = "with";
 	public static final String PROVIDER_BASE = "base";
 	public static final String PROVIDER_COLLECTIONS = "collections";

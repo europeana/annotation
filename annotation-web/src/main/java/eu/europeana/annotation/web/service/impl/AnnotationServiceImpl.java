@@ -173,12 +173,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 //	}
 
 	@Override
+	/**
+	 * @deprecated see AnnotationSearchServiceImpl
+	 */
 	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException {
 		return null;
 //		// return getSolrService().search(query);
 	}
 
 	@Override
+	/**
+	 * @deprecated see AnnotationSearchServiceImpl
+	 */
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
 			throws AnnotationServiceException {
 		return null;
@@ -186,22 +192,34 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
+	/**
+	 * @deprecated see AnnotationSearchServiceImpl
+	 */
 	public Map<String, Integer> searchAnnotations(String[] qf, List<String> queries) throws AnnotationServiceException {
 		return getSolrService().queryFacetSearch(SolrSyntaxConstants.ALL_SOLR_ENTRIES, qf, queries);
 	}
 
 	@Override
+	/**
+	 * @deprecated see AnnotationSearchServiceImpl
+	 */
 	public List<? extends SolrTag> searchTags(String query) throws TagServiceException {
 		return getSolrTagService().search(query);
 	}
 
 	@Override
+	/**
+	 * @deprecated see AnnotationSearchServiceImpl
+	 */
 	public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit)
 			throws StatusLogServiceException {
 		return getMongoStatusLogPersistence().getFilteredStatusLogList(query, startOn, limit);
 	}
 
 	@Override
+	/**
+	 * @deprecated see AnnotationSearchServiceImpl
+	 */
 	public List<? extends SolrTag> searchTags(String query, String startOn, String limit) throws TagServiceException {
 		return getSolrTagService().search(query, startOn, limit);
 	}
@@ -678,6 +696,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
 						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 			break;
+		//TODO: refactor to remove redundancy in case commands
+		case WebAnnotationFields.PROVIDER_EUMEDIA:
+			if (annoId.getIdentifier() != null)
+				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
+			break;
+		
 		case WebAnnotationFields.PROVIDER_WITH:
 			if (annoId.getIdentifier() != null)
 				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
