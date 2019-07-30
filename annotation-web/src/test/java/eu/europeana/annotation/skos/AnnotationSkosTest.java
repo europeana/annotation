@@ -1,15 +1,14 @@
 package eu.europeana.annotation.skos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.utils.concept.SkosUtils;
@@ -18,7 +17,7 @@ import eu.europeana.annotation.utils.concept.SkosUtils;
  * @deprecated skos vocabularies will be managed though entity-collection
  * This class implements different SKOS testing scenarios.
  */
-@Ignore
+@Deprecated
 public class AnnotationSkosTest {
 
 	public final String ALT_LABEL_KEY       = "http://www.w3.org/2004/02/skos/core#altLabel1_altLabel";
@@ -105,12 +104,12 @@ public class AnnotationSkosTest {
 	private SkosUtils skosUtils = null;
 
     
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
 		setSkosUtils(new SkosUtils());
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

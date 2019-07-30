@@ -1,14 +1,14 @@
 package eu.europeana.annotation.client.integration.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.client.AnnotationJsonApi;
 import eu.europeana.annotation.client.AnnotationJsonApiImpl;
@@ -19,14 +19,14 @@ import eu.europeana.annotation.utils.JsonUtils;
 
 
 //TODO: enable when the JSON API will be enabled again
-@Ignore 
+@Disabled
 public class AnnotationJsonApiTest extends AnnotationTestObjectBuilder{
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 	
     private AnnotationJsonApiImpl annotationJsonApi;
     
-    @Before
+    @BeforeEach
     public void initObjects() {
     	annotationJsonApi = new AnnotationJsonApiImpl();
     }

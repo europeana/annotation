@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
@@ -33,7 +34,6 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
-import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -54,7 +54,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
  */
 public class AnnotationLdParser extends JsonLdParser {
 
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 	private AnnotationIdHelper idHelper;
 
 	/**

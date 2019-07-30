@@ -3,7 +3,8 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Web Annotation Search", description = " ")
 public class WebAnnotationSearchRest extends BaseRest {
 	
-	private static Logger logger = Logger.getRootLogger();
+	private static Logger logger = LogManager.getRootLogger();
 
 	@RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, 
 			method = {RequestMethod.GET},

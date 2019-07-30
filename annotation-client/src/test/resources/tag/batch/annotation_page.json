@@ -1,33 +1,33 @@
 {
-  "@context": "http://www.w3.org/ns/anno.jsonld",
-  "type": "AnnotationPage",
-  "items": [
-    {
-      "bodyValue": "tag1-ff45d28b-8717-42f4-a486-f3a62f97fb64",
-      "motivation": "tagging",
-      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
-    },
-    {
-      "bodyValue": "tag2-ff45d28b-8717-42f4-a486-f3a62f97fb64",
-      "motivation": "tagging",
-      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
-    },
-    {
-      "id": "%httpurl1%",
-      "bodyValue": "tag3-ff45d28b-8717-42f4-a486-f3a62f97fb64",
-      "motivation": "tagging",
-      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
-    },
-    {
-      "bodyValue": "tag4-ff45d28b-8717-42f4-a486-f3a62f97fb64",
-      "motivation": "tagging",
-      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
-    },
-    {
-      "id": "%httpurl2%",
-      "bodyValue": "tag5-ff45d28b-8717-42f4-a486-f3a62f97fb64",
-      "motivation": "tagging",
-      "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
-    }
-  ]
+	"@context": "http://www.w3.org/ns/anno.jsonld",
+	"type": "AnnotationPage",
+	"items": [
+		{
+			"bodyValue": "tag1-ff45d28b-8717-42f4-a486-f3a62f97fb64",
+			"motivation": "tagging",
+			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+		},
+		{
+			"bodyValue": "tag2-ff45d28b-8717-42f4-a486-f3a62f97fb64",
+			"motivation": "tagging",
+			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+		},
+		{
+			"id": "%httpurl1%",
+			"bodyValue": "tag3-ff45d28b-8717-42f4-a486-f3a62f97fb64",
+			"motivation": "tagging",
+			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+		},
+		{
+			"bodyValue": "tag4-ff45d28b-8717-42f4-a486-f3a62f97fb64",
+			"motivation": "tagging",
+			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+		},
+		{
+			"id": "%httpurl2%",
+			"bodyValue": "tag5-ff45d28b-8717-42f4-a486-f3a62f97fb64",
+			"motivation": "tagging",
+			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+		}
+	]
 }

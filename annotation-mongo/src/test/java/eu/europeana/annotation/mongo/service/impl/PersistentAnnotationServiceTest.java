@@ -1,10 +1,10 @@
 package eu.europeana.annotation.mongo.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,12 +14,13 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 
 import org.bson.types.ObjectId;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -54,7 +55,7 @@ import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",
 		"/annotation-mongo-test.xml" })
 public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
@@ -79,7 +80,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	 * 
 	 * @throws IOException
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws IOException {
 		annotationDao.getCollection().drop();
 		setBaseAnnotationUrl(configuration.getAnnotationBaseUrl());
@@ -91,7 +92,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	 * 
 	 * @throws IOException
 	 */
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 		// annotationDao.getCollection().drop();
 	}
@@ -507,39 +508,40 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	}
 	
 
-	@Test(expected=BulkOperationException.class)
+	@Test
 	public void testRollbackUpdates() throws AnnotationMongoException, AnnotationValidationException, BulkOperationException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		
-		int annotationListSize = 5;
-		
-		List<Annotation> annoList = getTestAnnotationList(annotationListSize);
-		annotationService.create(annoList);
-		assertNotNull(annoList);
-		
-		List<String> httpUrls = AnnotationListUtils.getHttpUrls(annoList);
-		@SuppressWarnings("unchecked")
-		List<PersistentAnnotation> annoListFromDb = (List<PersistentAnnotation>)annotationService.getAnnotationList(httpUrls);
-		assertNotNull(annoListFromDb);
-		assertEquals(annoList.size(), annoListFromDb.size());
-		
-		// change object id of 4th item (at index position 3)
-		PersistentAnnotation annoWithChangedObjId = (PersistentAnnotation)annoListFromDb.get(annoListFromDb.size()-2);
-		// annotation[0]
-		// annotation[1]
-		// annotation[2]
-		// annotation[3] - object id changed
-		// annotation[4]
-		ObjectId changedObjId = new ObjectId();
-		annoWithChangedObjId.setId(changedObjId);
-		
-		// change body values 
-		for(int i = 0; i < annoListFromDb.size(); i++) {
-			annoListFromDb.get(i).getBody().setValue("updated "+i);
-		}
-		
-		// expected exception: BulkOperationException
-		annotationService.update(annoListFromDb);
-		
+	    Assertions.assertThrows(BulkOperationException.class, () -> {
+			int annotationListSize = 5;
+			
+			List<Annotation> annoList = getTestAnnotationList(annotationListSize);
+			annotationService.create(annoList);
+			assertNotNull(annoList);
+			
+			List<String> httpUrls = AnnotationListUtils.getHttpUrls(annoList);
+			@SuppressWarnings("unchecked")
+			List<PersistentAnnotation> annoListFromDb = (List<PersistentAnnotation>)annotationService.getAnnotationList(httpUrls);
+			assertNotNull(annoListFromDb);
+			assertEquals(annoList.size(), annoListFromDb.size());
+			
+			// change object id of 4th item (at index position 3)
+			PersistentAnnotation annoWithChangedObjId = (PersistentAnnotation)annoListFromDb.get(annoListFromDb.size()-2);
+			// annotation[0]
+			// annotation[1]
+			// annotation[2]
+			// annotation[3] - object id changed
+			// annotation[4]
+			ObjectId changedObjId = new ObjectId();
+			annoWithChangedObjId.setId(changedObjId);
+			
+			// change body values 
+			for(int i = 0; i < annoListFromDb.size(); i++) {
+				annoListFromDb.get(i).getBody().setValue("updated "+i);
+			}
+			
+			// expected exception: BulkOperationException
+			annotationService.update(annoListFromDb);
+	    });				
 	}
 	
 	@Test

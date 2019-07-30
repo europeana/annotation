@@ -1,14 +1,14 @@
 package eu.europeana.annotation.client.abstracts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europeana.annotation.client.AnnotationJsonLdApiImpl;
 import eu.europeana.annotation.client.EuropeanaLdApiImpl;
@@ -159,7 +159,7 @@ public class BaseJsonLdApiTest {
     "}";
     		
     
-    @Before
+    @BeforeEach
     public void initObjects() {
     	annotationJsonLdApi = new AnnotationJsonLdApiImpl();
     	europeanaLdApi = new EuropeanaLdApiImpl();

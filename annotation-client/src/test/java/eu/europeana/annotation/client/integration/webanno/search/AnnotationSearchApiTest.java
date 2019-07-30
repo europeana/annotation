@@ -1,16 +1,17 @@
 package eu.europeana.annotation.client.integration.webanno.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationDataSetTest;
@@ -42,7 +43,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Before
+	@BeforeEach
 	public void createAnnotationDataSet() throws JsonParseException, IOException {
 		annotations = createMultipleTestAnnotations(TOTAL_IN_COLLECTION);
 		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
@@ -51,7 +52,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	/**
 	 * Delete annotations data set after each test execution
 	 */
-	@After
+	@AfterEach
 	public void deleteAnnotationDataSet() {
 		//TODO delete all annotations for this generator, including old annotations
 		deleteAnnotations(annotations);
@@ -86,7 +87,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		
 		// first page
 		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET, SearchProfiles.MINIMAL);
-		assertNotNull("AnnotationPage must not be null", annPg);
+		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
 		assertEquals(annPg.getCurrentPage(), 0);

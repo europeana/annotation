@@ -1,12 +1,7 @@
 package eu.europeana.annotation.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,21 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-//import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.Version;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
-import eu.europeana.annotation.definitions.exception.WhitelistParserException;
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -50,8 +36,6 @@ import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelistEntry;
-import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
@@ -62,7 +46,6 @@ import eu.europeana.annotation.utils.serialization.ListDeserializer;
 import eu.europeana.annotation.utils.serialization.MapDeserializer;
 import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
 import eu.europeana.annotation.utils.serialization.TargetDeserializer;
-import eu.europeana.annotation.utils.serialization.WhitelistDeserializer;
 
 /**
  * @Deprecated the provided methods must be replaced by proper usage of the json to annotation parser 

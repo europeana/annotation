@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-//import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -29,14 +28,14 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 @Component
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
-	SolrServer solrServer;
+	SolrClient solrClient;
 
-	public void setSolrServer(SolrServer solrServer) {
-		this.solrServer = solrServer;
+	public void setSolrServer(SolrClient solrServer) {
+		this.solrClient = solrServer;
 	}
 
-	public SolrServer getSolrServer() {
-		return solrServer;
+	public SolrClient getSolrServer() {
+		return solrClient;
 	}
 	
 	@Override
@@ -53,7 +52,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	public void store(List<? extends Annotation> annos) throws AnnotationServiceException, SolrServerException, IOException {
 		for(Annotation anno : annos)
 			store(anno, false);
-		solrServer.commit();
+		solrClient.commit();
 	}
 
 	@Override
@@ -71,10 +70,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 			
 			processSolrBeanProperties(indexedAnno);
 
-			UpdateResponse rsp = solrServer.addBean(indexedAnno);
+			UpdateResponse rsp = solrClient.addBean(indexedAnno);
 			getLogger().info("store response: " + rsp.toString());
 			if(doCommit)
-				solrServer.commit();
+				solrClient.commit();
 		} catch (SolrServerException ex) {
 			throw new AnnotationServiceException(
 					"Unexpected Solr server exception occured when storing annotations for: " + anno.getAnnotationId(),
@@ -104,10 +103,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		 * Query the server
 		 */
 		try {
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			getLogger().info("query response: " + rsp.toString());
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for: " + term,
 					e);
 		}
@@ -143,10 +142,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		 * Query the server
 		 */
 		try {
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			getLogger().info("query response: " + rsp.toString());
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for: " + term,
 					e);
 		}
@@ -164,9 +163,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 		//Query the server
 		try {
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching all annotations", e);
 		}
 
@@ -189,9 +188,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 		//Query the server
 		try {
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			rs = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException(
 					"Unexpected exception occured when searching annotations for id: " + annoIdUrl, e);
 		}
@@ -230,9 +229,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		 * Query the server
 		 */
 		try {
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException(
 					"Unexpected exception occured when searching annotations for id: " + text, e);
 		}
@@ -261,10 +260,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		 */
 		try {
 			getLogger().info("search obj: " + searchQuery);
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			res = buildResultSet(rsp);
 			getLogger().debug("search obj res size: " + res.getResultSize());
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException(
 					"Unexpected exception occured when searching annotations for solrAnnotation: "
 							+ searchQuery.toString(),
@@ -289,9 +288,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		//Query the server
 		try {
 			getLogger().info("searchByLabel search query: " + query.toString());
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException(
 					"Unexpected exception occured when searching annotations for label: " + searchTerm, e);
 		}
@@ -313,9 +312,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		//Query the server
 		try {
 			getLogger().info("searchByMapKey search query: " + query.toString());
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for map key: "
 					+ searchKey + " and value: " + searchValue, e);
 		}
@@ -336,9 +335,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		//Query the server
 		try {
 			getLogger().info("searchByField search query: " + query.toString());
-			QueryResponse rsp = solrServer.query(query);
+			QueryResponse rsp = solrClient.query(query);
 			res = buildResultSet(rsp);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new AnnotationServiceException("Unexpected exception occured when searching annotations for field: "
 					+ field + " and value: " + searchValue, e);
 		}
@@ -379,9 +378,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	public void deleteByQuery(String query) throws AnnotationServiceException {
 		try {
 			getLogger().info("deleteByQuery: " + query);
-			UpdateResponse rsp = solrServer.deleteByQuery(query);
+			UpdateResponse rsp = solrClient.deleteByQuery(query);
 			getLogger().info("delete response: " + rsp.toString());
-			solrServer.commit();
+			solrClient.commit();
 		} catch (SolrServerException ex) {
 			throw new AnnotationServiceException(
 					"Unexpected solr server exception occured when deleting annotations for query: " + query, ex);
@@ -421,7 +420,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 			if (getLogger().isDebugEnabled()) {
 				getLogger().debug("Solr query is: " + solrQuery.toString());
 			}
-			response = solrServer.query(solrQuery);
+			response = solrClient.query(solrQuery);
 			getLogger().info("queryFacetSearch" + response.getElapsedTime());
 			queryFacets = response.getFacetQuery();
 		} catch (Exception e) {
@@ -437,9 +436,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	public void delete(String annoUrl) throws AnnotationServiceException {
 		try {
 			getLogger().info("delete annotation with ID: " + annoUrl);
-			UpdateResponse rsp = solrServer.deleteById(annoUrl);
+			UpdateResponse rsp = solrClient.deleteById(annoUrl);
 			getLogger().trace("delete response: " + rsp.toString());
-			solrServer.commit();
+			solrClient.commit();
 		} catch (SolrServerException ex) {
 			throw new AnnotationServiceException(
 					"Unexpected solr server exception occured when deleting annotations for: " + annoUrl, ex);

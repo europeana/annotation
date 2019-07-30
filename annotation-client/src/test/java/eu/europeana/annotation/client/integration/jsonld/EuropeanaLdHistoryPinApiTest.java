@@ -1,12 +1,11 @@
 package eu.europeana.annotation.client.integration.jsonld;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -16,7 +15,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 //disabled as the rest interface is disabled 
-@Ignore
+@Deprecated
 public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 	
 	@Test

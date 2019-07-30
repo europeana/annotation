@@ -1,8 +1,8 @@
 package eu.europeana.annotation.client.integration.webanno;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,9 +11,10 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -31,7 +32,7 @@ import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 public class BaseWebAnnotationProtocolTest {
 
-	protected Logger log = Logger.getLogger(getClass());
+	protected Logger log = LogManager.getLogger(getClass());
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 
@@ -85,7 +86,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	private WebAnnotationProtocolApi apiClient;
 
-	@Before
+	@BeforeEach
 	public void initObjects() {
 		apiClient = new WebAnnotationProtocolApiImpl();
 	}

@@ -3,7 +3,7 @@ package eu.europeana.annotation.web.service.controller.admin;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,7 +45,7 @@ public class ProviderManagementRest extends BaseRest {
 			getAnnotationService().deleteProvider(name, idGeneration);
 			response.success = true;
 		} catch (Exception e){
-			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
+			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}

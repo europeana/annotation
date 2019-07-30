@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.Mapper;
@@ -38,7 +39,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	@Resource
 	private AnnotationConfiguration configuration;
 	
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 	
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;

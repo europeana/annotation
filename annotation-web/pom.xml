@@ -108,11 +108,11 @@
 			<version>2.5</version>
 		</dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
+        <dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<version>${version.org.junit.jupiter}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

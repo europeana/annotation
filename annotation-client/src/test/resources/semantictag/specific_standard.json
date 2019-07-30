@@ -1,14 +1,14 @@
 {
-    "@context": "http://www.europeana.eu/annotation/context.jsonld",
-    "type": "Annotation",
-    "motivation": "tagging",	
-    "body": {
-        "type": "SpecificResource",
-        "id": "http://sws.geonames.org/2988506",  
-        "source": "http://www.geonames.org/2988507",
-        "purpose": "SEMANTIC_TAG",
-        "language": "en",
-        "format": "application/rdf+xml"
-    },
-    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+	"@context": "http://www.europeana.eu/annotation/context.jsonld",
+	"type": "Annotation",
+	"motivation": "tagging",
+	"body": {
+		"type": "SpecificResource",
+		"id": "http://sws.geonames.org/2988506",
+		"source": "http://www.geonames.org/2988507",
+		"purpose": "SEMANTIC_TAG",
+		"language": "en",
+		"format": "application/rdf+xml"
+	},
+	"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }

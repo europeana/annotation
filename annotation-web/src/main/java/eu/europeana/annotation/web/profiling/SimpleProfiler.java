@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.profiling;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StopWatch.TaskInfo;
@@ -10,7 +11,7 @@ import org.springframework.util.StopWatch.TaskInfo;
  */
 public class SimpleProfiler {
 	
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
      
     /**
      * Profiling method

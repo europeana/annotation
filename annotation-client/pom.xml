@@ -11,7 +11,7 @@
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-api</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>		
+		<version>${version.annotationApi}</version>
 	</parent>
 
 
@@ -22,16 +22,9 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${version.log4j}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>
 		</dependency>
 
 		<dependency>
@@ -62,6 +55,13 @@
 			</exclusions>
 		</dependency>
 
+        <dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+			<version>${version.org.junit.jupiter}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
@@ -79,8 +79,8 @@
 			<version>${version.annotationld}</version>
 			<exclusions>
 				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
