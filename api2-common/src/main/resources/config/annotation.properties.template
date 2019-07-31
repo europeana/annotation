@@ -1,13 +1,13 @@
 ##common settings
 #boolean value indicating if the indexing of annotations in solr should be performed. required valid solr configurations
-annotation.indexing.enabled=false
+annotation.indexing.enabled=true
 
 #string value indicating if the application runs in "production", "test", "development" environment 
 annotation.environment=development
 
-#Socks proxy configuration. If provided it will be used for all http connections (e.g. solr.entity.url) 
-# Url Format: socks://username:password@socks_proxy_server:1080 
-socks.proxy.url = socks://socksuser:hjwP14h9oSEp423df@95.85.7.105:30080
+#Socks proxy configuration. If provided it will be used for all http connections (see also solr.annotation.url, mongodb.annotation.connectionUrl) 
+# Url Format: socks://username:password@socks_proxy_server:port 
+socks.proxy.url=
 
 #used only in production environment
 annotation.environment.production.baseUrl=http://data.europeana.eu/annotation
