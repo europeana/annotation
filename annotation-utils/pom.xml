@@ -23,12 +23,6 @@
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
 			<version>${version.annotationld}</version>
-			<exclusions>
-				<exclusion>
-                	<groupId>log4j</groupId>
-                	<artifactId>log4j</artifactId>
-                </exclusion>
-			</exclusions>			
 		</dependency>
 
 

@@ -29,18 +29,28 @@ public class BaseJsonLdApiTest {
     
     public static String simpleTagAnnotation = 
     		"{" +
-    		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
-    		"\"@type\": \"oa:Annotation\"," +
-    		"\"annotatedBy\": {" +
-    			"\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
-    			"\"@type\": \"foaf:Person\"," +
+//    		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
+    		"\"@context\": \"http://www.w3.org/ns/anno.jsonld\"," +    		
+//    		"\"@type\": \"oa:Annotation\"," +
+    		"\"type\": \"Annotation\"," +
+//    		"\"annotatedBy\": {" +
+    		"\"creator\": {" +
+//				"\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
+				"\"id\": \"https://www.historypin.org/en/person/55376/\"," +
+//    			"\"@type\": \"foaf:Person\"," +
+    			"\"type\": \"Person\"," +
     			"\"name\": \"John Smith\"" +
     		"}," +
-    		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
-    		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
-    		"\"serializedBy\": \"http://www.historypin.org\"," +
+//    		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
+    		"\"created\": \"2015-02-27T12:00:43Z\"," +
+//    		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
+    		"\"generated\": \"2015-02-28T13:00:34Z\"," +
+//    		"\"serializedBy\": \"http://www.historypin.org\"," +
+    		"\"generator\": \"http://www.historypin.org\"," +
 //    		"\"motivation\": \"oa:tagging\"," +
-    		"\"body\": \"church\"," +
+			"\"motivation\": \"tagging\"," +
+			"\"bodyValue\": \"church\"," +
+//			"\"body\": \"church\"," +
     		"\"target\": \"" + TEST_TARGET + "\"" +
     		"}";
 

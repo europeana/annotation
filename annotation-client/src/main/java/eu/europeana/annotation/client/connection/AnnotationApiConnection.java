@@ -256,7 +256,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		if (annotationNr != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
-		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+//		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + "true";
 
 		/**
 		 * Execute Europeana API request
@@ -287,12 +288,17 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
 //		url += WebAnnotationFields.ANNOTATION_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
-		url += "annotation/" + motivation + ".jsonld" + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
-		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+//		url += "annotation/" + motivation + ".jsonld" + WebAnnotationFields.PAR_CHAR;
+//		url += "/" + motivation + ".jsonld" + WebAnnotationFields.PAR_CHAR;
+		url += "/" + WebAnnotationFields.PAR_CHAR;
+//		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + getApiKey() + WebAnnotationFields.AND;
+//		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
+		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + "tester1" + WebAnnotationFields.AND;
 		if (annotationNr != null)
 			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
-		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+//		url += WebAnnotationFields.INDEXING + WebAnnotationFields.EQUALS + "true";
+		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + "true";
 
 		/**
 		 * Execute Europeana API request

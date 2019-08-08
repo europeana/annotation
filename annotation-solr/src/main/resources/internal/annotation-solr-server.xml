@@ -9,7 +9,7 @@
 
 	<!-- LAZY INIT: the next beans has lazy init, to prevent them from being started when not used... -->
 
-	<bean id="annotation_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" lazy-init="true">
+	<bean id="annotation_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrClient" lazy-init="true">
 		<constructor-arg value="#{annotationProperties['solr.annotation.url']}"/>
 		<property name="followRedirects" value="false"/>
 		<property name="connectionTimeout" value="#{annotationProperties['solr.annotation.timeout']}"/>
@@ -18,7 +18,7 @@
 	</bean>
 
 
-	<bean id="tag_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" lazy-init="true">
+	<bean id="tag_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrClient" lazy-init="true">
 		<constructor-arg value="#{annotationProperties['solr.tag.url']}"/>
 		<property name="followRedirects" value="false"/>
 		<property name="connectionTimeout" value="#{annotationProperties['solr.tag.timeout']}"/>

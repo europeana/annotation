@@ -34,9 +34,10 @@ import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.apikey.client.Connector;
-import eu.europeana.apikey.client.ValidationRequest;
-import eu.europeana.apikey.client.ValidationResult;
+import eu.europeana.apikey.client.ApiKeyValidationRequest;
+//import eu.europeana.apikey.client.Connector;
+//import eu.europeana.apikey.client.ValidationRequest;
+//import eu.europeana.apikey.client.ValidationResult;
 import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
@@ -281,38 +282,38 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
      * @param method The method e.g. read, write, delete...
      * @return true if API key is valid
      */
-    public boolean validateApiKey(ValidationRequest request, String method) {
+    public boolean validateApiKey(ApiKeyValidationRequest request, String method) {
     	
     	boolean res = false;
     	
     	String SUCCESS = "204";
     	
         if (StringUtils.isNotBlank(method)) request.setMethod(method);
-        Connector connector;
-        try {
-            connector = new Connector();
-            ValidationResult result = connector.validateApiKey(request);
-            if (result.hasConnected()){
-                if (StringUtils.isBlank(getConfiguration().getValidationApi())) {
-                	logger.debug("Apikeyservice api not provided");
-                }
-                if (StringUtils.isBlank(method)) {
-                	logger.debug("Apikeyservice method not provided");
-                }
-                if (result.isPageNotFound_404()) {
-                	logger.debug("Error: Apikeyservice not found on server");
-                }
-            } else {
-            	logger.debug("Error: could not connect to ApiKey Service");
-            }
-            if (result.getReturnStatus().equals(SUCCESS))
-            	res = true;
-            
-        } catch (ApiKeyValidationException e) {
-        	logger.error(e.getMessage());
-        } catch (Exception e) {
-        	logger.error(e.getMessage());
-        }
+//        Connector connector;
+//        try {
+//            connector = new Connector();
+//            ValidationResult result = connector.validateApiKey(request);
+//            if (result.hasConnected()){
+//                if (StringUtils.isBlank(getConfiguration().getValidationApi())) {
+//                	logger.debug("Apikeyservice api not provided");
+//                }
+//                if (StringUtils.isBlank(method)) {
+//                	logger.debug("Apikeyservice method not provided");
+//                }
+//                if (result.isPageNotFound_404()) {
+//                	logger.debug("Error: Apikeyservice not found on server");
+//                }
+//            } else {
+//            	logger.debug("Error: could not connect to ApiKey Service");
+//            }
+//            if (result.getReturnStatus().equals(SUCCESS))
+//            	res = true;
+//            
+//        } catch (ApiKeyValidationException e) {
+//        	logger.error(e.getMessage());
+//        } catch (Exception e) {
+//        	logger.error(e.getMessage());
+//        }
         
         return res;
     }

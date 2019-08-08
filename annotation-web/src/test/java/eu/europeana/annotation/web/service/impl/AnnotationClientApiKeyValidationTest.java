@@ -22,7 +22,7 @@ import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilde
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.service.AdminService;
-import eu.europeana.apikey.client.ValidationRequest;
+//import eu.europeana.apikey.client.ValidationRequest;
 
 
 /**
@@ -88,16 +88,17 @@ public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBu
 	}
 
 	private boolean validateApiKey(String apiKey) throws ApplicationAuthenticationException {
-		ValidationRequest request = new ValidationRequest(
-        		configuration.getValidationAdminApiKey()
-        		, configuration.getValidationAdminSecretKey()
-        		, apiKey
-        		, configuration.getValidationApi()
-        		);
-        if (StringUtils.isNotBlank(API_METHOD)) request.setMethod(API_METHOD);
-		
-		boolean validationRes = getAdminService().validateApiKey(request, API_METHOD);
-		return validationRes;
+//		ValidationRequest request = new ValidationRequest(
+//        		configuration.getValidationAdminApiKey()
+//        		, configuration.getValidationAdminSecretKey()
+//        		, apiKey
+//        		, configuration.getValidationApi()
+//        		);
+//        if (StringUtils.isNotBlank(API_METHOD)) request.setMethod(API_METHOD);
+//		
+//		boolean validationRes = getAdminService().validateApiKey(request, API_METHOD);
+//		return validationRes;
+		return false;
 	}
 
 	

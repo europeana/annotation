@@ -6,7 +6,7 @@ import eu.europeana.annotation.web.exception.authentication.ApplicationAuthentic
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 
-public interface AuthorizationService {
+public interface AuthorizationService extends eu.europeana.api.commons.service.authorization.AuthorizationService {
 
 	Agent authorizeUser(String userToken, String apiKey, String operationName)
 			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException;

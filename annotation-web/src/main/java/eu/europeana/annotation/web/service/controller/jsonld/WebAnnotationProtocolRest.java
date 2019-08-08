@@ -1,9 +1,12 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +21,8 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
+import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
@@ -46,9 +51,13 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestBody String annotation,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
 			HttpServletRequest request)
-					throws HttpException {
+					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 		userToken = getUserToken(userToken, request);
+		
+		// verify access rights
+		List<? extends Authentication> authenticationList = processJwtToken(request);
+	    verifyWriteAccess(authenticationList, WebAnnotationFields.CREATE_OPERATION);	
 		
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
@@ -62,9 +71,13 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestBody String annotationPage,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request)
-					throws HttpException {
+					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 		userToken = getUserToken(userToken, request);
+		
+		// verify access rights
+		List<? extends Authentication> authenticationList = processJwtToken(request);
+	    verifyWriteAccess(authenticationList, WebAnnotationFields.WRITE_METHOD);	
 		
 		return storeAnnotations(wskey, provider, annotationPage, userToken);
 	}

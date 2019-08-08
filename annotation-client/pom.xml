@@ -61,7 +61,14 @@
 			<scope>test</scope>
 			<version>${version.org.junit.jupiter}</version>
 		</dependency>
-		
+	    <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform launcher -->
+	    <dependency>
+	        <groupId>org.junit.platform</groupId>
+	        <artifactId>junit-platform-launcher</artifactId>
+	        <version>${version.junit-platform}</version>
+	        <scope>test</scope>
+	    </dependency>
+	    		
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>

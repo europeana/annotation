@@ -62,12 +62,13 @@
 		<version.annotationApi>0.2.9-SNAPSHOT</version.annotationApi>
 		<version.java>1.8</version.java>
 		<version.org.junit.jupiter>5.1.0</version.org.junit.jupiter>
+		<version.junit-platform>1.2.0</version.junit-platform>		
 		<version.spring>5.0.7.RELEASE</version.spring>
 		<version.aspectj>1.8.8</version.aspectj>		
 		<version.corelib>2.1</version.corelib>
 		<version.log4j2>2.9.1</version.log4j2>
 		<version.commonsLang3>3.0</version.commonsLang3>
-		<version.annotationld>1.1.4-RELEASE</version.annotationld>	
+		<version.annotationld>1.1.5-SNAPSHOT</version.annotationld>	
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.9.4</version.jackson>
 		<version.commonsApi>0.2.7-SNAPSHOT</version.commonsApi>

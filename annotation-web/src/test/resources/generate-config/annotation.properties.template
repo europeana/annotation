@@ -39,7 +39,8 @@ mongodb.annotation.password=
 mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
 
 # solr connection settings
-solr.annotation.url = http://localhost:8282/solr/annotation
+#solr.annotation.url = http://localhost:8282/solr/annotation
+solr.annotation.url = http://localhost:8282/solr/annotation?wt=json
 solr.tag.url = http://localhost:8282/solr/tag
 solr.annotation.timeout = 60000
 solr.tag.timeout = 60000
@@ -51,3 +52,6 @@ solr.facetLimit=750
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
+
+#current API name
+authorization.api.name=

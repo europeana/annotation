@@ -38,7 +38,8 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	public void createSimpleTagAnnotationWithoutProvider() throws JsonParseException {
 		
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				"oa:tagging"
+//				"oa:tagging"
+				"tagging"
 				, null
 				, null
 				, simpleTagAnnotation
