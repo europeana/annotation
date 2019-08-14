@@ -73,7 +73,7 @@
 		<version.jackson>2.9.4</version.jackson>
 		<version.commonsApi>0.2.7-SNAPSHOT</version.commonsApi>
 		<version.apiKeyClient>1.1</version.apiKeyClient>
-		<version.apacheSolr>6.5.1</version.apacheSolr>
+		<version.apacheSolr>7.7.2</version.apacheSolr>
 		<version.woodstox>3.2.9</version.woodstox>
 		<version.servletJstl>1.2</version.servletJstl>
 	</properties>

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +19,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 //disabled as the rest interface is disabled 
 @Deprecated
 public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
+	
+	private final String HPDEMO_APIKEY = "hpdemo";
+	
+	protected Logger log = LogManager.getLogger(getClass());
 	
 	@Test
 	public void createSimpleTagHistoryPinAnnotation() throws JsonParseException {
@@ -100,12 +106,14 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, semanticTagAnnotation
+				, HPDEMO_APIKEY
 				);
 		annotationStr = europeanaLdApi.getAnnotationLd(
 				WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
+				, HPDEMO_APIKEY
 				);
-		System.out.println("historypin get annotation test: " + annotationStr);
+		log.info("historypin get annotation test: " + annotationStr);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
 		assertTrue(BodyInternalTypes.isTagBody(annotation.getBody().getInternalType()));
@@ -120,12 +128,14 @@ public class EuropeanaLdHistoryPinApiTest extends BaseJsonLdApiTest {
 				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
 				, simpleLinkAnnotation
+				, HPDEMO_APIKEY
 				);
 		annotationStr = europeanaLdApi.getAnnotationLd(
 				WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
+				, HPDEMO_APIKEY
 				);
-		System.out.println("historypin get annotation test: " + annotationStr);
+		log.info("historypin get annotation test: " + annotationStr);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		validateAnnotation(WebAnnotationFields.PROVIDER_HISTORY_PIN, annotationNr, annotation);
 	}

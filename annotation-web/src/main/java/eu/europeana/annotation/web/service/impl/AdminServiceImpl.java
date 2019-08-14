@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 
@@ -35,10 +35,6 @@ import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.apikey.client.ApiKeyValidationRequest;
-//import eu.europeana.apikey.client.Connector;
-//import eu.europeana.apikey.client.ValidationRequest;
-//import eu.europeana.apikey.client.ValidationResult;
-import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 

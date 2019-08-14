@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -37,6 +38,37 @@ public class HttpConnection {
     public String getURLContent(String url) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
+
+        try {
+            client.executeMethod(get);
+
+            if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = get.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+                return res;
+            } else {
+                return null;
+            }
+
+        } finally {
+            get.releaseConnection();
+        }
+    }
+
+    /**
+     * This method adds a header to the HTTP request
+     * @param url
+     * @param requestHeaderName
+     * @param requestHeaderValue
+     * @return
+     * @throws IOException
+     */
+    public String getURLContentWithHeader(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        GetMethod get = new GetMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	get.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(get);
@@ -189,9 +221,27 @@ public class HttpConnection {
     
     
 	public String getURLContentWithBody(String url, String jsonParamValue) throws IOException {
+        return getURLContentWithBody(url, jsonParamValue, null, null);
+    }
+    
+    
+	/**
+	 * This method supports request header input
+	 * @param url
+	 * @param jsonParamValue
+	 * @param requestHeaderName
+	 * @param requestHeaderValue
+	 * @return
+	 * @throws IOException
+	 */
+	public String getURLContentWithBody(String url, String jsonParamValue, 
+			String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
         post.setRequestBody(jsonParamValue);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	post.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(post);
@@ -208,45 +258,6 @@ public class HttpConnection {
         	post.releaseConnection();
         }
     }
-    
-    
-//    public boolean writeURLContent(String url, OutputStream out) throws IOException {
-//        return writeURLContent(url, out, null);
-//    }
-//
-//    public boolean writeURLContent(String url, OutputStream out, String requiredMime) throws IOException {
-//        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
-//        GetMethod getMethod = new GetMethod(url);
-//        try {
-//            client.executeMethod(getMethod);
-//
-//            Header tipoMimeHead = getMethod.getResponseHeader("Content-Type");
-//            String tipoMimeResp = "";
-//            if (tipoMimeHead != null) {
-//                tipoMimeResp = tipoMimeHead.getValue();
-//            }
-//
-//            if (getMethod.getStatusCode() >= STATUS_OK_START && getMethod.getStatusCode() <= STATUS_OK_END
-//                    && ((requiredMime == null) || ((tipoMimeResp != null) && tipoMimeResp.contains(requiredMime)))) {
-//                InputStream in = getMethod.getResponseBodyAsStream();
-//
-//                // Copy input stream to output stream
-//                byte[] b = new byte[4 * 1024];
-//                int read;
-//                while ((read = in.read(b)) != -1) {
-//                    out.write(b, 0, read);
-//                }
-//
-//                getMethod.releaseConnection();
-//                return true;
-//            } else {
-//                return false;
-//            }
-//
-//        } finally {
-//            getMethod.releaseConnection();
-//        }
-//    }
 
    
     private HttpClient getHttpClient(int connectionRetry, int conectionTimeout) {

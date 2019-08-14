@@ -882,13 +882,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		switch (webAnnotation.getMotivationType()) {
 		case LINKING:
 			// validate target URLs against whitelist
-			if (webAnnotation.getTarget().getValue() != null)
-				validateResource(webAnnotation.getTarget().getValue());
-
-			if (webAnnotation.getTarget().getValues() != null)
-				for (String url : webAnnotation.getTarget().getValues()) {
-					validateResource(url);
-				}
+			if (webAnnotation.getTarget() != null) {
+				if (webAnnotation.getTarget().getValue() != null)
+					validateResource(webAnnotation.getTarget().getValue());
+	
+				if (webAnnotation.getTarget().getValues() != null)
+					for (String url : webAnnotation.getTarget().getValues()) {
+						validateResource(url);
+					}
+			}
 			break;
 		case TAGGING:
 			validateTag(webAnnotation);

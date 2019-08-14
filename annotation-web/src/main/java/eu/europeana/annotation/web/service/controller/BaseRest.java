@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -463,4 +462,16 @@ public class BaseRest extends ApiResponseBuilder {
 		return res;
 	}    
     
+    /**
+     * This method extracts user name from a JWT token provided in HTTP request header
+     * @param request The HTTP request header
+     * @return jwt user name
+     * @throws ApiKeyExtractionException
+     * @throws AuthorizationExtractionException
+     * @throws eu.europeana.api.commons.exception.AuthorizationExtractionException 
+     */
+    public String getJwtUser(HttpServletRequest request) 
+    		throws ApiKeyExtractionException, AuthorizationExtractionException, eu.europeana.api.commons.exception.AuthorizationExtractionException {
+        return getAuthorizationService().getJwtUser(request);
+    }	
 }

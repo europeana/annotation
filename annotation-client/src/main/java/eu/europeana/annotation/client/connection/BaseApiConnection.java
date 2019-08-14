@@ -100,6 +100,11 @@ public class BaseApiConnection {
 		return getHttpConnection().getURLContent(url);
 	}
 	
+	String getJSONResultWithHeader(String url, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (GET): " + url);
+		return getHttpConnection().getURLContentWithHeader(url, headerName, headerValue);
+	}
+	
 	String getJSONResult(String url, String paramName, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST): " + url);
 		return getHttpConnection().getURLContent(url, paramName, jsonPost);
@@ -108,6 +113,11 @@ public class BaseApiConnection {
 	String getJSONResultWithBody(String url, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST) with body: " + url);
 		return getHttpConnection().getURLContentWithBody(url, jsonPost);
+	}
+	
+	String getJSONResultWithBodyAndHeader(String url, String jsonPost, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (POST) with body: " + url);
+		return getHttpConnection().getURLContentWithBody(url, jsonPost, headerName, headerValue);
 	}
 	
 	

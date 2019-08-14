@@ -125,6 +125,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String CLIENT_VALIDATION_API_KEY = "ApiKey1";
 
 	public static final String CREATE_OPERATION = "create";
+	public static final String UPDATE_OPERATION = "update";
 
 	/**
 	 * Query Fields
