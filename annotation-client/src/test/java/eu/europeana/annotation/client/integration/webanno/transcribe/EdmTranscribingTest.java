@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 

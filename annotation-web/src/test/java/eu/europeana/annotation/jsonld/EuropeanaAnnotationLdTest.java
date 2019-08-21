@@ -1,8 +1,8 @@
 package eu.europeana.annotation.jsonld;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,10 +10,9 @@ import java.net.MalformedURLException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 
@@ -28,7 +27,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 /**
  * @deprecated need to update the tests according to correctly use the EuropeanaAnnotationLd
  */
-@Ignore
+@Deprecated
 public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
@@ -55,11 +54,11 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 
 
 		
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

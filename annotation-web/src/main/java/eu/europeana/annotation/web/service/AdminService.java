@@ -14,7 +14,7 @@ import eu.europeana.annotation.web.exception.authentication.ApplicationAuthentic
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.apikey.client.ValidationRequest;
+//import eu.europeana.apikey.client.ValidationRequest;
 
 public interface AdminService {
 
@@ -133,6 +133,6 @@ public interface AdminService {
      * @param method The method e.g. read, write, delete...
      * @return true if API key is valid
      */
-	public boolean validateApiKey(ValidationRequest request, String method) throws ApplicationAuthenticationException;
+//	public boolean validateApiKey(ValidationRequest request, String method) throws ApplicationAuthenticationException;
 
 }

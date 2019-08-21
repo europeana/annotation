@@ -4,17 +4,16 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
@@ -25,7 +24,6 @@ import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
 import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationServiceImpl{
@@ -51,7 +49,7 @@ public abstract class BaseAnnotationServiceImpl{
 	@Resource
     PersistentClientService clientService;
 	
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 
 
 	public AuthenticationService getAuthenticationService() {
@@ -227,7 +225,7 @@ public abstract class BaseAnnotationServiceImpl{
 			getMongoPersistence().updateIndexingTime(res.getAnnotationId(), lastIndexing);
 			((PersistentAnnotation)res).setLastIndexed(lastIndexing);
 		} catch (Exception e) {
-			Logger.getLogger(getClass().getName())
+			LogManager.getLogger(getClass().getName())
 					.warn("The time of the last SOLR indexing could not be saved. " , e);
 		}
 	}

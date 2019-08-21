@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -52,16 +52,16 @@ public class ManagementRest extends BaseRest {
 
 	protected final Logger logger = getLogger();
 
-	@Resource
-	private AdminService adminService;
-
-	public AdminService getAdminService() {
-		return adminService;
-	}
-
-	public void setAdminService(AdminService adminService) {
-		this.adminService = adminService;
-	}
+//	@Resource
+//	private AdminService adminService;
+//
+//	public AdminService getAdminService() {
+//		return adminService;
+//	}
+//
+//	public void setAdminService(AdminService adminService) {
+//		this.adminService = adminService;
+//	}
 
 	@Resource(name = "annotation_db_apilockService")
 	private PersistentApiWriteLockService indexingJobService;

@@ -1,7 +1,7 @@
 package eu.europeana.annotation.clientapp;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,12 +12,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.gson.Gson;
 
@@ -36,7 +37,7 @@ import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticatio
 /**
  * This class implements different SKOS testing scenarios.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml" 
 	})
 public class AnnotationClientAppConfigToJsonTest{
@@ -70,12 +71,12 @@ public class AnnotationClientAppConfigToJsonTest{
     	apyKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
     }
 	
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	
 	private Gson gson = null;
 
     
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
 		setGson(new Gson());
 		initApiKeyMap();

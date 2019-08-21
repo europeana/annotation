@@ -1,6 +1,9 @@
 {
-	"motivation":"tagging",
-	"via": ["https://archive.org/details/PhilLeshandFriends", "https://www.wikidata.org/wiki/Q2085676"],
+	"motivation": "tagging",
+	"via": [
+		"https://archive.org/details/PhilLeshandFriends",
+		"https://www.wikidata.org/wiki/Q2085676"
+	],
 	"body": {
 		"value": "psychedelic rock"
 	},

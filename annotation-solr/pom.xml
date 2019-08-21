@@ -3,102 +3,86 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<artifactId>annotation-solr</artifactId>
 	<name>Europeana Annotation - Solr index management </name>
 	<url>http://www.europeanalabs.eu</url>
-	
+
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
 		<version>${version.annotationApi}</version>
 	</parent>
-	
-	
+
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApi}</version>			
+			<version>${version.annotationApi}</version>
 		</dependency>
-		
-		<!-- 
-		<dependency>
-			<groupId>eu.europeana.corelib</groupId>
-			<artifactId>corelib-logging</artifactId>
-			<version>${version.corelib}</version>
-		</dependency>
-		 -->
-		                		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<!-- 
-			<version>${version.springCore}</version>
-			 -->
+			<!-- <version>${version.springCore}</version> -->
 			<version>${version.spring}</version>
 		</dependency>
+
 		<!-- Other -->
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<!-- 
-			<version>${version.springCore}</version>
-			 -->
-			<version>${version.spring}</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
-			<scope>test</scope>
-		</dependency>
-                					
-		<!-- Other -->
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${version.commonsLang}</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
 			<version>${version.apacheSolr}</version>
 		</dependency>
+		<!-- 
 		<dependency>
-                <groupId>org.apache.solr</groupId>
-                <artifactId>solr-core</artifactId>
-                <version>${version.apacheSolr}</version>
-                <exclusions>
-                	<exclusion>
-                		<artifactId>jdk.tools</artifactId>
-                		<groupId>jdk.tools</groupId>
-                	</exclusion>
-                </exclusions>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
+			<version>${version.apacheSolr}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jdk.tools</artifactId>
+					<groupId>jdk.tools</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-	    <dependency>
+		 -->
+
+		<!-- Other -->
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>wstx-asl</artifactId>
+			<version>${version.woodstox}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
+
+		<!-- TEST Dependencies -->
+		<dependency>
+			<scope>test</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<!-- <version>${version.springCore}</version> -->
+			<version>${version.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+			<version>${version.org.junit.jupiter}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-test-framework</artifactId>
 			<version>${version.apacheSolr}</version>
 			<scope>test</scope>
 	    </dependency>
-	    <dependency>
-			<groupId>org.codehaus.woodstox</groupId>
-			<artifactId>wstx-asl</artifactId>
-			<version>${version.woodstox}</version>
-		</dependency>
-		<dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-		    <version>${version.apacheSolr}</version>
-        </dependency>			
+
 	</dependencies>
-	
-	<organization>
-		<name>Europeana Foundation</name>
-	</organization>
-	
 </project>

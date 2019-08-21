@@ -19,6 +19,10 @@ public interface AnnotationConfiguration {
 	public static final String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
 
 	public static final String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
+
+	public static final String AUTHORIZATION_API_NAME = "authorization.api.name";
+	public static final String KEY_APIKEY_JWTTOKEN_SIGNATUREKEY = "europeana.apikey.jwttoken.siganturekey";
+	
 	
 	public String getComponentName();
 	
@@ -58,4 +62,7 @@ public interface AnnotationConfiguration {
 	
 	public long getApiKeyCachingTime();
 	
+	public String getJwtTokenSignatureKey();
+
+	public String getAuthorizationApiName();	
 }

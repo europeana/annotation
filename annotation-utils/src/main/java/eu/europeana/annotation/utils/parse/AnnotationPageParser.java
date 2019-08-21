@@ -2,12 +2,12 @@ package eu.europeana.annotation.utils.parse;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
@@ -32,7 +32,7 @@ import eu.europeana.annotation.utils.QueryUtils;
  */
 public class AnnotationPageParser extends JsonLdParser {
 
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 
 	/**
 	 * Maps URIs to namespace prefixes.

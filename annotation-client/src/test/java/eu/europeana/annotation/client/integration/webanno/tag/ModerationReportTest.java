@@ -1,16 +1,17 @@
 package eu.europeana.annotation.client.integration.webanno.tag;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,7 +25,7 @@ public class ModerationReportTest extends BaseTaggingTest {
 
 	public final String API_KEY_CONFIG_FOLDER = "/config";
 
-	protected Logger log = Logger.getLogger(getClass());
+	protected Logger log = LogManager.getLogger(getClass());
 
 	public static String TEST_USER_TOKEN = "admin";
 	public static String JSON_FORMAT = "json";
@@ -40,7 +41,7 @@ public class ModerationReportTest extends BaseTaggingTest {
 		apiKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		initApiKeyMap();
 	}

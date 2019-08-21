@@ -1,8 +1,8 @@
 package eu.europeana.annotation.client.integration.admin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -114,7 +114,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 			// value defined by VALUE_INDEXING_TESTSET
 			AnnotationPage annPgBefore = annSearchApi.searchAnnotations(VALUE_INDEXING_TESTSET, null, null, null, null,
 					SearchProfiles.MINIMAL);
-			assertNotNull("AnnotationPage must not be null", annPgBefore);
+			assertNotNull(annPgBefore, "AnnotationPage must not be null");
 			// annotations were not indexed, therefore it must not show up in
 			// the search result
 			// assertEquals(0, annPgBefore.getTotalInCollection());
@@ -133,7 +133,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 			AnnotationPage annPgAfter = annSearchApi.searchAnnotations(VALUE_INDEXING_TESTSET,
 					Integer.toString(Query.DEFAULT_PAGE), Integer.toString(Query.DEFAULT_PAGE_SIZE), null, null,
 					SearchProfiles.MINIMAL);
-			assertNotNull("AnnotationPage must not be null", annPgAfter);
+			assertNotNull(annPgAfter, "AnnotationPage must not be null");
 			// Now that the annotation was indexed, it must show up in the
 			// search result
 			assertEquals(outdatedAnnotationsBefore + numAnnotations, annPgAfter.getTotalInCollection());

@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.model;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class BatchProcessingStatus implements BatchReportable {
 	int failureCount = 0;

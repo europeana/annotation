@@ -1,13 +1,12 @@
 {
-  "motivation": "transcribing",
-  "body": {
-    "id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
-    "language": "de",
-    "format": "text/html"
-  },
-  "target": {
-    "scope": "http://data.europeana.eu/item/2020601/contributions_20841",
-    "source": 
-    "http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"
-  }
+	"motivation": "transcribing",
+	"body": {
+		"id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
+		"language": "de",
+		"format": "text/html"
+	},
+	"target": {
+		"scope": "http://data.europeana.eu/item/2020601/contributions_20841",
+		"source": "http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"
+	}
 }

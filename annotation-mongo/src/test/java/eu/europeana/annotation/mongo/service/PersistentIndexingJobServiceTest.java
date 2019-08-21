@@ -1,29 +1,30 @@
 package eu.europeana.annotation.mongo.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;;
+import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml"
 	,"/annotation-mongo-test.xml" 
 	})
@@ -46,7 +47,7 @@ public class PersistentIndexingJobServiceTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws IOException {
 	}
 
@@ -55,7 +56,7 @@ public class PersistentIndexingJobServiceTest {
 	 * 
 	 * @throws IOException
 	 */
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 	}
 	

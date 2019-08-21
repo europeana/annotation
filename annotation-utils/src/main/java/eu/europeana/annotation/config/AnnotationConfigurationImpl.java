@@ -68,4 +68,12 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 		return Long.parseLong(getAnnotationProperties().getProperty(API_KEY_CACHING_TIME));
 	}
 	
+	public String getJwtTokenSignatureKey() {
+	    return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
+	}
+		
+	@Override
+	public String getAuthorizationApiName() {
+	    return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
+	}
 }

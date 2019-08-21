@@ -1,14 +1,14 @@
 package eu.europeana.annotation.client.abstracts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europeana.annotation.client.AnnotationJsonLdApiImpl;
 import eu.europeana.annotation.client.EuropeanaLdApiImpl;
@@ -29,18 +29,18 @@ public class BaseJsonLdApiTest {
     
     public static String simpleTagAnnotation = 
     		"{" +
-    		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
-    		"\"@type\": \"oa:Annotation\"," +
-    		"\"annotatedBy\": {" +
-    			"\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
-    			"\"@type\": \"foaf:Person\"," +
+    		"\"@context\": \"http://www.w3.org/ns/anno.jsonld\"," +    		
+    		"\"type\": \"Annotation\"," +
+    		"\"creator\": {" +
+				"\"id\": \"https://www.historypin.org/en/person/55376/\"," +
+    			"\"type\": \"Person\"," +
     			"\"name\": \"John Smith\"" +
     		"}," +
-    		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
-    		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
-    		"\"serializedBy\": \"http://www.historypin.org\"," +
-//    		"\"motivation\": \"oa:tagging\"," +
-    		"\"body\": \"church\"," +
+    		"\"created\": \"2015-02-27T12:00:43Z\"," +
+    		"\"generated\": \"2015-02-28T13:00:34Z\"," +
+    		"\"generator\": \"http://www.historypin.org\"," +
+			"\"motivation\": \"tagging\"," +
+			"\"bodyValue\": \"church\"," +
     		"\"target\": \"" + TEST_TARGET + "\"" +
     		"}";
 
@@ -57,53 +57,33 @@ public class BaseJsonLdApiTest {
     		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
     		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
     		"\"serializedBy\": \"http://data.europeana.eu/provider/Historypin\"," +
-//    		"\"motivation\": \"oa:tagging\"," +
     		"\"body\": [\"church\", \"orthodox\"]," +
     		"\"target\": \"" + TEST_TARGET + "\"," +
        	 	"\"oa:equivalentTo\": \"" + TEST_TARGET + "\"" +
     		"}";
-    
-    
+        
     public static String semanticTagAnnotation =
     		"{" +
-    		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
-    		"\"@type\": \"oa:Annotation\"," +
-    		"\"annotatedBy\": {" +
-    		"\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
-    		"\"@type\": \"foaf:Person\"," +
-    		"\"name\": \"John Smith\"" +
-	    	"}," +
-	    	"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
-	    	"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
-	    	"\"serializedBy\": \"http://www.historypin.org\"," +
-//	    	"\"motivation\": \"oa:tagging\"," +
+    		"\"@context\": \"http://www.w3.org/ns/anno.jsonld\"," +
+    	    "\"type\": \"Annotation\"," +
+    	    "\"motivation\": \"tagging\"," +
     		"\"body\": {" +
-    	    	"\"@type\": \"oa:SemanticTag\"," +
-    	    	"\"related\": \"http://dbpedia.org/resource/Paris\"" + 
+    	    	"\"id\": \"http://www.geonames.org/2988507\"," +
+    	    	"\"format\": \"application/rdf+xml\"" + 
     	    "}," +
-    	    "\"target\": \"" + TEST_TARGET + "\"" +
+    	    "\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\"" +
     		"}";
-    
     
     public static String simpleLinkAnnotation =
     		"{" +
-    		"\"@context\": \"http://www.europeana.eu/annotation/context.jsonld\"," +
-    		"\"@type\": \"oa:Annotation\"," +
-    		"\"annotatedBy\": {" +
-    			"\"@id\": \"https://www.historypin.org/en/person/55376/\"," +
-    			"\"@type\": \"foaf:Person\"," +
-    			"\"name\": \"John Smith\"" +
-    		"}," +
-    		"\"annotatedAt\": \"2015-02-27T12:00:43Z\"," +
-    		"\"serializedAt\": \"2015-02-28T13:00:34Z\"," +
-    		"\"serializedBy\": \"http://www.historypin.org\"," +
-//    		"\"motivation\": \"oa:linking\"," +
+    	    "\"@context\": \"http://www.w3.org/ns/anno.jsonld\"," +
+    	    "\"type\": \"Annotation\"," +
+    	    "\"motivation\": \"linking\"," +
             "\"target\": [" +
-                       "\"http://www.europeana.eu/portal/record/123/xyz.html\"," + 
-                       "\"http://www.europeana.eu/portal/record/333/xxx.html\"" +
-                   "]," +
-       	 	"\"oa:equivalentTo\": \"" + TEST_TARGET + "\"" +
-    		"}";
+            "\"http://data.europeana.eu/item/2059207/data_sounds_T471_5\"," + 
+            "\"http://data.europeana.eu/item/2059207/data_sounds_T471_4\"" +
+            "]," +
+        	"}";
     
     public static String objectTagHistoryPinAnnotation =
         "{" +
@@ -127,7 +107,6 @@ public class BaseJsonLdApiTest {
             "\"language\": \"ro\"," +
             "\"multilingual\": \"[ro:Vlad Tepes,en:Vlad the Impaler]\"" +
         "}," +
-//        "\"motivation\": \"oa:tagging\"," +
         "\"serializedAt\": \"2012-11-10T09:08:07\"," +
         "\"serializedBy\": {" +
             "\"@id\": \"open_id_2\"," +
@@ -159,7 +138,7 @@ public class BaseJsonLdApiTest {
     "}";
     		
     
-    @Before
+    @BeforeEach
     public void initObjects() {
     	annotationJsonLdApi = new AnnotationJsonLdApiImpl();
     	europeanaLdApi = new EuropeanaLdApiImpl();
@@ -182,7 +161,7 @@ public class BaseJsonLdApiTest {
 		if (provider.equals(WebAnnotationFields.PROVIDER_WEBANNO))
 			assertTrue(annotation.getAnnotationId().getIdentifier() != null);
 		else
-			assertEquals((Long)annotationNr, annotation.getAnnotationId().getIdentifier());
+			assertEquals((Long)annotationNr, Long.valueOf(annotation.getAnnotationId().getIdentifier()));
 		
 	}
 	
