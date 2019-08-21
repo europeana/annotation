@@ -8,7 +8,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -45,7 +46,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	AnnotationConfiguration configuration;
 	PersistentClientService clientService;
 
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 
 	public MockAuthenticationServiceImpl(AnnotationConfiguration configuration, PersistentClientService clientService) {
 		this.configuration = configuration;

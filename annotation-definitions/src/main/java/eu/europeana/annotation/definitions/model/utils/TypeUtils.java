@@ -13,13 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class TypeUtils {
 	
-	private static Logger log = Logger.getRootLogger();
+	private static Logger log = LogManager.getRootLogger();
 	
 	/**
 	 * This method extracts internalType from the input string with multiple types.

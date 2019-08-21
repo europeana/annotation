@@ -123,7 +123,10 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String WRITE_METHOD = "write";
 	public static final String DELETE_METHOD = "delete";
 	public static final String CLIENT_VALIDATION_API_KEY = "ApiKey1";
-	
+
+	public static final String CREATE_OPERATION = "create";
+	public static final String UPDATE_OPERATION = "update";
+
 	/**
 	 * Query Fields
 	 */
@@ -192,7 +195,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	 */
 	public static final String AND = "&";
 	public static final String EQUALS = "=";
-	public static final String INDEXING = "indexing";
+//	public static final String INDEXING = "indexing";
 	public static final String INDEX_ON_CREATE = "indexOnCreate";
 	public static final String PROVIDER = "provider";
 	public static final String USER = "user";

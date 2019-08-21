@@ -1,7 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,19 +9,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
@@ -43,7 +41,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
  * Unit test for the Web Annotation service
  * @deprecated adapt to use AnnotationLdParser and AnnotationLdDeserializerDeprecated
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
 	})
 public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
@@ -59,8 +57,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	
 	
 	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
-	
-	@Rule public ExpectedException thrown= ExpectedException.none();
 	
 	@Test
 	public void testStoreAnnotationInDbRetrieveAndSerialize() 
@@ -214,18 +210,18 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	public void testCreateAnnotationWrongProvider() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		thrown.expect( AnnotationValidationException.class );
-		
-		/**
-		 * Create a test annotation object.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstance();
+		Assertions.assertThrows(AnnotationValidationException.class, () -> {
+			
+			/**
+			 * Create a test annotation object.
+			 */
+			Annotation testAnnotation = createBaseObjectTagInstance();
 
-		/**
-		 * Store Annotation in database.
-		 */
-		webAnnotationService.storeAnnotation(testAnnotation);
-
+			/**
+			 * Store Annotation in database.
+			 */
+			webAnnotationService.storeAnnotation(testAnnotation);
+		});		
 	}
 
 	/**

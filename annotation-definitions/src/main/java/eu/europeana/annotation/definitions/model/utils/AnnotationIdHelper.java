@@ -1,9 +1,8 @@
 package eu.europeana.annotation.definitions.model.utils;
 
-import java.net.URL;
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;

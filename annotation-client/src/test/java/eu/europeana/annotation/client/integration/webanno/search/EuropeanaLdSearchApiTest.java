@@ -1,12 +1,11 @@
 package eu.europeana.annotation.client.integration.webanno.search;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Ignore;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -18,7 +17,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
  * @Deprecated
  * @author Sergiu Gordea @ait
  */
-@Ignore
+@Deprecated
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	
 //	@Test

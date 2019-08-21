@@ -42,6 +42,7 @@ mongodb.annotation.connectionUrl=
 #solr.tag.url = http://148.251.139.77/solr/tag
 
 solr.annotation.url = http://localhost:8282/solr/annotation
+#solr.annotation.url = http://localhost:8282/solr/annotation?wt=json
 solr.tag.url = http://localhost:8282/solr/tag
 solr.annotation.timeout = 60000
 solr.tag.timeout = 60000

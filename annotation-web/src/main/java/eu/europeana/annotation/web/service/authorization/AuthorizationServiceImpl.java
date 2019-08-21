@@ -2,8 +2,10 @@ package eu.europeana.annotation.web.service.authorization;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -19,10 +21,12 @@ import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.definitions.vocabulary.Role;
+import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
 
-public class AuthorizationServiceImpl implements AuthorizationService {
+public class AuthorizationServiceImpl extends BaseAuthorizationService implements AuthorizationService {
 	
-	protected final Logger logger = Logger.getLogger(getClass());
+	protected final Logger logger = LogManager.getLogger(getClass());
 
 	@Resource
 	AuthenticationService authenticationService;
@@ -30,6 +34,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Resource
 	AnnotationConfiguration configuration;
 
+    @Resource(name = "commons_oauth2_europeanaClientDetailsService")
+    ClientDetailsService clientDetailsService;
+    
 	public AuthorizationServiceImpl(AuthenticationService authenticationService){
 		this.authenticationService = authenticationService;
 	}
@@ -165,4 +172,30 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	public void setConfiguration(AnnotationConfiguration configuration) {
 		this.configuration = configuration;
 	}
+	
+//    @Override
+    protected String getAuthorizationApiName() {
+	    return getConfiguration().getAuthorizationApiName();
+    }
+
+    @Override
+    protected ClientDetailsService getClientDetailsService() {
+	    return clientDetailsService;
+    }
+
+    @Override
+    protected String getSignatureKey() {
+	    return getConfiguration().getJwtTokenSignatureKey();
+    }
+
+    @Override
+    protected Role getRoleByName(String name) {
+    	return UserGroups.getRoleByName(name);
+    }
+
+    @Override
+    protected String getApiName() {
+    	return getConfiguration().getAuthorizationApiName();
+    }
+	
 }

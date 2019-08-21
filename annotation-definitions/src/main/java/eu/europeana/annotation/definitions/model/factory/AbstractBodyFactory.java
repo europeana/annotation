@@ -1,9 +1,5 @@
 package eu.europeana.annotation.definitions.model.factory;
 
-import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
-import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-
 /*
  * @Deprecated not used anymore
  */

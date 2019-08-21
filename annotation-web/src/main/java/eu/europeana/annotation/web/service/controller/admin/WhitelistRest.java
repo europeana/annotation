@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ws.rs.DELETE;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -200,7 +200,7 @@ public class WhitelistRest extends BaseRest {
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
-			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
+			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
@@ -234,7 +234,7 @@ public class WhitelistRest extends BaseRest {
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
-			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
+			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}

@@ -3,7 +3,7 @@ package eu.europeana.annotation.solr.server;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SolrStarter {
 
-	SolrServer server;
+	SolrClient solrClient;
 
 	ApplicationContext context;
 
@@ -30,8 +30,9 @@ public class SolrStarter {
 	}
 
 	public void start() throws MalformedURLException {
-		server = context.getBean(org.apache.solr.client.solrj.SolrServer.class);
-		
+		//org.apache.solr.client.solrj.embedded.EmbeddedSolrServer
+		//server = context.getBean(org.apache.solr.client.solrj.SolrServer.class);
+		solrClient = context.getBean(org.apache.solr.client.solrj.embedded.EmbeddedSolrServer.class);
 	}
 
 	public static void main(String[] args) throws Exception {

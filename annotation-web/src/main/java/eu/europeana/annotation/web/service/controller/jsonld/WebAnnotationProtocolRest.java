@@ -1,9 +1,12 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
+import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
@@ -46,9 +53,12 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestBody String annotation,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
 			HttpServletRequest request)
-					throws HttpException {
+					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		userToken = getUserToken(userToken, request);
+        // TODO userToken parameter has to be removed from HTTP request parameters		
+        // userToken = getUserToken(userToken, request);
+		
+	    verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
 		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
 	}
@@ -62,9 +72,13 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestBody String annotationPage,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request)
-					throws HttpException {
+					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		userToken = getUserToken(userToken, request);
+//		userToken = getUserToken(userToken, request);
+		
+//	    String jwtUserToken = verifyAccessRights(request, WebAnnotationFields.CREATE_OPERATION);
+		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		
 		
 		return storeAnnotations(wskey, provider, annotationPage, userToken);
 	}
@@ -80,9 +94,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType,
 			HttpServletRequest request
-			)throws HttpException {
+			)throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		userToken = getUserToken(userToken, request);
+//		userToken = getUserToken(userToken, request);
+//	    String jwtUserToken = verifyAccessRights(request, WebAnnotationFields.CREATE_OPERATION);
+		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
 		MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 		if(motivation == null)
@@ -102,10 +118,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
-//			@RequestHeader(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken//,
 			) throws HttpException {
 
-			String action = "get:/annotation/{provider}/{identifier}[.{format}]";
+			String action = "get:/annotation/{provider}/{identifier}[.{format}]";		
 			return getAnnotationById(wskey, provider, identifier, action);
 	}
 	
@@ -116,12 +131,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
 			HttpServletRequest request)
-					throws HttpException {
+					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 		//the content response is delivered automatically by spring
 //				return null;
-		userToken = getUserToken(userToken, request);
-		
+//		userToken = getUserToken(userToken, request);	
 		return optionsForCorsPreflight(wskey, null, null, userToken);
 	}
 	
@@ -134,9 +148,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestBody String annotation,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
-			) throws HttpException {
+			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 		
-		userToken = getUserToken(userToken, request);
+//		userToken = getUserToken(userToken, request);
+//	    String jwtUserToken = verifyAccessRights(request, WebAnnotationFields.UPDATE_OPERATION);
+		verifyWriteAccess(WebAnnotationFields.UPDATE_OPERATION, request);
 		
 		String action = "put:/annotation/{provider}/{identifier}[.{format}]";
 		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
@@ -151,13 +167,38 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
-			) throws HttpException {
+			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		userToken = getUserToken(userToken, request);
+//		userToken = getUserToken(userToken, request);
+//	    String jwtUserToken = verifyWr
+//	    		(request, WebAnnotationFields.DELETE_METHOD);
+		verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
 		
 		String action = "delete:/annotation/{provider}/{identifier}[.{format}]";
 		return deleteAnnotation(wskey, provider, identifier, userToken, action);
 	}
 	
+	/**
+	 * Verify access rights using user token from request header
+	 * @param request The HTTP request
+	 * @param operation The API operation
+	 * @return user name
+	 * @throws eu.europeana.api.commons.web.exception.ApplicationAuthenticationException 
+	 * @throws OperationAuthorizationException 
+	 * @throws ApplicationAuthenticationException 
+	 * @throws AuthorizationExtractionException 
+	 * @throws ApiKeyExtractionException 
+	 * @throws eu.europeana.annotation.web.exception.authorization.AuthorizationExtractionException 
+	 */
+//	protected String verifyAccessRights(HttpServletRequest request, String operation) throws ApplicationAuthenticationException, OperationAuthorizationException, eu.europeana.api.commons.web.exception.ApplicationAuthenticationException, eu.europeana.annotation.web.exception.authorization.AuthorizationExtractionException, ApiKeyExtractionException, AuthorizationExtractionException {
+//		String user = "";
+//		List<? extends Authentication> authenticationList = processJwtToken(request);
+//	    verifyWriteAccess(authenticationList, operation);	
+//	    user = getJwtUser(request);
+//	    // TODO Negotiate the user name without forbidden characters e.g. '.'
+//	    // currently we replace it by '-' for testing
+//	    user = user.replace(".", "-");
+//        return user;
+//	}
 	
 }

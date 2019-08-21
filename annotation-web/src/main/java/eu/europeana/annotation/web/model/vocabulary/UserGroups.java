@@ -1,6 +1,8 @@
 package eu.europeana.annotation.web.model.vocabulary;
 
-public enum UserGroups {
+import eu.europeana.api.commons.definitions.vocabulary.Role;
+
+public enum UserGroups implements Role {
 
 	ANONYMOUS(new String[]{Operations.RETRIEVE}), 
 	USER(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
@@ -21,5 +23,32 @@ public enum UserGroups {
 	public void setOperations(String[] operations) {
 		this.operations = operations;
 	}
-	
+
+	/**
+	 * This method returns the api specific Role for the given role name
+	 * 
+	 * @param name the name of user role 
+	 * @return the user role
+	 */
+	public static Role getRoleByName(String name) {
+	    Role userRole = null;
+	    for(UserGroups role : UserGroups.values()) {
+		if(role.name().toLowerCase().equals(name)) {
+		    userRole = role;
+		    break;
+		}
+	    }
+	    return userRole;
+	}
+
+	@Override
+	public String getName() {
+	    return this.name();
+	}
+
+	@Override
+	public String[] getPermissions() {
+	    return getOperations();
+	}
+			
 }

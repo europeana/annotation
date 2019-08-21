@@ -1,11 +1,10 @@
 package eu.europeana.annotation.client.integration.jsonld;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -17,7 +16,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
  * @author GordeaS
  *
  */
-@Ignore
+@Deprecated
 public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	
 	@Test
@@ -39,7 +38,8 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	public void createSimpleTagAnnotationWithoutProvider() throws JsonParseException {
 		
 		String annotationStr = europeanaLdApi.createAnnotationLd(
-				"oa:tagging"
+//				"oa:tagging"
+				"tagging"
 				, null
 				, null
 				, simpleTagAnnotation

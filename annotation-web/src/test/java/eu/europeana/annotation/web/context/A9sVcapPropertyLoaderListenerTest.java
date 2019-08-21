@@ -1,6 +1,6 @@
 package eu.europeana.annotation.web.context;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,14 +8,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.junit.Test;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.context.support.MockA9sServletEnvironment;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
 public class A9sVcapPropertyLoaderListenerTest {
 
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	
 	@Test
 	public void writePropertiesToFile() throws FileNotFoundException, IOException {

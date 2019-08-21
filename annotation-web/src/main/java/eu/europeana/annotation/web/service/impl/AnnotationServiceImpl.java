@@ -1,13 +1,10 @@
 package eu.europeana.annotation.web.service.impl;
 
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +13,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.springframework.http.HttpStatus;
 
 import com.google.common.base.Strings;
 
@@ -36,22 +30,17 @@ import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.entity.Place;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.batch.BulkOperationMode;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
-import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
-import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
@@ -67,12 +56,10 @@ import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
-import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
@@ -895,13 +882,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		switch (webAnnotation.getMotivationType()) {
 		case LINKING:
 			// validate target URLs against whitelist
-			if (webAnnotation.getTarget().getValue() != null)
-				validateResource(webAnnotation.getTarget().getValue());
-
-			if (webAnnotation.getTarget().getValues() != null)
-				for (String url : webAnnotation.getTarget().getValues()) {
-					validateResource(url);
-				}
+			if (webAnnotation.getTarget() != null) {
+				if (webAnnotation.getTarget().getValue() != null)
+					validateResource(webAnnotation.getTarget().getValue());
+	
+				if (webAnnotation.getTarget().getValues() != null)
+					for (String url : webAnnotation.getTarget().getValues()) {
+						validateResource(url);
+					}
+			}
 			break;
 		case TAGGING:
 			validateTag(webAnnotation);

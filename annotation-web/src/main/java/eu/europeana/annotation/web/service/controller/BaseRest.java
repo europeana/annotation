@@ -9,10 +9,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -31,6 +32,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
+import eu.europeana.annotation.web.exception.authorization.AuthorizationExtractionException;
+import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -43,12 +46,14 @@ import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
+import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.model.ApiResponse;
-import eu.europeana.apikey.client.ValidationRequest;
+//import eu.europeana.apikey.client.ValidationRequest;
 
-public class BaseRest extends ApiResponseBuilder {
+public class BaseRest extends BaseRestController {
 
     /**
      * API key cache map contains apiKeys as a key and last response time as a value.
@@ -83,21 +88,8 @@ public class BaseRest extends ApiResponseBuilder {
 		this.adminService = adminService;
 	}
 	
-	@Resource
-	I18nService i18nService;
-
-	@Override
-	protected I18nService getI18nService() {
-		return i18nService;
-	}
-
-	@Override
-	public ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	Logger logger = Logger.getLogger(getClass());
+	//TODO move to base class
+	Logger logger = LogManager.getLogger(getClass());
 
 	public Logger getLogger() {
 		return logger;
@@ -302,24 +294,24 @@ public class BaseRest extends ApiResponseBuilder {
     	    	return true; // we already have recent positive response from the client 
     	} 
     	
-        ValidationRequest request = new ValidationRequest(
-        		getConfiguration().getValidationAdminApiKey() // the admin API key
-        		, getConfiguration().getValidationAdminSecretKey() // the admin secret key
-        		, apiKey
-        		, getConfiguration().getValidationApi() // the name of API e.g. search, entity, annotation...
-        		);
-        
-        if (StringUtils.isNotBlank(method)) request.setMethod(method);
-        res = getAdminService().validateApiKey(request, method);
-        if (res) {
-        	apyKeyCache.put(apiKey, currentTime);
-        } else {
-        	//remove invalid from cache if exists
-        	if (apyKeyCache.containsKey(apiKey)) 
-        		apyKeyCache.remove(apiKey);
-   			
-        	throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
-        }
+//        ValidationRequest request = new ValidationRequest(
+//        		getConfiguration().getValidationAdminApiKey() // the admin API key
+//        		, getConfiguration().getValidationAdminSecretKey() // the admin secret key
+//        		, apiKey
+//        		, getConfiguration().getValidationApi() // the name of API e.g. search, entity, annotation...
+//        		);
+//        
+//        if (StringUtils.isNotBlank(method)) request.setMethod(method);
+//        res = getAdminService().validateApiKey(request, method);
+//        if (res) {
+//        	apyKeyCache.put(apiKey, currentTime);
+//        } else {
+//        	//remove invalid from cache if exists
+//        	if (apyKeyCache.containsKey(apiKey)) 
+//        		apyKeyCache.remove(apiKey);
+//   			
+//        	throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
+//        }
         return res;
     }
 
@@ -421,4 +413,53 @@ public class BaseRest extends ApiResponseBuilder {
 		}
 		return userToken;
 	}
+	
+    /**
+     * This method adopts KeyCloack token from HTTP request
+     * @param request The HTTP request
+     * @return list of Authentication objects
+     * @throws ApplicationAuthenticationException
+     * @throws ApiKeyExtractionException
+     * @throws eu.europeana.api.commons.web.exception.ApplicationAuthenticationException 
+     * @throws eu.europeana.api.commons.exception.AuthorizationExtractionException 
+     */
+//    public List<? extends Authentication> processJwtToken(HttpServletRequest request) 
+//	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException, 
+//	        eu.europeana.api.commons.web.exception.ApplicationAuthenticationException, 
+//	        eu.europeana.api.commons.exception.AuthorizationExtractionException {
+//	    return getAuthorizationService().processJwtToken(request); 	
+//    }	
+//    
+//    /**
+//     * This method verifies write access rights for particular api and operation
+//     * @param authenticationList The list of authentications extracted from the JWT token
+//     * @param operation The name of current operation
+//     * @return true if authenticated, false otherwise
+//     * @throws ApplicationAuthenticationException
+//     * @throws OperationAuthorizationException 
+//     * @throws eu.europeana.api.commons.web.exception.ApplicationAuthenticationException 
+//     */
+//	public boolean verifyWriteAccess(List<? extends Authentication> authenticationList, String operation)
+//			throws ApplicationAuthenticationException, OperationAuthorizationException, 
+//			eu.europeana.api.commons.web.exception.ApplicationAuthenticationException {
+//		boolean res = getAuthorizationService().authorizeWriteAccess(authenticationList, operation);
+//		if (!res) {
+//			throw new OperationAuthorizationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+//					I18nConstants.OPERATION_NOT_AUTHORIZED, null);
+//		}
+//		return res;
+//	}    
+    
+    /**
+     * This method extracts user name from a JWT token provided in HTTP request header
+     * @param request The HTTP request header
+     * @return jwt user name
+     * @throws ApiKeyExtractionException
+     * @throws AuthorizationExtractionException
+     * @throws eu.europeana.api.commons.exception.AuthorizationExtractionException 
+     */
+//    public String getJwtUser(HttpServletRequest request) 
+//    		throws ApiKeyExtractionException, AuthorizationExtractionException, eu.europeana.api.commons.exception.AuthorizationExtractionException {
+//        return getAuthorizationService().getJwtUser(request);
+//    }	
 }

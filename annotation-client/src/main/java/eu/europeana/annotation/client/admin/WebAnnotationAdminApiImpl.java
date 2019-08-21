@@ -2,7 +2,8 @@ package eu.europeana.annotation.client.admin;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.BaseAnnotationApi;
@@ -12,7 +13,7 @@ import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 
 public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebAnnotationAdminApi {
 	
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 
 	public WebAnnotationAdminApiImpl(ClientConfiguration configuration,
 			AnnotationApiConnection apiConnection) {

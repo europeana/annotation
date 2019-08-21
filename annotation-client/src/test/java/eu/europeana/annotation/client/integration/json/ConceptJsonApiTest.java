@@ -1,11 +1,11 @@
 package eu.europeana.annotation.client.integration.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.client.ConceptJsonApiImpl;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
@@ -13,14 +13,14 @@ import eu.europeana.annotation.utils.JsonUtils;
 
 
 //TODO: enabled when concept API is enabled
-@Ignore 
+@Disabled
 public class ConceptJsonApiTest extends AnnotationTestObjectBuilder{
 
 	private static String TEST_URI = "concept.eu/new";
 	
     private ConceptJsonApiImpl conceptJsonApi;
     
-    @Before
+    @BeforeEach
     public void initObjects() {
     	conceptJsonApi = new ConceptJsonApiImpl();
     }

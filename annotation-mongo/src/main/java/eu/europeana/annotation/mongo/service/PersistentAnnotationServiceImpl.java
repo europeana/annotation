@@ -6,8 +6,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
@@ -49,7 +50,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	GeoPlaceValidator geoPlaceValidator;
 	
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Resource
 	private PersistentTagService tagService;

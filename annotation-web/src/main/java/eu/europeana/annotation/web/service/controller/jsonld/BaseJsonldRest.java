@@ -6,14 +6,17 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 
@@ -63,7 +66,7 @@ import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseJsonldRest extends BaseRest {
 	
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 
 	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation, String provider,
 			String identifier, boolean indexOnCreate, String annotation, String userToken) throws HttpException {

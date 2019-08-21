@@ -1,15 +1,16 @@
 package eu.europeana.annotation.client.integration.json;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
@@ -24,9 +25,9 @@ public class WhitelistJsonApiTest {
 	private static String TEST_NAME = "test.data.europeana";
 	
     private WhitelistJsonApiImpl whitelistJsonApi;
-    protected Logger log = Logger.getLogger(getClass());
+    protected Logger log = LogManager.getLogger(getClass());
     
-    @Before
+    @BeforeEach
     public void initObjects() {
     	whitelistJsonApi = new WhitelistJsonApiImpl();
     }

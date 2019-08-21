@@ -6,15 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.junit.Before;
 //import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
