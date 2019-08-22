@@ -769,7 +769,8 @@ public class AnnotationLdParser extends JsonLdParser {
 			else
 				return BodyInternalTypes.LINK;
 		case TRANSCRIBING:
-			return BodyInternalTypes.SPECIFIC_RESOURCE;
+			return BodyInternalTypes.FULL_TEXT_RESOURCE;
+//			return BodyInternalTypes.SPECIFIC_RESOURCE;
 		case TAGGING:
 			// simple resource (semantic) tag - extended
 			// specific resource - minimal or extended;

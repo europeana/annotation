@@ -723,6 +723,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// TODO: the body type shouldn't be null at this stage
 		if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 			validateTagWithSpecificResource(body);
+		} else if (body.getType() != null && body.getType().contains(WebAnnotationFields.FULL_TEXT_RESOURCE)) {
+			validateTagWithFullTextResource(body);
 		} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
 			validateSemanticTagUrl(body);
 		} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
@@ -774,6 +776,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 					I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
 					new String[]{"tag.body.httpUri", body.getHttpUri()});
+	}
+
+	private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
+		// check mandatory fields
+		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.type", body.getType().toString()});
+		if (Strings.isNullOrEmpty(body.getSource()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.source", body.getSource()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
