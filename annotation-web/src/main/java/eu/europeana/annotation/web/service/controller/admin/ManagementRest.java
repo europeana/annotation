@@ -92,7 +92,7 @@ public class ManagementRest extends BaseRest {
 		response.success = true;
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Delete Annotation for good result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = {
@@ -123,7 +123,7 @@ public class ManagementRest extends BaseRest {
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Delete a set of Annotations for good result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/annotation/validate", method = RequestMethod.GET, produces = {
@@ -141,7 +141,7 @@ public class ManagementRest extends BaseRest {
 		response.success = true;
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Delete Annotation for good result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	protected void deleteAnnotationForGood(String provider, String identifier, String apiKey, String userToken)
@@ -203,7 +203,7 @@ public class ManagementRest extends BaseRest {
 
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Reindex by annotation id result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class ManagementRest extends BaseRest {
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Reindex a set of annotations defined by selection criteria result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.POST, produces = {
@@ -282,7 +282,7 @@ public class ManagementRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
 		logger.info("Reindex a set of annotations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
-		return buildResponseEntityForJsonString(jsonStr, httpStatus);
+		return buildResponse(jsonStr, httpStatus);
 	}
 
 	@RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = {
@@ -315,7 +315,7 @@ public class ManagementRest extends BaseRest {
 		// return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Reindex all annotations result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.GET, produces = {
@@ -359,7 +359,7 @@ public class ManagementRest extends BaseRest {
 		logger.info(successMsg);
 
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr, httpStatus);
+		return buildResponse(jsonStr, httpStatus);
 	}
 
 	@RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
@@ -397,7 +397,7 @@ public class ManagementRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Update record ID operation result. \n Old ID: " + oldId + "\nnewId : " + newId + "\nResult: "
 				+ jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 
 	}
 
@@ -433,7 +433,7 @@ public class ManagementRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
 		logger.info("Lock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
-		return buildResponseEntityForJsonString(jsonStr, httpStatus);
+		return buildResponse(jsonStr, httpStatus);
 	}
 
 	@RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
@@ -473,7 +473,7 @@ public class ManagementRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
 		logger.info("Unlock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
-		return buildResponseEntityForJsonString(jsonStr, httpStatus);
+		return buildResponse(jsonStr, httpStatus);
 	}
 
 	@RequestMapping(value = "/admin/getClientApplication", method = RequestMethod.GET, produces = {
@@ -496,7 +496,7 @@ public class ManagementRest extends BaseRest {
 		
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.debug("Get client application result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/migrateClientApplication", method = RequestMethod.POST, produces = {
@@ -526,7 +526,7 @@ public class ManagementRest extends BaseRest {
 		
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.debug("Migrate client application result: " + jsonStr);
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 	@RequestMapping(value = "/admin/updateClientApplication", method = RequestMethod.POST, produces = {
@@ -557,7 +557,7 @@ public class ManagementRest extends BaseRest {
 		String jsonStr = JsonWebUtils.toJson(response, null);
 		logger.info("Update client application result: " + jsonStr);
 
-		return buildResponseEntityForJsonString(jsonStr);
+		return buildResponse(jsonStr);
 	}
 
 }

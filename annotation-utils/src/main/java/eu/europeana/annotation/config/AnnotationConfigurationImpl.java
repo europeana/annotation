@@ -46,27 +46,12 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 		return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
 	}
 
-	public String getValidationApi() {
-		return getAnnotationProperties().getProperty(VALIDATION_API);
-	}
-
-	public String getValidationAdminApiKey() {
-		return getAnnotationProperties().getProperty(VALIDATION_ADMIN_API_KEY);
-	}
-
-	public String getValidationAdminSecretKey() {
-		return getAnnotationProperties().getProperty(VALIDATION_ADMIN_SECRET_KEY);
-	}
-
+	
 	public int getMaxPageSize(String profile) {
 		String key = PREFIX_MAX_PAGE_SIZE + profile;
 		return Integer.parseInt(getAnnotationProperties().getProperty(key));
 	}
 
-	@Override
-	public long getApiKeyCachingTime() {
-		return Long.parseLong(getAnnotationProperties().getProperty(API_KEY_CACHING_TIME));
-	}
 	
 	public String getJwtTokenSignatureKey() {
 	    return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);

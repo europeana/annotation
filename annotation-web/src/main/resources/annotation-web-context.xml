@@ -43,7 +43,7 @@
     </beans:bean>
     
 	<beans:bean name="commons_oauth2_europeanaClientDetailsService" class="eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService">
-		<beans:property name="apiKeyServiceUrl" value="http://apikey2-test.eanadev.org/apikey"/>
+		<beans:property name="apiKeyServiceUrl" value="#{annotationProperties['europeana.apikey.serviceurl']}"/>
 	</beans:bean>     
     
     <!--  java api bean -->

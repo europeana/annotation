@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -32,8 +31,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
-import eu.europeana.annotation.web.exception.authorization.AuthorizationExtractionException;
-import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -45,13 +42,8 @@ import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
-import eu.europeana.api.commons.config.i18n.I18nService;
-import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
 import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api.commons.web.model.ApiResponse;
-//import eu.europeana.apikey.client.ValidationRequest;
 
 public class BaseRest extends BaseRestController {
 
@@ -272,49 +264,14 @@ public class BaseRest extends BaseRestController {
 		return getAnnotationIdHelper().extractProviderFromUri(identifier);
 	}
 	
-    /**
-     * This method employs API key client library for API key validation
-     * @param apiKey The API key e.g. ApiKey1
-     * @param method The method e.g. read, write, delete...
-     * @return true if API key is valid
-     * @throws ApplicationAuthenticationException 
-     */
-    public boolean validateApiKeyUsingClient(String apiKey, String method) throws ApplicationAuthenticationException {
-    	
-    	boolean res = false;
-    	
-    	// check in cache if there is a valid value
-    	// if yes - return true
-    	long currentTime = System.currentTimeMillis();
-    	Long cacheTime = apyKeyCache.get(apiKey);
-    	if (cacheTime != null) {
-    	    long diff = currentTime - cacheTime.longValue();
-    	    long configCacheTime = getConfiguration().getApiKeyCachingTime();
-    	    if (diff < configCacheTime) 
-    	    	return true; // we already have recent positive response from the client 
-    	} 
-    	
-//        ValidationRequest request = new ValidationRequest(
-//        		getConfiguration().getValidationAdminApiKey() // the admin API key
-//        		, getConfiguration().getValidationAdminSecretKey() // the admin secret key
-//        		, apiKey
-//        		, getConfiguration().getValidationApi() // the name of API e.g. search, entity, annotation...
-//        		);
-//        
-//        if (StringUtils.isNotBlank(method)) request.setMethod(method);
-//        res = getAdminService().validateApiKey(request, method);
-//        if (res) {
-//        	apyKeyCache.put(apiKey, currentTime);
-//        } else {
-//        	//remove invalid from cache if exists
-//        	if (apyKeyCache.containsKey(apiKey)) 
-//        		apyKeyCache.remove(apiKey);
-//   			
-//        	throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
-//        }
-        return res;
-    }
-
+   
+	/**
+	 * To be replaced by verifyRead and verifyWrite access methods
+	 * @param wsKey
+	 * @param method
+	 * @throws ApplicationAuthenticationException
+	 */
+	@Deprecated
 	protected void validateApiKey(String wsKey, String method) throws ApplicationAuthenticationException {
 		
 		//TODO: will not be included in the 0.2.8-RELEASE, enable in 0.2.9
@@ -325,16 +282,16 @@ public class BaseRest extends BaseRestController {
 	}
 
 	
-	protected ResponseEntity <String> buildResponseEntityForJsonString(String jsonStr) {
+	protected ResponseEntity <String> buildResponse(String jsonStr) {
 		
 		HttpStatus httpStatus = HttpStatus.OK;
-		ResponseEntity<String> response = buildResponseEntityForJsonString(jsonStr, httpStatus);
+		ResponseEntity<String> response = buildResponse(jsonStr, httpStatus);
 		
 		return response;		
 	}
 	
 
-	protected ResponseEntity<String> buildResponseEntityForJsonString(String jsonStr, HttpStatus httpStatus) {
+	protected ResponseEntity<String> buildResponse(String jsonStr, HttpStatus httpStatus) {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 		headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));

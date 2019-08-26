@@ -54,14 +54,6 @@ public interface AnnotationConfiguration {
 	
 	public int getMaxPageSize(String profile);
 	
-	public String getValidationApi();
-
-	public String getValidationAdminApiKey();
-
-	public String getValidationAdminSecretKey();
-	
-	public long getApiKeyCachingTime();
-	
 	public String getJwtTokenSignatureKey();
 
 	public String getAuthorizationApiName();	
