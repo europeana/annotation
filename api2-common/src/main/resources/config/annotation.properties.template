@@ -56,10 +56,8 @@ mongodb.annotation.truststore=
 mongodb.annotation.truststorepass=
 
 # solr connection settings
-solr.annotation.url = http://localhost:8282/solr/annotation
-solr.tag.url = http://localhost:8282/solr/tag
+solr.annotation.url = http://localhost:9090/solr/anno-up
 solr.annotation.timeout = 60000
-solr.tag.timeout = 60000
 
 solr.facetLimit=750
 
