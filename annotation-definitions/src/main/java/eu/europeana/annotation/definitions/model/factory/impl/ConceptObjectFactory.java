@@ -7,6 +7,7 @@ import eu.europeana.annotation.definitions.model.entity.impl.BaseSkosConcept;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.ConceptTypes;
 
+@Deprecated
 public class ConceptObjectFactory extends AbstractModelObjectFactory<Concept, ConceptTypes>{
 
 	private static ConceptObjectFactory singleton;

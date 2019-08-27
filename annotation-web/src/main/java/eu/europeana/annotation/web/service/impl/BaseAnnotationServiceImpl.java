@@ -38,9 +38,6 @@ public abstract class BaseAnnotationServiceImpl{
 	SolrAnnotationService solrService;
 
 	@Resource
-	SolrTagService solrTagService;	
-
-	@Resource
 	PersistentAnnotationService mongoPersistance;
 
 	@Resource
@@ -90,14 +87,6 @@ public abstract class BaseAnnotationServiceImpl{
 
 	public void setSolrService(SolrAnnotationService solrService) {
 		this.solrService = solrService;
-	}
-
-	public SolrTagService getSolrTagService() {
-		return solrTagService;
-	}
-
-	public void setSolrTagService(SolrTagService solrTagService) {
-		this.solrTagService = solrTagService;
 	}
 	
 	
