@@ -56,27 +56,19 @@ mongodb.annotation.truststore=
 mongodb.annotation.truststorepass=
 
 # solr connection settings
-solr.annotation.url = http://localhost:8282/solr/annotation
-solr.tag.url = http://localhost:8282/solr/tag
+solr.annotation.url = http://localhost:9090/solr/anno-up
 solr.annotation.timeout = 60000
-solr.tag.timeout = 60000
 
 solr.facetLimit=750
-#solr.username=europeana
-#solr.rowLimit=12
 
-#API Key validation
-api=annotation
-adminapikey=Key1
-adminsecretkey=Key2
+#URL of the APIKEY service
+europeana.apikey.serviceurl=http://localhost:8080/apikey
+
+#the name for annotation api resources in keyckloak tokens
+authorization.api.name=api_annotations
+
+#the signature key used to verify JWT tokens
+europeana.apikey.jwttoken.siganturekey=
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
-
-# validation
-api=annotation
-adminapikey=
-adminsecretkey=
-# cache time for validation of ApiKey in milliseconds (value of type long)
-# e.g. 1800000 is 30 minutes
-annotation.apikey.caching.time=1800000 

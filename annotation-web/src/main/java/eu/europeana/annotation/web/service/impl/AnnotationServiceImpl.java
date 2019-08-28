@@ -28,7 +28,6 @@ import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -49,8 +48,6 @@ import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
-import eu.europeana.annotation.solr.exceptions.TagServiceException;
-import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
@@ -176,11 +173,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	public Map<String, Integer> searchAnnotations(String[] qf, List<String> queries) throws AnnotationServiceException {
 		return getSolrService().queryFacetSearch(SolrSyntaxConstants.ALL_SOLR_ENTRIES, qf, queries);
 	}
-
-	@Override
-	public List<? extends SolrTag> searchTags(String query) throws TagServiceException {
-		return getSolrTagService().search(query);
-	}
+	
 
 	@Override
 	public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit)
@@ -188,10 +181,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return getMongoStatusLogPersistence().getFilteredStatusLogList(query, startOn, limit);
 	}
 
-	@Override
-	public List<? extends SolrTag> searchTags(String query, String startOn, String limit) throws TagServiceException {
-		return getSolrTagService().search(query, startOn, limit);
-	}
 
 	@Override
 	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr)
@@ -254,34 +243,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	@Override
 	public void deleteProvider(String name, String idGeneration) {
 		getMongoProviderPersistence().remove(name, idGeneration);
-	}
-
-	@Override
-	public Concept storeConcept(Concept newConcept) {
-
-		// must have registered id generation type.
-		// validateConcept(newConcept);
-
-		// store in mongo database
-		Concept res = getMongoConceptPersistence().store(newConcept);
-
-		return res;
-	}
-
-	@Override
-	public Concept updateConcept(Concept concept) {
-		Concept res = getMongoConceptPersistence().update(concept);
-		return res;
-	}
-
-	@Override
-	public void deleteConcept(String url) {
-		getMongoConceptPersistence().remove(url);
-	}
-
-	@Override
-	public Concept getConceptByUrl(String url) {
-		return getMongoConceptPersistence().findByUrl(url);
 	}
 
 	/*
@@ -521,28 +482,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			getSolrService().delete(annotation.getAnnotationId());
 		} catch (Exception e) {
 			getLogger().error("Cannot remove annotation from solr index: " + annotation.getAnnotationId().toRelativeUri(), e);
-		}
-	}
-
-	@Override
-	public void deleteTag(String tagId) {
-		try {
-			Annotation res = getMongoPersistence().findByTagId(tagId);
-			if (res == null) {
-				// PersistentTag persistentTag =
-				// getMongoTagPersistence().findByID(tagId);
-				// SolrTag indexedTag =
-				// copyPersistentTagIntoSolrTag(persistentTag);
-				SolrTag solrTag = getSolrTagService().search(tagId).get(0);
-				getSolrTagService().delete(solrTag);
-				getMongoTagPersistence().remove(tagId);
-			} else {
-				throw new TagServiceException(
-						"Tag with ID: '" + tagId + "' can't be removed since it is referenced by annotation '"
-								+ res.getAnnotationId().toString() + "'.");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 

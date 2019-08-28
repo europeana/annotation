@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 
 public enum BodyInternalTypes {
-	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, GEO_TAG, GRAPH, SPECIFIC_RESOURCE, FULL_TEXT_RESOURCE;;
+	TEXT, TAG, SEMANTIC_TAG, LINK, SEMANTIC_LINK, GEO_TAG, GRAPH, SPECIFIC_RESOURCE, FULL_TEXT_RESOURCE;
 	
 	public static boolean isTagBody(String type) {
 		boolean res = false;

@@ -16,6 +16,7 @@ import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.factory.impl.ConceptObjectFactory;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 
+@Deprecated
 public class ConceptDeserializer extends StdDeserializer<Concept> {
 	
 	public ConceptDeserializer() {

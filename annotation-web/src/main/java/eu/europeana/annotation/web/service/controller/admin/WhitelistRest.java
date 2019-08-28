@@ -92,7 +92,7 @@ public class WhitelistRest extends BaseRest {
 		
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	@RequestMapping(value = "/view"
@@ -117,7 +117,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 	
 	@RequestMapping(value = "/create", method = RequestMethod.POST
@@ -149,7 +149,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	@RequestMapping(value = "/load"
@@ -174,7 +174,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	
@@ -207,7 +207,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	@DELETE
@@ -241,7 +241,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 	
 }

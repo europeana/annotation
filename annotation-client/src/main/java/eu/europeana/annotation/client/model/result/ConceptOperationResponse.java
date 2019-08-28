@@ -2,6 +2,7 @@ package eu.europeana.annotation.client.model.result;
 
 import eu.europeana.annotation.definitions.model.entity.Concept;
 
+@Deprecated
 public class ConceptOperationResponse extends AbstractAnnotationApiResponse{
 
 	private Concept concept;

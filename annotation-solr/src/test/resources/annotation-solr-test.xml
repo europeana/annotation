@@ -44,9 +44,6 @@
 	
 	
 	<!-- OVERRIDE FOR TESTING -->
-	<bean name="annotation_solr_tagService" class="eu.europeana.annotation.solr.service.impl.SolrTagServiceImpl"
-		p:solrServer-ref="annotation_solr_solrEmbedded"
-	/>
 	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
 		p:solrServer-ref="annotation_solr_annotationEmbedded"
 	/>

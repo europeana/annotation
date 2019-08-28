@@ -12,9 +12,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
-import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -22,7 +20,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
-import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -185,24 +182,7 @@ public interface AnnotationService {
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit) 
 			throws AnnotationServiceException;
 	
-	/**
-	 * Search for tags by the given text query.
-	 * @param query
-	 * @return
-	 * @throws TagServiceException 
-	 */
-	public List<? extends TagResource> searchTags(String query) throws TagServiceException;
-
-	/**
-	 * Search for tags by the given text query, row start position and rows limit.
-	 * @param query
-	 * @param startOn
-	 * @param limit
-	 * @return
-	 * @throws TagServiceException 
-	 */
-	public List<? extends TagResource> searchTags(String query, String startOn, String limit) throws TagServiceException;
-
+	
 	/**
 	 * Search for annotation status logs by the given text query, row start position and rows limit.
 	 * @param query
@@ -221,12 +201,6 @@ public interface AnnotationService {
 	 * @throws AnnotationServiceException 
 	 */
 	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException;
-	
-	/**
-	 * This method removes Tag object from database and Solr but only when no annotation uses the tag.
-	 * @param tagId
-	 */
-	public void deleteTag(String tagId);
 	
 	/**
 	 * Check whether annotation for given provider and identifier already exist in database.
@@ -251,30 +225,6 @@ public interface AnnotationService {
 	 * @return
 	 */
 	public Annotation updateAnnotationStatus(Annotation annotation);
-	
-	/**
-	 * @param newConcept
-	 * @return
-	 */
-	public Concept storeConcept(Concept newConcept);
-		
-	/**
-	 * @param concept
-	 * @return
-	 */
-	public Concept updateConcept(Concept concept);
-	
-	/**
-	 * @param url
-	 */
-	public void deleteConcept(String url);
-	
-	/**
-	 * @param url
-	 * @return
-	 */
-	public Concept getConceptByUrl(String url);
-	
 	
 	/**
 	 * @param annotation

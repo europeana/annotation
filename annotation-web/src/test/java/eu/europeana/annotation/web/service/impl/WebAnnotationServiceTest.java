@@ -352,38 +352,4 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		assertTrue(disabledAnnotation == null);
 	}
 		
-	@Test
-	public void testDeleteTag() 
-			throws MalformedURLException, IOException, TagServiceException, InternalServerException, AnnotationServiceException {
-		
-		Annotation testAnnotation = createTestAnnotation();		
-        
-		/**
-		 * Store Annotation in database.
-		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
-		
-		/**
-		 * Delete Annotation.
-		 */
-		adminService.deleteAnnotation(
-//				storedAnnotation.getAnnotationId().getResourceId()
-				storedAnnotation.getAnnotationId());
-		
-		/**
-		 * Delete Annotation.
-		 */
-//		webAnnotationService.deleteTag(((PersistentAnnotation) storedAnnotation).getId().toString());
-		
-		/**
-		 * Search Tag by TagId.
-		 */
-		List<? extends TagResource> resList = null;
-		resList = webAnnotationService.searchTags(
-				((PersistentAnnotation) storedAnnotation).getId().toString());
-		assertTrue(resList.size() == 0);
-	}
-	
-	
-		
 }

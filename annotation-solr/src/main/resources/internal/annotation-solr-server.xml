@@ -18,17 +18,5 @@
 		<property name="maxTotalConnections" value="125"/>
 		 -->
 	</bean>
-
-
-	<bean id="tag_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrClient" lazy-init="true">
-		<constructor-arg value="#{annotationProperties['solr.tag.url']}"/>
-		<property name="followRedirects" value="false"/>
-		<property name="connectionTimeout" value="#{annotationProperties['solr.tag.timeout']}"/>
-		<!-- 
-		<property name="defaultMaxConnectionsPerHost" value="64"/>
-		<property name="maxTotalConnections" value="125"/>
-		 -->
-	</bean>
-  
 	
 </beans>
