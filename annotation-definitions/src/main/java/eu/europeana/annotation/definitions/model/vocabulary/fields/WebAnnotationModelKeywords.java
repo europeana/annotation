@@ -13,6 +13,7 @@ public class WebAnnotationModelKeywords {
 	public static final String CLASS_SOUND = "Sound";
 	public static final String CLASS_TEXT = "Text";
 	public static final String CLASS_SPECIFIC_RESOURCE = "SpecificResource";
+	public static final String CLASS_FULL_TEXT_RESOURCE = "FullTextResource";
 	
 	//EUROPEANA EXTENSIONS CLASSES
 	public static final String CLASS_GRAPH = "Graph";
