@@ -13,6 +13,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 
 	public static final String TAG_MINIMAL = "/tag/minimal.json";
 	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
+	public static final String TAG_FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
 	public static final String TAG_GEO_WRONG_LAT = "/tag/wrong/geotag_wrong_lat.json";
 	public static final String TAG_GEO_WRONG_LONG = "/tag/wrong/geotag_wrong_long.json";

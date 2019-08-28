@@ -1,0 +1,14 @@
+{
+  "id": "http://data.europeana.eu/annotation/transcribathon/12345",
+  "motivation": "transcribing",
+  "body": {
+    "type": "FullTextResource",
+    "language": "en",
+    "value": "... complete transcribed text in HTML ...",
+    "format": "text/html"
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/07931/diglit_uah_m1",
+    "source": "http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"
+  }
+}

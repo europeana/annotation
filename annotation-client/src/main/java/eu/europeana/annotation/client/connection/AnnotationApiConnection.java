@@ -325,7 +325,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return postURL(url, annotation);		
+		return postURL(url, annotation, requestHeaderName, requestHeaderValue);		
 	}
 
 	

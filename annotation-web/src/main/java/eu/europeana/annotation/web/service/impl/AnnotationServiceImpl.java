@@ -718,15 +718,27 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
+		
 		// check mandatory fields
+		
+		// check type
 		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 					new String[]{"tag.body.type", body.getType().toString()});
-		if (Strings.isNullOrEmpty(body.getSource()))
+		// check format - currently not in use until specification comes
+//		if (!eu.europeana.annotation.utils.UriUtils.isUrl(body.getSource()))
+//			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+//					I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+//					new String[]{"tag.format", body.getSource()});
+		if (Strings.isNullOrEmpty(body.getLanguage()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-					new String[]{"tag.body.source", body.getSource()});
+					new String[]{"tag.body.language", body.getLanguage()});
+		if (Strings.isNullOrEmpty(body.getValue()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+					I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
+					new String[]{"target.value", body.getValue()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {

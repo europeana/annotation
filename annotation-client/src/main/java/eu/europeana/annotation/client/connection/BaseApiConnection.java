@@ -122,6 +122,23 @@ public class BaseApiConnection {
 	
 	
 	/**
+	 * This method makes POST request for given URL, header and JSON body parameter that returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param jsonPost
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	ResponseEntity<String> postURL(String url, String jsonPost, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (POST) with body: " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().postURL(url, jsonPost, headerName, headerValue);
+	}
+	
+	
+	/**
 	 * This method makes POST request for given URL and JSON body parameter that returns
 	 * response body, response headers and status code.
 	 * @param url

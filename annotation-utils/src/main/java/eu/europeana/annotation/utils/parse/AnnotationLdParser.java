@@ -760,6 +760,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @param valueObject
 	 * @param motivation
 	 * @return
+	 * @throws JSONException 
 	 */
 	private BodyInternalTypes guesBodyInternalType(JSONObject valueObject, MotivationTypes motivation) {
 		switch (motivation) {
@@ -769,8 +770,10 @@ public class AnnotationLdParser extends JsonLdParser {
 			else
 				return BodyInternalTypes.LINK;
 		case TRANSCRIBING:
-			return BodyInternalTypes.FULL_TEXT_RESOURCE;
-//			return BodyInternalTypes.SPECIFIC_RESOURCE;
+			if (hasType(valueObject,ResourceTypes.FULL_TEXT_RESOURCE))
+				return BodyInternalTypes.FULL_TEXT_RESOURCE;
+			else
+				return BodyInternalTypes.SPECIFIC_RESOURCE;
 		case TAGGING:
 			// simple resource (semantic) tag - extended
 			// specific resource - minimal or extended;
@@ -816,6 +819,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			String value = parseStringTypeValue(valueObject);
 			return jsonType.getJsonValue().equals(value);
 		} catch (JSONException e) {
+			// type might be array
+			// continue
+		} catch (ClassCastException e) {
 			// type might be array
 			// continue
 		}
