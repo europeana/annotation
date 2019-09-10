@@ -77,6 +77,7 @@
 		<version.woodstox>3.2.9</version.woodstox>
 		<version.servletJstl>1.2</version.servletJstl>
 		<version.slf4j>1.7.5</version.slf4j>
+		<version.guava>18.0</version.guava>
 	</properties>
 	<modules>
 		<module>api2-common</module>

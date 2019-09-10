@@ -18,7 +18,13 @@
 			<artifactId>annotation-definitions</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${version.jackson}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
@@ -39,13 +45,6 @@
 			<scope>test</scope>
 			<version>${version.org.junit.jupiter}</version>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>${version.slf4j}</version>
-		</dependency>
- -->
 
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
@@ -80,6 +79,14 @@
             	<exclusion>
             		<groupId>org.apache.httpcomponents</groupId>
             		<artifactId>httpclient-cache</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-databind</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
             	</exclusion>
             </exclusions>            
         </dependency>
