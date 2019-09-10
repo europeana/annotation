@@ -1,0 +1,36 @@
+package eu.europeana.annotation.client.integration.webanno.describing;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Test;
+
+import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+
+/**
+ * This is a test for an annotation object with motivation "describing"
+ * and for provided CHO with textual body.
+ * 
+ * @author GrafR
+ *
+ */
+public class DescribingChoTest extends BaseDescribingTest {
+
+	@Test
+	public void createFullTextResource() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		String requestBody = getJsonStringInput(DESCRIBING_CHO);
+		
+		Annotation storedAnno = createDescribing(requestBody);
+				
+		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
+		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
+	}
+	
+}

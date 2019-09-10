@@ -73,6 +73,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String VALUE = "value";
 	public static final String TAG_TYPE = "tagType";
 	public static final String TAG = "tag";
+	public static final String DESCRIBING = "describing";
 	public static final String LINK = "link";
 	public static final String SPECIFIC_RESOURCE = "SpecificResource";
 	public static final String FULL_TEXT_RESOURCE = "FullTextResource";

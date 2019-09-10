@@ -3,6 +3,7 @@ package eu.europeana.annotation.definitions.model.factory.impl;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
+import eu.europeana.annotation.definitions.model.impl.BaseDescribingAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectLinking;
@@ -67,6 +68,9 @@ public class AnnotationObjectFactory
 		case TRANSCRIBING:
 			annoType = AnnotationTypes.OBJECT_TRANSCRIPTION;
 			break;
+		case DESCRIBING:
+			annoType = AnnotationTypes.OBJECT_DESCRIBING;
+			break;
 		default:
 			break;
 		}
@@ -105,6 +109,9 @@ public class AnnotationObjectFactory
 			break;
 		case OBJECT_TRANSCRIPTION:
 			ret = BaseTranscriptionAnnotation.class;
+			break;
+		case OBJECT_DESCRIBING:
+			ret = BaseDescribingAnnotation.class;
 			break;
 		default:
 			throw new RuntimeException(
