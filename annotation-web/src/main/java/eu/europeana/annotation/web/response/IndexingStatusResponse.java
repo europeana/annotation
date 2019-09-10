@@ -1,16 +1,19 @@
-package eu.europeana.api2.web.model.json.abstracts;
+package eu.europeana.annotation.web.response;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import eu.europeana.service.ir.image.model.IndexingStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import eu.europeana.api.commons.web.model.ApiResponse;
 
 /**
  * 
  * @author Sergiu Gordea <sergiu.gordea_at_ait.ac.at>
  *
  */
-@JsonSerialize(include = Inclusion.NON_EMPTY)
+@JsonSerialize()
+@JsonInclude(content=Include.NON_EMPTY, value=Include.NON_EMPTY)
 public class IndexingStatusResponse extends ApiResponse {
 
 //	private String collectionId;

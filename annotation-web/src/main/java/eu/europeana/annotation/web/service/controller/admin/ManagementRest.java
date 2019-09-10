@@ -52,16 +52,16 @@ public class ManagementRest extends BaseRest {
 
 	protected final Logger logger = getLogger();
 
-//	@Resource
-//	private AdminService adminService;
-//
-//	public AdminService getAdminService() {
-//		return adminService;
-//	}
-//
-//	public void setAdminService(AdminService adminService) {
-//		this.adminService = adminService;
-//	}
+	@Resource
+	private AdminService adminService;
+
+	public AdminService getAdminService() {
+		return adminService;
+	}
+
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+	}
 
 	@Resource(name = "annotation_db_apilockService")
 	private PersistentApiWriteLockService indexingJobService;

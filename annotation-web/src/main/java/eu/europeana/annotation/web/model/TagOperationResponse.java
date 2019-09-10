@@ -1,7 +1,7 @@
 package eu.europeana.annotation.web.model;
 
 import eu.europeana.annotation.solr.model.internal.SolrTag;
-import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
+import eu.europeana.api.commons.web.model.ApiResponse;
 
 public class TagOperationResponse extends ApiResponse{
 	

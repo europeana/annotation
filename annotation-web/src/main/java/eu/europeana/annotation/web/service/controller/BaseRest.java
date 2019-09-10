@@ -36,7 +36,6 @@ import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
-import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -68,17 +67,6 @@ public class BaseRest extends BaseRestController {
 
 	@Resource
 	AnnotationSearchService annotationSearchService;
-	
-	@Resource
-	private AdminService adminService;
-
-	public AdminService getAdminService() {
-		return adminService;
-	}
-
-	public void setAdminService(AdminService adminService) {
-		this.adminService = adminService;
-	}
 	
 	//TODO move to base class
 	Logger logger = LogManager.getLogger(getClass());
