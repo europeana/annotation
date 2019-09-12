@@ -44,7 +44,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
-import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
@@ -63,8 +62,8 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-	@Resource
-	PersistentTagService mongoTagPersistence;
+//	@Resource
+//	PersistentTagService mongoTagPersistence;
 
 	@Resource
 	PersistentProviderService mongoProviderPersistance;
@@ -105,13 +104,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return annotationBuilder;
 	}
 
-	public PersistentTagService getMongoTagPersistence() {
-		return mongoTagPersistence;
-	}
-
-	public void setMongoTagPersistance(PersistentTagService mongoTagPersistence) {
-		this.mongoTagPersistence = mongoTagPersistence;
-	}
 
 	public PersistentProviderService getMongoProviderPersistence() {
 		return mongoProviderPersistance;
@@ -169,6 +161,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 //		// return getSolrService().search(query, startOn, limit);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Map<String, Integer> searchAnnotations(String[] qf, List<String> queries) throws AnnotationServiceException {
 		return getSolrService().queryFacetSearch(SolrSyntaxConstants.ALL_SOLR_ENTRIES, qf, queries);
@@ -371,6 +364,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return res;
 	}
 
+	@SuppressWarnings("deprecation")
 	private void mergeAnnotationProperties(PersistentAnnotation annotation, Annotation updatedWebAnnotation) {
 		if (updatedWebAnnotation.getType() != null)
 			annotation.setType(updatedWebAnnotation.getType());
@@ -769,7 +763,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) {
-		int position = 1;
 		for (Annotation webanno : webAnnotations) {
 			try {
 				validateWebAnnotation(webanno);
@@ -778,26 +771,23 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			} catch (ParamValidationException e) {
 				batchReportable.incrementFailureCount();
 				String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
-				batchReportable.addError(position, message);
+				batchReportable.addError(webanno.getAnnotationId().toHttpUrl(), message);
 			}
-			position++;
 		}
 	}
 
 	@Override
 	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
 			List<String> missingHttpUrls) {
-		int position = 1;
 		for (Annotation anno : annotations) {
-			String httpUrl = anno.getHttpUrl();
+			String httpUrl = anno.getAnnotationId().toHttpUrl();
 			if (httpUrl != null) {
 				if (missingHttpUrls.contains(httpUrl)) {
 					batchReportable.incrementFailureCount();
-					batchReportable.addError(position, "Annotation does not exist: " + httpUrl);
+					batchReportable.addError(anno.getAnnotationId().toHttpUrl(), "Annotation does not exist: " + httpUrl);
 				} else
 					batchReportable.incrementSuccessCount();
 			}
-			position++;
 		}
 	}
 

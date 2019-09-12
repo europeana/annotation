@@ -49,7 +49,7 @@ public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBu
 	AnnotationConfiguration configuration;
 	
 	private final static String API_KEY = "ApiKey1";
-	private final static String API_METHOD = "read";
+//	private final static String API_METHOD = "read";
 	private final static String NOT_EXISTING_API_KEY = "NotExistingApiKey";
 	
     private static final Map<String, String> apyKeyMap = new HashMap<String, String>();

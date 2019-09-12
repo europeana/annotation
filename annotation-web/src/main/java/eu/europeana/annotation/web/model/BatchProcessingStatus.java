@@ -13,10 +13,10 @@ public class BatchProcessingStatus implements BatchReportable {
 	public void incrementIndexingFailureCount() {
 		this.indexingFailureCount++;
 	}
-	HashMap<Integer, String> errors;
+	HashMap<String, String> errors;
 	
 	public BatchProcessingStatus() {
-		errors = new HashMap<Integer, String>();
+		errors = new HashMap<String, String>();
 	}
 	
 	@Override
@@ -47,13 +47,13 @@ public class BatchProcessingStatus implements BatchReportable {
 	}
 
 	@Override
-	public HashMap<Integer, String> getErrors() {
+	public HashMap<String, String> getErrors() {
 		return errors;
 	}
 
 	@Override
-	public void addError(int pos, String msg) {
-		errors.put(pos, msg);
+	public void addError(String id, String msg) {
+		errors.put(id, msg);
 	}
 
 	@Override

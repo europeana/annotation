@@ -34,7 +34,6 @@ import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.apikey.client.ApiKeyValidationRequest;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
@@ -155,17 +154,21 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
 						if (success)
 							status.incrementSuccessCount();
-						else
+						else {
 							status.incrementFailureCount();
+							status.addError(id, "see error log");
+						}
 					} catch (IllegalArgumentException iae) {
 						String msg = "id: " + id + ". " + iae.getMessage();
 						getLogger().error(msg);
 						// throw new RuntimeException(iae);
 						status.incrementFailureCount();
+						status.addError(id, msg);
 					} catch (Throwable e) {
 						String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
 						getLogger().error(msg);
 						status.incrementFailureCount();
+						status.addError(id, msg);
 						// throw new RuntimeException(e);
 					}
 				}
@@ -270,49 +273,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	protected boolean isIndexInSync(PersistentAnnotation storedAnno) {
 		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
-	
-	
-    /**
-     * This method employs API key client library for API key validation
-     * @param request The validation request containing API key e.g. ApiKey1
-     * @param method The method e.g. read, write, delete...
-     * @return true if API key is valid
-     */
-    public boolean validateApiKey(ApiKeyValidationRequest request, String method) {
-    	
-    	boolean res = false;
-    	
-    	String SUCCESS = "204";
-    	
-        if (StringUtils.isNotBlank(method)) request.setMethod(method);
-//        Connector connector;
-//        try {
-//            connector = new Connector();
-//            ValidationResult result = connector.validateApiKey(request);
-//            if (result.hasConnected()){
-//                if (StringUtils.isBlank(getConfiguration().getValidationApi())) {
-//                	logger.debug("Apikeyservice api not provided");
-//                }
-//                if (StringUtils.isBlank(method)) {
-//                	logger.debug("Apikeyservice method not provided");
-//                }
-//                if (result.isPageNotFound_404()) {
-//                	logger.debug("Error: Apikeyservice not found on server");
-//                }
-//            } else {
-//            	logger.debug("Error: could not connect to ApiKey Service");
-//            }
-//            if (result.getReturnStatus().equals(SUCCESS))
-//            	res = true;
-//            
-//        } catch (ApiKeyValidationException e) {
-//        	logger.error(e.getMessage());
-//        } catch (Exception e) {
-//        	logger.error(e.getMessage());
-//        }
-        
-        return res;
-    }
+   
 	
 	/**
 	 * @param appKey
@@ -333,6 +294,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		return storedClient;
 	}
 
+	@SuppressWarnings("deprecation")
 	private Client updateClientConfig(Client storedClient, String appConfigJson) throws AnnotationMongoException {
 			
 			String newConfig = appConfigJson;

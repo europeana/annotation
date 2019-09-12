@@ -15,15 +15,9 @@ import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
 public interface PersistentAnnotationService extends AbstractNoSqlService<PersistentAnnotation, String>{
 
-//	public abstract ImageAnnotation store(ImageAnnotation object) throws AnnotationValidationException;
-
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
 	
-//	public abstract ObjectTag store(ObjectTag object) throws AnnotationValidationException;
-
 	public List<? extends Annotation> getAnnotationList(String europeanaId);
-
-//	public List<? extends Annotation> getAnnotationListByProvider(String europeanaId, String provider);
 
 	public List<? extends Annotation> getAnnotationListByTarget(String target);
 
@@ -43,24 +37,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public List<? extends Annotation> getAnnotationList (List<String> annotationIds);
 	
-//	public List<? extends Annotation> getAnnotationListByUrl (List<String> annotationIds);
-		
-	
-	//public PersistentAnnotation find(String provider, String identifier);
-	
-	//public PersistentAnnotation find(String europeanaId, String provider, String identifier);
-	
 	public PersistentAnnotation find(AnnotationId annoId);
-	
-	
-//	/**
-//	 * @param baseUrl
-//	 * @param resourceId
-//	 * @param annotationNr
-//	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
-//	 */
-//	public void remove(String baseUrl, String provider, String identifier);
-//	public void remove(String resourceId, String provider, Long annotationNr);
 	
 	/**
 	 * 
@@ -75,12 +52,13 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public PersistentAnnotation update(PersistentAnnotation annotation) throws AnnotationValidationException;
 
+	
 	/**
 	 * This method notices the time of the last SOLR indexing for particular annotation
-	 * @param annoId
+	 * @param anno the annotation object that was reindexed in solr
 	 * @throws AnnotationMongoException 
 	 */
-	public Annotation updateIndexingTime(AnnotationId annoId, Date lastIndexingDate) throws AnnotationMongoException;
+	public Annotation updateIndexingTime(Annotation anno, Date lastIndexingDate) throws AnnotationMongoException;
 
 	/**
 	 * This method changes annotation status.
@@ -92,7 +70,6 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public abstract AnnotationId generateAnnotationId(String provider);
 	
 	public abstract List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength);
-//	public abstract AnnotationId generateAnnotationId(String resourceId);
 
 	public abstract Annotation findByTagId(String tagId);
 	

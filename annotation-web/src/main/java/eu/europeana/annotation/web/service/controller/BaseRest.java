@@ -1,9 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +48,7 @@ public class BaseRest extends BaseRestController {
      * API key cache map contains apiKeys as a key and last response time as a value.
      * We only add keys if API key client responded with "204" - valid apikey.
      */
-    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
+//    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
     
 
 	@Resource

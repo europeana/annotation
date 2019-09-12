@@ -12,9 +12,9 @@ public interface BatchReportable {
 	
 	public void incrementSuccessCount();
 	
-	public HashMap<Integer, String> getErrors();
+	public HashMap<String, String> getErrors();
 	
-	public void addError(int pos, String msg);
+	public void addError(String id, String msg);
 	
 	public boolean hasErrors();
 	

@@ -416,7 +416,7 @@ public class ManagementRest extends BaseRest {
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
 		// lock write operations
-		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
+//		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
 
 		// get last active lock check if start date is correct and end date does
 		// not exist
