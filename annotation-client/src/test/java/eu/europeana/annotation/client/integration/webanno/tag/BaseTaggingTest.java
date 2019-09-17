@@ -23,11 +23,17 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
 	public static final String SEMANTICTAG_SPECIFIC_STANDARD = "/semantictag/specific_standard.json";
+	public static final String SEMANTICTAG_WEB_RESOURCE = "/semantictag/web_resource.json";
 	public static final String TAG_CANONICAL = "/tag/canonical.json";
 	public static final String TAG_VIA_STRING = "/tag/via_string.json";
 	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
 
 	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
+		IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return createAndValidateTag(inputFile, true);
+	}
+	
+	protected Annotation createAndValidateTag(String inputFile, boolean validate) throws IOException, JsonParseException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		System.out.println("Input File: " + inputFile);
@@ -39,7 +45,9 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 		Annotation inputAnno = parseTag(requestBody);
 
 		// validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
+		if (validate) {
+			validateOutputAgainstInput(storedAnno, inputAnno);
+		}
 
 		return storedAnno;
 	}

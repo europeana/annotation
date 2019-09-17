@@ -101,6 +101,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
 		MotivationTypes motivation = MotivationTypes.getTypeForOaType(annoType);
+		if (motivation == null) {
+			motivation = MotivationTypes.getTypeForAnnoType(annoType);
+		}
 		if(motivation == null)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
 					I18nConstants.ANNOTATION_VALIDATION,
