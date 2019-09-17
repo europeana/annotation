@@ -46,7 +46,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
-import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
@@ -268,6 +267,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		 
 	}
 
+	@SuppressWarnings("deprecation")
 	private Target buildTarget() {
 		Target target = new ImageTarget();
 		target.setMediaType("image");
@@ -331,7 +331,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		Annotation storedAnnotation = annotationService.store(initialPersistentAnnotation);
 		Logger.getLogger(getClass().getName()).info(
 				"testCreatePersistentAnnotation initialPersistentAnnotation: " + initialPersistentAnnotation.toString());
-		Annotation updatedAnnotation = annotationService.updateIndexingTime(storedAnnotation.getAnnotationId(), initialPersistentAnnotation.getLastUpdate());
+		Annotation updatedAnnotation = annotationService.updateIndexingTime(storedAnnotation, initialPersistentAnnotation.getLastUpdate());
 		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) updatedAnnotation;
 	    
 		Logger.getLogger(getClass().getName()).info(
@@ -460,12 +460,10 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		AnnotationId newAnnoId;
 		Annotation anno;
 		AnnotationId genAnnoId;
-		MongoAnnotationId mongoAnnoId;
 		for(int i = 0; i < numAnnotations; i++) {
 			anno = createPersistentAnnotationInstance();
 			genAnnoId = annoIdSequence.get(i);
 			newAnnoId = new BaseAnnotationId("http://localhost:8080/annotation", "rollbacktest", genAnnoId.getIdentifier());
-			mongoAnnoId = new MongoAnnotationId(newAnnoId);			
 			anno.setAnnotationId(newAnnoId);
 			annoList.add(i, anno);
 		}

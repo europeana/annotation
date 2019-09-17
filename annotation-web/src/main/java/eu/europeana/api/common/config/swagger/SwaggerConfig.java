@@ -74,6 +74,7 @@ public class SwaggerConfig {
 		return docketConfig;
 	}
 
+	@SuppressWarnings("deprecation")
 	ApiInfo apiInfo() {
 
 		String appTitle = StringUtils.isNotBlank(title) ? title : "REST API";

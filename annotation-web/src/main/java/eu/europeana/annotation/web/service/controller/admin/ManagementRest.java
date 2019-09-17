@@ -52,16 +52,16 @@ public class ManagementRest extends BaseRest {
 
 	protected final Logger logger = getLogger();
 
-//	@Resource
-//	private AdminService adminService;
-//
-//	public AdminService getAdminService() {
-//		return adminService;
-//	}
-//
-//	public void setAdminService(AdminService adminService) {
-//		this.adminService = adminService;
-//	}
+	@Resource
+	private AdminService adminService;
+
+	public AdminService getAdminService() {
+		return adminService;
+	}
+
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+	}
 
 	@Resource(name = "annotation_db_apilockService")
 	private PersistentApiWriteLockService indexingJobService;
@@ -416,7 +416,7 @@ public class ManagementRest extends BaseRest {
 		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
 
 		// lock write operations
-		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
+//		PersistentApiWriteLock newLock = indexingJobService.lock("lockWriteOperations");
 
 		// get last active lock check if start date is correct and end date does
 		// not exist

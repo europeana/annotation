@@ -169,6 +169,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 //		// return getSolrService().search(query, startOn, limit);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Map<String, Integer> searchAnnotations(String[] qf, List<String> queries) throws AnnotationServiceException {
 		return getSolrService().queryFacetSearch(SolrSyntaxConstants.ALL_SOLR_ENTRIES, qf, queries);
@@ -371,6 +372,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return res;
 	}
 
+	@SuppressWarnings("deprecation")
 	private void mergeAnnotationProperties(PersistentAnnotation annotation, Annotation updatedWebAnnotation) {
 		if (updatedWebAnnotation.getType() != null)
 			annotation.setType(updatedWebAnnotation.getType());
@@ -726,19 +728,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 					new String[]{"tag.body.type", body.getType().toString()});
-		// check format - currently not in use until specification comes
-//		if (!eu.europeana.annotation.utils.UriUtils.isUrl(body.getSource()))
-//			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-//					I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-//					new String[]{"tag.format", body.getSource()});
-		if (Strings.isNullOrEmpty(body.getLanguage()))
+		if (Strings.isNullOrEmpty(body.getSource()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-					new String[]{"tag.body.language", body.getLanguage()});
-		if (Strings.isNullOrEmpty(body.getValue()))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-					I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
-					new String[]{"target.value", body.getValue()});
+					new String[]{"tag.body.source", body.getSource()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
@@ -790,26 +783,23 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			} catch (ParamValidationException e) {
 				batchReportable.incrementFailureCount();
 				String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
-				batchReportable.addError(position, message);
+				batchReportable.addError(webanno.getAnnotationId().toHttpUrl(), message);
 			}
-			position++;
 		}
 	}
 
 	@Override
 	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
 			List<String> missingHttpUrls) {
-		int position = 1;
 		for (Annotation anno : annotations) {
-			String httpUrl = anno.getHttpUrl();
+			String httpUrl = anno.getAnnotationId().toHttpUrl();
 			if (httpUrl != null) {
 				if (missingHttpUrls.contains(httpUrl)) {
 					batchReportable.incrementFailureCount();
-					batchReportable.addError(position, "Annotation does not exist: " + httpUrl);
+					batchReportable.addError(anno.getAnnotationId().toHttpUrl(), "Annotation does not exist: " + httpUrl);
 				} else
 					batchReportable.incrementSuccessCount();
 			}
-			position++;
 		}
 	}
 

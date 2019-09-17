@@ -79,6 +79,7 @@ public class ConvertJsonConfigToApplicationTest{
 
 	for (PersistentClient storedClient : allStoredClients) {
 
+		@SuppressWarnings("deprecation")
 		Application clientApplication = authenticationService.parseApplication(
 				storedClient.getAuthenticationConfigJson());
 

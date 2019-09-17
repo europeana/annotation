@@ -128,6 +128,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void loadApiKeys() throws ApplicationAuthenticationException {
 
@@ -266,6 +267,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 	}
 
+	@SuppressWarnings("deprecation")
 	Application loadApiKey(String apiKey) {
 		Client apiClient = clientService.findByApiKey(apiKey);
 		Application application = null;

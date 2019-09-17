@@ -1,4 +1,4 @@
-package eu.europeana.service.ir.image.model;
+package eu.europeana.annotation.web.response;
 
 public class IndexingStatus {
 

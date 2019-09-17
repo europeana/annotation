@@ -7,7 +7,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
-import eu.europeana.api2.web.model.json.abstracts.ApiResponse;
+import eu.europeana.api.commons.web.model.ApiResponse;
 
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class WhitelistOperationResponse extends ApiResponse {

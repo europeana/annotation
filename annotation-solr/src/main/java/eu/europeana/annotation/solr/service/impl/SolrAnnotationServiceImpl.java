@@ -357,16 +357,15 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException {
 		getLogger().debug("update solr annotation: " + anno.toString());
-		boolean ret = false;
 		
 		delete(anno.getAnnotationId());
-		//index annotation only if not disabled
-		//disabled annotations 
-		if(!anno.isDisabled()){
+		if(anno.isDisabled()) {
+			//index annotation only if not disabled
+			return true;
+		}else {
 			Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
-			ret = store(indexedAnnotation);
+			return store(indexedAnnotation);
 		}
-		return ret;
 	}
 
 	public void delete(AnnotationId annotationId) throws AnnotationServiceException {

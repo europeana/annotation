@@ -30,10 +30,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	
 	
 	// skos fields
-	/*
-	 * TODO: //remove skos concepts management and replace it with the Entity API
-	 */
-	@Deprecated 
 	public static final String PREF_LABEL = "prefLabel";
 	public static final String ALT_LABEL = "altLabel";
 	public static final String HIDDEN_LABEL = "hiddenLabel";

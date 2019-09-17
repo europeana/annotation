@@ -141,7 +141,8 @@ public class AnnotationClientAppConfigToJsonTest{
     
 
 //    @Test
-    public void storeApiKeysToMongo() throws ApplicationAuthenticationException, AnnotationMongoException{
+    @SuppressWarnings("deprecation")
+	public void storeApiKeysToMongo() throws ApplicationAuthenticationException, AnnotationMongoException{
     	
     	getAuthenticationService().loadApiKeysFromFiles();
     	

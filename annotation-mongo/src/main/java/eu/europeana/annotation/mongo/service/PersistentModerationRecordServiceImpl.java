@@ -108,7 +108,6 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		remove(queryModerationRecord.getAnnotationId());
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void validateDeleteResult(WriteResult res) throws AnnotationMongoException {
 		int affected = res.getN();
 		if (affected != 1)

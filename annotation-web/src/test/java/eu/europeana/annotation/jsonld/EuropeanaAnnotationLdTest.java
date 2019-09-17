@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -246,7 +245,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         assertEquals(expectedIndent, actualIndent);
 
         AnnotationLdParser deserializer = new AnnotationLdParser();
-        JsonLd parsedJsonLd = null;
+//        JsonLd parsedJsonLd = null;
         try {
 //        	parsedJsonLd = JsonLdParser.parseExt(actual);
         	deserializer.parseAnnotation(null, actualIndent);
@@ -296,8 +295,8 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromEuropeanaAnnotationLd = deserializer.parseAnnotation(null, initialAnnotationIndent);
 
-        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
-        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
+//        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
+//        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
         assertEquals(originalAnnotation.getMotivation(), annotationFromEuropeanaAnnotationLd.getMotivation());
@@ -427,8 +426,8 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromEuropeanaAnnotationLd = annotationDeserializer.parseAnnotation(null, initialAnnotationIndent);
 
-        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
-        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
+//        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
+//        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
 //        System.out.println(originalAnnotation.toString());
@@ -457,14 +456,14 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object -> EuropeanaAnnotationLd object
          */
-		AnnotationLdParser parser = null;
-        JsonLd parsedJsonLd = null;
-        try {
-        	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdObjectString);
-        	parser = new AnnotationLdParser();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		AnnotationLdParser parser = null;
+//        JsonLd parsedJsonLd = null;
+//        try {
+//        	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdObjectString);
+////        	parser = new AnnotationLdParser();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
         //TODO:update test
 //        String original = parser.toString();
 //        //EuropeanaAnnotationLd.toConsole("", original);      

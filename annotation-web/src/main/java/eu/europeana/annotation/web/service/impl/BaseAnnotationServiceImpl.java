@@ -156,7 +156,6 @@ public abstract class BaseAnnotationServiceImpl{
 	 * @throws AnnotationIndexingException 
 	 */
 	protected boolean reindexAnnotation(Annotation res, Date lastIndexing) throws AnnotationIndexingException {
-		boolean success = false;
 		
 		if (!getConfiguration().isIndexingEnabled()){
 			getLogger().warn("Annotation was not reindexed, indexing is disabled. See configuration properties!");
@@ -168,12 +167,10 @@ public abstract class BaseAnnotationServiceImpl{
 			getSolrService().update(res, summary);
 			updateLastIndexingTime(res, lastIndexing);
 			
-			success = true;
+			return true;
 		} catch (Exception e) {
 			throw new AnnotationIndexingException("cannot reindex annotation with ID: " + res.getAnnotationId(), e);
 		}
-		
-		return success;
 	}
 
 	
@@ -186,8 +183,10 @@ public abstract class BaseAnnotationServiceImpl{
 	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing) {
 		boolean success = false;
 		try {
-			Annotation res = getAnnotationById(annoId);
-			success = reindexAnnotation(res, lastIndexing);
+//			Annotation res = getAnnotationById(annoId);
+			Annotation annotation = getMongoPersistence().find(annoId);
+			success = reindexAnnotation(annotation, lastIndexing);
+			System.out.println(annoId);
 		} catch (Exception e) {
 			getLogger().error(e.getMessage(), e);
 			return false;
@@ -198,10 +197,10 @@ public abstract class BaseAnnotationServiceImpl{
 	
 	protected void updateLastIndexingTime(Annotation res, Date lastIndexing) {
 		try {
-			getMongoPersistence().updateIndexingTime(res.getAnnotationId(), lastIndexing);
+			getMongoPersistence().updateIndexingTime(res, lastIndexing);
 			((PersistentAnnotation)res).setLastIndexed(lastIndexing);
 		} catch (Exception e) {
-			getLogger().warn("The time of the last SOLR indexing could not be saved. " , e);
+			getLogger().warn("The time of the last SOLR indexing could not be saved in the Mongo database. " , e);
 		}
 	}
 

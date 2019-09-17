@@ -7,6 +7,11 @@ package eu.europeana.annotation.definitions.exception;
  */
 public class AnnotationPageValidationException extends RuntimeException{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4594358905747792730L;
+
 	public AnnotationPageValidationException(String message){
 		super(message);
 	}

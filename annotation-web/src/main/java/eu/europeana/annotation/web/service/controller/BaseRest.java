@@ -1,9 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,6 @@ import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
-import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -51,7 +48,7 @@ public class BaseRest extends BaseRestController {
      * API key cache map contains apiKeys as a key and last response time as a value.
      * We only add keys if API key client responded with "204" - valid apikey.
      */
-    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
+//    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
     
 
 	@Resource
@@ -68,17 +65,6 @@ public class BaseRest extends BaseRestController {
 
 	@Resource
 	AnnotationSearchService annotationSearchService;
-	
-	@Resource
-	private AdminService adminService;
-
-	public AdminService getAdminService() {
-		return adminService;
-	}
-
-	public void setAdminService(AdminService adminService) {
-		this.adminService = adminService;
-	}
 	
 	//TODO move to base class
 	Logger logger = LogManager.getLogger(getClass());
