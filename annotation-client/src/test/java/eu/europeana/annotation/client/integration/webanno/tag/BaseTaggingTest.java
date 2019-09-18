@@ -30,10 +30,10 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 
 	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return createAndValidateTag(inputFile, true);
+		return createTag(inputFile, true);
 	}
 	
-	protected Annotation createAndValidateTag(String inputFile, boolean validate) throws IOException, JsonParseException,
+	protected Annotation createTag(String inputFile, boolean validate) throws IOException, JsonParseException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		System.out.println("Input File: " + inputFile);

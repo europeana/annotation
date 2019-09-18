@@ -58,19 +58,6 @@ public enum MotivationTypes implements JsonKeyword{
 		return null;
 	}
 	
-	public static MotivationTypes getTypeForOaType(String annoType){
-		
-		if(annoType == null)
-			return null;
-		
-		for (int i = 0; i < MotivationTypes.values().length; i++) {
-			if(annoType.equals(MotivationTypes.values()[i].getOaType()))
-				return MotivationTypes.values()[i];
-		}
-		
-		return null;
-	}
-	
 	@Override
 	public String toString() {
 		return super.toString() + ":" + getOaType() + ":" + getAnnoType();

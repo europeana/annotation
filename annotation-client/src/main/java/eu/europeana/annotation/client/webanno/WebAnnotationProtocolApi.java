@@ -71,24 +71,6 @@ public interface WebAnnotationProtocolApi {
 	
 	
 	/**
-	 * This method creates annotation describing it in body JSON string and
-	 * providing it with associated wskey, provider name and identifier.
-	 * When motivation is not given in JSON - annoType must be set up.
-	 * @param wskey
-	 * @param provider
-	 * @param identifier
-	 * @param indexOnCreate
-	 * @param requestBody Contains the body JSON string
-	 * @param userToken
-	 * @param annoType
-	 * @return response entity containing body, headers and status code.
-	 */
-	public ResponseEntity<String> createDescribing(
-			String provider, String identifier, Boolean indexOnCreate, 
-			String requestBody, String apiKey, String userToken);
-	
-	
-	/**
 	 * This method deletes annotation by the given identifier
 	 * @param wskey
 	 * @param provider - part of annotation id

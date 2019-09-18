@@ -141,11 +141,4 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		return res;
 	}
 
-	@Override
-	public ResponseEntity<String> createDescribing(String provider, String identifier, Boolean indexOnCreate,
-			String annotation, String apiKey, String userToken) {
-		return createAnnotation(apiKey, provider, identifier, indexOnCreate, annotation,
-				userToken, WebAnnotationFields.DESCRIBING);
-	}
-
 }

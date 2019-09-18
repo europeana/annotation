@@ -63,8 +63,8 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-	@Resource
-	PersistentTagService mongoTagPersistence;
+//	@Resource
+//	PersistentTagService mongoTagPersistence;
 
 	@Resource
 	PersistentProviderService mongoProviderPersistance;
@@ -105,13 +105,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return annotationBuilder;
 	}
 
-	public PersistentTagService getMongoTagPersistence() {
-		return mongoTagPersistence;
-	}
-
-	public void setMongoTagPersistance(PersistentTagService mongoTagPersistence) {
-		this.mongoTagPersistence = mongoTagPersistence;
-	}
+//	public PersistentTagService getMongoTagPersistence() {
+//		return mongoTagPersistence;
+//	}
+//
+//	public void setMongoTagPersistance(PersistentTagService mongoTagPersistence) {
+//		this.mongoTagPersistence = mongoTagPersistence;
+//	}
 
 	public PersistentProviderService getMongoProviderPersistence() {
 		return mongoProviderPersistance;

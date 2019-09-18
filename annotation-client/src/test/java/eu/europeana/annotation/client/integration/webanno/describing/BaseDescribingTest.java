@@ -33,7 +33,8 @@ public class BaseDescribingTest extends BaseWebAnnotationProtocolTest {
 
 		Annotation storedAnno = createTag(requestBody);
 
-		Annotation inputAnno = parseTag(requestBody);
+		MotivationTypes motivationType = MotivationTypes.DESCRIBING;
+		Annotation inputAnno = parseAnnotation(requestBody, motivationType);
 
 		// validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
@@ -41,8 +42,4 @@ public class BaseDescribingTest extends BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 
-	protected Annotation parseTag(String jsonString) throws JsonParseException {
-		MotivationTypes motivationType = MotivationTypes.DESCRIBING;
-		return parseAnnotation(jsonString, motivationType);
-	}
 }

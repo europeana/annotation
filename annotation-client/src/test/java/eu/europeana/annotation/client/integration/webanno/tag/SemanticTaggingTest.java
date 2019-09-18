@@ -16,7 +16,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 public class SemanticTaggingTest extends BaseTaggingTest {
 
 	
-//	@Test
+	@Test
 	public void createSemanticTagSimpleMinimal() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
@@ -24,7 +24,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		System.out.println(anno.getBody().getInternalType());
 	}
 
-//	@Test
+	@Test
 	public void createSemanticTagSimpleStandard() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
@@ -33,7 +33,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 
 	}
 
-//	@Test
+	@Test
 	public void createSemanticTagSpecificMinimal() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
@@ -42,7 +42,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 
 	}
 
-//	@Test
+	@Test
 	public void createSemanticTagSpecificStandard() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
@@ -55,7 +55,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 	public void createSemanticTagWebResource() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		Annotation storedAnno = createAndValidateTag(SEMANTICTAG_WEB_RESOURCE, false);
+		Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false);
 		System.out.println(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);

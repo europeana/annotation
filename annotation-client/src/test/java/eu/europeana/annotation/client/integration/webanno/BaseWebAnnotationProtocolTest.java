@@ -378,39 +378,6 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 
-	/**
-	 * @param requestBody
-	 * @return
-	 * @throws JsonParseException
-	 */
-	protected Annotation createDescribing(String requestBody) throws JsonParseException {
-		String provider = WebAnnotationFields.PROVIDER_WEBANNO;
-		String userToken = TEST_USER_TOKEN;
-		return createDescribing(requestBody, provider, getApiKey(), userToken);
-	}
-
-	/**
-	 * @param requestBody
-	 * @param provider
-	 * @param apiKey
-	 * @param userToken
-	 * @return
-	 * @throws JsonParseException
-	 */
-	protected Annotation createDescribing(String requestBody, String provider, String apiKey, String userToken) throws JsonParseException {
-		ResponseEntity<String> response = getApiClient().createDescribing(
-				provider, null, false, requestBody, 
-				apiKey, userToken);
-		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getCreator());
-		assertNotNull(storedAnno.getGenerator());
-		return storedAnno;
-	}
-
 	protected Annotation createLink(String requestBody) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 

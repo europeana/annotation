@@ -823,9 +823,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		} catch (JSONException e) {
 			// type might be array
 			// continue
-		} catch (ClassCastException e) {
-			// type might be array
-			// continue
 		}
 
 		try {
