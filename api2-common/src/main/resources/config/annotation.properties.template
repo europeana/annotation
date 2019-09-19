@@ -25,11 +25,6 @@ annotation.whitelist.default=/config/default_whitelist.json
 annotation.search.maxpagesize.minimal=10000
 annotation.search.maxpagesize.standard=100
  
-
-# VCAP settings
-#available values: pivotal, a9s 
-annotation.environment.vcap.provider = pivotal
-
 # Profiling configurations (enabling/disabling through profiler.expression property)
 # disable profiling
 # profiler.expression=within(none.*)
@@ -38,17 +33,10 @@ profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..))
 
 # mongoDB settings
 ### annotation database ###
-#deprecated
-#mongodb.annotation.dbname=annotation_test
-#mongodb.annotation.host=127.0.0.1
-#mongodb.annotation.port=27017
-#mongodb.annotation.username=europeana
-#mongodb.annotation.password=culture
 #Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
 #USER, PASSWORD are optional (in local environment) 
-
-#VCAP environment will overwrite configurations only if the connectionUrl is empty
 mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
+
 #SSL truststore
 #the name of the truststore. Must be available in the classpath in the /config folder
 mongodb.annotation.truststore=
