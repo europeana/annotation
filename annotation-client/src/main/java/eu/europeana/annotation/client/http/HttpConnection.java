@@ -106,8 +106,32 @@ public class HttpConnection {
         	post.releaseConnection();
         }
     }
-
     
+	/**
+	 * This method makes POST request for given URL and JSON body parameter with header.
+	 * @param url
+	 * @param jsonParamValue
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> postURL(String url, String jsonParamValue, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PostMethod post = new PostMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	post.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
+        post.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(post);
+   			return buildResponseEntity(post);
+        } finally {
+        	post.releaseConnection();
+        }
+    }
+
 	/**
 	 * This method makes POST request for given URL and JSON body parameter.
 	 * @param url

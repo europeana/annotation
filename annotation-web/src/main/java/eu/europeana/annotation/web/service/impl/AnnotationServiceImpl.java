@@ -44,6 +44,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
+import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
@@ -104,6 +105,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return annotationBuilder;
 	}
 
+//	public PersistentTagService getMongoTagPersistence() {
+//		return mongoTagPersistence;
+//	}
+//
+//	public void setMongoTagPersistance(PersistentTagService mongoTagPersistence) {
+//		this.mongoTagPersistence = mongoTagPersistence;
+//	}
 
 	public PersistentProviderService getMongoProviderPersistence() {
 		return mongoProviderPersistance;
@@ -712,7 +720,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
+		
 		// check mandatory fields
+		
+		// check type
 		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
@@ -763,6 +774,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	@Override
 	public void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) {
+		int position = 1;
 		for (Annotation webanno : webAnnotations) {
 			try {
 				validateWebAnnotation(webanno);
