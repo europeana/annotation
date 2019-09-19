@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
+import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
@@ -31,9 +33,9 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request)
-					throws HttpException {
+					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		userToken = getUserToken(userToken, request);
+		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
 		String action = "post:/annotation/{provider}/{identifier}/report";
 		return storeAnnotationReport(wskey, provider, identifier, userToken, action);
@@ -48,9 +50,9 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
-			) throws HttpException {
+			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		userToken = getUserToken(userToken, request);
+		verifyReadAccess(request);
 		
 		String action = "get:/annotation/{provider}/{identifier}/moderationsummary";
 		return getModerationReportSummary(wskey, provider, identifier, action);		
