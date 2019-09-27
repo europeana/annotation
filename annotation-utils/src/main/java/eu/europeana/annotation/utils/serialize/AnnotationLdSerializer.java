@@ -12,6 +12,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.AgentBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
@@ -310,6 +311,9 @@ public class AnnotationLdSerializer extends JsonLd {
 		if(annotation.getBody() instanceof GraphBody)
 			putGraphProperties(annotation, propertyValue);
 		
+		if(annotation.getBody() instanceof AgentBody)
+			putAgentProperties(annotation, propertyValue);
+		
 		bodyProperty.addValue(propertyValue);
 		return bodyProperty;
 	}
@@ -351,6 +355,33 @@ public class AnnotationLdSerializer extends JsonLd {
 			
 			if(!StringUtils.isBlank(place.getLatitude()))
 				propertyValue.getValues().put(WebAnnotationFields.LONGITUDE, place.getLongitude());
+		}
+	}
+	
+	protected void putAgentProperties(Annotation annotation, JsonLdPropertyValue propertyValue) {
+		
+		AgentBody agentBody = (AgentBody) annotation.getBody();
+		if(agentBody != null) {
+			if (agentBody.getPrefLabel() != null
+					&& !StringUtils.isBlank(agentBody.getPrefLabel().toString()))
+				propertyValue.getValues().put(WebAnnotationFields.PREF_LABEL,
+						JsonUtils.mapToString(agentBody.getPrefLabel()));
+			if (agentBody.getPlaceOfBirth() != null
+					&& !StringUtils.isBlank(agentBody.getPlaceOfBirth().toString()))
+				propertyValue.getValues().put(WebAnnotationFields.PLACE_OF_BIRTH,
+						JsonUtils.mapToString(agentBody.getPlaceOfBirth()));
+			if (agentBody.getPlaceOfDeath() != null
+					&& !StringUtils.isBlank(agentBody.getPlaceOfDeath().toString()))
+				propertyValue.getValues().put(WebAnnotationFields.PLACE_OF_DEATH,
+						JsonUtils.mapToString(agentBody.getPlaceOfDeath()));
+			if (agentBody.getDateOfBirth() != null
+					&& !StringUtils.isBlank(agentBody.getDateOfBirth().toString()))
+				propertyValue.getValues().put(WebAnnotationFields.DATE_OF_BIRTH,
+						agentBody.getDateOfBirth().toString());
+			if (agentBody.getDateOfDeath() != null
+					&& !StringUtils.isBlank(agentBody.getDateOfDeath().toString()))
+				propertyValue.getValues().put(WebAnnotationFields.DATE_OF_DEATH,
+						agentBody.getDateOfDeath().toString());
 		}
 	}
 	

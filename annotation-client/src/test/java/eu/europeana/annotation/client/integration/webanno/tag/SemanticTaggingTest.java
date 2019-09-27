@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
@@ -15,13 +17,14 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class SemanticTaggingTest extends BaseTaggingTest {
 
+	protected Logger log = LogManager.getLogger(getClass());
 	
 	@Test
 	public void createSemanticTagSimpleMinimal() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_MINIMAL);
-		System.out.println(anno.getBody().getInternalType());
+		log.info(anno.getBody().getInternalType());
 	}
 
 	@Test
@@ -29,7 +32,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_STANDARD);
-		System.out.println(anno.getBody().getInternalType());
+		log.info(anno.getBody().getInternalType());
 
 	}
 
@@ -38,7 +41,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_MINIMAL);
-		System.out.println(anno.getBody().getInternalType());
+		log.info(anno.getBody().getInternalType());
 
 	}
 
@@ -47,7 +50,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_STANDARD);
-		System.out.println(anno.getBody().getInternalType());
+		log.info(anno.getBody().getInternalType());
 
 	}
 
@@ -56,10 +59,21 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false);
-		System.out.println(storedAnno.getBody().getInternalType());
+		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.SEMANTIC_TAG.name());
+
+	}
+
+	@Test
+	public void createSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+
+		Annotation storedAnno = createTag(SEMANTICTAG_ENTITY, false);
+		log.info(storedAnno.getBody().getInternalType());
+		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
+		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.ENTITY.name());
 
 	}
 

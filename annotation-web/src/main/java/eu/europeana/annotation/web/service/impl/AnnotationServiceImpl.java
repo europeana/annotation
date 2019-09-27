@@ -28,6 +28,7 @@ import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.AgentBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -44,7 +45,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
-import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
@@ -668,10 +668,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			validateTagWithFullTextResource(body);
 		} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
 			validateSemanticTagUrl(body);
+		} else if (BodyInternalTypes.isEntityTagBody(body.getInternalType())) {
+			validateEntityTag(body);
 		} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
 			validateGeoTag(body);
 		} else {
 			validateTagWithValue(body);
+		}
+	}
+
+	/**
+	 * This method validate entity body
+	 * @param body The entity body
+	 * @throws ParamValidationException
+	 */
+	private void validateEntityTag(Body body) throws ParamValidationException {
+		if (!(body instanceof AgentBody)) {
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+					I18nConstants.MESSAGE_WRONG_CLASS,
+					new String[]{"tag.body.class", body.getClass().toString()});
 		}
 	}
 

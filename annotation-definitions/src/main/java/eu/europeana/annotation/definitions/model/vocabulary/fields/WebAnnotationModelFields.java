@@ -80,4 +80,11 @@ public interface WebAnnotationModelFields {
 	public static final String NS_OWL = "owl";
 	public static final String NS_AS = "as";
 	
+	// semantic tag - entity body
+	public static final String PREF_LABEL = "prefLabel";
+	public static final String DATE_OF_BIRTH = "dateOfBirth";
+	public static final String DATE_OF_DEATH = "dateOfDeath";
+	public static final String PLACE_OF_BIRTH = "placeOfBirth";
+	public static final String PLACE_OF_DEATH = "placeOfDeath";
+
 }

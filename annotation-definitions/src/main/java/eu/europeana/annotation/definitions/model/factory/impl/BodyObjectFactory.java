@@ -1,7 +1,9 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
+import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.impl.AgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
@@ -70,6 +72,9 @@ public class BodyObjectFactory extends
 			break;
 		case FULL_TEXT_RESOURCE:
 			returnType = FullTextResourceBody.class;
+			break;
+		case ENTITY:
+			returnType = AgentBody.class;
 			break;
 		case LINK:
 			throw new AnnotationInstantiationException("Bodies of type LINK must be empty!");

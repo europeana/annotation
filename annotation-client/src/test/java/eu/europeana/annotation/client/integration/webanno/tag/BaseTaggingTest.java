@@ -24,6 +24,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
 	public static final String SEMANTICTAG_SPECIFIC_STANDARD = "/semantictag/specific_standard.json";
 	public static final String SEMANTICTAG_WEB_RESOURCE = "/semantictag/web_resource.json";
+	public static final String SEMANTICTAG_ENTITY = "/semantictag/semantictag_entity.json";
 	public static final String TAG_CANONICAL = "/tag/canonical.json";
 	public static final String TAG_VIA_STRING = "/tag/via_string.json";
 	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
