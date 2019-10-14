@@ -581,9 +581,11 @@ public class AnnotationLdParser extends JsonLdParser {
 
 				// Textual Body
 				case WebAnnotationFields.VALUE:
-					body.setValue(value.toString());
-					// add implications of TEXT field
-					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
+					if (!body.getInternalType().equals(BodyInternalTypes.FULL_TEXT_RESOURCE.name())) {
+						body.setValue(value.toString());
+						// add implications of TEXT field
+						body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
+					}
 					break;
 				// TODO: separate specific fields for parsing the whole specific
 				// object
