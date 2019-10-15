@@ -86,5 +86,11 @@ public interface WebAnnotationModelFields {
 	public static final String DATE_OF_DEATH = "dateOfDeath";
 	public static final String PLACE_OF_BIRTH = "placeOfBirth";
 	public static final String PLACE_OF_DEATH = "placeOfDeath";
+	public static final String STREET_ADDRESS = "streetAddress";
+	public static final String POSTAL_CODE = "postalCode";
+	public static final String POST_OFFICE_BOX = "postOfficeBox";
+	public static final String LOCALITY = "locality";
+	public static final String REGION = "region";
+	public static final String COUNTRY_NAME = "countryName";
 
 }

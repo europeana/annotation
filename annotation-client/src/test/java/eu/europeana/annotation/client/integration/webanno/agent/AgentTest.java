@@ -12,20 +12,20 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.integration.webanno.tag.BaseTaggingTest;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AgentTest extends BaseTaggingTest {
 	
-	public static final String TAG_FULL_AGENT = "/tag/full_agent.json";
-	public static final String TAG_WRONG_AGENT_ID_NOT_URL = "/tag/wrong/agent_wrong_id_not_url.json";
+	public static final String FULL_AGENT = "/tag/full_agent.json";
+	public static final String WRONG_AGENT_ID_NOT_URL = "/tag/wrong/agent_wrong_id_not_url.json";
 
 	@Test
 	public void createAnnotationAgentDetails() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		String requestBody = getJsonStringInput(TAG_FULL_AGENT);
+		ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT);
+		validateResponse(response);
+		Annotation storedAnno = getApiClient().parseResponseBody(response);				
 		
-		Annotation storedAnno = createTag(requestBody);
-		
+		String requestBody = getJsonStringInput(FULL_AGENT);
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
@@ -34,14 +34,14 @@ public class AgentTest extends BaseTaggingTest {
 		validateOutputAgainstInput(storedAnno, inputAnno);
 	}
 
-	@Test
+//	@Test
 	public void agentIDNotUrlMustThrowException() throws IOException {
 		
-		String requestBody = getJsonStringInput(TAG_WRONG_AGENT_ID_NOT_URL);
-		
-		ResponseEntity<String> response = getApiClient().createTag(WebAnnotationFields.PROVIDER_WEBANNO, null, 
-				false, requestBody,	TEST_USER_TOKEN);
-		
+		String requestBody = getJsonStringInput(WRONG_AGENT_ID_NOT_URL);
+		ResponseEntity<String> response = null;
+//		ResponseEntity<String> response = getApiClient().createAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, null, 
+//				false, requestBody,	TEST_USER_TOKEN);
+//		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());		
 		
 	}

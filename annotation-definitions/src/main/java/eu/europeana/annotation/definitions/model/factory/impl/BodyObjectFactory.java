@@ -1,7 +1,6 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
-import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.impl.AgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
@@ -12,6 +11,7 @@ import eu.europeana.annotation.definitions.model.body.impl.SemanticLinkBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SpecificResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
+import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
@@ -75,6 +75,9 @@ public class BodyObjectFactory extends
 			break;
 		case ENTITY:
 			returnType = AgentBody.class;
+			break;
+		case VCARD_ADDRESS:
+			returnType = VcardAddressBody.class;
 			break;
 		case LINK:
 			throw new AnnotationInstantiationException("Bodies of type LINK must be empty!");

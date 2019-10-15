@@ -672,6 +672,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			validateEntityTag(body);
 		} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
 			validateGeoTag(body);
+		} else if (BodyInternalTypes.isVcardAddressTagBody(body.getInternalType())) {
+			validateTagWithVcardAddress(body);
 		} else {
 			validateTagWithValue(body);
 		}
@@ -747,6 +749,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 					new String[]{"tag.body.source", body.getSource()});
+	}
+
+	/**
+	 * @param body
+	 * @throws ParamValidationException
+	 */
+	private void validateTagWithVcardAddress(Body body) throws ParamValidationException {
+		
+		// check mandatory fields
+		
+		// check type
+		if (Strings.isNullOrEmpty(body.getInternalType().toString()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.type", body.getType().toString()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {
