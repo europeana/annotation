@@ -523,7 +523,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		Body body = parseBody(bodyText, motivation);
 		// add "bodyText" implications
 		body.setContentType(WebAnnotationModelKeywords.MIME_TYPE_TEXT_PLAIN);
-		body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 
 		return body;
 	}
@@ -580,8 +579,6 @@ public class AnnotationLdParser extends JsonLdParser {
 				// Textual Body
 				case WebAnnotationFields.VALUE:
 					body.setValue(value.toString());
-					// add implications of TEXT field
-					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 					break;
 				// TODO: separate specific fields for parsing the whole specific
 				// object
