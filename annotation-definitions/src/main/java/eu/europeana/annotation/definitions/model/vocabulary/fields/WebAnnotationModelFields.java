@@ -26,6 +26,12 @@ public interface WebAnnotationModelFields {
 	public static final String BODY = "body";
 	public static final String BODY_VALUE = "bodyValue";
 	public static final String TARGET = "target";
+	public static final String STREET_ADDRESS = "streetAddress";
+	public static final String POSTAL_CODE = "postalCode";
+	public static final String POST_OFFICE_BOX = "postOfficeBox";
+	public static final String LOCALITY = "locality";
+	public static final String REGION = "region";
+	public static final String COUNTRY_NAME = "countryName";
 	
 	// ** agent fields **/
 	public static final String NAME = "name";

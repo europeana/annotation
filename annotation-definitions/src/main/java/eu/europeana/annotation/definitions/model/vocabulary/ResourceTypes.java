@@ -12,6 +12,7 @@ public enum ResourceTypes implements JsonKeyword{
 	SPECIFIC_RESOURCE (WebAnnotationModelKeywords.CLASS_SPECIFIC_RESOURCE), 
 	FULL_TEXT_RESOURCE (WebAnnotationModelKeywords.CLASS_FULL_TEXT_RESOURCE), 
 	GRAPH (WebAnnotationModelKeywords.CLASS_GRAPH), 
+	VCARD_ADDRESS (WebAnnotationModelKeywords.CLASS_VCARD_ADDRESS),	
 	PLACE (WebAnnotationModelKeywords.CLASS_EDM_PLACE);
 	
 	

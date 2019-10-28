@@ -3,6 +3,7 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
 	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 	public static final String TAG_STANDARD_TEST_VALUE_TARGET = "http://data.europeana.eu/item/09102/_UEDIN_214";
+	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	
 	String START = "{";
 	String END = "}";
@@ -464,4 +466,17 @@ public class BaseWebAnnotationProtocolTest {
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
 		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getProvider(), anno.getAnnotationId().getIdentifier());
 	}
+	
+	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
+		validateResponse(response, HttpStatus.CREATED);
+	}
+	
+	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), status);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getAnnotationId());
+		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+	}	
 }
