@@ -12,6 +12,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
@@ -23,6 +24,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public class AnnotationLdSerializer extends JsonLd {
 
@@ -310,10 +312,41 @@ public class AnnotationLdSerializer extends JsonLd {
 		if(annotation.getBody() instanceof GraphBody)
 			putGraphProperties(annotation, propertyValue);
 		
+		if(annotation.getBody() instanceof VcardAddressBody)
+			putVcardAddressProperties(annotation, propertyValue);
+		
 		bodyProperty.addValue(propertyValue);
 		return bodyProperty;
 	}
 
+	/**
+	 * Synchronizing for semantic tag Vcard address
+	 * @param annotation
+	 * @param propertyValue
+	 */
+	protected void putVcardAddressProperties(Annotation annotation, JsonLdPropertyValue propertyValue) {
+		Address address = ((VcardAddressBody) annotation.getBody()).getAddress();
+		if(address != null){
+			if(!StringUtils.isBlank(address.getVcardStreetAddress()))
+				propertyValue.getValues().put(WebAnnotationFields.STREET_ADDRESS, address.getVcardStreetAddress());
+
+			if(!StringUtils.isBlank(address.getVcardPostalCode()))
+				propertyValue.getValues().put(WebAnnotationFields.POSTAL_CODE, address.getVcardPostalCode());
+
+			if(!StringUtils.isBlank(address.getVcardPostOfficeBox()))
+				propertyValue.getValues().put(WebAnnotationFields.POST_OFFICE_BOX, address.getVcardPostOfficeBox());
+
+			if(!StringUtils.isBlank(address.getVcardLocality()))
+				propertyValue.getValues().put(WebAnnotationFields.LOCALITY, address.getVcardLocality());
+
+			if(!StringUtils.isBlank(address.getVcardHasGeo()))
+				propertyValue.getValues().put(WebAnnotationFields.REGION, address.getVcardHasGeo());
+
+			if(!StringUtils.isBlank(address.getVcardCountryName()))
+				propertyValue.getValues().put(WebAnnotationFields.COUNTRY_NAME, address.getVcardCountryName());
+		}
+	}
+	
 	protected void putSpecificResourceProps(SpecificResource specificResource, JsonLdPropertyValue propertyValue) {
 		putResourceDescriptionProps(specificResource, propertyValue);
 		

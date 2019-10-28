@@ -26,6 +26,7 @@ import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -523,8 +524,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		Body body = parseBody(bodyText, motivation);
 		// add "bodyText" implications
 		body.setContentType(WebAnnotationModelKeywords.MIME_TYPE_TEXT_PLAIN);
-		body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
-
 		return body;
 	}
 
@@ -580,8 +579,6 @@ public class AnnotationLdParser extends JsonLdParser {
 				// Textual Body
 				case WebAnnotationFields.VALUE:
 					body.setValue(value.toString());
-					// add implications of TEXT field
-					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 					break;
 				// TODO: separate specific fields for parsing the whole specific
 				// object
@@ -591,6 +588,25 @@ public class AnnotationLdParser extends JsonLdParser {
 					break;
 				case WebAnnotationFields.LONGITUDE:
 					setLongitude(body, value.toString());
+					break;
+					// parsing for semantic tag Vcard address
+				case WebAnnotationFields.STREET_ADDRESS:
+					setVcardStreetAddress(body, value.toString());
+					break;
+				case WebAnnotationFields.POSTAL_CODE:
+					setVcardPostalCode(body, value.toString());
+					break;
+				case WebAnnotationFields.POST_OFFICE_BOX:
+					setVcardPostOfficeBox(body, value.toString());
+					break;
+				case WebAnnotationFields.LOCALITY:
+					setVcardLocality(body, value.toString());
+					break;
+				case WebAnnotationFields.REGION:
+					setVcardHasGeo(body, value.toString());
+					break;
+				case WebAnnotationFields.COUNTRY_NAME:
+					setVcardCountryName(body, value.toString());
 					break;
 
 				default:
@@ -609,6 +625,78 @@ public class AnnotationLdParser extends JsonLdParser {
 		return body;
 	}
 
+	/**
+	 * @param body
+	 * @param streetAddress
+	 * @throws JsonParseException
+	 */
+	private void setVcardStreetAddress(Body body, String streetAddress) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardStreetAddress(streetAddress);
+		else
+			throw new JsonParseException("Street address not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param postalCode
+	 * @throws JsonParseException
+	 */
+	private void setVcardPostalCode(Body body, String postalCode) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardPostalCode(postalCode);
+		else
+			throw new JsonParseException("Street address not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param postOfficeBox
+	 * @throws JsonParseException
+	 */
+	private void setVcardPostOfficeBox(Body body, String postOfficeBox) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardPostOfficeBox(postOfficeBox);
+		else
+			throw new JsonParseException("Post office box not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param locality
+	 * @throws JsonParseException
+	 */
+	private void setVcardLocality(Body body, String locality) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardLocality(locality);
+		else
+			throw new JsonParseException("Locality not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param region
+	 * @throws JsonParseException
+	 */
+	private void setVcardHasGeo(Body body, String region) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardHasGeo(region);
+		else
+			throw new JsonParseException("Region not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param countryName
+	 * @throws JsonParseException
+	 */
+	private void setVcardCountryName(Body body, String countryName) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardCountryName(countryName);
+		else
+			throw new JsonParseException("Country name not supported for bodyType: " + body.getInternalType());
+	}
+	
 	private void parseSpecificResourceProperty(SpecificResource specificResource, String property, Object value)
 			throws JsonParseException {
 		switch (property) {
@@ -789,7 +877,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
-
+			else if (hasType(valueObject, ResourceTypes.VCARD_ADDRESS))
+				return BodyInternalTypes.VCARD_ADDRESS;
 		default:
 			break;
 

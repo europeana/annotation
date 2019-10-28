@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -31,7 +32,9 @@ public class BaseDescribingTest extends BaseWebAnnotationProtocolTest {
 
 		String requestBody = getJsonStringInput(inputFile);
 
-		Annotation storedAnno = createTag(requestBody);
+		ResponseEntity<String> response = storeTestAnnotation(inputFile);
+		validateResponse(response);
+		Annotation storedAnno = getApiClient().parseResponseBody(response);				
 
 		MotivationTypes motivationType = MotivationTypes.DESCRIBING;
 		Annotation inputAnno = parseAnnotation(requestBody, motivationType);
@@ -41,5 +44,5 @@ public class BaseDescribingTest extends BaseWebAnnotationProtocolTest {
 
 		return storedAnno;
 	}
-
+	
 }
