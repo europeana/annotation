@@ -10,9 +10,10 @@ import org.apache.stanbol.commons.jsonld.JsonLdResource;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.body.impl.AgentBody;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.graph.Graph;
@@ -313,7 +314,7 @@ public class AnnotationLdSerializer extends JsonLd {
 		if(annotation.getBody() instanceof GraphBody)
 			putGraphProperties(annotation, propertyValue);
 		
-		if(annotation.getBody() instanceof AgentBody)
+		if(annotation.getBody() instanceof EdmAgentBody)
 			putAgentProperties(annotation, propertyValue);
 		
 		if(annotation.getBody() instanceof VcardAddressBody)
@@ -393,31 +394,26 @@ public class AnnotationLdSerializer extends JsonLd {
 	
 	protected void putAgentProperties(Annotation annotation, JsonLdPropertyValue propertyValue) {
 		
-		AgentBody agentBody = (AgentBody) annotation.getBody();
+		EdmAgent agentBody = (EdmAgent) ((EdmAgentBody) annotation.getBody()).getAgent();
 		if(agentBody != null) {
 			if (agentBody.getPrefLabel() != null
 					&& !StringUtils.isBlank(agentBody.getPrefLabel().toString()))
-				propertyValue.getValues().put(WebAnnotationFields.PREF_LABEL,
-						JsonUtils.mapToString(agentBody.getPrefLabel()));
+				addMapToPropertyValue(agentBody.getPrefLabel(), propertyValue, WebAnnotationFields.PREF_LABEL);
 			if (agentBody.getPlaceOfBirth() != null
 					&& !StringUtils.isBlank(agentBody.getPlaceOfBirth().toString()))
-				propertyValue.getValues().put(WebAnnotationFields.PLACE_OF_BIRTH,
-						JsonUtils.mapToString(agentBody.getPlaceOfBirth()));
+				addMapToPropertyValue(agentBody.getPlaceOfBirth(), propertyValue, WebAnnotationFields.PLACE_OF_BIRTH);
 			if (agentBody.getPlaceOfDeath() != null
 					&& !StringUtils.isBlank(agentBody.getPlaceOfDeath().toString()))
-				propertyValue.getValues().put(WebAnnotationFields.PLACE_OF_DEATH,
-						JsonUtils.mapToString(agentBody.getPlaceOfDeath()));
+				addMapToPropertyValue(agentBody.getPlaceOfDeath(), propertyValue, WebAnnotationFields.PLACE_OF_DEATH);
 			if (agentBody.getDateOfBirth() != null
 					&& !StringUtils.isBlank(agentBody.getDateOfBirth().toString()))
-				propertyValue.getValues().put(WebAnnotationFields.DATE_OF_BIRTH,
-						agentBody.getDateOfBirth().toString());
+				addListToPropertyValue(agentBody.getDateOfBirth(), propertyValue, WebAnnotationFields.DATE_OF_BIRTH);
 			if (agentBody.getDateOfDeath() != null
 					&& !StringUtils.isBlank(agentBody.getDateOfDeath().toString()))
-				propertyValue.getValues().put(WebAnnotationFields.DATE_OF_DEATH,
-						agentBody.getDateOfDeath().toString());
+				addListToPropertyValue(agentBody.getDateOfDeath(), propertyValue, WebAnnotationFields.DATE_OF_DEATH);
 		}
 	}
-	
+		
 	private void putGraphProperties(Annotation annotation, JsonLdPropertyValue propertyValue) {
 		Graph graph = ((GraphBody) annotation.getBody()).getGraph();
 		if(graph != null){

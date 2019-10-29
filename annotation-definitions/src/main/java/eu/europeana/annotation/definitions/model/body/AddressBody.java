@@ -1,4 +1,4 @@
-package eu.europeana.annotation.definitions.model.body.impl;
+package eu.europeana.annotation.definitions.model.body;
 
 import eu.europeana.corelib.definitions.edm.entity.Address;
 
