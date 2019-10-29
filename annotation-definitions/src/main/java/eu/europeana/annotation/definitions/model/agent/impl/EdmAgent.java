@@ -1,23 +1,24 @@
-package eu.europeana.annotation.definitions.model.body.impl;
+package eu.europeana.annotation.definitions.model.agent.impl;
 
 import java.util.List;
 import java.util.Map;
 
-import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.agent.ExtAgent;
 
-public class AgentBody extends BaseBody implements Body {
+
+/**
+ * Entity Data Model object for Agent
+ * 
+ * @author GrafR
+ *
+ */
+public class EdmAgent extends BaseAgent implements ExtAgent {
 
 	public Map<String, String> prefLabel;
 	public Map<String, String> placeOfBirth;
 	public Map<String, String> placeOfDeath;
 	public List<String> dateOfBirth;
 	public List<String> dateOfDeath;
-
-	public AgentBody(){
-		super();
-		setInternalType(BodyInternalTypes.ENTITY.name());
-	}
 
 	public Map<String, String> getPrefLabel() {
 	  	return prefLabel;

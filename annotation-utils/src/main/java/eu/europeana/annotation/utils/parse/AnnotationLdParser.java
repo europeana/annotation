@@ -24,10 +24,11 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.body.impl.AgentBody;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
@@ -882,13 +883,13 @@ public class AnnotationLdParser extends JsonLdParser {
      * @throws JSONException
      */
     private void setPrefLabel(Body body, Object valueObject) throws JsonParseException, JSONException {		
-		if (body instanceof AgentBody) {
+		if (body instanceof EdmAgentBody) {
 			if (valueObject instanceof JSONObject) {	
 				Map<String, String> resPrefLabel = extractStringStringMapFromJsonObject(valueObject);
-				((AgentBody) body).setPrefLabel(resPrefLabel);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPrefLabel(resPrefLabel);
 			} else {
 				Map<String, String> resPrefLabel = extractStringStringMapFromSerializedStringMap(valueObject);
-				((AgentBody) body).setPrefLabel(resPrefLabel);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPrefLabel(resPrefLabel);
 			}
 		} else {
 			throw new JsonParseException("prefLabel not supported for bodyType: " + body.getInternalType());
@@ -902,13 +903,13 @@ public class AnnotationLdParser extends JsonLdParser {
      * @throws JSONException
      */
     private void setPlaceOfBirth(Body body, Object valueObject) throws JsonParseException, JSONException {		
-		if (body instanceof AgentBody) {
+		if (body instanceof EdmAgentBody) {
 			if (valueObject instanceof JSONObject) {	
 				Map<String, String> resPlaceOfBirth = extractStringStringMapFromJsonObject(valueObject);	
-				((AgentBody) body).setPlaceOfBirth(resPlaceOfBirth);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfBirth(resPlaceOfBirth);
 			} else {
 				Map<String, String> resPlaceOfBirth = extractStringStringMapFromSerializedStringMap(valueObject);
-				((AgentBody) body).setPlaceOfBirth(resPlaceOfBirth);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfBirth(resPlaceOfBirth);
 			}
 		} else {
 			throw new JsonParseException("placeOfBirth not supported for bodyType: " + body.getInternalType());
@@ -950,13 +951,13 @@ public class AnnotationLdParser extends JsonLdParser {
      * @throws JSONException
      */
     private void setPlaceOfDeath(Body body, Object valueObject) throws JsonParseException, JSONException {		
-		if (body instanceof AgentBody) {
+		if (body instanceof EdmAgentBody) {
 			if (valueObject instanceof JSONObject) {	
 				Map<String, String> resPlaceOfDeath = extractStringStringMapFromJsonObject(valueObject);	
-				((AgentBody) body).setPlaceOfDeath(resPlaceOfDeath);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfDeath(resPlaceOfDeath);
 			} else {
 				Map<String, String> resPlaceOfDeath = extractStringStringMapFromSerializedStringMap(valueObject);
-				((AgentBody) body).setPlaceOfDeath(resPlaceOfDeath);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfDeath(resPlaceOfDeath);
 			}
 		} else {
 			throw new JsonParseException("placeOfDeath not supported for bodyType: " + body.getInternalType());
@@ -970,13 +971,13 @@ public class AnnotationLdParser extends JsonLdParser {
      * @throws JSONException
      */
     private void setDateOfBirth(Body body, Object valueObject) throws JsonParseException, JSONException {		
-		if (body instanceof AgentBody) {
+		if (body instanceof EdmAgentBody) {
 			if (valueObject instanceof JSONArray) {	
-				List<String> resList = extractStringListFromJsonArray(valueObject);
-				((AgentBody) body).setDateOfBirth(resList);
+				List<String> resList = extractStringListFromJsonArray((JSONArray) valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfBirth(resList);
 			} else {
 				List<String> resList = extractStringListFromSerializedStringArray(valueObject);
-				((AgentBody) body).setDateOfBirth(resList);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfBirth(resList);
 			}
 		} else {
 			throw new JsonParseException("dateOfBirth not supported for bodyType: " + body.getInternalType());
@@ -990,8 +991,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @return list of strings
 	 * @throws JSONException
 	 */
-	private List<String> extractStringListFromJsonArray(Object valueObject) throws JSONException {
-		JSONArray arr = (JSONArray) valueObject;
+	private List<String> extractStringListFromJsonArray(JSONArray arr) throws JSONException {
 		List<String> resList = new ArrayList<String>();
 		for(int i = 0; i < arr.length(); i++){
 		    resList.add(arr.getString(i));
@@ -1006,13 +1006,13 @@ public class AnnotationLdParser extends JsonLdParser {
      * @throws JSONException
      */
     private void setDateOfDeath(Body body, Object valueObject) throws JsonParseException, JSONException {		
-		if (body instanceof AgentBody) {
+		if (body instanceof EdmAgentBody) {
 			if (valueObject instanceof JSONArray) {	
-				List<String> resList = extractStringListFromJsonArray(valueObject);
-				((AgentBody) body).setDateOfDeath(resList);
+				List<String> resList = extractStringListFromJsonArray((JSONArray) valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfDeath(resList);
 			} else {
 				List<String> resList = extractStringListFromSerializedStringArray(valueObject);
-				((AgentBody) body).setDateOfDeath(resList);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfDeath(resList);
 			}
 		} else {
 			throw new JsonParseException("dateOfDeath not supported for bodyType: " + body.getInternalType());
@@ -1028,8 +1028,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	private List<String> extractStringListFromSerializedStringArray(Object valueObject) {
 		List<String> resList = new ArrayList<String>();
 		String strValueObject = valueObject.toString();
-		String value = strValueObject.substring(1, strValueObject.length()-1);
-		resList.add(value);
+		resList.add(strValueObject);
 		return resList;
 	}
 
@@ -1092,7 +1091,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
 			else if (hasType(valueObject, ResourceTypes.AGENT))
-				return BodyInternalTypes.ENTITY;
+				return BodyInternalTypes.AGENT;
 			else if (hasType(valueObject, ResourceTypes.VCARD_ADDRESS))
 				return BodyInternalTypes.VCARD_ADDRESS;
 
