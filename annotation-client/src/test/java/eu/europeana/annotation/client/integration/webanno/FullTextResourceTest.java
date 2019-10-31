@@ -1,6 +1,7 @@
 package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +15,8 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 
 public class FullTextResourceTest extends BaseWebAnnotationProtocolTest {
+	
+	private String FULL_TEXT_RESOURCE_VALUE = "... complete transcribed text in HTML ...";
 
 	@Test
 	public void createFullTextResource() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -22,6 +25,7 @@ public class FullTextResourceTest extends BaseWebAnnotationProtocolTest {
 		validateResponse(response);
 		Annotation storedAnno = getApiClient().parseResponseBody(response);				
 		assertEquals(storedAnno.getBody().getInternalType(), ResourceTypes.FULL_TEXT_RESOURCE.name());
+		assertTrue(storedAnno.getBody().getValue().equals(FULL_TEXT_RESOURCE_VALUE));
 	}
 	
 }

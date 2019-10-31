@@ -24,26 +24,25 @@ public class VcardAddressBody extends BaseBody implements AddressBody {
 	}
 			
 	@Override
-	public boolean equalsContent(Object other) {
-		// TODO Auto-generated method stub
-		return super.equalsContent(other);
+	public boolean equalsContent(Object addressBodyContent) {
+		return super.equalsContent(addressBodyContent);
 	}
 	
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(Object addressBody) {
 		
-		if(!super.equals(other))
+		if(!super.equals(addressBody))
 			return false;
 		
-		if (!(other instanceof AddressBody))
+		if (!(addressBody instanceof AddressBody))
 		        return false;
 		
-		AddressBody that = (AddressBody) other;
+		AddressBody addressBodyObj = (AddressBody) addressBody;
 		
 		if(this.getAddress() == null)
-			return that.getAddress() == null; 
+			return addressBodyObj.getAddress() == null; 
 		else 
-			return this.getAddress().equals(that.getAddress()); 
+			return this.getAddress().equals(addressBodyObj.getAddress()); 
 		
 	}
 	
