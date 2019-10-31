@@ -524,8 +524,9 @@ public class AnnotationLdParser extends JsonLdParser {
 		Body body = parseBody(bodyText, motivation);
 		// add "bodyText" implications
 		body.setContentType(WebAnnotationModelKeywords.MIME_TYPE_TEXT_PLAIN);
+
 		return body;
-	}
+	}	
 
 	private Body parseBody(String valueObject, MotivationTypes motivation) {
 
