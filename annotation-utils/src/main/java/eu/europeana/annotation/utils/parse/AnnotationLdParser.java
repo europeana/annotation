@@ -973,8 +973,18 @@ public class AnnotationLdParser extends JsonLdParser {
      */
     private void setDateOfBirth(Body body, Object valueObject) throws JsonParseException, JSONException {		
 		if (body instanceof EdmAgentBody) {
+<<<<<<< HEAD
 			List<String> dateOfBirth = extractListFromJsonArrayOrString(valueObject);
 			((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfBirth(dateOfBirth);
+=======
+			if (valueObject instanceof JSONArray) {	
+				List<String> resList = extractStringListFromJsonArray((JSONArray) valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfBirth(resList);
+			} else {
+				List<String> resList = extractStringListFromSerializedStringArray(valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfBirth(resList);
+			}
+>>>>>>> branch '#204_cors_request_handling' of https://github.com/europeana/annotation.git
 		} else {
 			throw new JsonParseException("dateOfBirth not supported for bodyType: " + body.getInternalType());
 		}		
@@ -1003,8 +1013,18 @@ public class AnnotationLdParser extends JsonLdParser {
      */
     private void setDateOfDeath(Body body, Object valueObject) throws JsonParseException, JSONException {		
 		if (body instanceof EdmAgentBody) {
+<<<<<<< HEAD
 			List<String> dateOfDeath = extractListFromJsonArrayOrString(valueObject);
 			((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfDeath(dateOfDeath);
+=======
+			if (valueObject instanceof JSONArray) {	
+				List<String> resList = extractStringListFromJsonArray((JSONArray) valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfDeath(resList);
+			} else {
+				List<String> resList = extractStringListFromSerializedStringArray(valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfDeath(resList);
+			}
+>>>>>>> branch '#204_cors_request_handling' of https://github.com/europeana/annotation.git
 		} else {
 			throw new JsonParseException("dateOfDeath not supported for bodyType: " + body.getInternalType());
 		}		
@@ -1017,6 +1037,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @throws JSONException
 	 * @throws JsonParseException
 	 */
+<<<<<<< HEAD
 	private List<String> extractListFromJsonArrayOrString(Object valueObject) throws JSONException, JsonParseException {
 		List<String> dateOfDeath;
 		if (valueObject instanceof JSONArray) {	
@@ -1028,6 +1049,13 @@ public class AnnotationLdParser extends JsonLdParser {
 			throw new JsonParseException("unsupported type for JSON date: " + valueObject.getClass());
 		}
 		return dateOfDeath;
+=======
+	private List<String> extractStringListFromSerializedStringArray(Object valueObject) {
+		List<String> resList = new ArrayList<String>();
+		String strValueObject = valueObject.toString();
+		resList.add(strValueObject);
+		return resList;
+>>>>>>> branch '#204_cors_request_handling' of https://github.com/europeana/annotation.git
 	}
 
 	/**
