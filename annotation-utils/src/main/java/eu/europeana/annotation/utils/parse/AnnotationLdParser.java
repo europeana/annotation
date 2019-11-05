@@ -582,7 +582,6 @@ public class AnnotationLdParser extends JsonLdParser {
 					}
 					body.setContext(context.getJsonValue());
 					break;
-
 				// Textual Body
 				case WebAnnotationFields.VALUE:
 					body.setValue(value.toString());
