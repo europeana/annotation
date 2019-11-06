@@ -12,6 +12,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -66,7 +67,7 @@ public class BaseJsonldRest extends BaseRest {
 	Logger logger = LogManager.getLogger(getClass());
 
 	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation, String provider,
-			String identifier, boolean indexOnCreate, String annotation, String userToken) throws HttpException {
+			String identifier, boolean indexOnCreate, String annotation, Authentication authentication) throws HttpException {
 		try {
 
 			// SET DEFAULTS
@@ -79,7 +80,8 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = buildAnnotationId(provider, identifier);
 
 			// 1. authorize user
-			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+			String userName = authentication.getPrincipal().toString();
+			Agent user = getAuthorizationService().authorizeUser(userName, wsKey, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -149,14 +151,14 @@ public class BaseJsonldRest extends BaseRest {
 	}
 	
 	
-	protected ResponseEntity<String> storeAnnotations(String wsKey, String provider, String annotationPageIn, String userToken) throws HttpException {
+	protected ResponseEntity<String> storeAnnotations(String wsKey, String provider, String annotationPageIn, Authentication authentication) throws HttpException {
 		try {
 
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
 			
 			// TODO #152 Authorization
-			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, Operations.CREATE);
+			Agent user = getAuthorizationService().authorizeUser(authentication.getPrincipal().toString(), wsKey, Operations.CREATE);
 			
 			// parse annotation page
 			AnnotationPageParser annoPageParser = new AnnotationPageParser();
@@ -508,24 +510,25 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param wsKey
 	 * @param identifier
 	 * @param annotation
-	 * @param userToken
+	 * @param authentication Contains user name
 	 * @param action
 	 * @return response entity that comprises response body, headers and status
 	 *         code
 	 * @throws HttpException
 	 */
 	protected ResponseEntity<String> updateAnnotation(String wsKey, String provider, String identifier,
-			String annotation, String userToken, String action) throws HttpException {
+			String annotation, Authentication authentication, String action) throws HttpException {
 
 		try {
 
 			// SET DEFAULTS
 			getAuthenticationService().getByApiKey(wsKey);
 
-			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			String userName = authentication.getPrincipal().toString();
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userName);
 
 			// 1. authorize user
-			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
+			getAuthorizationService().authorizeUser(userName, wsKey, annoId, Operations.UPDATE);
 
 			// 2. check time stamp
 			
@@ -585,14 +588,14 @@ public class BaseJsonldRest extends BaseRest {
 	 * 
 	 * @param wsKey
 	 * @param identifier
-	 * @param userToken
+	 * @param authentication Contains user name
 	 * @param action
 	 * @return response entity that comprises response body, headers and status
 	 *         code
 	 * @throws HttpException
 	 */
 	protected ResponseEntity<String> deleteAnnotation(String wsKey, String provider, String identifier,
-			String userToken, String action) throws HttpException {
+			Authentication authentication, String action) throws HttpException {
 
 		try {
 			// SET DEFAULTS
@@ -601,10 +604,11 @@ public class BaseJsonldRest extends BaseRest {
 			if (provider == null)
 				provider = app.getProvider();
 
-			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			String userName = authentication.getPrincipal().toString();
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userName);
 
 			// 5. authorize user
-			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
+			getAuthorizationService().authorizeUser(userName, wsKey, annoId, Operations.DELETE);
 
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
@@ -635,12 +639,12 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param wsKey
 	 * @param provider
 	 * @param identifier
-	 * @param userToken
+	 * @param authentication Contains user name
 	 * @return
 	 * @throws HttpException
 	 */
 	protected ResponseEntity<String> storeAnnotationReport(String wsKey, String provider, String identifier,
-			String userToken, String action) throws HttpException {
+			Authentication authentication, String action) throws HttpException {
 		try {
 
 			// SET DEFAULTS and validates apikey
@@ -648,10 +652,11 @@ public class BaseJsonldRest extends BaseRest {
 			getAuthenticationService().getByApiKey(wsKey);
 
 			// 2. build and verify annotation ID
-			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			String userName = authentication.getPrincipal().toString();
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userName);
 
 			// 1. authorize user
-			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
+			Agent user = getAuthorizationService().authorizeUser(userName, wsKey, annoId, Operations.REPORT);
 
 			// build vote
 			Date reportDate = new Date();

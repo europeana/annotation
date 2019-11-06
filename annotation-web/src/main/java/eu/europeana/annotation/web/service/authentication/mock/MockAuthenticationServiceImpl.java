@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -238,16 +239,16 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	}
 
 	@Override
-	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException {
+	public Agent getUserByName(String apiKey, String userName) throws UserAuthorizationException {
 		Agent user = null;
 
 		// read user from cache
 		try {
 			Application clientApp = getByApiKey(apiKey);
-			user = getUserByToken(userToken, clientApp);
+			user = getUserByName(userName, clientApp);
 
 		} catch (ApplicationAuthenticationException e) {
-			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userToken}, e);
+			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userName}, e);
 		}
 
 		// refresh cache - add specific api key if found in MongoDB
@@ -255,13 +256,13 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 			// read from MongoDB
 			Application application = loadApiKey(apiKey);
 			if (application != null) {
-				user = getUserByToken(userToken, application);
+				user = getUserByName(userName, application);
 			}
 		}
 
 		// unknown user
 		if (user == null)
-			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userToken});
+			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userName});
 
 		return user;
 
@@ -280,14 +281,21 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		return application;
 	}
 
-	private Agent getUserByToken(String userToken, Application application) {
-		Agent user;
-		if (WebAnnotationFields.USER_ANONYMOUNS.equals(userToken))
+	private Agent getUserByName(String userName, Application application) {
+		Agent user = null;
+		if (WebAnnotationFields.USER_ANONYMOUNS.equals(userName)) {
 			user = application.getAnonymousUser();
-		else if (WebAnnotationFields.USER_ADMIN.equals(userToken))
+		} else if (WebAnnotationFields.USER_ADMIN.equals(userName)) {
 			user = application.getAdminUser();
-		else
-			user = application.getAuthenticatedUsers().get(userToken);
+		} else {
+			Collection<Agent> users = application.getAuthenticatedUsers().values();
+			for (Agent agent : users) {
+				if(userName.equals(agent.getName())){
+					user = agent;
+					break;
+				}
+			}
+		}
 		return user;
 	}
 

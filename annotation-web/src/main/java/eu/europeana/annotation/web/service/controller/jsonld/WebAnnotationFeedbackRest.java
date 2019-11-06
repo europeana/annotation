@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,10 +36,10 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
 		String action = "post:/annotation/{provider}/{identifier}/report";
-		return storeAnnotationReport(wskey, provider, identifier, userToken, action);
+		return storeAnnotationReport(wskey, provider, identifier, authentication, action);
 	}
 
 	@RequestMapping(value = "/annotation/{provider}/{identifier}/moderationsummary", method = RequestMethod.GET, 

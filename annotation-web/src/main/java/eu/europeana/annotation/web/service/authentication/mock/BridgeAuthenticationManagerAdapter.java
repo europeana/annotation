@@ -67,8 +67,8 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 	}
 
 	@Override
-	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException {
-		return getMockOauthService().getUserByToken(apiKey, userToken);
+	public Agent getUserByName(String apiKey, String userToken) throws UserAuthorizationException {
+		return getMockOauthService().getUserByName(apiKey, userToken);
 	}
 
 	@Override

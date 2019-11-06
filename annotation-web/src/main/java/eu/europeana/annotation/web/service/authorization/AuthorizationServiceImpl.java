@@ -85,7 +85,7 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
 		
 		
 		Application app = getAuthenticationService().getByApiKey(apiKey);
-		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
+		Agent user = getAuthenticationService().getUserByName(apiKey, userToken);
 		
 		if (user== null || user.getName() == null || user.getUserGroup() == null)
 			throw new UserAuthorizationException("Invalid User (Token)", I18nConstants.INVALID_TOKEN, new String[]{userToken}, HttpStatus.FORBIDDEN);
@@ -96,19 +96,13 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
 					HttpStatus.FORBIDDEN);
 				
 		//check permissions
-		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
-		if(isAdmin(user) && hasPermission(user, operationName))//allow all
-			return user;
-		else if(isTester(user) && configuration.isProductionEnvironment()){
+		if(isTester(user) && configuration.isProductionEnvironment()){
 			//#20 testers not allowed in production environment
 			throw new UserAuthorizationException(null, I18nConstants.TEST_USER_FORBIDDEN, new String[]{user.getName()}, HttpStatus.FORBIDDEN);
-		} else	if(hasPermission(user, operationName)){
-			//user is authorized
-			return user;
 		}
 
-		//user is not authorized to perform operation
-		throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[]{user.getName()}, HttpStatus.FORBIDDEN);	
+		//user is authorized
+		return user;
 	}
 
 	/**

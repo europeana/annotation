@@ -19,6 +19,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -119,6 +120,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 	 * @throws Exception
 	 */
 	@Test
+	@Disabled
 	public void viaBatchUploadTest() throws Exception {
 		
 		//delete old entries in case they exist

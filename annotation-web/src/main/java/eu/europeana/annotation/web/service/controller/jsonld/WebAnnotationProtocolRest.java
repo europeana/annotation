@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,9 +54,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
         // TODO userToken parameter has to be removed from HTTP request parameters		
         // userToken = getUserToken(userToken, request);
 		
-	    verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
-		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, userToken);
+		return storeAnnotation(wskey, null, provider, identifier, indexOnCreate, annotation, authentication);
 	}
 
 	@RequestMapping(value = "/annotations/", method = RequestMethod.POST, 
@@ -69,13 +70,9 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-//		userToken = getUserToken(userToken, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
-//	    String jwtUserToken = verifyAccessRights(request, WebAnnotationFields.CREATE_OPERATION);
-		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
-		
-		
-		return storeAnnotations(wskey, provider, annotationPage, userToken);
+		return storeAnnotations(wskey, provider, annotationPage, authentication);
 	}
 	
 	@RequestMapping(value = {"/annotation/{annoType}", "/annotation/{annoType}.jsonld"}, method = RequestMethod.POST, 
@@ -91,9 +88,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			)throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-//		userToken = getUserToken(userToken, request);
-//	    String jwtUserToken = verifyAccessRights(request, WebAnnotationFields.CREATE_OPERATION);
-		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
 		MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 		
@@ -104,7 +99,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 					HttpStatus.NOT_ACCEPTABLE, 
 					null);
 		
-		return storeAnnotation(wskey, motivation, provider, identifier, indexOnCreate, annotation, userToken);
+		return storeAnnotation(wskey, motivation, provider, identifier, indexOnCreate, annotation, authentication);
 	}
 	
 	@RequestMapping(value = {"/annotation/{provider}/{identifier}", "/annotation/{provider}/{identifier}.jsonld"}, method = RequestMethod.GET, 
@@ -146,12 +141,10 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 		
-//		userToken = getUserToken(userToken, request);
-//	    String jwtUserToken = verifyAccessRights(request, WebAnnotationFields.UPDATE_OPERATION);
-		verifyWriteAccess(WebAnnotationFields.UPDATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.UPDATE_OPERATION, request);
 		
 		String action = "put:/annotation/{provider}/{identifier}[.{format}]";
-		return updateAnnotation(wskey, provider, identifier, annotation, userToken, action);
+		return updateAnnotation(wskey, provider, identifier, annotation, authentication, action);
 	}
 	
 	
@@ -165,36 +158,10 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-//		userToken = getUserToken(userToken, request);
-//	    String jwtUserToken = verifyWr
-//	    		(request, WebAnnotationFields.DELETE_METHOD);
-		verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
 		
 		String action = "delete:/annotation/{provider}/{identifier}[.{format}]";
-		return deleteAnnotation(wskey, provider, identifier, userToken, action);
+		return deleteAnnotation(wskey, provider, identifier, authentication, action);
 	}
-	
-	/**
-	 * Verify access rights using user token from request header
-	 * @param request The HTTP request
-	 * @param operation The API operation
-	 * @return user name
-	 * @throws eu.europeana.api.commons.web.exception.ApplicationAuthenticationException 
-	 * @throws OperationAuthorizationException 
-	 * @throws ApplicationAuthenticationException 
-	 * @throws AuthorizationExtractionException 
-	 * @throws ApiKeyExtractionException 
-	 * @throws eu.europeana.annotation.web.exception.authorization.AuthorizationExtractionException 
-	 */
-//	protected String verifyAccessRights(HttpServletRequest request, String operation) throws ApplicationAuthenticationException, OperationAuthorizationException, eu.europeana.api.commons.web.exception.ApplicationAuthenticationException, eu.europeana.annotation.web.exception.authorization.AuthorizationExtractionException, ApiKeyExtractionException, AuthorizationExtractionException {
-//		String user = "";
-//		List<? extends Authentication> authenticationList = processJwtToken(request);
-//	    verifyWriteAccess(authenticationList, operation);	
-//	    user = getJwtUser(request);
-//	    // TODO Negotiate the user name without forbidden characters e.g. '.'
-//	    // currently we replace it by '-' for testing
-//	    user = user.replace(".", "-");
-//        return user;
-//	}
-	
+		
 }

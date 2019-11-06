@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
-import eu.europeana.annotation.client.model.result.ConceptOperationResponse;
 import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -357,7 +356,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return postURL(url, "");		
+		return postURL(url, "", requestHeaderName, requestHeaderValue);		
 	}
 
 	
@@ -453,7 +452,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return putURL(url, updateAnnotation);		
+		return putURL(url, updateAnnotation, requestHeaderName, requestHeaderValue);		
 	}
 
 	/**
@@ -490,7 +489,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return putURL(url, updateAnnotation);		
+		return putURL(url, updateAnnotation, requestHeaderName, requestHeaderValue);		
 	}
 	/**
 	 * @Deprecated see new specifications for WebAnnotationProtocol
@@ -521,7 +520,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return deleteURL(url);		
+		return deleteURL(url, requestHeaderName, requestHeaderValue);		
 	}
 
 	/**
@@ -555,7 +554,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return deleteURL(url);		
+		return deleteURL(url, requestHeaderName, requestHeaderValue);		
 	}
 
 	
@@ -1077,7 +1076,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 				
 		url += WebAnnotationFields.AND + "url=" + httpUrl;
 		// Execute Whitelist API request
-		return deleteURL(url);
+		return deleteURL(url, requestHeaderName, requestHeaderValue);
 	}
 
 	
@@ -1094,7 +1093,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 		
 		// Execute Whitelist API request
-		return deleteURL(url);
+		return deleteURL(url, requestHeaderName, requestHeaderValue);
 	}
 	
 	
@@ -1122,7 +1121,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		logger.trace("Delete Annotation request URL: " + url);
 		// Execute Annotation delete request
-		ResponseEntity<String> re = deleteURL(url);
+		ResponseEntity<String> re = deleteURL(url, requestHeaderName, requestHeaderValue);
 		logger.trace(re.toString());
 
 		return re;
@@ -1179,7 +1178,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return postURL(url, tag);		
+		return postURL(url, tag, requestHeaderName, requestHeaderValue);		
 	}
 
 }
