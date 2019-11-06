@@ -467,6 +467,7 @@ public class BaseWebAnnotationProtocolTest {
 		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getProvider(), anno.getAnnotationId().getIdentifier());
 	}
 
+	
 	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
 		validateResponse(response, HttpStatus.CREATED);
 	}
@@ -478,5 +479,6 @@ public class BaseWebAnnotationProtocolTest {
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getAnnotationId());
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
-	}
+	}	
+
 }

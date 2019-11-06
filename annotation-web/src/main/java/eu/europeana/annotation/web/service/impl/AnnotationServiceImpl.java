@@ -678,7 +678,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			validateTagWithValue(body);
 		}
 	}
-
+	
 	/**
 	 * This method validate entity body
 	 * @param body The entity body
