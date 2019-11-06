@@ -28,6 +28,7 @@ import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -44,7 +45,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentConceptService;
 import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
-import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
@@ -668,10 +668,27 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			validateTagWithFullTextResource(body);
 		} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
 			validateSemanticTagUrl(body);
+		} else if (BodyInternalTypes.isAgentBodyTag(body.getInternalType())) {
+			validateAgentBody(body);
 		} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
 			validateGeoTag(body);
+		} else if (BodyInternalTypes.isVcardAddressTagBody(body.getInternalType())) {
+			validateVcardAddressBody(body);
 		} else {
 			validateTagWithValue(body);
+		}
+	}
+
+	/**
+	 * This method validate entity body
+	 * @param body The entity body
+	 * @throws ParamValidationException
+	 */
+	private void validateAgentBody(Body body) throws ParamValidationException {
+		if (!(body instanceof EdmAgentBody)) {
+			throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+					I18nConstants.MESSAGE_WRONG_CLASS,
+					new String[]{"tag.body.class", body.getClass().toString()});
 		}
 	}
 
@@ -732,6 +749,22 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 					new String[]{"tag.body.source", body.getSource()});
+	}
+
+	/**
+	 * @param body
+	 * @throws ParamValidationException
+	 */
+	private void validateVcardAddressBody(Body body) throws ParamValidationException {
+		
+		// check mandatory fields
+		
+		// check type
+		if (Strings.isNullOrEmpty(body.getInternalType().toString()) ||
+				!BodyInternalTypes.isVcardAddressTagBody(body.getInternalType()))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+					I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+					new String[]{"tag.body.type", body.getType().toString()});
 	}
 
 	private void validateTagWithValue(Body body) throws ParamValidationException {

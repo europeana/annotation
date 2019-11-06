@@ -1,9 +1,15 @@
 package eu.europeana.annotation.client.integration.webanno.describing;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -31,7 +37,9 @@ public class BaseDescribingTest extends BaseWebAnnotationProtocolTest {
 
 		String requestBody = getJsonStringInput(inputFile);
 
-		Annotation storedAnno = createTag(requestBody);
+		ResponseEntity<String> response = storeTestAnnotation(inputFile);
+		validateResponse(response);
+		Annotation storedAnno = getApiClient().parseResponseBody(response);				
 
 		MotivationTypes motivationType = MotivationTypes.DESCRIBING;
 		Annotation inputAnno = parseAnnotation(requestBody, motivationType);
@@ -41,5 +49,18 @@ public class BaseDescribingTest extends BaseWebAnnotationProtocolTest {
 
 		return storedAnno;
 	}
-
+	
+	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
+		validateResponse(response, HttpStatus.CREATED);
+	}
+	
+	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+		assertNotNull(response.getBody());
+		assertEquals(response.getStatusCode(), status);
+		
+		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		assertNotNull(storedAnno.getAnnotationId());
+		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+	}
+	
 }
