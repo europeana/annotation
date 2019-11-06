@@ -21,7 +21,6 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
@@ -40,7 +39,6 @@ import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
-import eu.europeana.annotation.utils.serialization.ConceptDeserializer;
 import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
 import eu.europeana.annotation.utils.serialization.ListDeserializer;
 import eu.europeana.annotation.utils.serialization.MapDeserializer;
@@ -118,24 +116,7 @@ public class JsonUtils extends BaseJsonParser{
 		
 		return annotation;
 	}
-	
-	public static String mapToString(Map<String,String> mp) {
-		String res = "";
-	    Iterator<Map.Entry<String, String>> it = mp.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
-	        if (res.length() > 0) {
-	        	res = res + ",";
-	        }
-	        res = res + pairs.getKey() + WebAnnotationFields.SEPARATOR_SEMICOLON + pairs.getValue();
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-	    if (res.length() > 0) {
-	    	res = "[" + res + "]";
-	    }
-	    return res;
-	}	
-	
+		
 	public static String mapToStringExt(Map<String,Integer> mp) {
 		String res = "";
 	    Iterator<Map.Entry<String, Integer>> it = mp.entrySet().iterator();
