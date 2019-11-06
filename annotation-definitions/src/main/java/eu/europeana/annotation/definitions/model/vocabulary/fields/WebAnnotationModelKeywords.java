@@ -19,6 +19,7 @@ public class WebAnnotationModelKeywords {
 	//EUROPEANA EXTENSIONS CLASSES
 	public static final String CLASS_GRAPH = "Graph";
 	public static final String CLASS_EDM_PLACE = "Place";
+	public static final String CLASS_EDM_AGENT = "Agent";
 	
 	
 	//Contexts

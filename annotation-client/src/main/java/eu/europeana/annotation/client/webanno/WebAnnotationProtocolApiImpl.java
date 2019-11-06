@@ -95,7 +95,8 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	@Override
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException{
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();
-		return europeanaParser.parseAnnotation(null, response.getBody());
+		String jsonLdStr = response.getBody();
+		return europeanaParser.parseAnnotation(null, jsonLdStr);
 	}
 
 	@Override

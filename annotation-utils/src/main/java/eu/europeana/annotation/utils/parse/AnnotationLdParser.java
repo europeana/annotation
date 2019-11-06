@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +17,7 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONString;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
@@ -23,9 +25,11 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
@@ -827,6 +831,270 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	/**
+	 * @param body
+	 * @param streetAddress
+	 * @throws JsonParseException
+	 */
+	private void setVcardStreetAddress(Body body, String streetAddress) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardStreetAddress(streetAddress);
+		else
+			throw new JsonParseException("Street address not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param postalCode
+	 * @throws JsonParseException
+	 */
+	private void setVcardPostalCode(Body body, String postalCode) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardPostalCode(postalCode);
+		else
+			throw new JsonParseException("Street address not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param postOfficeBox
+	 * @throws JsonParseException
+	 */
+	private void setVcardPostOfficeBox(Body body, String postOfficeBox) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardPostOfficeBox(postOfficeBox);
+		else
+			throw new JsonParseException("Post office box not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param locality
+	 * @throws JsonParseException
+	 */
+	private void setVcardLocality(Body body, String locality) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardLocality(locality);
+		else
+			throw new JsonParseException("Locality not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param region
+	 * @throws JsonParseException
+	 */
+	private void setVcardHasGeo(Body body, String region) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardHasGeo(region);
+		else
+			throw new JsonParseException("Region not supported for bodyType: " + body.getInternalType());
+	}
+
+	/**
+	 * @param body
+	 * @param countryName
+	 * @throws JsonParseException
+	 */
+	private void setVcardCountryName(Body body, String countryName) throws JsonParseException {
+		if (body instanceof VcardAddressBody)
+			((VcardAddressBody) body).getAddress().setVcardCountryName(countryName);
+		else
+			throw new JsonParseException("Country name not supported for bodyType: " + body.getInternalType());
+	}
+	
+    /**
+     * @param jsonobj
+     * @return
+     * @throws JSONException
+     */
+    public static Map<String, Object> toMap(JSONObject jsonobj)  throws JSONException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Iterator<String> keys = jsonobj.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonobj.get(key);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }   
+            map.put(key, value);
+        }   return map;
+    }
+    
+    /**
+     * @param array
+     * @return
+     * @throws JSONException
+     */
+    public static List<Object> toList(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<Object>();
+        for(int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+            else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            list.add(value);
+        }   return list;
+    }    
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setPrefLabel(Body body, Object valueObject) throws JsonParseException, JSONException {		
+		if (body instanceof EdmAgentBody) {
+			if (valueObject instanceof JSONObject) {	
+				Map<String, String> resPrefLabel = extractStringStringMapFromJsonObject(valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPrefLabel(resPrefLabel);
+			} else {
+				Map<String, String> resPrefLabel = extractStringStringMapFromSerializedStringMap(valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPrefLabel(resPrefLabel);
+			}
+		} else {
+			throw new JsonParseException("prefLabel not supported for bodyType: " + body.getInternalType());
+		}
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setPlaceOfBirth(Body body, Object valueObject) throws JsonParseException, JSONException {		
+		if (body instanceof EdmAgentBody) {
+			if (valueObject instanceof JSONObject) {	
+				Map<String, String> resPlaceOfBirth = extractStringStringMapFromJsonObject(valueObject);	
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfBirth(resPlaceOfBirth);
+			} else {
+				Map<String, String> resPlaceOfBirth = extractStringStringMapFromSerializedStringMap(valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfBirth(resPlaceOfBirth);
+			}
+		} else {
+			throw new JsonParseException("placeOfBirth not supported for bodyType: " + body.getInternalType());
+		}
+	}
+
+	/**
+	 * This method extracts string map from serialized string mapping
+	 * @param valueObject
+	 * @return string map
+	 */
+	private Map<String, String> extractStringStringMapFromSerializedStringMap(Object valueObject) {
+		Map<String, String> resPlaceOfBirth = new HashMap<String,String>();
+		String strValueObject = valueObject.toString();
+		int separator = strValueObject.indexOf(":");
+		String key = strValueObject.substring(1, separator);
+		String value = strValueObject.substring(separator+1, strValueObject.length()-1);
+		resPlaceOfBirth.put(key, value);
+		return resPlaceOfBirth;
+	}
+
+	/**
+	 * This method extracts a map of strings from serialized JSON object
+	 * @param valueObject
+	 * @return map of strings
+	 * @throws JSONException
+	 */
+	private Map<String, String> extractStringStringMapFromJsonObject(Object valueObject) throws JSONException {
+		Map<String, Object> placeOfBirth = toMap((JSONObject) valueObject);
+		Map<String, String> resPlaceOfBirth = placeOfBirth.entrySet().stream()
+			     .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+		return resPlaceOfBirth;
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setPlaceOfDeath(Body body, Object valueObject) throws JsonParseException, JSONException {		
+		if (body instanceof EdmAgentBody) {
+			if (valueObject instanceof JSONObject) {	
+				Map<String, String> resPlaceOfDeath = extractStringStringMapFromJsonObject(valueObject);	
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfDeath(resPlaceOfDeath);
+			} else {
+				Map<String, String> resPlaceOfDeath = extractStringStringMapFromSerializedStringMap(valueObject);
+				((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfDeath(resPlaceOfDeath);
+			}
+		} else {
+			throw new JsonParseException("placeOfDeath not supported for bodyType: " + body.getInternalType());
+		}
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setDateOfBirth(Body body, Object valueObject) throws JsonParseException, JSONException {		
+		if (body instanceof EdmAgentBody) {
+			List<String> dateOfBirth = extractListFromJsonArrayOrString(valueObject);
+			((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfBirth(dateOfBirth);
+		} else {
+			throw new JsonParseException("dateOfBirth not supported for bodyType: " + body.getInternalType());
+		}		
+	}
+
+	/**
+	 * This method extracts a list of strings from serialized JSON array. 
+	 * In this use case we have only one array element.
+	 * @param valueObject
+	 * @return list of strings
+	 * @throws JSONException
+	 */
+	private List<String> extractStringListFromJsonArray(JSONArray arr) throws JSONException {
+		List<String> resList = new ArrayList<String>();
+		for(int i = 0; i < arr.length(); i++){
+		    resList.add(arr.getString(i));
+		}
+		return resList;
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setDateOfDeath(Body body, Object valueObject) throws JsonParseException, JSONException {		
+		if (body instanceof EdmAgentBody) {
+			List<String> dateOfDeath = extractListFromJsonArrayOrString(valueObject);
+			((EdmAgent) ((EdmAgentBody) body).getAgent()).setDateOfDeath(dateOfDeath);
+		} else {
+			throw new JsonParseException("dateOfDeath not supported for bodyType: " + body.getInternalType());
+		}		
+	}
+
+	/**
+	 * This method extracts list of strings from JSON array or string
+	 * @param valueObject
+	 * @return
+	 * @throws JSONException
+	 * @throws JsonParseException
+	 */
+	private List<String> extractListFromJsonArrayOrString(Object valueObject) throws JSONException, JsonParseException {
+		List<String> dateOfDeath;
+		if (valueObject instanceof JSONArray) {	
+			dateOfDeath = extractStringListFromJsonArray((JSONArray) valueObject);
+		} else if (valueObject instanceof JSONString || valueObject instanceof String){
+			dateOfDeath = new ArrayList<String>(1);
+			dateOfDeath.add(valueObject.toString());
+		} else {
+			throw new JsonParseException("unsupported type for JSON date: " + valueObject.getClass());
+		}
+		return dateOfDeath;
+	}
+
+	/**
 	 * guess internal type if the json value of the body is a string
 	 * 
 	 * @param motivation
@@ -884,6 +1152,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
+			else if (hasType(valueObject, ResourceTypes.AGENT))
+				return BodyInternalTypes.AGENT;
 			else if (hasType(valueObject, ResourceTypes.VCARD_ADDRESS))
 				return BodyInternalTypes.VCARD_ADDRESS;
 		default:

@@ -2,6 +2,7 @@ package eu.europeana.annotation.definitions.model.factory.impl;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
@@ -71,6 +72,9 @@ public class BodyObjectFactory extends
 			break;
 		case FULL_TEXT_RESOURCE:
 			returnType = FullTextResourceBody.class;
+			break;
+		case AGENT:
+			returnType = EdmAgentBody.class;
 			break;
 		case VCARD_ADDRESS:
 			returnType = VcardAddressBody.class;
