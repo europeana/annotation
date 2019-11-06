@@ -280,4 +280,5 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public enum TypeNamespaces {
 		oa, foaf, prov;
 	}
+
 }

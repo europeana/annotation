@@ -1,5 +1,6 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
+import eu.europeana.annotation.definitions.model.body.AddressBody;
 import eu.europeana.api.commons.definitions.entities.BaseAddress;
 import eu.europeana.corelib.definitions.edm.entity.Address;
 
@@ -24,25 +25,26 @@ public class VcardAddressBody extends BaseBody implements AddressBody {
 	}
 			
 	@Override
-	public boolean equalsContent(Object addressBodyContent) {
-		return super.equalsContent(addressBodyContent);
+	public boolean equalsContent(Object other) {
+		// TODO Auto-generated method stub
+		return super.equalsContent(other);
 	}
 	
 	@Override
-	public boolean equals(Object addressBody) {
+	public boolean equals(Object other) {
 		
-		if(!super.equals(addressBody))
+		if(!super.equals(other))
 			return false;
 		
-		if (!(addressBody instanceof AddressBody))
+		if (!(other instanceof AddressBody))
 		        return false;
 		
-		AddressBody addressBodyObj = (AddressBody) addressBody;
+		AddressBody that = (AddressBody) other;
 		
 		if(this.getAddress() == null)
-			return addressBodyObj.getAddress() == null; 
+			return that.getAddress() == null; 
 		else 
-			return this.getAddress().equals(addressBodyObj.getAddress()); 
+			return this.getAddress().equals(that.getAddress()); 
 		
 	}
 	

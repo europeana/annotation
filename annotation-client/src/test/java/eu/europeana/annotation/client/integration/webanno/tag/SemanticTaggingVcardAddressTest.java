@@ -1,6 +1,7 @@
 package eu.europeana.annotation.client.integration.webanno.tag;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -31,6 +32,16 @@ public class SemanticTaggingVcardAddressTest extends BaseTaggingTest {
 		assertEquals(
 				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardCountryName()
 				,"The Netherlands");
+		assertNotNull(
+				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardHasGeo());
+		assertNotNull(
+				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardLocality());
+		assertNotNull(
+				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardPostalCode());
+		assertNotNull(
+				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardPostOfficeBox());
+		assertNotNull(
+				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardStreetAddress());
 	}
 
 }

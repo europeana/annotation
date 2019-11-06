@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +17,7 @@ import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONString;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
@@ -23,9 +25,11 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
@@ -556,6 +560,9 @@ public class AnnotationLdParser extends JsonLdParser {
 				if (body instanceof VcardAddressBody) 
 					parseAddressProperty((VcardAddressBody) body, key, value);				
 					
+				if (body instanceof EdmAgentBody) 
+					parseAgentProperty((EdmAgentBody) body, key, value);				
+					
 				if (body instanceof PlaceBody) 
 					parsePlaceProperty((PlaceBody) body, key, value);				
 					
@@ -723,6 +730,176 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	/**
+	 * Parsing for EDM Agent body
+	 * @param body
+	 * @param property
+	 * @param value
+	 * @throws JsonParseException
+	 * @throws JSONException 
+	 */
+	private void parseAgentProperty(EdmAgentBody body, String property, Object value)
+			throws JsonParseException, JSONException {
+		switch (property) {
+			case WebAnnotationFields.PREF_LABEL:
+				setPrefLabel(body, value);
+				break;
+			case WebAnnotationFields.DATE_OF_BIRTH:
+				setDateOfBirth(body, value);
+				break;
+			case WebAnnotationFields.DATE_OF_DEATH:
+				setDateOfDeath(body, value);
+				break;
+			case WebAnnotationFields.PLACE_OF_BIRTH:
+				setPlaceOfBirth(body, value);
+				break;
+			case WebAnnotationFields.PLACE_OF_DEATH:
+				setPlaceOfDeath(body, value);
+				break;
+			default:
+				break;
+		}
+	}
+
+    /**
+     * @param jsonobj
+     * @return
+     * @throws JSONException
+     */
+    public static Map<String, Object> toMap(JSONObject jsonobj)  throws JSONException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Iterator<String> keys = jsonobj.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonobj.get(key);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }   
+            map.put(key, value);
+        }   return map;
+    }
+    
+    /**
+     * @param array
+     * @return
+     * @throws JSONException
+     */
+    public static List<Object> toList(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<Object>();
+        for(int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+            else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            list.add(value);
+        }   return list;
+    }    
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     */
+    private void setPrefLabel(EdmAgentBody body, Object valueObject) throws JSONException {		
+		Map<String, String> resPrefLabel = extractStringStringMapFromJsonObject(valueObject);
+		((EdmAgent) body.getAgent()).setPrefLabel(resPrefLabel);
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     */
+    private void setPlaceOfBirth(EdmAgentBody body, Object valueObject) throws JSONException {		
+		Map<String, String> resPlaceOfBirth = extractStringStringMapFromJsonObject(valueObject);	
+		((EdmAgent) body.getAgent()).setPlaceOfBirth(resPlaceOfBirth);
+	}
+
+	/**
+	 * This method extracts a map of strings from serialized JSON object
+	 * @param valueObject
+	 * @return map of strings
+	 * @throws JSONException
+	 */
+	private Map<String, String> extractStringStringMapFromJsonObject(Object valueObject) throws JSONException {
+		Map<String, Object> placeOfBirth = toMap((JSONObject) valueObject);
+		Map<String, String> resPlaceOfBirth = placeOfBirth.entrySet().stream()
+			     .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+		return resPlaceOfBirth;
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     */
+    private void setPlaceOfDeath(EdmAgentBody body, Object valueObject) throws JSONException {		
+		Map<String, String> resPlaceOfDeath = extractStringStringMapFromJsonObject(valueObject);	
+		((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfDeath(resPlaceOfDeath);
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     * @throws JsonParseException 
+     */
+    private void setDateOfBirth(EdmAgentBody body, Object valueObject) throws JSONException, JsonParseException {		
+		List<String> dateOfBirth = extractListFromJsonArrayOrString(valueObject);
+		((EdmAgent) body.getAgent()).setDateOfBirth(dateOfBirth);
+	}
+
+	/**
+	 * This method extracts a list of strings from serialized JSON array. 
+	 * In this use case we have only one array element.
+	 * @param valueObject
+	 * @return list of strings
+	 * @throws JSONException
+	 */
+	private List<String> extractStringListFromJsonArray(JSONArray arr) throws JSONException {
+		List<String> resList = new ArrayList<String>();
+		for(int i = 0; i < arr.length(); i++){
+		    resList.add(arr.getString(i));
+		}
+		return resList;
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setDateOfDeath(EdmAgentBody body, Object valueObject) throws JsonParseException, JSONException {		
+		List<String> dateOfDeath = extractListFromJsonArrayOrString(valueObject);
+		((EdmAgent) body.getAgent()).setDateOfDeath(dateOfDeath);
+	}
+
+	/**
+	 * This method extracts list of strings from JSON array or string
+	 * @param valueObject
+	 * @return
+	 * @throws JSONException
+	 * @throws JsonParseException
+	 */
+	private List<String> extractListFromJsonArrayOrString(Object valueObject) throws JSONException, JsonParseException {
+		List<String> dateOfDeath;
+		if (valueObject instanceof JSONArray) {	
+			dateOfDeath = extractStringListFromJsonArray((JSONArray) valueObject);
+		} else if (valueObject instanceof JSONString || valueObject instanceof String){
+			dateOfDeath = new ArrayList<String>(1);
+			dateOfDeath.add(valueObject.toString());
+		} else {
+			throw new JsonParseException("unsupported type for JSON date: " + valueObject.getClass());
+		}
+		return dateOfDeath;
+	}
+	
+	/**
 	 * Parsing for place body
 	 * @param body
 	 * @param property
@@ -884,6 +1061,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
+			else if (hasType(valueObject, ResourceTypes.AGENT))
+				return BodyInternalTypes.AGENT;
 			else if (hasType(valueObject, ResourceTypes.VCARD_ADDRESS))
 				return BodyInternalTypes.VCARD_ADDRESS;
 		default:
