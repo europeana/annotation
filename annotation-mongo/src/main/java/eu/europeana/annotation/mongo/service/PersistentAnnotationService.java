@@ -80,6 +80,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @return list of object ids
 	 */
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
+	
+	public List<String> getDeletedByLastUpdateTimestamp(String startTimestamp);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 

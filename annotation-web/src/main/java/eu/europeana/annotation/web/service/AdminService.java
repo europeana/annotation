@@ -91,6 +91,14 @@ public interface AdminService {
 	 */
 	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
 
+	/*
+	 * This methods returns annotation ids which where deleted after a given date 
+	 * @param startDate
+	 * @param startTimestamp
+	 * @return deleted annotation ids
+	 */
+	public List<String> getDeletedAnnotationSet(String startDate, String startTimestamp);
+	
 	/**
 	 * This methods reindexes the set of annotations identified by their uris or objectIds
 	 * @param uriList

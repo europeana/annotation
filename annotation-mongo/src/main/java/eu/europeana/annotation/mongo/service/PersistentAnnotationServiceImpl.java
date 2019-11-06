@@ -487,6 +487,24 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		return response;
 	}
+	
+	public List<String> getDeletedByLastUpdateTimestamp(String startTimestamp) {
+        	Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+        	query.field(WebAnnotationFields.DISABLED).equal(true);
+        	if (StringUtils.isNotBlank(startTimestamp)) {
+        		//Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+        		Date start = new Date(Long.parseLong(startTimestamp));
+        		query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(start);
+        	}
+        	query.order(WebAnnotationFields.LAST_UPDATE);
+        	//Actually this is a list of Objects
+        	List<String> res = getAnnotationDao().findIds(query);
+        	//convert the list
+        	List<String> response = new ArrayList<String>(res.size());
+        	for (Object id : res){ response.add(id.toString()); }
+        	
+        	return response;
+        }
 
 	@Override
 	public Annotation updateStatus(Annotation newAnnotation) {

@@ -126,6 +126,28 @@ public class ManagementRest extends BaseRest {
 		return buildResponse(jsonStr);
 	}
 
+	@RequestMapping(value = "/admin/annotation/getdeletedSet", method = RequestMethod.GET, produces = {
+		HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
+	@ApiOperation(value = "Get a set of deleted Annotations", nickname = "getDeletedAnnotationSet", response = java.lang.Void.class)
+        public ResponseEntity<String> getDeletedAnnotationSet(
+        		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+        		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "startTimestamp", required = false) String startTimestamp) throws HttpException {
+        
+        	// SET DEFAULTS
+        	getAuthenticationService().getByApiKey(apiKey);
+        
+        	// 1. authorize user
+        	getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_ALL);
+        	
+        	List<String> annotationIds = getAdminService().getDeletedAnnotationSet(startDate, startTimestamp);
+
+		String jsonStr = JsonWebUtils.toJson(annotationIds, null);
+		logger.info("Get deleted Annotation id result: " + jsonStr);
+		return buildResponse(jsonStr);
+        }
+	
 	@RequestMapping(value = "/admin/annotation/validate", method = RequestMethod.GET, produces = {
 			HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
 	@ApiOperation(value = "Validate Annotation API key", nickname = "validateApiKey", response = java.lang.Void.class)

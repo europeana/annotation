@@ -93,6 +93,16 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		// is not successfull
 		getSolrService().delete(annoId);
 	}
+	
+	public List<String> getDeletedAnnotationSet(String startDate, String startTimestamp){
+	    	List<String> annotationIds = new ArrayList<>();
+		if (!Strings.isNullOrEmpty(startDate)) {
+			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
+		}
+		
+		annotationIds = getMongoPersistence().getDeletedByLastUpdateTimestamp(startTimestamp);
+		return annotationIds;
+	}
 
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
 			String endTimestamp, String action) throws HttpException, ApiWriteLockException {
