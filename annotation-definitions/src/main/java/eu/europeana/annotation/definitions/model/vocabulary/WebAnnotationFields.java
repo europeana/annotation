@@ -27,6 +27,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String DIMENSION_MAP = "dimensionMap";
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	public static final String MULTILINGUAL = "multilingual";
+	public static final String MODIFIED_START = "modifiedStart";
+	public static final String MODIFIED_END = "modifiedEnd";
 	
 	
 	// skos fields

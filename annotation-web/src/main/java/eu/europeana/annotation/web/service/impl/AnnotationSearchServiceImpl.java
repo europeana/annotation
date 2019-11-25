@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -289,4 +290,39 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			}
 		}
 	}
+
+	@Override
+	public AnnotationPage searchDisabled(Query query, HttpServletRequest request, Date startDate, Date endDate) throws HttpException {
+		AnnotationPage protocol = new AnnotationPageImpl(query);
+		
+		//search mongo db for disabled annotations modified after a given date
+		List<? extends Annotation> annotations = mongoPersistance.filterDisabledByDate(startDate, endDate);
+		protocol.setAnnotations(annotations);
+		
+		protocol.setTotalInPage(annotations.size());
+		protocol.setTotalInCollection(annotations.size());
+
+		String collectionUrl = buildCollectionUrl(query, request);
+		protocol.setCollectionUri(collectionUrl);
+		
+		int currentPage = query.getPageNr();
+		String currentPageUrl = buildPageUrl(collectionUrl, currentPage, query.getPageSize());
+		protocol.setCurrentPageUri(currentPageUrl);
+
+		if (currentPage > 0) {
+			String prevPage = buildPageUrl(collectionUrl, currentPage - 1, query.getPageSize());
+			protocol.setPrevPageUri(prevPage);	
+		}
+		
+		//if current page is not the last one
+		boolean isLastPage = protocol.getTotalInCollection() <= (currentPage + 1) * query.getPageSize(); 
+		if(!isLastPage){
+			String nextPage = buildPageUrl(collectionUrl, currentPage + 1, query.getPageSize());
+			protocol.setNextPageUri(nextPage);
+		}
+		
+		return protocol;
+	}
+
+
 }

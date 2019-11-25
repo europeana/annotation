@@ -38,7 +38,7 @@ public interface AnnotationSearchApi {
 	 * @return Annotation page
 	 */
 	public AnnotationPage searchAnnotations(String query, String startOn, String limit, String field, String language, SearchProfiles searchProfile);
-	
+
 	/**
 	 * Search for tags by the given text query.
 	 * @param query

@@ -1,5 +1,9 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -62,15 +67,22 @@ public class WebAnnotationSearchRest extends BaseRest {
 			// @RequestParam(value = WebAnnotationFields.PARAM_LIMIT) long
 			// limit,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
-			HttpServletRequest request) throws HttpException {
+			@RequestParam(value = WebAnnotationFields.DISABLED, defaultValue = "false", required = false) boolean disabled,
+			@RequestParam(value = WebAnnotationFields.MODIFIED_START, defaultValue = "01-01-2000", required = false) String modifiedStart,
+			@RequestParam(value = WebAnnotationFields.MODIFIED_END, defaultValue = "01-01-2000", required = false) String modifiedEnd,			
+			HttpServletRequest request) throws HttpException, ParseException {
 
 		String action = "get:/annotation/search{.format}";
+		
+		SimpleDateFormat formatter=new SimpleDateFormat("dd-MM-yyyy");  
+		Date dateStart=formatter.parse(modifiedStart);
+		Date dateEnd=formatter.parse(modifiedEnd);
 
-		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action);
+		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action,disabled,dateStart,dateEnd);
 	}
 
 	private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets,
-			SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile, HttpServletRequest request, String action)
+			SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile, HttpServletRequest request, String action, boolean disabled, Date modifiedStart, Date modifiedEnd)
 					throws HttpException {
 
 		try {
@@ -100,8 +112,17 @@ public class WebAnnotationSearchRest extends BaseRest {
 			Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
 					sortFieldStr, sortOrderField, page, pageSize, searchProfile);
 
+			AnnotationPage annotationPage;
 			//** do search
-			AnnotationPage annotationPage = getAnnotationSearchService().search(searchQuery, request);
+			if(disabled)
+			{
+				annotationPage = getAnnotationSearchService().searchDisabled(searchQuery, request, modifiedStart, modifiedEnd);
+			}
+			else
+			{
+				annotationPage = getAnnotationSearchService().search(searchQuery, request);
+			}
+			
 			
 			//** serialize page
 			AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage);

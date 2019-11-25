@@ -487,6 +487,23 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		return response;
 	}
+	
+	@Override
+	public List<? extends Annotation> filterDisabledByDate(Date startDate, Date endDate)
+	{
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		if (startDate!=null) {
+			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(startDate);
+		}
+		if (endDate!=null) {
+			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(endDate);
+		}
+		
+		query.field(WebAnnotationFields.DISABLED).equal(true);
+		
+		return getAnnotationDao().find(query).asList();
+		
+	}
 
 	@Override
 	public Annotation updateStatus(Annotation newAnnotation) {

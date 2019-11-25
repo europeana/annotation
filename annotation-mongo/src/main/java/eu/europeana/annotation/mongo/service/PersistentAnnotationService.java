@@ -80,6 +80,15 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @return list of object ids
 	 */
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
+	
+	/**
+	 * This method filters annotation by start and end modification dates
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<? extends Annotation> filterDisabledByDate(Date startDate, Date endDate);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 

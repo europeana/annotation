@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,8 +45,8 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	 */
 	@BeforeEach
 	public void createAnnotationDataSet() throws JsonParseException, IOException {
-		annotations = createMultipleTestAnnotations(TOTAL_IN_COLLECTION);
-		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
+//		annotations = createMultipleTestAnnotations(TOTAL_IN_COLLECTION);
+//		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
 	}
 
 	/**
@@ -117,4 +117,44 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		
 	}
 
+	
+	 /* Test search query and verify search result
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testSearchAnyAnnotation() throws Exception {
+
+		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
+		
+		// first page
+		AnnotationPage annPg = annSearchApi.searchAnnotations("*", SearchProfiles.FACET);
+		//AnnotationPage annPg = annSearchApi.searchAnnotations("*", "0", "10", "lastUpdate", "");
+		assertNotNull(annPg, "AnnotationPage must not be null");
+		//there might be old annotations of failing tests in the database
+		assertEquals(annPg.getCurrentPage(), 0);
+		
+				List<? extends Annotation> annos = annPg.getAnnotations(); 
+		assertTrue(0 < annos.size());
+		
+		
+	}
+	
+	
+	@Test
+	public void testSearchAnyAnnotationMinimalProfile() throws Exception {
+
+		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
+		
+		// first page
+		AnnotationPage annPg = annSearchApi.searchAnnotations("*", SearchProfiles.MINIMAL);
+		assertNotNull(annPg, "AnnotationPage must not be null");
+		//there might be old annotations of failing tests in the database
+		assertEquals(annPg.getCurrentPage(), 0);
+		
+				List<? extends Annotation> annos = annPg.getAnnotations(); 
+		assertTrue(0 < annos.size());
+		
+		
+	}
 }
