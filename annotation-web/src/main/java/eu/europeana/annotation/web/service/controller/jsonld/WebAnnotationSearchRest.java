@@ -67,22 +67,20 @@ public class WebAnnotationSearchRest extends BaseRest {
 			// @RequestParam(value = WebAnnotationFields.PARAM_LIMIT) long
 			// limit,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
-			@RequestParam(value = WebAnnotationFields.DISABLED, defaultValue = "false", required = false) boolean disabled,
-			@RequestParam(value = WebAnnotationFields.MODIFIED_START, defaultValue = "01-01-2000", required = false) String modifiedStart,
-			@RequestParam(value = WebAnnotationFields.MODIFIED_END, defaultValue = "01-01-2000", required = false) String modifiedEnd,			
+			//@RequestParam(value = WebAnnotationFields.DISABLED, defaultValue = "false", required = false) boolean disabled,
+			//@RequestParam(value = WebAnnotationFields.MODIFIED_START, defaultValue = "01-01-2000", required = false) String modifiedStart,
+			//@RequestParam(value = WebAnnotationFields.MODIFIED_END, defaultValue = "01-01-2000", required = false) String modifiedEnd,			
 			HttpServletRequest request) throws HttpException, ParseException {
 
 		String action = "get:/annotation/search{.format}";
-		
-		SimpleDateFormat formatter=new SimpleDateFormat("dd-MM-yyyy");  
-		Date dateStart=formatter.parse(modifiedStart);
-		Date dateEnd=formatter.parse(modifiedEnd);
 
-		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action,disabled,dateStart,dateEnd);
+		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action);
+	
 	}
-
+	
+	
 	private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets,
-			SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile, HttpServletRequest request, String action, boolean disabled, Date modifiedStart, Date modifiedEnd)
+			SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile, HttpServletRequest request, String action)
 					throws HttpException {
 
 		try {
@@ -114,9 +112,10 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 			AnnotationPage annotationPage;
 			//** do search
-			if(disabled)
+			if(queryString.contains("disabled"))
 			{
-				annotationPage = getAnnotationSearchService().searchDisabled(searchQuery, request, modifiedStart, modifiedEnd);
+				//search for deleted(disabled) annotations 
+				annotationPage = getAnnotationSearchService().searchDisabled(queryString, searchQuery, request);
 			}
 			else
 			{

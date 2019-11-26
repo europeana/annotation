@@ -1,7 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -292,11 +292,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	}
 
 	@Override
-	public AnnotationPage searchDisabled(Query query, HttpServletRequest request, Date startDate, Date endDate) throws HttpException {
+	public AnnotationPage searchDisabled(String queryString, Query query, HttpServletRequest request) throws HttpException, NoSuchFieldException, SecurityException, ParseException {
 		AnnotationPage protocol = new AnnotationPageImpl(query);
 		
 		//search mongo db for disabled annotations modified after a given date
-		List<? extends Annotation> annotations = mongoPersistance.filterDisabledByDate(startDate, endDate);
+		List<? extends Annotation> annotations = mongoPersistance.filterDisabled(queryString);
 		protocol.setAnnotations(annotations);
 		
 		protocol.setTotalInPage(annotations.size());

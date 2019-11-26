@@ -1,5 +1,6 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -82,13 +83,13 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 	
 	/**
-	 * This method filters annotation by start and end modification dates
+	 * This method filters deleted (disabled) annotations by the given query parameters.
+	 *  
+	 * @param queryParams TODO
 	 * 
-	 * @param startDate
-	 * @param endDate
 	 * @return
 	 */
-	public List<? extends Annotation> filterDisabledByDate(Date startDate, Date endDate);
+	public List<? extends Annotation> filterDisabled(String queryParams) throws NoSuchFieldException, SecurityException, ParseException;
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 

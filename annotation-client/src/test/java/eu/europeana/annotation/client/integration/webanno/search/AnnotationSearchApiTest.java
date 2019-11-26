@@ -126,15 +126,17 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	public void testSearchAnyAnnotation() throws Exception {
 
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
-		
+				
 		// first page
-		AnnotationPage annPg = annSearchApi.searchAnnotations("*", SearchProfiles.FACET);
+		AnnotationPage annPg = annSearchApi.searchAnnotations("*:*&fq=modified:[2019-11-24T16:10:49.624Z TO 2019-11-26T16:10:49.624Z]", SearchProfiles.STANDARD);
+		//AnnotationPage annPg = annSearchApi.searchAnnotations("disabled=true&lastUpdate=25-11-2019", SearchProfiles.STANDARD);
 		//AnnotationPage annPg = annSearchApi.searchAnnotations("*", "0", "10", "lastUpdate", "");
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertEquals(annPg.getCurrentPage(), 0);
 		
-				List<? extends Annotation> annos = annPg.getAnnotations(); 
+		List<? extends Annotation> annos = annPg.getAnnotations(); 
+		
 		assertTrue(0 < annos.size());
 		
 		

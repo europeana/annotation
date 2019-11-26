@@ -1,6 +1,6 @@
 package eu.europeana.annotation.web.service;
 
-import java.util.Date;
+import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,13 +32,17 @@ public interface AnnotationSearchService {
 	 * @param endDate
 	 * @return
 	 * @throws HttpException
+	 * @throws ParseException 
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
 	 */
-	public AnnotationPage searchDisabled(Query query, HttpServletRequest request, Date startDate, Date endDate)
-			throws HttpException;
+	public AnnotationPage searchDisabled(String searchQuery, Query query, HttpServletRequest request)
+			throws HttpException, NoSuchFieldException, SecurityException, ParseException;
 
 
 	public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String sort, String sortOrder, int pageNr, int pageSize,
 			SearchProfiles profile);
+
 
 	
 }

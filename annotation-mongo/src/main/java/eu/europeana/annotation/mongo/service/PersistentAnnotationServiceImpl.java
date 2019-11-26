@@ -1,5 +1,7 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Criteria;
+import org.mongodb.morphia.query.CriteriaContainer;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -489,17 +493,36 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 	
 	@Override
-	public List<? extends Annotation> filterDisabledByDate(Date startDate, Date endDate)
+	public List<? extends Annotation> filterDisabled(String queryParams) throws NoSuchFieldException, SecurityException, ParseException
 	{
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		if (startDate!=null) {
-			query.field(WebAnnotationFields.LAST_UPDATE).greaterThan(startDate);
-		}
-		if (endDate!=null) {
-			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(endDate);
+		List<Criteria> criteriaList = new ArrayList<Criteria>();
+		
+		String [] parts = queryParams.split("&");
+		for (String param : parts)
+		{
+			String  [] key_value_pair = param.split("=");
+			Class<?> objectType= PersistentAnnotationImpl.class.getDeclaredField(key_value_pair[0]).getType();
+			if(objectType.equals(String.class))
+			{
+				criteriaList.add(query.criteria(key_value_pair[0]).equal(key_value_pair[1]));
+			}
+			else if(objectType.equals(Date.class))
+			{
+				SimpleDateFormat formatter=new SimpleDateFormat("dd-MM-yyyy");  
+				Date dateStart=formatter.parse(key_value_pair[1]);
+				query.field(key_value_pair[0]).greaterThan(dateStart);
+			}
+			else if(objectType.equals(boolean.class))
+			{
+				query.field(key_value_pair[0]).equal(Boolean.valueOf(key_value_pair[1]));
+			}
 		}
 		
-		query.field(WebAnnotationFields.DISABLED).equal(true);
+		if(criteriaList.size()>0)
+		{
+			query.disableValidation().and(criteriaList.toArray(new CriteriaContainer[criteriaList.size()]));
+		}
 		
 		return getAnnotationDao().find(query).asList();
 		

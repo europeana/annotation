@@ -27,11 +27,22 @@ public interface SwaggerConstants {
 	public static final String SEARCH_SOLR_FIELDS = "motivation, anno_uri, anno_id, generator_uri, generator_name, generated, " 
 	        + "creator_uri, creator_name, created, modified, moderation_score, text, body_value, "
 			+ "body_value.&lt;lang&gt;, body_uri, target_uri, target_record_id, link_resource_uri, link_relation";	
+
+	public static final String SEARCH_MONGO_FIELDS = "annotationId.baseUrl, annotationId.identifier, annotationId.provider, annotationId.httpUrl" 
+	        + " type, internalType, creator.httpUrl, creator.agentType, creator.internalType, creator.name, creator.inputString,"
+			+ " generator.httpUrl, generator.agentType, generator.internalType, generator.name, generator.inputString,"
+	        + " created, generated, body.className, body.scope, body.contentType, body.value, body.internalType, body.inputString,"
+	        + " target.className, target.scope, target.resourceId, target.httpUri, target.value, target.internalType, target.inputString,"
+	        + " motivation, disabled, lastUpdate, lastIndexed";	
+			
 	public static final String SEARCH_PROFILES_LIST = "facet, standard.";
 	public static final String SEARCH_SORT_FIELD_LIST = "motivation, anno_uri, anno_id, generator_uri, generator_name, generated, creator_uri, creator_name, created, modified, moderation_score,  body_value, body_value.&lt;lang&gt;, body_uri, link_resource_uri, link_relation";
 	
 	
-	public static final String SEARCH_HELP_NOTE = "The following fields are available for search: "+ SEARCH_SOLR_FIELDS 
+	public static final String SEARCH_HELP_NOTE = "There are 2 types of search that can be performed. One is for disabled (i.e. deleted) annotations and one is for active annotations."
+			+ " In case of disabled annotations, please use the query parameter to specify the criteria for the anootations' fields. The critearia are simple key-value pairs, where for the fields of the type date, the start date is specified, meaning that the "
+			+ "annotations with the given field grater or equal from the specified date will be retrieved. The available fields in this case are: " + SEARCH_MONGO_FIELDS
+			+ ". In case of active annotations the following fields are available for search: "+ SEARCH_SOLR_FIELDS 
 			+". Default is text (i.e. no field specified in search query), urls and ids are keywords and need to be submitted in quotes (e.g. target_record_ids:\"/123/xyz\"). "
 			+ "The following profiles are available for search: "+ SEARCH_PROFILES_LIST 
 			+ " Sorting is available for fields: " + SEARCH_SORT_FIELD_LIST;
