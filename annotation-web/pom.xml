@@ -11,7 +11,8 @@
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<!-- version>${version.annotationApi}</version-->
+		<version>0.2.9-SNAPSHOT</version>
 	</parent>
 
 	<repositories>
@@ -228,6 +229,19 @@
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>
+		<plugins>
+		    <plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<!-- warSourceDirectory>WebContent</warSourceDirectory-->
+					<warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+		</plugins>
+		
 
 		<!-- plugins -->
 	</build>

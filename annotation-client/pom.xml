@@ -11,7 +11,8 @@
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-api</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<!-- version>${version.annotationApi}</version-->
+		<version>0.2.9-SNAPSHOT</version>
 	</parent>
 
 
@@ -132,6 +133,29 @@
 					<target>${version.java}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <version>3.0.0</version>
+    <configuration>
+     <descriptorRefs>
+      <descriptorRef>jar-with-dependencies</descriptorRef>
+     </descriptorRefs>
+     <archive>
+      <manifest>
+       <mainClass>eu.europeana.annotation.client.webanno.Main</mainClass>
+      </manifest>
+     </archive>
+    </configuration>
+    <executions>
+     <execution>
+      <phase>package</phase>
+      <goals>
+       <goal>single</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
 		</plugins>
 	</build>
 </project>

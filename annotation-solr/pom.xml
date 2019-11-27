@@ -12,7 +12,8 @@
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<!-- version>${version.annotationApi}</version-->
+		<version>0.2.9-SNAPSHOT</version>
 	</parent>
 
 
