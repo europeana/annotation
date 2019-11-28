@@ -509,7 +509,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			}
 			else if(objectType.equals(Date.class))
 			{
-				SimpleDateFormat formatter=new SimpleDateFormat("dd-MM-yyyy");  
+				SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  
 				Date dateStart=formatter.parse(key_value_pair[1]);
 				query.field(key_value_pair[0]).greaterThan(dateStart);
 			}
