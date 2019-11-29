@@ -675,22 +675,32 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += "/search?wskey=" + getApiKey() + "&profile=" + profile;
 		if (StringUtils.isNotEmpty(query)) {
 			
-			//this part is added to support several query parameters (e.g. Solr query params like q,fq,facet, etc.)
-			String [] queryParams = query.split("&");
-			for (String qParam : queryParams)
+			/* for deleted annotations the whole "query" String is sent as query while for active annotations
+			 * the query can have different parameters like q=,fq=,facet=, etc.
+			 */
+			if(query.contains("disabled"))
 			{
-				String  [] key_value_pair = qParam.split("=");
-				
-				if(key_value_pair.length==1) url += "&query=" + encodeUrl(key_value_pair[0]);
-				else if(key_value_pair.length==2)
+				url += "&query=" + encodeUrl(query);
+			}
+			else
+			{
+				//this part is added to support several query parameters (e.g. Solr query params like q,fq,facet, etc.)
+				String [] queryParams = query.split("&");
+				for (String qParam : queryParams)
 				{
-					if(key_value_pair[0].equals("q")) url += "&query=" + encodeUrl(key_value_pair[1]);					
-					else if (key_value_pair[0].equals("fq")) url += "&qf=" + encodeUrl(key_value_pair[1]);
-					else if (key_value_pair[0].contains("facet")) url += "&facet=" + encodeUrl(key_value_pair[1]);
-				}
-				else
-				{
-					throw new IllegalArgumentException("Invalid query parameters! Should be provided in the form: key1=value1&key2=value2&...");
+					String  [] key_value_pair = qParam.split("=");
+					
+					if(key_value_pair.length==1) url += "&query=" + encodeUrl(key_value_pair[0]);
+					else if(key_value_pair.length==2)
+					{
+						if(key_value_pair[0].equals("q")) url += "&query=" + encodeUrl(key_value_pair[1]);					
+						else if (key_value_pair[0].equals("fq")) url += "&qf=" + encodeUrl(key_value_pair[1]);
+						else if (key_value_pair[0].contains("facet")) url += "&facet=" + encodeUrl(key_value_pair[1]);
+					}
+					else
+					{
+						throw new IllegalArgumentException("Invalid query parameters! Should be provided in the form: key1=value1&key2=value2&...");
+					}
 				}
 			}
 				
