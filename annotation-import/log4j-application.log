@@ -1,0 +1,17 @@
+2019-12-03 13:20:22 INFO  AnnotationSynchronizer:49 - Solr metadata URLs: http://localhost:9091/solr
+2019-12-03 13:20:22 INFO  AnnotationSynchronizer:50 - Solr fulltext URLs: http://localhost:9093/solr
+2019-12-03 13:20:22 INFO  AnnotationSynchronizer:51 - Solr metadata collection: metadata
+2019-12-03 13:20:22 INFO  AnnotationSynchronizer:52 - Solr fulltext collection: fulltext
+2019-12-03 13:20:32 INFO  AnnotationSynchronizer:152 - Processing annotations set: 1-3
+2019-12-03 13:20:39 INFO  AnnotationSynchronizer:183 - Successfully deleted fulltext document!
+2019-12-03 13:20:40 INFO  AnnotationSynchronizer:194 - Updating fulltext documents with active annotations was successfull!
+2019-12-03 13:29:37 INFO  AnnotationSynchronizer:49 - Solr metadata URLs: http://localhost:9091/solr
+2019-12-03 13:29:37 INFO  AnnotationSynchronizer:50 - Solr fulltext URLs: http://localhost:9093/solr
+2019-12-03 13:29:37 INFO  AnnotationSynchronizer:51 - Solr metadata collection: metadata
+2019-12-03 13:29:37 INFO  AnnotationSynchronizer:52 - Solr fulltext collection: fulltext
+2019-12-03 13:29:39 INFO  HttpMethodDirector:439 - I/O exception (java.net.ConnectException) caught when processing request: Connection refused: connect
+2019-12-03 13:29:39 INFO  HttpMethodDirector:445 - Retrying request
+2019-12-03 13:29:40 INFO  HttpMethodDirector:439 - I/O exception (java.net.ConnectException) caught when processing request: Connection refused: connect
+2019-12-03 13:29:40 INFO  HttpMethodDirector:445 - Retrying request
+2019-12-03 13:29:41 INFO  HttpMethodDirector:439 - I/O exception (java.net.ConnectException) caught when processing request: Connection refused: connect
+2019-12-03 13:29:41 INFO  HttpMethodDirector:445 - Retrying request
