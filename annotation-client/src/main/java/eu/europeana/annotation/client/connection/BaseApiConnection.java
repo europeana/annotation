@@ -190,6 +190,22 @@ public class BaseApiConnection {
 	
 	
 	/**
+	 * This method makes GET request for given URL and returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param headerName
+	 * @param headerValue
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getURLWithHeader(String url, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (GET): " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().getURLWithHeader(url, headerName, headerValue);
+	}
+	
+	
+	/**
 	 * This method makes DELETE request for given URL that returns
 	 * response headers and status code.
 	 * @param url

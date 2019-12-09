@@ -34,7 +34,7 @@ public class ModerationReportTest extends BaseTaggingTest {
 
 	private static void initApiKeyMap() {
 		apiKeyMap.put("apiadmin", WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
-		apiKeyMap.put("apidemo", WebAnnotationFields.PROVIDER_WEBANNO);
+		apiKeyMap.put("apidemo", WebAnnotationFields.DEFAULT_PROVIDER);
 //		apiKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
 //		apiKeyMap.put("pMFSDInF22", WebAnnotationFields.PROVIDER_PUNDIT);
 		apiKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
@@ -65,16 +65,15 @@ public class ModerationReportTest extends BaseTaggingTest {
 
 		for (Map.Entry<String, String> entry : apiKeyMap.entrySet()) {
 
-			Annotation storedAnno = createTag(requestBody, entry.getValue(), entry.getKey(), TEST_USER_TOKEN);
-			String provider = storedAnno.getAnnotationId().getProvider();
+//			Annotation storedAnno = createTag(requestBody, entry.getValue(), entry.getKey(), TEST_USER_TOKEN);
+			Annotation storedAnno = createTag(requestBody, entry.getKey(), TEST_USER_TOKEN);
 			String identifier = storedAnno.getAnnotationId().getIdentifier();
 
-			ResponseEntity<String> reportResponse = storeTestAnnotationReport(entry.getKey(), provider, identifier,
+			ResponseEntity<String> reportResponse = storeTestAnnotationReport(entry.getKey(), identifier,
 					TEST_USER_TOKEN);
 			validateReportResponse(reportResponse, HttpStatus.CREATED);
 
 			ResponseEntity<String> response = getApiClient().deleteAnnotation(entry.getKey(),
-					storedAnno.getAnnotationId().getProvider(), 
 					identifier, TEST_USER_TOKEN, JSON_FORMAT);
 			validateReportResponse(response, HttpStatus.NO_CONTENT);
 		}

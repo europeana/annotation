@@ -164,15 +164,15 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		app.setOrganization(organization);
 		Agent annonymous = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		annonymous.setName(applicationName + "-" + WebAnnotationFields.USER_ANONYMOUNS);
-		annonymous.setUserGroup(UserGroups.ANONYMOUS.name());
+		annonymous.setUserGroup(UserGroups.anonimous.name());
 		app.setAnonymousUser(annonymous);
 
 		Agent admin = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		admin.setName(applicationName + "-" + WebAnnotationFields.USER_ADMIN);
 		if (WebAnnotationFields.PROVIDER_EUROPEANA_DEV.equals(applicationName))
-			admin.setUserGroup(UserGroups.ADMIN.name());
+			admin.setUserGroup(UserGroups.admin.name());
 		else
-			admin.setUserGroup(UserGroups.USER.name());
+			admin.setUserGroup(UserGroups.user.name());
 
 		app.setAdminUser(admin);
 
@@ -192,7 +192,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		String username = "Europeana Collections Curator";
 		collectionsUser.setName(applicationName + "-" + username);
 		collectionsUser.setHttpUrl(username + "@" + applicationName);
-		collectionsUser.setUserGroup(UserGroups.USER.name());
+		collectionsUser.setUserGroup(UserGroups.user.name());
 
 		app.addAuthenticatedUser(COLLECTIONS_USER_TOKEN, collectionsUser);
 	}
@@ -220,7 +220,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		Agent tester1 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		tester1.setName(applicationName + "-" + username);
 		tester1.setHttpUrl(username + "@" + applicationName);
-		tester1.setUserGroup(UserGroups.TESTER.name());
+		tester1.setUserGroup(UserGroups.tester.name());
 		return tester1;
 	}
 
@@ -231,7 +231,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		if (WebAnnotationFields.PROVIDER_PUNDIT.equals(provider))
 			return "http://pundit.it";
 
-		if (WebAnnotationFields.PROVIDER_WEBANNO.equals(provider))
+		if (WebAnnotationFields.DEFAULT_PROVIDER.equals(provider))
 			return "http://europeana.eu";
 
 		return null;

@@ -282,8 +282,24 @@ public class HttpConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String>  getURL(String url) throws IOException {
+        return getURLWithHeader(url, null, null);
+    }
+    
+    
+	/**
+	 * This method makes GET request for given URL.
+	 * @param url
+	 * @param requestHeaderName
+	 * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getURLWithHeader(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	get.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(get);

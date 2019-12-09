@@ -41,7 +41,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getProvider()
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
@@ -59,7 +58,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getProvider()
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN
 				);
@@ -70,7 +68,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 		 */
 		ResponseEntity<String> getResponse = getApiClient().getModerationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getProvider()
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN
 				);

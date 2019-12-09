@@ -84,7 +84,7 @@ public class AnnotationLdSerializer extends JsonLd {
 		putBody(annotation, jsonLdResource);
 		putTarget(annotation, jsonLdResource);
 
-		putGenerator(annotation, jsonLdResource);
+//		putGenerator(annotation, jsonLdResource);
 		putCreator(annotation, jsonLdResource);
 		putStyledBy(annotation, jsonLdResource);
 

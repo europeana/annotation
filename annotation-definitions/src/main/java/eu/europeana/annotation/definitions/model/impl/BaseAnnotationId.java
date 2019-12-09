@@ -12,7 +12,6 @@ public class BaseAnnotationId implements AnnotationId{
 
 	private String baseUrl;
 	private String identifier = null;
-	private String provider;
 	private String httpUrl;
 
 	@Override
@@ -38,9 +37,8 @@ public class BaseAnnotationId implements AnnotationId{
 //		this.resourceId = europeanaId;
 //	}
 	
-	public BaseAnnotationId(String baseUrl, String provider, String identifier){
+	public BaseAnnotationId(String baseUrl, String identifier){
 		this.baseUrl = baseUrl;
-		this.provider = provider;
 		this.identifier = identifier;
 		this.httpUrl = toHttpUrl();
 	}
@@ -55,16 +53,6 @@ public class BaseAnnotationId implements AnnotationId{
 	@Override
 	public String getIdentifier() {
 		return identifier;
-	}
-
-	@Override
-	public String getProvider() {
-		return provider;
-	}
-
-	@Override
-	public void setProvider(String provider) {
-		this.provider = provider;
 	}
 
 	@Override
@@ -89,7 +77,6 @@ public class BaseAnnotationId implements AnnotationId{
 	@Override
 	public String toRelativeUri() {
 		return WebAnnotationFields.SLASH
-				+ getProvider() + WebAnnotationFields.SLASH
 				+ getIdentifier();
 	}
 	
@@ -111,7 +98,6 @@ public class BaseAnnotationId implements AnnotationId{
 	@Override
 	public void copyFrom(AnnotationId volatileObject) {
 		this.setBaseUrl(((AnnotationId) volatileObject).getBaseUrl());
-		this.setProvider(((AnnotationId) volatileObject).getProvider());
 		this.setIdentifier(((AnnotationId) volatileObject).getIdentifier());
 		this.setHttpUrl(((AnnotationId) volatileObject).getHttpUrl());
 	}

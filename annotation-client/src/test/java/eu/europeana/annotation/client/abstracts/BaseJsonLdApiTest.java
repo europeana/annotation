@@ -147,7 +147,6 @@ public class BaseJsonLdApiTest {
  
 	/**
 	 * This method validates annotation object. It verifies annotationNr, provider and content.
-	 * @param provider
 	 * @param annotationNr
 	 * @param annotation
 	 * @throws JsonParseException
@@ -157,12 +156,8 @@ public class BaseJsonLdApiTest {
 		
 		System.out.println("Annotation URI: " + annotation.getAnnotationId().toRelativeUri());
 		
-		assertEquals(provider, annotation.getAnnotationId().getProvider());
-		if (provider.equals(WebAnnotationFields.PROVIDER_WEBANNO))
-			assertTrue(annotation.getAnnotationId().getIdentifier() != null);
-		else
-			assertEquals((Long)annotationNr, Long.valueOf(annotation.getAnnotationId().getIdentifier()));
-		
+		assertTrue(annotation.getAnnotationId().getIdentifier() != null);
+		assertEquals((Long)annotationNr, Long.valueOf(annotation.getAnnotationId().getIdentifier()));		
 	}
 	
 	/**

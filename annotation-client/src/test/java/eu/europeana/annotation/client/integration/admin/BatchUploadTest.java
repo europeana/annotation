@@ -89,7 +89,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 
 		// batch upload request
 		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
-				requestBody, true, WebAnnotationFields.PROVIDER_WEBANNO);
+				requestBody, true, WebAnnotationFields.DEFAULT_PROVIDER);
 
 		// response status must be 201 CREATED
 		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
@@ -125,7 +125,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		
 		//delete old entries in case they exist
 		try{
-			deleteAnnotation(WebAnnotationFields.PROVIDER_PUNDIT, "batchvia456");
+			deleteAnnotation("batchvia456");
 		}catch(Exception e){
 			//do nothing, we just avoid duplicate key exception
 		}
@@ -160,7 +160,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 
 		// batch upload request
 		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
-				requestBody, false, WebAnnotationFields.PROVIDER_WEBANNO);
+				requestBody, false, WebAnnotationFields.DEFAULT_PROVIDER);
 
 		// response status must be 404 NOT FOUND
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -214,7 +214,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 
 		// batch upload request
 		ResponseEntity<String> response = getApiClient().uploadAnnotations(getApiKey(), ADMIN_USER_TOKEN, 
-				requestBody, false, WebAnnotationFields.PROVIDER_WEBANNO);
+				requestBody, false, WebAnnotationFields.DEFAULT_PROVIDER);
 
 		// response status must be 400 BAD_REQUEST
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

@@ -83,7 +83,7 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_MINIMAL_WRONG);
 		
 		ResponseEntity<String> response = getApiClient().createTag(
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+				null, false, requestBody, 
 				TEST_USER_TOKEN);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
@@ -96,7 +96,7 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LAT);
 		
 		ResponseEntity<String> response = getApiClient().createTag(
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+				null, false, requestBody, 
 				TEST_USER_TOKEN);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
@@ -108,7 +108,7 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LONG);
 		
 		ResponseEntity<String> response = getApiClient().createTag(
-				WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody, 
+				null, false, requestBody, 
 				TEST_USER_TOKEN);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());

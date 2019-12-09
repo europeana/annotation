@@ -28,11 +28,14 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	 * @param provider
 	 * @return AnnotationId object
 	 */
-	AnnotationId generateNextAnnotationId(String provider);
+//	AnnotationId generateNextAnnotationId(String provider);
+	AnnotationId generateNextAnnotationId();
 	
-	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceIncrement);
+	List<AnnotationId> generateNextAnnotationIds(Integer sequenceIncrement);
+//	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceIncrement);
 	
-	Long getLastAnnotationNr(String provider);
+	Long getLastAnnotationNr();
+//	Long getLastAnnotationNr(String provider);
 
 	BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode delete) throws BulkOperationException;
 	

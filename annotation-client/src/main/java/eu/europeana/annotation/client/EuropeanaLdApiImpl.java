@@ -21,17 +21,17 @@ public class EuropeanaLdApiImpl extends BaseAnnotationApi implements EuropeanaLd
 
 	@Override
 	public String createAnnotationLd(
-			String motivation, String provider, Long annotationNr, String europeanaLdStr) {
-		return createAnnotationLd(motivation, provider, annotationNr, europeanaLdStr, null);
+			String motivation, Long annotationNr, String europeanaLdStr) {
+		return createAnnotationLd(motivation, annotationNr, europeanaLdStr, null);
 	}
 	
 	@Override
 	public String createAnnotationLd(
-			String motivation, String provider, Long annotationNr, String europeanaLdStr, String apikey) {
+			String motivation, Long annotationNr, String europeanaLdStr, String apikey) {
 		
 		AnnotationOperationResponse res;
 		try {
-			res = apiConnection.createEuropeanaAnnotationLd(motivation, provider, annotationNr, europeanaLdStr, apikey);
+			res = apiConnection.createEuropeanaAnnotationLd(motivation, annotationNr, europeanaLdStr, apikey);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the EuropenaLdApi for createEuropeanaAnnotationLd method", e);
 		}

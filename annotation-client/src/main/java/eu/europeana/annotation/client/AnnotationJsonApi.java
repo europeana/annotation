@@ -14,7 +14,6 @@ public interface AnnotationJsonApi {
 	 * providing it with associated wskey, provider name and identifier.
 	 * When motivation is not given in JSON - annoType must be set up.
 	 * @param wskey
-	 * @param provider
 	 * @param identifier
 	 * @param indexOnCreate
 	 * @param annotation Contains the body JSON string
@@ -23,7 +22,7 @@ public interface AnnotationJsonApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> createAnnotation(
-			String wskey, String provider, String identifier, boolean indexOnCreate, 
+			String wskey, String identifier, boolean indexOnCreate, 
 			String annotation, String userToken, String annoType);
 	
 	/**

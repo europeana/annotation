@@ -201,14 +201,14 @@ public class BaseRest extends BaseRestController {
 		return response;
 	}
 
-	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
+	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
 
-		return buildAnnotationId(provider, identifier, true);
+		return buildAnnotationId("webanno", identifier, true);
 	}
 
 	protected AnnotationId buildAnnotationId(String provider, String identifier, boolean validation) throws ParamValidationException {
 
-		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
 		if(validation)
 			annotationService.validateAnnotationId(annoId);
