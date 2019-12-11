@@ -13,7 +13,6 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
  * @author Sergiu Gordea 
  *
  */
-//TODO: check if possible to extend the BaseAnnotationId class
 @Entity(value="annotationNrGenerator", noClassnameStored=true)
 public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements AnnotationId {
 
@@ -47,16 +46,14 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 	/**
 	 * 
 	 * @param baseUrl
-	 * @param provider
 	 * @param identifier - must be a long number
 	 */
-	public GeneratedAnnotationIdImpl(String baseUrl, String provider, String identifier){
-		this(baseUrl, provider, Long.parseLong(identifier));
+	public GeneratedAnnotationIdImpl(String baseUrl, String identifier){
+		this(baseUrl, Long.parseLong(identifier));
 	}
 	
-	public GeneratedAnnotationIdImpl(String baseUrl, String provider, Long annotationNr){
-		super(null, provider, null);
-		this.id=provider;
+	public GeneratedAnnotationIdImpl(String baseUrl, Long annotationNr){
+		super();
 		this.annotationNr = annotationNr;
 		this.setHttpUrl(toHttpUrl());
 	}

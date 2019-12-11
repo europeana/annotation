@@ -9,7 +9,7 @@ public interface AuthenticationService {
 
 	public void loadApiKeys() throws ApplicationAuthenticationException;
 	
-	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException;
+	public Agent getUserByName(String apiKey, String userToken) throws UserAuthorizationException;
 
 	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException;
 

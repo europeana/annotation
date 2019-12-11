@@ -25,9 +25,9 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 	}
 
 	@Override
-	public ResponseEntity<String> deleteAnnotation(String provider, String identifier) {
+	public ResponseEntity<String> deleteAnnotation(String identifier) {
 		try {
-			return apiConnection.deleteAnnotation(provider, identifier);
+			return apiConnection.deleteAnnotation(identifier);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}

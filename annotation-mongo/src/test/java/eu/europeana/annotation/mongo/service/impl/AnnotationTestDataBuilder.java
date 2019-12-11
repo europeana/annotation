@@ -77,7 +77,7 @@ public class AnnotationTestDataBuilder {
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
 		persistentObject.setCreator(creator);
-		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), null));
 		return persistentObject;
 	}
 
@@ -136,7 +136,7 @@ public class AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), null));
 		return persistentObject;
 	}
 

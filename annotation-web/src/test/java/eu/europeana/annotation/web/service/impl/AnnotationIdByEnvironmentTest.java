@@ -102,7 +102,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	 */
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
-		AnnotationId annoId = new BaseAnnotationId(null, WebAnnotationFields.PROVIDER_WEBANNO, null);
+		AnnotationId annoId = new BaseAnnotationId(null, null);
 				
 		testAnnotation.setAnnotationId(annoId);					
 		return testAnnotation;

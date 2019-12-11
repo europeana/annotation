@@ -345,9 +345,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		// if (newAnnotation.getAnnotationId().getResourceId() == null)
 		// throw new AnnotationValidationException(
 		// "Annotaion.AnnotationId.resourceId must not be null!");
-
-		if (newAnnotation.getAnnotationId().getProvider() == null)
-			throw new AnnotationValidationException("Annotaion.AnnotationId.provider must not be null!");
 	}
 
 	/**
@@ -359,9 +356,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 		if (newModerationRecord.getAnnotationId() == null)
 			throw new ModerationRecordValidationException("ModerationRecord.AnnotationId must not be null!");
-
-		if (newModerationRecord.getAnnotationId().getProvider() == null)
-			throw new ModerationRecordValidationException("ModerationRecord.AnnotationId.provider must not be null!");
 	}
 
 	@Override
@@ -569,58 +563,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	
 	@Override
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
-		switch (annoId.getProvider()) {
-		case WebAnnotationFields.PROVIDER_HISTORY_PIN:
-			if (annoId.getIdentifier() == null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-		case WebAnnotationFields.PROVIDER_PUNDIT:
-			if (annoId.getIdentifier() == null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-		case WebAnnotationFields.PROVIDER_BASE:
-			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-		case WebAnnotationFields.PROVIDER_WEBANNO:
-			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-		case WebAnnotationFields.PROVIDER_COLLECTIONS:
-			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-		case WebAnnotationFields.PROVIDER_EUROPEANA_DEV:
-			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-		case WebAnnotationFields.PROVIDER_WITH:
-			if (annoId.getIdentifier() != null)
-				throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-						I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
-						new String[]{WebAnnotationFields.PROVIDER + "/" + WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
-			break;
-
-		default:
-//			throw new ParamValidationException(WebAnnotationFields.INVALID_PROVIDER, WebAnnotationFields.PROVIDER,
-//					annoId.getProvider());
-			throw new ParamValidationException("Invalid provider!", 
-					I18nConstants.INVALID_PROVIDER, 
-					new String[]{WebAnnotationFields.PROVIDER, annoId.getProvider()});
-		}
-
+		if (annoId.getIdentifier() != null)
+			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
+					I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
+					new String[]{WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri()});
 	}
 
 	protected boolean validateResource(String url) throws ParamValidationException {
@@ -934,24 +880,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	 * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting of annotations when returned as response
 	 */
 	@Override
-	public void insertNewAnnotations(String provider, BatchUploadStatus uploadStatus, 
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, 
 			List<? extends Annotation> annotations, AnnotationDefaults annoDefaults,
 			LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) 
 			throws AnnotationValidationException, BulkOperationException {
-		if(provider == null || StringUtils.isEmpty(provider))
-			provider = annoDefaults.getProvider();
 		
 		int count = annotations.size();
 		
-		// 
-		boolean reuseViaIdentifier = mustProvideIdentifier(provider);
-		
 		List<AnnotationId> annoIdSequence = null;
-		if(!reuseViaIdentifier)
-			annoIdSequence = generateAnnotationIds(provider, count);
+		annoIdSequence = generateAnnotationIds(count);
 		
 		// number of ids must equal number of annotations - not applicable in case the id is provided by the via field
-		if(!reuseViaIdentifier && (annotations.size() != annoIdSequence.size()))
+		if((annotations.size() != annoIdSequence.size()))
 			throw new IllegalStateException("The list of new annotations and corresponding ids are not of equal size");
 		
 		AnnotationId newAnnoId;
@@ -959,19 +899,19 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		AnnotationId genAnnoId;
 		for(int i = 0; i < annotations.size(); i++) {
 			// default: use the annotation id from the sequence generated above 
-			if(!reuseViaIdentifier) {
+//			if(!reuseViaIdentifier) {
 				genAnnoId = annoIdSequence.get(i);
-				newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), provider, genAnnoId.getIdentifier());
-			} else {// for some providers, the id must be provided by the via field 
-				String[] via = annotations.get(i).getVia();
-				if(via == null || via.length == 0)
-					throw new AnnotationValidationException("The annotation id must be provided by the via field for the provider: '"+provider+"'");
-				if(via.length > 1)
-					logger.warn("Multiple URLS provided in via field");
-				String viaUrl = via[0];
-				newAnnoId = getAnnotationIdHelper().getAnnotationIdBasedOnVia(getConfiguration().getAnnotationBaseUrl(), 
-						provider, viaUrl);
-			}
+				newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), genAnnoId.getIdentifier());
+//			} else {// for some providers, the id must be provided by the via field 
+//				String[] via = annotations.get(i).getVia();
+//				if(via == null || via.length == 0)
+//					throw new AnnotationValidationException("The annotation id must be provided by the via field for the provider: '"+provider+"'");
+//				if(via.length > 1)
+//					logger.warn("Multiple URLS provided in via field");
+//				String viaUrl = via[0];
+//				newAnnoId = getAnnotationIdHelper().getAnnotationIdBasedOnVia(getConfiguration().getAnnotationBaseUrl(), 
+//						viaUrl);
+//			}
 			anno = annotations.get(i);
 			anno.setAnnotationId(newAnnoId);
 			annoDefaults.putAnnotationDefaultValues(anno);
@@ -982,13 +922,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		getMongoPersistence().create(annotations);
 	}
 
-	protected boolean mustProvideIdentifier(String provider) {
-		return provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_HISTORY_PIN) 
-				|| provider.equalsIgnoreCase(WebAnnotationFields.PROVIDER_PUNDIT);
-	}
-
-	public List<AnnotationId> generateAnnotationIds(String provider, int count) {
-		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(provider, count);
+	public List<AnnotationId> generateAnnotationIds(int count) {
+		List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(count);
 		return annoIdSequence;
 	}
 

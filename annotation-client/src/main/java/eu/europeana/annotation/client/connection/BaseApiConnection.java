@@ -158,22 +158,23 @@ public class BaseApiConnection {
 	 * This method makes PUT request for given URL and JSON body parameter that returns
 	 * response body, response headers and status code.
 	 * @param url
-	 * @param jsonPost
+	 * @param jsonPut
+	 * @param headerName
+	 * @param headerValue
 	 * @return The response body, response headers and status code.
 	 * @throws IOException
 	 */
-	ResponseEntity<String> putURL(String url, String jsonPut) throws IOException {
+	ResponseEntity<String> putURL(String url, String jsonPut, String headerName, String headerValue) throws IOException {
 		logger.trace("Call to Annotation API (PUT) with body: " + url + 
 				". Returns body, headers and status code.");
 		
-		ResponseEntity<String> response = getHttpConnection().putURL(url, jsonPut);
+		ResponseEntity<String> response = getHttpConnection().putURL(url, jsonPut, headerName, headerValue);
 		
 		response.getStatusCode();
 		
 		return response;
 	}
 	
-
 	/**
 	 * This method makes GET request for given URL and returns
 	 * response body, response headers and status code.
@@ -189,16 +190,34 @@ public class BaseApiConnection {
 	
 	
 	/**
+	 * This method makes GET request for given URL and returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param headerName
+	 * @param headerValue
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getURLWithHeader(String url, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (GET): " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().getURLWithHeader(url, headerName, headerValue);
+	}
+	
+	
+	/**
 	 * This method makes DELETE request for given URL that returns
 	 * response headers and status code.
 	 * @param url
+	 * @param headerName
+	 * @param headerValue
 	 * @return The response headers and status code.
 	 * @throws IOException
 	 */
-	ResponseEntity<String> deleteURL(String url) throws IOException {
+	ResponseEntity<String> deleteURL(String url, String headerName, String headerValue) throws IOException {
 		logger.trace("Call to Annotation API (DELETE): " + url + 
 				". Returns headers and status code.");
-		return getHttpConnection().deleteURL(url);
+		return getHttpConnection().deleteURL(url, headerName, headerValue);
 	}
 	
 

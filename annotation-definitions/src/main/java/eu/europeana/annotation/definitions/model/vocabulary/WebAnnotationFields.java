@@ -150,7 +150,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String SLASH = "/";
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4;
 	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3;
-	public static final String PROVIDER_WEBANNO = "webanno";
 	public static final String PROVIDER_EUROPEANA_DEV = "eanadev";
 	public static final String PROVIDER_HISTORY_PIN = "historypin";
 	public static final String PROVIDER_PUNDIT = "pundit";
@@ -273,6 +272,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String ITEMS_COUNT = "itemsCount";
 	public static final String URI = "uri";
 	public static final String WHITELIST = "whitelist";
+	public static final String DEFAULT_GENERATOR_URL = "http://data.europeana.eu/annotations/apikey/";
+	public static final String DEFAULT_CREATOR_URL = "http://data.europeana.eu/annotations/user/";
 
 	
 	/**

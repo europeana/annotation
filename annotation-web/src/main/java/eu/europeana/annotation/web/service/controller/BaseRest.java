@@ -201,14 +201,14 @@ public class BaseRest extends BaseRestController {
 		return response;
 	}
 
-	protected AnnotationId buildAnnotationId(String provider, String identifier) throws ParamValidationException {
+	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
 
-		return buildAnnotationId(provider, identifier, true);
+		return buildAnnotationId("webanno", identifier, true);
 	}
 
 	protected AnnotationId buildAnnotationId(String provider, String identifier, boolean validation) throws ParamValidationException {
 
-		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
 		if(validation)
 			annotationService.validateAnnotationId(annoId);
@@ -216,27 +216,6 @@ public class BaseRest extends BaseRestController {
 		return annoId;
 	}
 
-	
-	/**
-	 * This method is employed when identifier is an URL and contains provider.
-	 * e.g. identifier 'http://data.europeana.eu/annotaion/base/1'
-	 * 
-	 * @param identifier
-	 * @return AnnotationId
-	 * @throws ParamValidationException
-	 */
-//	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
-//
-//		if (identifier.split(WebAnnotationFields.SLASH).length < ParamValidationException.MIN_IDENTIFIER_LEN)
-//			return null;
-//
-//		AnnotationId annoId = getAnnotationIdHelper().parseAnnotationId(identifier);
-//
-//		// annotationService.validateAnnotationId(annoId);
-//
-//		return annoId;
-//	}
-	
 	
 	/**
 	 * This method extracts provider name from an identifier URL e.g. identifier
@@ -357,52 +336,4 @@ public class BaseRest extends BaseRestController {
 		return userToken;
 	}
 	
-    /**
-     * This method adopts KeyCloack token from HTTP request
-     * @param request The HTTP request
-     * @return list of Authentication objects
-     * @throws ApplicationAuthenticationException
-     * @throws ApiKeyExtractionException
-     * @throws eu.europeana.api.commons.web.exception.ApplicationAuthenticationException 
-     * @throws eu.europeana.api.commons.exception.AuthorizationExtractionException 
-     */
-//    public List<? extends Authentication> processJwtToken(HttpServletRequest request) 
-//	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException, 
-//	        eu.europeana.api.commons.web.exception.ApplicationAuthenticationException, 
-//	        eu.europeana.api.commons.exception.AuthorizationExtractionException {
-//	    return getAuthorizationService().processJwtToken(request); 	
-//    }	
-//    
-//    /**
-//     * This method verifies write access rights for particular api and operation
-//     * @param authenticationList The list of authentications extracted from the JWT token
-//     * @param operation The name of current operation
-//     * @return true if authenticated, false otherwise
-//     * @throws ApplicationAuthenticationException
-//     * @throws OperationAuthorizationException 
-//     * @throws eu.europeana.api.commons.web.exception.ApplicationAuthenticationException 
-//     */
-//	public boolean verifyWriteAccess(List<? extends Authentication> authenticationList, String operation)
-//			throws ApplicationAuthenticationException, OperationAuthorizationException, 
-//			eu.europeana.api.commons.web.exception.ApplicationAuthenticationException {
-//		boolean res = getAuthorizationService().authorizeWriteAccess(authenticationList, operation);
-//		if (!res) {
-//			throw new OperationAuthorizationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-//					I18nConstants.OPERATION_NOT_AUTHORIZED, null);
-//		}
-//		return res;
-//	}    
-    
-    /**
-     * This method extracts user name from a JWT token provided in HTTP request header
-     * @param request The HTTP request header
-     * @return jwt user name
-     * @throws ApiKeyExtractionException
-     * @throws AuthorizationExtractionException
-     * @throws eu.europeana.api.commons.exception.AuthorizationExtractionException 
-     */
-//    public String getJwtUser(HttpServletRequest request) 
-//    		throws ApiKeyExtractionException, AuthorizationExtractionException, eu.europeana.api.commons.exception.AuthorizationExtractionException {
-//        return getAuthorizationService().getJwtUser(request);
-//    }	
 }

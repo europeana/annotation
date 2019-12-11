@@ -68,9 +68,11 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public Annotation updateStatus(Annotation newAnnotation);
 	
-	public abstract AnnotationId generateAnnotationId(String provider);
+	public abstract AnnotationId generateAnnotationId();
+//	public abstract AnnotationId generateAnnotationId(String provider);
 	
-	public abstract List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength);
+	public abstract List<AnnotationId> generateAnnotationIdSequence(Integer seqLength);
+//	public abstract List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength);
 
 	public abstract Annotation findByTagId(String tagId);
 	

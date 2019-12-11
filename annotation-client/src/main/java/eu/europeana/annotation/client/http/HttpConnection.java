@@ -175,6 +175,32 @@ public class HttpConnection {
 
 	
 	/**
+	 * This method makes PUT request for given URL and JSON body parameter.
+	 * @param url
+	 * @param jsonParamValue
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> putURL(String url, String jsonParamValue, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PutMethod put = new PutMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	put.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
+        put.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(put);
+   			return buildResponseEntity(put);
+        } finally {
+        	put.releaseConnection();
+        }
+    }
+
+	
+	/**
 	 * This method makes DELETE request for given identifier URL.
 	 * @param url The identifier URL
 	 * @return ResponseEntity that comprises response headers and status code.
@@ -183,6 +209,30 @@ public class HttpConnection {
 	public ResponseEntity<String> deleteURL(String url) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         DeleteMethod delete = new DeleteMethod(url);
+
+        try {
+            client.executeMethod(delete);
+   			return buildResponseEntity(delete);
+        } finally {
+        	delete.releaseConnection();
+        }
+    }
+
+	
+	/**
+	 * This method makes DELETE request for given identifier URL.
+	 * @param url The identifier URL
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteURL(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        DeleteMethod delete = new DeleteMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	delete.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(delete);
@@ -232,8 +282,24 @@ public class HttpConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String>  getURL(String url) throws IOException {
+        return getURLWithHeader(url, null, null);
+    }
+    
+    
+	/**
+	 * This method makes GET request for given URL.
+	 * @param url
+	 * @param requestHeaderName
+	 * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getURLWithHeader(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	get.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(get);

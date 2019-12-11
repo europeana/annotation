@@ -143,8 +143,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 			&& webAnnotation.getAnnotationId().toHttpUrl().contains( 
 				getBaseUrl() 
 //				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-				+ WebAnnotationFields.SLASH 
-				+ WebAnnotationFields.PROVIDER_WEBANNO 
 				+ WebAnnotationFields.SLASH )
 			);
 	}
@@ -156,7 +154,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
 		
-		AnnotationId annoId = new BaseAnnotationId( getBaseUrl(), WebAnnotationFields.PROVIDER_WEBANNO, null);
+		AnnotationId annoId = new BaseAnnotationId(getBaseUrl(), null);
 				
 		testAnnotation.setAnnotationId(annoId);					
 		return testAnnotation;
@@ -177,7 +175,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 				WebAnnotationFields.TEST_HISTORYPIN_URL);
 
 		
-		AnnotationId annoId = new BaseAnnotationId( getBaseUrl(), WebAnnotationFields.PROVIDER_HISTORY_PIN, "1");
+		AnnotationId annoId = new BaseAnnotationId(getBaseUrl(), "1");
 //		, testAnnotation.getSameAs());
 				
 		testAnnotation.setAnnotationId(annoId);		

@@ -32,7 +32,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
 
 		query.filter(PersistentModerationRecord.FIELD_BASEURL, moderationRecord.getAnnotationId().getBaseUrl());
-		query.filter(PersistentModerationRecord.FIELD_PROVIDER, moderationRecord.getAnnotationId().getProvider());
+//		query.filter(PersistentModerationRecord.FIELD_PROVIDER, moderationRecord.getAnnotationId().getProvider());
 		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, moderationRecord.getAnnotationId().getIdentifier());
 
 		return getDao().findOne(query);
@@ -42,7 +42,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 
 		Query<PersistentModerationRecord> query = getDao().createQuery();
 		query.filter(PersistentModerationRecord.FIELD_BASEURL, annoId.getBaseUrl());
-		query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
+//		query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
 		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoId.getIdentifier());
 
 		return getDao().findOne(query);
@@ -178,7 +178,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 			Query<PersistentModerationRecord> query = createQuery(null);
 
 			query.filter(PersistentModerationRecord.FIELD_BASEURL, annoId.getBaseUrl());
-			query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
+//			query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
 			query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoId.getIdentifier());
 
 			Key<PersistentModerationRecord> key = getDao().find(query).getKey();

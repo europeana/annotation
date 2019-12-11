@@ -33,7 +33,6 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 //		BaseAnnotationId realClass = null;
 		
 //		String resourceId = "";
-		String provider = "";
 		String identifier = null;
 		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 		while (elementsIterator.hasNext()) {
@@ -41,9 +40,6 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 //			if (ModelConst.RESOURCE_ID.equals(element.getKey())) {
 //				resourceId = element.getValue().toString();//.getTextValue();
 //			}
-			if (ModelConst.PROVIDER.equals(element.getKey())) {
-				provider = element.getValue().toString();//.getTextValue();
-			}
 			if (ModelConst.ANNOTATION_NR.equals(element.getKey())) {
 				identifier = element.getValue().getTextValue();
 			}
@@ -58,7 +54,6 @@ public class AnnotationIdDeserializer extends StdDeserializer<AnnotationId> {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
 		annotationId.setIdentifier(identifier);
-		annotationId.setProvider(provider);
 //		annotationId.setResourceId(resourceId);
 		
 //		realClass = (Class<? extends AnnotationId>) annotationId;

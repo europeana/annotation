@@ -12,6 +12,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -65,31 +66,34 @@ public class BaseJsonldRest extends BaseRest {
 	
 	Logger logger = LogManager.getLogger(getClass());
 
-	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation, String provider,
-			String identifier, boolean indexOnCreate, String annotation, String userToken) throws HttpException {
+	protected ResponseEntity<String> storeAnnotation(String wsKey, MotivationTypes motivation, 
+			String identifier, boolean indexOnCreate, String annotation, Authentication authentication) throws HttpException {
 		try {
 
-			// SET DEFAULTS
-			Application app = getAuthenticationService().getByApiKey(wsKey);
-
-			if (provider == null)
-				provider = app.getProvider();
-
 			// 0. annotation id
-			AnnotationId annoId = buildAnnotationId(provider, identifier);
+			AnnotationId annoId = buildAnnotationId(identifier);
 
 			// 1. authorize user
-			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.CREATE);
+			String userId = authentication.getPrincipal().toString();
+			String apikeyId = authentication.getDetails().toString();
+			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
-			// SET DEFAULTS
+			// validate annotation and check that no generator and creator exists in input json
+			webAnnotation.setCreator(null);
+			webAnnotation.setGenerator(null);
+			
+			// set generator and crator
+			String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL+apikeyId;
+			String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL+userId;
+
 			if (webAnnotation.getGenerator() == null)
-				webAnnotation.setGenerator(buildDefaultGenerator(app));
+				webAnnotation.setGenerator(buildAgentGenerator(generatorId));
 
 			if (webAnnotation.getCreator() == null)
-				webAnnotation.setCreator(user);
+				webAnnotation.setCreator(buildAgentGenerator(creatorId));
 
 			// 2. validate
 			// check whether annotation with the given provider and identifier
@@ -149,14 +153,15 @@ public class BaseJsonldRest extends BaseRest {
 	}
 	
 	
-	protected ResponseEntity<String> storeAnnotations(String wsKey, String provider, String annotationPageIn, String userToken) throws HttpException {
+	protected ResponseEntity<String> storeAnnotations(String wsKey, String annotationPageIn, Authentication authentication) throws HttpException {
 		try {
 
 			// SET DEFAULTS
 			Application app = getAuthenticationService().getByApiKey(wsKey);
 			
 			// TODO #152 Authorization
-			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, Operations.CREATE);
+			String userId = authentication.getPrincipal().toString();
+			getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
 			
 			// parse annotation page
 			AnnotationPageParser annoPageParser = new AnnotationPageParser();
@@ -217,12 +222,16 @@ public class BaseJsonldRest extends BaseRest {
 			uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
 			// default values
 			if(annosWithoutId.size() > 0) {
+				String apikeyId = authentication.getDetails().toString();
+				String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL+apikeyId;
+				String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL+userId;
+							
+				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
 				AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder()
-						.setProvider(provider)
-						.setGenerator(buildDefaultGenerator(app))
-						.setUser(user)
+						.setGenerator(buildAgentGenerator(generatorId))
+						.setUser(buildAgentGenerator(creatorId))
 						.build();
-				getAnnotationService().insertNewAnnotations(provider, uploadStatus, annosWithoutId.getAnnotations(), annoDefaults, webAnnoStoredAnnoAnnoMap);
+				getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults, webAnnoStoredAnnoAnnoMap);
 			}
 			
 			// create result annotation page
@@ -274,7 +283,18 @@ public class BaseJsonldRest extends BaseRest {
 		return serializer;
 	}
 
-	protected ResponseEntity<String> getAnnotationById(String wsKey, String provider, String identifier, String action)
+	/**
+	 * This method builds agent object
+	 * @param id agent id
+	 * @return agent as an Agent object
+	 */
+	protected Agent buildAgentGenerator(String id) {
+		Agent agent = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+		agent.setName(id);		
+		return agent;
+	}
+
+	protected ResponseEntity<String> getAnnotationById(String wsKey, String identifier, String action)
 			throws HttpException {
 
 		try {
@@ -282,14 +302,8 @@ public class BaseJsonldRest extends BaseRest {
 			// 2. Check client access (a valid “wskey” must be provided)
 			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
-			// SET DEFAULTS
-			Application app = getAuthenticationService().getByApiKey(wsKey);
-
-			if (provider == null)
-				provider = app.getProvider();
-
 			// 3. Retrieve an annotation based on its identifier;
-			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
+			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
 			// CHECK IF Required
 			// authorizeUser(userToken, wsKey, annoId, Operations.RETRIEVE);
@@ -351,7 +365,7 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param userToken
 	 * @return
 	 */
-	protected ResponseEntity<String> optionsForCorsPreflight(String wsKey, String userToken, String provider,
+	protected ResponseEntity<String> optionsForCorsPreflight(String wsKey, Authentication authentication, String provider,
 			String identifier) throws HttpException {
 		// Similar behaviour as GET method but different response code
 		try {
@@ -360,18 +374,13 @@ public class BaseJsonldRest extends BaseRest {
 			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// CHECK user autorization
-			getAuthorizationService().authorizeUser(userToken, wsKey, Operations.RETRIEVE);
-
-			// SET DEFAULTS
-			Application app = getAuthenticationService().getByApiKey(wsKey);
-
-			if (provider == null)
-				provider = app.getProvider();
+			String userId = authentication.getPrincipal().toString();
+			getAuthorizationService().authorizeUser(userId, authentication, Operations.RETRIEVE);
 
 			if (identifier != null) {
-				// if OPTIONS /annotation/provider/identifier request
+				// if OPTIONS /annotation/identifier request
 				// 3. Retrieve an annotation based on its identifier;
-				AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider,
+				AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), 
 						identifier);
 
 				// 4. If annotation doesn’t exist respond with HTTP 404 (if
@@ -404,7 +413,7 @@ public class BaseJsonldRest extends BaseRest {
 		}
 	}
 
-	protected ResponseEntity<String> getModerationReportSummary(String wsKey, String provider, String identifier,
+	protected ResponseEntity<String> getModerationReportSummary(String wsKey, String identifier,
 			String action) throws HttpException {
 
 		try {
@@ -412,14 +421,8 @@ public class BaseJsonldRest extends BaseRest {
 			// 2. Check client access (a valid “wskey” must be provided)
 			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
-			// SET DEFAULTS
-			Application app = getAuthenticationService().getByApiKey(wsKey);
-
-			if (provider == null)
-				provider = app.getProvider();
-
 			// 3. Retrieve an annotation based on its identifier;
-			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
+			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
 			// 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 			// moderation id doesn’t exists )
@@ -462,22 +465,22 @@ public class BaseJsonldRest extends BaseRest {
 	 * @return annotation object
 	 * @throws HttpException
 	 */
-	private AnnotationId validateInputsForUpdateDelete(String wsKey, String provider, String identifier,
+	private AnnotationId validateInputsForUpdateDelete(String wsKey, String identifier,
 			String userToken) throws HttpException {
 
 		// First check the API key as prio 0 check
-		validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
+//		validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 		// check identifier
-		if (provider == null || identifier == null)
+		if (identifier == null)
 			throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
 					I18nConstants.ANNOTATION_VALIDATION,
-					new String[]{"/provider/identifier", identifier},
+					new String[]{"/identifier", identifier},
 					HttpStatus.NOT_FOUND,
 					null);
 
 		// 1. build annotation id object
-		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), provider, identifier);
+		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
 		// 3. Retrieve an annotation based on its identifier;
 		// Annotation annotation =
@@ -494,7 +497,7 @@ public class BaseJsonldRest extends BaseRest {
 		if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
 					I18nConstants.ANNOTATION_VALIDATION,
-					new String[]{"/provider/identifier", annoId.toRelativeUri()},
+					new String[]{"/identifier", annoId.toRelativeUri()},
 					HttpStatus.NOT_FOUND, 
 					null);
 
@@ -505,27 +508,23 @@ public class BaseJsonldRest extends BaseRest {
 	 * This method validates input values, retrieves annotation object and
 	 * updates it.
 	 * 
-	 * @param wsKey
 	 * @param identifier
 	 * @param annotation
-	 * @param userToken
+	 * @param authentication Contains user name
 	 * @param action
 	 * @return response entity that comprises response body, headers and status
 	 *         code
 	 * @throws HttpException
 	 */
-	protected ResponseEntity<String> updateAnnotation(String wsKey, String provider, String identifier,
-			String annotation, String userToken, String action) throws HttpException {
+	protected ResponseEntity<String> updateAnnotation(String identifier,
+			String annotation, Authentication authentication, String action) throws HttpException {
 
 		try {
-
-			// SET DEFAULTS
-			getAuthenticationService().getByApiKey(wsKey);
-
-			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			String userId = authentication.getPrincipal().toString();
+			AnnotationId annoId = validateInputsForUpdateDelete(null, identifier, userId);
 
 			// 1. authorize user
-			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.UPDATE);
+			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.UPDATE);
 
 			// 2. check time stamp
 			
@@ -585,26 +584,21 @@ public class BaseJsonldRest extends BaseRest {
 	 * 
 	 * @param wsKey
 	 * @param identifier
-	 * @param userToken
+	 * @param authentication Contains user name
 	 * @param action
 	 * @return response entity that comprises response body, headers and status
 	 *         code
 	 * @throws HttpException
 	 */
-	protected ResponseEntity<String> deleteAnnotation(String wsKey, String provider, String identifier,
-			String userToken, String action) throws HttpException {
+	protected ResponseEntity<String> deleteAnnotation(String identifier,
+			Authentication authentication, String action) throws HttpException {
 
 		try {
-			// SET DEFAULTS
-			Application app = getAuthenticationService().getByApiKey(wsKey);
-
-			if (provider == null)
-				provider = app.getProvider();
-
-			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			String userId = authentication.getPrincipal().toString();
+			AnnotationId annoId = validateInputsForUpdateDelete(null, identifier, userId);
 
 			// 5. authorize user
-			getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.DELETE);
+			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
 
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
@@ -635,12 +629,12 @@ public class BaseJsonldRest extends BaseRest {
 	 * @param wsKey
 	 * @param provider
 	 * @param identifier
-	 * @param userToken
+	 * @param authentication Contains user name
 	 * @return
 	 * @throws HttpException
 	 */
-	protected ResponseEntity<String> storeAnnotationReport(String wsKey, String provider, String identifier,
-			String userToken, String action) throws HttpException {
+	protected ResponseEntity<String> storeAnnotationReport(String wsKey, String identifier,
+			Authentication authentication, String action) throws HttpException {
 		try {
 
 			// SET DEFAULTS and validates apikey
@@ -648,14 +642,15 @@ public class BaseJsonldRest extends BaseRest {
 			getAuthenticationService().getByApiKey(wsKey);
 
 			// 2. build and verify annotation ID
-			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, provider, identifier, userToken);
+			String userId = authentication.getPrincipal().toString();
+			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, identifier, userId);
 
 			// 1. authorize user
-			Agent user = getAuthorizationService().authorizeUser(userToken, wsKey, annoId, Operations.REPORT);
+			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
 
 			// build vote
 			Date reportDate = new Date();
-			Vote vote = buildVote(user, reportDate);
+			Vote vote = buildVote(buildAgentGenerator(userId), reportDate);
 
 			// 3. Check if the user has already reported this annotation
 			ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);

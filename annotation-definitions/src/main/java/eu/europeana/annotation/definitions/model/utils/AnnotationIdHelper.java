@@ -265,9 +265,7 @@ public class AnnotationIdHelper {
 			String uri, boolean includeBaseUrl) {
 		
 		AnnotationId annotationId = new BaseAnnotationId();
-		String provider = extractProviderFromUri(uri);
 		String id = extractIdFromUri(uri);
-		annotationId.setProvider(provider);
 		annotationId.setIdentifier(id);
 
 		if(includeBaseUrl){
@@ -316,12 +314,11 @@ public class AnnotationIdHelper {
     /**
      * Create annotation ID based on via URL
      * @param baseUrl Base URL for annotation id
-     * @param provider Provider
      * @param via via URL
      * @return new annotation ID
      */
-    public BaseAnnotationId getAnnotationIdBasedOnVia(String baseUrl, String provider, String via) {
-    	return new BaseAnnotationId(baseUrl, provider, getIdPartFromUri(via));
+    public BaseAnnotationId getAnnotationIdBasedOnVia(String baseUrl, String via) {
+    	return new BaseAnnotationId(baseUrl, getIdPartFromUri(via));
     }
     
 	

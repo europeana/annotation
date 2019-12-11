@@ -109,7 +109,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		if (isNew && object.getId() != null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 
-		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider()))
+		if (object.getAnnotationId() == null)
 			throw new AnnotationValidationException(
 					"AnnotationId must not be null. AnnotationId.provider attribute is required");
 
@@ -155,15 +155,17 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
 		if (StringUtils.isEmpty(object.getAnnotationId().getIdentifier())) {
-			return generateAnnotationId(object.getAnnotationId().getProvider());
+			return generateAnnotationId();
 		} else {
 			return new MongoAnnotationId(object.getAnnotationId());
 		}
 	}
 
 	@Override
-	public MongoAnnotationId generateAnnotationId(String provider) {
-		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
+	public MongoAnnotationId generateAnnotationId() {
+//		public MongoAnnotationId generateAnnotationId(String provider) {
+		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId();
+//		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
 		annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 
 		return new MongoAnnotationId(annoId);
@@ -177,9 +179,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @return List of annotation ids
 	 */
 	@Override
-	public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
+	public List<AnnotationId> generateAnnotationIdSequence(Integer seqLength) {
+//		public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
 		
-		return getAnnotationDao().generateNextAnnotationIds(provider, seqLength);
+		return getAnnotationDao().generateNextAnnotationIds(seqLength);
+//		return getAnnotationDao().generateNextAnnotationIds(provider, seqLength);
 
 	}
 

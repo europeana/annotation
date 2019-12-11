@@ -84,7 +84,7 @@ public class BaseWebAnnotationDataSetTest {
 	 */
 	protected ResponseEntity<String> storeTestAnnotation() {
 		ResponseEntity<String> storedResponse = apiClient.createAnnotation(
-				ClientConfiguration.getInstance().getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null,
+				ClientConfiguration.getInstance().getApiKey(), null,
 				defaultRequestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
@@ -116,7 +116,6 @@ public class BaseWebAnnotationDataSetTest {
 
 		Annotation annotation = apiClient.parseResponseBody(response);
 
-		assertEquals(WebAnnotationFields.PROVIDER_WEBANNO, annotation.getAnnotationId().getProvider());
 		return annotation;
 	}
 
@@ -145,7 +144,6 @@ public class BaseWebAnnotationDataSetTest {
 		}	
 		for (Annotation annotation : annotations) {
 			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
-					annotation.getAnnotationId().getProvider(), 
 					annotation.getAnnotationId().getIdentifier());
 			assertEquals(re.getStatusCode(), HttpStatus.OK);
 		}

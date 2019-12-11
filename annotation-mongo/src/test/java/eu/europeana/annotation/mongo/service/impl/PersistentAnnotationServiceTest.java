@@ -319,7 +319,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId(configuration.getAnnotationBaseUrl(), "webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(configuration.getAnnotationBaseUrl(), null));
 		return persistentObject;
 	}
 	
@@ -455,7 +455,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	
 
 	protected List<Annotation> getTestAnnotationList(Integer numAnnotations) {
-		List<AnnotationId> annoIdSequence = annotationService.generateAnnotationIdSequence("rollbacktest", numAnnotations);
+		List<AnnotationId> annoIdSequence = annotationService.generateAnnotationIdSequence(numAnnotations);
+//		List<AnnotationId> annoIdSequence = annotationService.generateAnnotationIdSequence("rollbacktest", numAnnotations);
 		List<Annotation> annoList = new ArrayList<Annotation>(numAnnotations);
 		AnnotationId newAnnoId;
 		Annotation anno;
@@ -463,7 +464,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		for(int i = 0; i < numAnnotations; i++) {
 			anno = createPersistentAnnotationInstance();
 			genAnnoId = annoIdSequence.get(i);
-			newAnnoId = new BaseAnnotationId("http://localhost:8080/annotation", "rollbacktest", genAnnoId.getIdentifier());
+			newAnnoId = new BaseAnnotationId("http://localhost:8080/annotation", genAnnoId.getIdentifier());
 			anno.setAnnotationId(newAnnoId);
 			annoList.add(i, anno);
 		}
