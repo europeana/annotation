@@ -59,7 +59,6 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	    if ((this.getAnnotationId() != null) && (that.getAnnotationId() != null) &&
 	    		(this.getAnnotationId().getIdentifier() != null) && (that.getAnnotationId().getIdentifier() != null) &&
 //	    		(this.getAnnotationId().getResourceId() != null) && (that.getAnnotationId().getResourceId() != null) &&
-	    		(this.getAnnotationId().getProvider() != null) && (that.getAnnotationId().getProvider() != null) &&
 	    		(!this.getAnnotationId().getIdentifier().equals(that.getAnnotationId().getIdentifier())
 //	    		|| !this.getAnnotationId().getResourceId().equals(that.getAnnotationId().getResourceId())
 	    		)) {
@@ -214,7 +213,6 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	        	//computed from the end of the url
 	        	//int objectPosition = arrValue.length - 3;
 	        	//computed from the end of the url
-	        	int providerPosition = arrValue.length - 2;
 	        	//computed from the end of the url
 	        	int identifierPosition = arrValue.length - 1;
 					        	
@@ -225,9 +223,6 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
 //				String annoNr = annotationId.substring(pos + 1);
 //				annoId.setAnnotationNr(Integer.parseInt(annoNr));
-				String provider = arrValue[providerPosition];
-				if (StringUtils.isNotEmpty(provider))
-					annoId.setProvider(provider);
 				String identifier = arrValue[identifierPosition];
 				if (StringUtils.isNotEmpty(identifier))
 					annoId.setIdentifier(identifier);

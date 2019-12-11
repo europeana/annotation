@@ -1,16 +1,21 @@
 package eu.europeana.annotation.web.model.vocabulary;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 
 public enum UserGroups implements Role {
 
-	ANONYMOUS(new String[]{Operations.RETRIEVE}), 
-	USER(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
-	TESTER(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
-	ADMIN(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT, Operations.ADMIN_ALL, Operations.ADMIN_UNLOCK, Operations.ADMIN_REINDEX, Operations.WHITELIST_ALL, Operations.WHITELIST_CREATE, Operations.WHITELIST_RETRIEVE, Operations.WHITELIST_DELETE}), 
-	MODERATOR(new String[]{Operations.MODERATION_ALL});
+	anonimous(new String[]{Operations.RETRIEVE}), 
+	user(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
+	tester(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
+	admin(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT, Operations.ADMIN_ALL, Operations.ADMIN_UNLOCK, Operations.ADMIN_REINDEX, Operations.WHITELIST_ALL, Operations.WHITELIST_CREATE, Operations.WHITELIST_RETRIEVE, Operations.WHITELIST_DELETE}), 
+	moderator(new String[]{Operations.MODERATION_ALL});
 	
 	String[] operations;
+	static Set<String> operationSet;
 	
 	UserGroups (String[] operations){
 		this.operations = operations;
@@ -50,5 +55,22 @@ public enum UserGroups implements Role {
 	public String[] getPermissions() {
 	    return getOperations();
 	}
+	
+	/**
+	 * This method retrieves operations from provided roles
+	 * @param roles
+	 * @return a set of supported operations
+	 */
+	public static Set<String> getPermissionSet(List<String> roles) {
+		if (operationSet == null || operationSet.isEmpty()) {
+			for (String role : roles) {
+				Role userGroup = getRoleByName(role);
+				operationSet.addAll(Arrays.asList(userGroup.getPermissions()));			
+				break;
+			}
+		}
+		return operationSet;
+	}
+	
 			
 }

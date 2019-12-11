@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
  * This is a test for an annotation object with motivation "describing"
@@ -32,7 +31,7 @@ public class DescribingWebResourceTest extends BaseDescribingTest {
 		String requestBody = getJsonStringInput(DESCRIBING_WEB_RESOURCE);
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
+				getApiKey(), null, true, requestBody, 
 				TEST_USER_TOKEN, 
 				null
 				);

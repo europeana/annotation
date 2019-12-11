@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,29 +25,27 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Provide Feedback on Annotations", description=" ")
 public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 
-	@RequestMapping(value = "/annotation/{provider}/{identifier}/report", method = RequestMethod.POST, 
+	@RequestMapping(value = "/annotation/{identifier}/report", method = RequestMethod.POST, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Report an (innapropriate) annotation", nickname = "reportAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> reportAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider, 
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
-		String action = "post:/annotation/{provider}/{identifier}/report";
-		return storeAnnotationReport(wskey, provider, identifier, userToken, action);
+		String action = "post:/annotation/{identifier}/report";
+		return storeAnnotationReport(wskey, identifier, authentication, action);
 	}
 
-	@RequestMapping(value = "/annotation/{provider}/{identifier}/moderationsummary", method = RequestMethod.GET, 
+	@RequestMapping(value = "/annotation/{identifier}/moderationsummary", method = RequestMethod.GET, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Retrieve moderation summary", nickname = "getModerationReportSummary", response = java.lang.Void.class)
 	public ResponseEntity<String> getModerationSummary(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_PROVIDER) String provider, 
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
@@ -54,8 +53,8 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 
 		verifyReadAccess(request);
 		
-		String action = "get:/annotation/{provider}/{identifier}/moderationsummary";
-		return getModerationReportSummary(wskey, provider, identifier, action);		
+		String action = "get:/annotation/{identifier}/moderationsummary";
+		return getModerationReportSummary(wskey, identifier, action);		
 	}
 	
 }

@@ -50,11 +50,13 @@ public class PersistentAnnotationDaoTest {
 
 	@Test
 	public void testGenerateAnnotationId(){
-		String testProvider = "test_provider";
-		AnnotationId id1 = annotationDao.generateNextAnnotationId(testProvider);
+//		String testProvider = "test_provider";
+		AnnotationId id1 = annotationDao.generateNextAnnotationId();
+//		AnnotationId id1 = annotationDao.generateNextAnnotationId(testProvider);
 		assertTrue(Long.parseLong(id1.getIdentifier()) > 0);
 		
-		AnnotationId id2 = annotationDao.generateNextAnnotationId(testProvider);
+		AnnotationId id2 = annotationDao.generateNextAnnotationId();
+//		AnnotationId id2 = annotationDao.generateNextAnnotationId(testProvider);
 		assertTrue(Long.parseLong(id1.getIdentifier()) +1 == Long.parseLong(id2.getIdentifier()));
 		
 	}
@@ -62,14 +64,16 @@ public class PersistentAnnotationDaoTest {
 
 	@Test
 	public void testGenerateAnnotationIds(){
-		String testProvider = "test_batch_provider";
+//		String testProvider = "test_batch_provider";
 		
-		List<AnnotationId> ids = annotationDao.generateNextAnnotationIds(testProvider, 10);
+		List<AnnotationId> ids = annotationDao.generateNextAnnotationIds(10);
+//		List<AnnotationId> ids = annotationDao.generateNextAnnotationIds(testProvider, 10);
 		assertEquals(SEQUENCE_LENGTH.intValue(), ids.size());
 		
 		GeneratedAnnotationIdImpl lastAnnoInSequence = (GeneratedAnnotationIdImpl)ids.get(SEQUENCE_LENGTH-1);
 		
-		Long persistedAnnoNumber = annotationDao.getLastAnnotationNr(testProvider);
+		Long persistedAnnoNumber = annotationDao.getLastAnnotationNr();
+//		Long persistedAnnoNumber = annotationDao.getLastAnnotationNr(testProvider);
 		
 		assertTrue(persistedAnnoNumber > 0);
 		assertTrue(lastAnnoInSequence.getAnnotationNr() > 0);

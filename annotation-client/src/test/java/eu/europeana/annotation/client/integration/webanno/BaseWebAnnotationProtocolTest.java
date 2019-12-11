@@ -27,7 +27,6 @@ import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
@@ -127,7 +126,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(),
-				WebAnnotationFields.PROVIDER_WEBANNO, null, requestBody, TEST_USER_TOKEN, null);
+				null, requestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 	
@@ -148,7 +147,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
-				WebAnnotationFields.PROVIDER_WEBANNO, null, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
+				null, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 	
@@ -160,7 +159,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * store annotation
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
-				WebAnnotationFields.PROVIDER_WEBANNO, identifier, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
+				identifier, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
 
@@ -168,14 +167,12 @@ public class BaseWebAnnotationProtocolTest {
 	 * This method creates test annotation report object
 	 * 
 	 * @param apiKey
-	 * @param provider
 	 * @param identifier
 	 * @param userToken
 	 * @return response entity that contains response body, headers and status code.
 	 */
 	protected ResponseEntity<String> storeTestAnnotationReport(
 			String apiKey
-			, String provider
 			, String identifier
 			, String userToken) {
 
@@ -183,7 +180,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * store annotation report
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().createAnnotationReport(
-				apiKey, provider, identifier, userToken);
+				apiKey, identifier, userToken);
 		return storedResponse;
 	}
 
@@ -206,7 +203,7 @@ public class BaseWebAnnotationProtocolTest {
 		 * get annotation report
 		 */
 		ResponseEntity<String> storedResponse = getApiClient().getModerationReport(
-				apiKey, provider, identifier, userToken);
+				apiKey, identifier, userToken);
 		return storedResponse;
 	}
 
@@ -287,7 +284,6 @@ public class BaseWebAnnotationProtocolTest {
 
 		Annotation annotation = getApiClient().parseResponseBody(response);
 
-		assertEquals(WebAnnotationFields.PROVIDER_WEBANNO, annotation.getAnnotationId().getProvider());
 		return annotation;
 	}
 	
@@ -301,7 +297,6 @@ public class BaseWebAnnotationProtocolTest {
 
 		Annotation annotation = getApiClient().parseResponseBody(response);
 
-		assertEquals(WebAnnotationFields.PROVIDER_WEBANNO, annotation.getAnnotationId().getProvider());
 		return annotation;
 	}
 
@@ -339,7 +334,8 @@ public class BaseWebAnnotationProtocolTest {
 				
 				for (int i = 0; i < methods.length; i++) {
 					currentMethod = methods[i];
-					if(currentMethod.getName().startsWith("get") && !isTechnicalMethod(currentMethod.getName())){
+					if(currentMethod.getName().startsWith("get") && !isTechnicalMethod(currentMethod.getName())
+							&& !isCreator(currentMethod.getName()) && !isGenerator(currentMethod.getName())){
 						inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
 						
 						//compare non null fields only
@@ -360,15 +356,22 @@ public class BaseWebAnnotationProtocolTest {
 		return "getIdAsString".equals(name);
 	}
 
-	protected Annotation createTag(String requestBody) throws JsonParseException {
-		String provider = WebAnnotationFields.PROVIDER_WEBANNO;
-		String userToken = TEST_USER_TOKEN;
-		return createTag(requestBody, provider, getApiKey(), userToken);
+	private boolean isGenerator(String name) {
+		return "getGenerator".equals(name);
 	}
 
-	protected Annotation createTag(String requestBody, String provider, String apiKey, String userToken) throws JsonParseException {
+	private boolean isCreator(String name) {
+		return "getCreator".equals(name);
+	}
+
+	protected Annotation createTag(String requestBody) throws JsonParseException {
+		String userToken = TEST_USER_TOKEN;
+		return createTag(requestBody, getApiKey(), userToken);
+	}
+
+	protected Annotation createTag(String requestBody, String apiKey, String userToken) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createTag(
-				provider, null, false, requestBody, 
+				null, false, requestBody, 
 				apiKey, userToken);
 		
 		assertNotNull(response.getBody());
@@ -376,13 +379,13 @@ public class BaseWebAnnotationProtocolTest {
 		
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getCreator());
-		assertNotNull(storedAnno.getGenerator());
+//		assertNotNull(storedAnno.getGenerator());
 		return storedAnno;
 	}
 
 	protected Annotation createLink(String requestBody) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
+				getApiKey(), null, true, requestBody, 
 				TEST_USER_TOKEN, 
 				null //WebAnnotationFields.LINK
 				);
@@ -393,13 +396,13 @@ public class BaseWebAnnotationProtocolTest {
 		
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getCreator());
-		assertNotNull(storedAnno.getGenerator());
+//		assertNotNull(storedAnno.getGenerator());
 		return storedAnno;
 	}
 	
 	protected Annotation createTranscription(String requestBody) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
+				getApiKey(), null, true, requestBody, 
 				TEST_USER_TOKEN, 
 				null 
 				);
@@ -410,7 +413,7 @@ public class BaseWebAnnotationProtocolTest {
 		
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getCreator());
-		assertNotNull(storedAnno.getGenerator());
+		//assertNotNull(storedAnno.getGenerator()); Generator is currently purposly not serialized
 		return storedAnno;
 	}
 	
@@ -419,15 +422,14 @@ public class BaseWebAnnotationProtocolTest {
 	 */
 	protected void deleteAnnotation(Annotation annotation) {
 		deleteAnnotation(
-				annotation.getAnnotationId().getProvider(), 
 				annotation.getAnnotationId().getIdentifier());
 	}
 	
-  protected void deleteAnnotation(String provider, String identifier) {
+  protected void deleteAnnotation(String identifier) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
-		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(provider, identifier);
+		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(identifier);
 		assertEquals(HttpStatus.OK, re.getStatusCode());
-		log.trace("Annotation deleted: /" + provider + "/" + identifier);
+		log.trace("Annotation deleted: /" + identifier);
 	}
 	
 //	protected Integer getNumericAnnotationId(Annotation annotation) {
@@ -464,7 +466,7 @@ public class BaseWebAnnotationProtocolTest {
 //	}
 	
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
-		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getProvider(), anno.getAnnotationId().getIdentifier());
+		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
 	}
 
 	
