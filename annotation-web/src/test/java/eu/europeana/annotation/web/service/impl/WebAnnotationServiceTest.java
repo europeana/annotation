@@ -11,13 +11,11 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
@@ -162,62 +160,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	protected String getBaseUrl() {
 		return ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
-	}
-
-	@Test
-	public void testCreateAnnotationHistorypin() 
-			throws MalformedURLException, IOException, AnnotationServiceException {
-		
-		/**
-		 * Create a test annotation object.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
-				WebAnnotationFields.TEST_HISTORYPIN_URL);
-
-		
-		AnnotationId annoId = new BaseAnnotationId(getBaseUrl(), "1");
-//		, testAnnotation.getSameAs());
-				
-		testAnnotation.setAnnotationId(annoId);		
-		
-		/**
-		 * Store Annotation in database.
-		 */
-		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
-		
-		if (StringUtils.isBlank(webAnnotation.getType())) {
-			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		
-		System.out.println("testAnnotation: " + testAnnotation.toString());
-		System.out.println("webAnnotation: " + webAnnotation.toString());
-		
-		assertTrue(webAnnotation.getAnnotationId() != null 
-				&& webAnnotation.getAnnotationId().toHttpUrl().contains( 
-					getBaseUrl()
-//					+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-					+ WebAnnotationFields.SLASH 
-					+ WebAnnotationFields.PROVIDER_HISTORY_PIN
-					+ WebAnnotationFields.SLASH )
-				);
-	}
-		
-	@Test
-	public void testCreateAnnotationWrongProvider() 
-			throws MalformedURLException, IOException, AnnotationServiceException {
-		
-		Assertions.assertThrows(AnnotationValidationException.class, () -> {
-			
-			/**
-			 * Create a test annotation object.
-			 */
-			Annotation testAnnotation = createBaseObjectTagInstance();
-
-			/**
-			 * Store Annotation in database.
-			 */
-			webAnnotationService.storeAnnotation(testAnnotation);
-		});		
 	}
 
 	/**

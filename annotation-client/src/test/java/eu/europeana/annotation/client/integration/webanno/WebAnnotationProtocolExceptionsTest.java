@@ -52,7 +52,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
     
     public String INVALID_USER_TOKEN = "invalid_user_token";
 
-    public String UNKNOWN_PROVIDED_IDENTIFIER = "unknown_provided_identifier";
        
 	@Test
 	public void createWebAnnotationWithWrongWskey() throws IOException {
@@ -132,22 +131,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	
 
 	@Test
-	public void createWebAnnotationForUnknownProvider() throws IOException {
-		
-		String requestBody = getJsonStringInput(TAG_STANDARD);
-		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey()
-				, null
-				, requestBody
-				, TEST_USER_TOKEN
-				, null
-				);
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-	}
-	
-		
-	@Test
 	public void getWebAnnotationWithWrongIdentifier() {
 		
 		ResponseEntity<String> response = getApiClient().getAnnotation(
@@ -180,21 +163,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
 				getApiKey()
 				, WRONG_GENERATED_IDENTIFIER
-				, requestBody
-				, TEST_USER_TOKEN
-				);
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-	}
-	
-		
-//	@Test TODO: rewrite test
-	public void updateWebAnnotationWithWrongProvider() throws IOException { 
-		
-		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
-		
-		ResponseEntity<String> response = getApiClient().updateAnnotation(
-				getApiKey()
-				, UNKNOWN_PROVIDED_IDENTIFIER
 				, requestBody
 				, TEST_USER_TOKEN
 				);

@@ -172,22 +172,6 @@ public class AnnotationIdHelper {
 		return res;
 	}
 
-	/**
-	 * This method validates provider.
-	 * @param annotation
-	 * @param provider
-	 * @return
-	 */
-	public boolean validateProvider(Annotation annotation, String provider) {
-		boolean res = true;
-		if (StringUtils.isNotEmpty(annotation.getSameAs())
-				&& annotation.getSameAs().contains(WebAnnotationFields.PROVIDER_HISTORY_PIN)
-				&& StringUtils.isNotEmpty(provider) 
-				&& !provider.equals(WebAnnotationFields.PROVIDER_HISTORY_PIN)
-				)
-			res = false;
-		return res;
-	}
 
 	/**
 	 * This method automatically extracts and inserts the resourceIDs from field 'value' or if it is empty 

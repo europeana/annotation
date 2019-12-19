@@ -33,12 +33,7 @@ public class ModerationReportTest extends BaseTaggingTest {
 	private static final Map<String, String> apiKeyMap = new HashMap<String, String>();
 
 	private static void initApiKeyMap() {
-		apiKeyMap.put("apiadmin", WebAnnotationFields.PROVIDER_EUROPEANA_DEV);
 		apiKeyMap.put("apidemo", WebAnnotationFields.DEFAULT_PROVIDER);
-//		apiKeyMap.put("hpdemo", WebAnnotationFields.PROVIDER_HISTORY_PIN);
-//		apiKeyMap.put("pMFSDInF22", WebAnnotationFields.PROVIDER_PUNDIT);
-		apiKeyMap.put("withdemo", WebAnnotationFields.PROVIDER_WITH);
-		apiKeyMap.put("phVKTQ8g9F", WebAnnotationFields.PROVIDER_COLLECTIONS);
 	}
 
 	@BeforeEach
