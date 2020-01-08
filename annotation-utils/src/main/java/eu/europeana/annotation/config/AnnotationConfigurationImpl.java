@@ -56,9 +56,14 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 	public String getJwtTokenSignatureKey() {
 	    return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
 	}
-		
+	
 	@Override
 	public String getAuthorizationApiName() {
-	    return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
+		return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
+	}
+
+	@Override
+	public String getTranscriptionsLicenses() {
+		return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
 	}
 }

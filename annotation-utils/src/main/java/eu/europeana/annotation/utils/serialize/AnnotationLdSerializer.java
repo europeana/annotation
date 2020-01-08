@@ -335,6 +335,8 @@ public class AnnotationLdSerializer extends JsonLd {
 			propertyValue.getValues().put(WebAnnotationFields.PURPOSE, specificResource.getPurpose());
 		if (!StringUtils.isBlank(specificResource.getScope()))
 			propertyValue.getValues().put(WebAnnotationFields.SCOPE, specificResource.getScope());
+		if (!StringUtils.isBlank(specificResource.getRights()))
+			propertyValue.getValues().put(WebAnnotationFields.RIGHTS, specificResource.getRights());
 	}
 
 	protected void putResourceDescriptionProps(ResourceDescription resourceDescription, JsonLdPropertyValue propertyValue) {

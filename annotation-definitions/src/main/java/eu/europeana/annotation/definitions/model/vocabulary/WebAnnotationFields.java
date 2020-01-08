@@ -161,6 +161,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String SCOPE = "scope";
 	public static final String SOURCE = "source";
 
+	public static final String RIGHTS = "rights";
+
 	/**
 	 * Markup
 	 */

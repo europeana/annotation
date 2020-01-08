@@ -3,8 +3,10 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -589,6 +591,30 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	/**
+	 * This method verifies if provided right is in a list of valid licenses
+	 * @param right The right provided in the input
+	 * @return true if provided right is in a list of valid licenses
+	 * @throws ParamValidationException
+	 */
+	protected boolean validateRights(String right) throws ParamValidationException {
+
+		// remove version from the right
+		String RIGHT_DELIMITER = "/";		
+		String[] rightElems = right.split(RIGHT_DELIMITER);
+		String[] normalizedRightElems = Arrays.copyOf(rightElems, rightElems.length-1);
+		String normalizedRight = String.join(RIGHT_DELIMITER, normalizedRightElems)+RIGHT_DELIMITER;
+		String transcriptionLicenses = getConfiguration().getTranscriptionsLicenses();
+		List<String> licensesList = Arrays.asList(transcriptionLicenses.split("\\s*,\\s*"));
+		Set<String> rights = new HashSet<String>(licensesList);
+		if (!rights.contains(normalizedRight))
+			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+					I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
+					new String[]{"rights.value", right});
+
+		return true;
+	}
+
+	/**
 	 * Validation of simple tags.
 	 * 
 	 * Pre-processing: Trim spaces. If the tag is encapsulated by double or
@@ -679,7 +705,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.UriUtils.isUrl(body.getHttpUri()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 					I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
-					new String[]{"tag.body.httpUri", body.getHttpUri()});
+					new String[]{"tag.body.httpUri", body.getHttpUri()});		
 	}
 
 	private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
@@ -828,6 +854,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			break;
 		case TAGGING:
 			validateTag(webAnnotation);
+			break;
+		case TRANSCRIBING:
+			// if rights are provided, check if it belongs to the valid license list
+			if (webAnnotation != null && webAnnotation.getBody() != null && webAnnotation.getBody().getRights() != null)
+				validateRights(webAnnotation.getBody().getRights());			
 			break;
 		default:
 			break;
