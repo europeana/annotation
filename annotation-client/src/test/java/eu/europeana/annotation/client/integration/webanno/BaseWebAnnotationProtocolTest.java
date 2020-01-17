@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -22,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
+import eu.europeana.annotation.client.utils.BaseUtils;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -44,6 +42,8 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 	public static final String TAG_STANDARD_TEST_VALUE_TARGET = "http://data.europeana.eu/item/09102/_UEDIN_214";
 	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
+	public static final String TAG_ANNOTATION = "/tag/annotation.json";
+	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
 	
 	String START = "{";
 	String END = "}";
@@ -109,7 +109,18 @@ public class BaseWebAnnotationProtocolTest {
 
 	}
 	
+	/**
+	 * This method creates new test annotation object
+	 * 
+	 * @return response entity that contains response body, headers and status
+	 *         code.
+	 * @throws IOException 
+	 */
+	protected ResponseEntity<String> storeNewTestAnnotation() throws IOException {
+		
+		return storeTestAnnotation(TAG_STANDARD);
 
+	}
 
 	/**
 	 * This method creates test annotation object
@@ -307,16 +318,7 @@ public class BaseWebAnnotationProtocolTest {
 	}
 
 	protected String getJsonStringInput(String resource) throws IOException {
-		InputStream resourceAsStream = getClass().getResourceAsStream(
-				resource);
-		
-		StringBuilder out = new StringBuilder();
-		BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream));
-		for(String line = br.readLine(); line != null; line = br.readLine()) 
-		    out.append(line);
-		br.close();
-		return out.toString();
-		
+		return (new BaseUtils()).getJsonStringInput(resource);
 	}
 	
 	protected Annotation parseAnnotation(String jsonString, MotivationTypes motivationType) throws JsonParseException {

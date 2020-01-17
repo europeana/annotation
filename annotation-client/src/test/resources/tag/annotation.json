@@ -1,0 +1,12 @@
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "http://data.europeana.eu/annotation/base/1",
+    "type": "Annotation",
+    "created": "2015-01-31T12:03:45Z",
+    "creator": "http://data.europeana.eu/user/55376",
+    "generated": "2015-01-31T12:04:00Z",
+    "generator": "http://data.europeana.eu/provider/historypin",
+    "bodyValue": "Trombone",
+    "motivation": "tagging",
+    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+}
