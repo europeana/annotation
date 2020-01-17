@@ -1,8 +1,10 @@
 package eu.europeana.annotation.web.service.impl;
 
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,12 +14,19 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
@@ -29,6 +38,7 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
+import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -39,6 +49,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -60,6 +71,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api2.utils.JsonWebUtils;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -90,7 +102,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	
 	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
 	
-
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;
 	}
@@ -105,6 +116,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return annotationBuilder;
 	}
 
+	private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
+
+	public MetisDereferenciationClient getDereferenciationClient() {
+		return dereferenciationClient;
+	}
+
+	public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
+		this.dereferenciationClient = dereferenciationClient;
+	}
+	
 //	public PersistentTagService getMongoTagPersistence() {
 //		return mongoTagPersistence;
 //	}
@@ -927,4 +948,17 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return annoIdSequence;
 	}
 
+	@Override
+	public Annotation addProfileData(Annotation annotation) throws IOException {
+		String queryUri = annotation.getBody().getInputString();
+		List<String> queryList = Arrays.asList(queryUri);
+		Map<String,String> dereferencedMap = getDereferenciationClient().queryMetis(
+				getConfiguration().getMetisBaseUrl()
+				, queryList
+				);
+		String dereferencedJsonLdMapStr = dereferencedMap.toString();
+		annotation.setDereferenced(dereferencedJsonLdMapStr);
+		return annotation;
+	}
+	
 }

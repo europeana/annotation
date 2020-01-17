@@ -326,8 +326,10 @@ public class BaseJsonldRest extends BaseRest {
 //					throw new UserAuthorizationException(UserAuthorizationException.MESSAGE_USER_NOT_AUTHORIZED, wsKey,
 //							e);
 //			}
+			
+			Annotation annotationWithProfile = getAnnotationService().addProfileData(annotation);
 
-			JsonLd annotationLd = new AnnotationLdSerializer(annotation);
+			JsonLd annotationLd = new AnnotationLdSerializer(annotationWithProfile);
 			String jsonLd = annotationLd.toString(4);
 
 			int etag;

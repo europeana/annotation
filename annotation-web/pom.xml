@@ -63,6 +63,11 @@
 			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-dereferenciation</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
 		<!-- aspectj /profiling -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -206,6 +211,13 @@
 			</exclusions>
 		</dependency>
  -->	
+ <!--  -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+ 
 	</dependencies>
 
 	<build>

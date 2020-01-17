@@ -17,6 +17,7 @@ public class BaseTagResource extends BaseInternetResource implements TagResource
 	private String tagType;
 	private List<String> sameAs; 
 	protected Map<String, String> multilingual;
+	private String dereferenced;
 
 			
 	public String getId() {
@@ -111,4 +112,10 @@ public class BaseTagResource extends BaseInternetResource implements TagResource
 	    this.multilingual.put(language, label);
 	}
 	
+	public String getDereferenced() {
+		return dereferenced;
+	}
+	public void setDereferenced(String dereferenced) {
+		this.dereferenced = dereferenced;
+	}
 }

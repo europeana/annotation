@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -162,6 +163,14 @@ public interface AnnotationService {
 	 */
 	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
+	/**
+	 * This method extends annotation according to the search profile
+	 * @param annotation
+	 * @return annotation extended with profile data
+	 * @throws IOException
+	 */
+	public Annotation addProfileData(Annotation annotation) throws IOException;
+	
 	/**
 	 * Search for annotations by the given text query.
 	 * @param query

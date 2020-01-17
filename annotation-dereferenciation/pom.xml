@@ -1,22 +1,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <artifactId>annotation-dereferenciation</artifactId>
+  <packaging>jar</packaging>
   <name>annotation-dereferenciation</name>
-  <description>This project supports SKOS functionality</description>
+  <description>This module supports the dereferenciation of entities used in annotations</description>
   
   <parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
+		<relativePath>../pom.xml</relativePath>
 		<version>${version.annotationApi}</version>
   </parent>
   
+  <properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
   <dependencies>
+  		<!--  
 	   	<dependency>
 	      <groupId>eu.europeana.annotation</groupId>
 	      <artifactId>annotation-definitions</artifactId>
 	      <version>${version.annotationApi}</version>
 	    </dependency>
+	    -->
+	    
+	    <dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${version.httpClient}</version>
+		</dependency>
 
         <dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -27,4 +47,40 @@
   </dependencies>
   
   <version>${version.annotationApi}</version>
+  
+	<build>
+		<!-- configure source and output locations -->
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${artifactId}-${version}</finalName>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>*.properties</include>
+					<include>log4j.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>  
 </project>

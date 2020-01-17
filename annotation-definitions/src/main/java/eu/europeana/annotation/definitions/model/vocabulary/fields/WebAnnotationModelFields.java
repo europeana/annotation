@@ -48,6 +48,7 @@ public interface WebAnnotationModelFields {
 
 	public static final String CANONICAL = "canonical";
 	public static final String VIA = "via";
+	public static final String DEREFERENCED = "dereferenced";
 	
 	public static final String ITEMS = "items";
 	public static final String PURPOSE = "purpose";

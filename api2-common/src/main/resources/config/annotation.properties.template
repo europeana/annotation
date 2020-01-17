@@ -60,3 +60,7 @@ europeana.apikey.jwttoken.siganturekey=
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
+
+# Metis API
+metis.baseUrl =
+

@@ -284,7 +284,8 @@ public class BaseRest extends BaseRestController {
 	public String decodeBase64(String base64Str) throws ApplicationAuthenticationException {
 		String res = null;
 		try {
-			byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
+//			byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
+			byte[] decodedBase64Str = org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes());
 			res = new String(decodedBase64Str);
 		} catch (Exception e) {
 			throw new ApplicationAuthenticationException(

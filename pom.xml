@@ -78,14 +78,13 @@
 		<version.servletJstl>1.2</version.servletJstl>
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.guava>18.0</version.guava>
+		<version.httpClient>3.1</version.httpClient>
 	</properties>
 	<modules>
 		<module>api2-common</module>
 		<module>annotation-definitions</module>
 		<module>annotation-utils</module>
-		<!--
 		<module>annotation-dereferenciation</module>
-			-->
 		<module>annotation-mongo</module>
 		<module>annotation-solr</module>
 		<module>annotation-web</module>

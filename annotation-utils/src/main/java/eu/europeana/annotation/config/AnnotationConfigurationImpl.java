@@ -61,4 +61,11 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration{
 	public String getAuthorizationApiName() {
 	    return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
 	}
+
+	@Override
+	public String getMetisBaseUrl() {
+		String key = METIS_BASE_URL; 
+		return getAnnotationProperties().getProperty(key);
+	}
+
 }
