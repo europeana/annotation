@@ -27,7 +27,7 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 		validateOutputAgainstInput(storedAnno, inputAnno);
 		
 		assertEquals(storedAnno.getBody().getInternalType(), ResourceTypes.SPECIFIC_RESOURCE.name());
-		assertTrue(storedAnno.getBody().getRights().equals(inputAnno.getBody().getRights()));		
+		assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));		
 	}
 	
 

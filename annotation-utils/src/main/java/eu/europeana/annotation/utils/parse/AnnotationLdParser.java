@@ -690,7 +690,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			break;
 
 		case WebAnnotationFields.RIGHTS:
-			specificResource.setRights(value.toString());
+			specificResource.setEdmRights(value.toString());
 			break;
 
 		default:

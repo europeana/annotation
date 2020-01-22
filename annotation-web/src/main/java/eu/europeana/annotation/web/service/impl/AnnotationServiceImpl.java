@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,11 +12,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.google.common.base.Strings;
 
@@ -591,25 +596,45 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	/**
+	 * This method retrieves a set of supported transcriptions licenses.
+	 * @return a set of transcriptions licenses
+	 */
+	protected Set<String> getAcceptedLicenceses() {
+		String transcriptionLicenses = getConfiguration().getTranscriptionsLicenses();
+		String[] transcriptions = StringUtils.split(transcriptionLicenses, ",");
+		Set<String> licenses = Stream.of(transcriptions)
+				.collect(Collectors.toCollection(HashSet::new));		
+		return licenses;
+	}
+	
+	/**
 	 * This method verifies if provided right is in a list of valid licenses
-	 * @param right The right provided in the input
+	 * @param webAnnotation The right provided in the input from annotation object
 	 * @return true if provided right is in a list of valid licenses
 	 * @throws ParamValidationException
 	 */
-	protected boolean validateRights(String right) throws ParamValidationException {
+	protected boolean validateEdmRights(Annotation webAnnotation) throws ParamValidationException {
 
-		// remove version from the right
-		String RIGHT_DELIMITER = "/";		
-		String[] rightElems = right.split(RIGHT_DELIMITER);
-		String[] normalizedRightElems = Arrays.copyOf(rightElems, rightElems.length-1);
-		String normalizedRight = String.join(RIGHT_DELIMITER, normalizedRightElems)+RIGHT_DELIMITER;
-		String transcriptionLicenses = getConfiguration().getTranscriptionsLicenses();
-		List<String> licensesList = Arrays.asList(transcriptionLicenses.split("\\s*,\\s*"));
-		Set<String> rights = new HashSet<String>(licensesList);
-		if (!rights.contains(normalizedRight))
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-					I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
-					new String[]{"rights.value", right});
+		// if rights are provided, check if it belongs to the valid license list
+		if (webAnnotation != null && webAnnotation.getBody() != null && webAnnotation.getBody().getEdmRights() != null) {
+			String right = webAnnotation.getBody().getEdmRights();
+			// remove version from the right and get licenses
+			String RIGHT_DELIMITER = "/";					
+			String[] rightElems = StringUtils.split(right, RIGHT_DELIMITER);
+			
+			List<String> rightElemsSet = Stream.of(rightElems)
+					.collect(Collectors.toCollection(ArrayList::new));
+			rightElemsSet.remove(rightElemsSet.size()-1);						
+			String normalizedRight = String.join(RIGHT_DELIMITER, rightElemsSet).replace(":/", "://")+RIGHT_DELIMITER;
+			Set<String> rights = getAcceptedLicenceses();
+			
+			if (!rights.contains(normalizedRight))
+				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+						I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
+						new String[]{"rights.value", right});
+		} else {
+			return false;
+		}
 
 		return true;
 	}
@@ -856,9 +881,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			validateTag(webAnnotation);
 			break;
 		case TRANSCRIBING:
-			// if rights are provided, check if it belongs to the valid license list
-			if (webAnnotation != null && webAnnotation.getBody() != null && webAnnotation.getBody().getRights() != null)
-				validateRights(webAnnotation.getBody().getRights());			
+			validateEdmRights(webAnnotation);			
 			break;
 		default:
 			break;
