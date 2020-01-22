@@ -27,6 +27,12 @@
 	    -->
 	    
 	    <dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-client</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
+	    
+	    <dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>

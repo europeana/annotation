@@ -14,6 +14,16 @@ public enum SearchProfiles {
 	    return false;
 	}
 	
+	public static SearchProfiles getByStr(String value) {
+
+	    for (SearchProfiles c : SearchProfiles.values()) {
+	        if(c.name().equalsIgnoreCase((value)))
+	        	return c;
+	    }
+
+	    return STANDARD;
+	}
+	
 	@Override
 	public String toString() {
 		return name().toLowerCase();

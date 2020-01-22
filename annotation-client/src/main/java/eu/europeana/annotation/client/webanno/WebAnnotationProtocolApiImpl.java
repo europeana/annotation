@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.BaseAnnotationApi;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
@@ -56,6 +57,20 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 		ResponseEntity<String> res;
 		try {
 			res = apiConnection.getAnnotation(wskey, identifier, false);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi getAnnotation method", e);
+		}
+
+		return res;
+	}
+
+	@Override
+	public ResponseEntity<String> getAnnotation(String wskey, String identifier, SearchProfiles searchProfile) {
+
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.getAnnotation(wskey, identifier, false, searchProfile);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi getAnnotation method", e);

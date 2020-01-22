@@ -382,6 +382,35 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 
 	/**
+	 * This method retrieves Annotation object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/497?wskey=apidemo&searchProfile=dereference
+	 * and for tag object with type jsonld
+	 *     http://localhost:8080/annotation/webanno/497.jsonld?wskey=apidemo&searchProfile=dereference
+	 * @param wskey
+	 * @param identifier
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String wskey, String identifier, boolean isTypeJsonld, SearchProfiles searchProfile) throws IOException {
+		
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+    	url += identifier;
+		if (isTypeJsonld)
+			url += WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_SEARCH_PROFILE + WebAnnotationFields.EQUALS + searchProfile.toString();
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURL(url);		
+	}
+
+
+	/**
 	 * This method retrieves summary of the Annotation moderation report object.
 	 * Example HTTP request for tag object: 
 	 *      http://localhost:8080/annotation/1202/moderationsummary?wskey=apiadmin&userToken=tester1

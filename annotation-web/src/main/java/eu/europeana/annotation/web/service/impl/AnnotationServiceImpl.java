@@ -43,6 +43,7 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -949,15 +950,22 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	public Annotation addProfileData(Annotation annotation) throws IOException {
+	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile) throws IOException, JsonParseException, HttpException {
+		if (SearchProfiles.DEREFERENCE != searchProfile) 
+			return annotation;
 		String queryUri = annotation.getBody().getInputString();
 		List<String> queryList = Arrays.asList(queryUri);
 		Map<String,String> dereferencedMap = getDereferenciationClient().queryMetis(
 				getConfiguration().getMetisBaseUrl()
 				, queryList
 				);
-		String dereferencedJsonLdMapStr = dereferencedMap.toString();
-		annotation.setDereferenced(dereferencedJsonLdMapStr);
+		String dereferencedJsonLdMapStr = dereferencedMap.get(queryUri);
+//		annotation.setDereferenced(dereferencedJsonLdMapStr);
+		String prefix = "{  \"motivation\": \"tagging\",  \"body\": ";
+		String postfix = "  }";
+		String dereferencedJsonLdMapStr2 = prefix + dereferencedJsonLdMapStr + postfix;
+		Annotation parsedResponseAnnotation = parseAnnotationLd(null, dereferencedJsonLdMapStr2);
+		annotation.setBody(parsedResponseAnnotation.getBody());
 		return annotation;
 	}
 	

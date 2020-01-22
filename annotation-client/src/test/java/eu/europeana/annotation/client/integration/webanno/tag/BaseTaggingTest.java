@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -30,6 +29,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String TAG_VIA_STRING = "/tag/via_string.json";
 	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
 	public static final String DEREFERENCED_SEMANTICTAG_MOZART_ENTITY = "/semantictag/dereferenced_semantictag_mozart_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_test_entity.json";
 	
 	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -90,10 +90,10 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	// return storedAnno;
 	// }
 	
-	protected ResponseEntity<String> getAnnotation(Annotation anno) {
-		// add profile
-		String searchProfile = "dereference";
-		return getAnnotation(anno, searchProfile);
-	}
+//	protected ResponseEntity<String> getAnnotation(Annotation anno) {
+//		// add profile
+//		String searchProfile = "dereference";
+//		return getAnnotation(anno, searchProfile);
+//	}
 	
 }

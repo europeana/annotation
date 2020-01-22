@@ -14,6 +14,7 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -166,10 +167,13 @@ public interface AnnotationService {
 	/**
 	 * This method extends annotation according to the search profile
 	 * @param annotation
+	 * @param searchProfile
 	 * @return annotation extended with profile data
 	 * @throws IOException
+	 * @throws HttpException 
+	 * @throws JsonParseException 
 	 */
-	public Annotation addProfileData(Annotation annotation) throws IOException;
+	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile) throws IOException, JsonParseException, HttpException;
 	
 	/**
 	 * Search for annotations by the given text query.

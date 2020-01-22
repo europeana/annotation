@@ -294,7 +294,7 @@ public class BaseJsonldRest extends BaseRest {
 		return agent;
 	}
 
-	protected ResponseEntity<String> getAnnotationById(String wsKey, String identifier, String action)
+	protected ResponseEntity<String> getAnnotationById(String wsKey, String identifier, String action, String searchProfileStr)
 			throws HttpException {
 
 		try {
@@ -327,7 +327,8 @@ public class BaseJsonldRest extends BaseRest {
 //							e);
 //			}
 			
-			Annotation annotationWithProfile = getAnnotationService().addProfileData(annotation);
+			SearchProfiles searchProfile = SearchProfiles.getByStr(searchProfileStr);
+			Annotation annotationWithProfile = getAnnotationService().addProfileData(annotation, searchProfile);
 
 			JsonLd annotationLd = new AnnotationLdSerializer(annotationWithProfile);
 			String jsonLd = annotationLd.toString(4);

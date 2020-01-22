@@ -109,6 +109,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PARAM_INCLUDE_ERROR_STACK = "includeErrorStack";
 	public static final String REQ_PARAM_PROVIDER = PATH_PARAM_PROVIDER;
 	public static final String REQ_PARAM_IDENTIFIER = PATH_PARAM_IDENTIFIER;
+	public static final String PARAM_SEARCH_PROFILE = "searchProfile";
 	
 	
 	/**

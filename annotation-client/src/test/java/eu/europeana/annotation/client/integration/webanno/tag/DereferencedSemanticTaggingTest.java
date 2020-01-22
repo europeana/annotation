@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 /**
@@ -23,9 +24,45 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
  */
 public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 
+	public static final String DEREFERENCE = "/tag/minimal.json";
+	
 	protected Logger log = LogManager.getLogger(getClass());
 	
+	/**
+	 * This is an example dereferenciation test for PoC.
+	 * @throws IOException
+	 * @throws JsonParseException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
 	@Test
+	public void createExampleDereferencedSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+
+		Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false);
+		log.info(storedAnno.getBody().getInternalType());
+		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
+		
+		// retrieve dereferenced annotation
+		ResponseEntity<String> response = getAnnotation(storedAnno, SearchProfiles.DEREFERENCE);
+		
+		assertNotNull(response.getBody());
+		
+		Annotation retrievedAnnotation = getApiClient().parseResponseBody(response);
+//		assertNotNull(retrievedAnnotation.getDereferenced());		
+//		log.info(retrievedAnnotation.getDereferenced());
+	}
+
+	/**
+	 * This is a Test for Mozart entity dereferenciation
+	 * @throws IOException
+	 * @throws JsonParseException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+//	@Test
 	public void createDereferencedSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 

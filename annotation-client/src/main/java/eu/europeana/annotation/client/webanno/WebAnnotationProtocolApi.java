@@ -4,6 +4,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 
 public interface WebAnnotationProtocolApi {
 
@@ -84,6 +85,16 @@ public interface WebAnnotationProtocolApi {
 	 */
 	public ResponseEntity<String> getAnnotation(
 			String wskey, String identifier);
+	
+	/**
+	 * This method retrieves annotation by the given provider, identifier and search profile.
+	 * @param wskey
+	 * @param identifier
+	 * @param searchProfile
+	* @return response entity containing body, headers and status code.
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String wskey, String identifier, SearchProfiles searchProfile);
 	
 	/**
 	 * This method updates annotation by the given update string in JSON format
