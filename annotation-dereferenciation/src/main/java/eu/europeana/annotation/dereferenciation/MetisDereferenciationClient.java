@@ -39,24 +39,6 @@ import eu.europeana.annotation.connection.HttpConnection;
  */
 public class MetisDereferenciationClient {
 	
-	public static final String DEREFERENCED_SEMANTICTAG_TEST_RESPONSE_ENTITY = "/dereferenced_semantictag_test_response_entity.json";
-
-	String TEST_MOZART_JSON_LD = "{\n" + 
-			"      \"id\": \"http://data.europeana.eu/agent/base/146951\",\n" + 
-			"      \"type\": \"Agent\",\n" + 
-			"      \"depiction\": \"http://commons.wikimedia.org/wiki/Special:FilePath/Barbara%20Krafft%20-%20Portr%C3%A4t%20Wolfgang%20Amadeus%20Mozart%20%281819%29.jpg\",\n" + 
-			"      \"prefLabel\": {\n" + 
-			"        \"en\": \"Wolfgang Amadeus Mozart\"\n" + 
-			"      },\n" + 
-			"      \"hiddenLabel\": {\n" + 
-			"        \"en\": [\n" + 
-			"          \"Wolfgang Amadeus Mozart\",\n" + 
-			"          \"Mozart, Wolfgang Amadeus\"\n" + 
-			"        ]\n" + 
-			"      },\n" + 
-			"      \"dateOfBirth\": \"1756-01-27\",\n" + 
-			"      \"dateOfDeath\": \"1791-12-05\"\n" + 
-			"    }";
 	protected static final String XSLT_TRANSFORMATION_FILE = "/deref2json.xsl";
 	
 	String TEST_JSON_LD = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + 
@@ -100,30 +82,7 @@ public class MetisDereferenciationClient {
 			"		</edm:Agent>\n" + 
 			"	</metis:enrichmentBaseWrapperList>\n" + 
 			"</metis:results>";
-
-	//	String TEST_JSON_LD = "{\n" +
-//		    "\"@context\": \"http://www.europeana.eu/schemas/context/entity.jsonld\",\n" +
-//		    "\"id\": \"http://www.wikidata.org/entity/Q41264\",\n" +
-//		    "\"type\": \"Agent\"\n" +
-//		    "\"prefLabel\": {\n" +
-//		    "\"en\": \"Johannes Vermeer\"\n" +
-//		    "},\n" +
-//		    "\"dateOfBirth\": [ \"1632-10-31\" ],\n" +
-//		    "\"dateOfDeath\": [ \"1675-12-15\" ]\n" +
-//		  "}";
-
-//	String TEST_JSON_LD = 
-//			"{" +
-//		    "    \"@context\": \"http://www.europeana.eu/schemas/context/entity.jsonld\"," +
-//		    "    \"id\": \"http://www.wikidata.org/entity/Q41264\"," +
-//		    "    \"type\": \"Agent\"" +
-//		    "    \"prefLabel\": {" +
-//		    "        \"en\": \"Johannes Vermeer\"" +
-//		    "    }," +
-//		    "    \"dateOfBirth\": [ \"1632-10-31\" ]," +
-//		    "    \"dateOfDeath\": [ \"1675-12-15\" ]" +
-//		  "}";
-
+	
 	private HttpConnection httpConnection = new HttpConnection();
 
 	Logger logger = LogManager.getLogger(getClass().getName());
@@ -158,43 +117,20 @@ public class MetisDereferenciationClient {
 	public Map<String,String> queryMetis(String baseUrl, List<String> uris) throws IOException {
 		Map<String,String> res = new HashMap<String,String>();
 		for (String uri : uris) {
-			String queryUri = baseUrl+uri;			
+			String queryUri = baseUrl+"?uri="+URLEncoder.encode(uri,"UTF-8");;			
 		    String xmlResponse = getHttpConnection().getURLContent(queryUri);
-		    String jsonLdStr = convertDereferenceOutputToJsonLd(xmlResponse);
+		    String jsonLdStr = convertDereferenceOutputToJsonLd(uri, xmlResponse).toString();
 		    res.put(uri,jsonLdStr);
 		}
 		return res;
 	}
 	
+	
 	/**
 	 * An XSLT converts dereference output to JSON-LD. 
 	 * @param xmlStr
 	 * @return dereferenced output in JSON-LD format
-	 * @throws IOException 
 	 */
-	public String convertDereferenceOutputToJsonLd(String xmlStr) throws IOException {
-//		return TEST_JSON_LD;
-		return getJsonStringInput(DEREFERENCED_SEMANTICTAG_TEST_RESPONSE_ENTITY);
-	}
-	
-	/**
-	 * This method reads data from provided file.
-	 * @param resource
-	 * @return
-	 * @throws IOException
-	 */
-	protected String getJsonStringInput(String resource) throws IOException {
-		InputStream resourceAsStream = getClass().getResourceAsStream(
-				resource);
-		
-		StringBuilder out = new StringBuilder();
-		BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream));
-		for(String line = br.readLine(); line != null; line = br.readLine()) 
-		    out.append(line);
-		br.close();
-		return out.toString();
-	}
-	
 	public StringWriter convertDereferenceOutputToJsonLd(String uri, String xmlStr) {
 		
 		InputStream xsltFileAsStream = getClass().getResourceAsStream(XSLT_TRANSFORMATION_FILE);
@@ -224,6 +160,6 @@ public class MetisDereferenciationClient {
 		}
 		
 		return result;
-	}
+		}
 	
 }
