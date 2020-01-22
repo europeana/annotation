@@ -10,6 +10,7 @@ import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.springframework.http.HttpHeaders;
 
 
 /**
@@ -29,6 +30,8 @@ public class HttpConnection {
     public String getURLContent(String url) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
+        get.setRequestHeader("Accept", "application/xml");
+
 
         try {
             client.executeMethod(get);
