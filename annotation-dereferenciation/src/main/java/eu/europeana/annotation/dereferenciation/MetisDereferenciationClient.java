@@ -1,16 +1,11 @@
 package eu.europeana.annotation.dereferenciation;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +20,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.IOUtils;
 
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.connection.HttpConnection;
@@ -82,7 +76,7 @@ public class MetisDereferenciationClient {
 			"		</edm:Agent>\n" + 
 			"	</metis:enrichmentBaseWrapperList>\n" + 
 			"</metis:results>";
-	
+
 	private HttpConnection httpConnection = new HttpConnection();
 
 	Logger logger = LogManager.getLogger(getClass().getName());
@@ -160,6 +154,5 @@ public class MetisDereferenciationClient {
 		}
 		
 		return result;
-		}
-	
+	}
 }
