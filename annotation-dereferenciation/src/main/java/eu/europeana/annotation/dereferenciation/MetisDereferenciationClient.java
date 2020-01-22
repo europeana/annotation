@@ -100,8 +100,8 @@ public class MetisDereferenciationClient {
 			"		</edm:Agent>\n" + 
 			"	</metis:enrichmentBaseWrapperList>\n" + 
 			"</metis:results>";
-	
-//	String TEST_JSON_LD = "{\n" +
+
+	//	String TEST_JSON_LD = "{\n" +
 //		    "\"@context\": \"http://www.europeana.eu/schemas/context/entity.jsonld\",\n" +
 //		    "\"id\": \"http://www.wikidata.org/entity/Q41264\",\n" +
 //		    "\"type\": \"Agent\"\n" +
