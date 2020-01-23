@@ -9,6 +9,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 public class BaseTranscribingTest extends BaseWebAnnotationProtocolTest {
 
 	public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
+	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
 
 	
 	protected Annotation parseTranscription(String jsonString) throws JsonParseException {

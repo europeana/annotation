@@ -64,3 +64,5 @@ annotation.properties.timestamp=-1
 # Metis API
 metis.baseUrl =
 
+# valid licenses list
+annotation.licenses=http://creativecommons.org/publicdomain/zero/,http://creativecommons.org/publicdomain/mark/,http://creativecommons.org/licenses/by/,http://rightsstatements.org/vocab/NoC-NC/,http://creativecommons.org/licenses/by-sa/,http://creativecommons.org/licenses/by-nd/,http://creativecommons.org/licenses/by-nc-sa/,http://creativecommons.org/licenses/by-nd-nc/

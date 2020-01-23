@@ -3,6 +3,7 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -11,6 +12,8 @@ import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+
+//import org.junit.jupiter.api.Test;
 
 /**
  * TODO: migrate when the search functionality is enabled 
@@ -21,90 +24,15 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	
 //	@Test
-	public void searchSemanticTagHistoryPinAnnotationByTarget() throws JsonParseException {
+	public void searchAnnotationsWithMultipleTargetsByEachTarget() throws JsonParseException, IOException {
 		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				MotivationTypes.TAGGING.name()
-//				, WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, semanticTagAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				TEST_TARGET
-				, null
-				);
-		System.out.println("historypin search annotation by target test: " + annotationStr);
-		assertNotNull(annotationStr);
-		verifySearchResult(annotationStr);
-	}
-
-//	@Test
-	public void searchSemanticTagHistoryPinAnnotationByResourceId() throws JsonParseException {
-		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				MotivationTypes.TAGGING.name()
-//				, WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, simpleTagAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				null
-				, TEST_RESOURCE_ID
-				);
-		System.out.println("historypin search annotation by resourceId test: " + annotationStr);
-		assertNotNull(annotationStr);
-		verifySearchResult(annotationStr);
-	}
-
-//	@Test
-	public void searchObjectLinkingHistoryPinAnnotationByTarget() throws JsonParseException {
-		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				MotivationTypes.TAGGING.name()
-//				, WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, simpleLinkAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				TEST_TARGET
-				, null
-				);
-		System.out.println("historypin search annotation by target test: " + annotationStr);
-		assertNotNull(annotationStr);
-		verifySearchResult(annotationStr);
-	}
-
-//	@Test
-	public void searchObjectLinkingHistoryPinAnnotationByResourceId() throws JsonParseException {
-		
-		long annotationNr = System.currentTimeMillis();
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				MotivationTypes.TAGGING.name()
-//				, WebAnnotationFields.PROVIDER_HISTORY_PIN
-				, annotationNr
-				, simpleLinkAnnotation
-				);
-		annotationStr = europeanaLdApi.searchLd(
-				null
-				, TEST_RESOURCE_ID
-				);
-		System.out.println("historypin search annotation by resourceId test: " + annotationStr);
-		assertNotNull(annotationStr);
-		verifySearchResult(annotationStr);
-	}
-
-//	@Test
-	public void searchAnnotationsWithMultipleTargetsByEachTarget() throws JsonParseException {
+		String requestBody = getJsonStringInput(SIMPLE_LINK_ANNOTATION);
 		
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
 				MotivationTypes.LINKING.name()
-//				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
-				, simpleLinkAnnotation
+				, requestBody
 				);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		String resJson = "";
@@ -132,14 +60,15 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	}
 	
 //	@Test
-	public void searchAnnotationsWithMultipleTargetsByEachResearchId() throws JsonParseException {
+	public void searchAnnotationsWithMultipleTargetsByEachResearchId() throws JsonParseException, IOException {
 		
+		String requestBody = getJsonStringInput(SIMPLE_LINK_ANNOTATION);
+
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
 				MotivationTypes.LINKING.name()
-//				, WebAnnotationFields.PROVIDER_HISTORY_PIN
 				, annotationNr
-				, simpleLinkAnnotation
+				, requestBody
 				);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();

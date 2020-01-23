@@ -25,6 +25,7 @@ public interface AnnotationConfiguration {
 
 	public static final String METIS_BASE_URL = "metis.baseUrl";
 
+	public static final String TRANSCRIPTIONS_LICENSES = "annotation.licenses";
 	
 	public String getComponentName();
 	
@@ -64,5 +65,7 @@ public interface AnnotationConfiguration {
 	 * uses metis.baseUrl property
 	 */
 	public String getMetisBaseUrl();
+	
+	public String getTranscriptionsLicenses();
 	
 }

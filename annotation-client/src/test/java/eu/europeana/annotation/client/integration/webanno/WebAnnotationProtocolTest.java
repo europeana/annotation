@@ -182,8 +182,6 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 		//TODO: search annotation in solr and verify body and target values.
 	}
 	
-	
-			
 				
 	@Test
 	public void deleteAnnotation() throws JsonParseException, IOException {
