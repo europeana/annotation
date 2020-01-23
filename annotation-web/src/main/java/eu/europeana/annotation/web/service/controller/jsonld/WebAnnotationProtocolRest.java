@@ -59,11 +59,12 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> getAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_SEARCH_PROFILE, required = false) String searchProfile,
+			@RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
 			) throws HttpException {
 
 			String action = "get:/annotation/{identifier}[.{format}]";		
-			return getAnnotationById(wskey, identifier, action, searchProfile);
+			return getAnnotationById(wskey, identifier, action, searchProfile, language);
 	}
 	
 	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 

@@ -29,7 +29,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String TAG_VIA_STRING = "/tag/via_string.json";
 	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
 	public static final String DEREFERENCED_SEMANTICTAG_MOZART_ENTITY = "/semantictag/dereferenced_semantictag_mozart_entity.json";
-	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_test_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_viaf_test_entity.json";
 	
 	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException {

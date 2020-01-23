@@ -14,19 +14,12 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
@@ -38,7 +31,6 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
-import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -72,7 +64,6 @@ import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.api2.utils.JsonWebUtils;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -950,7 +941,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	@Override
-	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile) throws IOException, JsonParseException, HttpException {
+	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws IOException, JsonParseException, HttpException {
 		if (SearchProfiles.DEREFERENCE != searchProfile) 
 			return annotation;
 		String queryUri = annotation.getBody().getInputString();
@@ -958,13 +949,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		Map<String,String> dereferencedMap = getDereferenciationClient().queryMetis(
 				getConfiguration().getMetisBaseUrl()
 				, queryList
+				, language
 				);
 		String dereferencedJsonLdMapStr = dereferencedMap.get(queryUri);
 //		annotation.setDereferenced(dereferencedJsonLdMapStr);
 		String prefix = "{  \"motivation\": \"tagging\",  \"body\": ";
 		String postfix = "  }";
-		String dereferencedJsonLdMapStr2 = prefix + dereferencedJsonLdMapStr + postfix;
-		Annotation parsedResponseAnnotation = parseAnnotationLd(null, dereferencedJsonLdMapStr2);
+		String dereferencedJsonLdMapStrExt = prefix + dereferencedJsonLdMapStr + postfix;
+		Annotation parsedResponseAnnotation = parseAnnotationLd(null, dereferencedJsonLdMapStrExt);
 		annotation.setBody(parsedResponseAnnotation.getBody());
 		return annotation;
 	}

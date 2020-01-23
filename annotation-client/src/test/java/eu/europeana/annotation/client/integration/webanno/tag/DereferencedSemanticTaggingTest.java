@@ -1,5 +1,6 @@
 package eu.europeana.annotation.client.integration.webanno.tag;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,8 +25,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
  */
 public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 
-	public static final String DEREFERENCE = "/tag/minimal.json";
-	
+
 	protected Logger log = LogManager.getLogger(getClass());
 	
 	/**
@@ -51,7 +51,11 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		
 		Annotation retrievedAnnotation = getApiClient().parseResponseBody(response);
 //		assertNotNull(retrievedAnnotation.getDereferenced());		
+		assertNotNull(retrievedAnnotation.getBody().getHttpUri());		
+		assertEquals(retrievedAnnotation.getBody().getHttpUri(),storedAnno.getBody().getValue());		
 //		log.info(retrievedAnnotation.getDereferenced());
+		log.info("Input body:" + storedAnno.getBody());
+		log.info("Output body dereferenced:" + retrievedAnnotation.getBody());
 	}
 
 	/**

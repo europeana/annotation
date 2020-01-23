@@ -168,12 +168,13 @@ public interface AnnotationService {
 	 * This method extends annotation according to the search profile
 	 * @param annotation
 	 * @param searchProfile
+	 * @param language e.g. "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru" 
 	 * @return annotation extended with profile data
 	 * @throws IOException
 	 * @throws HttpException 
 	 * @throws JsonParseException 
 	 */
-	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile) throws IOException, JsonParseException, HttpException;
+	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws IOException, JsonParseException, HttpException;
 	
 	/**
 	 * Search for annotations by the given text query.
