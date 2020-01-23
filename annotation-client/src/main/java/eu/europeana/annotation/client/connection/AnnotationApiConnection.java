@@ -384,9 +384,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * This method retrieves Annotation object.
 	 * Example HTTP request for tag object: 
-	 *      http://localhost:8080/annotation/webanno/497?wskey=apidemo&searchProfile=dereference
+	 *      http://localhost:8080/annotation/webanno/497?wskey=apidemo&profile=dereference
 	 * and for tag object with type jsonld
-	 *     http://localhost:8080/annotation/webanno/497.jsonld?wskey=apidemo&searchProfile=dereference
+	 *     http://localhost:8080/annotation/webanno/497.jsonld?wskey=apidemo&profile=dereference
 	 * @param wskey
 	 * @param identifier
 	 * @return response entity that comprises response body, headers and status code.
@@ -401,7 +401,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url += WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		url += WebAnnotationFields.PARAM_SEARCH_PROFILE + WebAnnotationFields.EQUALS + searchProfile.toString();
+		url += WebAnnotationFields.PARAM_PROFILE + WebAnnotationFields.EQUALS + searchProfile.toString();
 		
 		/**
 		 * Execute Europeana API request
