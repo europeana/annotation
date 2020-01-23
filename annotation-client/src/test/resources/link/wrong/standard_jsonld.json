@@ -9,7 +9,7 @@
 	},
 	"created": "2015-02-27T12:00:43Z",
 	"generated": "2015-02-28T13:00:34Z",
-	"generated": "http://www.historypin.org",
+	"generator": "http://www.historypin.org",
 	"target": [
 		"http://data.europeana.eu/item/123/xyz",
 		"http://data.europeana.eu/item/333/xxx"

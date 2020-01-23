@@ -3,17 +3,24 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.google.common.base.Strings;
 
@@ -589,6 +596,50 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	/**
+	 * This method retrieves a set of supported transcriptions licenses.
+	 * @return a set of transcriptions licenses
+	 */
+	protected Set<String> getAcceptedLicenceses() {
+		String transcriptionLicenses = getConfiguration().getTranscriptionsLicenses();
+		String[] transcriptions = StringUtils.split(transcriptionLicenses, ",");
+		Set<String> licenses = Stream.of(transcriptions)
+				.collect(Collectors.toCollection(HashSet::new));		
+		return licenses;
+	}
+	
+	/**
+	 * This method verifies if provided right is in a list of valid licenses
+	 * @param webAnnotation The right provided in the input from annotation object
+	 * @return true if provided right is in a list of valid licenses
+	 * @throws ParamValidationException
+	 */
+	protected boolean validateEdmRights(Annotation webAnnotation) throws ParamValidationException {
+
+		// if rights are provided, check if it belongs to the valid license list
+		if (webAnnotation != null && webAnnotation.getBody() != null && webAnnotation.getBody().getEdmRights() != null) {
+			String right = webAnnotation.getBody().getEdmRights();
+			// remove version from the right and get licenses
+			String RIGHT_DELIMITER = "/";					
+			String[] rightElems = StringUtils.split(right, RIGHT_DELIMITER);
+			
+			List<String> rightElemsSet = Stream.of(rightElems)
+					.collect(Collectors.toCollection(ArrayList::new));
+			rightElemsSet.remove(rightElemsSet.size()-1);						
+			String normalizedRight = String.join(RIGHT_DELIMITER, rightElemsSet).replace(":/", "://")+RIGHT_DELIMITER;
+			Set<String> rights = getAcceptedLicenceses();
+			
+			if (!rights.contains(normalizedRight))
+				throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+						I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE,
+						new String[]{"rights.value", right});
+		} else {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validation of simple tags.
 	 * 
 	 * Pre-processing: Trim spaces. If the tag is encapsulated by double or
@@ -679,7 +730,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		if (body.getHttpUri() != null && !eu.europeana.annotation.utils.UriUtils.isUrl(body.getHttpUri()))
 			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 					I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
-					new String[]{"tag.body.httpUri", body.getHttpUri()});
+					new String[]{"tag.body.httpUri", body.getHttpUri()});		
 	}
 
 	private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
@@ -828,6 +879,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 			break;
 		case TAGGING:
 			validateTag(webAnnotation);
+			break;
+		case TRANSCRIBING:
+			validateEdmRights(webAnnotation);			
 			break;
 		default:
 			break;

@@ -41,7 +41,8 @@ public interface SpecificResource extends InternetResource{
 
 	public abstract String getScope();
 
-	
-	
+	public abstract void setEdmRights(String rights);
+
+	public abstract String getEdmRights();
 	
 }
