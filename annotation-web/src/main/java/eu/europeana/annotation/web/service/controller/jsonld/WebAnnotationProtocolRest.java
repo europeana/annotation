@@ -65,20 +65,20 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			return getAnnotationById(wskey, identifier, action);
 	}
 	
-	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 
-			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-	@ApiOperation(value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
-	public ResponseEntity<String> options(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
-			HttpServletRequest request)
-					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
-
-		//the content response is delivered automatically by spring
-//				return null;
-//		userToken = getUserToken(userToken, request);	
-		return optionsForCorsPreflight(wskey, null, null, userToken);
-	}
+//	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 
+//			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+//	@ApiOperation(value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
+//	public ResponseEntity<String> options(
+//			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
+//			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
+//			HttpServletRequest request)
+//					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+//
+//		//the content response is delivered automatically by spring
+////				return null;
+////		userToken = getUserToken(userToken, request);	
+//		return optionsForCorsPreflight(wskey, null, null, userToken);
+//	}
 	
 	@RequestMapping(value = {"/annotation/{identifier}"}, method = RequestMethod.PUT, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})

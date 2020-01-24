@@ -14,12 +14,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
-import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
@@ -70,7 +67,7 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
 		this.apiWriteLockService = apiWriteLockService;
 	}
 	
-	@Override
+//	@Override
 	/**
 	 * use authorizeUser(String userToken, String apiKey, String operationName) instead
 	 * @param userToken
@@ -79,28 +76,28 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
 	 * @param operationName
 	 * @throws UserAuthorizationException
 	 */
-	public void authorizeUser(String userId, Authentication authentication, AnnotationId annoId, String operationName)
-			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-		// throws exception if user is not found
-		//TODO: add userToken to agent
-		
-		checkWriteLockInEffect(userId, operationName);
-		
-		
-		if (userId == null)
-			throw new UserAuthorizationException("Invalid User (Token)", I18nConstants.INVALID_TOKEN, new String[]{userId}, HttpStatus.FORBIDDEN);
-		
-		if(!isAdmin(authentication) && !hasPermission(authentication, operationName))
-			throw new OperationAuthorizationException(null, I18nConstants.CLIENT_NOT_AUTHORIZED, 
-					new String[]{"client apikey: " + authentication.getDetails() + "; annotation id: "+ annoId},
-					HttpStatus.FORBIDDEN);
-				
-		//check permissions
-		if(isTester(authentication) && configuration.isProductionEnvironment()){
-			//#20 testers not allowed in production environment
-			throw new UserAuthorizationException(null, I18nConstants.TEST_USER_FORBIDDEN, new String[]{authentication.getName()}, HttpStatus.FORBIDDEN);
-		}
-	}
+//	public void authorizeUser(String userId, Authentication authentication, AnnotationId annoId, String operationName)
+//			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
+//		// throws exception if user is not found
+//		//TODO: add userToken to agent
+//		
+//		checkWriteLockInEffect(userId, operationName);
+//		
+//		
+//		if (userId == null)
+//			throw new UserAuthorizationException("Invalid User (Token)", I18nConstants.INVALID_TOKEN, new String[]{userId}, HttpStatus.FORBIDDEN);
+//		
+//		if(!isAdmin(authentication) && !hasPermission(authentication, operationName))
+//			throw new OperationAuthorizationException(null, I18nConstants.CLIENT_NOT_AUTHORIZED, 
+//					new String[]{"client apikey: " + authentication.getDetails() + "; annotation id: "+ annoId},
+//					HttpStatus.FORBIDDEN);
+//				
+//		//check permissions
+//		if(isTester(authentication) && configuration.isProductionEnvironment()){
+//			//#20 testers not allowed in production environment
+//			throw new UserAuthorizationException(null, I18nConstants.TEST_USER_FORBIDDEN, new String[]{authentication.getName()}, HttpStatus.FORBIDDEN);
+//		}
+//	}
 
 	/**
 	 * Check if a write lock is in effect. Returns HttpStatus.LOCKED for change operations in case the write lock is active.
@@ -212,11 +209,11 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
 //		return UserGroups.TESTER.name().equals(user.getUserGroup());
 	}
 	
-	@Override
-	public void authorizeUser(String userToken, Authentication authentication, String operationName)
-			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-		authorizeUser(userToken, authentication, null, operationName);
-	}
+//	@Override
+//	public void authorizeUser(String userToken, Authentication authentication, String operationName)
+//			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
+//		authorizeUser(userToken, authentication, null, operationName);
+//	}
 
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;

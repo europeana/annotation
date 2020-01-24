@@ -76,7 +76,8 @@ public class BaseJsonldRest extends BaseRest {
 			// 1. authorize user
 			String userId = authentication.getPrincipal().toString();
 			String apikeyId = authentication.getDetails().toString();
-			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.CREATE);
+			//already performed in verify write access
+//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.CREATE);
 
 			// parse
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -152,7 +153,15 @@ public class BaseJsonldRest extends BaseRest {
 
 	}
 	
-	
+	@Deprecated 
+	/**
+	 * Must update authorization 
+	 * @param wsKey
+	 * @param annotationPageIn
+	 * @param authentication
+	 * @return
+	 * @throws HttpException
+	 */
 	protected ResponseEntity<String> storeAnnotations(String wsKey, String annotationPageIn, Authentication authentication) throws HttpException {
 		try {
 
@@ -161,7 +170,7 @@ public class BaseJsonldRest extends BaseRest {
 			
 			// TODO #152 Authorization
 			String userId = authentication.getPrincipal().toString();
-			getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
+//			getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
 			
 			// parse annotation page
 			AnnotationPageParser annoPageParser = new AnnotationPageParser();
@@ -226,7 +235,7 @@ public class BaseJsonldRest extends BaseRest {
 				String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL+apikeyId;
 				String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL+userId;
 							
-				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
+//				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
 				AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder()
 						.setGenerator(buildAgentGenerator(generatorId))
 						.setUser(buildAgentGenerator(creatorId))
@@ -357,62 +366,7 @@ public class BaseJsonldRest extends BaseRest {
 		}
 	}
 
-	/**
-	 * 
-	 * @param wskey
-	 * @param provider
-	 * @param identifier
-	 * @param userToken
-	 * @return
-	 */
-	protected ResponseEntity<String> optionsForCorsPreflight(String wsKey, Authentication authentication, String provider,
-			String identifier) throws HttpException {
-		// Similar behaviour as GET method but different response code
-		try {
-
-			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
-
-			// CHECK user autorization
-			String userId = authentication.getPrincipal().toString();
-			getAuthorizationService().authorizeUser(userId, authentication, Operations.RETRIEVE);
-
-			if (identifier != null) {
-				// if OPTIONS /annotation/identifier request
-				// 3. Retrieve an annotation based on its identifier;
-				AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), 
-						identifier);
-
-				// 4. If annotation doesn’t exist respond with HTTP 404 (if
-				// provided
-				// annotation id doesn’t exists )
-				if (!getAnnotationService().existsInDb(annoId))
-					throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{annoId.toRelativeUri()});
-			}
-
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-			headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-			
-			headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
-//			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_PGDOHP);
-//			headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, HttpHeaders.ALLOW_PGDOHP);
-//			headers.add(HttpHeaders.ACCEPT_POST, HttpHeaders.VALUE_LDP_CONTENT_TYPE);
-
-			ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
-
-			return response;
-
-		} catch (RuntimeException e) {
-			// not found ..
-			throw new InternalServerException(e);
-		} catch (HttpException e) {
-			// avoid wrapping http exception
-			throw e;
-		} catch (Exception e) {
-			throw new InternalServerException(e);
-		}
-	}
-
+	
 	protected ResponseEntity<String> getModerationReportSummary(String wsKey, String identifier,
 			String action) throws HttpException {
 
@@ -524,7 +478,8 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(null, identifier, userId);
 
 			// 1. authorize user
-			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.UPDATE);
+			//already performed in verify write access
+//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.UPDATE);
 
 			// 2. check time stamp
 			
@@ -598,7 +553,8 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(null, identifier, userId);
 
 			// 5. authorize user
-			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
+			//already performed in verify write access
+//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
 
 			// Retrieve an annotation based on its id;
 			Annotation annotation = getAnnotationService().getAnnotationById(annoId);
@@ -646,7 +602,8 @@ public class BaseJsonldRest extends BaseRest {
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, identifier, userId);
 
 			// 1. authorize user
-			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
+			//already performed in verify write access
+//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
 
 			// build vote
 			Date reportDate = new Date();
