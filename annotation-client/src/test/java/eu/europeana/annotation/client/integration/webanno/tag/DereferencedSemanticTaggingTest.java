@@ -20,7 +20,6 @@ import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 
 /**
  * This class is for testing of semantic tag entity dereferenciation.
@@ -30,8 +29,9 @@ import eu.europeana.annotation.utils.parse.AnnotationPageParser;
  */
 public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 
-	static final String SEARCH_VALUE_TEST = "\"body\": \"http://www.wikidata.org/entity/Q41264\""; 
-//			"generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";	
+	static final String QUERY_ID = "http://viaf.org/viaf/51961439";
+	static final String SEARCH_VALUE_TEST = "body_uri:\"" + QUERY_ID + "\"";
+	static final String TEST_LANGUAGE = "en,en-US";
 
 	protected Logger log = LogManager.getLogger(getClass());
 	
@@ -43,11 +43,11 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
 	 */
-//	@Test
+	@Test
 	public void createExampleDereferencedSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false);
+		Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
 		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		
@@ -57,43 +57,15 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(response.getBody());
 		
 		Annotation retrievedAnnotation = getApiClient().parseResponseBody(response);
-//		assertNotNull(retrievedAnnotation.getDereferenced());		
 		assertNotNull(retrievedAnnotation.getBody().getHttpUri());		
 		assertEquals(retrievedAnnotation.getBody().getHttpUri(),storedAnno.getBody().getValue());		
 		assertNotNull(((EdmAgent) ((EdmAgentBody) retrievedAnnotation.getBody()).getAgent()).getDateOfBirth());		
 		assertNotNull(((EdmAgent) ((EdmAgentBody) retrievedAnnotation.getBody()).getAgent()).getDateOfDeath());		
-//		log.info(retrievedAnnotation.getDereferenced());
 		log.info("Input body:" + storedAnno.getBody());
 		log.info("Output body dereferenced:" + retrievedAnnotation.getBody());
 		log.info("ID of dereferenced annotation:" + retrievedAnnotation.getAnnotationId());
 	}
 
-	/**
-	 * This is a Test for Mozart entity dereferenciation
-	 * @throws IOException
-	 * @throws JsonParseException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 */
-//	@Test
-	public void createDereferencedSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
-
-		Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_MOZART_ENTITY, false);
-		log.info(storedAnno.getBody().getInternalType());
-		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
-		
-		// retrieve dereferenced annotation
-		ResponseEntity<String> response = getAnnotation(storedAnno);
-		
-		assertNotNull(response.getBody());
-		
-		Annotation retrievedAnnotation = getApiClient().parseResponseBody(response);
-		assertNotNull(retrievedAnnotation.getDereferenced());		
-		log.info(retrievedAnnotation.getDereferenced());
-	}
-	
 	/**
 	 * Test search query and verify dereferenced search result
 	 * 
@@ -105,34 +77,16 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		AnnotationPage annPg = annSearchApi.searchAnnotations(SEARCH_VALUE_TEST, SearchProfiles.DEREFERENCE);
+		AnnotationPage annPg = annSearchApi.searchAnnotations(SEARCH_VALUE_TEST, SearchProfiles.DEREFERENCE, TEST_LANGUAGE);
 		assertNotNull(annPg, "AnnotationPage must not be null");
-		//there might be old annotations of failing tests in the database
-//		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
-//		assertEquals(annPg.getCurrentPage(), 0);
-//		assertEquals(TOTAL_IN_PAGE, annPg.getTotalInPage());
-//		assertEquals(TOTAL_IN_PAGE, annPg.getItems().getResultSize());
-//		assertNextPageNumber(annPg, 1);
-
-//		// second page
-//		String npUri = annPg.getNextPageUri();
-//		String nextPageJson = annSearchApi.getApiConnection().getHttpConnection().getURLContent(npUri);
-//		AnnotationPageParser annoPageParser = new AnnotationPageParser();
-//		AnnotationPage secondAnnoPg = annoPageParser.parseAnnotationPage(nextPageJson);
-//		String currentPageUri = secondAnnoPg.getCurrentPageUri();
-//		log.debug("currentPageUri" + currentPageUri);
-//		String nextCurrentPageUri = secondAnnoPg.getNextPageUri();
-//		log.debug("nextCurrentPageUri" + nextCurrentPageUri);
-//		assertNotNull(secondAnnoPg);
-//		assertEquals(secondAnnoPg.getCurrentPage(), 1);
-//		assertNextPageNumber(secondAnnoPg, 2);
-//		assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getTotalInPage());
-//		assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getItems().getResultSize());
-		
-		// last page
-//		int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
-//		AnnotationPage lastPage = annSearchApi.searchAnnotations(VALUE_TESTSET, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
-//		assertEquals(lastPage.getCurrentPage(), lastPageNum);
+		//there must be annotations in database after initial insert in this test class
+		assertTrue(0 <= annPg.getTotalInCollection());
+		assertEquals(annPg.getCurrentPage(), 0);
+		for (Annotation foundAnnotation : annPg.getAnnotations()) {
+			log.info(foundAnnotation.getAnnotationId());
+			log.info(foundAnnotation.getBody().getHttpUri());
+			assertEquals(foundAnnotation.getBody().getHttpUri(),QUERY_ID);
+		}
 	}	
 
 }

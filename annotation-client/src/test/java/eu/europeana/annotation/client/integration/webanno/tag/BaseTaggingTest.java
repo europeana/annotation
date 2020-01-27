@@ -38,12 +38,17 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	
 	protected Annotation createTag(String inputFile, boolean validate) throws IOException, JsonParseException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return createTag(inputFile, validate, false);
+	}
+	
+	protected Annotation createTag(String inputFile, boolean validate, boolean indexOnCreate) throws IOException, JsonParseException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		System.out.println("Input File: " + inputFile);
 
 		String requestBody = getJsonStringInput(inputFile);
 
-		Annotation storedAnno = createTag(requestBody);
+		Annotation storedAnno = createTagWithIndex(requestBody, indexOnCreate);
 
 		Annotation inputAnno = parseTag(requestBody);
 

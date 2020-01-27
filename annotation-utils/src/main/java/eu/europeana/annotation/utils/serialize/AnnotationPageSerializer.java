@@ -145,6 +145,7 @@ public class AnnotationPageSerializer extends JsonLd {
 			// do not serialize items
 			break;
 
+		case DEREFERENCE:
 		case STANDARD:
 			putStandardItemsProperty(jsonLdResource);
 

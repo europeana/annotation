@@ -64,8 +64,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private String status;
 	private Date lastUpdate;
 	
-	private String dereferenced;
-
 	//getters and setters
 	
 	public ObjectId getId() {
@@ -308,14 +306,4 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		 return null;
 	}
 	
-	@Override
-	public void setDereferenced(String dereferenced) {
-		this.dereferenced = dereferenced;		
-	}
-
-	@Override
-	public String getDereferenced() {
-		return dereferenced;
-	}
-
 }

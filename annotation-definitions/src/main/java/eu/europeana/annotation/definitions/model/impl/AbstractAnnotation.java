@@ -463,14 +463,4 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 		 return null;
 	}
 	
-	@Override
-	public String getDereferenced() {
-		return dereferenced;
-	}
-
-	@Override
-	public void setDereferenced(String dereferenced) {
-		this.dereferenced = dereferenced;
-	}
-
 }

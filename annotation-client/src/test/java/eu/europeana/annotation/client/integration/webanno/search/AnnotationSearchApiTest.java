@@ -86,7 +86,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET, SearchProfiles.MINIMAL);
+		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET, SearchProfiles.MINIMAL, null);
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());

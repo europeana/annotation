@@ -70,7 +70,7 @@ public class MetisDereferenciationClient {
 	public Map<String,String> queryMetis(String baseUrl, List<String> uris, String language) throws IOException {
 		Map<String,String> res = new HashMap<String,String>();
 		for (String uri : uris) {
-			String queryUri = baseUrl+"?uri="+URLEncoder.encode(uri,"UTF-8");;			
+			String queryUri = baseUrl+URLEncoder.encode(uri,"UTF-8");;			
 		    String xmlResponse = getHttpConnection().getURLContent(queryUri);
 		    String jsonLdStr = convertDereferenceOutputToJsonLd(uri, xmlResponse, language).toString();
 		    res.put(uri,jsonLdStr);

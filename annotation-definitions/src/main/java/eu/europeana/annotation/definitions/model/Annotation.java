@@ -58,11 +58,6 @@ public interface Annotation {
 
 	public abstract boolean isDisabled();
 	
-	public abstract void setDereferenced(String dereferenced);
-
-	public abstract String getDereferenced();
-
-
 	/**
 	 *  @return
 	 */

@@ -35,9 +35,10 @@ public interface AnnotationSearchApi {
 	 * @param field Additional field
 	 * @param language Language
 	 * @param searchProfile Search profile (MINIMAL, STANDARD, etc.)
+	 * @param language The language passed to the Web API as a parameter
 	 * @return Annotation page
 	 */
-	public AnnotationPage searchAnnotations(String query, String startOn, String limit, String field, String language, SearchProfiles searchProfile);
+	public AnnotationPage searchAnnotations(String query, String startOn, String limit, String field, String language, SearchProfiles searchProfile, String paramLanguage);
 	
 	/**
 	 * Search for tags by the given text query.
@@ -55,7 +56,13 @@ public interface AnnotationSearchApi {
 	 */
 	public List<? extends TagResource> searchTags(String query, String startOn, String limit, String field, String language);
 
-	AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile);
+	/**
+	 * @param query
+	 * @param searchProfile
+	 * @param language The language passed to the Web API as a parameter
+	 * @return Annotation page
+	 */
+	AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile, String language);
 
 
 

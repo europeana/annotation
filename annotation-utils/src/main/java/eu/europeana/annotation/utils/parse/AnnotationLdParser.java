@@ -295,9 +295,6 @@ public class AnnotationLdParser extends JsonLdParser {
 			String[] via = parseVia(valueObject);
 			anno.setVia(via);
 			break;
-		case (WebAnnotationFields.DEREFERENCED):
-			anno.setDereferenced((String) valueObject);
-			break;
 		default:
 			// throw new JsonParseException("Unsupported Property: " +
 			// property);

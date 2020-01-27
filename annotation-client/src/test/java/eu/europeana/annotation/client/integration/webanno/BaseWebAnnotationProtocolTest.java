@@ -372,9 +372,18 @@ public class BaseWebAnnotationProtocolTest {
 		return createTag(requestBody, getApiKey(), userToken);
 	}
 
+	protected Annotation createTagWithIndex(String requestBody, boolean indexOnCreate) throws JsonParseException {
+		String userToken = TEST_USER_TOKEN;
+		return createTag(null, indexOnCreate, requestBody, getApiKey(), userToken);
+	}
+
 	protected Annotation createTag(String requestBody, String apiKey, String userToken) throws JsonParseException {
+		return createTag(null, false, requestBody, getApiKey(), userToken);
+	}
+
+	protected Annotation createTag(String identifier, boolean indexOnCreate, String requestBody, String apiKey, String userToken) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createTag(
-				null, false, requestBody, 
+				identifier, indexOnCreate, requestBody, 
 				apiKey, userToken);
 		
 		assertNotNull(response.getBody());

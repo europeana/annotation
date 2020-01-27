@@ -618,19 +618,40 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 
 	/**
-	 * This method returns a list of Annotation objects for the passed query according to the given search profile.
-     * E.g. /annotation-web/annotations/search?wskey=key&profile=webtest&value=vlad&field=all&language=en&startOn=0&limit=&search=search	 
-     * @param query The query string 
-	 * @return AnnotationPage object
+	 * Search without language parameter.
+	 * @param query
+	 * @param page
+	 * @param pageSize
+	 * @param searchProfile
+	 * @return found annotations
 	 * @throws IOException
-	 * @throws JsonParseException 
+	 * @throws JsonParseException
 	 */
 	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile) 
 			throws IOException, JsonParseException {
-		String url = buildUrl(query, page, pageSize, searchProfile.toString()); 
-		
+		String DEFAULT_LANGUAGE = "en,en-US";
+		return search(query, page, pageSize, searchProfile, DEFAULT_LANGUAGE);
+	}
+	
+	
+	/**
+	 * This method returns a list of Annotation objects for the passed query according to the given search profile.
+     * E.g. /annotation-web/annotations/search?wskey=key&profile=webtest&value=vlad&field=all&language=en&startOn=0&limit=&search=search	 
+	 * @param query The query string
+	 * @param page
+	 * @param pageSize
+	 * @param searchProfile
+	 * @param language Response language
+	 * @return AnnotationPage object
+	 * @throws IOException
+	 * @throws JsonParseException
+	 */
+	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile, String language) 
+			throws IOException, JsonParseException {
+		String url = buildUrl(query, page, pageSize, searchProfile.toString(), language); 
+
 		// Execute Europeana API request
-		String json = getJSONResult(url);
+		String json = getJSONResultWithHeader(url, requestHeaderName, requestHeaderValue);
 		
 		return getAnnotationPage(json);
 	}
@@ -682,9 +703,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param page Start page
 	 * @param pageSize Page size
 	 * @param profile Query profile
+	 * @param language Query language
 	 * @return query Query URL
 	 */
-	private String buildUrl(String query, String page, String pageSize, String profile)  throws IOException {
+	private String buildUrl(String query, String page, String pageSize, String profile, String language)  throws IOException {
 		String url = getAnnotationServiceUri();
 		url += "/search?wskey=" + getApiKey() + "&profile=" + profile;
 		if (StringUtils.isNotEmpty(query)) {
@@ -698,6 +720,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url += "&pageSize=" + pageSize;
 		else
 			url += "&pageSize=10";
+		if (StringUtils.isNotEmpty(language)) {
+			url += "&language=" + language;
+		}
 		return url;
 	}
 
@@ -714,7 +739,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 */
 	public TagSearchResults searchTags(String query, String startOn, String limit) throws IOException {
 		
-		String url = buildUrl(query, startOn, limit, ModelConst.TAG);
+		String url = buildUrl(query, startOn, limit, ModelConst.TAG, null);
 		url = url.replace("annotations", "tags");
 		
 		/**
