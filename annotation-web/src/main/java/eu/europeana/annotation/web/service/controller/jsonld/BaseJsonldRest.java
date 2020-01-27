@@ -50,12 +50,10 @@ import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
-import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.BatchOperationStep;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
-import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
@@ -83,18 +81,18 @@ public class BaseJsonldRest extends BaseRest {
 			Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
 			// validate annotation and check that no generator and creator exists in input json
-			webAnnotation.setCreator(null);
-			webAnnotation.setGenerator(null);
+//			webAnnotation.setCreator(null);
+//			webAnnotation.setGenerator(null);
 			
-			// set generator and crator
+			// set generator and creator
 			String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL+apikeyId;
 			String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL+userId;
 
-			if (webAnnotation.getGenerator() == null)
-				webAnnotation.setGenerator(buildAgentGenerator(generatorId));
+//			if (webAnnotation.getGenerator() == null)
+			webAnnotation.setGenerator(buildAgentGenerator(generatorId));
 
-			if (webAnnotation.getCreator() == null)
-				webAnnotation.setCreator(buildAgentGenerator(creatorId));
+//			if (webAnnotation.getCreator() == null)
+			webAnnotation.setCreator(buildAgentGenerator(creatorId));
 
 			// 2. validate
 			// check whether annotation with the given provider and identifier
@@ -166,7 +164,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// SET DEFAULTS
-			Application app = getAuthenticationService().getByApiKey(wsKey);
+//			Application app = getAuthenticationService().getByApiKey(wsKey);
 			
 			// TODO #152 Authorization
 			String userId = authentication.getPrincipal().toString();
