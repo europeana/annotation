@@ -952,12 +952,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 				, language
 				);
 		String dereferencedJsonLdMapStr = dereferencedMap.get(queryUri);
-//		annotation.setDereferenced(dereferencedJsonLdMapStr);
-		String prefix = "{  \"motivation\": \"tagging\",  \"body\": ";
-		String postfix = "  }";
-		String dereferencedJsonLdMapStrExt = prefix + dereferencedJsonLdMapStr + postfix;
-		Annotation parsedResponseAnnotation = parseAnnotationLd(null, dereferencedJsonLdMapStrExt);
-		annotation.setBody(parsedResponseAnnotation.getBody());
+		//replace URI with dereferenced entity
+		if(StringUtils.isNotEmpty(dereferencedJsonLdMapStr)) {
+			annotation.getBody().setValue(dereferencedJsonLdMapStr);
+			annotation.getBody().setInputString(dereferencedJsonLdMapStr);
+		}
 		return annotation;
 	}
 	

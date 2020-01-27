@@ -1,10 +1,15 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -62,15 +68,17 @@ public class WebAnnotationSearchRest extends BaseRest {
 			// @RequestParam(value = WebAnnotationFields.PARAM_LIMIT) long
 			// limit,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
+			@RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
 			HttpServletRequest request) throws HttpException {
 
 		String action = "get:/annotation/search{.format}";
 
-		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action);
+		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action, language);
 	}
 
 	private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets,
-			SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile, HttpServletRequest request, String action)
+			SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile, HttpServletRequest request, 
+			String action, String language)
 					throws HttpException {
 
 		try {
@@ -95,13 +103,21 @@ public class WebAnnotationSearchRest extends BaseRest {
 				sortOrderField = sortOrder.toString();
 			
 			SearchProfiles searchProfile = getProfile(profile, request);
+			
+			// here we need a query search profile - dereference is not a query search profile - we use default
+			SearchProfiles querySearchProfile = searchProfile;
+			if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+				querySearchProfile = SearchProfiles.STANDARD;
+			}
 
 			//** build search query
 			Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
-					sortFieldStr, sortOrderField, page, pageSize, searchProfile);
+					sortFieldStr, sortOrderField, page, pageSize, querySearchProfile);
 
 			//** do search
 			AnnotationPage annotationPage = getAnnotationSearchService().search(searchQuery, request);
+			
+			applyDereferenceProfile(language, searchProfile, annotationPage);
 			
 			//** serialize page
 			AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage);
@@ -129,10 +145,21 @@ public class WebAnnotationSearchRest extends BaseRest {
 			throw new InternalServerException(e);
 		}
 	}
+
+	private void applyDereferenceProfile(String language, SearchProfiles searchProfile, AnnotationPage annotationPage)
+			throws IOException, JsonParseException, HttpException {
+		if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+			List<Annotation> annotationsWithProfile = new ArrayList<Annotation>();
+			List<? extends Annotation> annotations = annotationPage.getAnnotations();
+			for (Annotation annotation : annotations) {
+				Annotation annotationWithProfile = getAnnotationService().addProfileData(annotation, searchProfile, language);
+				annotationsWithProfile.add(annotationWithProfile);
+			}
+			annotationPage.setAnnotations(annotationsWithProfile);
+		}
+	}
 	
 	private SearchProfiles getProfile(String profile, HttpServletRequest request) {
-		
-		
 		
 		// if the profile parameter is given, the header preference is ignored
 		if(profile != null) {

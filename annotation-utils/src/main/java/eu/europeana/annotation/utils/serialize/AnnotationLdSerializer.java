@@ -93,8 +93,6 @@ public class AnnotationLdSerializer extends JsonLd {
 		putStringProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical(), jsonLdResource);
 		putStringArrayProperty(WebAnnotationFields.VIA, annotation.getVia(), jsonLdResource, true);
 
-		putDereferenced(annotation, jsonLdResource);
-
 		put(jsonLdResource);
 		
 		return jsonLdResource;
@@ -187,15 +185,6 @@ public class AnnotationLdSerializer extends JsonLd {
 		} else {
 			putStringProperty(WebAnnotationFields.CREATOR, annotation.getCreator().getInputString(), jsonLdResource);
 		}
-	}
-
-	/**
-	 * This method adds dereferenced map to annotation serialized object
-	 * @param annotation object
-	 * @param jsonLdResource serialized object
-	 */
-	protected void putDereferenced(Annotation annotation, JsonLdResource jsonLdResource) {
-		putStringProperty(WebAnnotationFields.DEREFERENCED, annotation.getDereferenced(), jsonLdResource);
 	}
 
 	protected void putGenerator(Annotation annotation, JsonLdResource jsonLdResource) {

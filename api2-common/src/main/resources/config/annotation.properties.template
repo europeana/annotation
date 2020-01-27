@@ -24,6 +24,8 @@ annotation.whitelist.default=/config/default_whitelist.json
 #max search results per page
 annotation.search.maxpagesize.minimal=10000
 annotation.search.maxpagesize.standard=100
+annotation.search.maxpagesize.dereference=100
+
  
 # Profiling configurations (enabling/disabling through profiler.expression property)
 # disable profiling

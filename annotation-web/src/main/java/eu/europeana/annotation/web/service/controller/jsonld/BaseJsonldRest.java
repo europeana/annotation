@@ -339,8 +339,9 @@ public class BaseJsonldRest extends BaseRest {
 			
 			Annotation annotationWithProfile = annotation;
 			SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
-			if (SearchProfiles.DEREFERENCE.equals(searchProfile))
+			if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
 				annotationWithProfile = getAnnotationService().addProfileData(annotation, searchProfile, language);
+			}
 
 			JsonLd annotationLd = new AnnotationLdSerializer(annotationWithProfile);
 			String jsonLd = annotationLd.toString(4);
