@@ -22,6 +22,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 import eu.europeana.annotation.web.model.BatchReportable;
@@ -163,14 +164,6 @@ public interface AnnotationService {
 	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	/**
-	 * Search for annotations by the given text query.
-	 * @param query
-	 * @return
-	 * @throws AnnotationServiceException 
-	 */
-	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException;
-	
-	/**
 	 * Search for annotations by the given text query, row start position and rows limit. 	 
 	 * @param query
 	 * @param startOn
@@ -251,7 +244,7 @@ public interface AnnotationService {
 
 //	void indexAnnotation(AnnotationId annoId);
 
-	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
+	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException;
 
 	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationException;
 	

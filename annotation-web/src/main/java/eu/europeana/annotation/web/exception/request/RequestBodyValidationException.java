@@ -19,6 +19,11 @@ public class RequestBodyValidationException extends HttpException{
 		super(message, i18nKey, null, HttpStatus.BAD_REQUEST, th);
 		this.bodyValue = message;
 	}
+	
+	public RequestBodyValidationException(String message, String i18nKey, String[] i18nParams){
+		super(message, i18nKey, i18nParams, HttpStatus.BAD_REQUEST, null);
+		this.bodyValue = message;
+	}
 		
 	public String getBodyValue() {
 		return bodyValue;

@@ -1,69 +1,88 @@
 package eu.europeana.annotation.config;
 
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class AnnotationConfigurationImpl implements AnnotationConfiguration{
+import org.apache.commons.lang3.StringUtils;
 
-	private Properties annotationProperties;
-	
-	@Override
-	public String getComponentName() {
-		return "annotation";
-	}
+public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
-	@Override
-	public boolean isIndexingEnabled() {
-		String value = getAnnotationProperties().getProperty(ANNOTATION_INDEXING_ENABLED);
-		return Boolean.valueOf(value);
-	}
+    private Properties annotationProperties;
+    private Set<String> acceptedLicences;
 
-	public Properties getAnnotationProperties() {
-		return annotationProperties;
-	}
+    @Override
+    public String getComponentName() {
+	return "annotation";
+    }
 
-	public void setAnnotationProperties(Properties annotationProperties) {
-		this.annotationProperties = annotationProperties;
-	}
+    @Override
+    public boolean isIndexingEnabled() {
+	String value = getAnnotationProperties().getProperty(ANNOTATION_INDEXING_ENABLED);
+	return Boolean.valueOf(value);
+    }
 
-	@Override
-	public boolean isProductionEnvironment() {
-		// TODO Auto-generated method stub
-		return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
-	}
+    public Properties getAnnotationProperties() {
+	return annotationProperties;
+    }
 
-	@Override
-	public String getEnvironment() {
-		return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
-	}
+    public void setAnnotationProperties(Properties annotationProperties) {
+	this.annotationProperties = annotationProperties;
+    }
 
-	@Override
-	public String getAnnotationBaseUrl() {
-		String key = ANNOTATION_ENVIRONMENT + "." + getEnvironment() + "." + SUFFIX_BASEURL; 
-		return getAnnotationProperties().getProperty(key);
-	}
+    @Override
+    public boolean isProductionEnvironment() {
+	// TODO Auto-generated method stub
+	return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
+    }
 
-	public String getDefaultWhitelistResourcePath() {
-		return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
-	}
+    @Override
+    public String getEnvironment() {
+	return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
+    }
 
-	
-	public int getMaxPageSize(String profile) {
-		String key = PREFIX_MAX_PAGE_SIZE + profile;
-		return Integer.parseInt(getAnnotationProperties().getProperty(key));
-	}
+    @Override
+    public String getAnnotationBaseUrl() {
+	String key = ANNOTATION_ENVIRONMENT + "." + getEnvironment() + "." + SUFFIX_BASEURL;
+	return getAnnotationProperties().getProperty(key);
+    }
 
-	
-	public String getJwtTokenSignatureKey() {
-	    return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
-	}
-	
-	@Override
-	public String getAuthorizationApiName() {
-		return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
-	}
+    public String getDefaultWhitelistResourcePath() {
+	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
+    }
 
-	@Override
-	public String getTranscriptionsLicenses() {
-		return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
+    public int getMaxPageSize(String profile) {
+	String key = PREFIX_MAX_PAGE_SIZE + profile;
+	return Integer.parseInt(getAnnotationProperties().getProperty(key));
+    }
+
+    public String getJwtTokenSignatureKey() {
+	return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
+    }
+
+    @Override
+    public String getAuthorizationApiName() {
+	return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
+    }
+
+    @Override
+    public String getTranscriptionsLicenses() {
+	return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
+    }
+
+    @Override
+    /*
+     * (non-Javadoc)
+     * @see eu.europeana.annotation.config.AnnotationConfiguration#getAcceptedLicenceses()
+     */
+    public Set<String> getAcceptedLicenceses() {
+
+	if (acceptedLicences == null) {
+	    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
+	    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
 	}
+	return acceptedLicences;
+    }
 }
