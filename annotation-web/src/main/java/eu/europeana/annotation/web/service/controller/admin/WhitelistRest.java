@@ -8,7 +8,6 @@ import javax.ws.rs.DELETE;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,6 @@ import eu.europeana.annotation.web.exception.authorization.UserAuthorizationExce
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
-import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.WhitelistService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;

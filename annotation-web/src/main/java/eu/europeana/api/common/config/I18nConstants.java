@@ -1,7 +1,7 @@
 package eu.europeana.api.common.config;
 
 public interface I18nConstants {
-	
+	//TODO: add extends api-commons.I18nConstants
 	static final String ANNOTATION_NOT_FOUND = "error.annotation_not_found";
 	static final String OPERATION_NOT_AUTHORIZED = "error.annotation_operation_not_authorized";
 	static final String CLIENT_NOT_AUTHORIZED = "error.annotation_client_not_authorized";
@@ -9,6 +9,7 @@ public interface I18nConstants {
 	static final String USER_NOT_AUTHORIZED = "error.annotation_user_not_authorized";
 	static final String ANNOTATION_NOT_ACCESSIBLE = "error.annotation_not_accessible";
 	static final String ANNOTATION_INVALID_BODY = "error.annotation_invalid_body";
+	static final String ANNOTATION_INVALID_RIGHTS = "annotation_invalid_rights";
 	static final String ANNOTATION_CANT_PARSE_BODY = "error.annotation_cant_parse_body";
 	static final String API_WRITE_LOCK = "error.annotation_write_lock";
 	static final String ANNOTATION_VALIDATION = "error.annotation_validation";

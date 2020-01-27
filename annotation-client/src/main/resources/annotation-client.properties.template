@@ -6,5 +6,5 @@ annotation.service.uri = http://localhost:8080/annotation
 annotation.api.key =
 
 # the annotation validation header definitions
-annotation.header.name = 
+annotation.header.name = Authorization 
 annotation.header.value =  

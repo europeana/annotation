@@ -83,7 +83,7 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getApiKey() {
-		return getProperties().getProperty(PROP_ANNOTATION_API_KEY);
+		return getProperties().getProperty(PROP_ANNOTATION_API_KEY).trim();
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getServiceUri() {
-		return getProperties().getProperty(PROP_ANNOTATION_SERVICE_URI);
+		return getProperties().getProperty(PROP_ANNOTATION_SERVICE_URI).trim();
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getHeaderName() {
-		return getProperties().getProperty(PROP_ANNOTATION_HEADER_NAME);
+		return getProperties().getProperty(PROP_ANNOTATION_HEADER_NAME).trim();
 	}
 	
 	/**
@@ -115,6 +115,6 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getHeaderValue() {
-		return getProperties().getProperty(PROP_ANNOTATION_HEADER_VALUE);
+		return getProperties().getProperty(PROP_ANNOTATION_HEADER_VALUE).trim();
 	}
 }

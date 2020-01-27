@@ -22,7 +22,7 @@ The following properties are optional in all annotations:
 						<li><a href="#semantictag_specific">Create (Semantic) Tag - Specific Resource</a></li>
 						<li><a href="#objectlink">Create Object Link</a></li>
 						<li><a href="#objectlink_specificRelation">Create Object Link - by specifying a relation type</a></li>
-						<li><a href="#transcription">Create Transcription Annotation</a></li>
+						<li><a href="#transcription">Create Transcription</a></li>
 						<li><a href="#tag_webResource">Create (Object) tag - web resource</a></li>
 					</ul>
 
@@ -234,7 +234,8 @@ The json-ld serialization available in the following box is a valid input to be 
   "body": {
     "id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
     "language": "de",
-    "format": "text/html"
+    "format": "text/html",
+    "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
   },
   "target": {
     "scope": "http://data.europeana.eu/item/2020601/contributions_20841",

@@ -24,6 +24,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
 import eu.europeana.annotation.web.model.BatchReportable;
@@ -165,26 +166,6 @@ public interface AnnotationService {
 	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	/**
-	 * This method extends annotation according to the search profile
-	 * @param annotation
-	 * @param searchProfile
-	 * @param language e.g. "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru" 
-	 * @return annotation extended with profile data
-	 * @throws IOException
-	 * @throws HttpException 
-	 * @throws JsonParseException 
-	 */
-	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws IOException, JsonParseException, HttpException;
-	
-	/**
-	 * Search for annotations by the given text query.
-	 * @param query
-	 * @return
-	 * @throws AnnotationServiceException 
-	 */
-	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException;
-	
-	/**
 	 * Search for annotations by the given text query, row start position and rows limit. 	 
 	 * @param query
 	 * @param startOn
@@ -265,7 +246,7 @@ public interface AnnotationService {
 
 //	void indexAnnotation(AnnotationId annoId);
 
-	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
+	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException;
 
 	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationException;
 	
@@ -294,4 +275,16 @@ public interface AnnotationService {
 
 	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
+	/**
+	 * This method extends annotation according to the search profile
+	 * @param annotation
+	 * @param searchProfile
+	 * @param language e.g. "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru" 
+	 * @return annotation extended with profile data
+	 * @throws IOException
+	 * @throws HttpException 
+	 * @throws JsonParseException 
+	 */
+	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws IOException, JsonParseException, HttpException;
+	
 }
