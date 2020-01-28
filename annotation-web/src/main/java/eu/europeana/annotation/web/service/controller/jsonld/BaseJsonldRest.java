@@ -372,7 +372,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
+//			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// 3. Retrieve an annotation based on its identifier;
 			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
