@@ -58,10 +58,12 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@ApiOperation(value = "Retrieve annotation", nickname = "getAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> getAnnotation(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			HttpServletRequest request
 			) throws HttpException {
 
-			String action = "get:/annotation/{identifier}[.{format}]";		
+			String action = "get:/annotation/{identifier}[.{format}]";
+			verifyReadAccess(request);
 			return getAnnotationById(wskey, identifier, action);
 	}
 	
