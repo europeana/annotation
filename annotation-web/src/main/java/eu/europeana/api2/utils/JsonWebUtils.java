@@ -2,21 +2,20 @@ package eu.europeana.api2.utils;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-
-import com.github.jsonldjava.utils.JSONUtils;
 
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 public class JsonWebUtils {
 	
-	private static final Logger log = Logger.getLogger(JSONUtils.class);
+	private static final Logger log = LogManager.getLogger(JsonWebUtils.class);
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
 	public static String toJson(Object object) {

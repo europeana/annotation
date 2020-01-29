@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -54,6 +55,37 @@ public class HttpConnection {
         }
     }
 
+    /**
+     * This method adds a header to the HTTP request
+     * @param url
+     * @param requestHeaderName
+     * @param requestHeaderValue
+     * @return
+     * @throws IOException
+     */
+    public String getURLContentWithHeader(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        GetMethod get = new GetMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	get.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
+
+        try {
+            client.executeMethod(get);
+
+            if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = get.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+                return res;
+            } else {
+                return null;
+            }
+
+        } finally {
+            get.releaseConnection();
+        }
+    }
+
     public String getURLContent(String url, String jsonParamName, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
@@ -74,8 +106,32 @@ public class HttpConnection {
         	post.releaseConnection();
         }
     }
-
     
+	/**
+	 * This method makes POST request for given URL and JSON body parameter with header.
+	 * @param url
+	 * @param jsonParamValue
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> postURL(String url, String jsonParamValue, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PostMethod post = new PostMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	post.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
+        post.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(post);
+   			return buildResponseEntity(post);
+        } finally {
+        	post.releaseConnection();
+        }
+    }
+
 	/**
 	 * This method makes POST request for given URL and JSON body parameter.
 	 * @param url
@@ -119,6 +175,32 @@ public class HttpConnection {
 
 	
 	/**
+	 * This method makes PUT request for given URL and JSON body parameter.
+	 * @param url
+	 * @param jsonParamValue
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> putURL(String url, String jsonParamValue, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        PutMethod put = new PutMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	put.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
+        put.setRequestBody(jsonParamValue);
+
+        try {
+            client.executeMethod(put);
+   			return buildResponseEntity(put);
+        } finally {
+        	put.releaseConnection();
+        }
+    }
+
+	
+	/**
 	 * This method makes DELETE request for given identifier URL.
 	 * @param url The identifier URL
 	 * @return ResponseEntity that comprises response headers and status code.
@@ -127,6 +209,30 @@ public class HttpConnection {
 	public ResponseEntity<String> deleteURL(String url) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         DeleteMethod delete = new DeleteMethod(url);
+
+        try {
+            client.executeMethod(delete);
+   			return buildResponseEntity(delete);
+        } finally {
+        	delete.releaseConnection();
+        }
+    }
+
+	
+	/**
+	 * This method makes DELETE request for given identifier URL.
+	 * @param url The identifier URL
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> deleteURL(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
+        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        DeleteMethod delete = new DeleteMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	delete.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(delete);
@@ -176,8 +282,24 @@ public class HttpConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String>  getURL(String url) throws IOException {
+        return getURLWithHeader(url, null, null);
+    }
+    
+    
+	/**
+	 * This method makes GET request for given URL.
+	 * @param url
+	 * @param requestHeaderName
+	 * @param requestHeaderValue
+	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getURLWithHeader(String url, String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	get.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(get);
@@ -189,9 +311,27 @@ public class HttpConnection {
     
     
 	public String getURLContentWithBody(String url, String jsonParamValue) throws IOException {
+        return getURLContentWithBody(url, jsonParamValue, null, null);
+    }
+    
+    
+	/**
+	 * This method supports request header input
+	 * @param url
+	 * @param jsonParamValue
+	 * @param requestHeaderName
+	 * @param requestHeaderValue
+	 * @return
+	 * @throws IOException
+	 */
+	public String getURLContentWithBody(String url, String jsonParamValue, 
+			String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
         post.setRequestBody(jsonParamValue);
+		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
+        	post.setRequestHeader(requestHeaderName, requestHeaderValue);
+        }
 
         try {
             client.executeMethod(post);
@@ -208,45 +348,6 @@ public class HttpConnection {
         	post.releaseConnection();
         }
     }
-    
-    
-//    public boolean writeURLContent(String url, OutputStream out) throws IOException {
-//        return writeURLContent(url, out, null);
-//    }
-//
-//    public boolean writeURLContent(String url, OutputStream out, String requiredMime) throws IOException {
-//        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
-//        GetMethod getMethod = new GetMethod(url);
-//        try {
-//            client.executeMethod(getMethod);
-//
-//            Header tipoMimeHead = getMethod.getResponseHeader("Content-Type");
-//            String tipoMimeResp = "";
-//            if (tipoMimeHead != null) {
-//                tipoMimeResp = tipoMimeHead.getValue();
-//            }
-//
-//            if (getMethod.getStatusCode() >= STATUS_OK_START && getMethod.getStatusCode() <= STATUS_OK_END
-//                    && ((requiredMime == null) || ((tipoMimeResp != null) && tipoMimeResp.contains(requiredMime)))) {
-//                InputStream in = getMethod.getResponseBodyAsStream();
-//
-//                // Copy input stream to output stream
-//                byte[] b = new byte[4 * 1024];
-//                int read;
-//                while ((read = in.read(b)) != -1) {
-//                    out.write(b, 0, read);
-//                }
-//
-//                getMethod.releaseConnection();
-//                return true;
-//            } else {
-//                return false;
-//            }
-//
-//        } finally {
-//            getMethod.releaseConnection();
-//        }
-//    }
 
    
     private HttpClient getHttpClient(int connectionRetry, int conectionTimeout) {

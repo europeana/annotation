@@ -11,6 +11,8 @@ public class ClientConfiguration {
 	protected static final String ANNOTATION_CLIENT_PROPERTIES_FILE = "/annotation-client.properties";
 	protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
 	protected static final String PROP_ANNOTATION_SERVICE_URI = "annotation.service.uri";
+	protected static final String PROP_ANNOTATION_HEADER_NAME = "annotation.header.name";
+	protected static final String PROP_ANNOTATION_HEADER_VALUE = "annotation.header.value";
 	private static Properties properties = null;
 
 	private static ClientConfiguration singleton;
@@ -81,7 +83,7 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getApiKey() {
-		return getProperties().getProperty(PROP_ANNOTATION_API_KEY);
+		return getProperties().getProperty(PROP_ANNOTATION_API_KEY).trim();
 	}
 	
 	/**
@@ -92,6 +94,27 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getServiceUri() {
-		return getProperties().getProperty(PROP_ANNOTATION_SERVICE_URI);
+		return getProperties().getProperty(PROP_ANNOTATION_SERVICE_URI).trim();
+	}
+	
+	/**
+	 * This method provides access to the header name defined in the configuration
+	 * file
+	 * @see PROP_EUROPEANA_SEARCH_URI
+	 * 
+	 * @return
+	 */
+	public String getHeaderName() {
+		return getProperties().getProperty(PROP_ANNOTATION_HEADER_NAME).trim();
+	}
+	
+	/**
+	 * This method provides access to the header value defined in the configuration
+	 * file
+	 * 
+	 * @return
+	 */
+	public String getHeaderValue() {
+		return getProperties().getProperty(PROP_ANNOTATION_HEADER_VALUE).trim();
 	}
 }

@@ -16,6 +16,7 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	private String styleClass;
 	protected String purpose;
 	private String scope = "";
+	private String edmRights;
 	
 	
 	public String getScope() {
@@ -73,4 +74,13 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	public void setPurpose(String role) {
 		this.purpose = role;
 	}
+	
+	public String getEdmRights() {
+		return edmRights;
+	}
+
+	public void setEdmRights(String rights) {
+		this.edmRights = rights;
+	}
+	
 }

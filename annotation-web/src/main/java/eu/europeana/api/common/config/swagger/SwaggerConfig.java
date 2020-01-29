@@ -2,18 +2,15 @@ package eu.europeana.api.common.config.swagger;
 
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Predicates.or;
+import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 import static springfox.documentation.builders.RequestHandlerSelectors.withClassAnnotation;
 import static springfox.documentation.builders.RequestHandlerSelectors.withMethodAnnotation;
-import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
-import com.google.common.base.Predicates;
-
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
@@ -77,6 +74,7 @@ public class SwaggerConfig {
 		return docketConfig;
 	}
 
+	@SuppressWarnings("deprecation")
 	ApiInfo apiInfo() {
 
 		String appTitle = StringUtils.isNotBlank(title) ? title : "REST API";

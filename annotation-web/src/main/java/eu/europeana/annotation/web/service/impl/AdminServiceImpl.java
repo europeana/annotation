@@ -6,46 +6,35 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.authentication.Application;
-import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
-import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
-import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.apikey.client.Connector;
-import eu.europeana.apikey.client.ValidationRequest;
-import eu.europeana.apikey.client.ValidationResult;
-import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
 	@Resource(name = "annotation_db_apilockService")
 	PersistentApiWriteLockService apiWriteLockService;
 	
-	private final String APP_CONFIG_SELF = "appConfigSelf";
-
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
 		AnnotationId annoId;
 		BatchProcessingStatus status = new BatchProcessingStatus();
@@ -158,17 +147,21 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
 						if (success)
 							status.incrementSuccessCount();
-						else
+						else {
 							status.incrementFailureCount();
+							status.addError(id, "see error log");
+						}
 					} catch (IllegalArgumentException iae) {
 						String msg = "id: " + id + ". " + iae.getMessage();
 						getLogger().error(msg);
 						// throw new RuntimeException(iae);
 						status.incrementFailureCount();
+						status.addError(id, msg);
 					} catch (Throwable e) {
 						String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
 						getLogger().error(msg);
 						status.incrementFailureCount();
+						status.addError(id, msg);
 						// throw new RuntimeException(e);
 					}
 				}
@@ -273,96 +266,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	protected boolean isIndexInSync(PersistentAnnotation storedAnno) {
 		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
-	
-	
-    /**
-     * This method employs API key client library for API key validation
-     * @param request The validation request containing API key e.g. ApiKey1
-     * @param method The method e.g. read, write, delete...
-     * @return true if API key is valid
-     */
-    public boolean validateApiKey(ValidationRequest request, String method) {
-    	
-    	boolean res = false;
-    	
-    	String SUCCESS = "204";
-    	
-        if (StringUtils.isNotBlank(method)) request.setMethod(method);
-        Connector connector;
-        try {
-            connector = new Connector();
-            ValidationResult result = connector.validateApiKey(request);
-            if (result.hasConnected()){
-                if (StringUtils.isBlank(getConfiguration().getValidationApi())) {
-                	logger.debug("Apikeyservice api not provided");
-                }
-                if (StringUtils.isBlank(method)) {
-                	logger.debug("Apikeyservice method not provided");
-                }
-                if (result.isPageNotFound_404()) {
-                	logger.debug("Error: Apikeyservice not found on server");
-                }
-            } else {
-            	logger.debug("Error: could not connect to ApiKey Service");
-            }
-            if (result.getReturnStatus().equals(SUCCESS))
-            	res = true;
-            
-        } catch (ApiKeyValidationException e) {
-        	logger.error(e.getMessage());
-        } catch (Exception e) {
-        	logger.error(e.getMessage());
-        }
-        
-        return res;
-    }
-	
-	/**
-	 * @param appKey
-	 * @param appConfigJson
-	 * @return
-	 * @throws AnnotationMongoException 
-	 */
-	public Client updateAuthenticationConfig(String appKey, String appConfigJson) throws AnnotationMongoException {
-		Client storedClient = getClientApplicationByApiKey(appKey);
-		Client clientApp = updateClientConfig(storedClient, appConfigJson);
-		return clientApp;
-	}
-
-	public Client getClientApplicationByApiKey(String appKey) {
-		PersistentClient storedClient = (PersistentClient) clientService.findByApiKey(appKey);
-		if(storedClient == null)
-			throw new AnnotationMongoRuntimeException("No Client Application found with the (API) Key: " + appKey);
-		return storedClient;
-	}
-
-	private Client updateClientConfig(Client storedClient, String appConfigJson) throws AnnotationMongoException {
-			
-			String newConfig = appConfigJson;
-			//support from migration of app config
-			if(APP_CONFIG_SELF.equals(appConfigJson))
-				newConfig = storedClient.getAuthenticationConfigJson();
-			
-			Application clientApplication = authenticationService.parseApplication(newConfig);
-					
-			// put application in the client
-			storedClient.setClientApplication(clientApplication);
-
-			// write to MongoDB
-			Client clientApp = clientService.update((PersistentClient) storedClient);
-			return clientApp;
-	}
-
-	@Override
-	public Client migrateAuthenticationConfig(String appKey) throws AnnotationMongoException, OperationAuthorizationException {
-		Client storedClient = getClientApplicationByApiKey(appKey);
-		if(storedClient.getClientApplication() != null)
-			throw new OperationAuthorizationException(I18nConstants.OPERATION_EXECUTION_NOT_ALLOWED, I18nConstants.OPERATION_EXECUTION_NOT_ALLOWED, 
-					new String[]{"The configuration of the client application was already migrated!"});
-			
-		Client clientApp = updateClientConfig(storedClient, APP_CONFIG_SELF);
-		return clientApp;
-	}
-
+   	
 }
   

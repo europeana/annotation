@@ -7,14 +7,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONString;
 
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
@@ -22,9 +25,12 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
+import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
+import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
@@ -33,7 +39,6 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
-import eu.europeana.annotation.definitions.model.resource.impl.BaseSpecificResource;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -54,7 +59,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
  */
 public class AnnotationLdParser extends JsonLdParser {
 
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 	private AnnotationIdHelper idHelper;
 
 	/**
@@ -427,7 +432,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		String baseUrl = valueObject.substring(0, baseUrlLength);
 
 		AnnotationId annoId = new BaseAnnotationId();
-		annoId.setProvider(provider);
 		annoId.setIdentifier(identifier);
 		annoId.setBaseUrl(baseUrl);
 
@@ -523,10 +527,9 @@ public class AnnotationLdParser extends JsonLdParser {
 		Body body = parseBody(bodyText, motivation);
 		// add "bodyText" implications
 		body.setContentType(WebAnnotationModelKeywords.MIME_TYPE_TEXT_PLAIN);
-		body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 
 		return body;
-	}
+	}	
 
 	private Body parseBody(String valueObject, MotivationTypes motivation) {
 
@@ -553,6 +556,15 @@ public class AnnotationLdParser extends JsonLdParser {
 				// parse base properties of specific resources
 				parseSpecificResourceProperty((SpecificResource) body, key, value);
 
+				if (body instanceof VcardAddressBody) 
+					parseAddressProperty((VcardAddressBody) body, key, value);				
+					
+				if (body instanceof EdmAgentBody) 
+					parseAgentProperty((EdmAgentBody) body, key, value);				
+					
+				if (body instanceof PlaceBody) 
+					parsePlaceProperty((PlaceBody) body, key, value);				
+					
 				switch (key) {
 				// GRAPH-(linking)
 				case WebAnnotationFields.GRAPH:
@@ -576,23 +588,10 @@ public class AnnotationLdParser extends JsonLdParser {
 					}
 					body.setContext(context.getJsonValue());
 					break;
-
 				// Textual Body
 				case WebAnnotationFields.VALUE:
 					body.setValue(value.toString());
-					// add implications of TEXT field
-					body.addType(WebAnnotationModelKeywords.CLASS_TEXTUAL_BODY);
 					break;
-				// TODO: separate specific fields for parsing the whole specific
-				// object
-				// PLACE
-				case WebAnnotationFields.LATITUDE:
-					setLatitude(body, value.toString());
-					break;
-				case WebAnnotationFields.LONGITUDE:
-					setLongitude(body, value.toString());
-					break;
-
 				default:
 					break;
 				}
@@ -609,6 +608,54 @@ public class AnnotationLdParser extends JsonLdParser {
 		return body;
 	}
 
+	/**
+	 * @param body
+	 * @param streetAddress
+	 */
+	private void setVcardStreetAddress(VcardAddressBody body, String streetAddress) {
+		body.getAddress().setVcardStreetAddress(streetAddress);
+	}
+
+	/**
+	 * @param body
+	 * @param postalCode
+	 */
+	private void setVcardPostalCode(VcardAddressBody body, String postalCode) {
+		body.getAddress().setVcardPostalCode(postalCode);
+	}
+
+	/**
+	 * @param body
+	 * @param postOfficeBox
+	 */
+	private void setVcardPostOfficeBox(VcardAddressBody body, String postOfficeBox) {
+		body.getAddress().setVcardPostOfficeBox(postOfficeBox);
+	}
+
+	/**
+	 * @param body
+	 * @param locality
+	 */
+	private void setVcardLocality(VcardAddressBody body, String locality) {
+		body.getAddress().setVcardLocality(locality);
+	}
+
+	/**
+	 * @param body
+	 * @param region
+	 */
+	private void setVcardHasGeo(VcardAddressBody body, String region) {
+		body.getAddress().setVcardHasGeo(region);
+	}
+
+	/**
+	 * @param body
+	 * @param countryName
+	 */
+	private void setVcardCountryName(VcardAddressBody body, String countryName) {
+		body.getAddress().setVcardCountryName(countryName);
+	}
+	
 	private void parseSpecificResourceProperty(SpecificResource specificResource, String property, Object value)
 			throws JsonParseException {
 		switch (property) {
@@ -642,9 +689,237 @@ public class AnnotationLdParser extends JsonLdParser {
 			specificResource.setScope(value.toString());
 			break;
 
+		case WebAnnotationFields.RIGHTS:
+			specificResource.setEdmRights(value.toString());
+			break;
+
 		default:
 			break;
 
+		}
+	}
+
+	/**
+	 * Parsing for semantic tag Vcard address
+	 * @param body
+	 * @param property
+	 * @param value
+	 * @throws JsonParseException
+	 */
+	private void parseAddressProperty(VcardAddressBody body, String property, Object value)
+			throws JsonParseException {
+		switch (property) {
+			case WebAnnotationFields.STREET_ADDRESS:
+				setVcardStreetAddress(body, value.toString());
+				break;
+			case WebAnnotationFields.POSTAL_CODE:
+				setVcardPostalCode(body, value.toString());
+				break;
+			case WebAnnotationFields.POST_OFFICE_BOX:
+				setVcardPostOfficeBox(body, value.toString());
+				break;
+			case WebAnnotationFields.LOCALITY:
+				setVcardLocality(body, value.toString());
+				break;
+			case WebAnnotationFields.REGION:
+				setVcardHasGeo(body, value.toString());
+				break;
+			case WebAnnotationFields.COUNTRY_NAME:
+				setVcardCountryName(body, value.toString());
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Parsing for EDM Agent body
+	 * @param body
+	 * @param property
+	 * @param value
+	 * @throws JsonParseException
+	 * @throws JSONException 
+	 */
+	private void parseAgentProperty(EdmAgentBody body, String property, Object value)
+			throws JsonParseException, JSONException {
+		switch (property) {
+			case WebAnnotationFields.PREF_LABEL:
+				setPrefLabel(body, value);
+				break;
+			case WebAnnotationFields.DATE_OF_BIRTH:
+				setDateOfBirth(body, value);
+				break;
+			case WebAnnotationFields.DATE_OF_DEATH:
+				setDateOfDeath(body, value);
+				break;
+			case WebAnnotationFields.PLACE_OF_BIRTH:
+				setPlaceOfBirth(body, value);
+				break;
+			case WebAnnotationFields.PLACE_OF_DEATH:
+				setPlaceOfDeath(body, value);
+				break;
+			default:
+				break;
+		}
+	}
+
+    /**
+     * @param jsonobj
+     * @return
+     * @throws JSONException
+     */
+    public static Map<String, Object> toMap(JSONObject jsonobj)  throws JSONException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Iterator<String> keys = jsonobj.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonobj.get(key);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }   
+            map.put(key, value);
+        }   return map;
+    }
+    
+    /**
+     * @param array
+     * @return
+     * @throws JSONException
+     */
+    public static List<Object> toList(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<Object>();
+        for(int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+            else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            list.add(value);
+        }   return list;
+    }    
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     */
+    private void setPrefLabel(EdmAgentBody body, Object valueObject) throws JSONException {		
+		Map<String, String> resPrefLabel = extractStringStringMapFromJsonObject(valueObject);
+		((EdmAgent) body.getAgent()).setPrefLabel(resPrefLabel);
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     */
+    private void setPlaceOfBirth(EdmAgentBody body, Object valueObject) throws JSONException {		
+		Map<String, String> resPlaceOfBirth = extractStringStringMapFromJsonObject(valueObject);	
+		((EdmAgent) body.getAgent()).setPlaceOfBirth(resPlaceOfBirth);
+	}
+
+	/**
+	 * This method extracts a map of strings from serialized JSON object
+	 * @param valueObject
+	 * @return map of strings
+	 * @throws JSONException
+	 */
+	private Map<String, String> extractStringStringMapFromJsonObject(Object valueObject) throws JSONException {
+		Map<String, Object> placeOfBirth = toMap((JSONObject) valueObject);
+		Map<String, String> resPlaceOfBirth = placeOfBirth.entrySet().stream()
+			     .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+		return resPlaceOfBirth;
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     */
+    private void setPlaceOfDeath(EdmAgentBody body, Object valueObject) throws JSONException {		
+		Map<String, String> resPlaceOfDeath = extractStringStringMapFromJsonObject(valueObject);	
+		((EdmAgent) ((EdmAgentBody) body).getAgent()).setPlaceOfDeath(resPlaceOfDeath);
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JSONException
+     * @throws JsonParseException 
+     */
+    private void setDateOfBirth(EdmAgentBody body, Object valueObject) throws JSONException, JsonParseException {		
+		List<String> dateOfBirth = extractListFromJsonArrayOrString(valueObject);
+		((EdmAgent) body.getAgent()).setDateOfBirth(dateOfBirth);
+	}
+
+	/**
+	 * This method extracts a list of strings from serialized JSON array. 
+	 * In this use case we have only one array element.
+	 * @param valueObject
+	 * @return list of strings
+	 * @throws JSONException
+	 */
+	private List<String> extractStringListFromJsonArray(JSONArray arr) throws JSONException {
+		List<String> resList = new ArrayList<String>();
+		for(int i = 0; i < arr.length(); i++){
+		    resList.add(arr.getString(i));
+		}
+		return resList;
+	}
+
+    /**
+     * @param body
+     * @param valueObject
+     * @throws JsonParseException
+     * @throws JSONException
+     */
+    private void setDateOfDeath(EdmAgentBody body, Object valueObject) throws JsonParseException, JSONException {		
+		List<String> dateOfDeath = extractListFromJsonArrayOrString(valueObject);
+		((EdmAgent) body.getAgent()).setDateOfDeath(dateOfDeath);
+	}
+
+	/**
+	 * This method extracts list of strings from JSON array or string
+	 * @param valueObject
+	 * @return
+	 * @throws JSONException
+	 * @throws JsonParseException
+	 */
+	private List<String> extractListFromJsonArrayOrString(Object valueObject) throws JSONException, JsonParseException {
+		List<String> dateOfDeath;
+		if (valueObject instanceof JSONArray) {	
+			dateOfDeath = extractStringListFromJsonArray((JSONArray) valueObject);
+		} else if (valueObject instanceof JSONString || valueObject instanceof String){
+			dateOfDeath = new ArrayList<String>(1);
+			dateOfDeath.add(valueObject.toString());
+		} else {
+			throw new JsonParseException("unsupported type for JSON date: " + valueObject.getClass());
+		}
+		return dateOfDeath;
+	}
+	
+	/**
+	 * Parsing for place body
+	 * @param body
+	 * @param property
+	 * @param value
+	 * @throws JsonParseException
+	 */
+	private void parsePlaceProperty(PlaceBody body, String property, Object value)
+			throws JsonParseException {
+		switch (property) {
+			case WebAnnotationFields.LATITUDE:
+				setLatitude(body, value.toString());
+				break;
+			case WebAnnotationFields.LONGITUDE:
+				setLongitude(body, value.toString());
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -760,6 +1035,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	 * @param valueObject
 	 * @param motivation
 	 * @return
+	 * @throws JSONException 
 	 */
 	private BodyInternalTypes guesBodyInternalType(JSONObject valueObject, MotivationTypes motivation) {
 		switch (motivation) {
@@ -769,7 +1045,12 @@ public class AnnotationLdParser extends JsonLdParser {
 			else
 				return BodyInternalTypes.LINK;
 		case TRANSCRIBING:
-			return BodyInternalTypes.SPECIFIC_RESOURCE;
+			if (hasType(valueObject,ResourceTypes.FULL_TEXT_RESOURCE))
+				return BodyInternalTypes.FULL_TEXT_RESOURCE;
+			else
+				return BodyInternalTypes.SPECIFIC_RESOURCE;
+		case DESCRIBING:
+			return BodyInternalTypes.TEXT;
 		case TAGGING:
 			// simple resource (semantic) tag - extended
 			// specific resource - minimal or extended;
@@ -783,7 +1064,10 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
-
+			else if (hasType(valueObject, ResourceTypes.AGENT))
+				return BodyInternalTypes.AGENT;
+			else if (hasType(valueObject, ResourceTypes.VCARD_ADDRESS))
+				return BodyInternalTypes.VCARD_ADDRESS;
 		default:
 			break;
 

@@ -1,14 +1,14 @@
 package eu.europeana.annotation.client.integration.jsonld;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
-import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
@@ -17,48 +17,35 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
  * @author GordeaS
  *
  */
-@Ignore
+@Deprecated
 public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	
 	@Test
-	public void createSimpleTagWebannoAnnotation() throws JsonParseException {
+	public void createSimpleTagWebannoAnnotation() throws JsonParseException, IOException {
 		
-		String annotationStr = europeanaLdApi.createAnnotationLd(
-				"oa:tagging"
-				, WebAnnotationFields.PROVIDER_WEBANNO
-				, null
-				, simpleTagAnnotation
-				);
-		System.out.println("webanno annotation test: " + annotationStr);
-		assertNotNull(annotationStr);
-		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
-		validateAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, -1, annotation);
-	}
-	
-	@Test
-	public void createSimpleTagAnnotationWithoutProvider() throws JsonParseException {
+		String requestBody = getJsonStringInput(SIMPLE_TAG_ANNOTATION);
 		
 		String annotationStr = europeanaLdApi.createAnnotationLd(
 				"oa:tagging"
 				, null
-				, null
-				, simpleTagAnnotation
+				, requestBody
 				);
 		System.out.println("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);
-		assertTrue(annotationStr.contains(WebAnnotationFields.SUCCESS_FALSE));
-		assertTrue(annotationStr.contains(WebAnnotationFields.INVALID_PROVIDER));
+//		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
+//		validateAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, -1, annotation);
 	}
-	
-	@Test
-	public void createSimpleTagWebannoAnnotationWithAnnotationNr() throws JsonParseException {
 		
+	@Test
+	public void createSimpleTagWebannoAnnotationWithAnnotationNr() throws JsonParseException, IOException {
+		
+		String requestBody = getJsonStringInput(SIMPLE_TAG_ANNOTATION);
+
 		long annotationNr = System.currentTimeMillis();
 		String annotationStr = europeanaLdApi.createAnnotationLd(
 				"oa:tagging"
-				, WebAnnotationFields.PROVIDER_WEBANNO
 				, annotationNr
-				, simpleTagAnnotation
+				, requestBody
 				);
 		System.out.println("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);

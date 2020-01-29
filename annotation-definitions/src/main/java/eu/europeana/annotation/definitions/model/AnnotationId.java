@@ -15,15 +15,7 @@ public interface AnnotationId extends Serializable {
 	public String getIdentifier();
 
 	/**
-	 * Provider name e.g. 'webanno' or 'historypin'
-	 * @return
-	 */
-	public String getProvider();
-
-	public void setProvider(String provider);
-	
-	/**
-	 * returns the URI of the annotation (/provider/identifier)
+	 * returns the URI of the annotation (/identifier)
 	 * @see also {@link AnnotationId#toHttpUrl(String)}
 	 * 
 	 */

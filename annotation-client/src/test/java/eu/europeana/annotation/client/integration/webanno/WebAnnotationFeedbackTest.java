@@ -1,17 +1,18 @@
 package eu.europeana.annotation.client.integration.webanno;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,7 +25,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
  */
 public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest { 
 
-	protected Logger log = Logger.getLogger(getClass());
+	protected Logger log = LogManager.getLogger(getClass());
 
 	public static String TEST_API_KEY = "apidemo"; //"apiadmin";
 	public static String TEST_USER_TOKEN = "tester1";
@@ -40,7 +41,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getProvider()
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
@@ -58,7 +58,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getProvider()
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN
 				);
@@ -69,7 +68,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 		 */
 		ResponseEntity<String> getResponse = getApiClient().getModerationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getProvider()
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN
 				);

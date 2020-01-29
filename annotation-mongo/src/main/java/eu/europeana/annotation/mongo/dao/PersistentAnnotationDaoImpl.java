@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.Mapper;
@@ -24,6 +25,7 @@ import com.mongodb.DBObject;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
@@ -38,7 +40,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	@Resource
 	private AnnotationConfiguration configuration;
 	
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 	
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;
@@ -52,14 +54,13 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		super(datastore, clazz);
 	}
 
-	public AnnotationId generateNextAnnotationId(String provider) {
+	public AnnotationId generateNextAnnotationId() {
 
 		GeneratedAnnotationIdImpl nextAnnotationId = null;
 
-		synchronized (provider) {
-
+		synchronized (this) {
 			Query<GeneratedAnnotationIdImpl> q = getDatastore().createQuery(GeneratedAnnotationIdImpl.class);
-			q.filter("_id", provider);
+			q.filter("_id", WebAnnotationFields.DEFAULT_PROVIDER);
 			
 			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
 					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
@@ -69,10 +70,9 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 			
 			if (nextAnnotationId == null) {
 				// if first annotationId
-				nextAnnotationId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+1L);
+				nextAnnotationId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), ""+1L);
 				ds.save(nextAnnotationId);
 			}else{
-				nextAnnotationId.setProvider(provider);
 				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 			}
 		}
@@ -86,16 +86,18 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 * @param provider The name of the provider
 	 * @param sequenceLength The length of the id sequence to be created
 	 */
-	public List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceLength) {
+	public List<AnnotationId> generateNextAnnotationIds(Integer sequenceLength) {
+//		public List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceLength) {
 		
 		List<AnnotationId> nextAnnotationIds = new ArrayList<AnnotationId>(sequenceLength);
 
 		GeneratedAnnotationIdImpl annoId = null;
 
-		synchronized (provider) {
+		synchronized (this) {
+//			synchronized (provider) {
 			
 			Query<GeneratedAnnotationIdImpl> q = getDatastore().createQuery(GeneratedAnnotationIdImpl.class);
-			q.filter("_id", provider);
+//			q.filter("_id", provider);
 			
 			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
 					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
@@ -106,15 +108,16 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 			
 			// no annotation id in collection for the given provider, therefore a new object is created
 			if (annoId == null) {
-				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+sequenceLength.toString());
+//			annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+sequenceLength.toString());
+				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), ""+sequenceLength.toString());
 				getDatastore().save(annoId);
 			}
 			// generating a sequence of annotation ids 
 			Long firstNrOfSequence = annoId.getAnnotationNr() - sequenceLength;
 			for(int i = 0; i < sequenceLength; i++) {
 				Long newAnnoIdNr = (firstNrOfSequence + i + 1);
-				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+newAnnoIdNr.toString());
-				annoId.setProvider(provider);
+//				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+newAnnoIdNr.toString());
+				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), ""+newAnnoIdNr.toString());
 				annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 				nextAnnotationIds.add(annoId);
 			}
@@ -193,9 +196,10 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 * @param provider ID of the provider
 	 * @return Last annotation number
 	 */
-	public Long getLastAnnotationNr(String provider) {
+	public Long getLastAnnotationNr() {
+//		public Long getLastAnnotationNr(String provider) {
 		List<GeneratedAnnotationIdImpl> res = getDatastore().createQuery(GeneratedAnnotationIdImpl.class)
-                .filter("_id", provider)                
+//                .filter("_id", provider)                
                 .asList();
 		if(res.size() == 1) {
 			GeneratedAnnotationIdImpl genAnnoId = res.get(0);

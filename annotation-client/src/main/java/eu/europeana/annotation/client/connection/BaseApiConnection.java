@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 
 import com.google.gson.Gson;
@@ -22,7 +23,7 @@ public class BaseApiConnection {
 	// "http://www.europeana.eu/api/v2/search.json";
 	private String annotationServiceUri = "";
 	private HttpConnection httpConnection = new HttpConnection();
-	Logger logger = Logger.getLogger(getClass().getName());
+	Logger logger = LogManager.getLogger(getClass().getName());
 
 	private Gson gson;
 
@@ -99,6 +100,11 @@ public class BaseApiConnection {
 		return getHttpConnection().getURLContent(url);
 	}
 	
+	String getJSONResultWithHeader(String url, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (GET): " + url);
+		return getHttpConnection().getURLContentWithHeader(url, headerName, headerValue);
+	}
+	
 	String getJSONResult(String url, String paramName, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST): " + url);
 		return getHttpConnection().getURLContent(url, paramName, jsonPost);
@@ -107,6 +113,28 @@ public class BaseApiConnection {
 	String getJSONResultWithBody(String url, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST) with body: " + url);
 		return getHttpConnection().getURLContentWithBody(url, jsonPost);
+	}
+	
+	String getJSONResultWithBodyAndHeader(String url, String jsonPost, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (POST) with body: " + url);
+		return getHttpConnection().getURLContentWithBody(url, jsonPost, headerName, headerValue);
+	}
+	
+	
+	/**
+	 * This method makes POST request for given URL, header and JSON body parameter that returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param jsonPost
+     * @param requestHeaderName
+     * @param requestHeaderValue
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	ResponseEntity<String> postURL(String url, String jsonPost, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (POST) with body: " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().postURL(url, jsonPost, headerName, headerValue);
 	}
 	
 	
@@ -130,22 +158,23 @@ public class BaseApiConnection {
 	 * This method makes PUT request for given URL and JSON body parameter that returns
 	 * response body, response headers and status code.
 	 * @param url
-	 * @param jsonPost
+	 * @param jsonPut
+	 * @param headerName
+	 * @param headerValue
 	 * @return The response body, response headers and status code.
 	 * @throws IOException
 	 */
-	ResponseEntity<String> putURL(String url, String jsonPut) throws IOException {
+	ResponseEntity<String> putURL(String url, String jsonPut, String headerName, String headerValue) throws IOException {
 		logger.trace("Call to Annotation API (PUT) with body: " + url + 
 				". Returns body, headers and status code.");
 		
-		ResponseEntity<String> response = getHttpConnection().putURL(url, jsonPut);
+		ResponseEntity<String> response = getHttpConnection().putURL(url, jsonPut, headerName, headerValue);
 		
 		response.getStatusCode();
 		
 		return response;
 	}
 	
-
 	/**
 	 * This method makes GET request for given URL and returns
 	 * response body, response headers and status code.
@@ -161,16 +190,34 @@ public class BaseApiConnection {
 	
 	
 	/**
+	 * This method makes GET request for given URL and returns
+	 * response body, response headers and status code.
+	 * @param url
+	 * @param headerName
+	 * @param headerValue
+	 * @return The response body, response headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getURLWithHeader(String url, String headerName, String headerValue) throws IOException {
+		logger.trace("Call to Annotation API (GET): " + url + 
+				". Returns body, headers and status code.");
+		return getHttpConnection().getURLWithHeader(url, headerName, headerValue);
+	}
+	
+	
+	/**
 	 * This method makes DELETE request for given URL that returns
 	 * response headers and status code.
 	 * @param url
+	 * @param headerName
+	 * @param headerValue
 	 * @return The response headers and status code.
 	 * @throws IOException
 	 */
-	ResponseEntity<String> deleteURL(String url) throws IOException {
+	ResponseEntity<String> deleteURL(String url, String headerName, String headerValue) throws IOException {
 		logger.trace("Call to Annotation API (DELETE): " + url + 
 				". Returns headers and status code.");
-		return getHttpConnection().deleteURL(url);
+		return getHttpConnection().deleteURL(url, headerName, headerValue);
 	}
 	
 

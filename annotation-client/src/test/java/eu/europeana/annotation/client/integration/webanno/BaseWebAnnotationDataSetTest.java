@@ -1,16 +1,17 @@
 package eu.europeana.annotation.client.integration.webanno;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,7 +25,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class BaseWebAnnotationDataSetTest {
 	
-	protected Logger log = Logger.getLogger(getClass());
+	protected Logger log = LogManager.getLogger(getClass());
 
 	protected static final String TEST_USER_TOKEN = "tester1";
 	public static final String TAG_STANDARD_TESTSET = "/tag/standard_testset.json";
@@ -37,7 +38,7 @@ public class BaseWebAnnotationDataSetTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Before
+	@BeforeEach
 	public void initObjects() throws IOException {
 		apiClient = new WebAnnotationProtocolApiImpl();
 		defaultRequestBody = this.getJsonStringInput(TAG_STANDARD_TESTSET);
@@ -83,7 +84,7 @@ public class BaseWebAnnotationDataSetTest {
 	 */
 	protected ResponseEntity<String> storeTestAnnotation() {
 		ResponseEntity<String> storedResponse = apiClient.createAnnotation(
-				ClientConfiguration.getInstance().getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null,
+				ClientConfiguration.getInstance().getApiKey(), null,
 				defaultRequestBody, TEST_USER_TOKEN, null);
 		return storedResponse;
 	}
@@ -115,7 +116,6 @@ public class BaseWebAnnotationDataSetTest {
 
 		Annotation annotation = apiClient.parseResponseBody(response);
 
-		assertEquals(WebAnnotationFields.PROVIDER_WEBANNO, annotation.getAnnotationId().getProvider());
 		return annotation;
 	}
 
@@ -141,7 +141,6 @@ public class BaseWebAnnotationDataSetTest {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		for (Annotation annotation : annotations) {
 			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
-					annotation.getAnnotationId().getProvider(), 
 					annotation.getAnnotationId().getIdentifier());
 			assertEquals(re.getStatusCode(), HttpStatus.OK);
 		}

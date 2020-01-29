@@ -4,6 +4,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
+import eu.europeana.annotation.mongo.model.PersistentObjectDescribingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectLinkingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTranscriptionImpl;
@@ -43,6 +44,9 @@ public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 			break;
 		case OBJECT_TRANSCRIPTION:
 			ret = PersistentObjectTranscriptionImpl.class;
+			break;
+		case OBJECT_DESCRIBING:
+			ret = PersistentObjectDescribingImpl.class;
 			break;
 		default:
 			throw new RuntimeException(

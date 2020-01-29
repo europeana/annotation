@@ -2,7 +2,7 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.query.Query;
@@ -32,7 +32,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
 
 		query.filter(PersistentModerationRecord.FIELD_BASEURL, moderationRecord.getAnnotationId().getBaseUrl());
-		query.filter(PersistentModerationRecord.FIELD_PROVIDER, moderationRecord.getAnnotationId().getProvider());
+//		query.filter(PersistentModerationRecord.FIELD_PROVIDER, moderationRecord.getAnnotationId().getProvider());
 		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, moderationRecord.getAnnotationId().getIdentifier());
 
 		return getDao().findOne(query);
@@ -42,7 +42,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 
 		Query<PersistentModerationRecord> query = getDao().createQuery();
 		query.filter(PersistentModerationRecord.FIELD_BASEURL, annoId.getBaseUrl());
-		query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
+//		query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
 		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoId.getIdentifier());
 
 		return getDao().findOne(query);
@@ -108,7 +108,6 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		remove(queryModerationRecord.getAnnotationId());
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void validateDeleteResult(WriteResult res) throws AnnotationMongoException {
 		int affected = res.getN();
 		if (affected != 1)
@@ -179,7 +178,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 			Query<PersistentModerationRecord> query = createQuery(null);
 
 			query.filter(PersistentModerationRecord.FIELD_BASEURL, annoId.getBaseUrl());
-			query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
+//			query.filter(PersistentModerationRecord.FIELD_PROVIDER, annoId.getProvider());
 			query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoId.getIdentifier());
 
 			Key<PersistentModerationRecord> key = getDao().find(query).getKey();

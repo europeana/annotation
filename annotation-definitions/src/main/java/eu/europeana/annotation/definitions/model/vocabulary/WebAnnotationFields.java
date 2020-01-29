@@ -30,10 +30,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	
 	
 	// skos fields
-	/*
-	 * TODO: //remove skos concepts management and replace it with the Entity API
-	 */
-	@Deprecated 
 	public static final String PREF_LABEL = "prefLabel";
 	public static final String ALT_LABEL = "altLabel";
 	public static final String HIDDEN_LABEL = "hiddenLabel";
@@ -73,8 +69,10 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String VALUE = "value";
 	public static final String TAG_TYPE = "tagType";
 	public static final String TAG = "tag";
+	public static final String DESCRIBING = "describing";
 	public static final String LINK = "link";
 	public static final String SPECIFIC_RESOURCE = "SpecificResource";
+	public static final String FULL_TEXT_RESOURCE = "FullTextResource";
 
 	public static final String DEFAULT_LANGUAGE = "EN";
 	public static final String UNDERSCORE = "_";
@@ -123,7 +121,10 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String WRITE_METHOD = "write";
 	public static final String DELETE_METHOD = "delete";
 	public static final String CLIENT_VALIDATION_API_KEY = "ApiKey1";
-	
+
+	public static final String CREATE_OPERATION = "create";
+	public static final String UPDATE_OPERATION = "update";
+
 	/**
 	 * Query Fields
 	 */
@@ -146,22 +147,16 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotation";
 	public static final String SLASH = "/";
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4;
-	public static final int MIN_HISTORY_PIN_COMPONENT_COUNT = 3;
-	public static final String PROVIDER_WEBANNO = "webanno";
 	public static final String PROVIDER_EUROPEANA_DEV = "eanadev";
-	public static final String PROVIDER_HISTORY_PIN = "historypin";
 	public static final String PROVIDER_PUNDIT = "pundit";
-	//Europeana Media project
-	public static final String PROVIDER_EUMEDIA = "eumedia";
 	public static final String PROVIDER_WITH = "with";
-	public static final String PROVIDER_BASE = "base";
-	public static final String PROVIDER_COLLECTIONS = "collections";
-	public static final String PROVIDER_WRONG = "wrong";
-	public static final String TEST_HISTORYPIN_URL = "http://historypin.com/annotation/1234";
+	public static final String PROVIDER_HISTORY_PIN = "historypin";
 	public static final String HTTP = "http://";
 
 	public static final String SCOPE = "scope";
 	public static final String SOURCE = "source";
+
+	public static final String RIGHTS = "edmRights";
 
 	/**
 	 * Markup
@@ -194,7 +189,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	 */
 	public static final String AND = "&";
 	public static final String EQUALS = "=";
-	public static final String INDEXING = "indexing";
+//	public static final String INDEXING = "indexing";
 	public static final String INDEX_ON_CREATE = "indexOnCreate";
 	public static final String PROVIDER = "provider";
 	public static final String USER = "user";
@@ -272,6 +267,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String ITEMS_COUNT = "itemsCount";
 	public static final String URI = "uri";
 	public static final String WHITELIST = "whitelist";
+	public static final String DEFAULT_GENERATOR_URL = "http://data.europeana.eu/annotations/apikey/";
+	public static final String DEFAULT_CREATOR_URL = "http://data.europeana.eu/annotations/user/";
 
 	
 	/**
@@ -281,4 +278,5 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public enum TypeNamespaces {
 		oa, foaf, prov;
 	}
+
 }

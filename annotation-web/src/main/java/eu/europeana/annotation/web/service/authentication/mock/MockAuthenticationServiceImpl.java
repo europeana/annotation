@@ -5,10 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -26,7 +29,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -34,6 +36,7 @@ import eu.europeana.annotation.web.service.authentication.model.ApplicationDeser
 import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public class MockAuthenticationServiceImpl implements AuthenticationService, ResourceServerTokenServices
 // , ApiKeyService
@@ -45,7 +48,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	AnnotationConfiguration configuration;
 	PersistentClientService clientService;
 
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 
 	public MockAuthenticationServiceImpl(AnnotationConfiguration configuration, PersistentClientService clientService) {
 		this.configuration = configuration;
@@ -82,7 +85,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 			getLogger().debug("Loaded Api Key: " + app.getApiKey());
 		} catch (IOException e) {
-			throw new ApplicationAuthenticationException(null, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, e);
+			throw new ApplicationAuthenticationException( I18nConstants.APIKEY_FILE_NOT_FOUND, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, HttpStatus.UNAUTHORIZED, e);
 		}
 		return app;
 	}
@@ -127,6 +130,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void loadApiKeys() throws ApplicationAuthenticationException {
 
@@ -161,15 +165,15 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		app.setOrganization(organization);
 		Agent annonymous = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		annonymous.setName(applicationName + "-" + WebAnnotationFields.USER_ANONYMOUNS);
-		annonymous.setUserGroup(UserGroups.ANONYMOUS.name());
+		annonymous.setUserGroup(UserGroups.anonimous.name());
 		app.setAnonymousUser(annonymous);
 
 		Agent admin = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		admin.setName(applicationName + "-" + WebAnnotationFields.USER_ADMIN);
 		if (WebAnnotationFields.PROVIDER_EUROPEANA_DEV.equals(applicationName))
-			admin.setUserGroup(UserGroups.ADMIN.name());
+			admin.setUserGroup(UserGroups.admin.name());
 		else
-			admin.setUserGroup(UserGroups.USER.name());
+			admin.setUserGroup(UserGroups.user.name());
 
 		app.setAdminUser(admin);
 
@@ -189,7 +193,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		String username = "Europeana Collections Curator";
 		collectionsUser.setName(applicationName + "-" + username);
 		collectionsUser.setHttpUrl(username + "@" + applicationName);
-		collectionsUser.setUserGroup(UserGroups.USER.name());
+		collectionsUser.setUserGroup(UserGroups.user.name());
 
 		app.addAuthenticatedUser(COLLECTIONS_USER_TOKEN, collectionsUser);
 	}
@@ -217,7 +221,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		Agent tester1 = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
 		tester1.setName(applicationName + "-" + username);
 		tester1.setHttpUrl(username + "@" + applicationName);
-		tester1.setUserGroup(UserGroups.TESTER.name());
+		tester1.setUserGroup(UserGroups.tester.name());
 		return tester1;
 	}
 
@@ -228,7 +232,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		if (WebAnnotationFields.PROVIDER_PUNDIT.equals(provider))
 			return "http://pundit.it";
 
-		if (WebAnnotationFields.PROVIDER_WEBANNO.equals(provider))
+		if (WebAnnotationFields.DEFAULT_PROVIDER.equals(provider))
 			return "http://europeana.eu";
 
 		return null;
@@ -236,16 +240,16 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	}
 
 	@Override
-	public Agent getUserByToken(String apiKey, String userToken) throws UserAuthorizationException {
+	public Agent getUserByName(String apiKey, String userName) throws UserAuthorizationException {
 		Agent user = null;
 
 		// read user from cache
 		try {
 			Application clientApp = getByApiKey(apiKey);
-			user = getUserByToken(userToken, clientApp);
+			user = getUserByName(userName, clientApp);
 
 		} catch (ApplicationAuthenticationException e) {
-			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userToken}, e);
+			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userName}, e);
 		}
 
 		// refresh cache - add specific api key if found in MongoDB
@@ -253,18 +257,19 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 			// read from MongoDB
 			Application application = loadApiKey(apiKey);
 			if (application != null) {
-				user = getUserByToken(userToken, application);
+				user = getUserByName(userName, application);
 			}
 		}
 
 		// unknown user
 		if (user == null)
-			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userToken});
+			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userName});
 
 		return user;
 
 	}
 
+	@SuppressWarnings("deprecation")
 	Application loadApiKey(String apiKey) {
 		Client apiClient = clientService.findByApiKey(apiKey);
 		Application application = null;
@@ -277,14 +282,21 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		return application;
 	}
 
-	private Agent getUserByToken(String userToken, Application application) {
-		Agent user;
-		if (WebAnnotationFields.USER_ANONYMOUNS.equals(userToken))
+	private Agent getUserByName(String userName, Application application) {
+		Agent user = null;
+		if (WebAnnotationFields.USER_ANONYMOUNS.equals(userName)) {
 			user = application.getAnonymousUser();
-		else if (WebAnnotationFields.USER_ADMIN.equals(userToken))
+		} else if (WebAnnotationFields.USER_ADMIN.equals(userName)) {
 			user = application.getAdminUser();
-		else
-			user = application.getAuthenticatedUsers().get(userToken);
+		} else {
+			Collection<Agent> users = application.getAuthenticatedUsers().values();
+			for (Agent agent : users) {
+				if(userName.equals(agent.getName())){
+					user = agent;
+					break;
+				}
+			}
+		}
 		return user;
 	}
 

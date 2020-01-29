@@ -14,12 +14,12 @@ import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements WebAnnotationProtocolApi {
 
 	@Override
-	public ResponseEntity<String> createAnnotation(String wskey, String provider, String identifier,
+	public ResponseEntity<String> createAnnotation(String wskey, String identifier,
 			Boolean indexOnCreate, String annotation, String userToken, String annoType) {
 
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.createAnnotation(wskey, provider, identifier, indexOnCreate, annotation, userToken,
+			res = apiConnection.createAnnotation(wskey, identifier, indexOnCreate, annotation, userToken,
 					annoType);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
@@ -30,18 +30,18 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 	
 	@Override
-	public ResponseEntity<String> createAnnotation(String wskey, String provider, String identifier, String annotation,
+	public ResponseEntity<String> createAnnotation(String wskey, String identifier, String annotation,
 			String userToken, String annoType) {
-		return createAnnotation(wskey, provider, identifier,
+		return createAnnotation(wskey, identifier,
 				true, annotation, userToken, annoType);
 	}
 
 	@Override
-	public ResponseEntity<String> deleteAnnotation(String wskey, String provider, String identifier, String userToken,
+	public ResponseEntity<String> deleteAnnotation(String wskey, String identifier, String userToken,
 			String format) {
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.deleteAnnotation(wskey, provider, identifier, userToken, format);
+			res = apiConnection.deleteAnnotation(wskey, identifier, userToken, format);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi deleteAnnotation method", e);
@@ -51,11 +51,11 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> getAnnotation(String wskey, String provider, String identifier) {
+	public ResponseEntity<String> getAnnotation(String wskey, String identifier) {
 
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.getAnnotation(wskey, provider, identifier, false);
+			res = apiConnection.getAnnotation(wskey, identifier, false);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi getAnnotation method", e);
@@ -65,11 +65,11 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> updateAnnotation(String wskey, String provider, String identifier, String annotation,
+	public ResponseEntity<String> updateAnnotation(String wskey, String identifier, String annotation,
 			String userToken) {
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.updateAnnotation(wskey, provider, identifier, annotation, userToken, null);
+			res = apiConnection.updateAnnotation(wskey, identifier, annotation, userToken, null);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi updateAnnotation method", e);
@@ -79,32 +79,33 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate,
+	public ResponseEntity<String> createTag(String identifier, Boolean indexOnCreate,
 			String annotation, String userToken) {
-		return createTag(provider, identifier, indexOnCreate, annotation,
+		return createTag(identifier, indexOnCreate, annotation,
 				getConfiguration().getApiKey(), userToken);
 	}
 
 	@Override
-	public ResponseEntity<String> createTag(String provider, String identifier, Boolean indexOnCreate,
+	public ResponseEntity<String> createTag(String identifier, Boolean indexOnCreate,
 			String annotation, String apiKey, String userToken) {
-		return createAnnotation(apiKey, provider, identifier, indexOnCreate, annotation,
+		return createAnnotation(apiKey, identifier, indexOnCreate, annotation,
 				userToken, WebAnnotationFields.TAG);
 	}
 	
 	@Override
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException{
 		AnnotationLdParser europeanaParser = new AnnotationLdParser();
-		return europeanaParser.parseAnnotation(null, response.getBody());
+		String jsonLdStr = response.getBody();
+		return europeanaParser.parseAnnotation(null, jsonLdStr);
 	}
 
 	@Override
-	public ResponseEntity<String> createAnnotationReport(String wskey, String provider, String identifier,
+	public ResponseEntity<String> createAnnotationReport(String wskey, String identifier,
 			String userToken) {
 		
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.createAnnotationReport(wskey, provider, identifier, userToken);
+			res = apiConnection.createAnnotationReport(wskey, identifier, userToken);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
@@ -114,12 +115,12 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> getModerationReport(String wskey, String provider, String identifier,
+	public ResponseEntity<String> getModerationReport(String wskey, String identifier,
 			String userToken) {
 		
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.getModerationReport(wskey, provider, identifier, userToken);
+			res = apiConnection.getModerationReport(wskey, identifier, userToken);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);

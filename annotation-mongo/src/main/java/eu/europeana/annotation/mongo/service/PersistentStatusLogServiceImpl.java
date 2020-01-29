@@ -2,7 +2,7 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
@@ -98,7 +98,6 @@ public class PersistentStatusLogServiceImpl extends
 		validateDeleteResult(res);
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void validateDeleteResult(WriteResult res)
 			throws AnnotationMongoException {
 		int affected = res.getN();

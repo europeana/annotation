@@ -6,7 +6,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.UrlUtils;
 
@@ -47,7 +48,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	@Resource
 	AuthenticationService authenticationService;
 
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	
 	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
 

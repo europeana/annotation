@@ -21,12 +21,17 @@ public class EuropeanaLdApiImpl extends BaseAnnotationApi implements EuropeanaLd
 
 	@Override
 	public String createAnnotationLd(
-//			public Annotation createAnnotationLd(
-			String motivation, String provider, Long annotationNr, String europeanaLdStr) {
+			String motivation, Long annotationNr, String europeanaLdStr) {
+		return createAnnotationLd(motivation, annotationNr, europeanaLdStr, null);
+	}
+	
+	@Override
+	public String createAnnotationLd(
+			String motivation, Long annotationNr, String europeanaLdStr, String apikey) {
 		
 		AnnotationOperationResponse res;
 		try {
-			res = apiConnection.createEuropeanaAnnotationLd(motivation, provider, annotationNr, europeanaLdStr);
+			res = apiConnection.createEuropeanaAnnotationLd(motivation, annotationNr, europeanaLdStr, apikey);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the EuropenaLdApi for createEuropeanaAnnotationLd method", e);
 		}
@@ -36,10 +41,14 @@ public class EuropeanaLdApiImpl extends BaseAnnotationApi implements EuropeanaLd
 
 	@Override
 	public String getAnnotationLd(String provider, Long annotationNr) {
-//		public Annotation getAnnotationLd(String provider, Long annotationNr) {
+		return getAnnotationLd(provider, annotationNr, null);
+	}
+	
+	@Override
+	public String getAnnotationLd(String provider, Long annotationNr, String apikey) {
 		AnnotationSearchResults res;
 		try {
-			res = apiConnection.getAnnotationLd(provider, annotationNr);
+			res = apiConnection.getAnnotationLd(provider, annotationNr, apikey);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the EuropenaLdApi for getAnnotationLd method", e);
 		}

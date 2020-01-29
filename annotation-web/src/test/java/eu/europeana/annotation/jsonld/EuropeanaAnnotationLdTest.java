@@ -1,34 +1,17 @@
-/*
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
 package eu.europeana.annotation.jsonld;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.apache.stanbol.commons.jsonld.JsonLdParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 
@@ -43,7 +26,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 /**
  * @deprecated need to update the tests according to correctly use the EuropeanaAnnotationLd
  */
-@Ignore
+@Deprecated
 public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
@@ -70,11 +53,11 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 
 
 		
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -262,7 +245,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         assertEquals(expectedIndent, actualIndent);
 
         AnnotationLdParser deserializer = new AnnotationLdParser();
-        JsonLd parsedJsonLd = null;
+//        JsonLd parsedJsonLd = null;
         try {
 //        	parsedJsonLd = JsonLdParser.parseExt(actual);
         	deserializer.parseAnnotation(null, actualIndent);
@@ -312,8 +295,8 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromEuropeanaAnnotationLd = deserializer.parseAnnotation(null, initialAnnotationIndent);
 
-        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
-        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
+//        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
+//        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
         assertEquals(originalAnnotation.getMotivation(), annotationFromEuropeanaAnnotationLd.getMotivation());
@@ -443,8 +426,8 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          */
         Annotation annotationFromEuropeanaAnnotationLd = annotationDeserializer.parseAnnotation(null, initialAnnotationIndent);
 
-        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
-        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
+//        AnnotationLdSerializer convertedEuropeanaAnnotationLd = new AnnotationLdSerializer(annotationFromEuropeanaAnnotationLd);
+//        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
 //        System.out.println(originalAnnotation.toString());
@@ -473,14 +456,14 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
          * parse JsonLd string using JsonLdParser.
          * JsonLd string -> JsonLdParser -> JsonLd object -> EuropeanaAnnotationLd object
          */
-		AnnotationLdParser parser = null;
-        JsonLd parsedJsonLd = null;
-        try {
-        	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdObjectString);
-        	parser = new AnnotationLdParser();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		AnnotationLdParser parser = null;
+//        JsonLd parsedJsonLd = null;
+//        try {
+//        	parsedJsonLd = JsonLdParser.parseExt(annotationJsonLdObjectString);
+////        	parser = new AnnotationLdParser();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
         //TODO:update test
 //        String original = parser.toString();
 //        //EuropeanaAnnotationLd.toConsole("", original);      

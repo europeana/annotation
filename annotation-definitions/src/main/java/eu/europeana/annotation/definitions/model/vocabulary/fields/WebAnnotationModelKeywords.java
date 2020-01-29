@@ -13,10 +13,13 @@ public class WebAnnotationModelKeywords {
 	public static final String CLASS_SOUND = "Sound";
 	public static final String CLASS_TEXT = "Text";
 	public static final String CLASS_SPECIFIC_RESOURCE = "SpecificResource";
+	public static final String CLASS_FULL_TEXT_RESOURCE = "FullTextResource";
+	public static final String CLASS_VCARD_ADDRESS = "Address";
 	
 	//EUROPEANA EXTENSIONS CLASSES
 	public static final String CLASS_GRAPH = "Graph";
 	public static final String CLASS_EDM_PLACE = "Place";
+	public static final String CLASS_EDM_AGENT = "Agent";
 	
 	
 	//Contexts

@@ -4,6 +4,6 @@ springfox.documentation.swagger.v2.path=/api-docs
 springfox.host = localhost:8080
 springfox.application.title = Europeana Annotations - REST API
 springfox.application.description = This Swagger API console provides an overview of and interface to the Europeana Annotations REST API. For more help and information, head to our comprehensive <a href=\"http://labs.europeana.api/api/\">online documentation</a>.
-springfox.application.version = 0.2.8-SNAPSHOT
+springfox.application.version = 0.2.9-SNAPSHOT
 #use comma separated list of packages
-springfox.api.hiddenPackages = 
+springfox.api.hiddenPackages =

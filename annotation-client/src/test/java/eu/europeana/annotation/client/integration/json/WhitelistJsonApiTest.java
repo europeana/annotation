@@ -1,48 +1,46 @@
 package eu.europeana.annotation.client.integration.json;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 
 
 //TODO: enabled when whitelistEntry API is enabled
 //@Ignore 
-public class WhitelistJsonApiTest {
+public class WhitelistJsonApiTest extends BaseWebAnnotationProtocolTest {
 
 	private static String TEST_HTTP_URI = "http://test.data.europeana.eu";
-	private static String TEST_NAME = "test.data.europeana";
 	
     private WhitelistJsonApiImpl whitelistJsonApi;
-    protected Logger log = Logger.getLogger(getClass());
+    protected Logger log = LogManager.getLogger(getClass());
     
-    @Before
+    @BeforeEach
     public void initObjects() {
     	whitelistJsonApi = new WhitelistJsonApiImpl();
     }
 
-	public static String whitelistEntryJson = 
-		"{" +
-		"\"name\": \"" + TEST_NAME + "\"," +
-		"\"httpUrl\": \"" + TEST_HTTP_URI + "\"," +
-		"\"status\": \"enabled\"" +
-		"}";
-
 	@Test
-	public void crudWhitelistEntry() {
+	public void crudWhitelistEntry() throws JsonParseException, IOException {
 		
-		//ensure that old failing tests doesn't breake the current run
+		//ensure that old failing tests doesn't break the current run
 		removeIfExists(TEST_HTTP_URI);
+		
+		String whitelistEntryJson = getJsonStringInput(WHITELIST_ENTRY);
 		
 		/**
 		 * Create a whitelistEntry object within the test and do not rely on the objects stored in the database.

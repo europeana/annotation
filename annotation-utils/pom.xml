@@ -18,7 +18,13 @@
 			<artifactId>annotation-definitions</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${version.jackson}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
@@ -33,19 +39,12 @@
 			<version>1.9.9</version>
 		</dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
+        <dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<version>${version.org.junit.jupiter}</version>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>${version.slf4j}</version>
-		</dependency>
- -->
 
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
@@ -64,6 +63,32 @@
             <artifactId>apache-jena-libs</artifactId> 
             <type>pom</type>
             <version>2.13.0</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>log4j</groupId>
+            		<artifactId>log4j</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.slf4j</groupId>
+            		<artifactId>slf4j-log4j12</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.apache.httpcomponents</groupId>
+            		<artifactId>httpclient</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.apache.httpcomponents</groupId>
+            		<artifactId>httpclient-cache</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-databind</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
+            </exclusions>            
         </dependency>
 						
 	</dependencies>

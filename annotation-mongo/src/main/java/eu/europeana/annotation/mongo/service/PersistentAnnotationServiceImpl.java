@@ -6,8 +6,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
@@ -19,11 +20,9 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.config.AnnotationMongoConfiguration;
@@ -34,9 +33,7 @@ import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.factory.PersistentAnnotationFactory;
 import eu.europeana.annotation.mongo.model.MongoAnnotationId;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
-import eu.europeana.annotation.mongo.model.PersistentTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.annotation.utils.AnnotationListUtils;
@@ -49,7 +46,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	GeoPlaceValidator geoPlaceValidator;
 	
-	protected final Logger logger = Logger.getLogger(this.getClass());
+	protected final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Resource
 	private PersistentTagService tagService;
@@ -108,7 +105,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		if (isNew && object.getId() != null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 
-		if (object.getAnnotationId() == null || StringUtils.isEmpty(object.getAnnotationId().getProvider()))
+		if (object.getAnnotationId() == null)
 			throw new AnnotationValidationException(
 					"AnnotationId must not be null. AnnotationId.provider attribute is required");
 
@@ -154,15 +151,17 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	MongoAnnotationId initializeAnnotationId(PersistentAnnotation object) {
 		if (StringUtils.isEmpty(object.getAnnotationId().getIdentifier())) {
-			return generateAnnotationId(object.getAnnotationId().getProvider());
+			return generateAnnotationId();
 		} else {
 			return new MongoAnnotationId(object.getAnnotationId());
 		}
 	}
 
 	@Override
-	public MongoAnnotationId generateAnnotationId(String provider) {
-		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
+	public MongoAnnotationId generateAnnotationId() {
+//		public MongoAnnotationId generateAnnotationId(String provider) {
+		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId();
+//		AnnotationId annoId = getAnnotationDao().generateNextAnnotationId(provider);
 		annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
 
 		return new MongoAnnotationId(annoId);
@@ -176,9 +175,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @return List of annotation ids
 	 */
 	@Override
-	public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
+	public List<AnnotationId> generateAnnotationIdSequence(Integer seqLength) {
+//		public List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength) {
 		
-		return getAnnotationDao().generateNextAnnotationIds(provider, seqLength);
+		return getAnnotationDao().generateNextAnnotationIds(seqLength);
+//		return getAnnotationDao().generateNextAnnotationIds(provider, seqLength);
 
 	}
 
@@ -196,37 +197,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				res = WebAnnotationFields.SLASH + collection + WebAnnotationFields.SLASH + object;
 		}
 		return res;
-	}
-
-	private PersistentTag findOrCreateTag(PersistentAnnotation object, TagBody body) {
-
-		PersistentTag tag = null;
-
-		// check if tag exists or create it
-		if (body.getTagId() == null) {
-			PersistentTag query = new PersistentTagImpl();
-			body.copyInto(query);
-			// query.setValue(body.getValue());
-			// query.setHttpUri(body.getHttpUri());
-			if (BodyInternalTypes.isSimpleTagBody(body.getType()))
-				query.setTagTypeEnum(TagTypes.SIMPLE_TAG);
-			else if (BodyInternalTypes.isSemanticTagBody(body.getType()))
-				query.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
-
-			try {
-				tag = tagService.find(query);
-				if (tag == null) {
-					query.setCreator(object.getCreator().getName() + " : " + object.getCreator().getHttpUrl());
-					tag = tagService.create(query);
-				}
-
-			} catch (AnnotationMongoException e) {
-				throw new AnnotationValidationException("Cannot read tag from database", e);
-			}
-		}
-		if (tag.getId() == null && tag.getObjectId() != null)
-			((PersistentTagImpl) tag).setId(tag.getObjectId().toString());
-		return tag;
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
@@ -322,6 +292,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return results.asList();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<? extends Annotation> getFilteredAnnotationList(String europeanaId, String provider, String startOn,
 			String limit, boolean isDisabled) {
@@ -349,11 +320,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		query.filter(PersistentAnnotation.FIELD_HTTPURL, annoId.getHttpUrl());
-//		query.filter(PersistentAnnotation.FIELD_BASEURL, annoId.getBaseUrl());
-//		query.filter(PersistentAnnotation.FIELD_PROVIDER, annoId.getProvider());
-//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER, annoId.getIdentifier());
-		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
-
 		return getAnnotationDao().findOne(query);
 	}
 
@@ -463,18 +429,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	@Override
-	public Annotation updateIndexingTime(AnnotationId annoId, Date lastIndexing) throws AnnotationMongoException {
-
-		PersistentAnnotation annotation = find(annoId);
-
-		if (annotation == null) {
-			throw new AnnotationMongoException(AnnotationMongoException.NO_RECORD_FOUND + annoId);
-		}
-
+	public Annotation updateIndexingTime(Annotation anno, Date lastIndexing) throws AnnotationMongoException {
 		if (lastIndexing == null)
 			lastIndexing = new Date();
 
-		if (!isValidLastIndexingTimestamp(annotation, lastIndexing))
+		PersistentAnnotation annotation = (PersistentAnnotation) anno;
+		
+		if (!isValidLastIndexingTimestamp((PersistentAnnotation) annotation, lastIndexing))
 			throw new AnnotationMongoRuntimeException(
 					AnnotationMongoRuntimeException.INVALID_LAST_INDEXING + lastIndexing);
 
@@ -488,7 +449,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 		return annotation;
 	}
-
+	
+	
 	private boolean isValidLastIndexingTimestamp(PersistentAnnotation annotation, Date lastIndexing) {
 		// if never indexed
 		if (lastIndexing != null && annotation.getLastIndexed() == null)
@@ -550,7 +512,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return res;
 	}
 
-	@SuppressWarnings("deprecation")
 	public PersistentAnnotation copyIntoPersistentAnnotation(Annotation annotation) {
 
 		PersistentAnnotationImpl persistentAnnotation = (PersistentAnnotationImpl) (PersistentAnnotationFactory
@@ -703,6 +664,5 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME, 
 				AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME);
 	}
-	
 	
 }

@@ -3,10 +3,11 @@ package eu.europeana.annotation.solr.service.impl;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -16,17 +17,17 @@ import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.solr.model.internal.SolrTag;
 import eu.europeana.annotation.solr.model.internal.SolrTagImpl;
 import eu.europeana.annotation.solr.service.SolrTagService;
-import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
+import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 public class SolrTagServiceImpl implements SolrTagService {
 
-	SolrServer solrServer;
+	SolrClient solrServer;
 
 //	private static final Logger log = Logger.getLogger(SolrTagServiceImpl.class);
-	private static final Logger log = Logger.getLogger(SolrSyntaxConstants.ROOT);
+	private static final Logger log = LogManager.getLogger(SolrSyntaxConstants.ROOT);
 	
-	public void setSolrServer(SolrServer solrServer) {
+	public void setSolrServer(SolrClient solrServer) {
 		this.solrServer = solrServer;
 	}
 
@@ -60,7 +61,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    try {
 	    	QueryResponse rsp =  solrServer.query( query );
 	    	res = rsp.getBeans(SolrTagImpl.class);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new TagServiceException("Unexpected exception occured when searching tags for: " + term, e);
         }
 	    
@@ -97,7 +98,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    	QueryResponse rsp =  solrServer.query( query );
 			log.info("query response: " + rsp.toString());
 	    	res = rsp.getBeans(SolrTagImpl.class);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new TagServiceException("Unexpected exception occured when searching tags for: " + term, e);
         }
 	    
@@ -143,7 +144,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    	QueryResponse rsp = solrServer.query( query );
 	    	res = rsp.getBeans(SolrTagImpl.class);
 	    	log.info("search obj res size: " + res.size());
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new TagServiceException("Unexpected exception occured when searching tags for solrTag: " + 
 					queryObject.toString(), e);
         }
@@ -206,7 +207,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    try {
 	    	QueryResponse rsp =  solrServer.query( query );
 	    	res = rsp.getBeans(SolrTagImpl.class);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new TagServiceException("Unexpected exception occured when searching tags for label: " + searchTerm, e);
         }
 	    
@@ -281,7 +282,7 @@ public class SolrTagServiceImpl implements SolrTagService {
 	    	log.info("searchByMapKey search query: " + query.toString());
 	    	QueryResponse rsp = solrServer.query( query );
 	    	res = rsp.getBeans(SolrTagImpl.class);
-		} catch (SolrServerException e) {
+		} catch (SolrServerException | IOException e) {
 			throw new TagServiceException("Unexpected exception occured when searching tags for map key: " + 
 					searchKey + " and value: " + searchValue, e);
         }

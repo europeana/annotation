@@ -143,7 +143,6 @@ public class PersistentWhitelistServiceImpl extends
 		validateDeleteResult(res);
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void validateDeleteResult(WriteResult res)
 			throws AnnotationMongoException {
 		int affected = res.getN();

@@ -1,7 +1,8 @@
 package eu.europeana.annotation.mongo.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
@@ -76,7 +77,7 @@ public class AnnotationTestDataBuilder {
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
 		persistentObject.setCreator(creator);
-		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), null));
 		return persistentObject;
 	}
 
@@ -135,7 +136,7 @@ public class AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), "webanno", null));
+		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), null));
 		return persistentObject;
 	}
 

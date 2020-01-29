@@ -1,28 +1,33 @@
 package eu.europeana.annotation.web.service.authorization;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
-import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.definitions.vocabulary.Role;
+import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
 
-public class AuthorizationServiceImpl implements AuthorizationService {
+public class AuthorizationServiceImpl extends BaseAuthorizationService implements AuthorizationService {
 	
-	protected final Logger logger = Logger.getLogger(getClass());
+	protected final Logger logger = LogManager.getLogger(getClass());
 
 	@Resource
 	AuthenticationService authenticationService;
@@ -30,6 +35,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Resource
 	AnnotationConfiguration configuration;
 
+    @Resource(name = "commons_oauth2_europeanaClientDetailsService")
+    ClientDetailsService clientDetailsService;
+    
 	public AuthorizationServiceImpl(AuthenticationService authenticationService){
 		this.authenticationService = authenticationService;
 	}
@@ -59,50 +67,37 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		this.apiWriteLockService = apiWriteLockService;
 	}
 	
-	@Override
+//	@Override
 	/**
 	 * use authorizeUser(String userToken, String apiKey, String operationName) instead
 	 * @param userToken
-	 * @param apiKey
+	 * @param authentication
 	 * @param annoId
 	 * @param operationName
-	 * @return
 	 * @throws UserAuthorizationException
 	 */
-	public Agent authorizeUser(String userToken, String apiKey, AnnotationId annoId, String operationName)
-			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-		// throws exception if user is not found
-		//TODO: add userToken to agent
-		
-		checkWriteLockInEffect(userToken, operationName);
-		
-		
-		Application app = getAuthenticationService().getByApiKey(apiKey);
-		Agent user = getAuthenticationService().getUserByToken(apiKey, userToken);
-		
-		if (user== null || user.getName() == null || user.getUserGroup() == null)
-			throw new UserAuthorizationException("Invalid User (Token)", I18nConstants.INVALID_TOKEN, new String[]{userToken}, HttpStatus.FORBIDDEN);
-		
-		if(!isAdmin(user) && !hasPermission(app, annoId, operationName))
-			throw new OperationAuthorizationException(null, I18nConstants.CLIENT_NOT_AUTHORIZED, 
-					new String[]{"client app provider: " + app.getProvider() + "; annotation id: "+ annoId},
-					HttpStatus.FORBIDDEN);
-				
-		//check permissions
-		//TODO: isAdmin check is not needed anymore after the implementation of permissions based on user groups
-		if(isAdmin(user) && hasPermission(user, operationName))//allow all
-			return user;
-		else if(isTester(user) && configuration.isProductionEnvironment()){
-			//#20 testers not allowed in production environment
-			throw new UserAuthorizationException(null, I18nConstants.TEST_USER_FORBIDDEN, new String[]{user.getName()}, HttpStatus.FORBIDDEN);
-		} else	if(hasPermission(user, operationName)){
-			//user is authorized
-			return user;
-		}
-
-		//user is not authorized to perform operation
-		throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[]{user.getName()}, HttpStatus.FORBIDDEN);	
-	}
+//	public void authorizeUser(String userId, Authentication authentication, AnnotationId annoId, String operationName)
+//			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
+//		// throws exception if user is not found
+//		//TODO: add userToken to agent
+//		
+//		checkWriteLockInEffect(userId, operationName);
+//		
+//		
+//		if (userId == null)
+//			throw new UserAuthorizationException("Invalid User (Token)", I18nConstants.INVALID_TOKEN, new String[]{userId}, HttpStatus.FORBIDDEN);
+//		
+//		if(!isAdmin(authentication) && !hasPermission(authentication, operationName))
+//			throw new OperationAuthorizationException(null, I18nConstants.CLIENT_NOT_AUTHORIZED, 
+//					new String[]{"client apikey: " + authentication.getDetails() + "; annotation id: "+ annoId},
+//					HttpStatus.FORBIDDEN);
+//				
+//		//check permissions
+//		if(isTester(authentication) && configuration.isProductionEnvironment()){
+//			//#20 testers not allowed in production environment
+//			throw new UserAuthorizationException(null, I18nConstants.TEST_USER_FORBIDDEN, new String[]{authentication.getName()}, HttpStatus.FORBIDDEN);
+//		}
+//	}
 
 	/**
 	 * Check if a write lock is in effect. Returns HttpStatus.LOCKED for change operations in case the write lock is active.
@@ -124,39 +119,101 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		}
 	}
 
-	//verify client app privileges 
-	protected boolean hasPermission(Application app, AnnotationId annoId, String operationName) {
-		if(Operations.MODERATION_ALL.equals(operationName) || Operations.RETRIEVE.equals(operationName) )
-			return true;
+	/**
+	 * This method verifies user privileges for given operation 
+	 * @param authentication
+	 * @param operationName
+	 * @return true if user has permission for given operation
+	 */
+	protected boolean hasPermission(Authentication authentication, String operationName) {
+		List<String> roles = getRoles(authentication);
+		Set<String> operations = UserGroups.getPermissionSet(roles);
+		if (operations != null)
+			return operations.contains(operationName);
+//			return checkOperationAgainstPermissionSet(operationName,operations);
 		
-		return annoId!= null && app.getProvider().equals(annoId.getProvider());
-	}
-
-	//verify user privileges
-	protected boolean hasPermission(Agent user, String operationName) {
-		UserGroups userGroup = UserGroups.valueOf(user.getUserGroup());
-		
-		for (String operation : userGroup.getOperations()) {
-			if(operation.equalsIgnoreCase(operationName))
-				return true;//users is authorized, everything ok
+		if (roles.size() > 0) {
+			for (String role : roles) {
+				UserGroups userGroup = UserGroups.valueOf(role);			
+				return checkOperationAgainstPermissionSet(operationName, userGroup.getOperations());
+			}
 		}
 		
 		return false;
 	}
 
-	protected boolean isAdmin(Agent user) {
-		return UserGroups.ADMIN.name().equals(user.getUserGroup());
+	/**
+	 * This method validates operation against permission set
+	 * @param operationName
+	 * @param permissionSet
+	 * @return true if operation supported
+	 */
+	private boolean checkOperationAgainstPermissionSet(String operationName, String[] permissionSet) {
+		boolean res = false;
+		for (String operation : permissionSet) {
+			if(operation.equalsIgnoreCase(operationName))
+				return true;//users is authorized, everything ok
+		}
+		return res;
+	}
+
+	/**
+	 * This method validates if user has admin role
+	 * @param authentication
+	 * @return true if user has this role
+	 */
+	protected boolean isAdmin(Authentication authentication) {
+		List<String> roles = getRoles(authentication);
+		if (roles.size() > 0) {
+			for (String role : roles) {
+				if (UserGroups.admin.name().toLowerCase().equals(role)) {
+					return true;
+				}
+			}
+		}
+		return false;
+//		return UserGroups.ADMIN.name().equals(user.getUserGroup());
 	}
 	
-	protected boolean isTester(Agent user) {
-		return UserGroups.TESTER.name().equals(user.getUserGroup());
+	/**
+	 * This method extracts roles from authentication object
+	 * @param authentication
+	 * @return a list of user roles
+	 */
+	protected List<String> getRoles(Authentication authentication) {
+		List<String> roles = new ArrayList<String>();
+		if (authentication.getAuthorities() != null && authentication.getAuthorities().size() > 0) {
+			for (GrantedAuthority authority : authentication.getAuthorities()) {
+				String role = authority.getAuthority().toString();
+				roles.add(role);
+			}
+		}
+		return roles;
 	}
 	
-	@Override
-	public Agent authorizeUser(String userToken, String apiKey, String operationName)
-			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-		return authorizeUser(userToken, apiKey, null, operationName);
+	/**
+	 * This method validates if user has tester role
+	 * @param authentication
+	 * @return true if user has this role
+	 */
+	protected boolean isTester(Authentication authentication) {
+		List<String> roles = getRoles(authentication);
+		if (roles.size() > 0) {
+			for (String role : roles) {
+				if (UserGroups.tester.name().equals(role)) {
+					return true;
+				}
+			}
+		}
+		return false;
+//		return UserGroups.TESTER.name().equals(user.getUserGroup());
 	}
+	
+//	@Override
+//	public void authorizeUser(String userToken, Authentication authentication, String operationName)
+//			throws UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
+//		authorizeUser(userToken, authentication, null, operationName);
+//	}
 
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;
@@ -165,4 +222,30 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	public void setConfiguration(AnnotationConfiguration configuration) {
 		this.configuration = configuration;
 	}
+	
+//    @Override
+    protected String getAuthorizationApiName() {
+	    return getConfiguration().getAuthorizationApiName();
+    }
+
+    @Override
+    protected ClientDetailsService getClientDetailsService() {
+	    return clientDetailsService;
+    }
+
+    @Override
+    protected String getSignatureKey() {
+	    return getConfiguration().getJwtTokenSignatureKey();
+    }
+
+    @Override
+    protected Role getRoleByName(String name) {
+    	return UserGroups.getRoleByName(name);
+    }
+
+    @Override
+    protected String getApiName() {
+    	return getConfiguration().getAuthorizationApiName();
+    }
+	
 }

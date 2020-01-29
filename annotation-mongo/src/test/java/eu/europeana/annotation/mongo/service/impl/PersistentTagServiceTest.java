@@ -1,20 +1,21 @@
 package eu.europeana.annotation.mongo.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
 import javax.annotation.Resource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
@@ -24,7 +25,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-mongo-context.xml",
 		"/annotation-mongo-test.xml" })
 public class PersistentTagServiceTest {
@@ -42,7 +43,7 @@ public class PersistentTagServiceTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws IOException {
 		//MorphiaLoggerFactory.registerLogger( SLF4JLogrImplFactory.class);
 		tagDao.getCollection().drop();
@@ -53,7 +54,7 @@ public class PersistentTagServiceTest {
 	 * 
 	 * @throws IOException
 	 */
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 		// tagDao.getCollection().drop();
 	}
@@ -118,11 +119,13 @@ public class PersistentTagServiceTest {
 		assertNotNull(savedTag.getLastUpdatedBy());
 	}
 	
-	@Test(expected=InvalidTagException.class)
+	@Test
 	public void createSemanticTagException() throws AnnotationMongoException{
-		PersistentTag tag = buildTestTag();
-		tag.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
-		tagService.create(tag);
+	    Assertions.assertThrows(InvalidTagException.class, () -> {
+		    PersistentTag tag = buildTestTag();
+			tag.setTagTypeEnum(TagTypes.SEMANTIC_TAG);
+			tagService.create(tag);
+	    });
 	}
 	
 	@Test

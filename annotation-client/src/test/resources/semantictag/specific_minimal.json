@@ -1,9 +1,9 @@
 {
-    "@context": "http://www.europeana.eu/annotation/context.jsonld",
-    "motivation": "tagging",	
-    "body": {
-        "type": "SpecificResource",
-        "source": "http://sws.geonames.org/2988507"    
-    },
-    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
+	"@context": "http://www.europeana.eu/annotation/context.jsonld",
+	"motivation": "tagging",
+	"body": {
+		"type": "SpecificResource",
+		"source": "http://sws.geonames.org/2988507"
+	},
+	"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }

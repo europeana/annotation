@@ -1,32 +1,18 @@
-/*
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
 package eu.europeana.annotation.clientapp;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.google.gson.Gson;
 
@@ -35,13 +21,13 @@ import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 /**
  * This class implements conversion from annotation api key to client application.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml" 
 	})
 public class ConvertJsonConfigToApplicationTest{
@@ -63,12 +49,12 @@ public class ConvertJsonConfigToApplicationTest{
 		this.clientService = clientService;
 	}
 
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	
 	private Gson gson = null;
 
     
-	@Before
+	@BeforeEach
     public void setUp() throws Exception {
 		setGson(new Gson());
     }
@@ -93,6 +79,7 @@ public class ConvertJsonConfigToApplicationTest{
 
 	for (PersistentClient storedClient : allStoredClients) {
 
+		@SuppressWarnings("deprecation")
 		Application clientApplication = authenticationService.parseApplication(
 				storedClient.getAuthenticationConfigJson());
 

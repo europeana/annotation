@@ -1,12 +1,7 @@
 package eu.europeana.annotation.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,27 +10,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-//import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.Version;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
-import eu.europeana.annotation.definitions.exception.WhitelistParserException;
 import eu.europeana.annotation.definitions.model.Annotation;
 //import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
@@ -50,19 +35,15 @@ import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.whitelist.BaseWhitelistEntry;
-import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.utils.serialization.AgentDeserializer;
 import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
 import eu.europeana.annotation.utils.serialization.BodyDeserializer;
-import eu.europeana.annotation.utils.serialization.ConceptDeserializer;
 import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
 import eu.europeana.annotation.utils.serialization.ListDeserializer;
 import eu.europeana.annotation.utils.serialization.MapDeserializer;
 import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
 import eu.europeana.annotation.utils.serialization.TargetDeserializer;
-import eu.europeana.annotation.utils.serialization.WhitelistDeserializer;
 
 /**
  * @Deprecated the provided methods must be replaced by proper usage of the json to annotation parser 
@@ -100,7 +81,7 @@ public class JsonUtils extends BaseJsonParser{
 			module.addDeserializer(Annotation.class, new AnnotationDeserializer());  
 			module.addDeserializer(Target.class, new TargetDeserializer());  
 			module.addDeserializer(Body.class, new BodyDeserializer());  
-			module.addDeserializer(Concept.class, new ConceptDeserializer());  
+//			module.addDeserializer(Concept.class, new ConceptDeserializer());  
 			module.addDeserializer(Agent.class, new AgentDeserializer());
 			module.addDeserializer(Selector.class, new SelectorDeserializer());
 			module.addDeserializer(InternetResource.class, new InternetResourceDeserializer());
@@ -135,50 +116,7 @@ public class JsonUtils extends BaseJsonParser{
 		
 		return annotation;
 	}
-	
-	public static Concept toConceptObject(String json) {
-		JsonParser parser;
-		Concept concept = null;
-		try {
-			parser = jsonFactory.createJsonParser(json);
-			SimpleModule module =  
-			      new SimpleModule("ConceptDeserializerModule",  
-			          new Version(1, 0, 0, null));  
-			    
-			module.addDeserializer(Concept.class, new ConceptDeserializer());  
-//			module.addDeserializer(Map.class, new MapDeserializer());
-			module.addDeserializer(List.class, new ListDeserializer());
-			
-			objectMapper.registerModule(module); 
-			
-			parser.setCodec(objectMapper);
-			concept = objectMapper.readValue(parser, Concept.class);
-		} catch (JsonParseException e) {
-			throw new AnnotationInstantiationException("Json formating exception!", e);
-		} catch (IOException e) {
-			throw new AnnotationInstantiationException("Json reading exception!", e);
-		}
 		
-		return concept;
-	}
-	
-	public static String mapToString(Map<String,String> mp) {
-		String res = "";
-	    Iterator<Map.Entry<String, String>> it = mp.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
-	        if (res.length() > 0) {
-	        	res = res + ",";
-	        }
-	        res = res + pairs.getKey() + WebAnnotationFields.SEPARATOR_SEMICOLON + pairs.getValue();
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-	    if (res.length() > 0) {
-	    	res = "[" + res + "]";
-	    }
-	    return res;
-	}	
-	
 	public static String mapToStringExt(Map<String,Integer> mp) {
 		String res = "";
 	    Iterator<Map.Entry<String, Integer>> it = mp.entrySet().iterator();

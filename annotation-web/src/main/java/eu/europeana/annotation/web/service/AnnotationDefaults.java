@@ -45,7 +45,7 @@ public class AnnotationDefaults {
 		if (anno.getCreator() == null)
 			anno.setCreator(this.getUser());
 		anno.setCreated(new Date());
-		anno.getAnnotationId().setHttpUrl(anno.getHttpUrl());
+		anno.getAnnotationId().setHttpUrl(anno.getAnnotationId().toHttpUrl());
     }
     
     public AnnotationDefaults(String provider, Agent app, Agent user) {

@@ -3,9 +3,10 @@ package eu.europeana.annotation.web.service.controller.admin;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -29,6 +29,10 @@ import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.WhitelistService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
+import eu.europeana.api.commons.exception.AuthorizationExtractionException;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -66,12 +70,14 @@ public class WhitelistRest extends BaseRest {
 //			public ModelAndView getWhitelistEntry (
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestParam(value = "url", required = true) String url
+		@RequestParam(value = "url", required = true) String url,
+		HttpServletRequest request
 		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 		
-		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
+	    	verifyReadAccess(request);
+//		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
+//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
 		WhitelistEntry whitelist = getWhitelistService().getWhitelistEntryByUrl(url);
 
@@ -92,7 +98,7 @@ public class WhitelistRest extends BaseRest {
 		
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	@RequestMapping(value = "/view"
@@ -101,12 +107,13 @@ public class WhitelistRest extends BaseRest {
 	@ApiOperation(value = "Retrieve the whole whitelist", nickname = "getFullWhitelist", response = java.lang.Void.class)
 	public ResponseEntity<String> getFullWhitelist(
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+		HttpServletRequest request) 
 				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
-		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
-
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
+//		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
+	    	verifyReadAccess(request);
+//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
 		List<? extends WhitelistEntry> whitelist = getWhitelistService().getWhitelist();
 
@@ -117,7 +124,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 	
 	@RequestMapping(value = "/create", method = RequestMethod.POST
@@ -126,12 +133,14 @@ public class WhitelistRest extends BaseRest {
 	public ResponseEntity<String> createWhitelistEntry (
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestBody String whitelist) throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+		@RequestBody String whitelist,
+		HttpServletRequest request
+		) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
+//		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_CREATE);
-		
+//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_CREATE);
+		verifyWriteAccess(Operations.WHITELIST_CREATE, request);
 		String action = "post:/whitelist/create";
 		
 		//parse
@@ -149,7 +158,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	@RequestMapping(value = "/load"
@@ -158,12 +167,14 @@ public class WhitelistRest extends BaseRest {
 	@ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
 	public ResponseEntity<String> loadDefaultWhitelist (
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
-				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException{
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+		HttpServletRequest request) 
+				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException{
 
-		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
+	    	verifyWriteAccess(WebAnnotationFields.WRITE_METHOD, request);
+//		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
 
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
+//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
 
 		List<? extends WhitelistEntry> whitelist = getWhitelistService().loadWhitelistFromResources();
 
@@ -174,7 +185,7 @@ public class WhitelistRest extends BaseRest {
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	
@@ -184,12 +195,13 @@ public class WhitelistRest extends BaseRest {
 	@ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAllWhitelistEntries(
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken) 
-				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+		HttpServletRequest request) 
+				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
-
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
+//		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
+	    	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
@@ -200,14 +212,14 @@ public class WhitelistRest extends BaseRest {
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
-			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
+			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 
 	@DELETE
@@ -218,12 +230,13 @@ public class WhitelistRest extends BaseRest {
 	public ResponseEntity<String> deleteWhitelistEntry(
 		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
 		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestParam(value = "url", required = true) String url
-		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+		@RequestParam(value = "url", required = true) String url,
+		HttpServletRequest request
+		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
-
-		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
+//		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
+		verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
 
 		WhitelistOperationResponse response;
 		response = new WhitelistOperationResponse(
@@ -234,14 +247,14 @@ public class WhitelistRest extends BaseRest {
 			response.success = true;
 			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
 		} catch (Exception e){
-			Logger.getLogger(SolrSyntaxConstants.ROOT).error(e);
+			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 			response.success = false;
 			response.error = e.getMessage();
 		}
 
 //		return JsonWebUtils.toJson(response, null);
 		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponseEntityForJsonString(jsonStr);		
+		return buildResponse(jsonStr);		
 	}
 	
 }

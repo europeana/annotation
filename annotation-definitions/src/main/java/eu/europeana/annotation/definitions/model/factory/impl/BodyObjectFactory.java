@@ -1,15 +1,17 @@
 package eu.europeana.annotation.definitions.model.factory.impl;
 
-import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.body.Body;
+import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
-import eu.europeana.annotation.definitions.model.body.impl.SpecificResourceBody;
+import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.RdfGraphBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticLinkBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
+import eu.europeana.annotation.definitions.model.body.impl.SpecificResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
+import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
@@ -67,6 +69,15 @@ public class BodyObjectFactory extends
 			break;
 		case SPECIFIC_RESOURCE:
 			returnType = SpecificResourceBody.class;
+			break;
+		case FULL_TEXT_RESOURCE:
+			returnType = FullTextResourceBody.class;
+			break;
+		case AGENT:
+			returnType = EdmAgentBody.class;
+			break;
+		case VCARD_ADDRESS:
+			returnType = VcardAddressBody.class;
 			break;
 		case LINK:
 			throw new AnnotationInstantiationException("Bodies of type LINK must be empty!");

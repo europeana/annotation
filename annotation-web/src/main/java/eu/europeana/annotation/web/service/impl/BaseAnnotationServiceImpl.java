@@ -4,28 +4,25 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.authentication.Application;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.solr.service.SolrTagService;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.mock.MockAuthenticationServiceImpl;
 import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationServiceImpl{
@@ -40,9 +37,6 @@ public abstract class BaseAnnotationServiceImpl{
 	SolrAnnotationService solrService;
 
 	@Resource
-	SolrTagService solrTagService;	
-
-	@Resource
 	PersistentAnnotationService mongoPersistance;
 
 	@Resource
@@ -51,7 +45,7 @@ public abstract class BaseAnnotationServiceImpl{
 	@Resource
     PersistentClientService clientService;
 	
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 
 
 	public AuthenticationService getAuthenticationService() {
@@ -92,14 +86,6 @@ public abstract class BaseAnnotationServiceImpl{
 
 	public void setSolrService(SolrAnnotationService solrService) {
 		this.solrService = solrService;
-	}
-
-	public SolrTagService getSolrTagService() {
-		return solrTagService;
-	}
-
-	public void setSolrTagService(SolrTagService solrTagService) {
-		this.solrTagService = solrTagService;
 	}
 	
 	
@@ -170,7 +156,6 @@ public abstract class BaseAnnotationServiceImpl{
 	 * @throws AnnotationIndexingException 
 	 */
 	protected boolean reindexAnnotation(Annotation res, Date lastIndexing) throws AnnotationIndexingException {
-		boolean success = false;
 		
 		if (!getConfiguration().isIndexingEnabled()){
 			getLogger().warn("Annotation was not reindexed, indexing is disabled. See configuration properties!");
@@ -182,24 +167,10 @@ public abstract class BaseAnnotationServiceImpl{
 			getSolrService().update(res, summary);
 			updateLastIndexingTime(res, lastIndexing);
 			
-			success = true;
+			return true;
 		} catch (Exception e) {
-//			Logger.getLogger(getClass().getName()).error("Error by reindexing of annotation: "
-//					+ res.getAnnotationId().toString() + ". " + e.getMessage());
 			throw new AnnotationIndexingException("cannot reindex annotation with ID: " + res.getAnnotationId(), e);
 		}
-		
-		// check if the tag is already indexed
-//		try {
-//			getSolrTagService().update(res);
-//		} catch (Exception e) {
-//			Logger.getLogger(getClass().getName())
-//					.warn("The annotation was updated correctly in the Mongo, but the Body tag was not updated yet. "
-//							, e);
-//		}
-
-		// save the time of the last SOLR indexing
-		return success;
 	}
 
 	
@@ -212,10 +183,12 @@ public abstract class BaseAnnotationServiceImpl{
 	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing) {
 		boolean success = false;
 		try {
-			Annotation res = getAnnotationById(annoId);
-			success = reindexAnnotation(res, lastIndexing);
+//			Annotation res = getAnnotationById(annoId);
+			Annotation annotation = getMongoPersistence().find(annoId);
+			success = reindexAnnotation(annotation, lastIndexing);
+			System.out.println(annoId);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			getLogger().error(e.getMessage(), e);
 			return false;
 		}
 		return success;
@@ -224,11 +197,10 @@ public abstract class BaseAnnotationServiceImpl{
 	
 	protected void updateLastIndexingTime(Annotation res, Date lastIndexing) {
 		try {
-			getMongoPersistence().updateIndexingTime(res.getAnnotationId(), lastIndexing);
+			getMongoPersistence().updateIndexingTime(res, lastIndexing);
 			((PersistentAnnotation)res).setLastIndexed(lastIndexing);
 		} catch (Exception e) {
-			Logger.getLogger(getClass().getName())
-					.warn("The time of the last SOLR indexing could not be saved. " , e);
+			getLogger().warn("The time of the last SOLR indexing could not be saved in the Mongo database. " , e);
 		}
 	}
 
@@ -236,9 +208,7 @@ public abstract class BaseAnnotationServiceImpl{
 		return logger;
 	}
 
-	public void setLogger(Logger logger) {
-		this.logger = logger;
-	}
+	
 
 	public PersistentAnnotationService getMongoPersistance() {
 		return mongoPersistance;
