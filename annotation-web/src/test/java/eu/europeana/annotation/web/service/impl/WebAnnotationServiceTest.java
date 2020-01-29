@@ -1,7 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,29 +9,23 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
-import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -43,7 +37,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
  * Unit test for the Web Annotation service
  * @deprecated adapt to use AnnotationLdParser and AnnotationLdDeserializerDeprecated
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
 	})
 public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
@@ -60,8 +54,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	
 	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
 	
-	@Rule public ExpectedException thrown= ExpectedException.none();
-	
 	@Test
 	public void testStoreAnnotationInDbRetrieveAndSerialize() 
 			throws MalformedURLException, IOException, AnnotationServiceException, JsonParseException {
@@ -71,15 +63,15 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Serialize an original Annotation test object.
 		 */
-        AnnotationLdSerializer origAnnotationLd = new AnnotationLdSerializer(testAnnotation);
+//        AnnotationLdSerializer origAnnotationLd = new AnnotationLdSerializer(testAnnotation);
         
-        String original = origAnnotationLd.toString();
+//        String original = origAnnotationLd.toString();
 //        AnnotationLd.toConsole("", original);
 //        String expectedOrig = "{\"@context\":{\"oa\":\"http://www.w3.org/ns/oa-context-20130208.json\"},\"@id\":\"http://data.europeana.eu/annotation/webanno/null\",\"@type\":\"OBJECT_TAG\",\"annotatedAt\":\"2012-11-10T09:08:07\",\"annotatedBy\":{\"@id\":\"open_id_1\",\"@type\":\"foaf:Person\",\"name\":\"annonymous web user\"},\"body\":{\"@type\":\"[SEMANTIC_TAG,oa:Tag,cnt:ContentAsText,dctypes:Text]\",\"chars\":\"Vlad Tepes\",\"foaf:page\":\"https://www.freebase.com/m/035br4\",\"format\":\"text/plain\",\"language\":\"ro\",\"multilingual\":\"\"},\"equivalentTo\":\"http://historypin.com/annotation/1234\",\"motivation\":\"TAGGING\",\"serializedAt\":\"2012-11-10T09:08:07\",\"serializedBy\":{\"@id\":\"open_id_2\",\"@type\":\"prov:Software\",\"foaf:homepage\":\"http://annotorious.github.io/\",\"name\":\"Annotorious\"},\"styledBy\":{\"@type\":\"oa:CSS\",\"source\":\"http://annotorious.github.io/latest/themes/dark/annotorious-dark.css\",\"styleClass\":\"annotorious-popup\"},\"target\":{\"@type\":\"[oa:IMAGE]\",\"contentType\":\"image/jpeg\",\"httpUri\":\"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbilddatenbank.khm.at%2Fimages%2F500%2FGG_8285.jpg&size=FULL_DOC&type=IMAGE\",\"selector\":{\"@type\":\"\",\"dimensionMap\":\"\"},\"source\":{\"@id\":\"http://europeana.eu/portal/record//testCollection/testObject.html\",\"contentType\":\"text/html\",\"format\":\"dctypes:Text\"},\"type\":\"oa:IMAGE\"},\"type\":\"OBJECT_TAG\"}";
         
 //        assertEquals(expectedOrig, original);
 		
-        String origIndent = origAnnotationLd.toString(4);
+//        String origIndent = origAnnotationLd.toString(4);
 //        AnnotationLd.toConsole("", origIndent);
         		
 		/**
@@ -149,8 +141,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 			&& webAnnotation.getAnnotationId().toHttpUrl().contains( 
 				getBaseUrl() 
 //				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-				+ WebAnnotationFields.SLASH 
-				+ WebAnnotationFields.PROVIDER_WEBANNO 
 				+ WebAnnotationFields.SLASH )
 			);
 	}
@@ -162,7 +152,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
 		
-		AnnotationId annoId = new BaseAnnotationId( getBaseUrl(), WebAnnotationFields.PROVIDER_WEBANNO, null);
+		AnnotationId annoId = new BaseAnnotationId(getBaseUrl(), null);
 				
 		testAnnotation.setAnnotationId(annoId);					
 		return testAnnotation;
@@ -170,62 +160,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	protected String getBaseUrl() {
 		return ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
-	}
-
-	@Test
-	public void testCreateAnnotationHistorypin() 
-			throws MalformedURLException, IOException, AnnotationServiceException {
-		
-		/**
-		 * Create a test annotation object.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstanceWithSameAs(
-				WebAnnotationFields.TEST_HISTORYPIN_URL);
-
-		
-		AnnotationId annoId = new BaseAnnotationId( getBaseUrl(), WebAnnotationFields.PROVIDER_HISTORY_PIN, "1");
-//		, testAnnotation.getSameAs());
-				
-		testAnnotation.setAnnotationId(annoId);		
-		
-		/**
-		 * Store Annotation in database.
-		 */
-		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
-		
-		if (StringUtils.isBlank(webAnnotation.getType())) {
-			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		
-		System.out.println("testAnnotation: " + testAnnotation.toString());
-		System.out.println("webAnnotation: " + webAnnotation.toString());
-		
-		assertTrue(webAnnotation.getAnnotationId() != null 
-				&& webAnnotation.getAnnotationId().toHttpUrl().contains( 
-					getBaseUrl()
-//					+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-					+ WebAnnotationFields.SLASH 
-					+ WebAnnotationFields.PROVIDER_HISTORY_PIN
-					+ WebAnnotationFields.SLASH )
-				);
-	}
-		
-	@Test
-	public void testCreateAnnotationWrongProvider() 
-			throws MalformedURLException, IOException, AnnotationServiceException {
-		
-		thrown.expect( AnnotationValidationException.class );
-		
-		/**
-		 * Create a test annotation object.
-		 */
-		Annotation testAnnotation = createBaseObjectTagInstance();
-
-		/**
-		 * Store Annotation in database.
-		 */
-		webAnnotationService.storeAnnotation(testAnnotation);
-
 	}
 
 	/**
@@ -355,39 +289,5 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		//disabled annotations will not be returned by the service 
 		assertTrue(disabledAnnotation == null);
 	}
-		
-	@Test
-	public void testDeleteTag() 
-			throws MalformedURLException, IOException, TagServiceException, InternalServerException, AnnotationServiceException {
-		
-		Annotation testAnnotation = createTestAnnotation();		
-        
-		/**
-		 * Store Annotation in database.
-		 */
-		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
-		
-		/**
-		 * Delete Annotation.
-		 */
-		adminService.deleteAnnotation(
-//				storedAnnotation.getAnnotationId().getResourceId()
-				storedAnnotation.getAnnotationId());
-		
-		/**
-		 * Delete Annotation.
-		 */
-//		webAnnotationService.deleteTag(((PersistentAnnotation) storedAnnotation).getId().toString());
-		
-		/**
-		 * Search Tag by TagId.
-		 */
-		List<? extends TagResource> resList = null;
-		resList = webAnnotationService.searchTags(
-				((PersistentAnnotation) storedAnnotation).getId().toString());
-		assertTrue(resList.size() == 0);
-	}
-	
-	
 		
 }

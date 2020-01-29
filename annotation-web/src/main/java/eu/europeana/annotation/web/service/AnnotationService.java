@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
@@ -13,27 +12,22 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
-import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
-import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
-import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
-import eu.europeana.annotation.solr.exceptions.TagServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.ModerationNotFoundException;
-import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AnnotationService {
 
@@ -170,14 +164,6 @@ public interface AnnotationService {
 	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	/**
-	 * Search for annotations by the given text query.
-	 * @param query
-	 * @return
-	 * @throws AnnotationServiceException 
-	 */
-	public List<? extends Annotation> searchAnnotations(String query) throws AnnotationServiceException;
-	
-	/**
 	 * Search for annotations by the given text query, row start position and rows limit. 	 
 	 * @param query
 	 * @param startOn
@@ -189,24 +175,7 @@ public interface AnnotationService {
 	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit) 
 			throws AnnotationServiceException;
 	
-	/**
-	 * Search for tags by the given text query.
-	 * @param query
-	 * @return
-	 * @throws TagServiceException 
-	 */
-	public List<? extends TagResource> searchTags(String query) throws TagServiceException;
-
-	/**
-	 * Search for tags by the given text query, row start position and rows limit.
-	 * @param query
-	 * @param startOn
-	 * @param limit
-	 * @return
-	 * @throws TagServiceException 
-	 */
-	public List<? extends TagResource> searchTags(String query, String startOn, String limit) throws TagServiceException;
-
+	
 	/**
 	 * Search for annotation status logs by the given text query, row start position and rows limit.
 	 * @param query
@@ -225,12 +194,6 @@ public interface AnnotationService {
 	 * @throws AnnotationServiceException 
 	 */
 	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException;
-	
-	/**
-	 * This method removes Tag object from database and Solr but only when no annotation uses the tag.
-	 * @param tagId
-	 */
-	public void deleteTag(String tagId);
 	
 	/**
 	 * Check whether annotation for given provider and identifier already exist in database.
@@ -257,30 +220,6 @@ public interface AnnotationService {
 	public Annotation updateAnnotationStatus(Annotation annotation);
 	
 	/**
-	 * @param newConcept
-	 * @return
-	 */
-	public Concept storeConcept(Concept newConcept);
-		
-	/**
-	 * @param concept
-	 * @return
-	 */
-	public Concept updateConcept(Concept concept);
-	
-	/**
-	 * @param url
-	 */
-	public void deleteConcept(String url);
-	
-	/**
-	 * @param url
-	 * @return
-	 */
-	public Concept getConceptByUrl(String url);
-	
-	
-	/**
 	 * @param annotation
 	 * @return
 	 */
@@ -305,7 +244,7 @@ public interface AnnotationService {
 
 //	void indexAnnotation(AnnotationId annoId);
 
-	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException;
+	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException;
 
 	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationException;
 	
@@ -332,6 +271,6 @@ public interface AnnotationService {
 
 	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
-	public void insertNewAnnotations(String provider, BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
 }

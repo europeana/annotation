@@ -1,13 +1,13 @@
 ##common settings
 #boolean value indicating if the indexing of annotations in solr should be performed. required valid solr configurations
-annotation.indexing.enabled=false
+annotation.indexing.enabled=true
 
 #string value indicating if the application runs in "production", "test", "development" environment 
 annotation.environment=development
 
-#Socks proxy configuration. If provided it will be used for all http connections (e.g. solr.entity.url) 
-# Url Format: socks://username:password@socks_proxy_server:1080 
-socks.proxy.url = socks://socksuser:hjwP14h9oSEp423df@95.85.7.105:30080
+#Socks proxy configuration. If provided it will be used for all http connections (see also solr.annotation.url, mongodb.annotation.connectionUrl) 
+# Url Format: socks://username:password@socks_proxy_server:port 
+socks.proxy.url=
 
 #used only in production environment
 annotation.environment.production.baseUrl=http://data.europeana.eu/annotation
@@ -25,11 +25,6 @@ annotation.whitelist.default=/config/default_whitelist.json
 annotation.search.maxpagesize.minimal=10000
 annotation.search.maxpagesize.standard=100
  
-
-# VCAP settings
-#available values: pivotal, a9s 
-annotation.environment.vcap.provider = pivotal
-
 # Profiling configurations (enabling/disabling through profiler.expression property)
 # disable profiling
 # profiler.expression=within(none.*)
@@ -38,17 +33,10 @@ profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..))
 
 # mongoDB settings
 ### annotation database ###
-#deprecated
-#mongodb.annotation.dbname=annotation_test
-#mongodb.annotation.host=127.0.0.1
-#mongodb.annotation.port=27017
-#mongodb.annotation.username=europeana
-#mongodb.annotation.password=culture
 #Format: "mongodb://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>"
 #USER, PASSWORD are optional (in local environment) 
-
-#VCAP environment will overwrite configurations only if the connectionUrl is empty
 mongodb.annotation.connectionUrl=mongodb://europeana:culture@127.0.0.1:27017/annotation_test
+
 #SSL truststore
 #the name of the truststore. Must be available in the classpath in the /config folder
 mongodb.annotation.truststore=
@@ -56,27 +44,22 @@ mongodb.annotation.truststore=
 mongodb.annotation.truststorepass=
 
 # solr connection settings
-solr.annotation.url = http://localhost:8282/solr/annotation
-solr.tag.url = http://localhost:8282/solr/tag
+solr.annotation.url = http://localhost:9090/solr/anno-up
 solr.annotation.timeout = 60000
-solr.tag.timeout = 60000
 
 solr.facetLimit=750
-#solr.username=europeana
-#solr.rowLimit=12
 
-#API Key validation
-api=annotation
-adminapikey=Key1
-adminsecretkey=Key2
+#URL of the APIKEY service
+europeana.apikey.serviceurl=http://localhost:8080/apikey
+
+#the name for annotation api resources in keyckloak tokens
+authorization.api.name=annotations
+
+#the signature key used to verify JWT tokens
+europeana.apikey.jwttoken.siganturekey=
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
 
-# validation
-api=annotation
-adminapikey=
-adminsecretkey=
-# cache time for validation of ApiKey in milliseconds (value of type long)
-# e.g. 1800000 is 30 minutes
-annotation.apikey.caching.time=1800000 
+# valid licenses list
+annotation.licenses=http://creativecommons.org/publicdomain/zero/,http://creativecommons.org/publicdomain/mark/,http://creativecommons.org/licenses/by/,http://rightsstatements.org/vocab/NoC-NC/,http://creativecommons.org/licenses/by-sa/,http://creativecommons.org/licenses/by-nd/,http://creativecommons.org/licenses/by-nc-sa/,http://creativecommons.org/licenses/by-nd-nc/

@@ -1,17 +1,17 @@
 package eu.europeana.annotation.web.service.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import eu.europeana.annotation.config.AnnotationConfigurationImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -19,7 +19,6 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.service.AnnotationService;
 
@@ -28,7 +27,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
  * Unit test for the Web Annotation service
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"
 	//, "/annotation-solr-test.xml" 
 	})
@@ -102,7 +101,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	 */
 	Annotation createTestAnnotation() {
 		Annotation testAnnotation = createBaseObjectTagInstance();
-		AnnotationId annoId = new BaseAnnotationId(null, WebAnnotationFields.PROVIDER_WEBANNO, null);
+		AnnotationId annoId = new BaseAnnotationId(null, null);
 				
 		testAnnotation.setAnnotationId(annoId);					
 		return testAnnotation;
