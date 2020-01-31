@@ -60,7 +60,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
 			@RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			HttpServletRequest request
 			) throws HttpException {
 
 			String action = "get:/annotation/{identifier}[.{format}]";		

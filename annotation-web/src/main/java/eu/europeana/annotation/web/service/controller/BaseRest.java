@@ -28,7 +28,6 @@ import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
@@ -40,6 +39,7 @@ import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.controller.BaseRestController;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
@@ -236,15 +236,15 @@ public class BaseRest extends BaseRestController {
 	 * @param method
 	 * @throws ApplicationAuthenticationException
 	 */
-	@Deprecated
-	protected void validateApiKey(String wsKey, String method) throws ApplicationAuthenticationException {
+//	@Deprecated
+//	protected void validateApiKey(String wsKey, String method) throws ApplicationAuthenticationException {
 		
 		//TODO: will not be included in the 0.2.8-RELEASE, enable in 0.2.9
 //		validateApiKeyUsingClient(wsKey, method);
 		
 		// throws exception if the wskey is not found
-		getAuthenticationService().getByApiKey(wsKey);
-	}
+//		getAuthenticationService().getByApiKey(wsKey);
+//	}
 
 	
 	protected ResponseEntity <String> buildResponse(String jsonStr) {

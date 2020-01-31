@@ -297,7 +297,8 @@ public class BaseJsonldRest extends BaseRest {
 	 */
 	protected Agent buildAgentGenerator(String id) {
 		Agent agent = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
-		agent.setName(id);		
+		agent.setHttpUrl(id);
+//		agent.setName(id);		
 		return agent;
 	}
 
@@ -317,7 +318,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
+//			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// 3. Retrieve an annotation based on its identifier;
 			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
@@ -387,7 +388,7 @@ public class BaseJsonldRest extends BaseRest {
 		try {
 
 			// 2. Check client access (a valid “wskey” must be provided)
-			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
+//			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
 			// 3. Retrieve an annotation based on its identifier;
 			AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);

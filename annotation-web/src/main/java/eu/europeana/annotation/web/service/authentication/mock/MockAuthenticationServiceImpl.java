@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -28,7 +29,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
-import eu.europeana.annotation.web.exception.authentication.ApplicationAuthenticationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
@@ -36,6 +36,7 @@ import eu.europeana.annotation.web.service.authentication.model.ApplicationDeser
 import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public class MockAuthenticationServiceImpl implements AuthenticationService, ResourceServerTokenServices
 // , ApiKeyService
@@ -84,7 +85,7 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 			getLogger().debug("Loaded Api Key: " + app.getApiKey());
 		} catch (IOException e) {
-			throw new ApplicationAuthenticationException(null, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, e);
+			throw new ApplicationAuthenticationException( I18nConstants.APIKEY_FILE_NOT_FOUND, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, HttpStatus.UNAUTHORIZED, e);
 		}
 		return app;
 	}
