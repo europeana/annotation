@@ -23,7 +23,10 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
  * @author GordeaS
  *
  */
-public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationManager implements AuthenticationService, ClientDetailsService {
+@Deprecated
+public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationManager implements AuthenticationService
+//, ClientDetailsService
+{
 
 	MockAuthenticationServiceImpl mockOauthService;
 	
@@ -60,30 +63,31 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 		setTokenServices((MockAuthenticationServiceImpl)getMockOauthService());
 	}
 	
-	@Override
-	public void loadApiKeys() throws ApplicationAuthenticationException {
-		
-		getMockOauthService().loadApiKeys();
-	}
+//	@Override
+//	public void loadApiKeys() throws ApplicationAuthenticationException {
+//		
+//		getMockOauthService().loadApiKeys();
+//	}
 
-	@Override
-	public Agent getUserByName(String apiKey, String userToken) throws UserAuthorizationException {
-		return getMockOauthService().getUserByName(apiKey, userToken);
-	}
+//	@Override
+//	@Deprecated
+//	public Agent getUserByName(String apiKey, String userToken) throws UserAuthorizationException {
+//		return getMockOauthService().getUserByName(apiKey, userToken);
+//	}
 
-	@Override
-	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException {
-		return getMockOauthService().getByApiKey(apiKey);
-	}
+//	@Override
+//	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException {
+//		return getMockOauthService().getByApiKey(apiKey);
+//	}
 
-	@Override
+//	@Override
 	public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-		try {
-			Application app = getMockOauthService().getByApiKey(clientId);
-			return new ClientAppDetailsAdapter(app);
-		} catch (ApplicationAuthenticationException e) {
-			throw new ClientRegistrationException("Cannot load client details", e);
-		}
+//		try {
+//			Application app = getMockOauthService().getByApiKey(clientId);
+			return new ClientAppDetailsAdapter(null);
+//		} catch (ApplicationAuthenticationException e) {
+//			throw new ClientRegistrationException("Cannot load client details", e);
+//		}
 	}
 
 	public AuthenticationService getMockOauthService() {
@@ -113,15 +117,15 @@ public class BridgeAuthenticationManagerAdapter extends BridgeAuthenticationMana
 		//getMockOauthService().
 	}
 
-	public Application parseApplication(String jsonData) {
-		return mockOauthService.parseApplication(jsonData);
-	}
+//	public Application parseApplication(String jsonData) {
+//		return mockOauthService.parseApplication(jsonData);
+//	}
 
-	@Override
-	public void loadApiKeysFromFiles() throws ApplicationAuthenticationException {
-		getMockOauthService().loadApiKeysFromFiles();
-		
-	}
+//	@Override
+//	public void loadApiKeysFromFiles() throws ApplicationAuthenticationException {
+//		getMockOauthService().loadApiKeysFromFiles();
+//		
+//	}
 
 	
 	

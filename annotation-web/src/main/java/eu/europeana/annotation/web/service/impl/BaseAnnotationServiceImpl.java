@@ -30,8 +30,8 @@ public abstract class BaseAnnotationServiceImpl{
 	@Resource
 	AnnotationConfiguration configuration;
 
-	@Resource
-	AuthenticationService authenticationService;
+//	@Resource
+//	AuthenticationService authenticationService;
 	
 	@Resource
 	SolrAnnotationService solrService;
@@ -48,13 +48,13 @@ public abstract class BaseAnnotationServiceImpl{
 	Logger logger = LogManager.getLogger(getClass());
 
 
-	public AuthenticationService getAuthenticationService() {
-		return authenticationService;
-	}
-
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
+//	public AuthenticationService getAuthenticationService() {
+//		return authenticationService;
+//	}
+//
+//	public void setAuthenticationService(AuthenticationService authenticationService) {
+//		this.authenticationService = authenticationService;
+//	}
 
 	public String getComponentName() {
 		return configuration.getComponentName();

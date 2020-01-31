@@ -65,7 +65,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 			HttpServletRequest request) throws HttpException {
 
 		String action = "get:/annotation/search{.format}";
-
+		//** 2. Check client access (a valid “wskey” must be provided)
+		verifyReadAccess(request);
+		
 		return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request, action);
 	}
 
@@ -74,9 +76,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 					throws HttpException {
 
 		try {
-
-			//** 2. Check client access (a valid “wskey” must be provided)
-			verifyReadAccess(request);
 			
 			//** Process input params
 			queryString = queryString.trim();
