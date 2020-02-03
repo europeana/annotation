@@ -45,8 +45,8 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	@Resource
 	PersistentAnnotationService mongoPersistance;
 
-	@Resource
-	AuthenticationService authenticationService;
+//	@Resource
+//	AuthenticationService authenticationService;
 
 	Logger logger = LogManager.getLogger(getClass());
 	
@@ -56,13 +56,13 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		return annotationIdHelper;
 	}
 
-	public AuthenticationService getAuthenticationService() {
-		return authenticationService;
-	}
-
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
+//	public AuthenticationService getAuthenticationService() {
+//		return authenticationService;
+//	}
+//
+//	public void setAuthenticationService(AuthenticationService authenticationService) {
+//		this.authenticationService = authenticationService;
+//	}
 
 	@Override
 	public String getComponentName() {

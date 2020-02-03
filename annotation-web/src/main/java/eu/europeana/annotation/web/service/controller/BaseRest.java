@@ -57,8 +57,8 @@ public class BaseRest extends BaseRestController {
 	@Resource
 	private AnnotationService annotationService;
 
-	@Resource
-	AuthenticationService authenticationService;
+//	@Resource
+//	AuthenticationService authenticationService;
 	
 	@Resource
 	AuthorizationService authorizationService;
@@ -81,13 +81,13 @@ public class BaseRest extends BaseRestController {
 		this.annotationSearchService = annotationSearchService;
 	}
 
-	public AuthenticationService getAuthenticationService() {
-		return authenticationService;
-	}
-		
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
+//	public AuthenticationService getAuthenticationService() {
+//		return authenticationService;
+//	}
+//		
+//	public void setAuthenticationService(AuthenticationService authenticationService) {
+//		this.authenticationService = authenticationService;
+//	}
 
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 	protected AnnotationIdHelper annotationIdHelper;

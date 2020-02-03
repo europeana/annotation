@@ -1,43 +1,31 @@
 package eu.europeana.annotation.web.service.authentication.mock;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
-import com.google.gson.Gson;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.authentication.Application;
-import eu.europeana.annotation.definitions.model.authentication.Client;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.model.internal.PersistentClient;
 import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
 import eu.europeana.annotation.web.service.authentication.AuthenticationService;
-import eu.europeana.annotation.web.service.authentication.model.ApplicationDeserializer;
-import eu.europeana.annotation.web.service.authentication.model.BaseDeserializer;
 import eu.europeana.annotation.web.service.authentication.model.ClientApplicationImpl;
 import eu.europeana.api.common.config.I18nConstants;
-import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
+@Deprecated
 public class MockAuthenticationServiceImpl implements AuthenticationService, ResourceServerTokenServices
 // , ApiKeyService
 {
@@ -72,85 +60,85 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 	}
 
 	// TODO: 524 read authentication config from file
-	public Application readApplicationConfigFromFile(String path) throws ApplicationAuthenticationException {
+//	public Application readApplicationConfigFromFile(String path) throws ApplicationAuthenticationException {
+//
+//		Application app;
+//
+//		try {
+//			BufferedReader br = new BufferedReader(new FileReader(path));
+//			String jsonData = br.readLine();
+//
+//			app = parseApplication(jsonData);
+//			br.close();
+//
+//			getLogger().debug("Loaded Api Key: " + app.getApiKey());
+//		} catch (IOException e) {
+//			throw new ApplicationAuthenticationException( I18nConstants.APIKEY_FILE_NOT_FOUND, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, HttpStatus.UNAUTHORIZED, e);
+//		}
+//		return app;
+//	}
 
-		Application app;
+//	@Override
+//	public Application parseApplication(String jsonData) {
+//		Application app;
+//		BaseDeserializer deserializer = new BaseDeserializer();
+//		Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
+//		app = gson.fromJson(jsonData, Application.class);
+//		return app;
+//	}
 
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(path));
-			String jsonData = br.readLine();
+//	@Override
+//	public void loadApiKeysFromFiles() throws ApplicationAuthenticationException {
+//
+//		// read from MongoDB
+//
+//		URL authenticationConfigFolder = getClass().getResource(API_KEY_CONFIG_FOLDER + API_KEY_STORAGE_FOLDER);
+//
+//		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
+//
+//		File folder = new File(authenticationConfigFolder.getFile());
+//		File[] listOfFiles = folder.listFiles();
+//
+//		if (!(listOfFiles.length > 0))
+//			logger.warn("No authentication configurations found!");
+//
+//		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
+//
+//		// TODO: 524 get authentication config files
+//		for (int i = 0; i < listOfFiles.length; i++) {
+//			if (listOfFiles[i].isFile()) {
+//				String fileName = listOfFiles[i].getAbsolutePath();
+//
+//				getLogger().info("Loading api keys from file: " + fileName);
+//				Application application = readApplicationConfigFromFile(fileName);
+//
+//				// put app in the cache
+//				getCachedClients().put(application.getApiKey(), application);
+//			}
+//		}
+//	}
 
-			app = parseApplication(jsonData);
-			br.close();
-
-			getLogger().debug("Loaded Api Key: " + app.getApiKey());
-		} catch (IOException e) {
-			throw new ApplicationAuthenticationException( I18nConstants.APIKEY_FILE_NOT_FOUND, I18nConstants.APIKEY_FILE_NOT_FOUND, new String[]{path}, HttpStatus.UNAUTHORIZED, e);
-		}
-		return app;
-	}
-
-	@Override
-	public Application parseApplication(String jsonData) {
-		Application app;
-		BaseDeserializer deserializer = new BaseDeserializer();
-		Gson gson = deserializer.registerDeserializer(Application.class, new ApplicationDeserializer());
-		app = gson.fromJson(jsonData, Application.class);
-		return app;
-	}
-
-	@Override
-	public void loadApiKeysFromFiles() throws ApplicationAuthenticationException {
-
-		// read from MongoDB
-
-		URL authenticationConfigFolder = getClass().getResource(API_KEY_CONFIG_FOLDER + API_KEY_STORAGE_FOLDER);
-
-		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
-
-		File folder = new File(authenticationConfigFolder.getFile());
-		File[] listOfFiles = folder.listFiles();
-
-		if (!(listOfFiles.length > 0))
-			logger.warn("No authentication configurations found!");
-
-		logger.debug("Loading authentication configurations from File: " + authenticationConfigFolder);
-
-		// TODO: 524 get authentication config files
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				String fileName = listOfFiles[i].getAbsolutePath();
-
-				getLogger().info("Loading api keys from file: " + fileName);
-				Application application = readApplicationConfigFromFile(fileName);
-
-				// put app in the cache
-				getCachedClients().put(application.getApiKey(), application);
-			}
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void loadApiKeys() throws ApplicationAuthenticationException {
-
-		// read from MongoDB
-		Iterable<PersistentClient> allStoredClients = clientService.findAll();
-
-		Application application;
-
-		for (PersistentClient storedClient : allStoredClients) {
-//			System.out.println(storedClient.getAuthenticationConfigJson());
-			//TODO allow both until the databases are migrated
-			if(storedClient.getClientApplication() != null)
-				application = storedClient.getClientApplication();
-			else
-				application = parseApplication(storedClient.getAuthenticationConfigJson());
-			
-			// put app in the cache
-			getCachedClients().put(application.getApiKey(), application);
-		}
-	}
+//	@SuppressWarnings("deprecation")
+//	@Override
+//	public void loadApiKeys() throws ApplicationAuthenticationException {
+//
+//		// read from MongoDB
+//		Iterable<PersistentClient> allStoredClients = clientService.findAll();
+//
+//		Application application;
+//
+//		for (PersistentClient storedClient : allStoredClients) {
+////			System.out.println(storedClient.getAuthenticationConfigJson());
+//			//TODO allow both until the databases are migrated
+//			if(storedClient.getClientApplication() != null)
+//				application = storedClient.getClientApplication();
+//			else
+//				application = parseApplication(storedClient.getAuthenticationConfigJson());
+//			
+//			// put app in the cache
+//			getCachedClients().put(application.getApiKey(), application);
+//		}
+//	}
 
 	protected Application createMockClientApplication(String apiKey, String organization, String applicationName) {
 		Application app = new ClientApplicationImpl();
@@ -239,27 +227,28 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 	}
 
-	@Override
+//	@Override
+	@Deprecated
 	public Agent getUserByName(String apiKey, String userName) throws UserAuthorizationException {
 		Agent user = null;
 
 		// read user from cache
-		try {
-			Application clientApp = getByApiKey(apiKey);
-			user = getUserByName(userName, clientApp);
-
-		} catch (ApplicationAuthenticationException e) {
-			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userName}, e);
-		}
+//		try {
+//			Application clientApp = getByApiKey(apiKey);
+//			user = getUserByName(userName, clientApp);
+//
+//		} catch (ApplicationAuthenticationException e) {
+//			throw new UserAuthorizationException(null, I18nConstants.INVALID_TOKEN, new String[]{userName}, e);
+//		}
 
 		// refresh cache - add specific api key if found in MongoDB
-		if (user == null) {
-			// read from MongoDB
-			Application application = loadApiKey(apiKey);
-			if (application != null) {
-				user = getUserByName(userName, application);
-			}
-		}
+//		if (user == null) {
+//			// read from MongoDB
+//			Application application = loadApiKey(apiKey);
+//			if (application != null) {
+//				user = getUserByName(userName, application);
+//			}
+//		}
 
 		// unknown user
 		if (user == null)
@@ -269,18 +258,18 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 
 	}
 
-	@SuppressWarnings("deprecation")
-	Application loadApiKey(String apiKey) {
-		Client apiClient = clientService.findByApiKey(apiKey);
-		Application application = null;
-
-		if (apiClient != null) {
-			application = parseApplication(apiClient.getAuthenticationConfigJson());
-			// put app in the cache
-			getCachedClients().put(application.getApiKey(), application);
-		}
-		return application;
-	}
+//	@SuppressWarnings("deprecation")
+//	Application loadApiKey(String apiKey) {
+//		Client apiClient = clientService.findByApiKey(apiKey);
+//		Application application = null;
+//
+//		if (apiClient != null) {
+//			application = parseApplication(apiClient.getAuthenticationConfigJson());
+//			// put app in the cache
+//			getCachedClients().put(application.getApiKey(), application);
+//		}
+//		return application;
+//	}
 
 	private Agent getUserByName(String userName, Application application) {
 		Agent user = null;
@@ -300,25 +289,26 @@ public class MockAuthenticationServiceImpl implements AuthenticationService, Res
 		return user;
 	}
 
-	@Override
-	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException {
-
-		Application app = null;
-
-		if (getCachedClients().isEmpty())
-			loadApiKeys();
-
-		app = getCachedClients().get(apiKey);
-
-		// reload from database
-		if (app == null)
-			app = loadApiKey(apiKey);
-
-		if (app == null)
-			throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
-
-		return app;
-	}
+//	@Override
+//	@Deprecated
+//	public Application getByApiKey(String apiKey) throws ApplicationAuthenticationException {
+//
+//		Application app = null;
+//
+//		if (getCachedClients().isEmpty())
+//			loadApiKeys();
+//
+//		app = getCachedClients().get(apiKey);
+//
+//		// reload from database
+//		if (app == null)
+//			app = loadApiKey(apiKey);
+//
+//		if (app == null)
+//			throw new ApplicationAuthenticationException(null, I18nConstants.INVALID_APIKEY, new String[]{apiKey});
+//
+//		return app;
+//	}
 
 	public AnnotationConfiguration getConfiguration() {
 		return configuration;

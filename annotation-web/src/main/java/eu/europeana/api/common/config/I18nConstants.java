@@ -1,10 +1,11 @@
 package eu.europeana.api.common.config;
 
-public interface I18nConstants {
+public interface I18nConstants extends eu.europeana.api.commons.definitions.config.i18n.I18nConstants{
 	//TODO: add extends api-commons.I18nConstants
 	static final String ANNOTATION_NOT_FOUND = "error.annotation_not_found";
-	static final String OPERATION_NOT_AUTHORIZED = "error.annotation_operation_not_authorized";
+//	static final String OPERATION_NOT_AUTHORIZED = "error.annotation_operation_not_authorized";
 	static final String CLIENT_NOT_AUTHORIZED = "error.annotation_client_not_authorized";
+	@Deprecated
 	static final String INVALID_TOKEN = "error.annotation_invalid_token";
 	static final String USER_NOT_AUTHORIZED = "error.annotation_user_not_authorized";
 	static final String ANNOTATION_NOT_ACCESSIBLE = "error.annotation_not_accessible";
@@ -14,7 +15,7 @@ public interface I18nConstants {
 	static final String API_WRITE_LOCK = "error.annotation_write_lock";
 	static final String ANNOTATION_VALIDATION = "error.annotation_validation";
 	static final String APIKEY_FILE_NOT_FOUND = "error.annotation_apikey_file_not_found";
-	static final String INVALID_APIKEY = "error.annotation_invalid_apikey";
+//	static final String INVALID_APIKEY = "error.annotation_invalid_apikey";
 	static final String TEST_USER_FORBIDDEN = "error.annotation_test_user_forbidden";
 	static final String LOCKED_MAINTENANCE = "error.annotation_lock_maintenance";
 	static final String AUTHENTICATION_FAIL = "error.annotation_authentication_fail";

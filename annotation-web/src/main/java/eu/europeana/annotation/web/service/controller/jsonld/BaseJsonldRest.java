@@ -591,11 +591,7 @@ public class BaseJsonldRest extends BaseRest {
 	protected ResponseEntity<String> storeAnnotationReport(String wsKey, String identifier,
 			Authentication authentication, String action) throws HttpException {
 		try {
-
-			// SET DEFAULTS and validates apikey
-			// 1.
-			getAuthenticationService().getByApiKey(wsKey);
-
+			
 			// 2. build and verify annotation ID
 			String userId = authentication.getPrincipal().toString();
 			AnnotationId annoId = validateInputsForUpdateDelete(wsKey, identifier, userId);
