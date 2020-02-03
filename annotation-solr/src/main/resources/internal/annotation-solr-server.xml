@@ -7,16 +7,23 @@
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 	">
 
-	<!-- LAZY INIT: the next beans has lazy init, to prevent them from being started when not used... -->
+	
+	<bean id="annotation_solr_client_clientbuilderBean"
+		class="org.apache.solr.client.solrj.impl.LBHttpSolrClient.Builder" />
 
-	<bean id="annotation_solr_solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrClient" lazy-init="true">
-		<constructor-arg value="#{annotationProperties['solr.annotation.url']}"/>
-		<property name="followRedirects" value="false"/>
-		<property name="connectionTimeout" value="#{annotationProperties['solr.annotation.timeout']}"/>
-		<!-- 
-		<property name="defaultMaxConnectionsPerHost" value="64"/>
-		<property name="maxTotalConnections" value="125"/>
-		 -->
+	<bean id="annotation_solr_client_clientBuilder"
+		class="org.apache.solr.client.solrj.impl.LBHttpSolrClient.Builder"
+		factory-bean="annotation_solr_client_clientbuilderBean"
+		factory-method="withBaseSolrUrls">
+		<constructor-arg
+			value="#{annotationProperties['solr.annotation.url'].split(',')}" />
+	</bean>
+
+	<bean id="annotation_solr_client"
+		class="org.apache.solr.client.solrj.SolrClient"
+		factory-bean="annotation_solr_client_clientBuilder" factory-method="build">
+		<property name="connectionTimeout"
+			value="#{annotationProperties['solr.annotation.timeout']}" />
 	</bean>
 	
 </beans>
