@@ -267,8 +267,8 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String ITEMS_COUNT = "itemsCount";
 	public static final String URI = "uri";
 	public static final String WHITELIST = "whitelist";
-	public static final String DEFAULT_GENERATOR_URL = "http://data.europeana.eu/annotations/apikey/";
-	public static final String DEFAULT_CREATOR_URL = "http://data.europeana.eu/annotations/user/";
+	public static final String DEFAULT_GENERATOR_URL = "http://data.europeana.eu/apikey/";
+	public static final String DEFAULT_CREATOR_URL = "http://data.europeana.eu/user/";
 
 	
 	/**
