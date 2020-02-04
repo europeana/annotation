@@ -187,16 +187,15 @@ public class WhitelistRest extends BaseRest {
     @ResponseBody
     @ApiOperation(value = "Delete an entry from the whitelist", nickname = "deleteWhitelistEntry", response = java.lang.Void.class)
     public ResponseEntity<String> deleteWhitelistEntry(
-	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-	    @RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-	    @RequestParam(value = "url", required = true) String url, HttpServletRequest request)
+	    @RequestParam(value = "url", required = true) String url, 
+	    HttpServletRequest request)
 	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException,
 	    ApiKeyExtractionException, AuthorizationExtractionException {
 
 	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
 
 	WhitelistOperationResponse response;
-	response = new WhitelistOperationResponse(apiKey, "delete/whitelist/delete");
+	response = new WhitelistOperationResponse(null, "delete/whitelist/delete");
 
 	try {
 	    int numDeletedWhitelistEntries = getWhitelistService().deleteWhitelistEntry(url);

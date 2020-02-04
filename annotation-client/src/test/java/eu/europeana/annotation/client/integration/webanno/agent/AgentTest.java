@@ -38,10 +38,10 @@ public class AgentTest extends BaseTaggingTest {
 	public void agentIDNotUrlMustThrowException() throws IOException {
 		
 		String requestBody = getJsonStringInput(WRONG_AGENT_ID_NOT_URL);
-		ResponseEntity<String> response = null;
-//		ResponseEntity<String> response = getApiClient().createAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, null, 
-//				false, requestBody,	TEST_USER_TOKEN);
-//		
+		
+		ResponseEntity<String> response = getApiClient().createAnnotation(
+			false, requestBody, null);
+		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());		
 		
 	}

@@ -14,13 +14,12 @@ import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements WebAnnotationProtocolApi {
 
 	@Override
-	public ResponseEntity<String> createAnnotation(String wskey, String identifier,
-			Boolean indexOnCreate, String annotation, String userToken, String annoType) {
+	public ResponseEntity<String> createAnnotation(
+			Boolean indexOnCreate, String annotation, String annoType) {
 
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.createAnnotation(wskey, identifier, indexOnCreate, annotation, userToken,
-					annoType);
+			res = apiConnection.createAnnotation(indexOnCreate, annotation, annoType);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
@@ -30,18 +29,16 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 	
 	@Override
-	public ResponseEntity<String> createAnnotation(String wskey, String identifier, String annotation,
-			String userToken, String annoType) {
-		return createAnnotation(wskey, identifier,
-				true, annotation, userToken, annoType);
+	public ResponseEntity<String> createAnnotation(String annotation,
+			String annoType) {
+		return createAnnotation(true, annotation, annoType);
 	}
 
 	@Override
-	public ResponseEntity<String> deleteAnnotation(String wskey, String identifier, String userToken,
-			String format) {
+	public ResponseEntity<String> deleteAnnotation(String identifier) {
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.deleteAnnotation(wskey, identifier, userToken, format);
+			res = apiConnection.deleteAnnotation(identifier);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi deleteAnnotation method", e);
@@ -65,11 +62,10 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> updateAnnotation(String wskey, String identifier, String annotation,
-			String userToken) {
+	public ResponseEntity<String> updateAnnotation(String identifier, String annotation) {
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.updateAnnotation(wskey, identifier, annotation, userToken, null);
+			res = apiConnection.updateAnnotation(identifier, annotation);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the AnnotationJsonApi updateAnnotation method", e);
@@ -79,17 +75,9 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> createTag(String identifier, Boolean indexOnCreate,
-			String annotation, String userToken) {
-		return createTag(identifier, indexOnCreate, annotation,
-				getConfiguration().getApiKey(), userToken);
-	}
-
-	@Override
-	public ResponseEntity<String> createTag(String identifier, Boolean indexOnCreate,
-			String annotation, String apiKey, String userToken) {
-		return createAnnotation(apiKey, identifier, indexOnCreate, annotation,
-				userToken, WebAnnotationFields.TAG);
+	public ResponseEntity<String> createTag(Boolean indexOnCreate,
+			String annotation) {
+		return createAnnotation(indexOnCreate, annotation, WebAnnotationFields.TAG);
 	}
 	
 	@Override
@@ -130,10 +118,10 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
-	public ResponseEntity<String> uploadAnnotations(String wskey, String userToken, String tag, Boolean indexOnCreate, String provider) {
+	public ResponseEntity<String> uploadAnnotations(String tag, Boolean indexOnCreate) {
 		ResponseEntity<String> res;
 		try {
-			res = apiConnection.uploadAnnotations(wskey, userToken,tag, indexOnCreate, provider);
+			res = apiConnection.uploadAnnotations(tag, indexOnCreate);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException(
 					"Exception occured when invoking the uploadAnnotations method", e);

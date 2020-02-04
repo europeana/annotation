@@ -136,8 +136,8 @@ public class BaseWebAnnotationProtocolTest {
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(),
-				null, requestBody, TEST_USER_TOKEN, null);
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(
+			true, requestBody, null);
 		return storedResponse;
 	}
 	
@@ -157,8 +157,7 @@ public class BaseWebAnnotationProtocolTest {
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
-				null, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null);
 		return storedResponse;
 	}
 	
@@ -169,8 +168,7 @@ public class BaseWebAnnotationProtocolTest {
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(getApiKey(), 
-				identifier, indexOnCreate, requestBody, TEST_USER_TOKEN, null);
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null);
 		return storedResponse;
 	}
 
@@ -373,8 +371,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	protected Annotation createTag(String requestBody, String apiKey, String userToken) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createTag(
-				null, false, requestBody, 
-				apiKey, userToken);
+				true, requestBody);
 		
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
@@ -387,8 +384,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	protected Annotation createLink(String requestBody) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey(), null, true, requestBody, 
-				TEST_USER_TOKEN, 
+				true, requestBody, 
 				null //WebAnnotationFields.LINK
 				);
 				
@@ -404,10 +400,7 @@ public class BaseWebAnnotationProtocolTest {
 	
 	protected Annotation createTranscription(String requestBody) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey(), null, true, requestBody, 
-				TEST_USER_TOKEN, 
-				null 
-				);
+				true, requestBody, null);
 				
 				
 		assertNotNull(response.getBody());

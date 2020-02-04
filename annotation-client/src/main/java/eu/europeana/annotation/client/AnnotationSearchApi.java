@@ -1,8 +1,5 @@
 package eu.europeana.annotation.client;
 
-import java.util.List;
-
-import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 
@@ -44,7 +41,7 @@ public interface AnnotationSearchApi {
 	 * @param query
 	 * @return
 	 */
-	public List<? extends TagResource> searchTags(String query);
+//	public List<? extends TagResource> searchTags(String query);
 
 	/**
 	 * Search for tags by the given text query, row start position and rows limit.
@@ -53,7 +50,7 @@ public interface AnnotationSearchApi {
 	 * @param limit
 	 * @return
 	 */
-	public List<? extends TagResource> searchTags(String query, String startOn, String limit, String field, String language);
+//	public List<? extends TagResource> searchTags(String query, String startOn, String limit, String field, String language);
 
 	AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile);
 

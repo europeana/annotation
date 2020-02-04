@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class TaggingTest extends BaseTaggingTest {
 
@@ -83,8 +82,7 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_MINIMAL_WRONG);
 		
 		ResponseEntity<String> response = getApiClient().createTag(
-				null, false, requestBody, 
-				TEST_USER_TOKEN);
+				true, requestBody);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
 		//log.debug("Error message: " + );
@@ -96,8 +94,7 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LAT);
 		
 		ResponseEntity<String> response = getApiClient().createTag(
-				null, false, requestBody, 
-				TEST_USER_TOKEN);
+				false, requestBody);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
 	}
@@ -108,8 +105,7 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LONG);
 		
 		ResponseEntity<String> response = getApiClient().createTag(
-				null, false, requestBody, 
-				TEST_USER_TOKEN);
+				false, requestBody);
 		
 		assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
 	}

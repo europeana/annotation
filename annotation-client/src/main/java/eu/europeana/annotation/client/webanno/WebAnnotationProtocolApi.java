@@ -19,13 +19,11 @@ public interface WebAnnotationProtocolApi {
 	 * @param annoType
 	 * @return response entity containing body, headers and status code.
 	 */
-	public ResponseEntity<String> createAnnotation(
-			String wskey, String identifier, Boolean indexOnCreate, 
-			String requestBody, String userToken, String annoType);
+	public ResponseEntity<String> createAnnotation(Boolean indexOnCreate, 
+			String requestBody, String annoType);
 	
 	public ResponseEntity<String> createAnnotation(
-			String wskey, String identifier, 
-			String requestBody, String userToken, String annoType);
+			String requestBody, String annoType);
 	
 	/**
 	 * This method creates test annotation report object
@@ -62,8 +60,8 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> createTag(
-			String identifier, Boolean indexOnCreate, 
-			String requestBody, String apiKey, String userToken);
+			Boolean indexOnCreate, 
+			String requestBody);
 	
 	
 	/**
@@ -74,7 +72,7 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity containing headers and status code.
 	 */
 	public ResponseEntity<String> deleteAnnotation(
-			String wskey, String identifier, String userToken, String format);
+			String identifier);
 	
 	/**
 	 * This method retrieves annotation by the given provider and identifier.
@@ -94,7 +92,7 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> updateAnnotation(
-			String wskey, String identifier, String requestBody, String userToken);
+			String identifier, String requestBody);
 
 
 	/**
@@ -105,10 +103,8 @@ public interface WebAnnotationProtocolApi {
 	 */
 	public Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException;
 
-	ResponseEntity<String> createTag(String identifier, Boolean indexOnCreate, String annotation,
-			String userToken);
 		
-	public ResponseEntity<String> uploadAnnotations(String wskey, String userToken, String tag, Boolean indexOnCreate, String provider);
+	public ResponseEntity<String> uploadAnnotations(String annotations, Boolean indexOnCreate);
 
 
 }
