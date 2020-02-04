@@ -39,222 +39,177 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @SwaggerSelect
-@Api(tags = "Whitelist JSON Rest Service", description=" ", hidden=true)
-@RequestMapping(value = "/"+WebAnnotationFields.WHITELIST)
+@Api(tags = "Whitelist JSON Rest Service", description = " ", hidden = true)
+@RequestMapping(value = "/" + WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {
-	
-	@Resource
-	private WhitelistService whitelistService;
-	
-	public WhitelistService getWhitelistService() {
-		return whitelistService;
-	}
 
-	public void setWhitelistService(WhitelistService whitelistService) {
-		this.whitelistService = whitelistService;
-	}
-	
-	@RequestMapping(value = "/component", method = RequestMethod.GET
-			, produces = MediaType.TEXT_PLAIN_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Retrieve component name", nickname = "getComponentName", response = java.lang.Void.class)
-	public String getComponentName() {
-		return WebAnnotationFields.WHITELIST;
-	}
+    @Resource
+    private WhitelistService whitelistService;
 
-	@RequestMapping(value = "/search"
-			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Retrieve whitelist entry for given URL", nickname = "getWhitelistEntry", response = java.lang.Void.class)
-	public ResponseEntity<String> getWhitelistEntry (
+    public WhitelistService getWhitelistService() {
+	return whitelistService;
+    }
+
+    public void setWhitelistService(WhitelistService whitelistService) {
+	this.whitelistService = whitelistService;
+    }
+
+    @RequestMapping(value = "/component", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "Retrieve component name", nickname = "getComponentName", response = java.lang.Void.class)
+    public String getComponentName() {
+	return WebAnnotationFields.WHITELIST;
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "Retrieve whitelist entry for given URL", nickname = "getWhitelistEntry", response = java.lang.Void.class)
+    public ResponseEntity<String> getWhitelistEntry(
 //			public ModelAndView getWhitelistEntry (
-		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestParam(value = "url", required = true) String url,
-		HttpServletRequest request
-		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
-		
-	    	verifyReadAccess(request);
-//		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
+	    @RequestParam(value = "url", required = true) String url, HttpServletRequest request)
+	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+	// JWT Token Only
+	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
 
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
+	WhitelistEntry whitelist = getWhitelistService().getWhitelistEntryByUrl(url);
 
-		WhitelistEntry whitelist = getWhitelistService().getWhitelistEntryByUrl(url);
+	WhitelistOperationResponse response = new WhitelistOperationResponse(null, "/whitelist/search");
 
-		WhitelistOperationResponse response = new WhitelistOperationResponse(
-				apiKey, "/whitelist/search");
-
-		if (whitelist != null) {
-			response = new WhitelistOperationResponse(
-					apiKey, "/whitelist/search");			
-			response.success = true;
-			response.setWhitelistEntry(serializeWhitelist(whitelist));
-		} else {
-			String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
-			response.action = "get: /whitelist/search";
-			response.success = false;
-			response.error = errorMessage;
-		}
-		
-//		return JsonWebUtils.toJson(response, null);
-		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponse(jsonStr);		
+	if (whitelist != null) {
+	    response.success = true;
+	    response.setWhitelistEntry(serializeWhitelist(whitelist));
+	} else {
+	    String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
+	    response.action = "get: /whitelist/search";
+	    response.success = false;
+	    response.error = errorMessage;
 	}
 
-	@RequestMapping(value = "/view"
-			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Retrieve the whole whitelist", nickname = "getFullWhitelist", response = java.lang.Void.class)
-	public ResponseEntity<String> getFullWhitelist(
-		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		HttpServletRequest request) 
-				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+	String jsonStr = JsonWebUtils.toJson(response, null);
+	return buildResponse(jsonStr);
+    }
 
-//		validateApiKey(apiKey, WebAnnotationFields.READ_METHOD);
-	    	verifyReadAccess(request);
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
+    @RequestMapping(value = "/view", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "Retrieve the whole whitelist", nickname = "getFullWhitelist", response = java.lang.Void.class)
+    public ResponseEntity<String> getFullWhitelist(HttpServletRequest request)
+	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
 
-		List<? extends WhitelistEntry> whitelist = getWhitelistService().getWhitelist();
+	// JWT Token Only
+	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
+	List<? extends WhitelistEntry> whitelist = getWhitelistService().getWhitelist();
 
-		String action = "get:/whitelist/view";
-		
-		WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(
-				whitelist, apiKey, action);
+	String action = "get:/whitelist/view";
+
+	WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(whitelist, null, action);
 
 //		return JsonWebUtils.toJson(response, null);
-		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponse(jsonStr);		
-	}
-	
-	@RequestMapping(value = "/create", method = RequestMethod.POST
-			, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Add a new entry to whitelist", nickname = "createWhitelistEntry", response = java.lang.Void.class)
-	public ResponseEntity<String> createWhitelistEntry (
-		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestBody String whitelist,
-		HttpServletRequest request
-		) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+	String jsonStr = JsonWebUtils.toJson(response, null);
+	return buildResponse(jsonStr);
+    }
 
-//		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Add a new entry to whitelist", nickname = "createWhitelistEntry", response = java.lang.Void.class)
+    public ResponseEntity<String> createWhitelistEntry(@RequestBody String whitelist, HttpServletRequest request)
+	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_CREATE);
-		verifyWriteAccess(Operations.WHITELIST_CREATE, request);
-		String action = "post:/whitelist/create";
-		
-		//parse
-		WhitelistEntry webWhitelist = WhiteListParser.toWhitelistEntry(whitelist);
-	
-		//store				
-		WhitelistEntry storedWhitelist = getWhitelistService().storeWhitelistEntry(webWhitelist);
+	verifyWriteAccess(Operations.WHITELIST_CREATE, request);
+	String action = "post:/whitelist/create";
 
-		//build response
-		WhitelistOperationResponse response = new WhitelistOperationResponse(
-				apiKey, action);
-		response.success = true;
+	// parse
+	WhitelistEntry webWhitelist = WhiteListParser.toWhitelistEntry(whitelist);
 
-		response.setWhitelistEntry(serializeWhitelist(storedWhitelist));
+	// store
+	WhitelistEntry storedWhitelist = getWhitelistService().storeWhitelistEntry(webWhitelist);
+
+	// build response
+	WhitelistOperationResponse response = new WhitelistOperationResponse(null, action);
+	response.success = true;
+
+	response.setWhitelistEntry(serializeWhitelist(storedWhitelist));
 
 //		return JsonWebUtils.toJson(response, null);
-		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponse(jsonStr);		
-	}
+	String jsonStr = JsonWebUtils.toJson(response, null);
+	return buildResponse(jsonStr);
+    }
 
-	@RequestMapping(value = "/load"
-			, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
-	public ResponseEntity<String> loadDefaultWhitelist (
-		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		HttpServletRequest request) 
-				throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException{
+    @RequestMapping(value = "/load", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
+    public ResponseEntity<String> loadDefaultWhitelist(
+	    HttpServletRequest request)
+	    throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException,
+	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-	    	verifyWriteAccess(WebAnnotationFields.WRITE_METHOD, request);
-//		validateApiKey(apiKey, WebAnnotationFields.WRITE_METHOD);
+	verifyWriteAccess(WebAnnotationFields.WRITE_METHOD, request);
 
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_RETRIEVE);
+	List<? extends WhitelistEntry> whitelist = getWhitelistService().loadWhitelistFromResources();
 
-		List<? extends WhitelistEntry> whitelist = getWhitelistService().loadWhitelistFromResources();
+	String action = "/load";
 
-		String action = "/load";
-		
-		WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(
-				whitelist, apiKey, action);
+	WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(whitelist, null, action);
 
 //		return JsonWebUtils.toJson(response, null);
-		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponse(jsonStr);		
+	String jsonStr = JsonWebUtils.toJson(response, null);
+	return buildResponse(jsonStr);
+    }
+
+    @DELETE
+    @RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
+    public ResponseEntity<String> deleteAllWhitelistEntries(
+	    HttpServletRequest request) throws ApplicationAuthenticationException, UserAuthorizationException,
+	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
+
+	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+
+	WhitelistOperationResponse response;
+	response = new WhitelistOperationResponse(null, "/whitelist/deleteall");
+
+	try {
+	    int numDeletedWhitelistEntries = getWhitelistService().deleteWholeWhitelist();
+	    response.success = true;
+	    response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
+	} catch (Exception e) {
+	    LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
+	    response.success = false;
+	    response.error = e.getMessage();
 	}
-
-	
-	@DELETE
-	@RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
-	public ResponseEntity<String> deleteAllWhitelistEntries(
-		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		HttpServletRequest request) 
-				throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
-
-//		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
-	    	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
-
-		WhitelistOperationResponse response;
-		response = new WhitelistOperationResponse(
-				apiKey, "/whitelist/deleteall");
-			
-		try{
-			int numDeletedWhitelistEntries = getWhitelistService().deleteWholeWhitelist();
-			response.success = true;
-			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
-		} catch (Exception e){
-			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
-			response.success = false;
-			response.error = e.getMessage();
-		}
 
 //		return JsonWebUtils.toJson(response, null);
-		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponse(jsonStr);		
+	String jsonStr = JsonWebUtils.toJson(response, null);
+	return buildResponse(jsonStr);
+    }
+
+    @DELETE
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiOperation(value = "Delete an entry from the whitelist", nickname = "deleteWhitelistEntry", response = java.lang.Void.class)
+    public ResponseEntity<String> deleteWhitelistEntry(
+	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
+	    @RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
+	    @RequestParam(value = "url", required = true) String url, HttpServletRequest request)
+	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException,
+	    ApiKeyExtractionException, AuthorizationExtractionException {
+
+	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+
+	WhitelistOperationResponse response;
+	response = new WhitelistOperationResponse(apiKey, "delete/whitelist/delete");
+
+	try {
+	    int numDeletedWhitelistEntries = getWhitelistService().deleteWhitelistEntry(url);
+	    response.success = true;
+	    response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
+	} catch (Exception e) {
+	    LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
+	    response.success = false;
+	    response.error = e.getMessage();
 	}
 
-	@DELETE
-	@RequestMapping(value = "/delete", method = RequestMethod.DELETE
-					, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Delete an entry from the whitelist", nickname = "deleteWhitelistEntry", response = java.lang.Void.class)
-	public ResponseEntity<String> deleteWhitelistEntry(
-		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = true) String apiKey,
-		@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-		@RequestParam(value = "url", required = true) String url,
-		HttpServletRequest request
-		) throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	String jsonStr = JsonWebUtils.toJson(response, null);
+	return buildResponse(jsonStr);
+    }
 
-//		validateApiKey(apiKey, WebAnnotationFields.DELETE_METHOD);
-		verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.WHITELIST_DELETE);
-
-		WhitelistOperationResponse response;
-		response = new WhitelistOperationResponse(
-				apiKey, "delete/whitelist/delete");
-			
-		try{
-			int numDeletedWhitelistEntries = getWhitelistService().deleteWhitelistEntry(url);
-			response.success = true;
-			response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
-		} catch (Exception e){
-			LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
-			response.success = false;
-			response.error = e.getMessage();
-		}
-
-//		return JsonWebUtils.toJson(response, null);
-		String jsonStr = JsonWebUtils.toJson(response, null);
-		return buildResponse(jsonStr);		
-	}
-	
 }
