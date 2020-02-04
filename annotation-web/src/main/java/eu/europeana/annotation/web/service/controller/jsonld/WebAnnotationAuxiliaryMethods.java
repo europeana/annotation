@@ -34,7 +34,7 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 
     @RequestMapping(value = "/annotations/", method = RequestMethod.POST, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(notes = SwaggerConstants.SAMPLES_JSON_LINK, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
+    @ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
     public ResponseEntity<String> createAnnotations(
 	    @RequestBody String annotationPage,
 	    HttpServletRequest request)
@@ -47,7 +47,7 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 
     @RequestMapping(value = { "/annotation/{annoType}" }, method = RequestMethod.POST, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(notes = SwaggerConstants.SAMPLES_JSON_LINK, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
+    @ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
     public ResponseEntity<String> createAnnotationByTypeJsonld(
 	    @RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 	    @RequestBody String annotation,
