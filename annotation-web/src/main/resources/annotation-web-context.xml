@@ -30,10 +30,7 @@
    	<beans:bean name="annotation_apiKeyService" class="eu.europeana.corelib.db.service.mock.impl.MockApiKeyServiceImpl"/>
 	 -->
 	 		
-    <!--  AuthenticationService -->
-	<!-- Not Used Anymore 
-	<beans:bean name="annotation_authenticationService" class="eu.europeana.annotation.web.service.authentication.mock.BridgeAuthenticationManagerAdapter"/>
-	 -->
+    <!--  Authorization Service -->
 	<beans:bean name="annotation_authorizationService" class="eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl">
     </beans:bean>
     

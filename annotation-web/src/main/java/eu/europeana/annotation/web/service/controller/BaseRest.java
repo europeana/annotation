@@ -35,7 +35,6 @@ import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.controller.BaseRestController;

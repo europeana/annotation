@@ -36,8 +36,6 @@ import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
-import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;

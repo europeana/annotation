@@ -36,21 +36,17 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation", nickname = "createAnnotation", response = java.lang.Void.class)
+	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSON_LINK, value = "Create annotation", nickname = "createAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotation(
-			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
+//			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-        // TODO userToken parameter has to be removed from HTTP request parameters		
-        // userToken = getUserToken(userToken, request);
-		
 		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
-		return storeAnnotation(null, null, identifier, indexOnCreate, annotation, authentication);
+		return storeAnnotation(null, indexOnCreate, annotation, authentication);
 	}
 
 	@RequestMapping(value = {"/annotation/{identifier}", "/annotation/{identifier}.jsonld"}, method = RequestMethod.GET, 
@@ -62,25 +58,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException {
 
-			String action = "get:/annotation/{identifier}[.{format}]";
+//			String action = "get:/annotation/{identifier}[.{format}]";
 			verifyReadAccess(request);
-			return getAnnotationById(wskey, identifier, action);
+			return getAnnotationById(identifier);
 	}
 	
-//	@RequestMapping(value = "/annotation/", method = RequestMethod.OPTIONS, 
-//			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-//	@ApiOperation(value = "Support CORS preflight requests", nickname = "options", response = java.lang.Void.class)
-//	public ResponseEntity<String> options(
-//			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
-//			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false) String userToken,
-//			HttpServletRequest request)
-//					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
-//
-//		//the content response is delivered automatically by spring
-////				return null;
-////		userToken = getUserToken(userToken, request);	
-//		return optionsForCorsPreflight(wskey, null, null, userToken);
-//	}
 	
 	@RequestMapping(value = {"/annotation/{identifier}"}, method = RequestMethod.PUT, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
@@ -88,14 +70,13 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> updateAnnotation(
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
 			@RequestBody String annotation,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 		
 		Authentication authentication = verifyWriteAccess(WebAnnotationFields.UPDATE_OPERATION, request);
 		
-		String action = "put:/annotation/{identifier}[.{format}]";
-		return updateAnnotation(identifier, annotation, authentication, action);
+//		String action = "put:/annotation/{identifier}[.{format}]";
+		return updateAnnotation(identifier, annotation, authentication);
 	}
 	
 	
@@ -104,14 +85,13 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	@ApiOperation(value = "Delete annotation", nickname = "deleteAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotation(
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 		Authentication authentication = verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
 		
-		String action = "delete:/annotation/{identifier}[.{format}]";
-		return deleteAnnotation(identifier, authentication, action);
+//		String action = "delete:/annotation/{identifier}[.{format}]";
+		return deleteAnnotation(identifier, authentication);
 	}
 		
 }

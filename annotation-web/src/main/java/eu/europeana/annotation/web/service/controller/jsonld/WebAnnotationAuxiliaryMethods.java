@@ -28,49 +28,43 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @SwaggerSelect
-@Api(tags = "Web Annotation Auxiliary Methods", description=" ")
+@Api(tags = "Web Annotation Auxiliary Methods", description = " ")
 @Component
 public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 
-	@RequestMapping(value = "/annotations/", method = RequestMethod.POST, 
-			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
-	public ResponseEntity<String> createAnnotations(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@RequestBody String annotationPage,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-			HttpServletRequest request)
-					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+    @RequestMapping(value = "/annotations/", method = RequestMethod.POST, produces = {
+	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+    @ApiOperation(notes = SwaggerConstants.SAMPLES_JSON_LINK, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
+    public ResponseEntity<String> createAnnotations(
+	    @RequestBody String annotationPage,
+	    HttpServletRequest request)
+	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
-		
-		return storeAnnotations(wskey, annotationPage, authentication);
-	}
-	
-	@RequestMapping(value = {"/annotation/{annoType}"}, method = RequestMethod.POST, 
-			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
-	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
-	public ResponseEntity<String> createAnnotationByTypeJsonld(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
-			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
-			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
-			@RequestBody String annotation,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType,
-			HttpServletRequest request
-			)throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+	Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 
-		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
-		
-		MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
-		
-		if(motivation == null)
-			throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-					I18nConstants.ANNOTATION_VALIDATION,
-					new String[]{WebAnnotationFields.PATH_PARAM_ANNO_TYPE, annoType},
-					HttpStatus.NOT_ACCEPTABLE, 
-					null);
-		
-		return storeAnnotation(wskey, motivation, identifier, indexOnCreate, annotation, authentication);
-	}
-	
+	return storeAnnotations(annotationPage, authentication);
+    }
+
+    @RequestMapping(value = { "/annotation/{annoType}" }, method = RequestMethod.POST, produces = {
+	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+    @ApiOperation(notes = SwaggerConstants.SAMPLES_JSON_LINK, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
+    public ResponseEntity<String> createAnnotationByTypeJsonld(
+	    @RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
+	    @RequestBody String annotation,
+	    @PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType, HttpServletRequest request)
+	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+
+	Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+
+	MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
+
+	if (motivation == null)
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+		    I18nConstants.ANNOTATION_VALIDATION,
+		    new String[] { WebAnnotationFields.PATH_PARAM_ANNO_TYPE, annoType }, HttpStatus.NOT_ACCEPTABLE,
+		    null);
+
+	return storeAnnotation(motivation, indexOnCreate, annotation, authentication);
+    }
+
 }

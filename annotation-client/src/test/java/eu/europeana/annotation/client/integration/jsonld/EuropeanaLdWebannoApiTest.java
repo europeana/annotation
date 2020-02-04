@@ -36,7 +36,13 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 //		validateAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, -1, annotation);
 	}
 		
-	@Test
+	//@Test
+	@Deprecated 
+	/**
+	 * provider not supported anymore, all annotation IDs will be generated
+	 * @throws JsonParseException
+	 * @throws IOException
+	 */
 	public void createSimpleTagWebannoAnnotationWithAnnotationNr() throws JsonParseException, IOException {
 		
 		String requestBody = getJsonStringInput(SIMPLE_TAG_ANNOTATION);

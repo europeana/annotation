@@ -14,7 +14,6 @@ import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserGroups;
-import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
