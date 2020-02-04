@@ -19,7 +19,6 @@ import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-//@Api(value = "web-annotation-feedback", description = "Providing Feedback on Annotations - API")
 @Controller
 @SwaggerSelect
 @Api(tags = "Provide Feedback on Annotations", description=" ")
@@ -29,16 +28,14 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Report an (innapropriate) annotation", nickname = "reportAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> reportAnnotation(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
 		
-		String action = "post:/annotation/{identifier}/report";
-		return storeAnnotationReport(wskey, identifier, authentication, action);
+//		String action = "post:/annotation/{identifier}/report";
+		return storeAnnotationReport(identifier, authentication);
 	}
 
 	@RequestMapping(value = "/annotation/{identifier}/moderationsummary", method = RequestMethod.GET, 
@@ -47,14 +44,11 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 	public ResponseEntity<String> getModerationSummary(
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
-			@RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 		verifyReadAccess(request);
-		
-		String action = "get:/annotation/{identifier}/moderationsummary";
-		return getModerationReportSummary(wskey, identifier, action);		
+		return getModerationReportSummary(wskey, identifier);		
 	}
 	
 }

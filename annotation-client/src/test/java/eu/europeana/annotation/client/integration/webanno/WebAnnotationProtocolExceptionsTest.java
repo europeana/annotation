@@ -52,24 +52,6 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
     
     public String INVALID_USER_TOKEN = "invalid_user_token";
 
-       
-	@Test
-	public void createWebAnnotationWithWrongWskey() throws IOException {
-		
-		String requestBody = getJsonStringInput(TAG_STANDARD);
-		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
-				UNKNOWN_WSKEY
-				, null
-				, requestBody
-				, TEST_USER_TOKEN
-				, null
-				);
-		
-		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-	}
-	
-
 	@Test
 	public void createWebannoAnnotationWithoutBody() {
 		
@@ -137,6 +119,17 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				getApiKey()
 				, WRONG_GENERATED_IDENTIFIER);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+	
+	@Test
+	public void getWebAnnotationWithWrongWskey() throws IOException {
+		
+		ResponseEntity<String> response = getApiClient().getAnnotation(
+				UNKNOWN_WSKEY, 
+				WRONG_GENERATED_IDENTIFIER
+				);
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	@Test
@@ -223,7 +216,8 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 	}
 	
 		
-	@Test()
+//	@Test()
+	@Deprecated //api key is used only for the read access
 	public void updateWebannoAnnotationWithUnknownWskey() throws JsonParseException, IOException { 
 		
 		/**

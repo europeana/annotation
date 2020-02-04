@@ -30,7 +30,6 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
-import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 

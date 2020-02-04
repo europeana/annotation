@@ -22,7 +22,6 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
-import eu.europeana.annotation.web.service.authentication.AuthenticationService;
 import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationServiceImpl{
