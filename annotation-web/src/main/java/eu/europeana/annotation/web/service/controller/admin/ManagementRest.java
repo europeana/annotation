@@ -325,18 +325,14 @@ public class ManagementRest extends BaseRest {
 	    verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
 		// 1. authorize user
-//		getAuthorizationService().authorizeUser(userToken, apiKey, Operations.ADMIN_REINDEX);
 		// TODO: check and remove
-		/*
-		 * BatchProcessingStatus status = getAdminService().reindexOutdated();
-		 * 
-		 * AnnotationOperationResponse response; response = new
-		 * AnnotationOperationResponse(apiKey,
-		 * "/admin/annotation/reindexoutdated");
-		 * response.setStatus("Outdated annotations reindexed. " +
-		 * status.toString());
-		 */
-
+//		BatchProcessingStatus status = getAdminService().reindexOutdated();
+//		AnnotationOperationResponse response; response = new
+//		AnnotationOperationResponse(apiKey,
+//		"/admin/annotation/reindexoutdated");
+//		response.setStatus("Outdated annotations reindexed. " +
+//		status.toString());
+//
 		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey,
 				"/admin/annotation/reindexoutdated");
 		BatchProcessingStatus status;

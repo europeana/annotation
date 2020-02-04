@@ -140,7 +140,7 @@ public class BaseWebAnnotationDataSetTest {
 		for (Annotation annotation : annotations) {
 			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
 					annotation.getAnnotationId().getIdentifier());
-			assertEquals(re.getStatusCode(), HttpStatus.OK);
+			assertEquals(re.getStatusCode(), HttpStatus.NO_CONTENT);
 		}
 	}
 
