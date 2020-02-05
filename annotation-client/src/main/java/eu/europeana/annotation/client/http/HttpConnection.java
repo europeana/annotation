@@ -116,6 +116,7 @@ public class HttpConnection {
 	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	public ResponseEntity<String> postURL(String url, String jsonParamValue, String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
@@ -139,6 +140,7 @@ public class HttpConnection {
 	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	public ResponseEntity<String> postURL(String url, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
@@ -160,6 +162,7 @@ public class HttpConnection {
 	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	public ResponseEntity<String> putURL(String url, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PutMethod put = new PutMethod(url);
@@ -183,6 +186,7 @@ public class HttpConnection {
 	 * @return ResponseEntity that comprises response body in JSON format, headers and status code.
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	public ResponseEntity<String> putURL(String url, String jsonParamValue, String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PutMethod put = new PutMethod(url);
@@ -324,6 +328,7 @@ public class HttpConnection {
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	public String getURLContentWithBody(String url, String jsonParamValue, 
 			String requestHeaderName, String requestHeaderValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);

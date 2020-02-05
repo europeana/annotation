@@ -15,11 +15,8 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
-import eu.europeana.annotation.client.model.result.TagSearchResults;
 import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.resource.impl.BaseTagResource;
-import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
@@ -36,8 +33,9 @@ import eu.europeana.annotation.utils.parse.WhiteListParser;
  */
 public class AnnotationApiConnection extends BaseApiConnection {
 
-	String requestHeaderName = null;
-	String requestHeaderValue = null;
+	String authorizationHeaderName = null;
+	String regularUserAuthorizationValue = null;
+	String adminUserAuthorizationValue = null;
 
 	/**
 	 * Create a new connection to the Annotation Service (REST API).
@@ -57,8 +55,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	}
 
 	private void initConfigurations() {
-		requestHeaderName = ClientConfiguration.getInstance().getHeaderName();
-		requestHeaderValue = ClientConfiguration.getInstance().getHeaderValue();
+		authorizationHeaderName = ClientConfiguration.getInstance().getHeaderName();
+		regularUserAuthorizationValue = ClientConfiguration.getInstance().getAuthorizationHeaderValue();
+		adminUserAuthorizationValue = ClientConfiguration.getInstance().getAuthorizationHeaderValueForAdmin();
 	}
 	
 	/**
@@ -144,7 +143,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		String json = getJSONResultWithHeader(url, requestHeaderName, requestHeaderValue);
+		String json = getJSONResultWithHeader(url, authorizationHeaderName, regularUserAuthorizationValue);
 		AnnotationSearchResults asr = new AnnotationSearchResults();
 		asr.setJson(json);
 		return asr;
@@ -272,7 +271,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		String json = getJSONResultWithBodyAndHeader(url, europeanaLdStr, requestHeaderName, requestHeaderValue);
+		String json = getJSONResultWithBodyAndHeader(url, europeanaLdStr, authorizationHeaderName, regularUserAuthorizationValue);
 		
 		AnnotationOperationResponse aor = new AnnotationOperationResponse();
 		aor.setSuccess("true");
@@ -299,8 +298,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> createAnnotation(
-			String wskey, String identifier, Boolean indexOnCreate, 
-			String annotation, String userToken, String annoType) throws IOException {
+			Boolean indexOnCreate, 
+			String annotation, String annoType) throws IOException {
 		
 		String url = getAnnotationServiceUri();
 		if(!url.endsWith(WebAnnotationFields.SLASH))
@@ -308,10 +307,6 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		if (annoType != null)
 			url += annoType + WebAnnotationFields.JSON_LD_REST;
 		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		if (identifier != null)
-			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + identifier + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
 		if(indexOnCreate != null )
 			url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;		
 		
@@ -319,7 +314,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return postURL(url, annotation, requestHeaderName, requestHeaderValue);		
+		return postURL(url, annotation, authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 
 	
@@ -349,7 +344,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return postURL(url, "", requestHeaderName, requestHeaderValue);		
+		return postURL(url, "", authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 
 	
@@ -408,41 +403,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return getURLWithHeader(url, requestHeaderName, requestHeaderValue);		
+		return getURLWithHeader(url, authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 
-
-	/**
-	 * This method updates Annotation object by the passed JsonLd update string.
-	 * Example HTTP request: 
-	 *      http://localhost:8080/annotation/{identifier}.jsonld?wskey=apidemo&identifier=http%3A%2F%2Fdata.europeana.eu%2Fannotation%2Fwebanno%2F496
-	 * where identifier is:
-	 *     http://data.europeana.eu/annotation/webanno/496
-	 * and the update JSON string is:
-	 *     { "body": "Buccin Trombone","target": "http://data.europeana.eu/item/09102/_UEDIN_2214" }
-	 * @param wskey
-	 * @param identifier The identifier URL that comprise annotation provider and ID
-	 * @param updateAnnotation The update Annotation body in JSON format
-	 * @param userToken
-	 * @return response entity that comprises response body, headers and status code.
-	 * @throws IOException
-	 */
-	public ResponseEntity<String> updateAnnotation(
-			String wskey, String identifier, String updateAnnotation, String userToken) throws IOException {
-		
-		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
-		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
-		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		if (identifier != null)
-			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
-		
-		/**
-		 * Execute Europeana API request
-		 */
-		return putURL(url, updateAnnotation, requestHeaderName, requestHeaderValue);		
-	}
 
 	/**
 	 * This method updates Annotation object by the passed JsonLd update string.
@@ -460,23 +423,18 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> updateAnnotation(
-			String wskey, String identifier, String updateAnnotation, String userToken, String format) throws IOException {
+			String identifier, String updateAnnotation) throws IOException {
 		
 		//TODO:refactor to use an abstract implementation for building client urls 
 		String url = getAnnotationServiceUri();
-		url += WebAnnotationFields.SLASH + identifier;
-		if(format != null)
-			url+="."+format;	
-		
-		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
-		
-		
+		url += WebAnnotationFields.SLASH + identifier;		
+//		url += WebAnnotationFields.PAR_CHAR;
+//		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+//		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
 		/**
 		 * Execute Europeana API request
 		 */
-		return putURL(url, updateAnnotation, requestHeaderName, requestHeaderValue);		
+		return putURL(url, updateAnnotation, authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 	/**
 	 * @Deprecated see new specifications for WebAnnotationProtocol
@@ -493,22 +451,22 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 * @deprecated TODO: remove deprecation or method when the json API will be enabled
 	 */
-	public ResponseEntity<String> deleteAnnotation(
-			String wskey, String identifier, String userToken) throws IOException {
-		
-		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
-		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
-		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		if (identifier != null)
-			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;	
-		
-		/**
-		 * Execute Europeana API request
-		 */
-		return deleteURL(url, requestHeaderName, requestHeaderValue);		
-	}
+//	public ResponseEntity<String> deleteAnnotation(
+//			String wskey, String identifier, String userToken) throws IOException {
+//		
+//		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+//		url += encodeUrl("{") + WebAnnotationFields.IDENTIFIER + encodeUrl("}") + WebAnnotationFields.JSON_LD_REST;
+//		url += WebAnnotationFields.PAR_CHAR;
+//		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+//		if (identifier != null)
+//			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + encodeUrl(identifier) + WebAnnotationFields.AND;
+//		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;	
+//		
+//		/**
+//		 * Execute Europeana API request
+//		 */
+//		return deleteURL(url, authorizationHeaderName, regularUserAuthorizationValue);		
+//	}
 
 	/**
 	 * This method deletes Annotation object by the passed identifier.
@@ -524,23 +482,15 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> deleteAnnotation(
-			String wskey, String identifier, String userToken, String format) throws IOException {
+			String identifier) throws IOException {
 		
 		String url = getAnnotationServiceUri();
 		url += WebAnnotationFields.SLASH + identifier;
-		if(format != null)
-			url+="."+format;	
-		
-		url += WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey;
-		
-		if(userToken != null)
-			url +=  WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
 		
 		/**
 		 * Execute Europeana API request
 		 */
-		return deleteURL(url, requestHeaderName, requestHeaderValue);		
+		return deleteURL(url, authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 
 	
@@ -676,75 +626,12 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return search(query, null, null);
 	}
 
-	/**
-	 * This method returns a list of Tag objects for the passed query.
-     * Sample url: "http://localhost:8081/annotation-web/tags/search?value=Vlad&field=multilingual&startOn=0&limit=10&language=en";
-	 * @param query The query string
-	 * @return tag search results
-	 * @throws IOException
-	 */
-	public TagSearchResults searchTags(String query, String startOn, String limit) throws IOException {
-		
-		String url = buildUrl(query, startOn, limit, ModelConst.TAG);
-		url = url.replace("annotations", "tags");
-		
-		/**
-		 * Execute Europeana API request
-		 */
-		String json = getJSONResult(url);
-		
-		TagSearchResults tsr = new TagSearchResults();
-		tsr.setSuccess("true");
-		tsr.setAction("create:/tags/search");
-		String tagListJsonString = JsonUtils.extractAnnotationListStringFromJsonString(json, "\":(.*?)}]");
-		if (StringUtils.isNotEmpty(tagListJsonString)) {
-	        if (!tagListJsonString.isEmpty()) {
-	        	tagListJsonString = 
-	        			tagListJsonString.substring(1, tagListJsonString.length() - 2); // remove braces
-		        String[] arrValue = JsonLdParser.splitAnnotationListStringToArray(tagListJsonString);
-		        List<TagResource> tagList = new ArrayList<TagResource>();
-		        for (String tagJsonStringElem : arrValue) {
-		        	if (!tagJsonStringElem.startsWith("{"))
-		        		tagJsonStringElem = "{" + tagJsonStringElem;
-		        	if (!tagJsonStringElem.endsWith("}"))
-		        		tagJsonStringElem = tagJsonStringElem + "}";
-		        	TagResource tagObject = toTagObject(tagJsonStringElem);
-					tagList.add(tagObject);
-		    	}
-		        tsr.setItems(tagList);
-	        }
-		}
-		return tsr;
-	}
 
-	/**
-	 * This method converts json string into TagResource object.
-	 * @param json
-	 * @return tag object
-	 */
-	public TagResource toTagObject(String json) {
-		BaseTagResource tag = new BaseTagResource();
-		String id = JsonUtils.extractValueFromJsonString(WebAnnotationFields.ID, json);
-		if (StringUtils.isNotEmpty(id))
-			tag.setId(id);
-		String label = JsonUtils.extractValueFromJsonString(WebAnnotationFields.LABEL, json);
-		if (StringUtils.isNotEmpty(label))
-			tag.setLabel(label);
-		String httpUri = JsonUtils.extractValueFromJsonString(WebAnnotationFields.HTTP_URI, json);
-		if (StringUtils.isNotEmpty(httpUri))
-			tag.setHttpUri(httpUri);
-		String value = JsonUtils.extractValueFromJsonString(WebAnnotationFields.VALUE, json);
-		if (StringUtils.isNotEmpty(value))
-			tag.setValue(value);
-		String language = JsonUtils.extractValueFromJsonString(WebAnnotationFields.LANGUAGE, json);
-		if (StringUtils.isNotEmpty(language))
-			tag.setLanguage(language);
-		return tag;
-	}
+
 	
-	public TagSearchResults searchTags(String query) throws IOException {
-	    return searchTags(query, null, null);
-	}	
+//	public TagSearchResults searchTags(String query) throws IOException {
+//	    return searchTags(query, null, null);
+//	}	
 		
 	public AnnotationOperationResponse getAnnotation(
 			String europeanaId, String identifier) throws IOException {
@@ -900,7 +787,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String url = getWhitelistServiceUrl(action);
 		
 		// Execute Whitelist API request
-		String json = getJSONResultWithBody(url, whitelistEntryJson);
+		String json = postURL(url, whitelistEntryJson, authorizationHeaderName, adminUserAuthorizationValue).getBody();
 		
 		WhitelistOperationResponse aor = new WhitelistOperationResponse();
 		aor.setSuccess("true");
@@ -960,10 +847,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	protected String getWhitelistServiceUrl(String action) {
 		String url = getWhitelistServiceBaseUri()
 				+ action; 
-		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" 
-				+ getAdminApiKey();
+//		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" 
+//				+ getAdminApiKey();
 		//TODO: add admin user tocken to properties
-		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
+//		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
 		return url;
 	}
 
@@ -981,9 +868,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String action = "search";
 		String url = getWhitelistServiceUrl(action);	
 
-		url += WebAnnotationFields.AND + "url=" + httpUrl;
+		url += WebAnnotationFields.PAR_CHAR + "url=" + httpUrl;
 		// Execute Whitelist API request
-		String json = getJSONResult(url);
+		String json = getJSONResultWithHeader(url, authorizationHeaderName, adminUserAuthorizationValue);
 		
 		WhitelistOperationResponse aor = new WhitelistOperationResponse();
 		aor.setSuccess("true");
@@ -1015,7 +902,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 		
 		// Execute Whitelist API request
-		String json = getJSONResult(url);
+		String json = getJSONResultWithHeader(url, authorizationHeaderName, adminUserAuthorizationValue);
 		
 		WhitelistOperationResponse aor = new WhitelistOperationResponse();
 		aor.setSuccess("true");
@@ -1053,9 +940,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		String url = getWhitelistServiceUrl(action);	
 	
 				
-		url += WebAnnotationFields.AND + "url=" + httpUrl;
+		url += WebAnnotationFields.PAR_CHAR + "url=" + httpUrl;
 		// Execute Whitelist API request
-		return deleteURL(url, requestHeaderName, requestHeaderValue);
+		return deleteURL(url, authorizationHeaderName, adminUserAuthorizationValue);
 	}
 
 	
@@ -1072,7 +959,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 		
 		// Execute Whitelist API request
-		return deleteURL(url, requestHeaderName, requestHeaderValue);
+		return deleteURL(url, authorizationHeaderName, adminUserAuthorizationValue);
 	}
 	
 	
@@ -1082,7 +969,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @return ResponseEntity<String>
 	 * @throws IOException
 	 */
-	public ResponseEntity<String> deleteAnnotation(String identifier) throws IOException {
+	public ResponseEntity<String> deleteAnnotationForGood(String identifier) throws IOException {
 		
 		String action = "delete";
 		
@@ -1091,13 +978,11 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
 		
 		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
-		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
 		url += WebAnnotationFields.AND + WebAnnotationFields.IDENTIFIER +"="+identifier;
-		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
 		
 		logger.trace("Delete Annotation request URL: " + url);
 		// Execute Annotation delete request
-		ResponseEntity<String> re = deleteURL(url, requestHeaderName, requestHeaderValue);
+		ResponseEntity<String> re = deleteURL(url, authorizationHeaderName, adminUserAuthorizationValue);
 		logger.trace(re.toString());
 
 		return re;
@@ -1118,11 +1003,12 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
 		
 		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
-		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
-		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
+//		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + "=" + getAdminApiKey();
+//		url += WebAnnotationFields.AND + WebAnnotationFields.USER_TOKEN +"=admin";
 		
 		logger.trace("(Re)index outdated annotations request URL: " + url);
-		ResponseEntity<String> res = getHttpConnection().getURL(url);
+		ResponseEntity<String> res = getURLWithHeader(url, authorizationHeaderName, adminUserAuthorizationValue);
+//		ResponseEntity<String> res = getHttpConnection().getURL(url);
 		logger.trace("(Re)index outdated annotations HTTP status: " + res.getStatusCode().toString());
 		
 		return res;
@@ -1140,13 +1026,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> uploadAnnotations(
-			String wskey, String userToken, String tag, Boolean indexOnCreate, String provider) throws IOException {
+			String tag, Boolean indexOnCreate) throws IOException {
 		String url = getAnnotationServiceUri()+"s";
 		if(!url.endsWith(WebAnnotationFields.SLASH))
 			url +=  WebAnnotationFields.SLASH;
-		url += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken + WebAnnotationFields.AND;
-		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
 		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;
 		
 		logger.debug("Upload annotations request URL: " + url);
@@ -1154,7 +1037,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return postURL(url, tag, requestHeaderName, requestHeaderValue);		
+		return postURL(url, tag, authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 
 }

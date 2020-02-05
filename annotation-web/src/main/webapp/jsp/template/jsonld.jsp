@@ -157,30 +157,6 @@ The json-ld serialization available in the following box is a valid input to be 
 </textarea>
 <br>
 
-<!-- 
-<h3 id="semantictag_specific_extended">Create Semantic Tag - Specific Resource - extended representation</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of (semantic) <b>tags</b>. 
-&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
-<br>
-(motivation:tagging)
-<textarea rows="20" cols="120" name="jsonldtag">
-{
-    "@context": "http://www.w3.org/ns/anno.jsonld",
-    "@type": "oa:Annotation",
-<%// if(!hasType){ %>    "motivation": "tagging",<%// }//endif%>	
-    "body": {
-        "@type": "SpecificResource",
-        "@id": "http://sws.geonames.org/2988506",  
-        "source": "http://www.geonames.org/2988507",
-        "purpose": "SEMANTIC_TAG",
-        "language": "en",
-        "format": "application/rdf+xml" 
-    },
-    "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
-}
-</textarea>
-<br>
- -->
 <h3 id="objectlink">Create Object Link</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of generic <b>Object Links</b>. 
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
@@ -235,6 +211,7 @@ The json-ld serialization available in the following box is a valid input to be 
     "id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
     "language": "de",
     "format": "text/html",
+    "value": "... complete transcribed text in HTML ...",
     "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
   },
   "target": {

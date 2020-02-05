@@ -1,6 +1,6 @@
 {
 	"@context": "http://www.europeana.eu/annotation/context.jsonld",
-	"type": "oa:Annotation",
+	"type": "Annotation",
 	"motivation": "tagging",
 	"creator": {
 		"id": "http://www.historypin.org/en/person/31446/",

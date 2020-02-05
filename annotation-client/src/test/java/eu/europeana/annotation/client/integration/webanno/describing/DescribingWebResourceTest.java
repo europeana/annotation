@@ -31,8 +31,7 @@ public class DescribingWebResourceTest extends BaseDescribingTest {
 		String requestBody = getJsonStringInput(DESCRIBING_WEB_RESOURCE);
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				getApiKey(), null, true, requestBody, 
-				TEST_USER_TOKEN, 
+				true, requestBody, 
 				null
 				);
 								

@@ -17,11 +17,9 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
-import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class BaseWebAnnotationDataSetTest {
 	
@@ -84,8 +82,8 @@ public class BaseWebAnnotationDataSetTest {
 	 */
 	protected ResponseEntity<String> storeTestAnnotation() {
 		ResponseEntity<String> storedResponse = apiClient.createAnnotation(
-				ClientConfiguration.getInstance().getApiKey(), null,
-				defaultRequestBody, TEST_USER_TOKEN, null);
+				true,
+				defaultRequestBody, null);
 		return storedResponse;
 	}
 
@@ -142,7 +140,7 @@ public class BaseWebAnnotationDataSetTest {
 		for (Annotation annotation : annotations) {
 			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
 					annotation.getAnnotationId().getIdentifier());
-			assertEquals(re.getStatusCode(), HttpStatus.OK);
+			assertEquals(re.getStatusCode(), HttpStatus.NO_CONTENT);
 		}
 	}
 

@@ -22,8 +22,7 @@ public interface AnnotationJsonApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> createAnnotation(
-			String wskey, String identifier, boolean indexOnCreate, 
-			String annotation, String userToken, String annoType);
+			boolean indexOnCreate, String annotation, String annoType);
 	
 	/**
 	 * This method retrieves annotation by the given provider and identifier.
@@ -34,7 +33,7 @@ public interface AnnotationJsonApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> getAnnotation(
-			String wskey, String provider, String identifier, boolean byTypeJsonld);
+			String wskey, String identifier, boolean byTypeJsonld);
 
 		
 	/**
@@ -47,17 +46,6 @@ public interface AnnotationJsonApi {
 	 */
 	public ResponseEntity<String> updateAnnotation(
 			String wskey, String identifier, String updateAnnotation, String userToken);
-
-		
-	/**
-	 * This method deletes annotation by the given identifier
-	 * @param wskey
-	 * @param identifier The identifier URL that comprises annotation provider and ID
-	 * @param userToken
-	 * @return response entity containing headers and status code.
-	 */
-	public ResponseEntity<String> deleteAnnotation(
-			String wskey, String identifier, String userToken);
 
 		
 	public String createAnnotation(Annotation annotation);

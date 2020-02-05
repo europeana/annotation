@@ -1,7 +1,6 @@
 package eu.europeana.annotation.client;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -11,8 +10,6 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
-import eu.europeana.annotation.client.model.result.TagSearchResults;
-import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -73,34 +70,34 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	}
 	
 
-	@Override
-	public List<? extends TagResource> searchTags(String query) {
-		TagSearchResults res;
-		try {
-			res = apiConnection.searchTags(query);
-		} catch (IOException e) {
-			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
-		}
+//	@Override
+//	public List<? extends TagResource> searchTags(String query) {
+//		TagSearchResults res;
+//		try {
+//			res = apiConnection.searchTags(query);
+//		} catch (IOException e) {
+//			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
+//		}
+//
+//		return res.getItems();
+//	}
 
-		return res.getItems();
-	}
-
-	@Override
-	public List<? extends TagResource> searchTags(
-			String query, String startOn, String limit, String field, String language) {
-		
-		TagSearchResults res;
-		try {
-			if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) 
-				query = addFieldToQuery(query, field, language);
-			res = apiConnection.searchTags(query, startOn, limit);
-		} catch (IOException e) {
-			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
-		}
-
-		return res.getItems();
-	}
-	
+//	@Override
+//	public List<? extends TagResource> searchTags(
+//			String query, String startOn, String limit, String field, String language) {
+//		
+//		TagSearchResults res;
+//		try {
+//			if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) 
+//				query = addFieldToQuery(query, field, language);
+//			res = apiConnection.searchTags(query, startOn, limit);
+//		} catch (IOException e) {
+//			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
+//		}
+//
+//		return res.getItems();
+//	}
+//	
 	/**
 	 * This method extends SOLR query by field and language if given.
 	 * @param query

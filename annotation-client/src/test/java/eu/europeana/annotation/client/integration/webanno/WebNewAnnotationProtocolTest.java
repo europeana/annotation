@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 
 /**
@@ -77,11 +76,8 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 				
 //		update annotation by identifier URL
 		ResponseEntity<String> updateResponse = getApiClient().updateAnnotation(
-				getApiKey()
-				, annotation.getAnnotationId().getIdentifier()
-				, requestBody
-				, TEST_USER_TOKEN
-				);
+				annotation.getAnnotationId().getIdentifier(), requestBody);
+		
 		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(updateResponse);
 		
 		assertEquals( HttpStatus.CREATED, response.getStatusCode());
@@ -100,8 +96,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		
 //		delete annotation by identifier URL
 		ResponseEntity<String> response = getApiClient().deleteAnnotation(
-				getApiKey(), annotation.getAnnotationId().getIdentifier(), TEST_USER_TOKEN, null
-				);
+				annotation.getAnnotationId().getIdentifier());
 		
 		log.debug("Response body: " + response.getBody());
 		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
