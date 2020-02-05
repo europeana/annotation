@@ -6,6 +6,7 @@ import eu.europeana.annotation.definitions.model.resource.impl.TagResource;
 import eu.europeana.annotation.definitions.model.vocabulary.TagTypes;
 import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
+@Deprecated
 public interface PersistentTag extends TagResource, NoSqlEntity{
 
 		public static final String FIELD_LABEL = "value";

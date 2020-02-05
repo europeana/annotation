@@ -20,6 +20,7 @@ import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
  */
 @Entity("tag")
 @Indexes( {@Index("httpUri, tagType"), @Index("value, tagType"), @Index("value")})
+@Deprecated
 public class PersistentTagImpl extends BaseTagResource implements PersistentTag, NoSqlEntity{
 	
 	@Id

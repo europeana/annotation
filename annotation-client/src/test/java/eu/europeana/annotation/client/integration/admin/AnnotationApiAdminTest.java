@@ -30,7 +30,6 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 
 	public static final String TAG_INDEXING = "/tag/tag_indexing.json";
-	final String VALUE_INDEXING_TESTSET = "generator_uri: \"http://test.europeana.org/519b30bc-6980-47b0-a0ad-50eb5933ae02\"";
 	
 	// settings for blockConcurrentBatchIndexingJobs test
 	public static final String TAG_INDEXING_LOCK = "/tag/tag_indexing_lock.json";
@@ -107,12 +106,14 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 				annotations.add(this.createTestAnnotation(TAG_INDEXING, false));
 			assertNotNull(annotations);
 			assertEquals(numAnnotations, annotations.size());
-
+			
+			String QUERY_BY_CREATOR = "creator_uri: \""+ annotations.get(0).getCreator().getHttpUrl() + "\"";
+			
 			AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 
 			// search for the annotation just created using the generator_id
 			// value defined by VALUE_INDEXING_TESTSET
-			AnnotationPage annPgBefore = annSearchApi.searchAnnotations(VALUE_INDEXING_TESTSET, null, null, null, null,
+			AnnotationPage annPgBefore = annSearchApi.searchAnnotations(QUERY_BY_CREATOR, null, null, null, null,
 					SearchProfiles.MINIMAL);
 			assertNotNull(annPgBefore, "AnnotationPage must not be null");
 			// annotations were not indexed, therefore it must not show up in
@@ -126,11 +127,13 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 			// index outdated annotations including the test annotation which
 			// was intentionally not indexed
 			WebAnnotationAdminApiImpl adminApi = new WebAnnotationAdminApiImpl();
-			adminApi.reindexOutdated();
-
+			ResponseEntity<String> result = adminApi.reindexOutdated();
+			assertEquals(HttpStatus.OK, result.getStatusCode());
+//			String indexed = JsonUtils.extractValueFromJsonString(valueName, result.getBody())
+			
 			// search for the annotation just created using the generator_id
 			// value defined by VALUE_INDEXING_TESTSET
-			AnnotationPage annPgAfter = annSearchApi.searchAnnotations(VALUE_INDEXING_TESTSET,
+			AnnotationPage annPgAfter = annSearchApi.searchAnnotations(QUERY_BY_CREATOR,
 					Integer.toString(Query.DEFAULT_PAGE), Integer.toString(Query.DEFAULT_PAGE_SIZE), null, null,
 					SearchProfiles.MINIMAL);
 			assertNotNull(annPgAfter, "AnnotationPage must not be null");
@@ -140,46 +143,6 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 		} finally {
 			// delete test annotations
 			deleteAnnotations(annotations);
-//TODO: chech and remove
-/*		
-      
-      for (Annotation anno : annotations) {
-				Integer numericId = getNumericAnnotationId(anno);
-				assertTrue(getNumericAnnotationId(anno) > 0);
-				log.debug("Created annotation: " + numericId);
-				this.deleteAnnotation(numericId);
-			}
-		// create test annotations without indexing it
-		List<Annotation> annotations = createAnnotationsTestSet(numAnnotations, TAG_INDEXING, false);
-		
-		assertNotNull(annotations);
-		assertEquals(numAnnotations, annotations.size());
-		
-		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
-		
-		// search for the annotation just created using the generator_id value defined by VALUE_INDEXING_TESTSET
-		AnnotationPage annPgBefore = annSearchApi.searchAnnotations(VALUE_INDEXING_TESTSET,
-				Integer.toString(Query.DEFAULT_PAGE), Integer.toString(Query.DEFAULT_PAGE_SIZE), null, null, SearchProfiles.MINIMAL);
-		
-		
-		
-		assertNotNull("AnnotationPage must not be null", annPgBefore);
-		// annotations were not indexed, therefore it must not show up in the search result
-		assertEquals(0, annPgBefore.getTotalInCollection());
-		
-		// index outdated annotations including the test annotation which was intentionally not indexed
-		WebAnnotationAdminApiImpl adminApi = new WebAnnotationAdminApiImpl();
-		adminApi.reindexOutdated();
-		
-		// search for the annotation just created using the generator_id value defined by VALUE_INDEXING_TESTSET
-		AnnotationPage annPgAfter = annSearchApi.searchAnnotations(VALUE_INDEXING_TESTSET,
-				Integer.toString(Query.DEFAULT_PAGE), Integer.toString(Query.DEFAULT_PAGE_SIZE), null, null, SearchProfiles.MINIMAL);
-		assertNotNull("AnnotationPage must not be null", annPgAfter);
-		// Now that the annotation was indexed, it must show up in the search result
-		assertEquals(numAnnotations, annPgAfter.getTotalInCollection());
-		
-		deleteAnnotations(annotations);
-    */
 	}
   }
 	

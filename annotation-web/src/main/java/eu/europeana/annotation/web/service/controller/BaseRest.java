@@ -216,36 +216,6 @@ public class BaseRest extends BaseRestController {
 	}
 
 	
-	/**
-	 * This method extracts provider name from an identifier URL e.g. identifier
-	 * 'http://data.europeana.eu/annotaion/base/1' comprises provider 'base'.
-	 * 
-	 * @param identifier
-	 * @return provider name
-	 */
-	protected String extractProviderFromIdentifier(String identifier) {
-
-		return getAnnotationIdHelper().extractProviderFromUri(identifier);
-	}
-	
-   
-	/**
-	 * To be replaced by verifyRead and verifyWrite access methods
-	 * @param wsKey
-	 * @param method
-	 * @throws ApplicationAuthenticationException
-	 */
-//	@Deprecated
-//	protected void validateApiKey(String wsKey, String method) throws ApplicationAuthenticationException {
-		
-		//TODO: will not be included in the 0.2.8-RELEASE, enable in 0.2.9
-//		validateApiKeyUsingClient(wsKey, method);
-		
-		// throws exception if the wskey is not found
-//		getAuthenticationService().getByApiKey(wsKey);
-//	}
-
-	
 	protected ResponseEntity <String> buildResponse(String jsonStr) {
 		
 		HttpStatus httpStatus = HttpStatus.OK;

@@ -67,8 +67,6 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 	@Resource PersistentAnnotationService annotationService;
 
-	@Resource PersistentTagService tagService;
-
 	@Resource AnnotationConfiguration configuration;
 
 	@Resource(name = "annotation_db_annotationDao")
@@ -239,14 +237,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				
 				//check deletion
 				Annotation anno = annotationService.find(storedObject.getAnnotationId());
-				assertNull(anno);
-				
-				//check tag existence
-				PersistentTag tag = tagService.findByID(tagId);
-				assertNotNull(tag);
-				
-		
-				
+				assertNull(anno);				
 	}
 	
 	@Test

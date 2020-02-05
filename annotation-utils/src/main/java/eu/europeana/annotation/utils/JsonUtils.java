@@ -105,9 +105,9 @@ public class JsonUtils extends BaseJsonParser{
 			annotation = objectMapper.readValue(parser, Annotation.class);
 			annotation.setInternalType(annotation.getType());
 			if (annotation.getTarget() != null) 
-				annotation.setTarget((Target) getIdHelper().setResourceIds(annotation.getTarget()));
+				setResourceIds(annotation.getTarget());
 			if (annotation.getBody() != null) 
-				annotation.setBody((Body) getIdHelper().setResourceIds(annotation.getBody()));
+				setResourceIds(annotation.getBody());
 		} catch (JsonParseException e) {
 			throw new AnnotationInstantiationException("Json formating exception!", e);
 		} catch (IOException e) {
@@ -116,7 +116,35 @@ public class JsonUtils extends BaseJsonParser{
 		
 		return annotation;
 	}
-		
+	
+	    /**
+	     * This method automatically extracts and inserts the resourceIDs from field
+	     * 'value' or if it is empty from 'values' in InternetResource like Target or
+	     * Body.
+	     * 
+	     * @param ir input InternetResource
+	     * @return output InternetResource
+	     */
+	    static InternetResource setResourceIds(InternetResource ir) {
+		InternetResource res = ir;
+		if (ir != null) {
+		    if (StringUtils.isNotEmpty(ir.getValue())) {
+			String resourceId = getIdHelper().extractResourceIdFromHttpUri(ir.getValue());
+			ir.setResourceId(resourceId);
+		    }
+		    if (ir.getValues() != null && ir.getValues().size() > 0) {
+			Iterator<String> itr = ir.getValues().iterator();
+			while (itr.hasNext()) {
+			    String value = itr.next();
+			    String resourceId = getIdHelper().extractResourceIdFromHttpUri(value);
+			    ir.addResourceId(resourceId);
+			}
+		    }
+		    res = ir;
+		}
+		return res;
+	    }
+	    
 	public static String mapToStringExt(Map<String,Integer> mp) {
 		String res = "";
 	    Iterator<Map.Entry<String, Integer>> it = mp.entrySet().iterator();

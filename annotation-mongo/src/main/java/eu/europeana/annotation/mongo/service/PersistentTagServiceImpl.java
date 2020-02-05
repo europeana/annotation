@@ -14,6 +14,7 @@ import eu.europeana.annotation.mongo.exception.InvalidTagException;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
+@Deprecated
 public class PersistentTagServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentTag, String> implements
 		PersistentTagService {

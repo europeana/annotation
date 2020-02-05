@@ -179,11 +179,12 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	
 	public AnnotationOperationResponse createAnnotation(Annotation annotation) throws IOException {
 		String url = getAnnotationServiceUri();
-        String resourceId = (new AnnotationIdHelper()).extractResourceId(annotation);
+        AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
+	String resourceId = annotationIdHelper.extractResourceId(annotation);
 		url += resourceId;
 		url += ModelConst.JSON_REST;
-		url += "?collection=" + (new AnnotationIdHelper()).extractCollectionFromResourceId(resourceId) 
-				+ "&object=" + (new AnnotationIdHelper()).extractObjectFromResourceId(resourceId); 
+		url += "?collection=" + annotationIdHelper.extractCollectionFromResourceId(resourceId) 
+				+ "&object=" + annotationIdHelper.extractObjectFromResourceId(resourceId); 
 //				+ "&provider=" + WebAnnotationFields.PROVIDER_WEBANNO;
 		// Execute Europeana API request
 		String jsonPost = getAnnotationGson().toJson(annotation);

@@ -40,7 +40,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		BatchProcessingStatus status = new BatchProcessingStatus();
 
 		for (String annoUri : uriList) {
-			annoId = JsonUtils.getIdHelper().parseAnnotationId(annoUri, true);
+			//TODO: replace the static id helper
+		    	annoId = JsonUtils.getIdHelper().parseAnnotationId(annoUri);
 			try {
 				deleteAnnotation(annoId);
 				status.incrementSuccessCount();
@@ -139,7 +140,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 						if (isObjectId) {
 							annotation = getMongoPersistence().findByID(id);
 						} else {
-							annoId = JsonUtils.getIdHelper().parseAnnotationId(id, true);
+							annoId = JsonUtils.getIdHelper().parseAnnotationId(id);
 							annotation = getMongoPersistence().find(annoId);
 						}
 						if (annotation == null)

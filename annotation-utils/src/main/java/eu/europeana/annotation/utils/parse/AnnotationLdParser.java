@@ -35,7 +35,6 @@ import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
@@ -359,7 +358,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(targetType);
 		target.setValue((String) valueObject);
 		target.setResourceId(
-				getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri((String) valueObject)));
+				getIdHelper().extractResourceIdFromHttpUri((String) valueObject));
 		target.setHttpUri(valueObject);
 		return target;
 
@@ -371,7 +370,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			for (int i = 0; i < valueObject.length(); i++) {
 				String val = valueObject.getString(i);
 				target.addValue(val);
-				String resourceId = getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri(val));
+				String resourceId = getIdHelper().extractResourceIdFromHttpUri(val);
 				target.addResourceId(resourceId);
 			}
 		} catch (JSONException e) {
@@ -411,30 +410,13 @@ public class AnnotationLdParser extends JsonLdParser {
 	private AnnotationId parseId(Object valueObject, JSONObject jo) throws JsonParseException {
 		AnnotationId annoId = null;
 		if (valueObject instanceof String) {
-			annoId = parseIdFromUri((String) valueObject, jo);
+			annoId = getIdHelper().parseAnnotationId((String) valueObject);
 		} else if (valueObject instanceof JSONObject) {
 			// annoId = parseIdFromJson((JSONObject) valueObject);
 			throw new JsonParseException("Cannot parse ID value: " + valueObject);
 		} else {
 			throw new JsonParseException("Cannot parse ID value: " + valueObject);
 		}
-		return annoId;
-	}
-
-	private AnnotationId parseIdFromUri(String valueObject, JSONObject jo) throws JsonParseException {
-		// TODO: check if already implemented or if can be moved in
-		// AnnotationIdDeserializer
-		String parts[] = valueObject.split("/");
-		String identifier = parts[parts.length - 1];
-		String provider = parts[parts.length - 2];
-		final int SLASHES = 2;
-		int baseUrlLength = valueObject.length() - provider.length() - identifier.length() - SLASHES;
-		String baseUrl = valueObject.substring(0, baseUrlLength);
-
-		AnnotationId annoId = new BaseAnnotationId();
-		annoId.setIdentifier(identifier);
-		annoId.setBaseUrl(baseUrl);
-
 		return annoId;
 	}
 
@@ -1134,7 +1116,7 @@ public class AnnotationLdParser extends JsonLdParser {
 				}
 
 				body.addValue(val);
-				String resourceId = getIdHelper().buildResourseId(getIdHelper().extractResoureIdPartsFromHttpUri(val));
+				String resourceId = getIdHelper().extractResourceIdFromHttpUri(val);
 				body.addResourceId(resourceId);
 			}
 		} catch (JSONException e) {
