@@ -1,7 +1,9 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,12 +34,14 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -135,6 +139,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return getMongoPersistence().getAnnotationList(resourceId);
     }
 
+	private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
+
+	public MetisDereferenciationClient getDereferenciationClient() {
+		return dereferenciationClient;
+	}
+
+	public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
+		this.dereferenciationClient = dereferenciationClient;
+	}
+	    
 //	@Override
 //	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
 //			boolean isDisabled) {
@@ -947,8 +961,28 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     public List<AnnotationId> generateAnnotationIds(int count) {
-	List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(count);
-	return annoIdSequence;
+    	List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(count);
+    	return annoIdSequence;
     }
 
+	@Override
+	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, IOException {
+		if (SearchProfiles.DEREFERENCE != searchProfile) 
+			return annotation;
+		String queryUri = annotation.getBody().getInputString();
+		List<String> queryList = Arrays.asList(queryUri);
+		Map<String,String> dereferencedMap = getDereferenciationClient().queryMetis(
+				getConfiguration().getMetisBaseUrl()
+				, queryList
+				, language
+				);
+		String dereferencedJsonLdMapStr = dereferencedMap.get(queryUri);
+		//replace URI with dereferenced entity
+		if(StringUtils.isNotEmpty(dereferencedJsonLdMapStr)) {
+			annotation.getBody().setValue(dereferencedJsonLdMapStr);
+			annotation.getBody().setInputString(dereferencedJsonLdMapStr);
+		}
+		return annotation;
+	}
+    
 }

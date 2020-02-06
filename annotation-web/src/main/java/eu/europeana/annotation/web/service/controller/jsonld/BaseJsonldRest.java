@@ -280,7 +280,17 @@ public class BaseJsonldRest extends BaseRest {
 	return agent;
     }
 
-    protected ResponseEntity<String> getAnnotationById(String identifier) throws HttpException {
+	/**
+	 * This method retrieves annotation by ID optionally providing profile and language
+	 * @param wsKey
+	 * @param identifier
+	 * @param profileStr e.g. "dereference"
+	 * @param language e.g. "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
+	 * @return
+	 * @throws HttpException
+	 */
+	protected ResponseEntity<String> getAnnotationById(String wsKey, String identifier, String profileStr, String language)
+			throws HttpException {
 
 	try {
 
@@ -292,7 +302,13 @@ public class BaseJsonldRest extends BaseRest {
 	    // 4.or 410 (if the user is not allowed to access the annotation);
 	    Annotation annotation = getAnnotationService().getAnnotationById(annoId);
 
-	    JsonLd annotationLd = new AnnotationLdSerializer(annotation);
+	Annotation annotationWithProfile = annotation;
+			SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
+			if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+				annotationWithProfile = getAnnotationService().addProfileData(annotation, searchProfile, language);
+			}	
+		
+	    JsonLd annotationLd = new AnnotationLdSerializer(annotationWithProfile);
 	    String jsonLd = annotationLd.toString(4);
 
 	    int etag;

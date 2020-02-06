@@ -42,8 +42,8 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	}
 	
 	@Override
-	public AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile) {
-		return searchAnnotations(query, null, null, null, null, searchProfile);
+	public AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile, String language) {
+		return searchAnnotations(query, null, null, null, null, searchProfile, language);
 	}
 
 	@Override
@@ -53,15 +53,22 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 		return searchAnnotations(query, page, pageSize, field, language, SearchProfiles.STANDARD);
 	}
 	
-	@Override
+
 	public AnnotationPage searchAnnotations(
 			String query, String page, String pageSize, String field, String language, SearchProfiles searchProfile) {
+		return searchAnnotations(query, page, pageSize, field, language, searchProfile, null);
+	}
+	
+	
+	@Override
+	public AnnotationPage searchAnnotations(
+			String query, String page, String pageSize, String field, String language, SearchProfiles searchProfile, String paramLanguage) {
 		
 		AnnotationPage res;
 		try {
 			if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) 
 				query = addFieldToQuery(query, field, language);
-			res = apiConnection.search(query, page, pageSize, searchProfile);
+			res = apiConnection.search(query, page, pageSize, searchProfile, paramLanguage);
 		} catch (IOException | JsonParseException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}

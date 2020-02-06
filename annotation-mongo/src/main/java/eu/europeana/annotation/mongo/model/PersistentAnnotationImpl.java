@@ -63,7 +63,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	private String status;
 	private Date lastUpdate;
-
+	
 	//getters and setters
 	
 	public ObjectId getId() {

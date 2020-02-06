@@ -23,6 +23,7 @@ import eu.europeana.annotation.client.utils.BaseUtils;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
@@ -462,6 +463,10 @@ public class BaseWebAnnotationProtocolTest {
 	
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
 		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
+	}
+
+	protected ResponseEntity<String> getAnnotation(Annotation anno, SearchProfiles searchProfile) {
+		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
 	}
 
 	
