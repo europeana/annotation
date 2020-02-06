@@ -53,7 +53,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Retrieve annotation", nickname = "getAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> getAnnotation(
-			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
 			@RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
