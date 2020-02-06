@@ -50,7 +50,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 //			,consumes = "application/ld+json"
 					)
 	@ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "Search annotations", nickname = "search", response = java.lang.Void.class)
-	public ResponseEntity<String> search(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY) String wskey,
+	public ResponseEntity<String> search(@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,
 			@RequestParam(value = WebAnnotationFields.PARAM_QF, required = false) String[] filters,
 			@RequestParam(value = WebAnnotationFields.PARAM_FACET, required = false) String[] facets,
