@@ -67,8 +67,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    @RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
 	    @RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
 	    HttpServletRequest request) throws HttpException {
-
-//		String action = "get:/annotation/search{.format}";
+	//		String action = "get:/annotation/search{.format}";
 	// ** 2. Check client access (a valid “wskey” must be provided)
 	verifyReadAccess(request);
 
