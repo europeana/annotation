@@ -139,16 +139,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return getMongoPersistence().getAnnotationList(resourceId);
     }
 
-	private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
+    private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
 
-	public MetisDereferenciationClient getDereferenciationClient() {
-		return dereferenciationClient;
-	}
+    public MetisDereferenciationClient getDereferenciationClient() {
+	return dereferenciationClient;
+    }
 
-	public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
-		this.dereferenciationClient = dereferenciationClient;
-	}
-	    
+    public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
+	this.dereferenciationClient = dereferenciationClient;
+    }
+
 //	@Override
 //	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
 //			boolean isDisabled) {
@@ -587,9 +587,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * @param webAnnotation The right provided in the input from annotation object
      * @return true if provided right is in a list of valid licenses
      * @throws ParamValidationException
-     * @throws RequestBodyValidationException 
+     * @throws RequestBodyValidationException
      */
-    protected void validateEdmRights(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException {
+    protected void validateEdmRights(Annotation webAnnotation)
+	    throws ParamValidationException, RequestBodyValidationException {
 
 	if (webAnnotation == null || webAnnotation.getBody() == null
 		|| webAnnotation.getBody().getEdmRights() == null) {
@@ -597,21 +598,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 
 	// if rights are provided, check if it belongs to the valid license list
-	String rightsClaim = webAnnotation.getBody().getEdmRights(); 
+	String rightsClaim = webAnnotation.getBody().getEdmRights();
 	String licence = null;
 	// remove version from the right and get licenses
 	char PATH_DELIMITER = '/';
 	long delimiterCount = rightsClaim.chars().filter(ch -> ch == PATH_DELIMITER).count();
-	
-	if(delimiterCount != 6 || !rightsClaim.endsWith(""+PATH_DELIMITER)) {
-	    //wrong format, max 6 (including the / after version, for )
+
+	if (delimiterCount != 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
+	    // wrong format, max 6 (including the / after version, for )
 	    throw new RequestBodyValidationException(webAnnotation.getBody().getInputString(),
 		    I18nConstants.ANNOTATION_INVALID_RIGHTS, new String[] { rightsClaim });
-	}else {
-	    //remove last /
-	    licence = rightsClaim.substring(0, rightsClaim.length()-1);
-	    //remove version, but preserve last /
-	    int versionStart = licence.lastIndexOf(PATH_DELIMITER)+1;
+	} else {
+	    // remove last /
+	    licence = rightsClaim.substring(0, rightsClaim.length() - 1);
+	    // remove version, but preserve last /
+	    int versionStart = licence.lastIndexOf(PATH_DELIMITER) + 1;
 	    licence = licence.substring(0, versionStart);
 	}
 	Set<String> rights = getConfiguration().getAcceptedLicenceses();
@@ -811,7 +812,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @Override
-    public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException {
+    public void validateWebAnnotation(Annotation webAnnotation)
+	    throws ParamValidationException, RequestBodyValidationException {
 
 	// validate canonical to be an absolute URI
 	if (webAnnotation.getCanonical() != null) {
@@ -961,28 +963,33 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     public List<AnnotationId> generateAnnotationIds(int count) {
-    	List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(count);
-    	return annoIdSequence;
+	List<AnnotationId> annoIdSequence = getMongoPersistence().generateAnnotationIdSequence(count);
+	return annoIdSequence;
     }
 
-	@Override
-	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, IOException {
-		if (SearchProfiles.DEREFERENCE != searchProfile) 
-			return annotation;
-		String queryUri = annotation.getBody().getInputString();
-		List<String> queryList = Arrays.asList(queryUri);
-		Map<String,String> dereferencedMap = getDereferenciationClient().queryMetis(
-				getConfiguration().getMetisBaseUrl()
-				, queryList
-				, language
-				);
-		String dereferencedJsonLdMapStr = dereferencedMap.get(queryUri);
-		//replace URI with dereferenced entity
-		if(StringUtils.isNotEmpty(dereferencedJsonLdMapStr)) {
-			annotation.getBody().setValue(dereferencedJsonLdMapStr);
-			annotation.getBody().setInputString(dereferencedJsonLdMapStr);
-		}
-		return annotation;
+    @Override
+    public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language)
+	    throws HttpException, IOException {
+
+	if (!SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+	    return;
 	}
-    
+
+	String bodyValue = annotation.getBody().getValue();
+	if (!UriUtils.isUrl(bodyValue)) {
+	    return;
+	}
+
+	List<String> queryList = Arrays.asList(bodyValue);
+	String metisBaseUrl = getConfiguration().getMetisBaseUrl();
+
+	Map<String, String> dereferencedMap = getDereferenciationClient().queryMetis(metisBaseUrl, queryList, language);
+	String dereferencedJsonLdMapStr = dereferencedMap.get(bodyValue);
+	// replace URI with dereferenced entity
+	if (StringUtils.isNotEmpty(dereferencedJsonLdMapStr)) {
+	    annotation.getBody().setValue(dereferencedJsonLdMapStr);
+	    annotation.getBody().setInputString(dereferencedJsonLdMapStr);
+	}
+    }
+
 }

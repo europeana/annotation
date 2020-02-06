@@ -60,9 +60,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException {
 
-//			String action = "get:/annotation/{identifier}[.{format}]";
 			verifyReadAccess(request);
-			return getAnnotationById(wskey, identifier, profile, language);
+			return getAnnotationById(identifier, profile, language);
 	}
 	
 	

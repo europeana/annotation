@@ -26,6 +26,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
@@ -104,42 +105,8 @@ public class BaseWebAnnotationProtocolTest {
 	 *         code.
 	 * @throws IOException 
 	 */
-	protected ResponseEntity<String> storeTestAnnotation() throws IOException {
-		
-		return storeTestAnnotation(TAG_STANDARD);
-
-	}
-	
-	/**
-	 * This method creates new test annotation object
-	 * 
-	 * @return response entity that contains response body, headers and status
-	 *         code.
-	 * @throws IOException 
-	 */
-	protected ResponseEntity<String> storeNewTestAnnotation() throws IOException {
-		
-		return storeTestAnnotation(TAG_STANDARD);
-
-	}
-
-	/**
-	 * This method creates test annotation object
-	 * 
-	 * @return response entity that contains response body, headers and status
-	 *         code.
-	 * @throws IOException 
-	 */
-	protected ResponseEntity<String> storeTestAnnotation(String tag) throws IOException {
-
-		String requestBody = getJsonStringInput(tag);
-		
-		/**
-		 * store annotation
-		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(
-			true, requestBody, null);
-		return storedResponse;
+	protected ResponseEntity<String> storeTestAnnotation(String jsonFile) throws IOException {
+	    return storeTestAnnotation(jsonFile, true);
 	}
 	
 
@@ -151,9 +118,9 @@ public class BaseWebAnnotationProtocolTest {
 	 *         code.
 	 * @throws IOException 
 	 */
-	protected ResponseEntity<String> storeTestAnnotation(String tag, boolean indexOnCreate) throws IOException {
+	private ResponseEntity<String> storeTestAnnotation(String inputFile, boolean indexOnCreate) throws IOException {
 
-		String requestBody = getJsonStringInput(tag);
+		String requestBody = getJsonStringInput(inputFile);
 		
 		/**
 		 * store annotation
@@ -162,16 +129,6 @@ public class BaseWebAnnotationProtocolTest {
 		return storedResponse;
 	}
 	
-	protected ResponseEntity<String> storeTestAnnotation(String tag, String identifier, boolean indexOnCreate) throws IOException {
-
-		String requestBody = getJsonStringInput(tag);
-		
-		/**
-		 * store annotation
-		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null);
-		return storedResponse;
-	}
 
 	/**
 	 * This method creates test annotation report object
@@ -225,64 +182,30 @@ public class BaseWebAnnotationProtocolTest {
 	 * @throws JsonParseException
 	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation() throws JsonParseException, IOException {
-		return createTestAnnotation(TAG_STANDARD);
-	}
-	
+	protected Annotation createTestAnnotation(String inputFile) throws JsonParseException, IOException {
 
-
-	/**
-	 * This method creates test annotation object
-	 * 
-	 * @return response entity that contains response body, headers and status
-	 *         code.
-	 * @throws JsonParseException
-	 * @throws IOException 
-	 */
-	protected Annotation createTestAnnotation(String tag) throws JsonParseException, IOException {
-
-		return createTestAnnotation(tag, true);
+		return createTestAnnotation(inputFile, true);
 		
 	}
 
 	/**
 	 * This method creates test annotation object allowing to decide if it should be indexed or not.
 	 * 
-	 * @param tag Annotation tag
+	 * @param inputFile Annotation tag
 	 * @param indexOnCreate Flag to decide if the test annotation should be indexed or not
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws JsonParseException
 	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation(String tag, boolean indexOnCreate) throws JsonParseException, IOException {
+	protected Annotation createTestAnnotation(String inputFile, boolean indexOnCreate) throws JsonParseException, IOException {
 
-		ResponseEntity<String> response = storeTestAnnotation(tag, indexOnCreate);
+		ResponseEntity<String> response = storeTestAnnotation(inputFile, indexOnCreate);
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 
 		return annotation;
 		
 	}
-
-	/**
-	 * This method creates test annotation object with an identifier allowing to decide if it should be indexed or not.
-	 * 
-	 * @param tag Annotation tag
-	 * @param indexOnCreate Flag to decide if the test annotation should be indexed or not
-	 * @return response entity that contains response body, headers and status
-	 *         code.
-	 * @throws JsonParseException
-	 * @throws IOException 
-	 */
-	protected Annotation createTestAnnotation(String tag, String identifier, boolean indexOnCreate) throws JsonParseException, IOException {
-
-		ResponseEntity<String> response = storeTestAnnotation(tag, identifier, indexOnCreate);
-		Annotation annotation = parseAndVerifyTestAnnotation(response);
-
-		return annotation;
-		
-	}
-	
 
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response) throws JsonParseException {
 		
@@ -290,9 +213,11 @@ public class BaseWebAnnotationProtocolTest {
 	}
 	
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
-		assertEquals(""+status.value(), ""+response.getStatusCode().value());
+		assertEquals(status.value(), response.getStatusCode().value());
 
 		Annotation annotation = getApiClient().parseResponseBody(response);
+		assertNotNull(annotation.getCreator());
+		
 
 		return annotation;
 	}
@@ -366,27 +291,16 @@ public class BaseWebAnnotationProtocolTest {
 	}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
-		String userToken = TEST_USER_TOKEN;
-		return createTag(requestBody, getApiKey(), userToken);
-	}
-
-	protected Annotation createTag(String requestBody, String apiKey, String userToken) throws JsonParseException {
-		ResponseEntity<String> response = getApiClient().createTag(
-				true, requestBody);
-		
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getCreator());
-//		assertNotNull(storedAnno.getGenerator());
-		return storedAnno;
+	    ResponseEntity<String> response = getApiClient().createAnnotation(
+			true, requestBody,  WebAnnotationFields.TAG);
+	    Annotation storedAnno = getApiClient().parseResponseBody(response);
+	    return storedAnno;
 	}
 
 	protected Annotation createLink(String requestBody) throws JsonParseException {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				true, requestBody, 
-				null //WebAnnotationFields.LINK
+				true, requestBody, WebAnnotationFields.LINK 
+				//null 
 				);
 				
 				
@@ -399,19 +313,20 @@ public class BaseWebAnnotationProtocolTest {
 		return storedAnno;
 	}
 	
-	protected Annotation createTranscription(String requestBody) throws JsonParseException {
-		ResponseEntity<String> response = getApiClient().createAnnotation(
-				true, requestBody, null);
-				
-				
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getCreator());
-		//assertNotNull(storedAnno.getGenerator()); Generator is currently purposly not serialized
-		return storedAnno;
-	}
+//	protected Annotation storeTranscription(String requestBody) throws JsonParseException {
+//	    createTestAnnotation
+//	    ResponseEntity<String> response = getApiClient().createAnnotation(
+//				true, requestBody, null);
+//				
+//				
+//		assertNotNull(response.getBody());
+//		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+//		
+//		Annotation storedAnno = getApiClient().parseResponseBody(response);
+//		assertNotNull(storedAnno.getCreator());
+//		//assertNotNull(storedAnno.getGenerator()); Generator is currently purposly not serialized
+//		return storedAnno;
+//	}
 	
 	/**
 	 * @param annotation
@@ -428,39 +343,18 @@ public class BaseWebAnnotationProtocolTest {
 		log.trace("Annotation deleted: /" + identifier);
 	}
 	
-//	protected Integer getNumericAnnotationId(Annotation annotation) {
-//		String annotIdUriStr = annotation.getAnnotationId().toString();
-//		Integer numericId = Integer.parseInt(annotIdUriStr.substring(annotIdUriStr.lastIndexOf("/") + 1));
-//		return numericId;
-//	}
 	
 	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
 		
 		Annotation[] testAnnotations = new Annotation[numTestAnno];
 		for( int i = 0; i < numTestAnno; i++) {
-			Annotation annotation = this.createTestAnnotation();
+			Annotation annotation = this.createTestAnnotation(TAG_STANDARD);
 			assertNotNull(annotation);
 			testAnnotations[i] = annotation;
 		}
 		return testAnnotations;
 	}
-	
-//	protected Integer[] getNumericAnnotationIds(Annotation[] annotations) {
-//		Integer[] annotationIds = new Integer[annotations.length];
-//		for(int i = 0; i < annotations.length; i++) {
-//			annotationIds[i] = getNumericAnnotationId(annotations[i]);
-//		}
-//		return annotationIds;
-//	}
-	
-//	protected void deleteAnnotations(Integer[] numericIds) {
-//		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
-//		for(int i = 0; i < numericIds.length; i++) {
-//			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(null, ""+numericIds[i]);
-//			assertEquals(re.getStatusCode(), HttpStatus.OK);
-//		}
-//	}
-	
+		
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
 		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
 	}

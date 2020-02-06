@@ -18,10 +18,9 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 	public void createTranscriptionWithRights() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		String requestBody = getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
-		
 		Annotation inputAnno = parseTranscription(requestBody);
 		
-		Annotation storedAnno = createTranscription(requestBody);
+		Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS);
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);

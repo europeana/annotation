@@ -73,7 +73,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 	 */
 	@Test
 	public void testSearchDereferencedAnnotation() throws Exception {
-
+	    	//TODO: the test must create new annotations first. (at least 3 with different VIAF IDS)
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page

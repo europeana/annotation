@@ -19,31 +19,33 @@ import eu.europeana.annotation.definitions.model.Annotation;
  */
 public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtocolTest {
 
-	
+    @Deprecated	
     public String LINK_JSON_WITHOUT_BLANK = 
     		START + LINK_CORE +
 		    "\"motivation\":\"oa:linking\"," +	
 		    END;
 	
+    @Deprecated
     public String CORRUPTED_JSON = 
     		START + LINK_CORE +
 		    "\"motivation\",=\"oa:linking\"," +	
 		    END;
 	
+    @Deprecated
     public String LINK_JSON_WITH_WRONG_MOTIVATION = 
     		START + LINK_CORE +
 		    "\"motiv\":\"oa:wrong\"," +	
 		    END;
-	
+    @Deprecated
     public String CORRUPTED_UPDATE_BODY =
     		"\"bodyText\":=,\"Buccin Trombone\"";
 
+    @Deprecated
     public String CORRUPTED_UPDATE_JSON =
     		START +
     		CORRUPTED_UPDATE_BODY + "," + 
     		"\"target\":" + "\"" + TAG_STANDARD_TEST_VALUE_TARGET+ "\"," +
     		END;
-    
     public String WRONG_GENERATED_IDENTIFIER = "-1";
     
     public String UNKNOWN_WSKEY = "invalid_wskey";
@@ -151,7 +153,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		/**
 		 * store annotation and retrieve its identifier URL
 		 */
-		Annotation anno = createTestAnnotation();
+		Annotation anno = createTestAnnotation(TAG_STANDARD);
 		ResponseEntity<String> response = getApiClient().updateAnnotation(
 				anno.getAnnotationId().getIdentifier(), CORRUPTED_UPDATE_JSON);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -166,7 +168,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 		/**
 		 * store annotation and retrieve its id
 		 */
-		Annotation anno = createTestAnnotation();
+		Annotation anno = createTestAnnotation(TAG_STANDARD);
 		
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		

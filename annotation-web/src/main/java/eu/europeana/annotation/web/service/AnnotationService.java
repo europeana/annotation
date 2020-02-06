@@ -285,6 +285,6 @@ public interface AnnotationService {
 	 * @throws HttpException 
 	 * @throws JsonParseException 
 	 */
-	public Annotation addProfileData(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, IOException;
+	public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, IOException;
 	
 }

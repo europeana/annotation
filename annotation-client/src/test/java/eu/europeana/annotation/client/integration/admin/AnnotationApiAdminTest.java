@@ -47,7 +47,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 	public void createAndDeleteAnnotation() throws JsonParseException, IOException {
 
 		// create
-		Annotation annotation = this.createTestAnnotation();
+		Annotation annotation = this.createTestAnnotation(TAG_STANDARD);
 
 		// read
 		assertNotNull(annotation);
