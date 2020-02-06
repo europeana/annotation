@@ -13,7 +13,6 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 
@@ -193,43 +192,6 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	    return res;
 	}
 	
-	/**
-	 * This method converts annotationId_string to AnnotaionId object.
-	 * @param annotationId The annotationId_string
-	 * @return AnnotationId object
-	 */
-	public AnnotationId parse(String annotationId){
-//		int pos = annotationId.lastIndexOf("/");
-
-//		System.out.println("annotationIdString() annotationId: " + annotationId + ", pos: " + pos);
-		AnnotationId annoId = new BaseAnnotationId();
-		if (StringUtils.isNotEmpty(annotationId)) {
-	        String[] arrValue = annotationId.split(WebAnnotationFields.SLASH);
-	        if (arrValue.length >= WebAnnotationFields.MIN_ANNOTATION_ID_COMPONENT_COUNT) {
-	//		System.out.println("annotationIdString() annotationId.substring(0, pos): " + annotationId.substring(0, pos));
-//			annoId.setResourceId(annotationId.substring(0, pos));
-	        	//computed from the end of the url
-	        	//int collectionPosition = arrValue.length - 4;
-	        	//computed from the end of the url
-	        	//int objectPosition = arrValue.length - 3;
-	        	//computed from the end of the url
-	        	//computed from the end of the url
-	        	int identifierPosition = arrValue.length - 1;
-					        	
-				//String collection = arrValue[collectionPosition];
-	        	//String object     = arrValue[objectPosition];
-//				if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(object))
-//					annoId.setResourceId((new AnnotationIdHelper()).createResourceId(collection, object));
-	//		System.out.println("annotationIdString() annotationId.substring(pos + 1): " + annotationId.substring(pos + 1));
-//				String annoNr = annotationId.substring(pos + 1);
-//				annoId.setAnnotationNr(Integer.parseInt(annoNr));
-				String identifier = arrValue[identifierPosition];
-				if (StringUtils.isNotEmpty(identifier))
-					annoId.setIdentifier(identifier);
-	        }
-		}
-		return annoId;
-	}
 
 	@Override
 	public AnnotationId getAnnotationId() {

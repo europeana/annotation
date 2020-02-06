@@ -7,6 +7,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
+@Deprecated
 public interface PersistentTagService  extends AbstractNoSqlService<PersistentTag, String> {
 
 	//find() methods 

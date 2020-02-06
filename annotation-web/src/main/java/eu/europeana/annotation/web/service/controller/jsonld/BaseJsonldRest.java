@@ -79,18 +79,12 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
 	    // validate annotation and check that no generator and creator exists in input
-	    // json
-//			webAnnotation.setCreator(null);
-//			webAnnotation.setGenerator(null);
 
 	    // set generator and creator
 	    String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
 	    String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL + userId;
 
-//			if (webAnnotation.getGenerator() == null)
 	    webAnnotation.setGenerator(buildAgent(generatorId));
-
-//			if (webAnnotation.getCreator() == null)
 	    webAnnotation.setCreator(buildAgent(creatorId));
 
 	    // 2. validate
