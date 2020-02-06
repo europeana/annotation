@@ -1,0 +1,10 @@
+{
+    "@context": "http://www.europeana.eu/schemas/context/entity.jsonld",
+    "id": "http://www.wikidata.org/entity/Q41264",
+    "type": "Agent",
+    "prefLabel": {
+      "en": "Johannes Vermeer"
+    },
+    "dateOfBirth": [ "1632-10-31" ],
+    "dateOfDeath": [ "1675-12-15" ]
+}

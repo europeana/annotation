@@ -57,7 +57,7 @@ public interface Annotation {
 	public abstract void setDisabled(boolean isDisabled);
 
 	public abstract boolean isDisabled();
-
+	
 	/**
 	 *  @return
 	 */

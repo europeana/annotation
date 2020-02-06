@@ -26,7 +26,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	@Test
 	public void createWebannoAnnotationTag() throws JsonParseException, IOException {
 		
-		ResponseEntity<String> response = storeTestAnnotation();
+		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 
 		validateResponse(response);
 		
@@ -119,7 +119,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	@Test
 	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
-		ResponseEntity<String> createResponse = storeTestAnnotation(); 
+		ResponseEntity<String> createResponse = storeTestAnnotation(TAG_STANDARD); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
 		/**
 		 * get annotation by provider and identifier
@@ -140,7 +140,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 				
 		
 //		store annotation
-		Annotation anno = createTestAnnotation();
+		Annotation anno = createTestAnnotation(TAG_STANDARD);
 		
 //		updated annotation value
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
@@ -163,7 +163,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest {
 	public void deleteAnnotation() throws JsonParseException, IOException {
 				
 //		store annotation and retrieve its identifier URL
-		Annotation anno = createTestAnnotation();
+		Annotation anno = createTestAnnotation(TAG_STANDARD);
 		
 //		delete annotation by identifier URL
 		ResponseEntity<String> response = getApiClient().deleteAnnotation(

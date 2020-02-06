@@ -25,7 +25,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 	@Test
 	public void createAnnotation() throws JsonParseException, IOException {
 		
-		ResponseEntity<String> response = storeNewTestAnnotation();
+		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 
 		validateResponse(response);		
 	}
@@ -47,7 +47,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 	@Test
 	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
-		ResponseEntity<String> createResponse = storeNewTestAnnotation(); 
+		ResponseEntity<String> createResponse = storeTestAnnotation(TAG_STANDARD); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
 		/**
 		 * get annotation by provider and identifier
@@ -67,7 +67,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 	public void updateAnnotation() throws JsonParseException, IOException {
 						
 //		store annotation
-		ResponseEntity<String> response = storeNewTestAnnotation();
+		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 		
@@ -91,7 +91,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 	public void deleteAnnotation() throws JsonParseException, IOException {
 				
 //		store annotation and retrieve its identifier URL
-		ResponseEntity<String> createResponse = storeNewTestAnnotation(); 
+		ResponseEntity<String> createResponse = storeTestAnnotation(TAG_STANDARD); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
 		
 //		delete annotation by identifier URL

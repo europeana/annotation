@@ -35,6 +35,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	private Date lastUpdate;
 	private String canonical;
 	private String[] via;
+	private String dereferenced;
 	
 	
 	public AbstractAnnotation(){

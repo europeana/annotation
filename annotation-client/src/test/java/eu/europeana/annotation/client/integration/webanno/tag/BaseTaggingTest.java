@@ -28,20 +28,22 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String TAG_CANONICAL = "/tag/canonical.json";
 	public static final String TAG_VIA_STRING = "/tag/via_string.json";
 	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
-
+	public static final String DEREFERENCED_SEMANTICTAG_MOZART_ENTITY = "/semantictag/dereferenced_semantictag_mozart_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_viaf_test_entity.json";
+	
 	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return createTag(inputFile, true);
+		return createTag(inputFile, true, true);
 	}
 	
-	protected Annotation createTag(String inputFile, boolean validate) throws IOException, JsonParseException,
+	protected Annotation createTag(String inputFile, boolean validate, boolean indexOnCreate) throws IOException, JsonParseException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		System.out.println("Input File: " + inputFile);
 
 		String requestBody = getJsonStringInput(inputFile);
 
-		Annotation storedAnno = createTag(requestBody);
+		Annotation storedAnno = createTestAnnotation(inputFile, indexOnCreate);
 
 		Annotation inputAnno = parseTag(requestBody);
 
@@ -87,4 +89,11 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	// assertNotNull(storedAnno.getGenerator());
 	// return storedAnno;
 	// }
+	
+//	protected ResponseEntity<String> getAnnotation(Annotation anno) {
+//		// add profile
+//		String searchProfile = "dereference";
+//		return getAnnotation(anno, searchProfile);
+//	}
+	
 }

@@ -61,7 +61,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 	public void createSemanticTagWebResource() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false);
+		Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false, true);
 		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);
@@ -73,7 +73,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 	public void createSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		Annotation storedAnno = createTag(SEMANTICTAG_ENTITY, false);
+		Annotation storedAnno = createTag(SEMANTICTAG_ENTITY, false, true);
 		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());

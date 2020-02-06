@@ -378,6 +378,35 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
 
 	/**
+	 * This method retrieves Annotation object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/497?wskey=apidemo&profile=dereference
+	 * and for tag object with type jsonld
+	 *     http://localhost:8080/annotation/webanno/497.jsonld?wskey=apidemo&profile=dereference
+	 * @param wskey
+	 * @param identifier
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String wskey, String identifier, boolean isTypeJsonld, SearchProfiles searchProfile) throws IOException {
+		
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+    	url += identifier;
+		if (isTypeJsonld)
+			url += WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
+		url += WebAnnotationFields.PARAM_PROFILE + WebAnnotationFields.EQUALS + searchProfile.toString();
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURL(url);		
+	}
+
+
+	/**
 	 * This method retrieves summary of the Annotation moderation report object.
 	 * Example HTTP request for tag object: 
 	 *      http://localhost:8080/annotation/1202/moderationsummary?wskey=apiadmin&userToken=tester1
@@ -388,7 +417,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 */
 	public ResponseEntity<String> getModerationReport(
-			String wskey, String identifier, String userToken) throws IOException {
+			String wskey, String identifier) throws IOException {
 		
 		String url = getAnnotationServiceUri();
 		if(!url.endsWith(WebAnnotationFields.SLASH))
@@ -397,7 +426,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		url += WebAnnotationFields.PATH_FIELD_MODERATION_SUMMARY;
 		url += WebAnnotationFields.PAR_CHAR;
 		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + wskey + WebAnnotationFields.AND;
-		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
+//		url += WebAnnotationFields.USER_TOKEN + WebAnnotationFields.EQUALS + userToken;
 		
 		logger.trace("Ivoking get annotation moderation report: " + url);
 		
@@ -534,7 +563,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public AnnotationPage search(String query, String page, String pageSize) 
 			throws IOException, JsonParseException {
 		
-		return search(query, page, pageSize, SearchProfiles.STANDARD); 
+		return search(query, page, pageSize, SearchProfiles.STANDARD, null); 
 		
 	}
 	
@@ -542,17 +571,25 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * This method returns a list of Annotation objects for the passed query according to the given search profile.
      * E.g. /annotation-web/annotations/search?wskey=key&profile=webtest&value=vlad&field=all&language=en&startOn=0&limit=&search=search	 
-     * @param query The query string 
+     * @param query The query string
+     * * @param language Response language
+	  
 	 * @return AnnotationPage object
 	 * @throws IOException
 	 * @throws JsonParseException 
 	 */
-	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile) 
+	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile, String language) 
 			throws IOException, JsonParseException {
-		String url = buildUrl(query, page, pageSize, searchProfile.toString()); 
+//	    String DEFAULT_LANGUAGE = "en,en-US";
+			
+	    String url = buildUrl(query, page, pageSize, searchProfile.toString(), language); 
 		
+	 // Execute Europeana API request
+	 String json = getJSONResultWithHeader(url, authorizationHeaderName, regularUserAuthorizationValue);
+	 		
+	    
 		// Execute Europeana API request
-		String json = getJSONResult(url);
+//		String json = getJSONResult(url);
 		
 		return getAnnotationPage(json);
 	}
@@ -604,9 +641,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param page Start page
 	 * @param pageSize Page size
 	 * @param profile Query profile
+	 * @param language Query language
 	 * @return query Query URL
 	 */
-	private String buildUrl(String query, String page, String pageSize, String profile)  throws IOException {
+	private String buildUrl(String query, String page, String pageSize, String profile, String language)  throws IOException {
 		String url = getAnnotationServiceUri();
 		url += "/search?wskey=" + getApiKey() + "&profile=" + profile;
 		if (StringUtils.isNotEmpty(query)) {
@@ -620,6 +658,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 			url += "&pageSize=" + pageSize;
 		else
 			url += "&pageSize=10";
+		if (StringUtils.isNotEmpty(language)) {
+			url += "&language=" + language;
+		}
 		return url;
 	}
 

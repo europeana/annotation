@@ -25,7 +25,7 @@ public class SemanticTaggingVcardAddressTest extends BaseTaggingTest {
 	public void createSemanticTagWithVcardAddress() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-		Annotation storedAnno = createTag(SEMANTICTAG_VCARD_ADDRESS, false);
+		Annotation storedAnno = createTag(SEMANTICTAG_VCARD_ADDRESS, false, true);
 		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.VCARD_ADDRESS.name());

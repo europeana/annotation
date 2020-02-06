@@ -75,11 +75,11 @@ public class WhitelistJsonApiTest extends BaseWebAnnotationProtocolTest {
 		assertTrue(numDeletedWhitelistEntries == 1);		
 	}
 
-	private void removeIfExists(String tEST_HTTP_URI2) {
+	private void removeIfExists(String whiteListEntryUrl) {
 		try{
-			WhitelistEntry resultWhitelistEntry = whitelistJsonApi.getWhitelistEntryByUrl(TEST_HTTP_URI);
+			WhitelistEntry resultWhitelistEntry = whitelistJsonApi.getWhitelistEntryByUrl(whiteListEntryUrl);
 			if(resultWhitelistEntry != null)
-				whitelistJsonApi.deleteWhitelistEntry(TEST_HTTP_URI);
+				whitelistJsonApi.deleteWhitelistEntry(whiteListEntryUrl);
 		}catch(Exception ex){
 			log.warn("posible problem to clean failing test results", ex);
 		}

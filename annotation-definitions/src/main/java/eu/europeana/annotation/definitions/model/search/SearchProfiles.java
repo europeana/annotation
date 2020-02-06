@@ -2,7 +2,7 @@ package eu.europeana.annotation.definitions.model.search;
 
 public enum SearchProfiles {
 	
-	FACET, STANDARD, MINIMAL;
+	FACET, STANDARD, MINIMAL, DEREFERENCE;
 
 	public static boolean contains(String value) {
 
@@ -12,6 +12,16 @@ public enum SearchProfiles {
 	    }
 
 	    return false;
+	}
+	
+	public static SearchProfiles getByStr(String value) {
+
+	    for (SearchProfiles c : SearchProfiles.values()) {
+	        if(c.name().equalsIgnoreCase((value)))
+	        	return c;
+	    }
+
+	    return STANDARD;
 	}
 	
 	@Override

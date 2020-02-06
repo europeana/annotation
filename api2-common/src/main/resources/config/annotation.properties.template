@@ -24,6 +24,8 @@ annotation.whitelist.default=/config/default_whitelist.json
 #max search results per page
 annotation.search.maxpagesize.minimal=10000
 annotation.search.maxpagesize.standard=100
+annotation.search.maxpagesize.dereference=100
+
  
 # Profiling configurations (enabling/disabling through profiler.expression property)
 # disable profiling
@@ -60,6 +62,9 @@ europeana.apikey.jwttoken.siganturekey=
 
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
+
+# Metis API
+metis.baseUrl =
 
 # valid licenses list
 annotation.licenses=http://creativecommons.org/publicdomain/zero/,http://creativecommons.org/publicdomain/mark/,http://creativecommons.org/licenses/by/,http://rightsstatements.org/vocab/NoC-NC/,http://creativecommons.org/licenses/by-sa/,http://creativecommons.org/licenses/by-nd/,http://creativecommons.org/licenses/by-nc-sa/,http://creativecommons.org/licenses/by-nd-nc/

@@ -92,7 +92,7 @@ public class AnnotationLdSerializer extends JsonLd {
 		
 		putStringProperty(WebAnnotationFields.CANONICAL, annotation.getCanonical(), jsonLdResource);
 		putStringArrayProperty(WebAnnotationFields.VIA, annotation.getVia(), jsonLdResource, true);
-		
+
 		put(jsonLdResource);
 		
 		return jsonLdResource;

@@ -79,10 +79,17 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
      */
     public Set<String> getAcceptedLicenceses() {
 
-	if (acceptedLicences == null) {
-	    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
-	    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
-	}
+		if (acceptedLicences == null) {
+		    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
+		    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
+		}
+
 	return acceptedLicences;
     }
+
+	@Override
+	public String getMetisBaseUrl() {
+		String key = METIS_BASE_URL; 
+		return getAnnotationProperties().getProperty(key);
+	}
 }

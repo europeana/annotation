@@ -1042,14 +1042,14 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.GRAPH;
 			else if (hasType(valueObject, ResourceTypes.PLACE))
 				return BodyInternalTypes.GEO_TAG;
-			else if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
-				return BodyInternalTypes.SEMANTIC_TAG;
-			else if (valueObject.has(WebAnnotationFields.VALUE))
-				return BodyInternalTypes.TAG;
 			else if (hasType(valueObject, ResourceTypes.AGENT))
 				return BodyInternalTypes.AGENT;
 			else if (hasType(valueObject, ResourceTypes.VCARD_ADDRESS))
 				return BodyInternalTypes.VCARD_ADDRESS;
+			else if (valueObject.has(WebAnnotationFields.ID) || valueObject.has(WebAnnotationFields.SOURCE))
+				return BodyInternalTypes.SEMANTIC_TAG;
+			else if (valueObject.has(WebAnnotationFields.VALUE))
+				return BodyInternalTypes.TAG;
 		default:
 			break;
 

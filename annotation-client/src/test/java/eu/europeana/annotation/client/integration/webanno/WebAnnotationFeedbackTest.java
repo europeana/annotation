@@ -35,7 +35,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 	@Test
 	public void createAnnotationReport() throws JsonParseException, IOException {
 		
-		ResponseEntity<String> response = storeTestAnnotation();
+		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		validateResponse(response);
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 		
@@ -52,7 +52,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest {
 			throws JsonParseException, IllegalAccessException, IllegalArgumentException, 
 				   InvocationTargetException, JSONException, IOException {
 		
-		ResponseEntity<String> response = storeTestAnnotation();
+		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		validateResponse(response);
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 		
