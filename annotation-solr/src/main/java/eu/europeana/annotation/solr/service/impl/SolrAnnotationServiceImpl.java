@@ -69,17 +69,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    if (anno instanceof SolrAnnotation)
 		indexedAnno = (SolrAnnotation) anno;
 	    else {
-		boolean withMultilingual = false;
-		indexedAnno = copyIntoSolrAnnotation(anno, withMultilingual, null);
+		indexedAnno = copyIntoSolrAnnotation(anno, null);
 	    }
-
-	    processSolrBeanProperties(indexedAnno);
-
-//			Map<String, String> p = new HashMap<String, String>();
-//			p.put("wt", "json");
-//			SolrParams params = new MapSolrParams(p);			
-//			solrClient.query(params);
-
+	    
 	    UpdateResponse rsp = solrClient.addBean(indexedAnno);
 	    getLogger().info("store response: " + rsp.toString());
 	    if (doCommit)
@@ -366,7 +358,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    // index annotation only if not disabled
 	    return true;
 	} else {
-	    Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, false, summary);
+	    Annotation indexedAnnotation = copyIntoSolrAnnotation(anno, summary);
 	    return store(indexedAnnotation);
 	}
     }
