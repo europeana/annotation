@@ -97,7 +97,8 @@ public class MetisDereferenciationClient {
 			Source xslt = new StreamSource(xsltFileAsStream);
 			transformer = factory.newTransformer(xslt);
 			transformer.setParameter("uri",uri);
-			transformer.setParameter("langs",language);
+			if(language != null)
+			    transformer.setParameter("langs",language);
 			InputStream inputStringStream = new ByteArrayInputStream(xmlStr.getBytes());
 			Source text = new StreamSource(inputStringStream);
 			transformer.transform(text,	new StreamResult(result));			
