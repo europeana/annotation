@@ -158,14 +158,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		return null;		
 	}
 
-//	@Field("*_multilingual")
-	public void setMultilingual(Map<String, String> multilingual) {
-
-		//TODO: re-implement when needed
-//		if (super.getBody() != null)
-//			super.getBody().setMultilingual(multilingual);
-		
-	}
 
 	/**
 	 * This method adds a new language/label association to the multilingual

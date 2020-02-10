@@ -274,21 +274,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    try {
 		getSolrService().store(res);
 	    } catch (Exception e) {
-		getLogger().warn("The annotation was stored correctly into the Mongo, but it was not indexed yet. ", e);
-		// throw new RuntimeException(e);
+		getLogger().info("The annotation was stored correctly into the Mongo, but it was not indexed yet. ", e);
 	    }
-
-	    // check if the tag is already indexed
-	    try {
-		// TODO : enable+ refactor when semantic tagging is in place
-		// SolrTag indexedTag = copyIntoSolrTag(res.getBody());
-		// getSolrTagService().findOrStore(indexedTag);
-	    } catch (Exception e) {
-		getLogger().warn(
-			"The annotation was stored correctly into the Mongo, but the Body tag was not indexed yet. ",
-			e);
-	    }
-
 	    // save the time of the last SOLR indexing
 	    updateLastIndexingTime(res, newAnnotation.getLastUpdate());
 	}
