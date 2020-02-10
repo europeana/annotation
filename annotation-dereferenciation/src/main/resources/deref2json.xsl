@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Document   : wkd2edm.xsl
+  Document   : deref2json.xsl
   Author     : hmanguinhas
-  Created on : October 13, 2019
-  Updated on : December 17, 2019
+  Created on : January 15, 2020
+  Updated on : January 15, 2020
 -->
 
 <xsl:stylesheet version="2.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+
     xmlns:metis="http://www.europeana.eu/schemas/metis"
     xmlns:edm="http://www.europeana.eu/schemas/edm/"
     xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -20,12 +21,6 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:rdaGr2="http://RDVocab.info/ElementsGr2/"
     xmlns:wgs84_pos="http://www.w3.org/2003/01/geo/wgs84_pos#"
-    xmlns:fn="http://www.w3.org/2005/xpath-functions"
-    xmlns:doc="http://www.example.org/functions"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-
-    xmlns:wdt="http://www.wikidata.org/prop/direct/"
-    xmlns:schema="http://schema.org/"
     >
 
     <xsl:output method="text" omit-xml-declaration="yes" indent="no" encoding="UTF-8"/>
@@ -122,9 +117,8 @@
 
         <xsl:if test="$prop">
             <xsl:text>, "</xsl:text><xsl:value-of select="$name"/>
-            <xsl:text>": </xsl:text><xsl:value-of select="$prop[position()=1]/text()"/><xsl:text>"</xsl:text>
+            <xsl:text>": "</xsl:text><xsl:value-of select="$prop[position()=1]/text()"/><xsl:text>"</xsl:text>
         </xsl:if>
     </xsl:template>
-
 
 </xsl:stylesheet>

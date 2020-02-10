@@ -44,7 +44,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 	 * @throws InvocationTargetException
 	 */
 	@Test
-	public void createExampleDereferencedSemanticTagEntity() throws IOException, JsonParseException, IllegalAccessException,
+	public void dereferencedSemanticTag() throws IOException, JsonParseException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
 		Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
