@@ -12,7 +12,7 @@ public class ClientConfiguration {
 	protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
 	protected static final String PROP_ANNOTATION_SERVICE_URI = "annotation.service.uri";
 	protected static final String PROP_AUTHORIZATION_HEADER_NAME = "annotation.header.name";
-	protected static final String PROP_AUTHORIZATION_HEADER_VALUE = "annotation.header.value";
+	protected static final String PROP_REGULAR_AUTHORIZATION_HEADER_VALUE = "annotation.regular.authorization.value";
 	protected static final String PROP_ADMIN_ANNOTATION_HEADER_VALUE = "annotation.admin.authorization.value";
 	private static Properties properties = null;
 
@@ -116,7 +116,7 @@ public class ClientConfiguration {
 	 * @return
 	 */
 	public String getAuthorizationHeaderValue() {
-		return getProperties().getProperty(PROP_AUTHORIZATION_HEADER_VALUE).trim();
+		return getProperties().getProperty(PROP_REGULAR_AUTHORIZATION_HEADER_VALUE).trim();
 	}
 	
 	/**
