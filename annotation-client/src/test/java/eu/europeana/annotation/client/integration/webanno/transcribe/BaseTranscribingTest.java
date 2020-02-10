@@ -10,6 +10,7 @@ public class BaseTranscribingTest extends BaseWebAnnotationProtocolTest {
 
 	public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
 	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
+	public static final String TRANSCRIPTION_WITHOUT_RIGHTS = "/transcription/transcription-without-rights.json";
 
 	
 	protected Annotation parseTranscription(String jsonString) throws JsonParseException {

@@ -29,5 +29,4 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 		assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));		
 	}
 	
-
 }

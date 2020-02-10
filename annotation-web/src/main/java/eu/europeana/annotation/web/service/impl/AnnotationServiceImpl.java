@@ -30,11 +30,13 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
+import eu.europeana.annotation.definitions.model.body.impl.SpecificResourceBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -647,6 +649,23 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     /**
+     * Validation of transcribing.
+     * 
+     * @param webAnnotation
+     */
+    private void validateTranscribing(Annotation webAnnotation) throws ParamValidationException {
+		Body body = webAnnotation.getBody();
+		Target target = webAnnotation.getTarget();
+	
+		// the body type shouldn't be null at this stage
+		if (!(body instanceof SpecificResourceBody)) {
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+				    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
+		}
+		validateTranscribingWithSpecificResource(body, target);
+    }
+
+    /**
      * This method validate entity body
      * 
      * @param body The entity body
@@ -698,6 +717,38 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 		    I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
 		    new String[] { "tag.body.httpUri", body.getHttpUri() });
+    }
+
+    /**
+     * The "language", "edmRights" and "value" of the transcribing body are mandatory
+     * and "source" becomes mandatory as soon as you have a "scope" in the target
+     * @param body
+     * @throws ParamValidationException
+     */
+    private void validateTranscribingWithSpecificResource(Body body, Target target) throws ParamValidationException {
+		// check mandatory field language
+		if (Strings.isNullOrEmpty(body.getLanguage()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.language", body.getLanguage() });
+
+		// check mandatory field edmRights
+		if (Strings.isNullOrEmpty(body.getEdmRights()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.edmRights", body.getEdmRights() });
+
+		// check mandatory field value
+		if (Strings.isNullOrEmpty(body.getValue()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.value", body.getValue() });
+
+		// "source" becomes mandatory as soon as you have a "scope" in the target
+		if (target != null && !Strings.isNullOrEmpty(target.getScope()) && Strings.isNullOrEmpty(target.getSource()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.source", body.getSource() });		
     }
 
     private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
@@ -845,6 +896,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    validateTag(webAnnotation);
 	    break;
 	case TRANSCRIBING:
+	    validateTranscribing(webAnnotation);
 	    validateEdmRights(webAnnotation);
 	    break;
 	default:
