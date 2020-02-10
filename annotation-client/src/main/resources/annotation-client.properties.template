@@ -3,11 +3,14 @@
 annotation.service.uri = http://localhost:8080/annotation
 
 # the user key used to access Europeana API. For more information see http://pro.europeana.eu/api 
-annotation.api.key =
+annotation.api.key=
 
-# the settings for api access
+# the settings for readonly api access
+annotation.readonly.authorization.value=
+
+# the settings for regular api access
 annotation.header.name = Authorization 
-annotation.header.value =
+annotation.regular.authorization.value=
 
 # the settings for admin api access  
-annotation.admin.authorization.value =
+annotation.admin.authorization.value=

@@ -77,6 +77,20 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	}
 
 	@Override
+	public ResponseEntity<String> getAnnotation(String identifier, SearchProfiles searchProfile) {
+
+		ResponseEntity<String> res;
+		try {
+			res = apiConnection.getAnnotation(identifier, false, searchProfile);
+		} catch (IOException e) {
+			throw new TechnicalRuntimeException(
+					"Exception occured when invoking the AnnotationJsonApi getAnnotation method", e);
+		}
+
+		return res;
+	}
+
+	@Override
 	public ResponseEntity<String> updateAnnotation(String identifier, String annotation) {
 		ResponseEntity<String> res;
 		try {

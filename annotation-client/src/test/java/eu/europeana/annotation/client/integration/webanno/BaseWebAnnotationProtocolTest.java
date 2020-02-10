@@ -363,6 +363,9 @@ public class BaseWebAnnotationProtocolTest {
 		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
 	}
 
+	protected ResponseEntity<String> getAnnotationByJwtToken(Annotation anno, SearchProfiles searchProfile) {
+		return getApiClient().getAnnotation(anno.getAnnotationId().getIdentifier(), searchProfile);
+	}
 	
 	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
 		validateResponse(response, HttpStatus.CREATED);
