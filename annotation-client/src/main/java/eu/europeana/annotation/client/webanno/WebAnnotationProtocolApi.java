@@ -95,6 +95,16 @@ public interface WebAnnotationProtocolApi {
 			String wskey, String identifier, SearchProfiles searchProfile);
 	
 	/**
+	 * This method retrieves annotation by the given provider, identifier and search profile using JWT token
+	 * instead of wskey.
+	 * @param identifier
+	 * @param searchProfile
+	* @return response entity containing body, headers and status code.
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String identifier, SearchProfiles searchProfile);
+	
+	/**
 	 * This method updates annotation by the given update string in JSON format
 	 * @param wskey
 	 * @param identifier - part of the annotationId 
