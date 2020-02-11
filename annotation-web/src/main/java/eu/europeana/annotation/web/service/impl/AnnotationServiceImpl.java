@@ -652,17 +652,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * Validation of transcribing.
      * 
      * @param webAnnotation
+     * @throws RequestBodyValidationException 
      */
-    private void validateTranscribing(Annotation webAnnotation) throws ParamValidationException {
+    private void validateTranscription(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException {
 		Body body = webAnnotation.getBody();
 		Target target = webAnnotation.getTarget();
 	
-		// the body type shouldn't be null at this stage
-		if (!(body instanceof SpecificResourceBody)) {
-		    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-				    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
-		}
-		validateTranscribingWithSpecificResource(body, target);
+		validateTranscriptionWithSpecificResource(body, target);
+	    validateEdmRights(webAnnotation);		
     }
 
     /**
@@ -725,7 +722,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * @param body
      * @throws ParamValidationException
      */
-    private void validateTranscribingWithSpecificResource(Body body, Target target) throws ParamValidationException {
+    private void validateTranscriptionWithSpecificResource(Body body, Target target) throws ParamValidationException {
+		// the body type shouldn't be null at this stage
+		if (!(body instanceof SpecificResourceBody)) {
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+				    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
+		}
 		// check mandatory field language
 		if (Strings.isNullOrEmpty(body.getLanguage()))
 		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
@@ -896,8 +898,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    validateTag(webAnnotation);
 	    break;
 	case TRANSCRIBING:
-	    validateTranscribing(webAnnotation);
-	    validateEdmRights(webAnnotation);
+	    validateTranscription(webAnnotation);
 	    break;
 	default:
 	    break;

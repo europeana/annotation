@@ -1,11 +1,13 @@
 package eu.europeana.annotation.client.integration.webanno.transcribe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.httpclient.HttpException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
@@ -29,4 +31,16 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 		assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));		
 	}
 	
+	@Test
+	public void createTranscriptionWithoutRights() {
+		
+		// exception must be thrown
+		HttpException exception = assertThrows(HttpException.class, () -> {
+			createTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS);
+		});
+		
+	    String actualMessage = exception.getMessage();
+	    String expectedMessage = "Missing mandatory field!";
+	    assertTrue(actualMessage.contains(expectedMessage));
+	}	
 }
