@@ -402,7 +402,34 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		/**
 		 * Execute Europeana API request
 		 */
-		return getURL(url);		
+		return getURLWithHeader(url, authorizationHeaderName, regularUserAuthorizationValue);		
+	}
+
+
+	/**
+	 * This method retrieves Annotation object.
+	 * Example HTTP request for tag object: 
+	 *      http://localhost:8080/annotation/webanno/497?profile=dereference
+	 * and for tag object with type jsonld
+	 *     http://localhost:8080/annotation/webanno/497.jsonld?profile=dereference
+	 * @param identifier
+	 * @return response entity that comprises response body, headers and status code.
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getAnnotation(
+			String identifier, boolean isTypeJsonld, SearchProfiles searchProfile) throws IOException {
+		
+		String url = getAnnotationServiceUri() + WebAnnotationFields.SLASH;
+    	url += identifier;
+		if (isTypeJsonld)
+			url += WebAnnotationFields.JSON_LD_REST;
+		url += WebAnnotationFields.PAR_CHAR;
+		url += WebAnnotationFields.PARAM_PROFILE + WebAnnotationFields.EQUALS + searchProfile.toString();
+		
+		/**
+		 * Execute Europeana API request
+		 */
+		return getURLWithHeader(url, authorizationHeaderName, regularUserAuthorizationValue);		
 	}
 
 
