@@ -48,8 +48,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	
 	protected final Logger logger = LogManager.getLogger(this.getClass());
 	
-	@Resource
-	private PersistentTagService tagService;
+//	@Resource
+//	private PersistentTagService tagService;
 
 	@Resource
 	private AnnotationConfiguration configuration;

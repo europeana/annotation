@@ -48,9 +48,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentTag;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
-import eu.europeana.annotation.mongo.service.PersistentTagService;
 import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 

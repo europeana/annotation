@@ -44,9 +44,11 @@
     
 	<beans:bean id="whitelistService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
     </beans:bean>
-    									
+    
+    <!-- 									
    <beans:bean id="clientService" class="eu.europeana.annotation.mongo.service.PersistentClientServiceImpl" p:dao-ref="annotation_db_clientDao">
     </beans:bean>
+     -->
     
     <beans:bean id="adminService" class="eu.europeana.annotation.web.service.impl.AdminServiceImpl">
     </beans:bean>

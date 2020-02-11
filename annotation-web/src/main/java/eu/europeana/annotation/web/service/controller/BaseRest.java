@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -17,21 +16,16 @@ import org.springframework.util.MultiValueMap;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.impl.AbstractProvider;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseProvider;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
-import eu.europeana.annotation.web.model.ProviderSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
@@ -168,23 +162,6 @@ public class BaseRest extends BaseRestController {
 		response.items = webWhitelist;
 		response.itemsCount = response.items.size();
 		response.totalResults = entries.size();
-		return response;
-	}
-
-	public ProviderSearchResults<AbstractProvider> buildProviderSearchResponse(List<? extends Provider> providers,
-			String apiKey, String action) {
-		ProviderSearchResults<AbstractProvider> response = new ProviderSearchResults<AbstractProvider>(apiKey, action);
-		response.items = new ArrayList<AbstractProvider>(providers.size());
-
-		for (Provider provider : providers) {
-			BaseProvider webProvider = new BaseProvider();
-			webProvider.setName(provider.getName());
-			webProvider.setUri(provider.getUri());
-			webProvider.setIdGeneration(IdGenerationTypes.getValueByType(provider.getIdGeneration()));
-			response.items.add(webProvider);
-		}
-		response.itemsCount = response.items.size();
-		response.totalResults = providers.size();
 		return response;
 	}
 

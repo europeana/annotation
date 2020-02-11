@@ -25,15 +25,6 @@
 		p:dao-ref="annotation_db_annotationDao">
 	</bean>
 		
-	<bean name="annotation_db_tagService" class="eu.europeana.annotation.mongo.service.PersistentTagServiceImpl"
-		p:dao-ref="annotation_db_tagDao"/>
-		
-	<bean name="annotation_db_providerService" class="eu.europeana.annotation.mongo.service.PersistentProviderServiceImpl"
-		p:dao-ref="annotation_db_providerDao"/>
-		
-	<bean name="annotation_db_conceptService" class="eu.europeana.annotation.mongo.service.PersistentConceptServiceImpl"
-		p:dao-ref="annotation_db_conceptDao"/>
-		
 	<bean name="annotation_db_statusLogService" class="eu.europeana.annotation.mongo.service.PersistentStatusLogServiceImpl"
 		p:dao-ref="annotation_db_statusLogDao"/>
 		
@@ -43,8 +34,10 @@
 	<bean name="annotation_db_whitelistService" class="eu.europeana.annotation.mongo.service.PersistentWhitelistServiceImpl"
 		p:dao-ref="annotation_db_whitelistDao"/>
 
+<!-- 
 	<bean name="annotation_db_clientService" class="eu.europeana.annotation.mongo.service.PersistentClientServiceImpl"
 		p:dao-ref="annotation_db_clientDao"/>
+		 -->
 		
 	<bean name="annotation_db_apilockService" class="eu.europeana.annotation.mongo.service.PersistentApiWriteLockServiceImpl"
 		p:dao-ref="annotation_db_lockDao"/>
