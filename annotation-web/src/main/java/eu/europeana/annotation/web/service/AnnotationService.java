@@ -11,7 +11,6 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -84,39 +83,6 @@ public interface AnnotationService {
 	 * @throws HttpException 
 	 */
 	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException, HttpException;
-
-	/**
-	 * This method creates Provider object in database.
-	 * @param newProvider
-	 * @return Provider object
-	 */
-	public Provider storeProvider(Provider newProvider);
-
-	/**
-	 * @param idGeneration
-	 * @return
-	 */
-	public List<? extends Provider> getProviderList(String idGeneration);
-	
-	/**
-	 * @param idGeneration
-	 * @param startOn
-	 * @param limit
-	 * @return
-	 */
-	public List<? extends Provider> getFilteredProviderList(String idGeneration, String startOn, String limit);		
-	
-	/**
-	 * @param newProvider
-	 * @return
-	 */
-	public Provider updateProvider(Provider newProvider);
-	
-	/**
-	 * @param name
-	 * @param idGeneration
-	 */
-	public void deleteProvider(String name, String idGeneration);
 
 	/**
 	 * This method stores Annotation object in database and in Solr.
@@ -209,10 +175,10 @@ public interface AnnotationService {
 	 */
 	public boolean existsModerationInDb(AnnotationId annoId);
 	
-	/**
-	 * Check whether given provider already exists in database.
-	 */
-	public boolean existsProviderInDb(Provider provider); 
+//	/**
+//	 * Check whether given provider already exists in database.
+//	 */
+//	public boolean existsProviderInDb(Provider provider); 
 	
 	/**
 	 * This method updates annotation status.

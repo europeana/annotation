@@ -15,7 +15,6 @@ import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
-import eu.europeana.annotation.mongo.service.PersistentClientService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -40,9 +39,6 @@ public abstract class BaseAnnotationServiceImpl{
 
 	@Resource
 	PersistentModerationRecordService mongoModerationRecordPersistance;
-	
-	@Resource
-    PersistentClientService clientService;
 	
 	Logger logger = LogManager.getLogger(getClass());
 

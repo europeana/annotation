@@ -22,10 +22,8 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
-import eu.europeana.annotation.definitions.exception.ProviderValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.Provider;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
@@ -38,15 +36,12 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.IdGenerationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.service.PersistentConceptService;
-import eu.europeana.annotation.mongo.service.PersistentProviderService;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -66,11 +61,11 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-    @Resource
-    PersistentProviderService mongoProviderPersistance;
+//    @Resource
+//    PersistentProviderService mongoProviderPersistance;
 
-    @Resource
-    PersistentConceptService mongoConceptPersistence;
+//    @Resource
+//    PersistentConceptService mongoConceptPersistence;
 
     @Resource
     PersistentWhitelistService mongoWhitelistPersistence;
@@ -83,6 +78,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Resource
     I18nService i18nService;
+    
+    private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
 
     AnnotationBuilder annotationBuilder;
 
@@ -102,21 +99,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return annotationBuilder;
     }
 
-    public PersistentProviderService getMongoProviderPersistence() {
-	return mongoProviderPersistance;
-    }
+//    public PersistentProviderService getMongoProviderPersistence() {
+//	return mongoProviderPersistance;
+//    }
+//
+//    public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
+//	this.mongoProviderPersistance = mongoProviderPersistance;
+//    }
 
-    public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
-	this.mongoProviderPersistance = mongoProviderPersistance;
-    }
-
-    public PersistentConceptService getMongoConceptPersistence() {
-	return mongoConceptPersistence;
-    }
-
-    public void setMongoConceptPersistance(PersistentConceptService mongoConceptPersistence) {
-	this.mongoConceptPersistence = mongoConceptPersistence;
-    }
+//    public PersistentConceptService getMongoConceptPersistence() {
+//	return mongoConceptPersistence;
+//    }
+//
+//    public void setMongoConceptPersistance(PersistentConceptService mongoConceptPersistence) {
+//	this.mongoConceptPersistence = mongoConceptPersistence;
+//    }
 
     public PersistentWhitelistService getMongoWhitelistPersistence() {
 	return mongoWhitelistPersistence;
@@ -139,8 +136,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return getMongoPersistence().getAnnotationList(resourceId);
     }
 
-    private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
-
     public MetisDereferenciationClient getDereferenciationClient() {
 	return dereferenciationClient;
     }
@@ -149,11 +144,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	this.dereferenciationClient = dereferenciationClient;
     }
 
-//	@Override
-//	public List<? extends Annotation> getFilteredAnnotationList(String resourceId, String startOn, String limit,
-//			boolean isDisabled) {
-//		return getMongoPersistence().getFilteredAnnotationList(resourceId, null, startOn, limit, isDisabled);
-//	}
 
     @Override
     @Deprecated
@@ -194,52 +184,52 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
     }
 
-    @Override
-    public Provider storeProvider(Provider newProvider) {
+//    @Override
+//    public Provider storeProvider(Provider newProvider) {
+//
+//	// must have registered id generation type.
+//	validateProvider(newProvider);
+//
+//	// store in mongo database
+//	Provider res = getMongoProviderPersistence().store(newProvider);
+//
+//	return res;
+//    }
 
-	// must have registered id generation type.
-	validateProvider(newProvider);
+//    /**
+//     * This method validates Provider object.
+//     * 
+//     * @param newProvider
+//     */
+//    private void validateProvider(Provider newProvider) {
+//
+//	if (newProvider.getIdGeneration() == null)
+//	    throw new ProviderValidationException(ProviderValidationException.ERROR_NOT_NULL_ID_GENERATION);
+//
+//	if (StringUtils.isEmpty(IdGenerationTypes.isRegisteredAs(newProvider.getIdGeneration())))
+//	    throw new ProviderValidationException(ProviderValidationException.ERROR_NOT_STANDARDIZED_ID_GENERATION);
+//    }
 
-	// store in mongo database
-	Provider res = getMongoProviderPersistence().store(newProvider);
+//    @Override
+//    public List<? extends Provider> getProviderList(String idGeneration) {
+//	return getMongoProviderPersistence().getProviderList(idGeneration);
+//    }
+//
+//    @Override
+//    public List<? extends Provider> getFilteredProviderList(String idGeneration, String startOn, String limit) {
+//	return getMongoProviderPersistence().getFilteredProviderList(idGeneration, startOn, limit);
+//    }
 
-	return res;
-    }
-
-    /**
-     * This method validates Provider object.
-     * 
-     * @param newProvider
-     */
-    private void validateProvider(Provider newProvider) {
-
-	if (newProvider.getIdGeneration() == null)
-	    throw new ProviderValidationException(ProviderValidationException.ERROR_NOT_NULL_ID_GENERATION);
-
-	if (StringUtils.isEmpty(IdGenerationTypes.isRegisteredAs(newProvider.getIdGeneration())))
-	    throw new ProviderValidationException(ProviderValidationException.ERROR_NOT_STANDARDIZED_ID_GENERATION);
-    }
-
-    @Override
-    public List<? extends Provider> getProviderList(String idGeneration) {
-	return getMongoProviderPersistence().getProviderList(idGeneration);
-    }
-
-    @Override
-    public List<? extends Provider> getFilteredProviderList(String idGeneration, String startOn, String limit) {
-	return getMongoProviderPersistence().getFilteredProviderList(idGeneration, startOn, limit);
-    }
-
-    @Override
-    public Provider updateProvider(Provider provider) {
-	Provider res = getMongoProviderPersistence().update(provider);
-	return res;
-    }
-
-    @Override
-    public void deleteProvider(String name, String idGeneration) {
-	getMongoProviderPersistence().remove(name, idGeneration);
-    }
+//    @Override
+//    public Provider updateProvider(Provider provider) {
+//	Provider res = getMongoProviderPersistence().update(provider);
+//	return res;
+//    }
+//
+//    @Override
+//    public void deleteProvider(String name, String idGeneration) {
+//	getMongoProviderPersistence().remove(name, idGeneration);
+//    }
 
     /*
      * (non-Javadoc)
@@ -520,17 +510,17 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * eu.europeana.annotation.web.service.AnnotationService#existsProviderInDb(
      * eu.europeana.annotation.definitions.model.Provider)
      */
-    public boolean existsProviderInDb(Provider provider) {
-	boolean res = false;
-	try {
-	    Provider dbRes = getMongoProviderPersistence().find(provider.getName(), provider.getIdGeneration());
-	    if (dbRes != null)
-		res = true;
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
-	return res;
-    }
+//    public boolean existsProviderInDb(Provider provider) {
+//	boolean res = false;
+//	try {
+//	    Provider dbRes = getMongoProviderPersistence().find(provider.getName(), provider.getIdGeneration());
+//	    if (dbRes != null)
+//		res = true;
+//	} catch (Exception e) {
+//	    throw new RuntimeException(e);
+//	}
+//	return res;
+//    }
 
     public void logAnnotationStatusUpdate(String user, Annotation annotation) {
 	// store in mongo database
