@@ -18,10 +18,10 @@ public class ParamValidationException extends HttpException{
 //	public static final String MESSAGE_MISSING_PROPERTY_FILE = "The property file was not found!";
 
 	public static final String MESSAGE_IDENTIFIER_NOT_NULL = "Identifier must not be set when creating a new Annotation for the given provider!";
-	public static final String MESSAGE_IDENTIFIER_NULL = "Identifier must not be null for the given provider!";
-	public static final String MESSAGE_IDENTIFIER_WRONG = "Identifier must have at least a provider and an identifier number! E.g. 'http://data.europeana.eu/annotation/webanno/494'";
+//	public static final String MESSAGE_IDENTIFIER_NULL = "Identifier must not be null for the given provider!";
+//	public static final String MESSAGE_IDENTIFIER_WRONG = "Identifier must have at least a provider and an identifier number! E.g. 'http://data.europeana.eu/annotation/webanno/494'";
 	public static final String MESSAGE_ANNOTATION_ID_EXISTS = "An annotation with the given identifier already exists in database! Overwrite not allowed in this method!";
-	public static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "An annotation with the given identifier is not yet existing in database!";
+//	public static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "An annotation with the given identifier is not yet existing in database!";
 	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported or not allowed!";
 	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
 	public static final String MESSAGE_URL_NOT_VALID = "Given URL is not valid!";
@@ -33,7 +33,7 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_MISSING_MANDATORY_FIELD = "Missing mandatory field!";
 	public static final String MESSAGE_WRONG_CLASS = "The object class doesn't match the input format!";
 	
-	public static final int MIN_IDENTIFIER_LEN = 2;
+//	public static final int MIN_IDENTIFIER_LEN = 2;
 
 	
 	public ParamValidationException(String message, String i18nKey, String[] i18nParams){

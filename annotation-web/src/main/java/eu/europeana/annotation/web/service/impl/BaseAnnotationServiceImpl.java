@@ -83,23 +83,22 @@ public abstract class BaseAnnotationServiceImpl{
 		this.solrService = solrService;
 	}
 	
-	
-	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException {
+	@Deprecated
+	public Annotation getAnnotationById(AnnotationId annoId, String userId) throws AnnotationNotFoundException, UserAuthorizationException {
 		Annotation annotation = getMongoPersistence().find(annoId);
 		if(annotation == null)
 			throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{annoId.toHttpUrl()});
 		
-		String user = (String)null;
 		try {
 			// check visibility	
-			checkVisibility(annotation, user);
+			checkVisibility(annotation, userId);
 		} catch (AnnotationStateException e) {
 			if (annotation.isDisabled())
 				throw new UserAuthorizationException(null, I18nConstants.ANNOTATION_NOT_ACCESSIBLE, 
 						new String[]{annotation.getStatus()}, HttpStatus.GONE, e);
 			else
 				// TODO: either change method parameters to accept wsKey or return different exception
-				throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[]{user}, e);
+				throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[]{userId}, e);
 		}		
 		
 		return annotation;

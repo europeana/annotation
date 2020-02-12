@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -48,13 +51,16 @@ import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.BatchOperationStep;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
+import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
@@ -70,10 +76,7 @@ public class BaseJsonldRest extends BaseRest {
 	    AnnotationId annoId = buildAnnotationId(null);
 
 	    // 1. authorize user
-	    String userId = authentication.getPrincipal().toString();
-	    String apikeyId = authentication.getDetails().toString();
 	    // already performed in verify write access
-//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.CREATE);
 
 	    // parse
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
@@ -81,8 +84,10 @@ public class BaseJsonldRest extends BaseRest {
 	    // validate annotation and check that no generator and creator exists in input
 
 	    // set generator and creator
-	    String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
-	    String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL + userId;
+	    String userId = authentication.getPrincipal().toString();
+	    String apikeyId = authentication.getDetails().toString();
+	    String generatorId = buildGeneratorUri(apikeyId);
+	    String creatorId = buildCreatorUri(userId);
 
 	    webAnnotation.setGenerator(buildAgent(generatorId));
 	    webAnnotation.setCreator(buildAgent(creatorId));
@@ -142,6 +147,14 @@ public class BaseJsonldRest extends BaseRest {
 	    throw new InternalServerException(e);
 	}
 
+    }
+
+    protected String buildCreatorUri(String userId) {
+	return WebAnnotationFields.DEFAULT_CREATOR_URL + userId;
+    }
+
+    protected String buildGeneratorUri(String apikeyId) {
+	return WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
     }
 
     @Deprecated
@@ -221,8 +234,8 @@ public class BaseJsonldRest extends BaseRest {
 	    // default values
 	    if (annosWithoutId.size() > 0) {
 		String apikeyId = authentication.getDetails().toString();
-		String generatorId = WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
-		String creatorId = WebAnnotationFields.DEFAULT_CREATOR_URL + userId;
+		String generatorId = buildGeneratorUri(apikeyId);
+		String creatorId = buildCreatorUri(userId);
 
 //				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
 		AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder().setGenerator(buildAgent(generatorId))
@@ -302,12 +315,12 @@ public class BaseJsonldRest extends BaseRest {
 	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 	    // annotation id doesn’t exists )
 	    // 4.or 410 (if the user is not allowed to access the annotation);
-	    Annotation annotation = getAnnotationService().getAnnotationById(annoId);
+	    Annotation annotation = getAnnotationService().getAnnotationById(annoId, null);
 
 	    SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
-	    //will update body if dereference profile is used
+	    // will update body if dereference profile is used
 	    getAnnotationService().dereferenceSemanticTags(annotation, searchProfile, language);
-	    
+
 	    JsonLd annotationLd = new AnnotationLdSerializer(annotation);
 	    String jsonLd = annotationLd.toString(4);
 
@@ -388,38 +401,35 @@ public class BaseJsonldRest extends BaseRest {
      * @return annotation object
      * @throws HttpException
      */
-    private AnnotationId validateInputsForUpdateDelete(String identifier, String userId) throws HttpException {
+    private Annotation verifyOwnerOrAdmin(String identifier, Authentication authentication) throws HttpException {
 
-	// First check the API key as prio 0 check
-//		validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
-
-	// check identifier
-	if (identifier == null)
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_WRONG,
-		    I18nConstants.ANNOTATION_VALIDATION, new String[] { "/identifier", identifier },
-		    HttpStatus.NOT_FOUND, null);
-
-	// 1. build annotation id object
+	//Retrieve an annotation based on its identifier;
 	AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
+	String userId = buildCreatorUri((String)authentication.getPrincipal());
+	Annotation annotation = getAnnotationService().getAnnotationById(annoId, userId);
+	
+	//verify ownership
+	boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
+	if(isOwner || hasAdminRights(authentication)) {
+	    //approve owner or admin
+	    return annotation;
+	}else {
+	    //not authorized
+	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."});
+	}
+    }
 
-	// 3. Retrieve an annotation based on its identifier;
-	// Annotation annotation =
-	// getAnnotationService().getAnnotationById(annoId);
-
-	// 4. If annotation doesn’t exist respond with HTTP 404 (if provided
-	// annotation id doesn’t exists )
-	// throw new
-	// AnnotationNotFoundException(AnnotationNotFoundException.MESSAGE_ANNOTATION_NO_FOUND,
-	// annoId.toUri());
-
-	// check whether annotation with the given provider and identifier
-	// already exist in the database
-	if (annoId.getIdentifier() != null && !getAnnotationService().existsInDb(annoId))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_NOT_EXISTS,
-		    I18nConstants.ANNOTATION_VALIDATION, new String[] { "/identifier", annoId.toRelativeUri() },
-		    HttpStatus.NOT_FOUND, null);
-
-	return annoId;
+    private boolean hasAdminRights(Authentication authentication) {
+	
+	for (Iterator<? extends GrantedAuthority> iterator = authentication.getAuthorities().iterator(); iterator.hasNext();) {
+	    //role based authorization
+	    String role = iterator.next().getAuthority();
+	    if(UserRoles.admin.getName().equals(role)){
+		return true;
+	    }
+	}
+	return false;
     }
 
     /**
@@ -438,22 +448,18 @@ public class BaseJsonldRest extends BaseRest {
 
 	try {
 	    String userId = authentication.getPrincipal().toString();
-	    AnnotationId annoId = validateInputsForUpdateDelete(identifier, userId);
-
+	    
 	    // 1. authorize user
 	    // already performed in verify write access
-//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.UPDATE);
+	    //			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.UPDATE);
+	    //check permissions for update
+	    Annotation storedAnnotation = verifyOwnerOrAdmin(identifier, authentication);
 
 	    // 2. check time stamp
-
 	    // 3. validate new description for format and fields
-
 	    // 4. generate new and replace existing time stamp for annotation
 
 	    // Retrieve an annotation based on its identifier;
-	    PersistentAnnotation storedAnnotation = (PersistentAnnotation) getAnnotationService()
-		    .getAnnotationById(annoId);
-
 //			PersistentAnnotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
 //					identifier);
 
@@ -466,7 +472,7 @@ public class BaseJsonldRest extends BaseRest {
 
 	    // 6. apply updates - merge current and updated annotation
 	    // 7. and call database update method
-	    Annotation updatedAnnotation = getAnnotationService().updateAnnotation(storedAnnotation,
+	    Annotation updatedAnnotation = getAnnotationService().updateAnnotation((PersistentAnnotation)storedAnnotation,
 		    updateWebAnnotation);
 
 	    // serialize to jsonld
@@ -515,21 +521,19 @@ public class BaseJsonldRest extends BaseRest {
 	    throws HttpException {
 
 	try {
-	    String userId = authentication.getPrincipal().toString();
-	    AnnotationId annoId = validateInputsForUpdateDelete(identifier, userId);
-
+//	    String userId = authentication.getPrincipal().toString();
+	    
 	    // 5. authorize user
 	    // already performed in verify write access
 //			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
 
 	    // Retrieve an annotation based on its id;
-	    Annotation annotation = getAnnotationService().getAnnotationById(annoId);
-
-	    // TODO: Verify if user is allowed to perform the deletion.
+	    // Verify if user is allowed to perform the deletion.
+	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication);
 
 	    // call database delete method that deactivates existing Annotation
 	    // in Mongo
-	    getAnnotationService().disableAnnotation(annotation);
+	    getAnnotationService().disableAnnotation(storedAnno);
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
@@ -559,15 +563,20 @@ public class BaseJsonldRest extends BaseRest {
     protected ResponseEntity<String> storeAnnotationReport(String identifier, Authentication authentication)
 	    throws HttpException {
 	try {
-
-	    // 2. build and verify annotation ID
-	    String userId = authentication.getPrincipal().toString();
-	    AnnotationId annoId = validateInputsForUpdateDelete(identifier, userId);
-
+	
 	    // 1. authorize user
 	    // already performed in verify write access
 //			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
 
+	    // 2. build and verify annotation ID
+	    String userId = authentication.getPrincipal().toString();
+	    AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
+	    if(!getAnnotationService().existsInDb(annoId)) {
+		throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
+			I18nConstants.ANNOTATION_VALIDATION,
+			new String[] { "/provider/identifier", annoId.toRelativeUri() });
+	    }
+	    	
 	    // build vote
 	    Date reportDate = new Date();
 	    Vote vote = buildVote(buildAgent(userId), reportDate);

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 
-public enum UserGroups implements Role {
+public enum UserRoles implements Role {
 
 	anonimous(new String[]{Operations.RETRIEVE}), 
 	user(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
@@ -17,7 +17,7 @@ public enum UserGroups implements Role {
 	String[] operations;
 	static Set<String> operationSet;
 	
-	UserGroups (String[] operations){
+	UserRoles (String[] operations){
 		this.operations = operations;
 	}
 	
@@ -37,7 +37,7 @@ public enum UserGroups implements Role {
 	 */
 	public static Role getRoleByName(String name) {
 	    Role userRole = null;
-	    for(UserGroups role : UserGroups.values()) {
+	    for(UserRoles role : UserRoles.values()) {
 		if(role.name().toLowerCase().equals(name)) {
 		    userRole = role;
 		    break;
@@ -71,6 +71,4 @@ public enum UserGroups implements Role {
 		}
 		return operationSet;
 	}
-	
-			
 }

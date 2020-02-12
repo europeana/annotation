@@ -61,12 +61,6 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-//    @Resource
-//    PersistentProviderService mongoProviderPersistance;
-
-//    @Resource
-//    PersistentConceptService mongoConceptPersistence;
-
     @Resource
     PersistentWhitelistService mongoWhitelistPersistence;
 
@@ -98,22 +92,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    annotationBuilder = new AnnotationBuilder();
 	return annotationBuilder;
     }
-
-//    public PersistentProviderService getMongoProviderPersistence() {
-//	return mongoProviderPersistance;
-//    }
-//
-//    public void setMongoProviderPersistance(PersistentProviderService mongoProviderPersistance) {
-//	this.mongoProviderPersistance = mongoProviderPersistance;
-//    }
-
-//    public PersistentConceptService getMongoConceptPersistence() {
-//	return mongoConceptPersistence;
-//    }
-//
-//    public void setMongoConceptPersistance(PersistentConceptService mongoConceptPersistence) {
-//	this.mongoConceptPersistence = mongoConceptPersistence;
-//    }
 
     public PersistentWhitelistService getMongoWhitelistPersistence() {
 	return mongoWhitelistPersistence;
@@ -184,52 +162,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
     }
 
-//    @Override
-//    public Provider storeProvider(Provider newProvider) {
-//
-//	// must have registered id generation type.
-//	validateProvider(newProvider);
-//
-//	// store in mongo database
-//	Provider res = getMongoProviderPersistence().store(newProvider);
-//
-//	return res;
-//    }
-
-//    /**
-//     * This method validates Provider object.
-//     * 
-//     * @param newProvider
-//     */
-//    private void validateProvider(Provider newProvider) {
-//
-//	if (newProvider.getIdGeneration() == null)
-//	    throw new ProviderValidationException(ProviderValidationException.ERROR_NOT_NULL_ID_GENERATION);
-//
-//	if (StringUtils.isEmpty(IdGenerationTypes.isRegisteredAs(newProvider.getIdGeneration())))
-//	    throw new ProviderValidationException(ProviderValidationException.ERROR_NOT_STANDARDIZED_ID_GENERATION);
-//    }
-
-//    @Override
-//    public List<? extends Provider> getProviderList(String idGeneration) {
-//	return getMongoProviderPersistence().getProviderList(idGeneration);
-//    }
-//
-//    @Override
-//    public List<? extends Provider> getFilteredProviderList(String idGeneration, String startOn, String limit) {
-//	return getMongoProviderPersistence().getFilteredProviderList(idGeneration, startOn, limit);
-//    }
-
-//    @Override
-//    public Provider updateProvider(Provider provider) {
-//	Provider res = getMongoProviderPersistence().update(provider);
-//	return res;
-//    }
-//
-//    @Override
-//    public void deleteProvider(String name, String idGeneration) {
-//	getMongoProviderPersistence().remove(name, idGeneration);
-//    }
 
     /*
      * (non-Javadoc)
@@ -338,9 +270,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @SuppressWarnings("deprecation")
-    private void mergeAnnotationProperties(PersistentAnnotation annotation, Annotation updatedWebAnnotation) {
-	if (updatedWebAnnotation.getType() != null)
-	    annotation.setType(updatedWebAnnotation.getType());
+    private void mergeAnnotationProperties(PersistentAnnotation annotation, Annotation webAnnotation) {
+	if (webAnnotation.getType() != null)
+	    annotation.setType(webAnnotation.getType());
 
 //		So my decision for the moment would be to only keep the "id" and "created" immutable.
 //
@@ -359,51 +291,55 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	// if (updatedWebAnnotation.getMotivation() != null)
 	// currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
 
-	if (updatedWebAnnotation.getLastUpdate() != null) {
-	    annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
+	if (webAnnotation.getLastUpdate() != null) {
+	    annotation.setLastUpdate(webAnnotation.getLastUpdate());
 	} else {
 	    Date timeStamp = new java.util.Date();
 	    annotation.setLastUpdate(timeStamp);
 	}
 
-	if (updatedWebAnnotation.getCreator() != null)
-	    annotation.setCreator(updatedWebAnnotation.getCreator());
+// creator and generator are mandatory, and set during the creation	
+//	if (updatedWebAnnotation.getCreator() != null)
+//	    annotation.setCreator(updatedWebAnnotation.getCreator());
+//
+//	if (updatedWebAnnotation.getGenerator() != null)
+//	    annotation.setGenerator(updatedWebAnnotation.getGenerator());
 
-	if (updatedWebAnnotation.getGenerator() != null)
-	    annotation.setGenerator(updatedWebAnnotation.getGenerator());
-
-	if (updatedWebAnnotation.getCreated() != null)
-	    annotation.setCreated(updatedWebAnnotation.getCreated());
+//created must not be updated	
+//	if (webAnnotation.getCreated() != null)
+//	    annotation.setCreated(webAnnotation.getCreated());
 //		if (updatedWebAnnotation.getCreator() != null)
 //			annotation.setCreator(updatedWebAnnotation.getCreator());
-	if (updatedWebAnnotation.getGenerated() != null)
-	    annotation.setGenerated(updatedWebAnnotation.getGenerated());
+	if (webAnnotation.getGenerated() != null)
+	    annotation.setGenerated(webAnnotation.getGenerated());
 //		if (updatedWebAnnotation.getGenerator() != null)
 //			annotation.setGenerator(updatedWebAnnotation.getGenerator());
-	if (updatedWebAnnotation.getBody() != null)
-	    annotation.setBody(updatedWebAnnotation.getBody());
-	if (updatedWebAnnotation.getTarget() != null)
-	    annotation.setTarget(updatedWebAnnotation.getTarget());
-	if (annotation.isDisabled() != updatedWebAnnotation.isDisabled())
-	    annotation.setDisabled(updatedWebAnnotation.isDisabled());
-	if (updatedWebAnnotation.getEquivalentTo() != null)
-	    annotation.setEquivalentTo(updatedWebAnnotation.getEquivalentTo());
-	if (updatedWebAnnotation.getInternalType() != null)
-	    annotation.setInternalType(updatedWebAnnotation.getInternalType());
+	if (webAnnotation.getBody() != null)
+	    annotation.setBody(webAnnotation.getBody());
+	if (webAnnotation.getTarget() != null)
+	    annotation.setTarget(webAnnotation.getTarget());
+	if (annotation.isDisabled() != webAnnotation.isDisabled())
+	    annotation.setDisabled(webAnnotation.isDisabled());
+	if (webAnnotation.getEquivalentTo() != null)
+	    annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
+	if (webAnnotation.getInternalType() != null)
+	    annotation.setInternalType(webAnnotation.getInternalType());
 //		if (updatedWebAnnotation.getLastUpdate() != null)
 //			annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
-	if (updatedWebAnnotation.getSameAs() != null)
-	    annotation.setSameAs(updatedWebAnnotation.getSameAs());
-	if (updatedWebAnnotation.getStatus() != null)
-	    annotation.setStatus(updatedWebAnnotation.getStatus());
-	if (updatedWebAnnotation.getStyledBy() != null)
-	    annotation.setStyledBy(updatedWebAnnotation.getStyledBy());
-	if (updatedWebAnnotation.getCanonical() != null)
-	    // #404 must never be overwritten
-	    if (StringUtils.isEmpty(annotation.getCanonical()))
-		annotation.setCanonical(updatedWebAnnotation.getCanonical());
-	if (updatedWebAnnotation.getVia() != null)
-	    annotation.setVia(updatedWebAnnotation.getVia());
+	if (webAnnotation.getSameAs() != null)
+	    annotation.setSameAs(webAnnotation.getSameAs());
+	if (webAnnotation.getStatus() != null)
+	    annotation.setStatus(webAnnotation.getStatus());
+	if (webAnnotation.getStyledBy() != null)
+	    annotation.setStyledBy(webAnnotation.getStyledBy());
+	if (webAnnotation.getCanonical() != null) {
+	    //TODO: #404 must never be overwritten
+	    if (StringUtils.isEmpty(annotation.getCanonical())) {
+		annotation.setCanonical(webAnnotation.getCanonical());
+	    }
+	}
+	if (webAnnotation.getVia() != null)
+	    annotation.setVia(webAnnotation.getVia());
     }
 
     @Override
