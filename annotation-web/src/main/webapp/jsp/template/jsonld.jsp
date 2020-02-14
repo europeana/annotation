@@ -199,7 +199,7 @@ The json-ld serialization available in the following box is a valid input to be 
 </textarea>
 
 <h3 id="transcription">Create annotation for transcription</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Transcription annotation</b>. 
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Transcription annotation</b>. The fields: "language", "value" and "edmRights" are mandatory, and "source" becomes mandatory as soon as "scope" field is in the target.
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 
 <br>
