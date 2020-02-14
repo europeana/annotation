@@ -15,9 +15,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-
-import com.google.common.base.Strings;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -74,7 +71,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Resource
     I18nService i18nService;
-    
+
     private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
 
     AnnotationBuilder annotationBuilder;
@@ -124,7 +121,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	this.dereferenciationClient = dereferenciationClient;
     }
 
-
     @Override
     @Deprecated
     /**
@@ -163,7 +159,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    throw new RequestBodyValidationException(annotationJsonLdStr, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 	}
     }
-
 
     /*
      * (non-Javadoc)
@@ -335,7 +330,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	if (webAnnotation.getStyledBy() != null)
 	    annotation.setStyledBy(webAnnotation.getStyledBy());
 	if (webAnnotation.getCanonical() != null) {
-	    //TODO: #404 must never be overwritten
+	    // TODO: #404 must never be overwritten
 	    if (StringUtils.isEmpty(annotation.getCanonical())) {
 		annotation.setCanonical(webAnnotation.getCanonical());
 	    }
@@ -578,14 +573,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * Validation of transcribing.
      * 
      * @param webAnnotation
-     * @throws RequestBodyValidationException 
+     * @throws RequestBodyValidationException
      */
-    private void validateTranscription(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException {
-		Body body = webAnnotation.getBody();
-		Target target = webAnnotation.getTarget();
-	
-		validateTranscriptionWithSpecificResource(body, target);
-	    validateEdmRights(webAnnotation);		
+    private void validateTranscription(Annotation webAnnotation)
+	    throws ParamValidationException, RequestBodyValidationException {
+	Body body = webAnnotation.getBody();
+	Target target = webAnnotation.getTarget();
+
+	validateTranscriptionWithSpecificResource(body, target);
+	validateEdmRights(webAnnotation);
     }
 
     /**
@@ -620,63 +616,64 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     private void validateTagWithSpecificResource(Body body) throws ParamValidationException {
 	// check mandatory fields
-	if (Strings.isNullOrEmpty(body.getInternalType().toString()))
+	if (StringUtils.isBlank(body.getInternalType().toString()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    new String[] { "tag.body.type", body.getType().toString() });
-	if (Strings.isNullOrEmpty(body.getSource()))
+	if (StringUtils.isBlank(body.getSource()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    new String[] { "tag.body.source", body.getSource() });
 
 	// source must be an URL
-	if (!eu.europeana.annotation.utils.UriUtils.isUrl(body.getSource()))
+	if (!UriUtils.isUrl(body.getSource()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
 		    I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
 		    new String[] { "tag.format", body.getSource() });
 
 	// id is not a mandatory field but if exists it must be an URL
-	if (body.getHttpUri() != null && !eu.europeana.annotation.utils.UriUtils.isUrl(body.getHttpUri()))
+	if (body.getHttpUri() != null && !UriUtils.isUrl(body.getHttpUri()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
 		    I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
 		    new String[] { "tag.body.httpUri", body.getHttpUri() });
     }
 
     /**
-     * The "language", "edmRights" and "value" of the transcribing body are mandatory
-     * and "source" becomes mandatory as soon as you have a "scope" in the target
+     * The "language", "edmRights" and "value" of the transcribing body are
+     * mandatory and "source" becomes mandatory as soon as you have a "scope" in the
+     * target
+     * 
      * @param body
      * @throws ParamValidationException
      */
     private void validateTranscriptionWithSpecificResource(Body body, Target target) throws ParamValidationException {
-		// the body type shouldn't be null at this stage
-		if (!(body instanceof SpecificResourceBody)) {
-		    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-				    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
-		}
-		// check mandatory field language
-		if (Strings.isNullOrEmpty(body.getLanguage()))
-		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-			    new String[] { "tag.body.language", body.getLanguage() });
+	// the body type shouldn't be null at this stage
+	if (!(body instanceof SpecificResourceBody)) {
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+		    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
+	}
+	// check mandatory field language
+	if (StringUtils.isBlank(body.getLanguage()))
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+		    new String[] { "tag.body.language", body.getLanguage() });
 
-		// check mandatory field edmRights
-		if (Strings.isNullOrEmpty(body.getEdmRights()))
-		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-			    new String[] { "tag.body.edmRights", body.getEdmRights() });
+	// check mandatory field edmRights
+	if (StringUtils.isBlank(body.getEdmRights()))
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+		    new String[] { "tag.body.edmRights", body.getEdmRights() });
 
-		// check mandatory field value
-		if (Strings.isNullOrEmpty(body.getValue()))
-		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-			    new String[] { "tag.body.value", body.getValue() });
+	// check mandatory field value
+	if (StringUtils.isBlank(body.getValue()))
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.value", body.getValue() });
 
-		// "source" becomes mandatory as soon as you have a "scope" in the target
-		if (target != null && !Strings.isNullOrEmpty(target.getScope()) && Strings.isNullOrEmpty(target.getSource()))
-		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-			    new String[] { "tag.body.source", body.getSource() });		
+	// "source" becomes mandatory as soon as you have a "scope" in the target
+	if (target != null && !StringUtils.isBlank(target.getScope()) && StringUtils.isBlank(target.getSource()))
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+		    new String[] { "tag.body.source", body.getSource() });
     }
 
     private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
@@ -684,11 +681,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	// check mandatory fields
 
 	// check type
-	if (Strings.isNullOrEmpty(body.getInternalType().toString()))
+	if (StringUtils.isBlank(body.getInternalType().toString()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    new String[] { "tag.body.type", body.getType().toString() });
-	if (Strings.isNullOrEmpty(body.getSource()))
+	if (StringUtils.isBlank(body.getSource()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    new String[] { "tag.body.source", body.getSource() });
@@ -703,7 +700,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	// check mandatory fields
 
 	// check type
-	if (Strings.isNullOrEmpty(body.getInternalType().toString())
+	if (StringUtils.isBlank(body.getInternalType().toString())
 		|| !BodyInternalTypes.isVcardAddressTagBody(body.getInternalType()))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
