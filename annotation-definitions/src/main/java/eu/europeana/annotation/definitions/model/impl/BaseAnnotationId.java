@@ -76,13 +76,12 @@ public class BaseAnnotationId implements AnnotationId{
 
 	@Override
 	public String toRelativeUri() {
-		return WebAnnotationFields.SLASH
-				+ getIdentifier();
+		return String.valueOf(getIdentifier());
 	}
 	
 	@Override
 	public String toHttpUrl() {
-		return getBaseUrl() + toRelativeUri(); 
+		return getBaseUrl() + WebAnnotationFields.SLASH + toRelativeUri(); 
 	}
 
 	@Override

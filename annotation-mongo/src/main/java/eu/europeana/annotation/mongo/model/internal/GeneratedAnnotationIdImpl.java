@@ -60,7 +60,7 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 	
 	@Override
 	public String getIdentifier() {
-		return ""+getAnnotationNr();
+		return String.valueOf(getAnnotationNr());
 	}
 
 	@Override
