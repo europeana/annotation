@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -730,7 +731,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	int MAX_TAG_LENGTH = 64;
 
-	if (eu.europeana.annotation.utils.UriUtils.isUrl(value))
+	if (UriUtils.isUrl(value))
 	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG,
 		    I18nConstants.MESSAGE_INVALID_SIMPLE_TAG, new String[] { value });
 	else if (value.length() > MAX_TAG_LENGTH)

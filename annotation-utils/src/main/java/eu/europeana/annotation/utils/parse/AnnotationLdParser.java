@@ -506,8 +506,11 @@ public class AnnotationLdParser extends JsonLdParser {
 	}
 
 	private Body parseBodyText(MotivationTypes motivation, String bodyText) throws JsonParseException {
-		Body body = parseBody(bodyText, motivation);
-		// add "bodyText" implications
+	    	//Body body = parseBody(bodyText, motivation);
+	    	//bodyValue is a short representation of a Tag 
+	    	Body body = BodyObjectFactory.getInstance().createObjectInstance(BodyInternalTypes.TAG);
+	    	body.setValue(bodyText);
+		// add "bodyValue" implications
 		body.setContentType(WebAnnotationModelKeywords.MIME_TYPE_TEXT_PLAIN);
 
 		return body;
