@@ -126,10 +126,11 @@ public interface AnnotationService {
 	/**
 	 * This method returns annotation object for given annotationId that
 	 * comprises provider and identifier.
-	 * @param
+	 * @param annoId - id of the annotation to be retrieved
+	 * @param userId - id of the user sending the request (URI)
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(AnnotationId annoId) throws AnnotationNotFoundException, UserAuthorizationException;
+	public Annotation getAnnotationById(AnnotationId annoId, String userId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	/**
 	 * Search for annotations by the given text query, row start position and rows limit. 	 

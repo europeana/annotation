@@ -15,7 +15,7 @@ public class BaseSpecificResource extends BaseInternetResource implements Specif
 	private State state;
 	private String styleClass;
 	protected String purpose;
-	private String scope = "";
+	private String scope;
 	private String edmRights;
 	
 	
