@@ -26,6 +26,7 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.view.AnnotationViewAdapter;
 import eu.europeana.annotation.solr.model.view.FacetFieldAdapter;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
+import eu.europeana.annotation.utils.UriUtils;
 
 public class SolrAnnotationUtils {
 
@@ -128,7 +129,8 @@ public class SolrAnnotationUtils {
 	    // not specified yet
 	    break;
 	case SEMANTIC_TAG:
-	    solrAnnotation.setBodyUris(extractTargetUriValues(body));
+	    //
+	    solrAnnotation.setBodyUris(extractUriValues(body));
 	    break;
 	case TAG:
 	    solrAnnotation.setBodyValue(extractTextValues(body));
@@ -170,7 +172,7 @@ public class SolrAnnotationUtils {
 
 	SpecificResource internetResource = solrAnnotation.getTarget();
 	// extract URIs for target_uri field
-	List<String> targetUris = extractTargetUriValues(internetResource);
+	List<String> targetUris = extractUriValues(internetResource);
 	solrAnnotation.setTargetUris(targetUris);
 
 	// Extract URIs for target_record_id
@@ -182,29 +184,40 @@ public class SolrAnnotationUtils {
 	solrAnnotation.setTargetRecordIds(recordIds);
     }
 
-    protected List<String> extractTargetUriValues(SpecificResource specificResource) {
+    protected List<String> extractUriValues(SpecificResource specificResource) {
+	List<String> resourceUrls = new ArrayList<String>();
+	
 	// linking scenario, target is list of URIs
-	if (specificResource.getValues() != null && !specificResource.getValues().isEmpty())
-	    return specificResource.getValues();
+	if (specificResource.getValues() != null && !specificResource.getValues().isEmpty()) {
+	    for (String value : specificResource.getValues()) {
+		appendUrlValue(resourceUrls, value);
+	    }
+	}
+	    
 
 	// Regular or Specific resources
-	List<String> resourceUrls = new ArrayList<String>();
 	if (specificResource.getValue() != null) {
 	    // simple resource
-	    resourceUrls.add(specificResource.getValue());
+	    appendUrlValue(resourceUrls, specificResource.getValue());
 	} 
 	
 	if (specificResource.getSource() != null) {
 	    // specific resource - source
-	    resourceUrls.add(specificResource.getSource());
+	    appendUrlValue(resourceUrls, specificResource.getSource());
 	} 
 	
 	if (specificResource.getScope() != null) {
 	    // specific resource - scope
-	    resourceUrls.add(specificResource.getScope());
+	    appendUrlValue(resourceUrls, specificResource.getScope());
 	}
 	
 	return resourceUrls;
+    }
+
+    private void appendUrlValue(List<String> resourceUrls, String value) {
+	if(UriUtils.isUrl(value)) {
+	    resourceUrls.add(value);
+	}
     }
 
     List<String> extractRecordIds(List<String> targetUrls) {

@@ -4,8 +4,7 @@
     "type": "FullTextResource",
     "language": "en",
     "value": "... complete transcribed text in HTML ...",
-    "format": "text/plain",
-    "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
+    "format": "text/plain"
   },
   "target": {
     "scope": "http://data.europeana.eu/item/07931/diglit_uah_m1",

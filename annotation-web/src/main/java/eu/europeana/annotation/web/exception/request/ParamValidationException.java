@@ -30,8 +30,10 @@ public class ParamValidationException extends HttpException{
 	public static final String MESSAGE_INVALID_SIMPLE_TAG = MESSAGE_INVALID_TAG_FORMAT + " A tag can't contain URLs!";
 	public static final String MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE = MESSAGE_INVALID_TAG_FORMAT + " The source of a SpecificResource must be an URL!";
 	public static final String MESSAGE_INVALID_TAG_ID_FORMAT = MESSAGE_INVALID_TAG_FORMAT + " The internal id must be an URL!";
+	@Deprecated
+	//TODO switch to PropertyValidationException
 	public static final String MESSAGE_MISSING_MANDATORY_FIELD = "Missing mandatory field!";
-	public static final String MESSAGE_WRONG_CLASS = "The object class doesn't match the input format!";
+//	public static final String MESSAGE_WRONG_CLASS = "The object class doesn't match the input format!";
 	
 //	public static final int MIN_IDENTIFIER_LEN = 2;
 

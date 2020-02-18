@@ -1,8 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
