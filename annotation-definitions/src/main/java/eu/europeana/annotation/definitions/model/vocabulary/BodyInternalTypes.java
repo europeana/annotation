@@ -50,6 +50,10 @@ public enum BodyInternalTypes {
 		return VCARD_ADDRESS.name().equalsIgnoreCase(internalType);
 	}
 	
+	public static boolean isTextualBody(String internalType) {
+		return TEXT.name().equalsIgnoreCase(internalType);
+	}	
+	
 	public static boolean contains(String test) {
 
 	    for (BodyInternalTypes c : BodyInternalTypes.values()) {

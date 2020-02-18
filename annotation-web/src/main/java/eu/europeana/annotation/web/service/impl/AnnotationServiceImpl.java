@@ -25,9 +25,11 @@ import eu.europeana.annotation.definitions.exception.ModerationRecordValidationE
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
+import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
+import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -38,6 +40,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -58,6 +61,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -637,16 +641,59 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     /**
-     * This method validate entity body
+     * This method validates describing annotation.
+     * @param webAnnotation
+     * @throws ParamValidationException
+     */
+    private void validateDescribing(Annotation webAnnotation) throws ParamValidationException {
+		Body body = webAnnotation.getBody();
+	
+		if (BodyInternalTypes.isTextualBody(body.getInternalType())) {
+		    validateTextualBody(body);
+		}
+    }
+
+	/**
+     * This method validates entity body.
      * 
      * @param body The entity body
      * @throws ParamValidationException
      */
     private void validateAgentBody(Body body) throws ParamValidationException {
-	if (!(body instanceof EdmAgentBody)) {
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-		    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
-	}
+		if (!(body instanceof EdmAgentBody)) {
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
+			    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
+		}
+		validateAgentEntityBody(body);
+    }
+
+    /**
+     * Semantic tagging with entity descriptions (edm:Agent) has mandatory field skos:prefLabel 
+     * and one of the following fields: 
+     * rdaGr2:professionOrOccupation, edm:begin, rdaGr2:dateOfBirth, edm:end, rdaGr2:dateOfDeath, 
+     * rdaGr2:placeOfDeath, rdaGr2:placeOfBirth
+     * 
+     * @param body
+     * @throws ParamValidationException
+     */
+    private void validateAgentEntityBody(Body body) throws ParamValidationException {
+
+		EdmAgent agent = (EdmAgent) ((EdmAgentBody) body).getAgent();
+
+    	// check mandatory field prefLabel
+		if (agent.getPrefLabel() == null)
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "agent.body.prefLabel", agent.getPrefLabel().toString() });
+	
+		// check mandatory field - one of the professionOrOccupation, begin, dateOfBirth, end, dateOfDeath
+		// placeOfBirth, placeOfDeath
+//		if (agent.getPlaceOfBirth() == null && agent.getPlaceOfDeath() == null 
+//				&& agent.getDateOfDeath() == null && agent.getDateOfDeath() == null)
+//		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+//			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+//			    new String[] { "agent.body.fields", 
+//			    		"missing one of the professionOrOccupation, begin, dateOfBirth, end, dateOfDeath, placeOfBirth, placeOfDeath" });
     }
 
     private void validateGeoTag(Body body) throws ParamValidationException {
@@ -711,14 +758,84 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      */
     private void validateVcardAddressBody(Body body) throws ParamValidationException {
 
-	// check mandatory fields
+		// check mandatory fields
+    	validateSemanticTagVcardAddressBody(body);
+	
+		// check type
+		if (Strings.isNullOrEmpty(body.getInternalType().toString())
+			|| !BodyInternalTypes.isVcardAddressTagBody(body.getInternalType()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.type", body.getType().toString() });
+    }
 
-	// check type
-	if (Strings.isNullOrEmpty(body.getInternalType().toString())
-		|| !BodyInternalTypes.isVcardAddressTagBody(body.getInternalType()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    new String[] { "tag.body.type", body.getType().toString() });
+	/**
+     * Semantic tagging with vcard:Address type has mandatory fields:
+     * "Address", "streetAddress", "locality", "countryName"
+     * The "type" field should have value "Address"
+     * @param body
+     * @throws ParamValidationException
+     */
+    private void validateSemanticTagVcardAddressBody(Body body) throws ParamValidationException {
+		// check mandatory field address
+		if (!(body instanceof VcardAddressBody)) 
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+				    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+				    new String[] { "tag.body.class", body.getClass().toString() });
+
+		Address address = ((VcardAddressBody) body).getAddress();
+		
+		// check mandatory field streetAddress
+		if (Strings.isNullOrEmpty(address.getVcardStreetAddress()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.address.streetAddress", address.getVcardStreetAddress() });
+
+		// check mandatory field locality
+		if (Strings.isNullOrEmpty(address.getVcardLocality()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.address.locality", address.getVcardLocality() });
+
+		// check mandatory field countryName
+		if (Strings.isNullOrEmpty(address.getVcardCountryName()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.address.countryName", address.getVcardCountryName() });
+		
+		// check mandatory field type
+		if (body.getType() == null || Strings.isNullOrEmpty(body.getType().get(0)) 
+				|| !body.getType().get(0).equals(WebAnnotationModelKeywords.CLASS_VCARD_ADDRESS))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.address.type", body.getInternalType() });
+    }
+		
+    /**
+     * For describing annotations: "value" and "language" within the "body" are mandatory.
+     * @param body
+     * @throws ParamValidationException
+     */
+    private void validateTextualBody(Body body) throws ParamValidationException {
+
+		// check mandatory field value
+		if (Strings.isNullOrEmpty(body.getValue()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.value", body.getValue() });
+	
+		// check mandatory field language
+		if (Strings.isNullOrEmpty(body.getLanguage()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.language", body.getLanguage() });
+
+		// check type
+		if (Strings.isNullOrEmpty(body.getInternalType().toString())
+			|| !BodyInternalTypes.isTextualBody(body.getInternalType()))
+		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+			    new String[] { "tag.body.type", body.getType().toString() });
     }
 
     private void validateTagWithValue(Body body) throws ParamValidationException {
@@ -831,6 +948,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		    }
 	    }
 	    break;
+	case DESCRIBING:
+		validateDescribing(webAnnotation);
 	case TAGGING:
 	    validateTag(webAnnotation);
 	    break;
