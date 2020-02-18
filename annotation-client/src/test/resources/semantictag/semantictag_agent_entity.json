@@ -1,0 +1,317 @@
+{
+  "motivation": "tagging",
+  "body": {
+    "@context": "http://www.europeana.eu/schemas/context/entity.jsonld",
+    "id": "http://data.europeana.eu/agent/base/60404",
+    "type": "Agent",
+    "depiction": {
+        "id": "http://commons.wikimedia.org/wiki/Special:FilePath/Cropped%20version%20of%20Jan%20Vermeer%20van%20Delft%20002.jpg",
+        "source": "http://commons.wikimedia.org/wiki/File:Cropped%20version%20of%20Jan%20Vermeer%20van%20Delft%20002.jpg"
+    },
+    "prefLabel": {
+        "ar": "يوهانس فيرمير",
+        "az": "Yan Vermeer",
+        "be": "Ян Вермер",
+        "bg": "Йоханес Вермер",
+        "bs": "Johannes Vermeer",
+        "ca": "Johannes Vermeer de Delft",
+        "cs": "Jan Vermeer",
+        "cy": "Johannes Vermeer",
+        "da": "Johannes Vermeer",
+        "de": "Jan Vermeer",
+        "el": "Γιοχάνες Βερμέερ",
+        "en": "Johannes Vermeer",
+        "es": "Johannes Vermeer",
+        "et": "Johannes Vermeer",
+        "eu": "Jan Vermeer",
+        "fi": "Johannes Vermeer",
+        "fr": "Johannes Vermeer",
+        "gd": "Johannes Vermeer",
+        "gl": "Johannes Vermeer",
+        "he": "יאן ורמיר",
+        "hr": "Johannes Vermeer",
+        "hu": "Jan Vermeer van Delft",
+        "hy": "Յան Վերմեեր",
+        "is": "Johannes Vermeer",
+        "it": "Jan Vermeer",
+        "ja": "ヨハネス・フェルメール",
+        "ka": "იან ვერმეერი",
+        "ko": "요하네스 페르메이르",
+        "lt": "Jan Vermeer",
+        "lv": "Jans Vermērs",
+        "nl": "Johannes Vermeer",
+        "no": "Johannes Vermeer",
+        "pl": "Jan Vermeer",
+        "pt": "Johannes Vermeer",
+        "ro": "Johannes Vermeer",
+        "ru": "Вермеер, Ян",
+        "sk": "Jan Vermeer",
+        "sl": "Jan Vermeer van Delft",
+        "sr": "Јоханес Вермер",
+        "sv": "Johannes Vermeer",
+        "tr": "Johannes Vermeer",
+        "uk": "Ян Вермер",
+        "zh": "扬·弗美尔"
+    },
+    "altLabel": {
+        "en": [
+            "Delft, Jan Vermeer",
+            "van Vermeer, Johannes",
+            "Johannes van Vermeer"
+        ]
+    },
+    "dateOfBirth": [
+        "1632-10-31"
+    ],
+    "dateOfDeath": [
+        "1675-12-15"
+    ],
+    "biographicalInformation": [
+        {
+            "@language": "no",
+            "@value": "Johannes Vermeer eller Jan Vermeer (nederlandsk uttale: [joˈɦɑnəs jɑn vərˈmɪːr]), i sin samtid også kalt Joannis ver Meer og Joannis van der Meer, (døpt 31. oktober 1632 i Delft, begravet 15. desember 1675 i Delft) var en hollandsk maler som i dag regnes som en av den nordeuropeiske barokkens fremste kunstnere fra den nederlandske gullalderen.Vermeer spesialiserte seg på interiørscener fra borgerskap og middelklasse, og var en moderat fremgangsrik, provinsiell sjangermaler mens han levde. Det ser ut til at han aldri var særlig velstående, og han etterlot seg gjeld som gikk i arv til ektefelle og barn. Bare 35 malerier kan med sikkerhet tilskrives Vermeer. De mest kjente er «Pike med perleøredobb», «Melkepiken» og «Utsikt over Delft». Vermeers malerier eies av 17 ulike museer og institusjoner i Europa og USA. Kvalitetene i Vermeers malerier er blant annet forklart som «fast og enkel komposisjon» og at «lyset er tillagt en verdi som til da var ukjent; det faller gjerne bløtt inn fra venstre og omslutter person og interiør i et mykt skjær som står i kontrast til det samtidige skarpe clair-obscurmaleri.»Mens han levde, var han kjent og høyt verdsatt i Delft og Haag. Senere var hans ettermæle lenge svært beskjedent. Dette endret seg da han i 1842 ble gjenoppdaget av franskmannen Théophile Thoré-Bürger, som i 1866 ga ut et essay om Vermeer. To større utstillinger i 1995–96 og 2001 har i nyere tid bidratt til å etablere Vermeer som en av de mest populære av de gamle mestere."
+        },
+        {
+            "@language": "de",
+            "@value": "Jan Vermeer van Delft (getauft 31. Oktober 1632 in Delft; begraben 15. Dezember 1675 in Delft; zeitgenössisch: Joannis ver Meer, Joannis van der Meer) ist einer der bekanntesten holländischen Maler des Barock. Er wirkte in der Epoche des Goldenen Zeitalters der Niederlande, in der das Land eine politische, wirtschaftliche und kulturelle Blütezeit erlebte.Der Umfang des Gesamtwerkes von Jan Vermeer ist mit heute bekannten 37 Bildern sehr klein, wobei aus alten Auktionsaufzeichnungen weitere Titel überliefert sind. Die ersten Werke Vermeers waren Historienbilder, bekannt geworden ist er jedoch für seine Genreszenen, die einen Großteil seiner Arbeiten ausmachen. Die bekanntesten Werke sind durch die heutige Rezeption die Ansicht von Delft und Das Mädchen mit dem Perlenohrgehänge. Aufgrund der geringen Zahl bekannter Bilder wurden ihm im 19. Jahrhundert, einer Zeit gestiegenen Interesses der Forschung über Jan Vermeer und sein Werk, fälschlicherweise Bilder anderer Künstler zugeschrieben. Heute ist sein Werkumfang jedoch von der Forschung allgemein anerkannt."
+        },
+        {
+            "@language": "ru",
+            "@value": "Ян Верме́ер (Верме́ер Де́льфтский, нидерл. Jan Vermeer van Delft, МФА: [ˈjɑn vərˈmeːr]; 1632—1675) — нидерландский художник-живописец, мастер бытовой живописи и жанрового портрета. Наряду с Рембрандтом и Франсом Халсом является одним из величайших живописцев золотого века голландского искусства.В русской искусствоведческой традиции более распространённым вариантом написания имени художника является Вермеер Дельфтский. Другие варианты — Йоханнис ван дер Мер, Йоханнис вер Мер, Вермер Дельфтский. Заметим, что по правилам транскрипции голландских имен сочетание ее передается как е."
+        },
+        {
+            "@language": "be",
+            "@value": "Ян Верме́ер (Верме́р) Дэ́лфцкі (нідэрл.: Jan Vermeer van Delft, МФА: [ˈjɑn vərˈmeːr]; 31 кастрычніка 1632, Дэлфт, Нідэрланды — 15 снежня 1675) — галандскі мастак, майстар бытавага жывапісу і жанравага партрэта. Нароўні з Рэмбрандтам і Франсом Халсом з'яўляецца адным з найвялікшых жывапісцаў залатога стагоддзя галандскага мастацтва."
+        },
+        {
+            "@language": "fi",
+            "@value": "Jan Vermeer tai Johannes Vermeer van Delft (kastettu 31. lokakuuta 1632 Delft - haudattu 15. joulukuuta 1675 Delft) oli hollantilainen taidemaalari Delftin kaupungissa. Hän on Rembrandtin ohella tunnetuimpia Hollannin kultakauden maalareista. Vermeerin kuuluisimpia maalauksia on Turbaanipäinen tyttö. Monet Vermeerin maalauksista ovat sisäkuvia, joissa kuvataan nainen syventyneenä johonkin askareeseen. Vermeerin maalaustapa on huoliteltu ja maalauksissa on tarkoin tutkittuja tila- ja valaistusvaikutuksia sekä pehmeän harmonisia värisointuja.Vermeer työskenteli hitaasti ja käytti voimakkaita värejä, kuten ultramariinia ja keltaista. Vermeer maalasi historiallisia ja allegorisia kuvia, maisemamaalauksia Delftistä ja paljon laatukuvia. Myöhemmin hän kuvasi myös keskiluokan elämää. Vermeer tunnettiin omana aikanaan kotikaupungissaan Delftissä, mutta kuolemansa jälkeen hän oli lähes tuntematon vuoteen 1842 asti. Tästä syystä ei tiedetä varmuudella, kuinka monta Vermeerin maalausta on säilynyt. Tiedossa on 32 aitoa maalausta ja lisäksi viisi aitouden suhteen kyseenalaista. Hän vietti elämänsä suurimman osan Delftissä ja Haagissa. Menestyksen huipulla hän elätti perheensä, mutta köyhtyi elämänsä loppupuolella."
+        },
+        {
+            "@language": "pt",
+            "@value": "Johannes Vermeer (Delft, 31 de Outubro de 1632 - Delft, 15 de Dezembro de 1675) foi um pintor holandês, que também é conhecido como Vermeer de Delft ou Johannes van der Meer.Vermeer viveu toda a sua vida na sua terra natal, onde está sepultado na Igreja Velha (Oude Kerk) de Delft.É o segundo pintor holandês mais famoso e importante do século XVII (um período que é conhecido por Idade de Ouro Holandesa, devido às espantosas conquistas culturais e artísticas do país nessa época), depois de Rembrandt. Os seus quadros são admirados pelas suas cores transparentes, composições inteligentes e brilhante com o uso da luz. Pouco se sabe da sua vida. Era filho de Reynier Jansz e Dingenum Baltens. Casou-se em 1653 com Catharina Bolenes e teve 15 filhos, dos quais morreram 4 em tenra idade. No mesmo ano juntou-se à guilda de pintores de Saint Lucas (São Lucas). Mais tarde, em 1662 e 1669, foi escolhido para presidir à guilda. Sabe-se que vivia com magros rendimentos como comerciante de arte, e não pela venda dos seus quadros. Por vezes até foi obrigado a pagar com quadros dívidas contraídas nas lojas de comida locais. Morreu muito pobre em 1675. A sua viúva teve de vender todos os quadros que ainda estavam na sua posse ao conselho municipal em troca de uma pequena pensão (uma fonte diz que foi só um quadro: a última obra de Vermeer, intitulada Clio).Depois da sua morte, Vermeer foi esquecido. Por vezes, os seus quadros foram vendidos com a assinatura de outro pintor para lhe aumentar o valor. Foi só muito recentemente que a grandeza de Vermeer foi reconhecida: em 1866, o historiador de arte Théophile Thoré (pseudónimo de W. Bürger) fez uma declaração nesse sentido, atribuindo 76 pinturas a Vermeer, número esse que foi em breve reduzido por outros estudiosos. No princípio do século XX havia muitos rumores de que ainda existiriam quadros de Vermeer por descobrir.Conhecem-se hoje muito poucos quadros de Vermeer. Só sobrevivem 35 a 40 trabalhos atribuídos ao pintor holandês. Há opiniões contraditórias quanto à autenticidade de alguns quadros.A vida do pintor é contracenada no filme \"Girl with a Pearl Earring\" (2003) do diretor Peter Webber. A atriz Scarlett Johansson interpreta Griet, a moça com brinco de pérola."
+        },
+        {
+            "@language": "bg",
+            "@value": "Йоханес Вермѐр ван Делфт (на нидерландски: Johannes Vermeer van Delft, 1632—1675) е нидерландски художник, майстор на битовата живопис и жанровия портрет. Днес е считан за един от най-великите живописци от Нидерландския Златен век, редом с Рембранд ван Рейн и Франс Халс.Известен е като Йоханес Вермер, Вермер ван Делфт, а също и като Ян Вермер (на нидерландски: Ian Vermeer).Прекарва целия си живот в родния си град, Делфт. Прието е авторството му на около 35 картини. Специфично за него е майсторството, с което предава светлината в своите картини."
+        },
+        {
+            "@language": "lt",
+            "@value": "Janas (Johanas arba Johanesas) Vermejeris (ol. Johannes Vermeer), pramintas Delftiečiu (Vermeer van Delft, 1632 m. spalio 31 – 1675 m. gruodžio 15 d.) – Nyderlandų XVII a. baroko dailininkas. Savo gyvenimo metu Vermejeris nebuvo plačiai žinomas, jo darbai atrasti ir įvertinti tik XIX a. romantikų ir nuo to laiko jis laikomas vienu didžiausių, kada nors kūrusių, Europos dailės meistrų. Nyderlandų dailėje Vermejeris vertinamas iškart po Rembranto.Tik 35 ar 36 Vermejerio paveikslai išlikę. Patys garsiausi jų: „Mergina su perlo auskaru“, „Delfto peizažas“, „Mergina prie lango, skaitanti laišką“."
+        },
+        {
+            "@language": "hr",
+            "@value": "Johannes Vermeer van Delft ili Jan Vermeer ili Johannes van der Meer (Delft, kršten 31. listopada 1632. – Delft, 15. prosinca 1675.) smatra se jednim od najboljih nizozemskih slikara koji se specijalizirao za interijere domaćinske atmosfere običnog građanskog života. Cijela jedna epoha 17. st. u Nizozemskoj ostala je vjerno prikazana u njegovim slikama."
+        },
+        {
+            "@language": "lv",
+            "@value": "Johanness, Jans vai Johans Vermērs (nīderlandiešu: Johannes Vermeer; kristīts 1632. gada 31. oktobrī Delftā; miris 1675. gada 15. decembrī) bija nīderlandiešu baroka gleznotājs.Tā kā viņš, iespējams, visu dzīvi aizvadīja lielā trūkumā, Jans Vermērs ir uzgleznojis realti'vi nedaudzus darbus. Pārsvarā gleznoja sadzīves ainas. Pēc nāves gandrīz aizmirsts, kļuvis slavens tikai 19. gadsimtā."
+        },
+        {
+            "@language": "fr",
+            "@value": "Johannes ou Jan Van der Meer, dit Vermeer ou Vermeer de Delft, baptisé à Delft le 31 octobre 1632, et inhumé dans cette même ville le 15 décembre 1675, est un peintre baroque néerlandais (Provinces-Unies).Actif dans la cité hollandaise de Delft rattachée à la Maison d’Orange, Vermeer semble avoir acquis en son temps une réputation d’artiste novateur, et avoir bénéficié de la protection de riches commanditaires. Mais une notoriété qui s'est essentiellement cantonnée aux limites du territoire provincial qui était le sien, une production de faible ampleur, évaluée à quarante-cinq tableaux maximum en vingt ans, ainsi qu'une biographie longtemps restée obscure — d'où son surnom de « Sphinx de Delft » —, peuvent expliquer pourquoi le peintre tombe dans l'oubli après sa mort — si ce n'est auprès des collectionneurs éclairés.Vermeer n'est réellement mis en lumière que dans la deuxième moitié du XIXe siècle, à partir du moment où le critique d'art et journaliste français Théophile Thoré-Burger lui consacre une série d'articles publiés en 1866 dans la Gazette des beaux-arts. Dès lors, sa réputation, soutenue par les hommages que lui rendent les peintres, notamment impressionnistes, et les écrivains, tel Marcel Proust, ne cesse de s'amplifier. Ses tableaux font l'objet d'une véritable traque, rendue plus vive encore par leur rareté, et attirant la convoitise des faussaires. Parmi les trente-quatre lui sont actuellement attribués avec certitude — trois autres faisant encore l’objet de discussions —, La Jeune Fille à la perle et La Laitière comptent désormais parmi les œuvres les plus célèbres de l'histoire de la peinture, et Vermeer est placé, avec Rembrandt et Frans Hals, au rang des maîtres du Siècle d'or néerlandais. Cette fortune tant critique que populaire est confirmée par l'affluence des expositions qui lui sont consacrées, et est alimentée par l'utilisation publicitaire de ses œuvres, ainsi que par des succès de librairie et du box-office.Vermeer reste essentiellement connu pour ses scènes de genre. Celles-ci présentent, dans un style qui conjugue mystère et familiarité, perfection formelle et profondeur poétique, des intérieurs et scènes de la vie domestique, pour figurer un monde plus parfait que celui dont il a pu être le témoin. Ces œuvres de la maturité présentent une cohérence qui les rend immédiatement reconnaissables, et qui se fonde notamment sur des associations de couleurs inimitables — avec une prédilection pour l'outremer naturel et le jaune —, une grande maîtrise du traitement de la lumière et de l'espace, et la combinaison d'éléments restreints, récurrents d'un tableau à l'autre."
+        },
+        {
+            "@language": "hu",
+            "@value": "Jan Vermeer van Delft, a delfti Vermeer (Jan (Johannes) van der Meer, Delft, 1632. október 31. (keresztelése) – 1675. december 15. (temetése)) Rembrandt mellett a holland aranykor másik legnagyobb festője. „Észak Mona Lisájának” alkotója.Műveit sokáig csak kortársai ismerték el, majd évszázadokig névtelenség kísérte. Csak a 19. század közepén, 1842-ben fedezte fel őt Théophile Thoré-Bürger (1807–1869) neves francia művészettörténész. A hosszú ismeretlenség miatt nem tudni pontosan, hány képet is festett: ma 32-ről állítják biztosan, hogy az ő műve, további öt kérdéses. Történelmi-, allegorikus-, (városáról) táj-, de leginkább zsánerképeket festett – utóbbiakon legtöbbször a középosztály életének jeleneteit megörökítve. Lassan dolgozott, élénk színeket használt, különösen az ultramarinkéket és a sárgát. Élete nagy részét Delftben és Hágában töltötte. Bár fénykorában el tudta tartani népes családját, élete végére teljesen elszegényedett."
+        },
+        {
+            "@language": "bs",
+            "@value": "Johannes Vermeer van Delft ili Jan Vermeer ili Johannes van der Meer (31. oktobar 1632 - 15. decembar 1675.) veliki majstor holandskog enterijera i žanr slikarstva 17. vijeka."
+        },
+        {
+            "@language": "uk",
+            "@value": "Ян (Йоганнес) Верме́р, Вермер Делфтський (нід. Jan Vermeer van Delft, 1632—1675) — нідерландський художник, майстер побутового живопису і жанрового портрета. Разом з Рембрандтом і Франсом Галсом є одним з найбільших живописців «Золотого століття» голландського мистецтва."
+        },
+        {
+            "@language": "ka",
+            "@value": "იან ვერმეერი, იან ვერმეერ დელფტელი (ნიდერლ. Johannes Vermeer; დ. 1632 — გ. 1675) — ნიდერლანდელი ფერმწერი. მუშაობდა დელფტში. ვერმეერის ჯერ კიდევ ადრინდელ ნამუშევრებში ჩანს მისწრაფება, რომ შერწყმული იყოს სახეების ამაღლებული სულისკვეთება და ნატურასთან სიახლოვე („დიანა ნიმფებთან“, მაურიცჰეისი, ჰააგა; „ქრისტე მართასა და მარიამთან“, ედინბურგის ეროვნული გალერეა). დიდფიგურებიან ტილოზე „მაჭანკალთან“ (1656, სურათების გალერეა, დრეზდენი) მძაფვრი მონუმენტურობით წარმოდგენილია ცხოვრებისეული სცენა, რომელიც სავსეა სისხლსავსე მგრძნობელობითა და ახალგაზრდული სითამამით. ამ სურათებში ტონალური კოლორიტის ელემენტები ფერის დიდ და სუფთა ლაქებთან არის შერწყმული. 1650 წლის II ნახევრიდან ვერმეერი ქმნის მცირე ზომის სურათებს, რომლებშიც ვერცხლისფერი შუქით განათებულ ქალაქის სახლის ინტერიერში გამოსახულია ერთი ან რამდენიმე ფიგურა („გოგონა წერილით“, სურათების გალერეა, დრეზდენი; „ჯარისკაცი და მომღიმარი ქალი“, ფრიის კოლექცია, ნიუ-იორკი; „მოსამსახურე ქალი რძიანი ქილით ხელში“, სახელმწიფო მუზეუმი, ამსტერდამი). ამ ნამუშევრებში მთავარი ყურადღება გადატანილია სცენის საერთო ლირიკულ განწყობილებაზე.ვერმეერის სურათებში ყოველდღიური ოჯახური ცხოვრების პოეზია, ადამიანისა და გარემოს ერთიანობა ასახულია კლასიკური სიცხადითა და ჰარმონიულობით. სივრცობრივი კომპოზიციით მძაფრი გამომხატველობა, ჰაერისა და სინათლის ცოცხალი ვიბრაცია, მდიდარი და სხივიანი ფერების წმინდა გრადაცია, ტონების, რეფლექსებისა და ელფერის მრავალმხრივი თამაში ამდიდრებს უბრალო ადამიანის სამყაროს და მხატვრულ ძალას ანიჭებს ჩვეულებრივ ყოფით საგნებს. 1650-იანი წლების დასასრულს ვერმეერმა პეიზაჟური ფერწერის ორი შედევრი შექმნა: „ქუჩა“ (სახელმწიფო მუზეუმი, ამსტერდამი) და „დელფტის ხედი“ (მაურიცჰეისი, ჰააგა). 1660-იან წლებში ვერმეერის შემოქმედება უფრო მჭვრეტელობითი და დახვეწილი გახდა, ფერწერა კი ცივი; ამ დროს ტილოების საერთო მინანქრისფერი კოლორიტი გაცხოველებულია ლურჯი და ყვითელი მკაფიო აქცენტით: „გოგონა მარგალიტის საყურით“ (მაურიცჰეისი), „ჭიქა ღვინო“, „ქალი ისინჯავს ყელსაბამს“ (სურათების გალერეა, ბერლინ-დალემი). ვერმეერის გვიანდელი პერიოდის ნამუშევრები ეძღვნება მშრომელ ადამიანს, შემოქმედს, მეცნიერს. მხატვარი გამოსახავს მათ მუშაობას, შემოქმედებითი წვის პროცესში: „მემაქმანე ქალი“ (ლუვრი, პარიზი), „მხატვრის სახელოსნო“ (ვენის სამხატვრო-ისტორიული მუზეუმი), „გეოგრაფი“ (შტედელის სამხატვრო ინსტიტუტი, მაინის ფრანკფურტი)."
+        },
+        {
+            "@language": "sk",
+            "@value": "Jan Vermeer alebo Johannes Vermeer, Vermeer van Delft či Johannes van der Meer (* 31. október 1632, Delft - † 15. december 1675, Delft) bol holandský maliar, ktorý žil a pracoval v Delfte. Od 19. storočia je jedným z najobdivovanejších holandských barokových maliarov."
+        },
+        {
+            "@language": "sl",
+            "@value": "Jan Vermeer van Delft, tudi Johannes Vermeer, nizozemski baročni slikar, * 31. oktober 1632, † december 1675."
+        },
+        {
+            "@language": "gd",
+            "@value": "B' e Johannes Vermeer (ainm slàn: Johannes Vermeer van Delft, IPA: joˈɦɑnəs jɑn vərˈmɪːr, Delft, 31 an Damhair 1632 - Ibidem, 15 an Dùbhlachd 1675) peantair ainmeil às Na Tìrean Ìsle. Phòs e ri Catharina Bolenes ann an 1653. Rugadh e anns Na Tìrean Ìsle ri linn Poblachd nan Seachd Roinnean, nuair a bha an dùthaich uabhasach beairteach."
+        },
+        {
+            "@language": "ca",
+            "@value": "Johannes Vermeer o Jan Vermeer (Delft, 1632 - 15 de desembre de 1675) fou un pintor neerlandès especialitzat en interiors domèstics, retrats i vistes urbanes, considerat un dels més grans de tots els temps."
+        },
+        {
+            "@language": "sr",
+            "@value": "Јоханес Вермер, такође Јан Вермер, Јан Вермер ван Делфт (хол. Johannes Vermeer, Jan Vermeer van Delft, Делфт, 31. октобар 1632 — 15. децембар 1675.) је познати холандски, барокни сликар 17. века (Златно доба Холандије)."
+        },
+        {
+            "@language": "sv",
+            "@value": "Johannes (eller Jan) Vermeer, född i oktober 1632 i Delft i Nederländerna, död i december 1675 i Delft, var en nederländsk målare."
+        },
+        {
+            "@language": "ko",
+            "@value": "요하네스 페르메이르 또는 얀 페르메이르(네덜란드어: Johannes Vermeer 또는 Jan Vermeer, 1632년 8월 31일 - 1675년 12월 15일)는 바로크 시대에 활동했던 네덜란드출신 화가이다. 그는 네덜란드가 정치적, 경제적, 문화적으로 전성기를 구가하던 네덜란드의 '황금 시대'에 활동했던 화가였다. 델프트에서 살면서 작품활동을 했기 때문에,‘델프트의 페르메이르(Vermeer van Delft, 페르메이르 판 델프트)’라고 부르기도 한다. 역사소설 《진주 귀고리 소녀》와 동명영화의 소재가 된 인물이기도 하다.다른 작품의 제목이 옛 경매 기록에 적혀 전해지고 있지만, 오늘날 알려져 있는 37점으로 이루어진 전체 작품의 규모는 아주 작은 편이다. 페르메이르의 첫 번째 작품들은 역사화였다. 하지만 그는 작품의 상당 부분을 이루고 있는 장르화로 알려졌다. 가장 널리 알려진 작품은 〈델프트 시의 전경〉과〈진주 귀걸이를 한 소녀〉다. 알려진 그림의 숫자가 적었던 관계로 19세기에 다른 미술가의 작품을 잘못해서 그의 작품이라고 결정하는 일들이 일어났었다. 하지만 오늘날 그의 작품 규모는 연구자들에 의해서 일반적으로 인정을 받고 있다."
+        },
+        {
+            "@language": "gl",
+            "@value": "Johannes Vermeer, coñecido baixo os nomes Jan Vermeer, Vermeer de Delft ou Johannes van der Meer, nado en Delft en 1632 e falecido na mesma cidade o 15 de decembro de 1675, foi un pintor neerlandés, considerado un dos máis importantes da idade de ouro da pintura holandesa.Especializouse en escenas interiores cotiás da vida doméstica burguesa. Pasou toda a súa vida na cidade de Delft. En vida foi un moderadamente exitoso pintor de provincias. Non foi nunca especialmente rico, quizais debido ó escaso número de pinturas que producía, e á súa morte deixou débedas á súa esposa e once fillos. Practicamente esquecido durante dous séculos, en 1866 o crítico de arte Thoré Bürger publicou un ensaio atribuíndolle 66 pinturas (se ben só 34 delas sonlle actualmente atribuídas con seguridade). Desde entón a reputación de Vermeer creceu enormemente e actualmente está considerado como un dos maiores pintores da idade de ouro holandesa. É particularmente recoñecido pola súa mestría no uso e tratamento da luz."
+        },
+        {
+            "@language": "el",
+            "@value": "Ο Γιοχάνες Βερμέερ, γνωστός και ως Γιαν Βερμέερ (η σωστή προφορά είναι Φερμίιρ) (Johannes Vermeer, 31 Οκτωβρίου 1632 - 15 Δεκεμβρίου 1675), ήταν Ολλανδός ζωγράφος που ειδικεύτηκε στην απεικόνιση καθημερινών σκηνών από τη ζωή της μεσαίας τάξης. Έζησε και εργάστηκε στην περιοχή του Ντελφτ της Δυτικής Ολλανδίας κατά το 17ο αιώνα. Μαζί με τον Ρέμπραντ αποτελεί έναν από τους σημαντικότερους ζωγράφους της Χρυσής Εποχής (1584-1702) της Ολλανδίας."
+        },
+        {
+            "@language": "en",
+            "@value": "Johannes, Jan or Johan Vermeer (Dutch: [joˈɦɑnəs jɑn vərˈmeːr]; 1632 – December 1675) was a Dutch painter who specialized in domestic interior scenes of middle-class life. Vermeer was a moderately successful provincial genre painter in his lifetime. He seems never to have been particularly wealthy, leaving his wife and children in debt at his death, perhaps because he produced relatively few paintings.Vermeer worked slowly and with great care, using bright colours and sometimes expensive pigments, with a preference for lapis lazuli and Indian yellow. He is particularly renowned for his masterly treatment and use of light in his work.Vermeer painted mostly domestic interior scenes. \"Almost all his paintings are apparently set in two smallish rooms in his house in Delft; they show the same furniture and decorations in various arrangements and they often portray the same people, mostly women.\"Recognized during his lifetime in Delft and The Hague, his modest celebrity gave way to obscurity after his death; he was barely mentioned in Arnold Houbraken's major source book on 17th-century Dutch painting (Grand Theatre of Dutch Painters and Women Artists), and was thus omitted from subsequent surveys of Dutch art for nearly two centuries.In the 19th century, Vermeer was rediscovered by Gustav Friedrich Waagen and Théophile Thoré-Bürger, who published an essay attributing sixty-six pictures to him, although only thirty-four paintings are universally attributed to him today. Since that time, Vermeer's reputation has grown, and he is now acknowledged as one of the greatest painters of the Dutch Golden Age."
+        },
+        {
+            "@language": "is",
+            "@value": "Johannes Vermeer eða Jan Vermeer (skírður 31. október 1632 — 15. desember 1675) var hollenskur listmálari sem fékkst einkum við myndir af borgaralegu lífi innan veggja heimilisins. Hann bjó alla ævi í borginni Delft og gekk nokkuð vel í sinni grein en varð aldrei sérlega frægur. 1866 gaf listfræðingurinn Thoré Burger út ritgerð þar sem hann eignaði Vermeer 60 verk (34 eru örugglega eignuð honum í dag) og frá þeim tíma hefur frægð Vermeers vaxið gríðarlega og hann er nú talinn einn af bestu málurunum á gullöld Hollands."
+        },
+        {
+            "@language": "it",
+            "@value": "Jan Vermeer /jɑn vər'meˑɪ̯r/, (Delft, 1632 – Delft, 15 dicembre 1675) è stato un pittore olandese. La grafia estesa del suo nome è Johannes van der Meer, dalla quale deriva la sua tipica firma \"I V Meer\"."
+        },
+        {
+            "@language": "zh",
+            "@value": "扬·弗美尔（Jan Vermeer，荷兰语读音: [vərˈmɪər]，1632年10月31日－1675年12月15日），又名约翰尼斯·弗美尔（Johannes Vermeer），是一位17世紀的荷蘭畫家。他一生都工作生活在荷蘭陶都代尔夫特（Delft）。他有時也被稱為代尔夫特的弗美尔（Vermeer of Delft），或者约翰尼斯·范·德梅爾（Johannes Van der Meer）。與林布蘭一樣，弗美尔被稱為荷蘭黃金時代最偉大的畫家，他們的作品中都有著透明的顏色、嚴謹的構圖、以及對光影的巧妙運用。弗美尔精細地描寫一個限定的空間，優美地表現出物體本身的光影效果、人物的真實感與質感。"
+        },
+        {
+            "@language": "es",
+            "@value": "Johannes Vermeer van Delft /joˈɦɑnəs vərˈmeːr vɑn dɛlft/ (bautizado en Delft, el 31 de octubre de 1632 - id. 15 de diciembre de 1675), llamado por sus contemporáneos Joannis ver Meer o Joannis van der Meer e incluso Jan ver Meer, es uno de los pintores neerlandeses más reconocidos del arte Barroco. Vivió durante la llamada Edad de Oro neerlandesa, en la cual las Provincias Unidas de los Países Bajos experimentaron un extraordinario florecimiento político, económico y cultural.La obra completa de Vermeer es muy reducida, solamente se conocen 33 a 35 cuadros. Esto pudo deberse a que pintaba para mecenas, por encargo, más que para el mercado de arte.Pintó otras obras, hoy perdidas, de las que se tiene conocimiento por antiguas actas de subastas. Sus primeras obras fueron de tipo histórico, pero alcanzó la fama gracias a su pintura costumbrista, muchas veces considerada de género, que forma la mayoría de su producción. Sus cuadros más conocidos son Vista de Delft y La joven de la perla. En vida fue un pintor de éxito moderado. No tuvo una vida desahogada, quizá debido al escaso número de pinturas que producía, y a su muerte dejó deudas a su esposa y once hijos.Prácticamente olvidado durante dos siglos, a partir de mediados del siglo XIX, la pintura de Vermeer tuvo un amplio reconocimiento. William Thoré-Bürger contribuyó a la consagración de Vermeer con unos artículos periodísticos muy elogiosos. Actualmente está considerado uno de los más grandes pintores de los Países Bajos. Es particularmente reconocido por su maestría en el uso y tratamiento de la luz."
+        },
+        {
+            "@language": "et",
+            "@value": "Johannes Vermeer ehk Jan Vermeer van Delft (ristitud 31. oktoobril 1632 Delftis nimega Joannis – maetud 15. detsembril 1675 samas nimega Jan) oli Hollandi maalikunstnik.Vermeer oli Delfti linna maalikunstnik, kes elu ajal erilist edu ei saavutanud. Ta sai küll maalijate gildi vanemaks, kuid elas suhteliselt vaesetes oludes nagu enamik tolle aja kunstnikke. Tema elust on suhteliselt vähe teada. Tema isa oli siidikangur, võõrastemaja peremees ja kunstikaupmees, kes suri 1652. aastal. Pärast isa surma jätkas Vermeer tema tööd kunstikaupmehena.Vermeeri isa oli siidikangur Reijnier Janszoon. Janszoon ei olnud perekonnanimi, vaid isanimi. Isa elas Amsterdamis Sint Antoniesbreestraatil, kus elas üsna mitu kunstnikku. 1615 abiellus ta Digna Baltusega. Nad kolisid Delfti ja nad said tütre Gertruy, Johannes Vermeeri ainsa õe, kes ristiti 1620. 1625 osales Reijnier kakluses sõduri Willem van Bylandtiga, kes suri selles saadud haavadesse 5 kuud hiljem. Umbes selle aja paiku hakkas ta tegutsema kunstikaupmehena. 1631 liisis ta võõrastemaja \"Lendav Rebane\". 1641 omandas ta märksa suurema kõrtsi \"Mechelen\", mis oli nimetatud samanimelise linna järgi ja asus turuplatsi ääres. Selle omandamine pani talle peale suured võlad. 1652. aasta oktoobris ta suri ja poeg jätkas tema kunstiäri.29. detsembril 1653 sai Vermeer Püha Luuka gildi liikmeks. See gild ühendas maalikunstnikke. Gildi raamatupidamine ei jäta kahtlust selles, et Vermeer ei maksnud sisseastumismaksu. See oli katku, sõja ja majanduskriisi aasta, nii et mitte üksnes Vermeeril polnud rahaga kitsi. 1654 lendas õhku Delfti püssirohuladu ja selles plahvatuses hävis veerand linna. Hukkus sadakond inimest, nende seas kunstnik Carel Fabritius.1662 valiti Vermeer gildivanemaks. Ta valiti tagasi aastail 1663, 1670 ja 1671, mis tõendab, et teda peeti heaks kunstnikuks.Johannes Vermeer ristiti kalvinistlikus kirikus. 1653 läks ta üle katoliku usku ja abiellus katoliiklase Catharina Bolenesi (Bolnesiga). Abielu sõlmiti lähedalasuvas Schipluideni külas. Vermeeri jaoks oli see hea abielu, sest tema ämm Maria Thins oli märgatavalt rikkam kui ta ise. Tõenäoliselt oligi abielu tingimuseks pöördumine katoliiklusse. On küll kaheldud, kui südamest katoliiklane ta oli, aga tema maalil \"Katoliku usu allegooria\", mis valmis 1670–1672, on kujutatud usku armulaua sakramenti. Pärastpoole koliski kunstnik oma ämma juurde elama.Abielust sündis 14 last, kellest 4 suri enne ristimist, kuid registreeriti Johan Vermeeri lastena. Sugulaste tehtud testamentidest on teada ülejäänud kümne lapse nimed: Maria, Elisabeth, Cornelia, Aleydis, Beatrix, Johannes, Gertruyd, Franciscus, Catharina ja Ignatius. Tõenäoliselt sai viimane neist nime Jesuiitide ordu asutaja Ignatius Loyola järgi.1672. aastal tabas Hollandit taas sõda. Prantsusmaa ja Louis XIV ründasid Hollandit lõunast, Inglismaa merelt. Läänest ründasid kaks Saksamaa piiskoppi. Paljud õukonnad, teatrid, kauplused ja koolid suleti. Alles ülejärgmisel aastal lõppes sõda Hollandi võiduga ja kulus veel mõni aasta, enne kui olukord oli paranenud. Vermeer pidi Amsterdamist raha laenama, kusjuures tema käendajaks oli tema ämm.Kogu selle aja jooksul jätkas Vermeer kallite värvide kasutamist, mis annab alust arvata, et ta ei ostnud paljusid töövahendeid ise, vaid need muretses tema patroon Pieter van Ruijven.1675. aasta detsembris haigestus Vermeer raskelt ja suri poolteist päeva hiljem. Tema lesk seostas tema surma rahaliste raskustega. Kunstituru kokkulangemine kahjustas tema sissetulekuid nii kunstniku kui kunstikaupmehena. Pärast tema surma kuulutati välja tema pankrot ja pankrotihalduriks oli mikroskoobi leiutaja Antoni van Leeuwenhoek.Üldiselt on Vermeeri elust vähe teada. Tundub, et ta oli täielikult kunstile pühendunud, elades kogu oma elu Delftis. Tema nime kohtab üksnes mõnes registris, mõnes ametlikus dokumendis ja teiste kunstnike kommentaarides.Tema kuulsus hajus pärast tema surma. Arnold Houbrakeni 17. sajandil kirjutatud kolmeköiteline suurteos hollandi kunsti kuldajast käsitles 440 kunstnikku, kelle seast aga Vermeer puudub, teda mainitakse vaid ühes kohas möödaminnes ja seejärel unustati ta kaheks sajandiks täielikult.19. sajandil avastasid Vermeeri uuesti Gustav Friedrich Waagen ja Théophile Thoré-Bürger, kes kirjutasid temast artikli, milles omistasid Vermeerile 69 maali, ehkki tänapäeval omistatakse neist Vermeerile üksnes 34. Praeguseks on teada umbes 40 Vermeeri maali. Sellest ajast on Vermeeri kuulsus järjest kasvanud, nii et tänapäeval arvatakse temagi hollandi kunsti kuldaja maalikunstnike sekka.20. sajandi üks kõige tuntumaid kunstivõltsijaid Hans van Meegeren otsustas jäljendada Vermeeri kunsti osalt esteetilistel põhjustel, osalt sellepärast, et Vermeeri teoseid oli vähe, nad olid seetõttu haruldasemad ja kallimad, ning osalt seetõttu, et Vermeer ise oli teistest kunstnikest halvemini tuntud, mistõttu võltsingut oli raskem avastada."
+        },
+        {
+            "@language": "eu",
+            "@value": "Johannes, Jan edo Johan Vermeer, jaiotzez Joannis Vermeer (Delft, Herbehereak, 1632ko urriaren 31 - Delft, 1675eko abenduaren 15a) margolari herbeheretarra izan zen."
+        },
+        {
+            "@language": "cs",
+            "@value": "Jan Vermeer van Delft [jan frmér fan delft], také Joannis van der Meer (pokřtěn 31. října 1632 Delft – 15. prosince 1675 tamtéž) byl nizozemský barokní malíř."
+        },
+        {
+            "@language": "ar",
+            "@value": "يوهانِس فيرمير والمعروف باسم فيرمير (بالهولندية: Johannes Vermeer) (1632-1675م) هو رسَّام هولندي، ولد في بلدة دلفت الهولندية. يعتبر من أكبر فناني القرن الـ17 الميلادي في أوروبا."
+        },
+        {
+            "@language": "cy",
+            "@value": "Arlunydd o'r Iseldiroedd oedd Johannes Vermeer neu Jan Vermeer (bedyddwyd 31 Hydref 1632, bu farw 15 Rhagfyr 1675), a baentiodd yn yr arddull Baróc. Roedd yn arbenigo mewn golygfeydd o ddydd i ddydd o fewn y cartref. Treuliodd rhanfwyaf o'i fywyd yn Delft. Yn ystod ei fywyd, roedd Vermeer yn baentwr weddol llwyddianus o fewn ei dalaith. Nid oedd erioed yn arbennig o gyfoethog, efallai gan na gynhyrchodd nifer fawr o baentiadau, gadawodd ei wraig a'i unarddeg o blant mewn dyled pan fu farw.Bu bron iddo gael ei anghofio am ddau gan mlynedd hyd i feirniadwr celf, Thoré Bürger, gyhoeddi traethawd yn 1866, yn priodoli 66 iddo (dim ond 35 o baentiadau sydd wedi eu prodoli i Vermeer yn gadarn). Ers hynnu, mae enw Vermeer wedi dod i'r amlwg, a cydnabyddir ef fel un o baentwyr gorau'r Oes Aur Iseldiraidd, mae'n enwog yn arbennig am ei driniaeth meistriol o olau yn ei waith.Heddiw prodolir 35 o baentiadau i Vermeer yn gadarn. Dyma'r rhestr: Crist yn Nhy Mair a Martha (1654-1655) - Olew ar gynfas, 160 x 142 cm, Oriel Genedlaethol yr Alban, Caeredin Diana a'i chymdeithion (1655-1656) - Olew ar gynfas, 98.5 x 105 cm, Mauritshuis, The Hague The Procuress (1656) - Olew ar gynfas, 143 x 130 cm, Gemäldegalerie Alte Meister, Dresden Merch yn darllen llythyr wrth ffenestr agored (1657) - Olew ar gynfas, 83 x 64.5 cm, Gemäldegalerie Alte Meister, Dresden Merch yn cysgu (1657) - Amgueddfa Gelf y Metropolitan, Efrog Newydd Y stryd fechan (1657/58) - Rijksmuseum, Amsterdam Swyddog gyda merch yn chwerthin (tua 1657) - Olew ar gynfas, 50.5 x 46 cm, Frick Collection, Efrog Newydd Y Forwyn Laeth (tua 1658) - Olew ar gynfas, 45.5 x 41 cm, Rijksmuseum, Amsterdam Merch yn yfed, a Bonheddwr (1658-1660) - Olew ar gynfas, 39.4 x 44.5 cm,Gemäldegalerie, Berlin Merch gyda gwydryn gwin (tua 1659) - Olew ar gynfas, Herzog Anton-Ulrich-Museum, Braunschweig Golygfa o Delft (1659-1660) - Olew ar gynfas, 98.5 x 117.5 cm, Mauritshuis, Den Haag Girl Interrupted at her Music (1660-1661) - Olew ar gynfas, 39.4 x 44.5 cm, Frick Collection, Efrog Newydd Gwraig mewn glas yn darllen llythyr (1663-1664) - Olew ar gynfas, 46.6 x 39.1 cm, Rijksmuseum, Amsterdam Y wers gerddoriaeth or A Lady at the Virginals with a Gentleman (1662/5) - Olew ar gynfas, 73,3 x 64,5 cm, Casgliad Gelf Brenhinol, Llundain Woman with a Lute near a Window (tua 1663) - Olew ar gynfas, 51.4 x 45.7 cm, Amgueddfa Gelf y Metropolitan, Efrog Newydd Woman with a Pearl Necklace (1662-1664) - Olew ar gynfas, 55 x 45 cm, Gemäldegalerie, Berlin Woman with a Water Jug (1660-1662) - Olew ar gynfas, 45,7 x 40,6 cm, Amgueddfa Gelf y Metropolitan, Efrog Newydd Merch yn dal clorian (1662-1663) - Olew ar gynfas, 42,5 x 38 cm, Oriel Gelf Genedlaethol, Washington Merch yn ysgrifennu llythyr (1665-1666) - Olew ar gynfas, 45 x 40 cm, Oriel Gelf Genedlaethol, Washington Girl with a Pearl Earring (a.k.a. Girl In A Turban, Head Of Girl In A Turban, The Young Girl With Turban) (tua 1665) - Olew ar gynfas, 46.5 x 40 cm, Mauritshuis, Den Haag The Concert (1665-1666) - Olew ar gynfas, 69 x 63 cm, stolen in March 1990 from the Amgueddfa Isabella Stewart Gardner, Boston Portrait of a Young Woman (1666-1667) - Olew ar gynfas, 44.5 x 40 cm, Amgueddfa Gelf y Metropolitan, Efrog Newydd The Allegory of Painting or The Art of Painting (1666/67) - Kunsthistorisches Museum, Wien Meistres a Morwyn (1667/68) - Frick Collection, Efrog Newydd Merch a het goch (1668) - Oriel Gelf Genedlaethol, Washington Y Seryddwr (1668) - Louvre, Paris Y Daearyddwr (1668/69) - Städelsches Kunstinstitut, Frankfurt am Main The Lacemaker (1669/70) - Louvre, Paris Y llythyr cariad (1669/70) - Rijksmuseum, Amsterdam Lady writing a Letter with her Maid (1670) - Olew ar gynfas, 71.1 x 58.4 cm, Oriel Genedlaethol Iwerddon, Dulyn Alegori o Ffydd (1671/74) - Amgueddfa Gelf y Metropolitan, Efrog Newydd Y Chwaraewr Gitâr (1672) - Rhodd Iveagh, Tŷ Kenwood, Llundain Lady Standing at a Virginal (1673/75) - Oriel Genedlaethol, Llundain Lady Seated at a Virginal (1673/75) - Oriel Genedlaethol, Llundain↑"
+        },
+        {
+            "@language": "ja",
+            "@value": "ヨハネス・フェルメール（Johannes Vermeer、1632年10月31日? - 1675年12月15日?）は、17世紀にオランダで活躍した画家。本名ヤン・ファン・デル・メール・ファン・デルフト（Jan van der Meer van Delft）。ヤン・フェルメールとも呼ばれる。レンブラントと並び17世紀のオランダ美術を代表する画家とされる。生涯のほとんどを故郷デルフトで過ごした。最も初期の作品の一つ『マリアとマルタの家のキリスト』（1654年-55年頃）に見られるように、彼は初め物語画家として出発したが、やがて1656年の年記のある『取り持ち女』の頃から風俗画家へと転向していく。静謐で写実的な迫真性のある画面は、綿密な空間構成と巧みな光と質感の表現に支えられている。現存する作品点数は、研究者によって異同はあるものの33～36点と少ない。このほか記録にのみ残っている作品が少なくとも10点はある。"
+        },
+        {
+            "@language": "az",
+            "@value": "Yohannes və ya Yan Vermeer — gündəlik həyatı təsvir edən tabloları ilə tanınan hollandiyalı barokko rəssamı. Vermeer həyatı boyunca müvəfəqiyyətli rəssam kimi tanındı. Nisbətən çox az tablo çəkdiyi və ölümündən sonra arvadı və uşaqlarına borc qoyduğu üçün zəngin bir adam kimi xatırlanmır."
+        },
+        {
+            "@language": "pl",
+            "@value": "Jan Vermeer van Delft, właściwie Johannes Vermeer (ur. przed 31 października 1632 w Delft, zm. przed 15 grudnia 1675 tamże) – malarz holenderski.Malował przede wszystkim sceny rodzajowe, wykorzystując mistrzowsko grę świateł. Na początku swojej kariery stworzył także dwa płótna historyczne. W dorobku malarza dominują przedstawienia kobiet we wnętrzach mieszkalnych, zajętych m.in. muzyką, lekturą listu czy rozmową. W wielu obrazach badacze doszukują się ukrytych alegorii lub symbolicznych przesłań.Częściowo zapomniany przez niemal dwa stulecia od swej śmierci, Vermeer został odkryty na nowo w drugiej połowie XIX wieku. Dziś przypisuje mu się niewiele ponad 30 obrazów i najprawdopodobniej jest to niemal cały jego dorobek artystyczny."
+        },
+        {
+            "@language": "ro",
+            "@value": "Johannes Vermeer, cunoscut mai ales ca Jan Vermeer van Delft (botezat 31 octombrie, 1632, Delft, Țările de Jos, d. 15 decembrie 1675, Delft, Țările de Jos) a fost un pictor olandez, unul din cei mai cunoscuți reprezentanți ai stilului baroc. În timp, reputația lui Vermeer a crescut tot mai mult, astăzi el fiind considerat unul dintre cei mai mari pictori olandezi ai vârstei de aur, fiind cunoscut mai cu seamă ca un maestru al folosirii luminii în lucrările sale. Întrega sa operă, considerată autentică, cuprinde 37 de tablouri. Cele mai multe reprezintă scene de fiecare zi sau alegorii."
+        },
+        {
+            "@language": "he",
+            "@value": "יאן וֵרְמִיר או יוהנס וֵרְמִיר (בהולנדית: Johannes Vermeer‏; 31 באוקטובר 1632 – 15 בדצמבר 1675), צייר הולנדי שרוב ציוריו מתארים דמויות בתוך ביתן, עוסקות בשיחה, בנגינה או בעבודה. מעט מאוד ידוע על חייו מלבד העובדה שגדל ופעל בדלפט. במשך שנים חסתה יצירתו בצל ציירים הולנדים גדולים כמו פיטר דה הוך או רמברנדט, אך מאמצע המאה ה־19, ובמיוחד במאה ה-20, קנה את מקומו בין גדולי הציירים, בין השאר בזכות משפט מפורסם בעקבות זיוף יצירותיו. בשנים האחרונות זכתה יצירתו לתשומת לב מועצמת בעקבות הספר והסרט \"נערה עם עגיל פנינה\", שהתמקדו בו וביצירותיו."
+        },
+        {
+            "@language": "da",
+            "@value": "Johannes Vermeer eller Jan Vermeer og i samtiden Joannis ver Meer og Joannis van der Meer (døbt 31. oktober 1632 – 15. december 1675) var en nederlandsk kunstmaler, som regnes som en af den nordeuropæiske baroks mest talentfulde malere. Han var aktiv i den Den hollandske guldalder, hvor landet var inde i en periode af uset politisk, økonomisk og kulturel storhed.Kun 35 malerier er med sikkerhed malet af Johannes Vermeer; det måske mest berømte er Pige med perleørering (også kaldet Nordens Mona Lisa). Vermeers malerier er i dag udstillet på bl.a. Rijksmuseum, Amsterdam; Mauritshuis, Den Haag; Kunsthistorisches Museum, Wien; Städelsches Kunstinstitut, Frankfurt og Gemäldegalerie i Dresden. Han er ikke repræsenteret på danske museer. Vermeer begyndte med historiske motiver, men vendte sig mod genrebilledet. Han specialiserede sig i interiørscener fra middelklassens liv og var en moderat fremgangsrig, provinsiel genremaler. Det ser ud til, at han aldrig var særlig velstående, måske fordi han malede så få malerier, og han efterlod sig gæld."
+        },
+        {
+            "@language": "nl",
+            "@value": "Johannes Vermeer (gedoopt te Delft, 31 oktober 1632 - begraven aldaar, 15 december 1675) is een van de beroemdste Nederlandse kunstschilders uit de Gouden Eeuw. Hij werd in de 19e eeuw de Sfinx van Delft genoemd omdat er zo weinig details over zijn leven bekend waren. Vermeer had bovendien een voorkeur voor tijdloze, ingetogen momenten. Hij blijft raadselachtig vanwege de onnavolgbare kleurstelling en het verbijsterende lichtgehalte. Vermeers schilderijen, meestal genrestukken en een paar historiestukken, allegorieën en stadsgezichten, onderscheiden zich door een subtiel kleurgebruik en een ideale compositie. Hij gebruikte soms dure pigmenten en had een grote voorkeur voor korenbloemblauw en loodtingeel."
+        },
+        {
+            "@language": "tr",
+            "@value": "Johannes ya da Jan Vermeer (31 Ekim 1632'de Delft'te Joannis ismiyle vaftiz edildi ve 16 Aralık 1675'te aynı şehirde Jan ismiyle gömüldü), evlerin içindeki gündelik hayatı betimlediği tablolarıyla tanınan Hollandalı Barok ressam. Vermeer yaşamı boyunca başarılı, taşralı bir tür ressamı olarak tanındı. Göreceli olarak çok az tablo ürettiği ve ölümünün ardından eşi ve çocuklarına borç bıraktığı için zengin bir adam olarak anılmamaktadır.Vermeer, parlak renkler, peygamberçiçeği mavisinden sarıya kadar pahalı boya maddeleri kullandığı resimleri üzerinde son derece dikkatli ve yavaş çalıştı. Tablolarındaki ışık kullanımı ve ustalıklı işleyiş ile ünlendi. Çalışmalarında çoğunlukla açık bir sevgi teması özellikle de aşk hastalığı dikkat çeker. Onun eserlerinde yarattığı dünya yaşadığına göre çok daha kusursuzdu.Ölümünün ardında bir yüzyıl boyunca unutulan Vermeer, 1866 yılında sanat eleştirmeni Thoré Bürger tarafından tekrar keşfedildi. Bürger, Vermeer'in 66 eseri hakkında bir makale yayınladı (bugün bu eserlerden 35 tanesinin onun olduğu kabul edilmektedir) O günden itibaren Vermeer'in ünü büyüdü ve Hollanda Altın Çağı'nın en önemli ressamlarından biri kabul edilmeye başlandı."
+        }
+    ],
+    "isRelatedTo": [
+        "http://dbpedia.org/resource/Carel_Fabritius",
+        "http://dbpedia.org/resource/Dirck_van_Baburen",
+        "http://dbpedia.org/resource/Leonaert_Bramer"
+    ],
+    "sameAs": [
+        "http://gd.dbpedia.org/resource/Johannes_Vermeer",
+        "http://bs.dbpedia.org/resource/Johannes_Vermeer",
+        "http://it.dbpedia.org/resource/Jan_Vermeer",
+        "http://br.dbpedia.org/resource/Johannes_Vermeer",
+        "http://eu.dbpedia.org/resource/Jan_Vermeer",
+        "http://es.dbpedia.org/resource/Johannes_Vermeer",
+        "http://fr.dbpedia.org/resource/Johannes_Vermeer",
+        "http://th.dbpedia.org/resource/โยฮันเนิส_เฟอร์เมร์",
+        "http://scn.dbpedia.org/resource/Johannes_Vermeer",
+        "http://sl.dbpedia.org/resource/Jan_Vermeer_van_Delft",
+        "http://hy.dbpedia.org/resource/Յան_Վերմեեր",
+        "http://pl.dbpedia.org/resource/Jan_Vermeer",
+        "http://bn.dbpedia.org/resource/জোহানস্‌_ভারমির",
+        "http://la.dbpedia.org/resource/Iohannes_Vermeer",
+        "http://no.dbpedia.org/resource/Johannes_Vermeer",
+        "http://id.dbpedia.org/resource/Johannes_Vermeer",
+        "http://www.wikidata.org/entity/Q41264",
+        "http://et.dbpedia.org/resource/Johannes_Vermeer",
+        "http://war.dbpedia.org/resource/Johannes_Vermeer",
+        "http://io.dbpedia.org/resource/Johannes_Vermeer",
+        "http://gl.dbpedia.org/resource/Johannes_Vermeer",
+        "http://tr.dbpedia.org/resource/Johannes_Vermeer",
+        "http://lt.dbpedia.org/resource/Jan_Vermeer",
+        "http://sh.dbpedia.org/resource/Johannes_Vermeer",
+        "http://mzn.dbpedia.org/resource/یوهانس_ورمر",
+        "http://ta.dbpedia.org/resource/யொஹான்னெஸ்_வெர்மீர்",
+        "http://ar.dbpedia.org/resource/يوهانس_فيرمير",
+        "http://sr.dbpedia.org/resource/Јоханес_Вермер",
+        "http://pnb.dbpedia.org/resource/جان_ورمیر",
+        "http://bg.dbpedia.org/resource/Йоханес_Вермер",
+        "http://ja.dbpedia.org/resource/ヨハネス・フェルメール",
+        "http://wikidata.dbpedia.org/resource/Q41264",
+        "http://cy.dbpedia.org/resource/Johannes_Vermeer",
+        "http://ko.dbpedia.org/resource/요하네스_페르메이르",
+        "http://ka.dbpedia.org/resource/იან_ვერმეერი",
+        "http://eo.dbpedia.org/resource/Johannes_Vermeer",
+        "http://als.dbpedia.org/resource/Jan_Vermeer",
+        "http://yago-knowledge.org/resource/Johannes_Vermeer",
+        "http://hr.dbpedia.org/resource/Johannes_Vermeer",
+        "http://be.dbpedia.org/resource/Ян_Вермер",
+        "http://vi.dbpedia.org/resource/Johannes_Vermeer",
+        "http://fa.dbpedia.org/resource/یوهانس_فرمیر",
+        "http://mr.dbpedia.org/resource/योहानेस_व्हर्मीर",
+        "http://fy.dbpedia.org/resource/Johannes_Vermeer",
+        "http://ro.dbpedia.org/resource/Johannes_Vermeer",
+        "http://fi.dbpedia.org/resource/Johannes_Vermeer",
+        "http://simple.dbpedia.org/resource/Johannes_Vermeer",
+        "http://da.dbpedia.org/resource/Johannes_Vermeer",
+        "http://ru.dbpedia.org/resource/Вермеер,_Ян",
+        "http://rdf.freebase.com/ns/m.0bw2x",
+        "http://nn.dbpedia.org/resource/Johannes_Vermeer",
+        "http://he.dbpedia.org/resource/יאן_ורמיר",
+        "http://pt.dbpedia.org/resource/Johannes_Vermeer",
+        "http://uk.dbpedia.org/resource/Ян_Вермер",
+        "http://nl.dbpedia.org/resource/Johannes_Vermeer",
+        "http://ca.dbpedia.org/resource/Johannes_Vermeer_de_Delft",
+        "http://az.dbpedia.org/resource/Yan_Vermeer",
+        "http://pms.dbpedia.org/resource/Jan_Vermeer",
+        "http://is.dbpedia.org/resource/Johannes_Vermeer",
+        "http://sk.dbpedia.org/resource/Jan_Vermeer",
+        "http://hu.dbpedia.org/resource/Jan_Vermeer_van_Delft",
+        "http://el.dbpedia.org/resource/Γιοχάνες_Βερμέερ",
+        "http://de.dbpedia.org/resource/Jan_Vermeer",
+        "http://sv.dbpedia.org/resource/Johannes_Vermeer",
+        "http://cs.dbpedia.org/resource/Jan_Vermeer",
+        "http://lv.dbpedia.org/resource/Jans_Vermērs",
+        "http://lb.dbpedia.org/resource/Johannes_Vermeer",
+        "http://zh.dbpedia.org/resource/扬·弗美尔",
+        "http://dbpedia.org/resource/Johannes_Vermeer"
+    ]
+  },
+  "target": "http://data.europeana.eu/item/2020601/contributions_20841"
+}
