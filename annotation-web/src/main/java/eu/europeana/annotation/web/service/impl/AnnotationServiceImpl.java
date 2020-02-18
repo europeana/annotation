@@ -26,17 +26,16 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
-import eu.europeana.annotation.definitions.model.body.impl.SpecificResourceBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
-import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
@@ -50,6 +49,7 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
@@ -500,16 +500,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * @throws ParamValidationException
      * @throws RequestBodyValidationException
      */
-    protected void validateEdmRights(Annotation webAnnotation)
+    protected void validateEdmRights(Body body)
 	    throws ParamValidationException, RequestBodyValidationException {
-
-	if (webAnnotation == null || webAnnotation.getBody() == null
-		|| webAnnotation.getBody().getEdmRights() == null) {
-	    return; // nothing to validate
-	}
-
+	
 	// if rights are provided, check if it belongs to the valid license list
-	String rightsClaim = webAnnotation.getBody().getEdmRights();
+	String rightsClaim = body.getEdmRights();
 	String licence = null;
 	// remove version from the right and get licenses
 	char PATH_DELIMITER = '/';
@@ -517,7 +512,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	if (delimiterCount != 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
 	    // wrong format, max 6 (including the / after version, for )
-	    throw new RequestBodyValidationException(webAnnotation.getBody().getInputString(),
+	    throw new RequestBodyValidationException(body.getInputString(),
 		    I18nConstants.ANNOTATION_INVALID_RIGHTS, new String[] { rightsClaim });
 	} else {
 	    // remove last /
@@ -528,7 +523,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
 	Set<String> rights = getConfiguration().getAcceptedLicenceses();
 	if (!rights.contains(licence))
-	    throw new RequestBodyValidationException(webAnnotation.getBody().getInputString(),
+	    throw new RequestBodyValidationException(body.getInputString(),
 		    I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE, new String[] { rightsClaim });
 
     }
@@ -555,8 +550,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	// TODO: the body type shouldn't be null at this stage
 	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 	    validateTagWithSpecificResource(body);
-	} else if (body.getType() != null && body.getType().contains(WebAnnotationFields.FULL_TEXT_RESOURCE)) {
-	    validateTagWithFullTextResource(body);
 	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
 	    validateSemanticTagUrl(body);
 	} else if (BodyInternalTypes.isAgentBodyTag(body.getInternalType())) {
@@ -575,14 +568,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * 
      * @param webAnnotation
      * @throws RequestBodyValidationException
+     * @throws PropertyValidationException 
      */
     private void validateTranscription(Annotation webAnnotation)
-	    throws ParamValidationException, RequestBodyValidationException {
-	Body body = webAnnotation.getBody();
-	Target target = webAnnotation.getTarget();
-
-	validateTranscriptionWithSpecificResource(body, target);
-	validateEdmRights(webAnnotation);
+	    throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
+	validateTranscriptionWithFullTextResource(webAnnotation.getBody());
     }
 
     /**
@@ -593,15 +583,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      */
     private void validateAgentBody(Body body) throws ParamValidationException {
 	if (!(body instanceof EdmAgentBody)) {
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-		    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
+	    throw new ParamValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
+		    I18nConstants.INVALID_PROPERTY_VALUE, new String[] { "tag.body.type", ResourceTypes.AGENT.getJsonValue() });
 	}
     }
 
     private void validateGeoTag(Body body) throws ParamValidationException {
 	if (!(body instanceof PlaceBody))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-		    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
+	    throw new ParamValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
+		    I18nConstants.INVALID_PROPERTY_VALUE, new String[] { "tag.body.type", ResourceTypes.PLACE.toString() });
 
 	Place place = ((PlaceBody) body).getPlace();
 
@@ -610,8 +600,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.latitude" });
 
 	if (StringUtils.isEmpty(place.getLongitude()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-		    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.longitude" });
+	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.longitude" });
 
     }
 
@@ -646,50 +636,43 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * 
      * @param body
      * @throws ParamValidationException
+     * @throws PropertyValidationException
+     * @throws RequestBodyValidationException 
      */
-    private void validateTranscriptionWithSpecificResource(Body body, Target target) throws ParamValidationException {
+    private void validateTranscriptionWithFullTextResource(Body body)
+	    throws ParamValidationException, PropertyValidationException, RequestBodyValidationException {
 	// the body type shouldn't be null at this stage
-	if (!(body instanceof SpecificResourceBody)) {
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_WRONG_CLASS,
-		    I18nConstants.MESSAGE_WRONG_CLASS, new String[] { "tag.body.class", body.getClass().toString() });
-	}
-	// check mandatory field language
-	if (StringUtils.isBlank(body.getLanguage()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    new String[] { "tag.body.language", body.getLanguage() });
+	if (body.getType() == null || !(body.getType().size() == 1)) {
+	    // (external) Type is mandatory
+	    //temporarily commented out to verify if type is mandatory
+//	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+//		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.type" });
 
-	// check mandatory field edmRights
-	if (StringUtils.isBlank(body.getEdmRights()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    new String[] { "tag.body.edmRights", body.getEdmRights() });
+	} else if (!ResourceTypes.FULL_TEXT_RESOURCE.hasJsonValue(body.getType().get(0))) {
+	    // only full text resources accepted
+	    throw new PropertyValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
+		    I18nConstants.INVALID_PROPERTY_VALUE,
+		    new String[] { "transcription.body.type", ResourceTypes.FULL_TEXT_RESOURCE.getJsonValue() });
+	}
+
+	// check mandatory field language
+	if (StringUtils.isBlank(body.getLanguage())) {
+	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.language" });
+	}
 
 	// check mandatory field value
-	if (StringUtils.isBlank(body.getValue()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.value", body.getValue() });
+	if (StringUtils.isBlank(body.getValue())) {
+	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.value" });
+	}
 
-	// "source" becomes mandatory as soon as you have a "scope" in the target
-	if (target != null && !StringUtils.isBlank(target.getScope()) && StringUtils.isBlank(target.getSource()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    new String[] { "tag.body.source", body.getSource() });
-    }
-
-    private void validateTagWithFullTextResource(Body body) throws ParamValidationException {
-
-	// check mandatory fields
-
-	// check type
-	if (StringUtils.isBlank(body.getInternalType().toString()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    new String[] { "tag.body.type", body.getType().toString() });
-	if (StringUtils.isBlank(body.getSource()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    new String[] { "tag.body.source", body.getSource() });
+	// check mandatory field edmRights
+	if (StringUtils.isBlank(body.getEdmRights())) {
+	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.edmRights" });
+	}
+	validateEdmRights(body);
     }
 
     /**
@@ -751,7 +734,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		validateWebAnnotation(webanno);
 		// TODO: validate via, size must be 1
 		batchReportable.incrementSuccessCount();
-	    } catch (ParamValidationException | RequestBodyValidationException e) {
+	    } catch (ParamValidationException | RequestBodyValidationException | PropertyValidationException e) {
 		batchReportable.incrementFailureCount();
 		String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
 		batchReportable.addError(webanno.getAnnotationId().toHttpUrl(), message);
@@ -777,7 +760,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public void validateWebAnnotation(Annotation webAnnotation)
-	    throws ParamValidationException, RequestBodyValidationException {
+	    throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
 
 	// validate canonical to be an absolute URI
 	if (webAnnotation.getCanonical() != null) {

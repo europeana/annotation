@@ -200,8 +200,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	protected boolean hasTagBody(PersistentAnnotation object) {
-		if (BodyInternalTypes.isTagBody(object.getBody().getType()))
-			return true;
 		return BodyInternalTypes.isTagBody(object.getBody().getInternalType());
 	}
 
