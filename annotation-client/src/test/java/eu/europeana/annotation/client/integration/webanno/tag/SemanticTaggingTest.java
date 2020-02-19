@@ -95,6 +95,9 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());
 		EdmAgent agentBody = (EdmAgent) ((EdmAgentBody) storedAnno.getBody()).getAgent();
 		assertNotNull(agentBody.getPrefLabel());
+		assertTrue(agentBody.getPrefLabel().size() == 43);
+		assertNotNull(agentBody.getDateOfBirth());
+		assertNotNull(agentBody.getDateOfDeath());
 	}
 
 }

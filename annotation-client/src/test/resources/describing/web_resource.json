@@ -2,7 +2,7 @@
   "id": "http://data.europeana.eu/annotation/transcribathon/12345",
   "motivation": "describing",
   "body": {
-    "type": "TextualBody",
+    "type": "Text",
     "value": "... this is the textual description of the item ...",
     "language": "en"
   },

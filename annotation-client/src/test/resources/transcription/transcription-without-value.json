@@ -3,8 +3,8 @@
   "body": {
     "type": "FullTextResource",
     "language": "en",
-    "value": "... complete transcribed text in HTML ...",
-    "format": "text/plain"
+    "format": "text/plain",
+    "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
   },
   "target": {
     "scope": "http://data.europeana.eu/item/07931/diglit_uah_m1",

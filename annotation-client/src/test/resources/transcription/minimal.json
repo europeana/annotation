@@ -1,10 +1,8 @@
 {
 	"motivation": "transcribing",
 	"body": {
-		"id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
 		"language": "de",
-		"format": "text/html",
-        "value": "... complete transcribed text in HTML ...",
+		"value": "... complete transcribed text in HTML ...",
         "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"		
 	},
 	"target": {
