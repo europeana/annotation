@@ -1030,10 +1030,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			else
 				return BodyInternalTypes.LINK;
 		case TRANSCRIBING:
-			if (hasType(valueObject,ResourceTypes.FULL_TEXT_RESOURCE))
-				return BodyInternalTypes.FULL_TEXT_RESOURCE;
-			else
-				return BodyInternalTypes.SPECIFIC_RESOURCE;
+			return BodyInternalTypes.FULL_TEXT_RESOURCE;
 		case DESCRIBING:
 			return BodyInternalTypes.TEXT;
 		case TAGGING:

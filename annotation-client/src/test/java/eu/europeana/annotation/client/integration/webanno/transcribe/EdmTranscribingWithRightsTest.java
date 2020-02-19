@@ -28,7 +28,7 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
 
-	assertEquals(storedAnno.getBody().getInternalType(), ResourceTypes.SPECIFIC_RESOURCE.name());
+	assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
 	assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
     }
 
@@ -37,7 +37,25 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 
 	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS);
 	assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
-	String expectedMessage = "Missing mandatory field!";
+	String expectedMessage = "Missing mandatory field! transcription.body.edmRights";
+	assertTrue(response.getBody().contains(expectedMessage));
+    }
+    
+    @Test
+    public void createTranscriptionWithoutLanguage() throws IOException {
+
+	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_LANG);
+	assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
+	String expectedMessage = "Missing mandatory field! transcription.body.language";
+	assertTrue(response.getBody().contains(expectedMessage));
+    }
+    
+    @Test
+    public void createTranscriptionWithoutValue() throws IOException {
+
+	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_VALUE);
+	assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
+	String expectedMessage = "Missing mandatory field! transcription.body.value";
 	assertTrue(response.getBody().contains(expectedMessage));
     }
 }

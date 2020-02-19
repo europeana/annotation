@@ -1,6 +1,7 @@
 {
   "motivation": "transcribing",
   "body": {
+    "type": "FullTextResource",
     "language": "en",
     "value": "... complete transcribed text in HTML ...",
     "format": "text/plain",
