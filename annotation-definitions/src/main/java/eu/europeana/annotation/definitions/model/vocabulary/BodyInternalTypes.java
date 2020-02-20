@@ -56,6 +56,10 @@ public enum BodyInternalTypes {
 		return FULL_TEXT_RESOURCE.name().equalsIgnoreCase(type);
 	}
 	
+	public static boolean isTextualBody(String internalType) {
+		return TEXT.name().equalsIgnoreCase(internalType);
+	}	
+	
 	public static boolean contains(String test) {
 
 	    for (BodyInternalTypes c : BodyInternalTypes.values()) {

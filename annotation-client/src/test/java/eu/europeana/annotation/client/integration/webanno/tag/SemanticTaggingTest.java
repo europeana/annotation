@@ -85,4 +85,19 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(agentBody.getPrefLabel());
 	}
 
+	@Test
+	public void createSemanticTagAgentEntity() throws IOException, JsonParseException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+
+		Annotation storedAnno = createTag(SEMANTICTAG_AGENT_ENTITY, false, true);
+		log.info(storedAnno.getBody().getInternalType());
+		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
+		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());
+		EdmAgent agentBody = (EdmAgent) ((EdmAgentBody) storedAnno.getBody()).getAgent();
+		assertNotNull(agentBody.getPrefLabel());
+		assertTrue(agentBody.getPrefLabel().size() == 43);
+		assertNotNull(agentBody.getDateOfBirth());
+		assertNotNull(agentBody.getDateOfDeath());
+	}
+
 }
