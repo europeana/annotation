@@ -641,6 +641,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	        throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
 		        I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.prefLabel" });
 	
+		// check mandatory field type
+		if (body.getType() == null || StringUtils.isBlank(body.getType().get(0)))
+	        throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
+		        I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });	
+		
 		// check mandatory field - one of the professionOrOccupation, begin, dateOfBirth, end, dateOfDeath
 		// placeOfBirth, placeOfDeath
 //		if (agent.getPlaceOfBirth() == null && agent.getPlaceOfDeath() == null 
