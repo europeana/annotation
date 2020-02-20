@@ -763,7 +763,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		    //temporarily commented out to verify if type is mandatory
 //		    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 //			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "vcardAddress.body.type" });
-
 		} else if (!ResourceTypes.VCARD_ADDRESS.hasJsonValue(body.getType().get(0))) {
 		    // only full text resources accepted
 		    throw new PropertyValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
