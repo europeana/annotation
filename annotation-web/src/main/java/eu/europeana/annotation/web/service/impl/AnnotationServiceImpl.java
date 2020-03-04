@@ -192,7 +192,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	// store in mongo database
 	Annotation res = getMongoPersistence().store(newAnnotation);
 
-	if (indexing) {
+	if (indexing && getConfiguration().isIndexingEnabled()) {
 	    // add solr indexing here
 	    try {
 		getSolrService().store(res);
