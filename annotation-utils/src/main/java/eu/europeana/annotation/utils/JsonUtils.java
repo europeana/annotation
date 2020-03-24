@@ -250,9 +250,9 @@ public class JsonUtils extends BaseJsonParser{
 		return res;
 	}
     
-	public static String extractAnnotationListStringFromJsonString(String jsonString) {
-		return extractAnnotationListStringFromJsonString(jsonString, "\":(.*?)}}]");
-	}
+//	public static String extractAnnotationListStringFromJsonString(String jsonString) {
+//		return extractAnnotationListStringFromJsonString(jsonString, "\":(.*?)}}]");
+//	}
     
 	public static String extractAnnotationListStringFromJsonString(String jsonString, String regex) {
 		String res = "";

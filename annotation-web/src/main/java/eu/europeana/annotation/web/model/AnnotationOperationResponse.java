@@ -1,12 +1,12 @@
 package eu.europeana.annotation.web.model;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.api.commons.web.model.ApiResponse;
 
-@JsonSerialize(include = Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_NULL)
 public class AnnotationOperationResponse extends ApiResponse{
 	
 	Annotation annotation;

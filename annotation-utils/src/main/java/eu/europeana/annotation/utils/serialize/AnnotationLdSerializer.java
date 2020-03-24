@@ -154,17 +154,17 @@ public class AnnotationLdSerializer extends JsonLd {
 			} else {
 				if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0) {
 					putListProperty(WebAnnotationFields.BODY, annotation.getBody().getValues(), jsonLdResource, true);
-//					JsonLdProperty bodyProperty = buildListProperty(WebAnnotationFields.BODY,
-//							annotation.getBody().getValues(), true);
-//					if (bodyProperty != null)
-//						jsonLdResource.putProperty(bodyProperty);
 				} else{
-					if(annotation.getTarget().getInputString() != null)
+				    	//TODO: check if this is still correct
+				    	//if no values in the body, 
+				    	//linking  have not
+				    	if(annotation.getTarget().getInputString() != null) {
 						putStringProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString(), jsonLdResource);
 //						jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
-					else
+				    	} else {
 						putStringProperty(WebAnnotationFields.BODY, annotation.getBody().getHttpUri(), jsonLdResource);
 //						jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getHttpUri());
+				    	}
 				}
 			}
 		}
@@ -490,7 +490,7 @@ public class AnnotationLdSerializer extends JsonLd {
 	}
 
 	private boolean isJsonObjectInput(String inputString) {
-		return inputString != null && (inputString.contains("{") 
+		return inputString != null && (inputString.startsWith("{") 
 				|| (inputString.indexOf(WebAnnotationFields.BODY_VALUE) == 1));
 	}
 

@@ -114,7 +114,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 			// search for the annotation just created using the generator_id
 			// value defined by VALUE_INDEXING_TESTSET
 			AnnotationPage annPgBefore = annSearchApi.searchAnnotations(QUERY_BY_CREATOR, null, null, null, null,
-					SearchProfiles.MINIMAL);
+					SearchProfiles.MINIMAL, null);
 			assertNotNull(annPgBefore, "AnnotationPage must not be null");
 			// annotations were not indexed, therefore it must not show up in
 			// the search result
@@ -135,7 +135,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 			// value defined by VALUE_INDEXING_TESTSET
 			AnnotationPage annPgAfter = annSearchApi.searchAnnotations(QUERY_BY_CREATOR,
 					Integer.toString(Query.DEFAULT_PAGE), Integer.toString(Query.DEFAULT_PAGE_SIZE), null, null,
-					SearchProfiles.MINIMAL);
+					SearchProfiles.MINIMAL, null);
 			assertNotNull(annPgAfter, "AnnotationPage must not be null");
 			// Now that the annotation was indexed, it must show up in the
 			// search result

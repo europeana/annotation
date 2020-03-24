@@ -87,7 +87,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		// is not successfull
 		getSolrService().delete(annoId);
 	}
-
+	
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
 			String endTimestamp, String action) throws HttpException, ApiWriteLockException {
 

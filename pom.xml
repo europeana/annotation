@@ -19,27 +19,24 @@
 	
 	<repositories>
 		<repository>
-		    <id>artifactory.eanadev.org</id>
-			<name>artifactory.eanadev.org-releases (external libs)</name>
-			<url>http://artifactory.eanadev.org/artifactory/ext-release-local</url>
-		</repository>
-		<repository>
-			<id>libs-release-local</id>
+			<id>libs-release</id>
 			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
 		
 		<!--  added artifactory to solve restlet dependency problems in jenkins -->
+		<!-- 
 		<repository>
 			<id>restlet</id>
 			<name>restlet repository</name>
 			<url>http://maven.restlet.org</url>
 		</repository>
+		 -->
 		
 		<!--  disable ibiblio.org mirror because of corrupted jars -->
 		<repository>
@@ -60,6 +57,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.annotationApi>0.2.9-SNAPSHOT</version.annotationApi>
+		<version.europeana-search-tools>0.0.1-SNAPSHOT</version.europeana-search-tools>
 		<version.java>1.8</version.java>
 		<version.org.junit.jupiter>5.1.0</version.org.junit.jupiter>
 		<version.junit-platform>1.2.0</version.junit-platform>		
@@ -71,7 +69,7 @@
 		<version.annotationld>1.1.6-SNAPSHOT</version.annotationld>	
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.9.4</version.jackson>
-		<version.commonsApi>0.2.8-SNAPSHOT</version.commonsApi>
+		<version.commonsApi>0.2.8</version.commonsApi>
 		<version.apiKeyClient>1.1</version.apiKeyClient>
 		<version.apacheSolr>7.7.2</version.apacheSolr>
 		<version.woodstox>3.2.9</version.woodstox>
@@ -89,9 +87,8 @@
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
 		<module>annotation-client</module>
-		
-		
-	</modules>
+		<module>annotation-import</module>
+  </modules>
 	<build>
 		<!--  configure source and output locations -->
 		<directory>target</directory>
@@ -115,7 +112,14 @@
 		</testResources>
 
 		<!--  plugins -->
-		<plugins>
+		<pluginManagement>
+			<plugins>
+			<!--
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+				</plugin>
+			-->	
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -125,7 +129,7 @@
 					<target>${version.java}</target>
 				</configuration>
 			</plugin>
-
-		</plugins>
+			</plugins>
+		</pluginManagement>	
 	</build>
 </project>

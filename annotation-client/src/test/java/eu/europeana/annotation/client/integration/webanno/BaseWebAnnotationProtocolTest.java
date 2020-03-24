@@ -43,7 +43,7 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
 	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 	public static final String TAG_STANDARD_TEST_VALUE_TARGET = "http://data.europeana.eu/item/09102/_UEDIN_214";
-	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
+//	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
 	

@@ -35,7 +35,8 @@ public class PersistentApiWriteLockServiceImpl extends
 	public PersistentApiWriteLock getLastActiveLock(String name) throws ApiWriteLockException {
 		
 		try {
-			Query<PersistentApiWriteLock> query = getDao().createQuery().limit(1);
+			Query<PersistentApiWriteLock> query = getDao().createQuery();
+			
 			query.criteria("name").contains(name);
 			query.criteria("ended").doesNotExist();
 			query.order("-started");
@@ -50,7 +51,7 @@ public class PersistentApiWriteLockServiceImpl extends
 	public PersistentApiWriteLock getLastActiveLock() throws ApiWriteLockException {
 		
 		try {
-			Query<PersistentApiWriteLock> query = getDao().createQuery().limit(1);
+			Query<PersistentApiWriteLock> query = getDao().createQuery();
 			query.criteria("ended").doesNotExist();
 			query.order("-started");
 			PersistentApiWriteLock pij = getDao().findOne(query);
@@ -63,7 +64,7 @@ public class PersistentApiWriteLockServiceImpl extends
 	@Override
 	public PersistentApiWriteLock getLockById(String id) throws ApiWriteLockException {
 		try {
-			Query<PersistentApiWriteLock> query = getDao().createQuery().limit(1);
+			Query<PersistentApiWriteLock> query = getDao().createQuery();
 			query.criteria("_id").equal(new ObjectId(id));
 			PersistentApiWriteLock pij = getDao().findOne(query);
 			return pij;

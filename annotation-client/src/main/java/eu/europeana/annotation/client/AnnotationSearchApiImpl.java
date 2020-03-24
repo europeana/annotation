@@ -42,21 +42,30 @@ public class AnnotationSearchApiImpl extends BaseAnnotationApi implements Annota
 	}
 	
 	@Override
+	@Deprecated
 	public AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile, String language) {
 		return searchAnnotations(query, null, null, null, null, searchProfile, language);
 	}
+	
+	@Override
+        public AnnotationPage searchAnnotations(String query, String qf, String sort, String sortOrder, String page,
+    	    String pageSize, SearchProfiles searchProfile, String language) {
+        	AnnotationPage res;
+        	try {
+        	    res = apiConnection.search(query, qf, sort, sortOrder, page, pageSize, searchProfile, language);
+        	} catch (IOException | JsonParseException e) {
+        	    throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
+        	}
+        
+        	return res;
+        }
 
 	@Override
+	@Deprecated
 	public AnnotationPage searchAnnotations(
 			String query, String page, String pageSize, String field, String language) {
 		
-		return searchAnnotations(query, page, pageSize, field, language, SearchProfiles.STANDARD);
-	}
-	
-
-	public AnnotationPage searchAnnotations(
-			String query, String page, String pageSize, String field, String language, SearchProfiles searchProfile) {
-		return searchAnnotations(query, page, pageSize, field, language, searchProfile, null);
+		return searchAnnotations(query, page, pageSize, field, language, SearchProfiles.STANDARD, null);
 	}
 	
 	
