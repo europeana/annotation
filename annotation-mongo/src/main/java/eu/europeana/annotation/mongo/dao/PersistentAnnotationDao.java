@@ -22,20 +22,13 @@ import eu.europeana.api.commons.nosql.dao.NosqlDao;
 public interface PersistentAnnotationDao<E extends PersistentAnnotation, T extends Serializable > extends NosqlDao<E, T> {
 
 	/**
-	 * This method sets default provider. Currently there are two providers:
-	 *    1. 'webanno' e.g. "http://data.europeana.eu/annotations/15502/GG_8285/webanno/1"
-	 *    2. 'historypin' e.g. "http://historypin.com/annotation/1234"
-	 * @param provider
-	 * @return AnnotationId object
+	 * @return AnnotationId object with the generated ID based on database sequence
 	 */
-//	AnnotationId generateNextAnnotationId(String provider);
 	AnnotationId generateNextAnnotationId();
 	
 	List<AnnotationId> generateNextAnnotationIds(Integer sequenceIncrement);
-//	List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceIncrement);
 	
 	Long getLastAnnotationNr();
-//	Long getLastAnnotationNr(String provider);
 
 	BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode delete) throws BulkOperationException;
 	

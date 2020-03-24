@@ -3,14 +3,12 @@ package eu.europeana.annotation.mongo.model;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
 
 @Entity("statusLog")
-@Polymorphic
 public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentObject {
 
 	@Id

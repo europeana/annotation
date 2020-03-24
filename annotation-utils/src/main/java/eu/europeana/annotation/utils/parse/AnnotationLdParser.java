@@ -357,6 +357,7 @@ public class AnnotationLdParser extends JsonLdParser {
 	private Target parseTarget(String targetType, String valueObject) {
 		Target target = TargetObjectFactory.getInstance().createModelObjectInstance(targetType);
 		target.setValue((String) valueObject);
+		//set europeana resource id
 		target.setResourceId(
 				getIdHelper().extractResourceIdFromHttpUri((String) valueObject));
 		target.setHttpUri(valueObject);
@@ -649,6 +650,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			// need to align with target.
 			// body.setValue(value.toString());
 			specificResource.setHttpUri(value.toString());
+			parseEuropeanaResourceId(specificResource, value);
 			break;
 		case WebAnnotationFields.LANGUAGE:
 			specificResource.setLanguage(value.toString());
@@ -672,6 +674,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		
 		case WebAnnotationFields.SCOPE:
 			specificResource.setScope(value.toString());
+			parseEuropeanaResourceId(specificResource, value);		    
 			break;
 
 		case WebAnnotationFields.RIGHTS:
@@ -682,6 +685,13 @@ public class AnnotationLdParser extends JsonLdParser {
 			break;
 
 		}
+	}
+
+	protected void parseEuropeanaResourceId(SpecificResource specificResource, Object value) {
+	    if(specificResource instanceof Target) {
+	        specificResource.setResourceId(
+	    		getIdHelper().extractResourceIdFromHttpUri(value.toString()));
+	    }
 	}
 
 	/**

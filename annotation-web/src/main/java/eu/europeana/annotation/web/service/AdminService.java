@@ -57,6 +57,7 @@ public interface AdminService {
 	 */
 	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
 
+	
 	/**
 	 * This methods reindexes the set of annotations identified by their uris or objectIds
 	 * @param uriList

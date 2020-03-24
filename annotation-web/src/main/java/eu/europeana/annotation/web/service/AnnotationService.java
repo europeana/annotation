@@ -12,6 +12,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
+import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -42,13 +43,6 @@ public interface AnnotationService {
 	 */
 	public List<? extends Annotation> getAnnotationList (String resourceId);
 	
-//	/**
-//	 * This method retrieves all not disabled annotations for given provider.
-//	 * @param resourceId
-//	 * @param provider
-//	 * @return the list of not disabled annotations
-//	 */
-//	public List<? extends Annotation> getAnnotationListByProvider (String resourceId, String provider);
 	
 	/**
 	 * This method retrieves all not disabled annotations for given target.
@@ -64,16 +58,6 @@ public interface AnnotationService {
 	 */
 	public List<? extends Annotation> getAnnotationListByResourceId (String resourceId);
 	
-	/*
-	 * This method retrieves annotations applying filters.
-	 * @param resourceId
-	 * @param startOn
-	 * @param limit
-	 * @param isDisabled
-	 * @return the list of annotations
-	 */
-//	public List<? extends Annotation> getFilteredAnnotationList (
-//			String resourceId, String startOn, String limit, boolean isDisabled);
 	
 	/**
 	 * This method creates Europeana Annotation object from a JsonLd string.
@@ -254,5 +238,14 @@ public interface AnnotationService {
 	 * @throws JsonParseException 
 	 */
 	public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, IOException;
+	
+	/*
+	 * This methods returns annotation ids which where deleted after a given date 
+	 * @param startDate
+	 * @param startTimestamp
+	 * @return deleted annotation ids
+	 */
+	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String startTimestamp);
+	
 	
 }
