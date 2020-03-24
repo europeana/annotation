@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
@@ -116,4 +117,47 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		
 	}
 
+	
+	 /* Test search query and verify search result
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testSearchAnyAnnotation() throws Exception {
+
+		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
+
+		// first page
+		//to search for active annotations, the first parameter can be provided as, e.g. "q=*:*" or just "*:*"
+		AnnotationPage annPg = annSearchApi.searchAnnotations("*:*&fq=modified:[2019-11-24T16:10:49.624Z TO 2019-11-27T16:10:49.624Z]", SearchProfiles.STANDARD, null);
+		//to search for disabled(deleted) annotations, the parameter "disabled" must be provided
+		//AnnotationPage annPg = annSearchApi.searchAnnotations("disabled=true&lastUpdate=25-11-2019", SearchProfiles.STANDARD);
+		assertNotNull(annPg, "AnnotationPage must not be null");
+		//there might be old annotations of failing tests in the database
+		assertEquals(annPg.getCurrentPage(), 0);
+		
+		List<? extends Annotation> annos = annPg.getAnnotations(); 
+		
+		assertTrue(0 < annos.size());
+		
+		
+	}
+	
+	
+	@Test
+	public void testSearchAnyAnnotationMinimalProfile() throws Exception {
+
+		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
+		
+		// first page
+		AnnotationPage annPg = annSearchApi.searchAnnotations("*", SearchProfiles.MINIMAL, null);
+		assertNotNull(annPg, "AnnotationPage must not be null");
+		//there might be old annotations of failing tests in the database
+		assertEquals(annPg.getCurrentPage(), 0);
+		
+				List<? extends Annotation> annos = annPg.getAnnotations(); 
+		assertTrue(0 < annos.size());
+		
+		
+	}
 }

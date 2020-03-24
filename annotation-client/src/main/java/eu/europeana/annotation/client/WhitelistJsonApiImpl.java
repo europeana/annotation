@@ -39,6 +39,7 @@ public class WhitelistJsonApiImpl extends BaseAnnotationApi implements Whitelist
 		WhitelistOperationResponse res;
 		try {
 			res = apiConnection.createWhitelistEntry(whitelistEntryJson);
+			
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the WhitelistEntryJsonApi", e);
 		}

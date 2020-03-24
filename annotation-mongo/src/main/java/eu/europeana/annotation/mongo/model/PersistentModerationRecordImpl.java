@@ -10,7 +10,6 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -22,7 +21,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
 @Entity("moderationRecord")
-@Polymorphic
 @Indexes({@Index(PersistentAnnotation.FIELD_BASEURL + ", "+ PersistentAnnotation.FIELD_PROVIDER + ", " + PersistentAnnotation.FIELD_IDENTIFIER), 
 	@Index("provider, identifier")})
 public class PersistentModerationRecordImpl implements PersistentModerationRecord, PersistentObject {

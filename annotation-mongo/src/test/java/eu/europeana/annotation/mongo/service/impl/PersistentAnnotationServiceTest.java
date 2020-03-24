@@ -229,6 +229,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				// store first annotation
 				ObjectTag storedObject = (ObjectTag) annotationService.store(firstObject);
 				String tagId = ((TagBody)storedObject.getBody()).getTagId();
+				assertNull(tagId);
 				
 				//delete object
 				annotationService.remove(storedObject.getAnnotationId());
