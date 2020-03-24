@@ -54,6 +54,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		super(datastore, clazz);
 	}
 
+	@SuppressWarnings("deprecation")
 	public AnnotationId generateNextAnnotationId() {
 
 		GeneratedAnnotationIdImpl nextAnnotationId = null;

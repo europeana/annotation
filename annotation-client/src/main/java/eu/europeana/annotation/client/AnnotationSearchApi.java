@@ -61,6 +61,9 @@ public interface AnnotationSearchApi {
 	 */
 	AnnotationPage searchAnnotations(String query, SearchProfiles searchProfile, String language);
 
+	AnnotationPage searchAnnotations(String query, String qf, String sort, String sortOrder, String page,
+		String pageSize, SearchProfiles searchProfile, String language);
+
 
 
 

@@ -29,12 +29,14 @@ import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
+import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
@@ -1074,4 +1076,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	}
     }
 
+    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate, String startTimestamp) {
+	if (!StringUtils.isBlank(startDate)) {
+	    startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
+	}
+
+	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivation.getOaType(), startTimestamp);
+	
+	return res;
+    }
 }

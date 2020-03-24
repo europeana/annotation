@@ -92,4 +92,15 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 		String key = METIS_BASE_URL; 
 		return getAnnotationProperties().getProperty(key);
 	}
+
+    @Override
+    public String getAnnotationApiVersion() {
+    	return getAnnotationProperties().getProperty(API_VERSION);
+    }
+
+    @Override
+    public String getEtagFormat() {
+    	return ETAG_FORMAT;
+    }
+
 }

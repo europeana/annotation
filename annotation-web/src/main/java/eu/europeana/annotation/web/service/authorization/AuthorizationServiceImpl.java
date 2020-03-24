@@ -17,6 +17,7 @@ import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public class AuthorizationServiceImpl extends BaseAuthorizationService implements AuthorizationService {
 
@@ -52,7 +53,7 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
      * @param operationName
      * @throws UserAuthorizationException
      */
-    private void checkWriteLockInEffect(String userToken, String operationName) throws UserAuthorizationException {
+    public void checkWriteLockInEffect(String operationName) throws ApplicationAuthenticationException {
 	PersistentApiWriteLock runningJob;
 	try {
 	    runningJob = getPersistentIndexingJobService().getLastActiveLock("lockWriteOperations");
@@ -61,11 +62,11 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
 	    if (!(operationName.equals(Operations.ADMIN_UNLOCK) || operationName.equals(Operations.ADMIN_REINDEX)
 		    || operationName.endsWith(Operations.RETRIEVE)) && runningJob != null
 		    && runningJob.getName().equals("lockWriteOperations") && runningJob.getEnded() == null) {
-		throw new UserAuthorizationException(null, I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED);
+		throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE, I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED, null);
 	    }
 	} catch (ApiWriteLockException e) {
-	    throw new UserAuthorizationException(null, I18nConstants.AUTHENTICATION_FAIL, new String[] { userToken },
-		    HttpStatus.INTERNAL_SERVER_ERROR);
+	    throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE, I18nConstants.LOCKED_MAINTENANCE, null,
+		    HttpStatus.LOCKED, e);
 	}
     }
 

@@ -137,6 +137,9 @@ public class BaseWebAnnotationDataSetTest {
 	 */
 	protected void deleteAnnotations(Annotation[] annotations) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+		if(annotations == null) {
+			return;
+		}	
 		for (Annotation annotation : annotations) {
 			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
 					annotation.getAnnotationId().getIdentifier());

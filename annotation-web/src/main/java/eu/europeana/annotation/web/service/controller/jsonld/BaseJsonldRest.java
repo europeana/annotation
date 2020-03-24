@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -46,6 +48,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
+import eu.europeana.annotation.web.exception.HeaderValidationException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -118,10 +121,11 @@ public class BaseJsonldRest extends BaseRest {
 	    // build response entity with headers
 	    // TODO: clarify serialization ETag: "_87e52ce126126"
 	    // TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
+	    String eTag = generateETag(storedAnnotation.getLastUpdate());
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, "" + storedAnnotation.getLastUpdate().hashCode());
+	    headers.add(HttpHeaders.ETAG, eTag);
 	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
@@ -322,15 +326,15 @@ public class BaseJsonldRest extends BaseRest {
 	    JsonLd annotationLd = new AnnotationLdSerializer(annotation);
 	    String jsonLd = annotationLd.toString(4);
 
-	    int etag;
+	    String eTag;
 	    if (annotation.getLastUpdate() != null)
-		etag = annotation.getLastUpdate().hashCode();
+	        eTag = generateETag(annotation.getLastUpdate());
 	    else
-		etag = annotation.getGenerated().hashCode();
+	        eTag = generateETag(annotation.getGenerated());
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, "" + etag);
+	    headers.add(HttpHeaders.ETAG, eTag);
 	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 	    headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
 
@@ -442,7 +446,7 @@ public class BaseJsonldRest extends BaseRest {
      * @throws HttpException
      */
     protected ResponseEntity<String> updateAnnotation(String identifier, String annotation,
-	    Authentication authentication) throws HttpException {
+	    Authentication authentication, HttpServletRequest request) throws HttpException {
 
 	try {
 //	    String userId = authentication.getPrincipal().toString();
@@ -466,12 +470,17 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(null, annotation);
 
 	    // validate annotation
+	    String eTagOrigin = generateETag(storedAnnotation.getLastUpdate());
+
+	    checkIfMatchHeader(eTagOrigin, request);
 	    getAnnotationService().validateWebAnnotation(updateWebAnnotation);
 
 	    // 6. apply updates - merge current and updated annotation
 	    // 7. and call database update method
 	    Annotation updatedAnnotation = getAnnotationService().updateAnnotation((PersistentAnnotation)storedAnnotation,
 		    updateWebAnnotation);
+
+	    String eTag = generateETag(updatedAnnotation.getLastUpdate());
 
 	    // serialize to jsonld
 	    JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation);
@@ -480,7 +489,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // build response entity with headers
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, "" + updatedAnnotation.getLastUpdate().hashCode());
+	    headers.add(HttpHeaders.ETAG, eTag);
 	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
 	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
@@ -504,6 +513,50 @@ public class BaseJsonldRest extends BaseRest {
 	}
     }
 
+    /**
+     * This method compares If-Match header with the current etag value.
+     * 
+     * @param etag    The current etag value
+     * @param request The request containing If-Match header
+     * @throws HttpException
+     */
+    public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException {
+
+		String ifMatchHeader = request.getHeader(HttpHeaders.IF_MATCH);
+		if (ifMatchHeader != null) {
+		    try {
+				if (!etag.equals(ifMatchHeader))
+				    throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH,
+					    ifMatchHeader);
+		    } catch (NumberFormatException e) {
+				throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH,
+					ifMatchHeader);
+		    }
+		}
+    }
+    
+    /**
+     * This method generates etag for response header.
+     * 
+     * @param modifiedDate The date of the last modification of annotaiton
+     * @return etag value
+     */
+    public String generateETag(Date modifiedDate) {
+    	// add timestamp
+		Integer hashCode;
+		hashCode = modifiedDate.hashCode();
+		
+		// add ETag format 
+		hashCode += '|'+getConfiguration().getEtagFormat().hashCode();
+		
+		// add the hascode of the api version
+		String apiVersion = getConfiguration().getAnnotationApiVersion();
+		if (apiVersion != null)
+		    hashCode += '|'+apiVersion.hashCode();
+	
+		return hashCode.toString();
+    }
+    
     /**
      * This method validates input values, retrieves annotation object and deletes
      * it.

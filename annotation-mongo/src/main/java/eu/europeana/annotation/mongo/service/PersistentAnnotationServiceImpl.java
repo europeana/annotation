@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Criteria;
+import org.mongodb.morphia.query.CriteriaContainer;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -20,6 +22,8 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
+import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
+import eu.europeana.annotation.definitions.model.impl.BaseAnnotationDeletion;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -488,6 +492,78 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		for (Object id : res){ response.add(id.toString()); }
 		
 		return response;
+	}
+	
+	
+    public List<AnnotationDeletion> getDeletedByLastUpdateTimestamp(String motivation, String startTimestamp) {
+	Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+	query.field(WebAnnotationFields.DISABLED).equal(true);
+	if (StringUtils.isNotBlank(startTimestamp)) {
+	    // Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+	    Date start = new Date(Long.parseLong(startTimestamp));
+	    query.field(WebAnnotationFields.GENERATED).greaterThan(start);
+	}
+	if (StringUtils.isNotBlank(motivation)) {
+	    query.field(WebAnnotationFields.MOTIVATION).equal(motivation);
+	}
+	
+	//ascending order by last update
+	query.order(WebAnnotationFields.LAST_UPDATE);
+	
+	QueryResults<PersistentAnnotation> res = getAnnotationDao().find(query);
+	List<? extends Annotation> disabledAnnos = res.asList();
+	if(disabledAnnos == null || disabledAnnos.isEmpty()) {
+	    return null;
+	}
+	
+	List<AnnotationDeletion> results = new ArrayList<AnnotationDeletion>(disabledAnnos.size());
+	AnnotationDeletion deletion;
+	for (Annotation annotation : disabledAnnos) {
+	    deletion = new BaseAnnotationDeletion();
+	    deletion.setAnnotaionId(annotation.getAnnotationId().getHttpUrl());
+	    deletion.setResourceId(annotation.getTarget().getResourceId());
+	    deletion.setTimestamp(annotation.getGenerated().getTime());
+	    results.add(deletion);
+	}
+	
+	return results;
+    }
+	
+	@Override
+	@Deprecated
+	public List<? extends Annotation> filterDisabled(String queryParams)
+	{
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		List<Criteria> criteriaList = new ArrayList<Criteria>();
+		
+//		String [] parts = queryParams.split("&");
+//		for (String param : parts)
+//		{
+//			String  [] key_value_pair = param.split("=");
+//			Class<?> objectType= PersistentAnnotationImpl.class.getDeclaredField(key_value_pair[0]).getType();
+//			if(objectType.equals(String.class))
+//			{
+//				criteriaList.add(query.criteria(key_value_pair[0]).equal(key_value_pair[1]));
+//			}
+//			else if(objectType.equals(Date.class))
+//			{
+//				SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  
+//				Date dateStart=formatter.parse(key_value_pair[1]);
+//				query.field(key_value_pair[0]).greaterThan(dateStart);
+//			}
+//			else if(objectType.equals(boolean.class))
+//			{
+//				query.field(key_value_pair[0]).equal(Boolean.valueOf(key_value_pair[1]));
+//			}
+//		}
+		
+		if(criteriaList.size()>0)
+		{
+			query.disableValidation().and(criteriaList.toArray(new CriteriaContainer[criteriaList.size()]));
+		}
+		
+		return getAnnotationDao().find(query).asList();
+		
 	}
 
 	@Override

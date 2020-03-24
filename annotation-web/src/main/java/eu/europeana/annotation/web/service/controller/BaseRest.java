@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -31,18 +32,13 @@ import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
-
-    /**
-     * API key cache map contains apiKeys as a key and last response time as a value.
-     * We only add keys if API key client responded with "204" - valid apikey.
-     */
-//    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
-    
 
 	@Resource
 	AnnotationConfiguration configuration;
@@ -50,9 +46,6 @@ public class BaseRest extends BaseRestController {
 	@Resource
 	private AnnotationService annotationService;
 
-//	@Resource
-//	AuthenticationService authenticationService;
-	
 	@Resource
 	AuthorizationService authorizationService;
 
@@ -74,13 +67,6 @@ public class BaseRest extends BaseRestController {
 		this.annotationSearchService = annotationSearchService;
 	}
 
-//	public AuthenticationService getAuthenticationService() {
-//		return authenticationService;
-//	}
-//		
-//	public void setAuthenticationService(AuthenticationService authenticationService) {
-//		this.authenticationService = authenticationService;
-//	}
 
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 	protected AnnotationIdHelper annotationIdHelper;
@@ -281,6 +267,16 @@ public class BaseRest extends BaseRestController {
 			userToken = paramUserToken;
 		}
 		return userToken;
+	}
+	
+	@Override
+	public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
+	        throws ApplicationAuthenticationException {
+	    
+	    Authentication auth = super.verifyWriteAccess(operation, request);
+	    //prevent write when locked
+	    getAuthorizationService().checkWriteLockInEffect(operation);
+	    return auth;
 	}
 	
 }

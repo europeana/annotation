@@ -77,7 +77,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		Authentication authentication = verifyWriteAccess(WebAnnotationFields.UPDATE_OPERATION, request);
 		
 //		String action = "put:/annotation/{identifier}[.{format}]";
-		return updateAnnotation(identifier, annotation, authentication);
+		return updateAnnotation(identifier, annotation, authentication, request);
 	}
 	
 	
