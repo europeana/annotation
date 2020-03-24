@@ -9,6 +9,6 @@ annotation.api.key=
 annotation.header.name=Authorization
 
 # the annotation validation header definitions
-annotation.readonly.authorization.value=
-annotation.regular.authorization.value=
-annotation.admin.authorization.value=
+annotation.readonly.authorization.value=Bearer
+annotation.regular.authorization.value=Bearer
+annotation.admin.authorization.value=Bearer

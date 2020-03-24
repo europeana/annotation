@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -31,18 +33,14 @@ import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HeaderValidationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
-
-    /**
-     * API key cache map contains apiKeys as a key and last response time as a value.
-     * We only add keys if API key client responded with "204" - valid apikey.
-     */
-//    private static Map<String, Long> apyKeyCache = new HashMap<String, Long>();
-    
 
 	@Resource
 	AnnotationConfiguration configuration;
@@ -50,9 +48,6 @@ public class BaseRest extends BaseRestController {
 	@Resource
 	private AnnotationService annotationService;
 
-//	@Resource
-//	AuthenticationService authenticationService;
-	
 	@Resource
 	AuthorizationService authorizationService;
 
@@ -74,13 +69,6 @@ public class BaseRest extends BaseRestController {
 		this.annotationSearchService = annotationSearchService;
 	}
 
-//	public AuthenticationService getAuthenticationService() {
-//		return authenticationService;
-//	}
-//		
-//	public void setAuthenticationService(AuthenticationService authenticationService) {
-//		this.authenticationService = authenticationService;
-//	}
 
 	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
 	protected AnnotationIdHelper annotationIdHelper;
@@ -283,4 +271,37 @@ public class BaseRest extends BaseRestController {
 		return userToken;
 	}
 	
+	@Override
+	public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
+	        throws ApplicationAuthenticationException {
+	    
+	    Authentication auth = super.verifyWriteAccess(operation, request);
+	    //prevent write when locked
+	    getAuthorizationService().checkWriteLockInEffect(operation);
+	    return auth;
+	}
+	
+    /**
+     * This method compares If-Match header with the current etag value.
+     * 
+     * @param etag    The current etag value
+     * @param request The request containing If-Match header
+     * @throws HttpException
+     */
+    public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException {
+    	super.checkIfMatchHeader(etag, request);
+    }
+	
+    /**
+     * This method generates etag for response header.
+     * 
+     * @param timestamp The date of the last modification
+     * @param format       The MIME format
+     * @param version      The API version
+     * @return etag value
+     */
+    public String generateETag(Date timestamp, String format, String version) {
+		return super.generateETag(timestamp, format, version);
+    }
+        
 }

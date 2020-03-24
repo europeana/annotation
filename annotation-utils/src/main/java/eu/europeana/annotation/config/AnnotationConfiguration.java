@@ -22,6 +22,8 @@ public interface AnnotationConfiguration {
 	
 	public static final String PREFIX_MAX_PAGE_SIZE = "annotation.search.maxpagesize.";
 	
+	public static final String API_VERSION = "annotation.apiVersion";
+	
 	public String getComponentName();
 	
 	/**
@@ -75,4 +77,9 @@ public interface AnnotationConfiguration {
      */
     public Set<String> getAcceptedLicenceses();
 
+	/**
+	 * uses annotation.apiVersion property
+	 */
+	public String getAnnotationApiVersion();
+		
 }

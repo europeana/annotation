@@ -6,6 +6,7 @@ import java.util.List;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -82,6 +83,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * @return list of object ids
 	 */
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
+	
+	public List<AnnotationDeletion> getDeletedByLastUpdateTimestamp(String motivation, String startTimestamp);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 
@@ -111,6 +114,9 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException;
 
 	public void createBackupCopy(List<? extends Annotation> existingAnnos);
+
+	@Deprecated
+	List<? extends Annotation> filterDisabled(String queryParams);
 
 }
 

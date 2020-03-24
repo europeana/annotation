@@ -1,7 +1,8 @@
 {
 	"motivation": "transcribing",
 	"body": {
-		"language": "de",
+		"type": "FullTextResource",
+    	"language": "de",
 		"value": "... complete transcribed text in HTML ...",
         "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"		
 	},

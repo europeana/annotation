@@ -9,7 +9,6 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.Polymorphic;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -21,7 +20,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
-@Polymorphic
 @Entity("annotation")
 
 @Indexes(@Index(PersistentAnnotation.FIELD_HTTPURL))

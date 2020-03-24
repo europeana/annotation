@@ -19,8 +19,6 @@ import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import eu.europeana.annotation.definitions.model.utils.ModelConst;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.JsonUtils;
@@ -108,15 +106,15 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return asr;
 	}
 	
-	/**
-	 * @param provider
-	 * @param annotationNr
-	 * @return
-	 * @throws IOException
-	 */
-	public AnnotationSearchResults getAnnotationLd(String provider, Long annotationNr) throws IOException {
-		return getAnnotationLd(provider, annotationNr, null);
-	}
+//	/**
+//	 * @param provider
+//	 * @param annotationNr
+//	 * @return
+//	 * @throws IOException
+//	 */
+//	public AnnotationSearchResults getAnnotationLd(String provider, Long annotationNr) throws IOException {
+//		return getAnnotationLd(provider, annotationNr, null);
+//	}
 	
 	/**
 	 * This method retrieves the Europeana AnnotationLd object by provider and annotationNr.
@@ -177,71 +175,18 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		return asr;
 	}
 	
-	public AnnotationOperationResponse createAnnotation(Annotation annotation) throws IOException {
-		String url = getAnnotationServiceUri();
-        AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
-	String resourceId = annotationIdHelper.extractResourceId(annotation);
-		url += resourceId;
-		url += ModelConst.JSON_REST;
-		url += "?collection=" + annotationIdHelper.extractCollectionFromResourceId(resourceId) 
-				+ "&object=" + annotationIdHelper.extractObjectFromResourceId(resourceId); 
-//				+ "&provider=" + WebAnnotationFields.PROVIDER_WEBANNO;
-		// Execute Europeana API request
-		String jsonPost = getAnnotationGson().toJson(annotation);
-		String json = getJSONResultWithBody(url, jsonPost);
-		
-		AnnotationOperationResponse aor = new AnnotationOperationResponse();
-		aor.setSuccess("true");
-		aor.setAction("create:/annotations/collection/object.json");
-		String annotationJsonString = JsonUtils.extractAnnotationStringFromJsonString(json);
-		aor.setJson(annotationJsonString);
-		return aor;
-	}
 
-	/**
-	 * This method creates AnnotationLd object from JsonLd string.
-	 * The HTTP request sample is:
-	 *     http://localhost:8081/annotation-web/annotationld.jsonld?provider=historypin&annotationNr=1111&indexing=true
-	 * @param provider
-	 * @param annotationNr
-	 * @param annotationJsonLdStr The Annotation
-	 * @return annotation operation response
-	 * @throws IOException
-	 */
-	public AnnotationOperationResponse createAnnotationLd(
-			String provider, Long annotationNr, String annotationJsonLdStr) throws IOException {
-		
-		String url = getAnnotationServiceUri(); // current annotation service uri is .../annotation-web/annotations
-		url += WebAnnotationFields.ANNOTATION_LD_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
-		url += WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + "ws" + WebAnnotationFields.AND;
-//		url += WebAnnotationFields.PROVIDER + WebAnnotationFields.EQUALS + provider + WebAnnotationFields.AND;
-		if (annotationNr != null)
-			url += WebAnnotationFields.IDENTIFIER + WebAnnotationFields.EQUALS + annotationNr + WebAnnotationFields.AND;
-		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + "true";
-
-		/**
-		 * Execute Europeana API request
-		 */
-		String json = getJSONResultWithBody(url, annotationJsonLdStr);
-		
-		AnnotationOperationResponse aor = new AnnotationOperationResponse();
-		aor.setSuccess("true");
-		aor.setAction("create:/annotationld.jsonld");
-		aor.setJson(json);
-		return aor;
-	}
-
-	/**
-	 * @param motivation
-	 * @param annotationNr
-	 * @param europeanaLdStr
-	 * @return
-	 * @throws IOException
-	 */
-	public AnnotationOperationResponse createEuropeanaAnnotationLd(
-			String motivation, Long annotationNr, String europeanaLdStr) throws IOException {
-		return createEuropeanaAnnotationLd(motivation, annotationNr, europeanaLdStr, null);		
-	}
+//	/**
+//	 * @param motivation
+//	 * @param annotationNr
+//	 * @param europeanaLdStr
+//	 * @return
+//	 * @throws IOException
+//	 */
+//	public AnnotationOperationResponse createEuropeanaAnnotationLd(
+//			String motivation, Long annotationNr, String europeanaLdStr) throws IOException {
+//		return createEuropeanaAnnotationLd(motivation, annotationNr, europeanaLdStr, null);		
+//	}
 	
 	/**
 	 * This method creates Europeana Annotation object from JsonLd string.
@@ -594,6 +539,11 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 	}
 	
+	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile, String language) 
+		throws IOException, JsonParseException{
+	    
+	    return search(query, null, null, null, page, pageSize, searchProfile, language);
+	}
 
 	/**
 	 * This method returns a list of Annotation objects for the passed query according to the given search profile.
@@ -605,21 +555,16 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @throws IOException
 	 * @throws JsonParseException 
 	 */
-	public AnnotationPage search(String query, String page, String pageSize, SearchProfiles searchProfile, String language) 
-			throws IOException, JsonParseException {
-//	    String DEFAULT_LANGUAGE = "en,en-US";
-			
-	    String url = buildUrl(query, page, pageSize, searchProfile.toString(), language); 
-		
-	 // Execute Europeana API request
-	 String json = getJSONResultWithHeader(url, authorizationHeaderName, regularUserAuthorizationValue);
-	 		
-	    
-		// Execute Europeana API request
-//		String json = getJSONResult(url);
-		
-		return getAnnotationPage(json);
-	}
+    public AnnotationPage search(String query, String qf, String sort, String sortOrder, String page, String pageSize,
+	    SearchProfiles searchProfile, String language) throws IOException, JsonParseException {
+
+	String url = buildUrl(query, qf, sort, sortOrder, page, pageSize, searchProfile.toString(), language);
+
+	// Execute Europeana API request
+	String json = getJSONResult(url);
+
+	return getAnnotationPage(json);
+    }
 
 
 	/**
@@ -671,20 +616,38 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	 * @param language Query language
 	 * @return query Query URL
 	 */
-	private String buildUrl(String query, String page, String pageSize, String profile, String language)  throws IOException {
+	private String buildUrl(String query, String qf, String sort, String sortOrder, String page, String pageSize, String profile, String language)  throws IOException {
 		String url = getAnnotationServiceUri();
-		url += "/search?wskey=" + getApiKey() + "&profile=" + profile;
+		url += "/search?wskey=" + getApiKey();
+		
+		if (StringUtils.isNotEmpty(query)) {
+			url += "&profile=" + profile;
+		}
+		
 		if (StringUtils.isNotEmpty(query)) {
 			url += "&query=" + encodeUrl(query);
 		}
-		if (StringUtils.isNotEmpty(page))
+		if (StringUtils.isNotEmpty(qf)) {
+			url += "&qf=" + encodeUrl(qf);
+		}
+		if (StringUtils.isNotEmpty(sort)) {
+			url += "&sort=" + sort;
+		}
+		if (StringUtils.isNotEmpty(sortOrder)) {
+			url += "&sortOrder=" + sortOrder;
+		}
+		if (StringUtils.isNotEmpty(page)) {
 			url += "&page=" + page;
-		else
+		} else {
 			url += "&page=0";
-		if (StringUtils.isNotEmpty(pageSize))
+		}
+		
+		if (StringUtils.isNotEmpty(pageSize)) {
 			url += "&pageSize=" + pageSize;
-		else
+		} else {
 			url += "&pageSize=10";
+		}
+		
 		if (StringUtils.isNotEmpty(language)) {
 			url += "&language=" + language;
 		}
@@ -1067,8 +1030,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		
 		String action = "reindexoutdated";
 		
-		logger.debug("Annotation service URI: " +getAnnotationServiceUri());	
-		String adminAnnotationServiceUri = getAnnotationServiceUri().replace("annotation", "admin/annotation");
+		logger.debug("Annotation service URI: " +getAnnotationServiceUri());
+		String adminAnnotationServiceUri = StringUtils.removeEnd(getAnnotationServiceUri(), "annotation");
+		adminAnnotationServiceUri += "admin/annotation";
 		logger.trace("Admin annotation service URI: " +adminAnnotationServiceUri);	
 		
 		String url = adminAnnotationServiceUri+ WebAnnotationFields.SLASH + action ; 	
@@ -1097,8 +1061,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	public ResponseEntity<String> uploadAnnotations(
 			String tag, Boolean indexOnCreate) throws IOException {
 		String url = getAnnotationServiceUri()+"s";
-		if(!url.endsWith(WebAnnotationFields.SLASH))
-			url +=  WebAnnotationFields.SLASH;
+		//if(!url.endsWith(WebAnnotationFields.SLASH))
+		url += WebAnnotationFields.SLASH;
+		url += "?";
 		url += WebAnnotationFields.INDEX_ON_CREATE + WebAnnotationFields.EQUALS + indexOnCreate;
 		
 		logger.debug("Upload annotations request URL: " + url);
@@ -1107,6 +1072,18 @@ public class AnnotationApiConnection extends BaseApiConnection {
 		 * Execute Europeana API request
 		 */
 		return postURL(url, tag, authorizationHeaderName, regularUserAuthorizationValue);		
+	}
+
+	public String getDeleted(String motivation, Long afterTimestamp) throws IOException, JsonParseException {
+	    String url = getAnnotationServiceUri()+"s";
+	    url += WebAnnotationFields.SLASH;
+	    url += "deleted?afterTimestamp" + WebAnnotationFields.EQUALS + afterTimestamp;
+	    url += WebAnnotationFields.AND + WebAnnotationFields.MOTIVATION + WebAnnotationFields.EQUALS + motivation;	
+	    url += WebAnnotationFields.AND + WebAnnotationFields.PARAM_WSKEY + WebAnnotationFields.EQUALS + getApiKey();
+		
+	    logger.debug("Get deleted annotation ids with URL: " + url);
+		
+	    return getJSONResult(url);
 	}
 
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.europeana.annotation</groupId>
+		<artifactId>annotation-api</artifactId>
+		<relativePath>../pom.xml</relativePath>
+		<version>${version.annotationApi}</version>
+	</parent>
+
+	<artifactId>annotation-import</artifactId>
+	<packaging>jar</packaging>
+	<name>annotation-import</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.europeana.search-tools</groupId>
+			<artifactId>search-fulltext-api</artifactId>
+			<version>${version.europeana-search-tools}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-client</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+			<version>5.1.0</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>com.fasterxml.jackson.module</groupId> <artifactId>jackson-module-jaxb-annotations</artifactId> 
+			<version>${version.jackson}</version> </dependency> <dependency> <groupId>org.codehaus.jackson</groupId> 
+			<artifactId>jackson-xc</artifactId> <version>1.9.9</version> </dependency> -->
+
+	</dependencies>
+
+	<build>
+		
+		<!-- 
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${artifactId}-${version}</finalName>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>*.properties</include>
+					<include>log4j.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+		-->
+
+<!-- 
+		<plugins>
+			<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				<configuration> <source>${version.java}</source> <target>${version.java}</target> 
+				</configuration> </plugin> 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>eu.europeana.annotation.synchronize.AnnotationSynchronizer</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		-->
+	</build>
+</project>
