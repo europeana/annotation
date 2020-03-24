@@ -19,27 +19,24 @@
 	
 	<repositories>
 		<repository>
-		    <id>artifactory.eanadev.org</id>
-			<name>artifactory.eanadev.org-releases (external libs)</name>
-			<url>http://artifactory.eanadev.org/artifactory/ext-release-local</url>
-		</repository>
-		<repository>
-			<id>libs-release-local</id>
+			<id>libs-release</id>
 			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
 		
 		<!--  added artifactory to solve restlet dependency problems in jenkins -->
+		<!-- 
 		<repository>
 			<id>restlet</id>
 			<name>restlet repository</name>
 			<url>http://maven.restlet.org</url>
 		</repository>
+		 -->
 		
 		<!--  disable ibiblio.org mirror because of corrupted jars -->
 		<repository>
