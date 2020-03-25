@@ -141,7 +141,7 @@ public class WhitelistRest extends BaseRest {
 	    throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException,
 	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-	verifyWriteAccess(WebAnnotationFields.WRITE_METHOD, request);
+	verifyWriteAccess(Operations.WHITELIST_CREATE, request);
 
 	List<? extends WhitelistEntry> whitelist = getWhitelistService().loadWhitelistFromResources();
 
@@ -162,7 +162,7 @@ public class WhitelistRest extends BaseRest {
 	    HttpServletRequest request) throws ApplicationAuthenticationException, UserAuthorizationException,
 	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
 	WhitelistOperationResponse response;
 	response = new WhitelistOperationResponse(null, "/whitelist/deleteall");
@@ -192,7 +192,7 @@ public class WhitelistRest extends BaseRest {
 	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException,
 	    ApiKeyExtractionException, AuthorizationExtractionException {
 
-	verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
 	WhitelistOperationResponse response;
 	response = new WhitelistOperationResponse(null, "delete/whitelist/delete");
