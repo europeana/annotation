@@ -101,16 +101,16 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	}
 
 	int page = 0;
-//	final int pageSize = getAnnotationSearchPageSize();
-//	//update transcriptions using pagination
-//	while (fetchTranscriptions(lastRun, page, pageSize)) {
-//	    // retrieve active annotation (not deleted ones)
-//	    // update fulltext index
-//	    updateFulltextWithTranscriptions();	 
-//	    // move to next page and clear transcriptions map
-//	    page++;
-//	    transcriptionsMap.clear();
-//	}
+	final int pageSize = getAnnotationSearchPageSize();
+	//update transcriptions using pagination
+	while (fetchTranscriptions(lastRun, page, pageSize)) {
+	    // retrieve active annotation (not deleted ones)
+	    // update fulltext index
+	    updateFulltextWithTranscriptions();	 
+	    // move to next page and clear transcriptions map
+	    page++;
+	    transcriptionsMap.clear();
+	}
 
 	// retrieve deleted annotation
 	// TODO: implement pagination for deleted annotations
