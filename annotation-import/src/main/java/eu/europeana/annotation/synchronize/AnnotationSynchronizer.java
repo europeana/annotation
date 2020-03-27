@@ -95,20 +95,22 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    if (lastRun == null) {
 		logAndExit(
 			"cannot retreeve the last run date from solr, please verify configurations or run a full import");
+	    }else {
+		LOGGER.info("Last import run:{}", lastRun);
 	    }
 	}
 
 	int page = 0;
-	final int pageSize = getAnnotationSearchPageSize();
-	//update transcriptions using pagination
-	while (fetchTranscriptions(lastRun, page, pageSize)) {
-	    // retrieve active annotation (not deleted ones)
-	    // update fulltext index
-	    updateFulltextWithTranscriptions();	 
-	    // move to next page and clear transcriptions map
-	    page++;
-	    transcriptionsMap.clear();
-	}
+//	final int pageSize = getAnnotationSearchPageSize();
+//	//update transcriptions using pagination
+//	while (fetchTranscriptions(lastRun, page, pageSize)) {
+//	    // retrieve active annotation (not deleted ones)
+//	    // update fulltext index
+//	    updateFulltextWithTranscriptions();	 
+//	    // move to next page and clear transcriptions map
+//	    page++;
+//	    transcriptionsMap.clear();
+//	}
 
 	// retrieve deleted annotation
 	// TODO: implement pagination for deleted annotations
@@ -148,7 +150,8 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    return false;
 	}
 
-	LOGGER.debug("Processing annotations set: {}", page + 1 + "-" + (page + annotations.size()));
+	int start = page*pageSize;
+	LOGGER.debug("Processing annotations set: {}", (start + 1) + "-" + (start + annotations.size()));
 
 	for (Annotation annotation : annotations) {
 	    String resourceId = annotation.getTarget().getResourceId();
