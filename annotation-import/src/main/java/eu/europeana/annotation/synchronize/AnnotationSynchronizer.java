@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -19,7 +18,6 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import europeana.fulltext.api.FulltextContent;
@@ -39,16 +37,10 @@ import europeana.utils.SolrErrorHandling;
  */
 public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 
-    boolean fullImport = false;
-    boolean incrementalImport = false;
-    long updatedRecords = 0, deletedRecords = 0;
-
     // a map of id->transcription for the active annotations
     // must preserve order of annotations
     public Map<String, Annotation> transcriptionsMap = new LinkedHashMap<String, Annotation>();
     
-    AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
-
     public static void main(String[] args) {
 	AnnotationSynchronizer importer = new AnnotationSynchronizer();
 
@@ -95,28 +87,6 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	}
 	
     }
-
-    protected static void logResults(AnnotationSynchronizer importer) {
-	LOGGER.info("Updated FulltextRecords: {}", importer.updatedRecords);
-	LOGGER.info("Deleted FulltextRecords: {}", importer.deletedRecords);
-    }
-
-    private static void logAndExit(String message, Throwable th) {
-	if (th == null) {
-	    LOGGER.error(message);
-	} else {
-	    LOGGER.error(message, th);
-	}
-	// jenkins job failure is indicated trough a predefined value of the exit code,
-	// we set it too 3
-	// (same as for runtime exceptions)
-	System.exit(3);
-    }
-
-    private static void logAndExit(String message) {
-	logAndExit(message, null);
-    }
-
 
     public void run(Date lastRun) throws SolrServerException, IOException, InterruptedException, JsonParseException {
 
@@ -205,9 +175,10 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    UpdateResponse deleteResponse = fulltextAPI.deleteById(fulltextDeleteIds);
 	    UpdateResponse commitResponse = SolrErrorHandling.commit(fulltextAPI.getSolrClient(),
 		    fulltextAPI.getSolrCollection());
-	    deletedRecords += fulltextDeleteIds.size();
+	    deteleOperations += fulltextDeleteIds.size();
 	    if (deleteResponse.getStatus() == 0 && commitResponse.getStatus() == 0) {
 		LOGGER.info("Successfully deleted fulltext document!");
+		deletedFulltextRecords.addAll(fulltextDeleteIds);
 	    } else {
 		LOGGER.info("ERROR occured during deleting a fulltext document with the id: ", fulltextDeleteIds);
 		throw new RuntimeException("Cannot delete records from tulltext index:" + fulltextDeleteIds );
@@ -223,7 +194,8 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 		    fulltextAPI.getSolrCollection());
 	    if (addResponse.getStatus() == 0 && commitResponse.getStatus() == 0) {
 		LOGGER.info("Updating fulltext documents with active annotations was successfull!");
-		updatedRecords += fulltextDocs.size();
+		updateOperations += fulltextDocs.size();
+		addRecordIdsToSet(fulltextDocs, updatedFulltextRecords);
 	    } else {
 		LOGGER.info("ERROR occured during updating fulltext documents with annotations!", fulltextDocs);
 		//
@@ -288,11 +260,6 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 		toDelete.add(annotationDeletion.getResourceId());
 	    }
 	}
-    }
-
- 
-    protected AnnotationIdHelper getAnnotationIdHelper() {
-	return annotationIdHelper;
     }
 
 }

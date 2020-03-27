@@ -7,15 +7,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.AuxiliaryMethodsApiImpl;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import europeana.fulltext.api.FulltextAPI;
+import europeana.fulltext.api.FulltextDocument;
 import europeana.metadata.api.MetadataAPI;
 
 public class BaseAnnotationSynchronizer {
@@ -36,6 +40,13 @@ public class BaseAnnotationSynchronizer {
     MetadataAPI metadataAPI;
     FulltextAPI fulltextAPI;
     int pageSize = 100;
+    protected boolean fullImport = false;
+    protected boolean incrementalImport = false;
+    protected long updateOperations = 0;
+    protected long deteleOperations = 0;
+    AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
+    protected Set<String> updatedFulltextRecords = new HashSet<String>();
+    protected Set<String> deletedFulltextRecords = new HashSet<String>();
 
     public static final String PROPERTIES_FILE = "/annotation-import.properties";
 
@@ -103,6 +114,39 @@ public class BaseAnnotationSynchronizer {
 	return pageSize;
     }
     
+    protected void addRecordIdsToSet(List<FulltextDocument> fulltextDocs, Set<String> resourceIdSet) {
+        for (FulltextDocument fulltextDocument : fulltextDocs) {
+            resourceIdSet.add(fulltextDocument.getEuropeana_id());
+        }
+    }
+
+    protected static void logResults(AnnotationSynchronizer importer) {
+	LOGGER.info("Update Fulltext Operation: {}", importer.updateOperations);
+        LOGGER.info("Delete Fulltext Operations: {}", importer.deteleOperations);
+        LOGGER.info("Total Updated FulltextRecords: {}", importer.updatedFulltextRecords.size());
+        LOGGER.info("Total Deleted FulltextRecords: {}", importer.deletedFulltextRecords.size());
+    }
+
+    protected static void logAndExit(String message, Throwable th) {
+        if (th == null) {
+            LOGGER.error(message);
+        } else {
+            LOGGER.error(message, th);
+        }
+        // jenkins job failure is indicated trough a predefined value of the exit code,
+        // we set it too 3
+        // (same as for runtime exceptions)
+        System.exit(3);
+    }
+
+    protected static void logAndExit(String message) {
+        logAndExit(message, null);
+    }
+
+    protected AnnotationIdHelper getAnnotationIdHelper() {
+        return annotationIdHelper;
+    }
+
     public static Date parseDate(String dateString) {
 	    SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 	    try {
