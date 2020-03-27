@@ -95,6 +95,8 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    if (lastRun == null) {
 		logAndExit(
 			"cannot retreeve the last run date from solr, please verify configurations or run a full import");
+	    }else {
+		LOGGER.info("Last import run:{}", lastRun);
 	    }
 	}
 
@@ -148,7 +150,8 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    return false;
 	}
 
-	LOGGER.debug("Processing annotations set: {}", page + 1 + "-" + (page + annotations.size()));
+	int start = page*pageSize;
+	LOGGER.debug("Processing annotations set: {}", (start + 1) + "-" + (start + annotations.size()));
 
 	for (Annotation annotation : annotations) {
 	    String resourceId = annotation.getTarget().getResourceId();
