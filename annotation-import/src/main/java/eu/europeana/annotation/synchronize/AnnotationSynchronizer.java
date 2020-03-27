@@ -247,6 +247,10 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 
 	List<AnnotationDeletion> disabledResources = annotationAuxiliaryApi
 		.getDeleted(MotivationTypes.TRANSCRIBING.getOaType(), startingDate.getTime());
+	if(disabledResources == null || disabledResources.isEmpty()) {
+	    LOGGER.debug("No disabled resources to process!");
+	    return;
+	}
 	Date lastFulltextUpdate, deletionDate;
 	for (AnnotationDeletion annotationDeletion : disabledResources) {
 	    if(annotationDeletion.getResourceId() == null) {
