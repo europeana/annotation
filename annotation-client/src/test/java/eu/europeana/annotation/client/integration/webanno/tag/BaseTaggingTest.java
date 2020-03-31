@@ -18,6 +18,8 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String TAG_GEO_WRONG_LONG = "/tag/wrong/geotag_wrong_long.json";
 	public static final String TAG_STANDARD = "/tag/standard.json";
 	public static final String TAG_GEOTAG = "/tag/geotag.json";
+	public static final String LINK_STANDARD = "/link/standard.json";
+	public static final String LINK_SEMANTIC = "/link/edmIsSimilarTo.json";
 	public static final String SEMANTICTAG_SIMPLE_MINIMAL = "/semantictag/simple_minimal.json";
 	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
@@ -33,6 +35,8 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_viaf_test_entity.json";
 	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2 = "/semantictag/dereferenced_semantictag_viaf_test_entity2.json";
 	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3 = "/semantictag/dereferenced_semantictag_viaf_test_entity3.json";
+	public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
+	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
 	
 	protected Annotation createAndValidateTag(String inputFile) throws IOException, JsonParseException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException {
