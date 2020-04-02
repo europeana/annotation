@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -34,6 +35,7 @@ import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
@@ -276,4 +278,5 @@ public class BaseRest extends BaseRestController {
 	    getAuthorizationService().checkWriteLockInEffect(operation);
 	    return auth;
 	}
+	        
 }

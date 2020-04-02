@@ -22,6 +22,8 @@ public interface AnnotationConfiguration {
 	
 	public static final String PREFIX_MAX_PAGE_SIZE = "annotation.search.maxpagesize.";
 	
+	public static final String API_VERSION = "annotation.apiVersion";
+	
 	public String getComponentName();
 	
 	/**
@@ -67,6 +69,8 @@ public interface AnnotationConfiguration {
     public static final String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
 
     public static final String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
+    
+    public static final String ETAG_FORMAT = "application/json";
 
     /**
      * This method retrieves a set of supported transcriptions licenses.
@@ -75,4 +79,9 @@ public interface AnnotationConfiguration {
      */
     public Set<String> getAcceptedLicenceses();
 
+	/**
+	 * uses annotation.apiVersion property
+	 */
+	public String getAnnotationApiVersion();
+		
 }
