@@ -278,28 +278,5 @@ public class BaseRest extends BaseRestController {
 	    getAuthorizationService().checkWriteLockInEffect(operation);
 	    return auth;
 	}
-	
-    /**
-     * This method compares If-Match header with the current etag value.
-     * 
-     * @param etag    The current etag value
-     * @param request The request containing If-Match header
-     * @throws HttpException
-     */
-    public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException {
-    	super.checkIfMatchHeader(etag, request);
-    }
-	
-    /**
-     * This method generates etag for response header.
-     * 
-     * @param timestamp The date of the last modification
-     * @param format       The MIME format
-     * @param version      The API version
-     * @return etag value
-     */
-    public String generateETag(Date timestamp, String format, String version) {
-		return super.generateETag(timestamp, format, version);
-    }
-        
+	        
 }
