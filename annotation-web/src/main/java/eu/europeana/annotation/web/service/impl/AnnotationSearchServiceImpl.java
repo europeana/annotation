@@ -31,6 +31,7 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationSearchServiceImpl implements AnnotationSearchService {
@@ -148,11 +149,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
 	private String buildPageUrl(String collectionUrl, int page, int pageSize) {
 		StringBuilder builder = new StringBuilder(collectionUrl);
-		builder.append(WebAnnotationFields.AND).append(WebAnnotationFields.PARAM_PAGE)
-			.append(WebAnnotationFields.EQUALS).append(page);
+		builder.append(WebFields.AND).append(WebAnnotationFields.PARAM_PAGE)
+			.append(WebFields.EQUALS).append(page);
 
-		builder.append(WebAnnotationFields.AND).append(WebAnnotationFields.PARAM_PAGE_SIZE)
-		.append(WebAnnotationFields.EQUALS).append(pageSize);
+		builder.append(WebFields.AND).append(WebAnnotationFields.PARAM_PAGE_SIZE)
+		.append(WebFields.EQUALS).append(pageSize);
 
 		return builder.toString();
 	}
@@ -180,8 +181,8 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 	protected String removeParam(final String queryParam, String queryParams) {
 		String tmp;
 		//avoid name conflicts search "queryParam="
-		int startPos = queryParams.indexOf(queryParam+WebAnnotationFields.EQUALS);
-		int startEndPos = queryParams.indexOf(WebAnnotationFields.AND, startPos + 1);
+		int startPos = queryParams.indexOf(queryParam+WebFields.EQUALS);
+		int startEndPos = queryParams.indexOf(WebFields.AND, startPos + 1);
 
 		if (startPos >= 0) {
 			//make sure to remove the "&" if not the first param
