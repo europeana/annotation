@@ -60,6 +60,7 @@ import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -121,7 +122,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // TODO: clarify serialization ETag: "_87e52ce126126"
 	    // TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTag = generateETag(storedAnnotation.getGenerated(), WebAnnotationFields.FORMAT_JSONLD, apiVersion);
+	    String eTag = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
@@ -152,7 +153,7 @@ public class BaseJsonldRest extends BaseRest {
     }
 
     protected String buildCreatorUri(String userId) {
-	return WebAnnotationFields.DEFAULT_CREATOR_URL + userId;
+	return WebFields.DEFAULT_CREATOR_URL + userId;
     }
 
     protected String buildGeneratorUri(String apikeyId) {
@@ -327,7 +328,7 @@ public class BaseJsonldRest extends BaseRest {
 	    String jsonLd = annotationLd.toString(4);
 
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTag = generateETag(annotation.getGenerated(), WebAnnotationFields.FORMAT_JSONLD, apiVersion);
+	    String eTag = generateETag(annotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
@@ -468,7 +469,7 @@ public class BaseJsonldRest extends BaseRest {
 
 	    // validate annotation
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebAnnotationFields.FORMAT_JSONLD, apiVersion);
+	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
 	    checkIfMatchHeader(eTagOrigin, request);
 	    getAnnotationService().validateWebAnnotation(updateWebAnnotation);
@@ -478,7 +479,7 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation updatedAnnotation = getAnnotationService().updateAnnotation((PersistentAnnotation)storedAnnotation,
 		    updateWebAnnotation);
 
-	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebAnnotationFields.FORMAT_JSONLD, apiVersion);
+	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
 	    // serialize to jsonld
 	    JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation);

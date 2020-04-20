@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
@@ -44,7 +45,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 		
 		return storeAnnotation(null, indexOnCreate, annotation, authentication);
 	}
@@ -74,7 +75,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 		
-		Authentication authentication = verifyWriteAccess(WebAnnotationFields.UPDATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(Operations.UPDATE, request);
 		
 //		String action = "put:/annotation/{identifier}[.{format}]";
 		return updateAnnotation(identifier, annotation, authentication, request);
@@ -89,7 +90,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		Authentication authentication = verifyWriteAccess(WebAnnotationFields.DELETE_METHOD, request);
+		Authentication authentication = verifyWriteAccess(Operations.DELETE, request);
 		
 //		String action = "delete:/annotation/{identifier}[.{format}]";
 		return deleteAnnotation(identifier, authentication);
