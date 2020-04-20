@@ -16,7 +16,7 @@ public class HeaderValidationException extends HttpException{
 	private static final long serialVersionUID = 6638981164823301905L;
 
 	public HeaderValidationException(String parameterName, String parameterValue){
-		this(I18nConstants.INVALID_PARAM_VALUE, parameterName, parameterValue, null);
+		this(I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE, parameterName, parameterValue, null);
 	}
 	
 	public HeaderValidationException(String i18nKey, String parameterName, String parameterValue){

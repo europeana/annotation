@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +27,7 @@ import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.api.commons.web.model.vocabulary.Operations;
 import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,7 +44,7 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
     public ResponseEntity<String> createAnnotations(@RequestBody String annotationPage, HttpServletRequest request)
 	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-	Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+	Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 
 	return storeAnnotations(annotationPage, authentication);
     }
@@ -58,7 +58,7 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 	    @PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType, HttpServletRequest request)
 	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-	Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+	Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 
 	MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 
