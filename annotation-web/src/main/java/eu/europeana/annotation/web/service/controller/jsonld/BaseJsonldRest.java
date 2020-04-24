@@ -472,13 +472,7 @@ public class BaseJsonldRest extends BaseRest {
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
 	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
-	    try {
-	    	checkIfMatchHeader(eTagOrigin, request);
-	    } catch (HeaderValidationException e) {
-	    	String ifMatchHeader = request.getHeader(HttpHeaders.IF_MATCH);
-		    throw new eu.europeana.annotation.web.exception.HeaderValidationException(HttpHeaders.IF_MATCH,
-				    ifMatchHeader);	    	
-	    }
+    	checkIfMatchHeader(eTagOrigin, request);
 	    getAnnotationService().validateWebAnnotation(updateWebAnnotation);
 
 	    // 6. apply updates - merge current and updated annotation
