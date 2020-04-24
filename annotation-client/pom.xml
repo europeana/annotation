@@ -20,12 +20,6 @@
 	</properties>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-web</artifactId>
-			<version>${version.commonsApi}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
