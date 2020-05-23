@@ -89,8 +89,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	//Not needed yet
 	//public static final String WHITELIST = "whitelist";
 
-	public static final String FORMAT_JSONLD = "jsonld";
-
 	/**
 	 * Query Params
 	 */
@@ -117,13 +115,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String ANNOTAION_API = "annotation";
 	public static final String ENTITY_API = "entity";
 	public static final String SEARCH_API = "search";
-	public static final String READ_METHOD = "read";
-	public static final String WRITE_METHOD = "write";
-	public static final String DELETE_METHOD = "delete";
 	public static final String CLIENT_VALIDATION_API_KEY = "ApiKey1";
-
-	public static final String CREATE_OPERATION = "create";
-	public static final String UPDATE_OPERATION = "update";
 
 	/**
 	 * Query Fields
@@ -187,8 +179,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	/**
 	 * AnnotationLd
 	 */
-	public static final String AND = "&";
-	public static final String EQUALS = "=";
 //	public static final String INDEXING = "indexing";
 	public static final String INDEX_ON_CREATE = "indexOnCreate";
 	public static final String PROVIDER = "provider";
@@ -197,7 +187,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String IDENTIFIER = "identifier";
 	public static final String RESOURCE_ID = "resourceId";
 	public static final String JSON_REST = ".json";
-	public static final String JSON_LD_REST = ".jsonld";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
 	public static final String ANNOTATION_LD_JSON_LD_REST = "annotationld.jsonld";
 	public static final String CONCEPT_JSON_REST = "uri.json";
@@ -268,7 +257,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String URI = "uri";
 	public static final String WHITELIST = "whitelist";
 	public static final String DEFAULT_GENERATOR_URL = "http://data.europeana.eu/apikey/";
-	public static final String DEFAULT_CREATOR_URL = "http://data.europeana.eu/user/";
 
 	
 	/**

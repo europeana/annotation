@@ -5,9 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -20,16 +20,16 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import europeana.fulltext.api.FulltextContent;
-import europeana.fulltext.api.FulltextDocument;
-import europeana.utils.SolrErrorHandling;
+import eu.europeana.fulltext.api.FulltextContent;
+import eu.europeana.fulltext.api.FulltextDocument;
+import eu.europeana.utils.SolrErrorHandling;
 
 /**
  * This class performs the synchronization of annotations. Namely, it enables
  * updating the fulltext index taking into account the modifications of the
  * annotations and/or their metadata. As first command line argument, use one of
  * {@link #IMPORT_FULL} or {@link #IMPORT_DATE}. If type is {@link #IMPORT_DATE}
- * second argument needs to be a date provided in the ISO 8601 format (e.g.
+ * second argument needs to be a date provided in the {@link #SOLR_DATE_FORMAT} format (e.g.
  * "2019-11-22T10:44:30.620Z").
  * 
  * @author SrdjanStevanetic
@@ -39,8 +39,11 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 
     // a map of id->transcription for the active annotations
     // must preserve order of annotations
-    public Map<String, Annotation> transcriptionsMap = new LinkedHashMap<String, Annotation>();
-    
+    // to be updated when nested documents are available
+//    public Map<String, Annotation> transcriptionsMap = new LinkedHashMap<String, Annotation>();
+    List<? extends Annotation> transcriptions;
+    Set<String> records = new TreeSet<String>();
+
     public static void main(String[] args) {
 	AnnotationSynchronizer importer = new AnnotationSynchronizer();
 
@@ -85,7 +88,7 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    logResults(importer);
 	    LOGGER.error("The import job failed!", th);
 	}
-	
+
     }
 
     public void run(Date lastRun) throws SolrServerException, IOException, InterruptedException, JsonParseException {
@@ -95,21 +98,22 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    if (lastRun == null) {
 		logAndExit(
 			"cannot retreeve the last run date from solr, please verify configurations or run a full import");
-	    }else {
+	    } else {
 		LOGGER.info("Last import run:{}", lastRun);
 	    }
 	}
 
 	int page = 0;
 	final int pageSize = getAnnotationSearchPageSize();
-	//update transcriptions using pagination
+	// update transcriptions using pagination
 	while (fetchTranscriptions(lastRun, page, pageSize)) {
 	    // retrieve active annotation (not deleted ones)
 	    // update fulltext index
-	    updateFulltextWithTranscriptions();	 
+	    updateFulltextWithTranscriptions();
 	    // move to next page and clear transcriptions map
 	    page++;
-	    transcriptionsMap.clear();
+//	    transcriptionsMap.clear();
+	    transcriptions.clear();
 	}
 
 	// retrieve deleted annotation
@@ -140,23 +144,24 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 //	SOLR_DATE_FORMAT
 	SimpleDateFormat solrDateFormatter = new SimpleDateFormat(SOLR_DATE_FORMAT);
 	String afterDate = solrDateFormatter.format(startingDate);
-	String query = WebAnnotationFields.MOTIVATION + ":" + MotivationTypes.TRANSCRIBING.getOaType() 
-		+" AND "+ WebAnnotationFields.FIELD_MODIFIED + ":[" + afterDate + " TO NOW]";
-	AnnotationPage annPg = annotationSearchApi.searchAnnotations(query, null, WebAnnotationFields.FIELD_MODIFIED, "asc",
-		String.valueOf(page), String.valueOf(pageSize), SearchProfiles.STANDARD, null);
+	String query = WebAnnotationFields.MOTIVATION + ":" + MotivationTypes.TRANSCRIBING.getOaType() + " AND "
+		+ WebAnnotationFields.FIELD_MODIFIED + ":[" + afterDate + " TO NOW]";
+	AnnotationPage annPg = annotationSearchApi.searchAnnotations(query, null, WebAnnotationFields.FIELD_MODIFIED,
+		"asc", String.valueOf(page), String.valueOf(pageSize), SearchProfiles.STANDARD, null);
 	List<? extends Annotation> annotations = annPg.getAnnotations();
 
 	if (annotations == null || annotations.size() == 0) {
 	    return false;
 	}
 
-	int start = page*pageSize;
+	int start = page * pageSize;
 	LOGGER.debug("Processing annotations set: {}", (start + 1) + "-" + (start + annotations.size()));
 
-	for (Annotation annotation : annotations) {
-	    String resourceId = annotation.getTarget().getResourceId();
-	    transcriptionsMap.put(resourceId, annotation);
-	}
+//	for (Annotation annotation : annotations) {
+//	    String resourceId = annotation.getTarget().getResourceId();
+//	    transcriptionsMap.put(resourceId, annotation);
+//	}
+	transcriptions = annotations;
 
 	return true;
     }
@@ -184,47 +189,73 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 		deletedFulltextRecords.addAll(fulltextDeleteIds);
 	    } else {
 		LOGGER.info("ERROR occured during deleting a fulltext document with the id: ", fulltextDeleteIds);
-		throw new RuntimeException("Cannot delete records from tulltext index:" + fulltextDeleteIds );
+		throw new RuntimeException("Cannot delete records from tulltext index:" + fulltextDeleteIds);
 	    }
 	}
     }
 
     protected void updateDocs(List<FulltextDocument> fulltextDocs)
 	    throws SolrServerException, IOException, InterruptedException {
-	if (!fulltextDocs.isEmpty()) {
-	    UpdateResponse addResponse = fulltextAPI.set(fulltextDocs, metadataAPI);
+
+	for (FulltextDocument fulltextDocument : fulltextDocs) {
+	    UpdateResponse addResponse = fulltextAPI.set(fulltextDocument, metadataAPI);
 	    UpdateResponse commitResponse = SolrErrorHandling.commit(fulltextAPI.getSolrClient(),
 		    fulltextAPI.getSolrCollection());
 	    if (addResponse.getStatus() == 0 && commitResponse.getStatus() == 0) {
 		LOGGER.info("Updating fulltext documents with active annotations was successfull!");
-		updateOperations += fulltextDocs.size();
-		addRecordIdsToSet(fulltextDocs, updatedFulltextRecords);
+		updateOperations++;
+//		addRecordIdsToSet(fulltextDocs, updatedFulltextRecords);
+		records.add(fulltextDocument.getEuropeana_id());
 	    } else {
-		LOGGER.info("ERROR occured during updating fulltext documents with annotations!", fulltextDocs);
+		LOGGER.info("ERROR occured during updating fulltext document with annotations!", fulltextDocument);
 		//
-		throw new RuntimeException("cannot submit records to solr index for fulltext docs:" + fulltextDocs);
+		throw new RuntimeException("cannot submit records to solr index for fulltext doc:" + fulltextDocument);
 	    }
-
 	}
     }
 
     protected void fillUpdateAndDeleteLists(List<FulltextDocument> fulltextDocs, List<String> fulltextDeleteIds)
 	    throws SolrServerException, IOException {
 	
-	Annotation annotation;
-	for (String europeana_id : transcriptionsMap.keySet()) {
-	    // ensuring that there is a document in the metadata
+//	Annotation annotation;
+	//to be revisited when nested documents for resources is implemented
+//	for (String europeana_id : transcriptionsMap.keySet()) {
+//	    // ensuring that there is a document in the metadata
+//	    if (metadataAPI.get(europeana_id) == null) {
+//		// delete the document from the fulltext API
+//		fulltextDeleteIds.add(europeana_id);
+//	    } else {
+//		// TODO: clarify the language aspect and use TranscriptionLanguage
+//		// even if exists it must be overwritten with the new value
+////		  String existingTranscription = transcriptionsMap.get(key);
+////		  if(existingTranscription==null) {
+//		annotation = transcriptionsMap.get(europeana_id);
+//		String transcription = annotation.getBody().getValue();
+//		String language = annotation.getBody().getLanguage();
+//		if(language == null)
+//		    language = "";
+//		
+//		Date updated = annotation.getGenerated();
+//		
+//		if (StringUtils.isNotBlank(transcription)) {
+//			FulltextContent fulltextContent = new FulltextContent(transcription, language);
+//			fulltextDocs.add(new FulltextDocument(europeana_id, Arrays.asList(fulltextContent), updated));   
+//		} else {
+//		    LOGGER.info("No textual transcription available, the annotation is not added to fulltext: {0}", annotation.getAnnotationId());
+//		}
+//	    }
+//	}
+	String europeana_id, transcription, language;
+	for (Annotation annotation : transcriptions) {
+	    
+	    europeana_id = annotation.getTarget().getResourceId();
+	    //TODO preserve metadata document to reduce nr of solr requests, or implement exists
 	    if (metadataAPI.get(europeana_id) == null) {
 		// delete the document from the fulltext API
 		fulltextDeleteIds.add(europeana_id);
 	    } else {
-		// TODO: clarify the language aspect and use TranscriptionLanguage
-		// even if exists it must be overwritten with the new value
-//		  String existingTranscription = transcriptionsMap.get(key);
-//		  if(existingTranscription==null) {
-		annotation = transcriptionsMap.get(europeana_id);
-		String transcription = annotation.getBody().getValue();
-		String language = annotation.getBody().getLanguage();
+		transcription = annotation.getBody().getValue();
+		language = annotation.getBody().getLanguage();
 		if(language == null)
 		    language = "";
 		
@@ -236,7 +267,7 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 		} else {
 		    LOGGER.info("No textual transcription available, the annotation is not added to fulltext: {0}", annotation.getAnnotationId());
 		}
-	    }
+	    } 
 	}
     }
 
@@ -247,23 +278,27 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 
 	List<AnnotationDeletion> disabledResources = annotationAuxiliaryApi
 		.getDeleted(MotivationTypes.TRANSCRIBING.getOaType(), startingDate.getTime());
-	if(disabledResources == null || disabledResources.isEmpty()) {
+	if (disabledResources == null || disabledResources.isEmpty()) {
 	    LOGGER.debug("No disabled resources to process!");
 	    return;
 	}
 	Date lastFulltextUpdate, deletionDate;
 	for (AnnotationDeletion annotationDeletion : disabledResources) {
-	    if(annotationDeletion.getResourceId() == null) {
+	    if (annotationDeletion.getResourceId() == null) {
 		LOGGER.info("annotation doesn't have a resource id {}", annotationDeletion.getAnnotaionId());
 		continue;
 	    }
 	    lastFulltextUpdate = fulltextAPI.getLastAnnotationUpdate(annotationDeletion.getResourceId());
 	    deletionDate = new Date(annotationDeletion.getTimestamp());
-	    if(lastFulltextUpdate == null || lastFulltextUpdate.after(deletionDate)) {
-		//nothing to do, record doesn't exists in the fulltext or transcription was already updated by another annotation
-		LOGGER.info("Fulltext record {} doesn't exist for annotation {}  or the record was updated with a later timestamp than the curent one {}: {}",
-			annotationDeletion.getResourceId(), annotationDeletion.getAnnotaionId(), deletionDate, lastFulltextUpdate);
-	    }else {
+//	    if (lastFulltextUpdate == null || lastFulltextUpdate.after(deletionDate))
+	    if (lastFulltextUpdate == null) {
+		// nothing to do, record doesn't exists in the fulltext or transcription was
+		// already updated by another annotation
+		LOGGER.info(
+			"Fulltext record {} doesn't exist for annotation {}  or the record was updated with a later timestamp than the curent one {}: {}",
+			annotationDeletion.getResourceId(), annotationDeletion.getAnnotaionId(), deletionDate,
+			lastFulltextUpdate);
+	    } else {
 		toDelete.add(annotationDeletion.getResourceId());
 	    }
 	}

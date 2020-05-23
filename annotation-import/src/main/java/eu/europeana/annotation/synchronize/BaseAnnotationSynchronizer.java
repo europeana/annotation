@@ -18,9 +18,8 @@ import org.apache.logging.log4j.Logger;
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.AuxiliaryMethodsApiImpl;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import europeana.fulltext.api.FulltextAPI;
-import europeana.fulltext.api.FulltextDocument;
-import europeana.metadata.api.MetadataAPI;
+import eu.europeana.fulltext.api.FulltextAPI;
+import eu.europeana.metadata.api.MetadataAPI;
 
 public class BaseAnnotationSynchronizer {
 
@@ -114,11 +113,11 @@ public class BaseAnnotationSynchronizer {
 	return pageSize;
     }
     
-    protected void addRecordIdsToSet(List<FulltextDocument> fulltextDocs, Set<String> resourceIdSet) {
-        for (FulltextDocument fulltextDocument : fulltextDocs) {
-            resourceIdSet.add(fulltextDocument.getEuropeana_id());
-        }
-    }
+//    protected void addRecordIdsToSet(List<FulltextDocument> fulltextDocs, Set<String> resourceIdSet) {
+//        for (FulltextDocument fulltextDocument : fulltextDocs) {
+//            resourceIdSet.add(fulltextDocument.getEuropeana_id());
+//        }
+//    }
 
     protected static void logResults(AnnotationSynchronizer importer) {
 	LOGGER.info("Update Fulltext Operation: {}", importer.updateOperations);
@@ -148,12 +147,12 @@ public class BaseAnnotationSynchronizer {
     }
 
     public static Date parseDate(String dateString) {
-	    SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+	    SimpleDateFormat format = new SimpleDateFormat(SOLR_DATE_FORMAT);
 	    try {
 	      return format.parse(dateString);
 	    } catch (ParseException e) {
 	      String message = "When first argument is: " + IMPORT_DATE
-	          + "the second argument must be a date formated as: " + DATE_FORMAT;
+	          + "the second argument must be a date formated as: " + SOLR_DATE_FORMAT;
 	      throw new IllegalArgumentException(message, e);
 	    }
 	  }

@@ -90,7 +90,12 @@
             	</exclusion>
             </exclusions>            
         </dependency>
-						
+        <!-- dependencies for switching to JDK 11 -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>${version.javax.annotation}</version>
+		</dependency>				
 	</dependencies>
 </project>
 

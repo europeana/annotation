@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
@@ -32,7 +33,7 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		Authentication authentication = verifyWriteAccess(WebAnnotationFields.CREATE_OPERATION, request);
+		Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 		
 //		String action = "post:/annotation/{identifier}/report";
 		return storeAnnotationReport(identifier, authentication);
