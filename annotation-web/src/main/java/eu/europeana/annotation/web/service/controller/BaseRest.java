@@ -23,6 +23,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -165,10 +166,10 @@ public class BaseRest extends BaseRestController {
 
 	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
 
-		return buildAnnotationId("webanno", identifier, true);
+		return buildAnnotationId(identifier, true);
 	}
 
-	protected AnnotationId buildAnnotationId(String provider, String identifier, boolean validation) throws ParamValidationException {
+	protected AnnotationId buildAnnotationId(String identifier, boolean validation) throws ParamValidationException {
 
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
