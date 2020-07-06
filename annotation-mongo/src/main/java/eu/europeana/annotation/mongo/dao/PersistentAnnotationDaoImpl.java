@@ -71,7 +71,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 			
 			if (nextAnnotationId == null) {
 				// if first annotationId
-				nextAnnotationId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), ""+1L);
+				nextAnnotationId = new GeneratedAnnotationIdImpl(WebAnnotationFields.DEFAULT_PROVIDER, getConfiguration().getAnnotationBaseUrl(), 1L);
 				ds.save(nextAnnotationId);
 			}else{
 				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());

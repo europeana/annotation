@@ -29,6 +29,13 @@
 	</repositories>
 
 	<dependencies>
+	
+		<!-- fixes for JDK 11 -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${version.jaxb}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>

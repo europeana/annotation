@@ -1,0 +1,37 @@
+db.annotation.update(   
+{},
+{$set: {"annotationId.baseUrl":"http://data.europeana.eu/annotation"}},
+{ multi: true }
+)
+
+db.annotation.find().forEach(
+    function (elem) {
+        db.annotation.update(
+            {
+                _id: elem._id
+            },
+            {
+                $set: {
+                    "annotationId.httpUrl": "http://data.europeana.eu/annotation/" + elem.annotationId.identifier                }
+            }
+        );
+    }
+);
+
+
+db.getCollection('annotation').find({"annotationId.httpUrl":{$regex: ".*data.*"}}).count()
+
+
+db.annotation.find({"annotationId.httpUrl":{$regex: ".*acceptance.*"}}).forEach(
+    function (elem) {
+        db.annotation.updateOne(
+            {
+                _id: elem._id
+            },
+            {
+                $set: {
+                    "annotationId.httpUrl": "http://data.europeana.eu/annotation/" + elem.annotationId.identifier                }
+            }
+        );
+    }
+);

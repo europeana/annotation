@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<artifactId>annotation-mongo</artifactId>
 	<name>Europeana Annotation - Mongo based persistance </name>
 	<url>http://www.europeanalabs.eu</url>
@@ -21,27 +22,27 @@
 			<artifactId>annotation-definitions</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>eu.europeana.api.commons</groupId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
 			<version>${version.commonsApi}</version>
 			<artifactId>commons-nosql</artifactId>
 		</dependency>
-		
-        <dependency>
+
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 			<version>${version.org.junit.jupiter}</version>
 		</dependency>
 		
-		<!--  overwrite   -->
+		<!-- overwrite -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -52,62 +53,21 @@
 			<artifactId>spring-context-support</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
-		
-		<!--
-		<dependency>
-			<groupId>eu.europeana.corelib</groupId>
-			<artifactId>corelib-db</artifactId>
-			<version>${version.corelib}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>corelib-search</artifactId>
-					<groupId>eu.europeana.corelib</groupId>
-				</exclusion>
-				<exclusion>
-            		<artifactId>spring-boot</artifactId>
-            		<groupId>org.springframework.boot</groupId>
-            	</exclusion>
-				<exclusion>
-					<artifactId>harvester-persistence</artifactId>
-					<groupId>eu.europeana</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>xml-apis</artifactId>
-					<groupId>xml-apis</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
-		<dependency>
-			<groupId>eu.europeana.corelib</groupId>
-			<artifactId>corelib-common-storage</artifactId>
-			<version>${version.corelib}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>eu.europeana.corelib</groupId>
-			<artifactId>corelib-logging</artifactId>
-			<version>${version.corelib}</version>
-		</dependency>
- 		-->
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<!-- 
-			<version>${version.springCore}</version>
-			 -->
+			<!-- <version>${version.springCore}</version> -->
 			<version>${version.spring}</version>
 		</dependency>
-		
+
 		<!-- TESTING PURPOSES -->
-		
+
 		<dependency>
 			<scope>test</scope>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<!-- 
-			<version>${version.springCore}</version>
-			 -->
+			<!-- <version>${version.springCore}</version> -->
 			<version>${version.spring}</version>
 		</dependency>
 
@@ -117,9 +77,9 @@
 			<version>${version.annotationApi}</version>
 		</dependency>
 	</dependencies>
-	
+
 	<organization>
 		<name>Europeana Foundation</name>
 	</organization>
-	
+
 </project>

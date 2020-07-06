@@ -5,6 +5,7 @@ import org.mongodb.morphia.annotations.Id;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
  * This class is used to generate the Annotation IDs in form of europeanaId/annotationNr, where the 
@@ -49,14 +50,26 @@ public class GeneratedAnnotationIdImpl extends BaseAnnotationId implements Annot
 	 * @param identifier - must be a long number
 	 */
 	public GeneratedAnnotationIdImpl(String baseUrl, String identifier){
-		this(baseUrl, Long.parseLong(identifier));
+		this(WebAnnotationFields.DEFAULT_PROVIDER, baseUrl, Long.parseLong(identifier));
 	}
 	
 	public GeneratedAnnotationIdImpl(String baseUrl, Long annotationNr){
+	    this(WebAnnotationFields.DEFAULT_PROVIDER, baseUrl, annotationNr);
+	}
+	
+	/**
+	 * 
+	 * @param id - set with the value of provider, see also 
+	 * @param baseUrl
+	 * @param annotationNr
+	 */
+	public GeneratedAnnotationIdImpl(String id, String baseUrl, Long annotationNr){
 		super();
+		this.id = id;
 		this.annotationNr = annotationNr;
 		this.setHttpUrl(toHttpUrl());
 	}
+	
 	
 	@Override
 	public String getIdentifier() {
