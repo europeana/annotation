@@ -93,7 +93,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		Authentication authentication = verifyWriteAccess(Operations.DELETE, request);
 		
 //		String action = "delete:/annotation/{identifier}[.{format}]";
-		return deleteAnnotation(identifier, authentication);
+		return deleteAnnotation(identifier, authentication, request);
 	}
 		
 }
