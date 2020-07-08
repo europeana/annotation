@@ -28,7 +28,7 @@
 	    
 	    <dependency>
 			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>annotation-client</artifactId>
+			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
 	    

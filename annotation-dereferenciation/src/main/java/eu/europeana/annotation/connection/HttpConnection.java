@@ -12,7 +12,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.springframework.http.MediaType;
 
 
 /**
@@ -73,7 +72,7 @@ public class HttpConnection {
         HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
         post.setRequestHeader("Accept", "application/xml");
-        StringRequestEntity requestBody = new StringRequestEntity(body, MediaType.APPLICATION_JSON_UTF8_VALUE, null);
+        StringRequestEntity requestBody = new StringRequestEntity(body, "application/json;charset=UTF-8", null);
         post.setRequestEntity(requestBody);
 
         try {
