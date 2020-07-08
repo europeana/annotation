@@ -202,7 +202,7 @@ public class BodyTypesTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(LINK_STANDARD);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation storedAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
 		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
@@ -224,7 +224,7 @@ public class BodyTypesTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(LINK_SEMANTIC);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation storedAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
 		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
@@ -246,7 +246,7 @@ public class BodyTypesTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(LINK_SEMANTIC);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation storedAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
 		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);

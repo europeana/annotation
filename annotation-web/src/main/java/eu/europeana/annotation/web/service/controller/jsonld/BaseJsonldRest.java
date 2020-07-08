@@ -160,9 +160,7 @@ public class BaseJsonldRest extends BaseRest {
 	return WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
     }
 
-    @Deprecated
     /**
-     * Must update authorization
      * 
      * @param wsKey
      * @param annotationPageIn

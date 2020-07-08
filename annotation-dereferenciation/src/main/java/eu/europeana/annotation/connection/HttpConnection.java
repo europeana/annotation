@@ -9,7 +9,10 @@ import java.io.IOException;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.springframework.http.MediaType;
 
 
 /**
@@ -19,15 +22,33 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  */
 public class HttpConnection {
 
-    private static final int CONNECTION_RETRIES = 3;
-    private static final int TIMEOUT_CONNECTION = 40000;
+    public static final int DEFAULT_CONNECTION_RETRIES = 3;
+    public static final int DEFAULT_TIMEOUT_CONNECTION = 40000;
     private static final int STATUS_OK_START = 200;
     private static final int STATUS_OK_END = 299;
     private static final String ENCODING = "UTF-8";
     private HttpClient httpClient = null;
-
+    private int connectionRetries, connectionTimeout;
+    
+    public HttpConnection(int retries, int timeout) {
+	if(retries > 0) {
+	    this.connectionRetries = retries;
+	}else {
+	    this.connectionRetries = DEFAULT_CONNECTION_RETRIES;
+	}
+	if(timeout > 0) {
+	    this.connectionTimeout = timeout;
+	}else{
+	    this.connectionTimeout = timeout;
+	}
+    }
+    
+    public HttpConnection() {
+	this(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
+    }
+    
     public String getURLContent(String url) throws IOException {
-        HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
+        HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
         get.setRequestHeader("Accept", "application/xml");
 
@@ -45,6 +66,29 @@ public class HttpConnection {
 
         } finally {
             get.releaseConnection();
+        }
+    }
+    
+    public String postRequest(String url, String body) throws IOException {
+        HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
+        PostMethod post = new PostMethod(url);
+        post.setRequestHeader("Accept", "application/xml");
+        StringRequestEntity requestBody = new StringRequestEntity(body, MediaType.APPLICATION_JSON_UTF8_VALUE, null);
+        post.setRequestEntity(requestBody);
+
+        try {
+            client.executeMethod(post);
+
+            if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
+                byte[] byteResponse = post.getResponseBody();
+                String res = new String(byteResponse, ENCODING);
+                return res;
+            } else {
+                return null;
+            }
+
+        } finally {
+            post.releaseConnection();
         }
     }
    
@@ -93,5 +137,21 @@ public class HttpConnection {
             this.httpClient = client;
         }
         return this.httpClient;
+    }
+
+    public int getConnectionRetries() {
+        return connectionRetries;
+    }
+
+    public void setConnectionRetries(int connectionRetries) {
+        this.connectionRetries = connectionRetries;
+    }
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
     }
 }

@@ -34,7 +34,6 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
     @Override
     public boolean isProductionEnvironment() {
-	// TODO Auto-generated method stub
 	return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
     }
 
@@ -75,27 +74,49 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     @Override
     /*
      * (non-Javadoc)
-     * @see eu.europeana.annotation.config.AnnotationConfiguration#getAcceptedLicenceses()
+     * 
+     * @see
+     * eu.europeana.annotation.config.AnnotationConfiguration#getAcceptedLicenceses(
+     * )
      */
     public Set<String> getAcceptedLicenceses() {
 
-		if (acceptedLicences == null) {
-		    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
-		    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
-		}
+	if (acceptedLicences == null) {
+	    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
+	    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
+	}
 
 	return acceptedLicences;
     }
 
-	@Override
-	public String getMetisBaseUrl() {
-		String key = METIS_BASE_URL; 
-		return getAnnotationProperties().getProperty(key);
+    @Override
+    public String getMetisBaseUrl() {
+	return getAnnotationProperties().getProperty(METIS_BASE_URL);
+    }
+
+    @Override
+    public int getMetisConnectionRetries() {
+	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_RETRIES);
+	return toInt(value);
+    }
+
+    @Override
+    public int getMetisConnectionTimeout() {
+	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_TIMEOUT);
+	return toInt(value);
+    }
+
+    int toInt(String value) {
+	try {
+	    return Integer.valueOf(value);
+	} catch (NumberFormatException e) {
+	    return -1;
 	}
+    }
 
     @Override
     public String getAnnotationApiVersion() {
-    	return getAnnotationProperties().getProperty(API_VERSION);
+	return getAnnotationProperties().getProperty(API_VERSION);
     }
 
 }

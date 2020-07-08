@@ -1,9 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,17 +16,12 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
+import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
-import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.body.PlaceBody;
-import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
-import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
-import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
@@ -37,10 +30,7 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -50,7 +40,6 @@ import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
-import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
@@ -62,7 +51,6 @@ import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
@@ -243,7 +231,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * 
      * @param newAnnotation
      */
-    private void validateAnnotationId(Annotation newAnnotation) {
+    protected void validateAnnotationId(Annotation newAnnotation) {
 
 	if (newAnnotation.getAnnotationId() == null)
 	    throw new AnnotationValidationException("Annotaion.AnnotationId must not be null!");
@@ -258,7 +246,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * 
      * @param newModerationRecord
      */
-    private void validateAnnotationIdForModerationRecord(ModerationRecord newModerationRecord) {
+    protected void validateAnnotationIdForModerationRecord(ModerationRecord newModerationRecord) {
 
 	if (newModerationRecord.getAnnotationId() == null)
 	    throw new ModerationRecordValidationException("ModerationRecord.AnnotationId must not be null!");
@@ -473,396 +461,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @Override
-    public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
-	if (annoId.getIdentifier() != null)
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_IDENTIFIER_NOT_NULL,
-		    I18nConstants.MESSAGE_IDENTIFIER_NOT_NULL,
-		    new String[] { WebAnnotationFields.IDENTIFIER, annoId.toRelativeUri() });
-    }
-
-    protected boolean validateResource(String url) throws ParamValidationException {
-
-	String domainName;
-	try {
-	    domainName = getMongoWhitelistPersistence().getDomainName(url);
-	    Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
-	    if (!domains.contains(domainName))
-		throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-			I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE, new String[] { "target.value", url });
-	} catch (URISyntaxException e) {
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID,
-		    I18nConstants.MESSAGE_URL_NOT_VALID, new String[] { "target.value", url });
-	}
-
-	return true;
-    }
-
-    /**
-     * This method verifies if provided right is in a list of valid licenses
-     * 
-     * @param webAnnotation The right provided in the input from annotation object
-     * @return true if provided right is in a list of valid licenses
-     * @throws ParamValidationException
-     * @throws RequestBodyValidationException
-     */
-    protected void validateEdmRights(Body body) throws ParamValidationException, RequestBodyValidationException {
-
-	// if rights are provided, check if it belongs to the valid license list
-	String rightsClaim = body.getEdmRights();
-	String licence = null;
-	// remove version from the right and get licenses
-	char PATH_DELIMITER = '/';
-	long delimiterCount = rightsClaim.chars().filter(ch -> ch == PATH_DELIMITER).count();
-
-	if (delimiterCount != 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
-	    // wrong format, max 6 (including the / after version, for )
-	    throw new RequestBodyValidationException(body.getInputString(), I18nConstants.ANNOTATION_INVALID_RIGHTS,
-		    new String[] { rightsClaim });
-	} else {
-	    // remove last /
-	    licence = rightsClaim.substring(0, rightsClaim.length() - 1);
-	    // remove version, but preserve last /
-	    int versionStart = licence.lastIndexOf(PATH_DELIMITER) + 1;
-	    licence = licence.substring(0, versionStart);
-	}
-	Set<String> rights = getConfiguration().getAcceptedLicenceses();
-	if (!rights.contains(licence))
-	    throw new RequestBodyValidationException(body.getInputString(),
-		    I18nConstants.MESSAGE_INVALID_PARAMETER_VALUE, new String[] { rightsClaim });
-
-    }
-
-    /**
-     * Validation of simple tags.
-     * 
-     * Pre-processing: Trim spaces. If the tag is encapsulated by double or single
-     * quotes, remove these.
-     *
-     * Validation rules: A maximum of 64 characters is allowed for the tag. Tags
-     * cannot be URIs, tags which start with http://, ftp:// or https:// are not
-     * allowed.
-     *
-     * Examples of allowed tags: black, white, "black and white" (will become tag:
-     * black and white)
-     *
-     * @param webAnnotation
-     * @throws PropertyValidationException
-     */
-    private void validateTag(Annotation webAnnotation) throws ParamValidationException, PropertyValidationException {
-	// webAnnotation.
-	Body body = webAnnotation.getBody();
-
-	// TODO: the body type shouldn't be null at this stage
-	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
-	    validateTagWithSpecificResource(body);
-	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
-	    validateSemanticTagUrl(body);
-	} else if (BodyInternalTypes.isAgentBodyTag(body.getInternalType())) {
-	    validateAgentBody(body);
-	} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
-	    validateGeoTag(body);
-	} else if (BodyInternalTypes.isVcardAddressTagBody(body.getInternalType())) {
-	    validateVcardAddressBody(body);
-	} else {
-	    validateTagWithValue(body);
-	}
-    }
-
-    /**
-     * This method validates describing annotation.
-     * 
-     * @param webAnnotation
-     * @throws ParamValidationException
-     */
-    private void validateDescribing(Annotation webAnnotation) throws ParamValidationException {
-	Body body = webAnnotation.getBody();
-
-	if (body.getType() != null && !ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0))) {
-	    validateTextualBody(body, true);
-	}
-    }
-
-    /**
-     * Validation of transcribing.
-     * 
-     * @param webAnnotation
-     * @throws RequestBodyValidationException
-     * @throws PropertyValidationException
-     */
-    private void validateTranscription(Annotation webAnnotation)
-	    throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
-	validateTranscriptionWithFullTextResource(webAnnotation.getBody());
-
-	// validate target
-	// TODO consider moving to validateSpecificResource method
-	// "source" becomes mandatory as soon as you have a "scope" in the target
-	if (webAnnotation.getTarget() != null && !StringUtils.isBlank(webAnnotation.getTarget().getScope())
-		&& StringUtils.isBlank(webAnnotation.getTarget().getSource()))
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.source" });
-    }
-
-    /**
-     * This method validates entity body.
-     * 
-     * @param body The entity body
-     * @throws ParamValidationException
-     * @throws PropertyValidationException
-     */
-    private void validateAgentBody(Body body) throws ParamValidationException, PropertyValidationException {
-	if (body.getType() == null || !(body.getType().size() == 1)) {
-	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
-
-	} else if (!ResourceTypes.AGENT.hasJsonValue(body.getType().get(0))) {
-	    // only full text resources accepted
-	    throw new PropertyValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
-		    I18nConstants.INVALID_PROPERTY_VALUE, new String[] { "agent.body.type" });
-	}
-
-	validateAgentEntityBody(body);
-    }
-
-    /**
-     * Semantic tagging with entity descriptions (edm:Agent) has mandatory field
-     * skos:prefLabel and one of the following fields:
-     * rdaGr2:professionOrOccupation, edm:begin, rdaGr2:dateOfBirth, edm:end,
-     * rdaGr2:dateOfDeath, rdaGr2:placeOfDeath, rdaGr2:placeOfBirth
-     * 
-     * @param body
-     * @throws ParamValidationException
-     * @throws PropertyValidationException
-     */
-    private void validateAgentEntityBody(Body body) throws ParamValidationException, PropertyValidationException {
-
-	EdmAgent agent = (EdmAgent) ((EdmAgentBody) body).getAgent();
-
-	// check mandatory field prefLabel
-	if (agent.getPrefLabel() == null)
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.prefLabel" });
-
-	// check mandatory field type
-	if (body.getType() == null || StringUtils.isBlank(body.getType().get(0)))
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
-
-	// check mandatory field - one of the professionOrOccupation, begin,
-	// dateOfBirth, end, dateOfDeath
-	// placeOfBirth, placeOfDeath
-//		if (agent.getPlaceOfBirth() == null && agent.getPlaceOfDeath() == null 
-//				&& agent.getDateOfDeath() == null && agent.getDateOfDeath() == null)
-//		    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-//			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-//			    new String[] { "agent.body.fields", 
-//			    		"missing one of the professionOrOccupation, begin, dateOfBirth, end, dateOfDeath, placeOfBirth, placeOfDeath" });
-    }
-
-    private void validateGeoTag(Body body) throws ParamValidationException {
-	if (!(body instanceof PlaceBody))
-	    throw new ParamValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
-		    I18nConstants.INVALID_PROPERTY_VALUE,
-		    new String[] { "tag.body.type", ResourceTypes.PLACE.toString() });
-
-	Place place = ((PlaceBody) body).getPlace();
-
-	if (StringUtils.isEmpty(place.getLatitude()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.latitude" });
-
-	if (StringUtils.isEmpty(place.getLongitude()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.longitude" });
-
-    }
-
-    private void validateTagWithSpecificResource(Body body) throws ParamValidationException {
-	// check mandatory fields
-	if (StringUtils.isBlank(body.getInternalType().toString()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.type" });
-	if (StringUtils.isBlank(body.getSource()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.source" });
-
-	// source must be an URL
-	if (!UriUtils.isUrl(body.getSource()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-		    I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-		    new String[] { "tag.format", body.getSource() });
-
-	// id is not a mandatory field but if exists it must be an URL
-	if (body.getHttpUri() != null && !UriUtils.isUrl(body.getHttpUri()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_ID_FORMAT,
-		    I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
-		    new String[] { "tag.body.httpUri", body.getHttpUri() });
-    }
-
-    /**
-     * The "language", "edmRights" and "value" of the transcribing body are
-     * mandatory and "source" becomes mandatory as soon as you have a "scope" in the
-     * target
-     * 
-     * @param body
-     * @throws ParamValidationException
-     * @throws PropertyValidationException
-     * @throws RequestBodyValidationException
-     */
-    private void validateTranscriptionWithFullTextResource(Body body)
-	    throws ParamValidationException, PropertyValidationException, RequestBodyValidationException {
-	// the body type shouldn't be null at this stage
-	if (body.getType() == null || !(body.getType().size() == 1)) {
-	    // (external) Type is mandatory
-	    // temporarily commented out to verify if type is mandatory
-//	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-//		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.type" });
-
-	} else if (!ResourceTypes.FULL_TEXT_RESOURCE.hasJsonValue(body.getType().get(0))) {
-	    // only full text resources accepted
-	    throw new PropertyValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
-		    I18nConstants.INVALID_PROPERTY_VALUE,
-		    new String[] { "transcription.body.type", ResourceTypes.FULL_TEXT_RESOURCE.getJsonValue() });
-	}
-	// check mandatory field language
-	if (StringUtils.isBlank(body.getLanguage())) {
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.language" });
-	}
-
-	// check mandatory field value
-	if (StringUtils.isBlank(body.getValue())) {
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.value" });
-	}
-
-	// check mandatory field edmRights
-	if (StringUtils.isBlank(body.getEdmRights())) {
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.edmRights" });
-	}
-	validateEdmRights(body);
-    }
-
-    /**
-     * @param body
-     * @throws ParamValidationException
-     * @throws PropertyValidationException
-     */
-    private void validateVcardAddressBody(Body body) throws ParamValidationException, PropertyValidationException {
-
-	// check mandatory fields
-	validateSemanticTagVcardAddressBody(body);
-    }
-
-    /**
-     * Semantic tagging with vcard:Address type has mandatory fields: "Address",
-     * "streetAddress", "locality", "countryName" The "type" field should have value
-     * "Address"
-     * 
-     * @param body
-     * @throws ParamValidationException
-     * @throws PropertyValidationException
-     */
-    private void validateSemanticTagVcardAddressBody(Body body)
-	    throws ParamValidationException, PropertyValidationException {
-	// check type
-	if (body.getType() == null || !(body.getType().size() == 1)) {
-	    // (external) Type is mandatory
-	    // temporarily commented out to verify if type is mandatory
-//		    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-//			    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "vcardAddress.body.type" });
-	} else if (!ResourceTypes.VCARD_ADDRESS.hasJsonValue(body.getType().get(0))) {
-	    // only full text resources accepted
-	    throw new PropertyValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
-		    I18nConstants.INVALID_PROPERTY_VALUE, new String[] { "vcardAddress.body.type" });
-	}
-
-	Address address = ((VcardAddressBody) body).getAddress();
-
-	// check mandatory field streetAddress
-	if (StringUtils.isBlank(address.getVcardStreetAddress()))
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.address.streetAddress" });
-
-	// check mandatory field locality
-	if (StringUtils.isBlank(address.getVcardLocality()))
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.address.locality" });
-
-	// check mandatory field countryName
-	if (StringUtils.isBlank(address.getVcardCountryName()))
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.address.countryName" });
-
-	// check mandatory field type
-	if (body.getType() == null || StringUtils.isBlank(body.getType().get(0)))
-	    throw new PropertyValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.address.type" });
-    }
-
-    /**
-     * For describing annotations: "value" and "language" within the "body" are
-     * mandatory.
-     * 
-     * @param body
-     * @param isLanguageMandatory Flag for the cases when language is not mandatory
-     * @throws ParamValidationException
-     */
-    private void validateTextualBody(Body body, boolean isLanguageMandatory) throws ParamValidationException {
-
-	// check mandatory field value
-	if (StringUtils.isBlank(body.getValue()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.value" });
-
-	// check mandatory field language
-	if (isLanguageMandatory && StringUtils.isBlank(body.getLanguage()))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.language" });
-
-	// check type
-	if (body.getType() == null || !ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0)))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.type" });
-    }
-
-    private void validateTagWithValue(Body body) throws ParamValidationException {
-
-	String value = body.getValue();
-
-	value = value.trim();
-	// remove leading and end quotes
-	if (value.startsWith("\"")) {
-	    int secondPosition = 1;
-	    value = value.substring(secondPosition);
-	    value = value.trim();
-	}
-
-	if (value.endsWith("\"")) {
-	    int secondLastPosition = value.length() - 1;
-	    value = value.substring(0, secondLastPosition);
-	    value = value.trim();
-	}
-
-	// reset the tag value with the trimmed value
-	body.setValue(value);
-
-	int MAX_TAG_LENGTH = 64;
-
-	if (UriUtils.isUrl(value))
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_SIMPLE_TAG,
-		    I18nConstants.MESSAGE_INVALID_SIMPLE_TAG, new String[] { value });
-	else if (value.length() > MAX_TAG_LENGTH)
-	    throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_TAG_SIZE,
-		    I18nConstants.MESSAGE_INVALID_TAG_SIZE, new String[] { String.valueOf(value.length()) });
-    }
-
-    protected void validateSemanticTagUrl(Body body) {
-	// TODO Add whitelist based validation here
-
-    }
-
-    @Override
     public void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) {
 	for (Annotation webanno : webAnnotations) {
 	    try {
@@ -890,62 +488,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		} else
 		    batchReportable.incrementSuccessCount();
 	    }
-	}
-    }
-
-    @Override
-    public void validateWebAnnotation(Annotation webAnnotation)
-	    throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
-
-	// validate canonical to be an absolute URI
-	if (webAnnotation.getCanonical() != null) {
-	    try {
-		URI cannonicalUri = URI.create(webAnnotation.getCanonical());
-		if (!cannonicalUri.isAbsolute())
-		    throw new ParamValidationException("The canonical URI is not absolute:",
-			    I18nConstants.ANNOTATION_VALIDATION,
-			    new String[] { WebAnnotationFields.CANONICAL, webAnnotation.getCanonical() });
-	    } catch (IllegalArgumentException e) {
-		throw new ParamValidationException("Error when validating canonical URI:",
-			I18nConstants.ANNOTATION_VALIDATION,
-			new String[] { WebAnnotationFields.CANONICAL, webAnnotation.getCanonical() }, e);
-	    }
-	}
-
-	// validate via to be valid URL(s)
-	if (webAnnotation.getVia() != null) {
-	    if (webAnnotation.getVia() instanceof String[]) {
-		for (String via : webAnnotation.getVia()) {
-		    if (!(UriUtils.isUrl(via)))
-			throw new ParamValidationException("This is not a valid URL:",
-				I18nConstants.ANNOTATION_VALIDATION, new String[] { WebAnnotationFields.VIA, via });
-		}
-	    }
-	}
-
-	switch (webAnnotation.getMotivationType()) {
-	case LINKING:
-	    // validate target URLs against whitelist
-	    if (webAnnotation.getTarget() != null) {
-		if (webAnnotation.getTarget().getValue() != null)
-		    validateResource(webAnnotation.getTarget().getValue());
-
-		if (webAnnotation.getTarget().getValues() != null)
-		    for (String url : webAnnotation.getTarget().getValues()) {
-			validateResource(url);
-		    }
-	    }
-	    break;
-	case DESCRIBING:
-	    validateDescribing(webAnnotation);
-	case TAGGING:
-	    validateTag(webAnnotation);
-	    break;
-	case TRANSCRIBING:
-	    validateTranscription(webAnnotation);
-	    break;
-	default:
-	    break;
 	}
     }
 
@@ -1022,19 +564,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	AnnotationId genAnnoId;
 	for (int i = 0; i < annotations.size(); i++) {
 	    // default: use the annotation id from the sequence generated above
-//			if(!reuseViaIdentifier) {
 	    genAnnoId = annoIdSequence.get(i);
 	    newAnnoId = new BaseAnnotationId(genAnnoId.getBaseUrl(), genAnnoId.getIdentifier());
-//			} else {// for some providers, the id must be provided by the via field 
-//				String[] via = annotations.get(i).getVia();
-//				if(via == null || via.length == 0)
-//					throw new AnnotationValidationException("The annotation id must be provided by the via field for the provider: '"+provider+"'");
-//				if(via.length > 1)
-//					logger.warn("Multiple URLS provided in via field");
-//				String viaUrl = via[0];
-//				newAnnoId = getAnnotationIdHelper().getAnnotationIdBasedOnVia(getConfiguration().getAnnotationBaseUrl(), 
-//						viaUrl);
-//			}
+
 	    anno = annotations.get(i);
 	    anno.setAnnotationId(newAnnoId);
 	    annoDefaults.putAnnotationDefaultValues(anno);
@@ -1053,36 +585,97 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language)
-	    throws HttpException, IOException {
+	    throws HttpException, AnnotationDereferenciationException {
+	// will update the body only when dereference profile is used
+	if (!isDereferenceProfile(searchProfile)) {
+	    return;
+	}
 
-	if (!SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+	if (!hasBodyUrl(annotation)) {
 	    return;
 	}
 
 	String bodyValue = annotation.getBody().getValue();
-	if (!UriUtils.isUrl(bodyValue)) {
+	Map<String, String> dereferencedMap = getDereferenciationClient().dereferenceOne(getConfiguration().getMetisBaseUrl(), bodyValue,
+		language);
+	setDereferencedBody(annotation, dereferencedMap);
+    }
+
+    private void setDereferencedBody(Annotation annotation, Map<String, String> dereferencedMap) {
+	String bodyValue = annotation.getBody().getValue();
+	if(!dereferencedMap.containsKey(bodyValue)) {
 	    return;
 	}
-
-	List<String> queryList = Arrays.asList(bodyValue);
-	String metisBaseUrl = getConfiguration().getMetisBaseUrl();
-
-	Map<String, String> dereferencedMap = getDereferenciationClient().queryMetis(metisBaseUrl, queryList, language);
 	String dereferencedJsonLdMapStr = dereferencedMap.get(bodyValue);
 	// replace URI with dereferenced entity
-	if (StringUtils.isNotEmpty(dereferencedJsonLdMapStr)) {
+	if (StringUtils.isNotBlank(dereferencedJsonLdMapStr)) {
 	    annotation.getBody().setValue(dereferencedJsonLdMapStr);
 	    annotation.getBody().setInputString(dereferencedJsonLdMapStr);
 	}
     }
 
-    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate, String startTimestamp) {
+    @Override
+    public void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages)
+	    throws AnnotationDereferenciationException, HttpException {
+	// will update the body only when dereference profile is used
+	if (!isDereferenceProfile(searchProfile)) {
+	    return;
+	}
+	if (annotations == null || annotations.isEmpty()) {
+	    return;
+	}
+
+	List<String> entityIds = extractEntityUris(annotations);
+	//check if dereferenciation is possible
+	if(entityIds.isEmpty()) {
+	    return;
+	}
+	
+	Map<String, String> dereferencedMap = getDereferenciationClient().dereferenceMany(getConfiguration().getMetisBaseUrl(), 
+		entityIds, languages);
+	
+	//update dereferenced bodies
+	for (Annotation annotation : annotations) {
+	    setDereferencedBody(annotation, dereferencedMap);
+	}	
+    }
+
+    private List<String> extractEntityUris(List<? extends Annotation> annotations) {
+	List<String> entityIds = new ArrayList<String>();
+	for (Annotation annotation : annotations) {
+	    if (isSemanticTag(annotation)) {
+		entityIds.add(annotation.getBody().getValue());
+	    }
+	}
+	return entityIds;
+    }
+
+    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate,
+	    String startTimestamp) {
 	if (!StringUtils.isBlank(startDate)) {
 	    startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
 	}
 
-	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivation.getOaType(), startTimestamp);
-	
+	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivation.getOaType(),
+		startTimestamp);
+
 	return res;
+    }
+    
+    protected boolean validateResource(String url) throws ParamValidationException {
+	    
+        String domainName;
+        try {
+            domainName = getMongoWhitelistPersistence().getDomainName(url);
+            Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
+            if (!domains.contains(domainName))
+        	throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+        		I18nConstants.INVALID_PARAM_VALUE, new String[] { "target.value", url });
+        } catch (URISyntaxException e) {
+            throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID,
+        	    I18nConstants.MESSAGE_URL_NOT_VALID, new String[] { "target.value", url });
+        }
+    
+        return true;
     }
 }

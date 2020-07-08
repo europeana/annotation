@@ -1,6 +1,5 @@
 package eu.europeana.annotation.web.service;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.Map;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
+import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -160,12 +160,7 @@ public interface AnnotationService {
 	 * @return
 	 */
 	public boolean existsModerationInDb(AnnotationId annoId);
-	
-//	/**
-//	 * Check whether given provider already exists in database.
-//	 */
-//	public boolean existsProviderInDb(Provider provider); 
-	
+		
 	/**
 	 * This method updates annotation status.
 	 * @param annotation
@@ -195,8 +190,6 @@ public interface AnnotationService {
 	 * @throws ParamValidationException 
 	 */
 	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
-
-//	void indexAnnotation(AnnotationId annoId);
 
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException, PropertyValidationException;
 
@@ -228,16 +221,27 @@ public interface AnnotationService {
 	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
 	/**
-	 * This method extends annotation according to the search profile
+	 * This method extends the body for semantic tags for dereference profile
 	 * @param annotation
 	 * @param searchProfile
 	 * @param language e.g. "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru" 
 	 * @return annotation extended with profile data
-	 * @throws IOException
+	 * @throws AnnotationDereferenciationException
 	 * @throws HttpException 
 	 * @throws JsonParseException 
 	 */
-	public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, IOException;
+	public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, AnnotationDereferenciationException;
+	
+	/**
+	 * This method extends the body for semantic tags for dereference profile
+	 * @param annotations a list of annotation
+	 * @param searchProfile the serialization profile
+	 * @param language e.g. "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru" 
+	 * @throws AnnotationDereferenciationException
+	 * @throws HttpException 
+	 * @throws JsonParseException 
+	 */
+	public void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages) throws AnnotationDereferenciationException, HttpException;
 	
 	/*
 	 * This methods returns annotation ids which where deleted after a given date 
@@ -246,6 +250,7 @@ public interface AnnotationService {
 	 * @return deleted annotation ids
 	 */
 	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String startTimestamp);
+
 	
 	
 }
