@@ -1,16 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
-	<artifactId>api2-common</artifactId>
-	<name>api2-common</name>
-	<packaging>jar</packaging>
-	
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
 		<version>${version.annotationApi}</version>
 	</parent>
+	
+	<artifactId>api2-common</artifactId>
+	<name>api2-common</name>
+	<packaging>jar</packaging>
+	
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
@@ -35,41 +36,5 @@
 		</dependency>
 		
 	</dependencies>
- 
-	<build>
-		<!--  configure source and output locations -->
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>/config/*.properties</include>
-					<include>*.xml</include>
-				</includes>
-			</resource>
-		</resources>
-	<!-- not used yet	
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
-	 -->	
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${version.java}</source>
-					<target>${version.java}</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+
 </project>
