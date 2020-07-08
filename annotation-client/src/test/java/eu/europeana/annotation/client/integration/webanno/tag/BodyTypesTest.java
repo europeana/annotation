@@ -35,14 +35,14 @@ public class BodyTypesTest extends BaseTaggingTest {
 	static final String VALUE_ID = "anno_id:";
 	static final String VALUE_TARGET = "target_uri:\"http://data.europeana.eu/item/09102/_UEDIN_214\"";
 	static final String VALUE_TARGET_TAG = "target_uri:\"http://data.europeana.eu/item/000002/_UEDIN_214\"";
-	static final String VALUE_TARGET_LINK = "target_uri:\"http://data.europeana.eu/item/123/xyz\"";
-	static final String VALUE_TARGET_LINK_SEMANTIC = "target_uri:\"http://data.europeana.eu/item/2059207/data_sounds_T471_5\"";
+	static final String VALUE_TARGET_LINK = "target_uri:\"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584\"";
+	static final String VALUE_TARGET_LINK_SEMANTIC = "target_uri:\"http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6\"";
 	static final String VALUE_DESCRIBING_TARGET_SCOPE = "target_uri:\"http://data.europeana.eu/item/07931/diglit_uah_m1\"";
 	static final String VALUE_BODY_URI = "body_uri:\"http://www.geonames.org/2988507\"";
 	static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"... this is the textual description of the item ...\"";
 	static final String VALUE_BODY_VALUE = "body_value:\"trombone\"";
 	static final String VALUE_BODY_LINK_RELATION = "link_relation:\"isSimilarTo\"";
-	static final String VALUE_BODY_LINK_RESOURCE_URI = "link_resource_uri:\"http://thesession.org/tunes/52\"";
+	static final String VALUE_BODY_LINK_RESOURCE_URI = "link_resource_uri:\"https://www.wikidata.org/wiki/Q762\"";
 	static final String VALUE_BODY_SPECIFIC_RESOURCE = "body_uri:\"http://www.geonames.org/2988507\""; // source
 	static final String VALUE_BODY_FULL_TEXT_RESOURCE = "body_value:\"... complete transcribed text in HTML ...\"";
 
@@ -212,7 +212,7 @@ public class BodyTypesTest extends BaseTaggingTest {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getValues());
-		assertTrue(target.getValues().contains("http://data.europeana.eu/item/123/xyz"));
+		assertTrue(target.getValues().contains("http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584"));
 
 		// remove tag
 		deleteAnnotation(storedAnno);
@@ -234,7 +234,7 @@ public class BodyTypesTest extends BaseTaggingTest {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/2059207/data_sounds_T471_5"));
+		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 
 		// remove tag
 		deleteAnnotation(storedAnno);
@@ -259,12 +259,12 @@ public class BodyTypesTest extends BaseTaggingTest {
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.GRAPH.name());
 		Graph graphBody = ((GraphBody) storedAnno.getBody()).getGraph();
 		assertNotNull(graphBody.getNode());
-		assertTrue(graphBody.getNode().getHttpUri().equals("http://thesession.org/tunes/52"));
+		assertTrue(graphBody.getNode().getHttpUri().equals("https://www.wikidata.org/wiki/Q762"));
 		assertTrue(graphBody.getRelationName().equals("isSimilarTo"));
-		assertTrue(graphBody.getResourceUri().equals("http://data.europeana.eu/item/2059207/data_sounds_T471_5"));
+		assertTrue(graphBody.getResourceUri().equals("http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/2059207/data_sounds_T471_5"));
+		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 
 		// remove tag
 		deleteAnnotation(storedAnno);

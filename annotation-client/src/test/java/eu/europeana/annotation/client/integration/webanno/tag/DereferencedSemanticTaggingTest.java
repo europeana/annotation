@@ -41,7 +41,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 
 	protected Logger log = LogManager.getLogger(getClass());
 	
-	private Annotation[] testAnnotations = new Annotation[NUM_TEST_ANNOTATIONS];;
+	private Annotation[] testAnnotations = new Annotation[NUM_TEST_ANNOTATIONS];
 	
     @BeforeEach
 	public void createTestAnnotations() throws Exception {

@@ -47,6 +47,50 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
 	
+	public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
+	public static final String VALUE_ID = "anno_id:";
+	
+	public static final String VALUE_TARGET_URI = "http://data.europeana.eu/item/09102/_UEDIN_214";
+	public static final String VALUE_SEARCH_TARGET = "target_uri:\""+ VALUE_TARGET_URI +"\"";
+	
+	public static final String VALUE_TARGET_TAG_URI = "http://data.europeana.eu/item/000002/_UEDIN_214";
+	public static final String VALUE_SEARCH_TARGET_TAG = "target_uri:\""+ VALUE_TARGET_TAG_URI +"\"";
+	
+	
+	public static final String VALUE_TARGET_LINK_URI = "http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584";
+	public static final String VALUE_SEARCH_TARGET_LINK = "target_uri:\""+ VALUE_TARGET_LINK_URI +"\"";
+	
+//	public static final String VALUE_TARGET_LINK_SEMANTIC_URI = "http://data.europeana.eu/item/2059207/data_sounds_T471_5";
+	public static final String VALUE_TARGET_LINK_SEMANTIC_URI = "http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
+	public static final String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
+	
+	public static final String VALUE_DESCRIBING_TARGET_SCOPE_URI = "http://data.europeana.eu/item/07931/diglit_uah_m1";
+	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
+	
+	public static final String VALUE_TAG_BODY_URI = "http://www.geonames.org/2988507";
+	public static final String VALUE_SEARCH_TAG_BODY_URI = "body_uri:\"" +VALUE_TAG_BODY_URI+ "\"";
+	
+	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"... this is the textual description of the item ...\"";
+	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value:\""+VALUE_DESCRIBING_BODY_VALUE+"\"";
+	
+	public static final String VALUE_TAG_BODY_VALUE = "trombone";
+	public static final String VALUE_SEARCH_TAG_BODY_VALUE = "body_value:\""+VALUE_TAG_BODY_VALUE+"\"";
+	
+	public static final String VALUE_BODY_LINK_RELATION = "isSimilarTo";
+	public static final String VALUE_SEARCH_BODY_LINK_RELATION = "link_relation:\"" +VALUE_BODY_LINK_RELATION+ "\"";
+	
+	public static final String VALUE_BODY_LINK_RESOURCE_URI = "https://www.wikidata.org/wiki/Q762";
+	public static final String VALUE_SEARCH_BODY_LINK_RESOURCE_URI = "link_resource_uri:\""+VALUE_BODY_LINK_RESOURCE_URI+"\"";
+	
+	
+	public static final String VALUE_BODY_SPECIFIC_RESOURCE = "http://www.geonames.org/2988507"; // source
+	public static final String VALUE_SEARCH_BODY_SPECIFIC_RESOURCE = "body_uri:\""+VALUE_BODY_SPECIFIC_RESOURCE+"\""; // source
+	
+	public static final String VALUE_BODY_FULL_TEXT_RESOURCE = "... complete transcribed text in HTML ...";
+	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\""+VALUE_BODY_FULL_TEXT_RESOURCE+"\"";
+
+	
+	
 	String START = "{";
 	String END = "}";
 	String TYPE = "\"@context\": \"" + WebAnnotationModelKeywords.WA_CONTEXT + "\","
@@ -82,10 +126,6 @@ public class BaseWebAnnotationProtocolTest {
 	public String LINK_JSON_BY_TYPE_JSONLD = START + LINK_CORE + END;
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
-
-	public String TEST_USER_TOKEN = "tester1";
-	public String ADMIN_USER_TOKEN = "admin";
-	public String ANONYMOUS_USER_TOKEN = "anonymous";
 
 	private WebAnnotationProtocolApi apiClient;
 
