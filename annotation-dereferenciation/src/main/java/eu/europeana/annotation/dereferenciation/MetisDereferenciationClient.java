@@ -75,7 +75,7 @@ public class MetisDereferenciationClient {
 	    Templates templates = factory.newTemplates(xslSource);
 	    transformer = templates.newTransformer();
 	} catch (TransformerConfigurationException e) {
-	    logger.error("Error " + e);
+//	    logger.error("Error ", e);
 	    throw new AnnotationDereferenciationException(
 		    "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
 		    e);
@@ -139,6 +139,7 @@ public class MetisDereferenciationClient {
 	try {
 	    queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");		
 	    xmlResponse = getHttpConnection().getURLContent(queryUri);
+//	    System.out.println(xmlResponse);
 	    jsonLdStr = convertToJsonLd(uri, xmlResponse, language).toString();
 	    res.put(uri, jsonLdStr);
 	    
