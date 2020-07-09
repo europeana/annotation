@@ -77,7 +77,7 @@ public class MetisDereferenciationClient {
 	} catch (TransformerConfigurationException e) {
 //	    logger.error("Error ", e);
 	    throw new AnnotationDereferenciationException(
-		    "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
+		    "Cannot instantiate XSLT Transformer",
 		    e);
 	}
     }

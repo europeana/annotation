@@ -11,7 +11,6 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:lib="http://example.org/lib"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-
     xmlns:metis="http://www.europeana.eu/schemas/metis"
     xmlns:edm="http://www.europeana.eu/schemas/edm/"
     xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -43,10 +42,6 @@
         <xsl:call-template name="lang-map">
             <xsl:with-param name="prop" select="skos:prefLabel[lib:isAcceptableLang(@xml:lang)]"/>
             <xsl:with-param name="name">prefLabel</xsl:with-param>
-        </xsl:call-template>
-        <xsl:call-template name="array">
-            <xsl:with-param name="prop" select="rdaGr2:dateOfBirth"/>
-            <xsl:with-param name="name">dateOfBirth</xsl:with-param>
         </xsl:call-template>
         <xsl:call-template name="array">
             <xsl:with-param name="prop" select="edm:begin"/>
