@@ -105,25 +105,6 @@ public class MetisDereferenciationClient {
      * list and fills the map with the URI and JSON string. It sends GET HTTP
      * request to dereference URI.
      * 
-     * @deprecated use {@link #dereferenceMany(String, List, String)} instead
-     * @param baseUrl  The Metis base URL.
-     * @param uris     The list of query URIs. The URI is composed from the base URI
-     *                 to Metis API completed with query URI from the entity.
-     * @param language e.g.
-     *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
-     * @return response from Metis API in JSON-LD format
-     * @throws IOException
-     */
-    @Deprecated
-    public synchronized Map<String, String> queryMetis(String baseUrl, List<String> uris, String language) throws IOException {
-	return dereferenceMany(baseUrl, uris, language);
-    }
-
-    /**
-     * This method applies the XSLT to the XML output for each of the URIs in the
-     * list and fills the map with the URI and JSON string. It sends GET HTTP
-     * request to dereference URI.
-     * 
      * @param baseUrl  The Metis base URL.
      * @param uris     The list of query URIs. The URI is composed from the base URI
      *                 to Metis API completed with query URI from the entity.
