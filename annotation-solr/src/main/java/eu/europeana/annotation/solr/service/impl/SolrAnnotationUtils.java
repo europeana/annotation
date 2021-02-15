@@ -240,8 +240,9 @@ public class SolrAnnotationUtils {
 	if (pos > 0)
 	    recordId = target.substring(pos + markup.length() - 1);// do not eliminate last /
 
-	if (recordId != null)
+	if (recordId != null && !recordIds.contains(recordId)) {
 	    recordIds.add(recordId);
+	}
     }
 
 }

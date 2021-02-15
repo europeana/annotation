@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.config.AnnotationConfigurationImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -41,7 +42,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	public void testStoreInDevelopmentEnvironment() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		String environment = AnnotationConfigurationImpl.VALUE_ENVIRONMENT_DEVELOPMENT;
+		String environment = AnnotationConfiguration.VALUE_ENVIRONMENT_DEVELOPMENT;
 		createTestAnnoInEnvironment(environment);	
 	}
 
@@ -49,7 +50,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	public void testStoreInTestEnvironment() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		String environment = AnnotationConfigurationImpl.VALUE_ENVIRONMENT_TEST;
+		String environment = AnnotationConfiguration.VALUE_ENVIRONMENT_TEST;
 		createTestAnnoInEnvironment(environment);
 	}
 
@@ -57,7 +58,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	public void testStoreInProductionEnvironment() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		String environment = AnnotationConfigurationImpl.VALUE_ENVIRONMENT_PRODUCTION;
+		String environment = AnnotationConfiguration.VALUE_ENVIRONMENT_PRODUCTION;
 		createTestAnnoInEnvironment(environment);
 	}
 
@@ -65,7 +66,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
 		AnnotationConfigurationImpl config = (AnnotationConfigurationImpl) ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration();
-		config.getAnnotationProperties().put(AnnotationConfigurationImpl.ANNOTATION_ENVIRONMENT, environment);
+		config.getAnnotationProperties().put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, environment);
 		
 		Annotation anno = testCreateAnnotationWebanno();
 		

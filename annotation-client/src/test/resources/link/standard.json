@@ -2,17 +2,12 @@
 	"@context": "http://www.europeana.eu/annotation/context.jsonld",
 	"type": "Annotation",
 	"motivation": "linking",
-	"creator": {
-		"id": "https://www.historypin.org/en/person/55376/",
-		"type": "Person",
-		"name": "John Smith"
-	},
 	"created": "2015-02-27T12:00:43Z",
-	"generated": "2015-02-28T13:00:34Z",
-	"generator": "http://www.historypin.org",
+	"generator": "http://europeana.transcribathon.eu",
 	"target": [
-		"http://data.europeana.eu/item/123/xyz",
-		"http://data.europeana.eu/item/333/xxx"
+		"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584",
+		"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_6191",
+		"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19586"
 	],
-	"oa:equivalentTo": "https://www.historypin.org/en/item/789"
+	"oa:equivalentTo": "https://europeana.transcribathon.eu/documents/story/?story=106191"
 }

@@ -4,6 +4,13 @@ import org.springframework.http.HttpStatus;
 
 import eu.europeana.api.commons.web.exception.HttpException;
 
+
+@Deprecated
+/**
+ * Use exception class from api commons instead
+ * @author GordeaS
+ *
+ */
 public class ParamValidationException extends HttpException{
 
 	/**
@@ -22,7 +29,7 @@ public class ParamValidationException extends HttpException{
 //	public static final String MESSAGE_IDENTIFIER_WRONG = "Identifier must have at least a provider and an identifier number! E.g. 'http://data.europeana.eu/annotation/webanno/494'";
 	public static final String MESSAGE_ANNOTATION_ID_EXISTS = "An annotation with the given identifier already exists in database! Overwrite not allowed in this method!";
 //	public static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "An annotation with the given identifier is not yet existing in database!";
-	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported or not allowed!";
+	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported or not allowed!{0}";
 	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
 	public static final String MESSAGE_URL_NOT_VALID = "Given URL is not valid!";
 	public static final String MESSAGE_INVALID_TAG_SIZE = "Invalid tag size. Must be shorter then 64 characters!";

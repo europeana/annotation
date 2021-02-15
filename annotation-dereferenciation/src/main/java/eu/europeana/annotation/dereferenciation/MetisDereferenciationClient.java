@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -21,9 +22,11 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.stanbol.commons.jsonld.JsonSerializer;
 
-import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
+import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 
 /**
  * This class supports requests to Metis API and XSLT conversion of response.
@@ -36,13 +39,23 @@ public class MetisDereferenciationClient {
     static final String XSLT_TRANSFORMATION_FILE = "/deref2json.xsl";
     static final String PARAM_URI = "uri";
     static final String PARAM_LANGS = "langs";
+    @Resource
+    private AnnotationConfiguration configuration;
     Transformer transformer;
-
-    private HttpConnection httpConnection = new HttpConnection();
+    private HttpConnection httpConnection;
     
     Logger logger = LogManager.getLogger(getClass().getName());
 
     public HttpConnection getHttpConnection() {
+	if(httpConnection == null) {
+	    if(getConfiguration() != null) {
+		httpConnection = new HttpConnection(
+			getConfiguration().getMetisConnectionRetries(), 
+			getConfiguration().getMetisConnectionTimeout());
+	    }else {
+		httpConnection = new HttpConnection();
+	    }
+	}
 	return httpConnection;
     }
 
@@ -62,9 +75,9 @@ public class MetisDereferenciationClient {
 	    Templates templates = factory.newTemplates(xslSource);
 	    transformer = templates.newTransformer();
 	} catch (TransformerConfigurationException e) {
-	    logger.error("Error " + e);
-	    throw new TechnicalRuntimeException(
-		    "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
+//	    logger.error("Error ", e);
+	    throw new AnnotationDereferenciationException(
+		    "Cannot instantiate XSLT Transformer",
 		    e);
 	}
     }
@@ -98,19 +111,60 @@ public class MetisDereferenciationClient {
      * @param language e.g.
      *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
      * @return response from Metis API in JSON-LD format
-     * @throws IOException
+     * @throws AnnotationDereferenciationException
      */
-    public synchronized Map<String, String> queryMetis(String baseUrl, List<String> uris, String language) throws IOException {
+    public synchronized Map<String, String> dereferenceOne(String baseUrl, String uri, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
-	for (String uri : uris) {
-	    String queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");
-	    String xmlResponse = getHttpConnection().getURLContent(queryUri);
-	    String jsonLdStr = convertToJsonLd(uri, xmlResponse, language).toString();
+	String queryUri, xmlResponse, jsonLdStr;
+	    
+	try {
+	    queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");		
+	    xmlResponse = getHttpConnection().getURLContent(queryUri);
+//	    System.out.println(xmlResponse);
+	    jsonLdStr = convertToJsonLd(uri, xmlResponse, language).toString();
 	    res.put(uri, jsonLdStr);
+	    
+	} catch (IOException ex) {
+	    throw new AnnotationDereferenciationException(ex);
+	} catch (RuntimeException ex) {
+	    throw new AnnotationDereferenciationException(ex);
 	}
 	return res;
     }
 
+    /**
+     * This method applies the XSLT to the XML output for each of the URIs in the
+     * list and fills the map with the URI and JSON string. It sends GET HTTP
+     * request to dereference URI.
+     * 
+     * @param baseUrl  The Metis base URL.
+     * @param uris     The list of query URIs. The URI is composed from the base URI
+     *                 to Metis API completed with query URI from the entity.
+     * @param language e.g.
+     *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
+     * @return response from Metis API in JSON-LD format
+     * @throws AnnotationDereferenciationException
+     */
+    public synchronized Map<String, String> dereferenceMany(String baseUrl, List<String> uris, String language) throws AnnotationDereferenciationException {
+	Map<String, String> res = new HashMap<String, String>();
+	String xmlResponse, jsonLdStr;
+	try {
+        	@SuppressWarnings({ "rawtypes", "unchecked" })
+		String urisJson = JsonSerializer.toString((List)uris);
+	        xmlResponse = getHttpConnection().postRequest(baseUrl, urisJson);
+	        for (Object uri : uris) {
+	            jsonLdStr = convertToJsonLd((String)uri, xmlResponse, language).toString();
+        	    res.put((String)uri, jsonLdStr);
+         	}
+	}catch(IOException ex) {
+	    throw new AnnotationDereferenciationException(ex);
+	}catch(RuntimeException ex) {
+	    throw new AnnotationDereferenciationException(ex);
+	}
+	return res;
+    }
+
+  
     /**
      * An XSLT converts dereference output to JSON-LD.
      * 
@@ -134,14 +188,18 @@ public class MetisDereferenciationClient {
 	    getTransformer().transform(text, new StreamResult(result));
 	    
 	} catch (TransformerConfigurationException e) {
-	    throw new TechnicalRuntimeException(
-		    "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
+	    throw new AnnotationDereferenciationException(
+		    "Unexpected exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
 		    e);
 	} catch (TransformerException e) {
-	    throw new TechnicalRuntimeException(
+	    throw new AnnotationDereferenciationException(
 		    "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
 		    e);
 	}
 	return result;
+    }
+
+    AnnotationConfiguration getConfiguration() {
+        return configuration;
     }
 }

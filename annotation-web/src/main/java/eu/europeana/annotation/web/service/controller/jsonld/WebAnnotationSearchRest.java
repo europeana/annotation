@@ -1,7 +1,5 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -111,7 +108,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    // ** do search
 	    AnnotationPage annotationPage = getAnnotationSearchService().search(searchQuery, request);
 
-	    dereferenceSemanticTags(language, searchProfile, annotationPage);
+	    if(annotationPage.getAnnotations() != null && SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), searchProfile, language);
+	    }
 
 	    // ** serialize page
 	    AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage);
@@ -137,16 +136,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
-	}
-    }
-
-    private void dereferenceSemanticTags(String language, SearchProfiles searchProfile, AnnotationPage annotationPage)
-	    throws IOException, HttpException {
-	if (annotationPage.getAnnotations() == null)
-	    return;
-	for (Annotation annotation : annotationPage.getAnnotations()) {
-	    // will update the body only when dereference profile is used
-	    getAnnotationService().dereferenceSemanticTags(annotation, searchProfile, language);
 	}
     }
 

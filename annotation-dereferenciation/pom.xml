@@ -1,57 +1,65 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <artifactId>annotation-dereferenciation</artifactId>
-  <packaging>jar</packaging>
-  <name>annotation-dereferenciation</name>
-  <description>This module supports the dereferenciation of entities used in annotations</description>
-  
-  <parent>
+	<artifactId>annotation-dereferenciation</artifactId>
+	<packaging>jar</packaging>
+	<name>annotation-dereferenciation</name>
+	<description>This module supports the dereferenciation of entities used in annotations</description>
+
+	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
 		<version>${version.annotationApi}</version>
-  </parent>
-  
-  <properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
-  <dependencies>
-  		<!--  
-	   	<dependency>
-	      <groupId>eu.europeana.annotation</groupId>
-	      <artifactId>annotation-definitions</artifactId>
-	      <version>${version.annotationApi}</version>
-	    </dependency>
-	    -->
-	    
-	    <dependency>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<!-- <dependency> <groupId>eu.europeana.annotation</groupId> <artifactId>annotation-definitions</artifactId> 
+			<version>${version.annotationApi}</version> </dependency> -->
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>${version.saxonHE}</version>
+		</dependency>
+		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>annotation-client</artifactId>
+			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-	    
-	    <dependency>
+
+		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>${version.httpClient}</version>
 		</dependency>
 
-        <dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 			<version>${version.org.junit.jupiter}</version>
 		</dependency>
-  </dependencies>
-  
+
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>${version.junit-platform}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<!-- configure source and output locations -->
 		<directory>target</directory>
@@ -86,5 +94,5 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>  
+	</build>
 </project>

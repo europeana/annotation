@@ -3,13 +3,13 @@
 	"body": {
 		"@graph": {
 			"@context": "http://www.europeana.eu/schemas/context/edm.jsonld",
-			"id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+			"id": "http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6",
 			"isSimilarTo": {
-				"id": "http://thesession.org/tunes/52",
+				"id": "https://www.wikidata.org/wiki/Q762",
 				"format": "text/html",
-				"title": "The Kid On The Mountain (slip jig) on The Session"
+				"title": "Leonardo da Vinci"
 			}
 		}
 	},
-	"target": "http://data.europeana.eu/item/2059207/data_sounds_T471_5"
+	"target": "http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"
 }

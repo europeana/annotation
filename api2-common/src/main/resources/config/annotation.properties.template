@@ -64,7 +64,10 @@ europeana.apikey.jwttoken.siganturekey=
 annotation.properties.timestamp=-1
 
 # Metis API
-metis.baseUrl =
+metis.baseUrl=
+metis.connection.retries=3
+#connection timeout in milliseconds
+metis.connection.timeout=30000
 
 # valid licenses list
 annotation.licenses=http://creativecommons.org/publicdomain/zero/,http://creativecommons.org/publicdomain/mark/,http://creativecommons.org/licenses/by/,http://rightsstatements.org/vocab/NoC-NC/,http://creativecommons.org/licenses/by-sa/,http://creativecommons.org/licenses/by-nd/,http://creativecommons.org/licenses/by-nc-sa/,http://creativecommons.org/licenses/by-nd-nc/

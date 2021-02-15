@@ -62,7 +62,6 @@ import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
-import eu.europeana.api.commons.web.exception.HeaderValidationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
@@ -161,9 +160,7 @@ public class BaseJsonldRest extends BaseRest {
 	return WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
     }
 
-    @Deprecated
     /**
-     * Must update authorization
      * 
      * @param wsKey
      * @param annotationPageIn
@@ -449,11 +446,12 @@ public class BaseJsonldRest extends BaseRest {
 
 	try {
 //	    String userId = authentication.getPrincipal().toString();
-	    
+
 	    // 1. authorize user
 	    // already performed in verify write access
-	    //			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.UPDATE);
-	    //check permissions for update
+	    // getAuthorizationService().authorizeUser(userId, authentication, annoId,
+	    // Operations.UPDATE);
+	    // check permissions for update
 	    Annotation storedAnnotation = verifyOwnerOrAdmin(identifier, authentication);
 
 	    // 2. check time stamp
@@ -472,13 +470,13 @@ public class BaseJsonldRest extends BaseRest {
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
 	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
-    	checkIfMatchHeader(eTagOrigin, request);
+	    checkIfMatchHeader(eTagOrigin, request);
 	    getAnnotationService().validateWebAnnotation(updateWebAnnotation);
 
 	    // 6. apply updates - merge current and updated annotation
 	    // 7. and call database update method
-	    Annotation updatedAnnotation = getAnnotationService().updateAnnotation((PersistentAnnotation)storedAnnotation,
-		    updateWebAnnotation);
+	    Annotation updatedAnnotation = getAnnotationService()
+		    .updateAnnotation((PersistentAnnotation) storedAnnotation, updateWebAnnotation);
 
 	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
@@ -524,12 +522,12 @@ public class BaseJsonldRest extends BaseRest {
      * @return response entity that comprises response body, headers and status code
      * @throws HttpException
      */
-    protected ResponseEntity<String> deleteAnnotation(String identifier, Authentication authentication)
+    protected ResponseEntity<String> deleteAnnotation(String identifier, Authentication authentication, HttpServletRequest request)
 	    throws HttpException {
 
 	try {
 //	    String userId = authentication.getPrincipal().toString();
-	    
+
 	    // 5. authorize user
 	    // already performed in verify write access
 //			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
@@ -537,6 +535,12 @@ public class BaseJsonldRest extends BaseRest {
 	    // Retrieve an annotation based on its id;
 	    // Verify if user is allowed to perform the deletion.
 	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication);
+
+	    // validate annotation
+	    String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+
+	    checkIfMatchHeader(eTagOrigin, request);
 
 	    // call database delete method that deactivates existing Annotation
 	    // in Mongo

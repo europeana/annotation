@@ -8,6 +8,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectLinking;
 import eu.europeana.annotation.definitions.model.impl.BaseObjectTag;
+import eu.europeana.annotation.definitions.model.impl.BaseSubtitleAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseTranscriptionAnnotation;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -68,6 +69,9 @@ public class AnnotationObjectFactory
 		case TRANSCRIBING:
 			annoType = AnnotationTypes.OBJECT_TRANSCRIPTION;
 			break;
+		case SUBTITLING:
+			annoType = AnnotationTypes.OBJECT_SUBTITLLE;
+			break;
 		case DESCRIBING:
 			annoType = AnnotationTypes.OBJECT_DESCRIBING;
 			break;
@@ -109,6 +113,9 @@ public class AnnotationObjectFactory
 			break;
 		case OBJECT_TRANSCRIPTION:
 			ret = BaseTranscriptionAnnotation.class;
+			break;
+		case OBJECT_SUBTITLLE:
+			ret = BaseSubtitleAnnotation.class;
 			break;
 		case OBJECT_DESCRIBING:
 			ret = BaseDescribingAnnotation.class;

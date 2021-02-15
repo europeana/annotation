@@ -160,5 +160,11 @@ public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements W
 		return getMongoWhitelistPersistence().getAll();
 	}
 
+	@Override
+	protected boolean validateResource(String value) {
+	    // TODO Auto-generated method stub
+	    return false;
+	}
+
 	
 }

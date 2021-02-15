@@ -30,7 +30,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	static final String MESSAGE_IDENTIFIER_WRONG = "error.message_identifier_wrong";
 	static final String MESSAGE_ANNOTATION_ID_EXISTS = "error.message_annotation_id_exists";
 	static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "error.message_annotation_id_not_exists";
-	static final String MESSAGE_INVALID_PARAMETER_VALUE = "error.message_invalid_parameter_value";
+//	static final String MESSAGE_INVALID_PARAMETER_VALUE = "error.message_invalid_parameter_value";
 	static final String MESSAGE_BLANK_PARAMETER_VALUE = "error.message_blank_parameter_value";
 	static final String MESSAGE_URL_NOT_VALID = "error.message_url_not_valid";
 	static final String MESSAGE_INVALID_TAG_SIZE = "error.message_invalid_tag_size";
