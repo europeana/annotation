@@ -6,9 +6,14 @@ annotation.service.uri = http://localhost:8080/annotation
 annotation.api.key=
 
 # the settings for api access
-annotation.header.name=Authorization
+#annotation.header.name=Authorization
 
 # the annotation validation header definitions
 annotation.readonly.authorization.value=Bearer
-annotation.regular.authorization.value=Bearer
-annotation.admin.authorization.value=Bearer
+#annotation.regular.authorization.value=Bearer
+#annotation.admin.authorization.value=Bearer
+
+#the URL for the endpoint of OAuth service  
+oauth.service.uri=
+oauth.token.request.params.regular=
+oauth.token.request.params.admin=username=

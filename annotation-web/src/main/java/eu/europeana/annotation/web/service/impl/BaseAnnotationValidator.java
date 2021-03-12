@@ -351,7 +351,10 @@ public abstract class BaseAnnotationValidator {
 	    validateTranscription(webAnnotation);
 	    break;
 	case SUBTITLING:
-	    validateSubtitle(webAnnotation);
+	    validateSubtitleOrCaption(webAnnotation);
+	    break;
+	case CAPTIONING:
+	    validateSubtitleOrCaption(webAnnotation);
 	    break;
 	default:
 	    break;
@@ -477,7 +480,7 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    protected void validateSubtitle(Annotation webAnnotation)
+    protected void validateSubtitleOrCaption(Annotation webAnnotation)
 	    throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
 
 	// validate body

@@ -1043,6 +1043,8 @@ public class AnnotationLdParser extends JsonLdParser {
 			return BodyInternalTypes.FULL_TEXT_RESOURCE;
 		case SUBTITLING:
 			return BodyInternalTypes.FULL_TEXT_RESOURCE;
+		case CAPTIONING:
+			return BodyInternalTypes.FULL_TEXT_RESOURCE;
 		case DESCRIBING:
 			return BodyInternalTypes.TEXT;
 		case TAGGING:
