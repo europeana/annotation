@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
@@ -26,11 +26,11 @@ public class WhitelistJsonApiTest extends BaseWebAnnotationProtocolTest {
 
 	private static String TEST_HTTP_URI = "http://test.data.europeana.eu";
 	
-    private WhitelistJsonApiImpl whitelistJsonApi;
+    private static WhitelistJsonApiImpl whitelistJsonApi;
     protected Logger log = LogManager.getLogger(getClass());
     
-    @BeforeEach
-    public void initObjects() {
+    @BeforeAll
+    public  static void initObjects() {
     	whitelistJsonApi = new WhitelistJsonApiImpl();
     }
 

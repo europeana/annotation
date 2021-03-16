@@ -4,10 +4,10 @@ import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public class PersistentObjectSubtitleImpl extends PersistentAnnotationImpl implements ObjectTag{
+public class PersistentSubtitleImpl extends PersistentAnnotationImpl implements ObjectTag{
 	
 	
-	public PersistentObjectSubtitleImpl(){
+	public PersistentSubtitleImpl(){
 		super();
 		setInternalType(AnnotationTypes.OBJECT_SUBTITLLE.name());
 		setMotivation(MotivationTypes.SUBTITLING.getOaType());

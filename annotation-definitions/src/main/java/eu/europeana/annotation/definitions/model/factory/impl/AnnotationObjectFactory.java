@@ -3,6 +3,7 @@ package eu.europeana.annotation.definitions.model.factory.impl;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
+import eu.europeana.annotation.definitions.model.impl.BaseCaptionAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseDescribingAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
@@ -72,6 +73,9 @@ public class AnnotationObjectFactory
 		case SUBTITLING:
 			annoType = AnnotationTypes.OBJECT_SUBTITLLE;
 			break;
+		case CAPTIONING:
+			annoType = AnnotationTypes.OBJECT_CAPTION;
+			break;
 		case DESCRIBING:
 			annoType = AnnotationTypes.OBJECT_DESCRIBING;
 			break;
@@ -116,6 +120,9 @@ public class AnnotationObjectFactory
 			break;
 		case OBJECT_SUBTITLLE:
 			ret = BaseSubtitleAnnotation.class;
+			break;
+		case OBJECT_CAPTION:
+			ret = BaseCaptionAnnotation.class;
 			break;
 		case OBJECT_DESCRIBING:
 			ret = BaseDescribingAnnotation.class;

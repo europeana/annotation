@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -127,10 +127,10 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
-	private WebAnnotationProtocolApi apiClient;
+	private static WebAnnotationProtocolApi apiClient;
 
-	@BeforeEach
-	public void initObjects() {
+	@BeforeAll
+	public static void initObjects() {
 		apiClient = new WebAnnotationProtocolApiImpl();
 	}
 

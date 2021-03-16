@@ -31,7 +31,7 @@
     <xsl:param name="langs">en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru</xsl:param>
 
     <xsl:template match="/">
-        <xsl:apply-templates select="metis:results/metis:enrichmentBaseWrapperList/*[@rdf:about=$uri]"/>
+        <xsl:apply-templates select="metis:results/metis:result/*[@rdf:about=$uri]"/>
     </xsl:template>
 
     <xsl:template match="skos:Concept|edm:Agent|edm:Place|edm:TimeSpan">

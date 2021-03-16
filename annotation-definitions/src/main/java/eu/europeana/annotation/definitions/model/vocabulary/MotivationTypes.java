@@ -15,6 +15,7 @@ public enum MotivationTypes implements JsonKeyword{
 	, REPLYING("replying", null)
 	, TRANSCRIBING("transcribing", null)
 	, SUBTITLING("subtitling", null)
+	, CAPTIONING("captioning", null)
 	, TAGGING("tagging", "tag"),
 	UNKNOWN("unknown", "unknown"); 
 
