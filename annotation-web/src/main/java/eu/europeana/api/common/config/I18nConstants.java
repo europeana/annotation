@@ -10,6 +10,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	static final String USER_NOT_AUTHORIZED = "error.annotation_user_not_authorized";
 	static final String ANNOTATION_NOT_ACCESSIBLE = "error.annotation_not_accessible";
 	static final String ANNOTATION_INVALID_BODY = "error.annotation_invalid_body";
+	static final String ANNOTATION_INVALID_SUBTITLES_FORMATS = "error.annotation_invalid_subtitles_formats";
 	static final String ANNOTATION_INVALID_RIGHTS = "annotation_invalid_rights";
 	static final String ANNOTATION_CANT_PARSE_BODY = "error.annotation_cant_parse_body";
 	static final String API_WRITE_LOCK = "error.annotation_write_lock";

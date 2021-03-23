@@ -47,6 +47,12 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 	String key = ANNOTATION_ENVIRONMENT + "." + getEnvironment() + "." + SUFFIX_BASEURL;
 	return getAnnotationProperties().getProperty(key);
     }
+    
+    @Override
+    public String getAnnotationSubtitlesFormats() {
+	return getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS).trim();
+    }
+
 
     public String getDefaultWhitelistResourcePath() {
 	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
