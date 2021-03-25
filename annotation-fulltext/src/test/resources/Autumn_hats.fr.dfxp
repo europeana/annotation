@@ -1,0 +1,48 @@
+<tt xmlns:tts="http://www.w3.org/ns/ttml#styling" xmlns:ttm="http://www.w3.org/ns/ttml#metadata" xmlns="http://www.w3.org/ns/ttml" xml:lang="fr">
+    <head>
+        <metadata>
+            <ttm:title/>
+            <ttm:description/>
+            <ttm:copyright/>
+        </metadata>
+        <styling>
+            <style xml:id="amara-style" tts:color="white" tts:textOutline="black 1px 0px" tts:fontFamily="proportionalSansSerif" tts:fontSize="18px" tts:backgroundColor="transparent" tts:textAlign="center"/>
+        </styling>
+        <layout>
+            <region xml:id="bottom" style="amara-style" tts:origin="0 80%" tts:extent="100% 20%"/>
+            <region xml:id="top" style="amara-style" tts:origin="0 0" tts:extent="100% 20%"/>
+        </layout>
+    </head>
+    <body region="bottom">
+        <div>
+            <p begin="00:00:00.000" end="00:00:05.780">(musique)</p>
+            <p begin="00:00:05.780" end="00:00:07.000">Chapeau madame !</p>
+            <p begin="00:00:07.000" end="00:00:08.770">On s'inclinera, en effet, devant </p>
+            <p begin="00:00:08.770" end="00:00:10.890">la gr&#226;ce l&#233;g&#232;re et l'harmonie audacieuse</p>
+            <p begin="00:00:10.890" end="00:00:13.000">des cr&#233;ations que la haute mode</p>
+            <p begin="00:00:13.000" end="00:00:15.000">pr&#233;sente pour la saison prochaine.</p>
+            <p begin="00:00:15.000" end="00:00:17.000">On verra donc, Arabel</p>
+            <p begin="00:00:17.000" end="00:00:19.320">de jade griffe.</p>
+            <p begin="00:00:19.720" end="00:00:21.390">Etoile filante</p>
+            <p begin="00:00:21.390" end="00:00:23.390">d'Achilde</p>
+            <p begin="00:00:23.390" end="00:00:27.770">(musique)</p>
+            <p begin="00:00:27.770" end="00:00:29.000">Sphinx</p>
+            <p begin="00:00:29.000" end="00:00:32.110">de Morgen</p>
+            <p begin="00:00:32.110" end="00:00:36.490">(musique) </p>
+            <p begin="00:00:36.490" end="00:00:38.110">Chapeau de clown</p>
+            <p begin="00:00:38.110" end="00:00:40.110">de Marie Christiane</p>
+            <p begin="00:00:40.110" end="00:00:44.100">(musique)</p>
+            <p begin="00:00:44.110" end="00:00:46.000">Colibri</p>
+            <p begin="00:00:46.000" end="00:00:48.000">de Jack'n Spen</p>
+            <p begin="00:00:48.000" end="00:00:55.830">(musique)</p>
+            <p begin="00:00:55.830" end="00:00:57.666">Enfin, Jean Barthet pr&#233;sente</p>
+            <p begin="00:00:57.666" end="00:00:59.660">Incognito, qui romp avec </p>
+            <p begin="00:00:59.660" end="00:01:01.883">les toques envoitantes qui semblent avoir</p>
+            <p begin="00:01:01.883" end="00:01:03.660">l'aveu g&#233;n&#233;ral. <br/>Et Carioca</p>
+            <p begin="00:01:03.660" end="00:01:05.250">qui sera le panache </p>
+            <p begin="00:01:05.250" end="00:01:07.660">d'un automne luxueux.</p>
+            <p begin="00:01:07.660" end="00:01:09.660">Chapeau, madame !</p>
+            <p begin="00:01:09.660" end="00:01:11.780">(musique)</p>
+        </div>
+    </body>
+</tt>
