@@ -88,6 +88,12 @@
             		<groupId>com.fasterxml.jackson.core</groupId>
             		<artifactId>jackson-core</artifactId>
             	</exclusion>
+            	<!-- Srdjan added -->
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            
             </exclusions>            
         </dependency>
         <!-- dependencies for switching to JDK 11 -->
