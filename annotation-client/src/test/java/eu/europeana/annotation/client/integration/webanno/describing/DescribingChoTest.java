@@ -31,7 +31,7 @@ public class DescribingChoTest extends BaseDescribingTest {
 		String requestBody = getJsonStringInput(DESCRIBING_CHO);
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-				true, requestBody, null);
+				true, requestBody, null, null);
 								
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);

@@ -50,7 +50,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 
 		String requestBody = getJsonStringInput(inputFile);
 
-		Annotation storedAnno = createTestAnnotation(inputFile, indexOnCreate);
+		Annotation storedAnno = createTestAnnotation(inputFile, indexOnCreate, null);
 
 		Annotation inputAnno = parseTag(requestBody);
 
