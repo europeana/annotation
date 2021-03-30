@@ -493,8 +493,7 @@ public abstract class BaseAnnotationValidator {
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "subtitle.body.format" });
 	}
 	// check if the body.format field has a valid value
-	String[] validSubtitlesFormats = getConfiguration().getAnnotationSubtitlesFormats().split(",");
-	boolean result = Arrays.stream(validSubtitlesFormats).anyMatch(body.getContentType()::equals);
+	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
 	if (!result) {
 	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
 		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "subtitle.body.format" });
