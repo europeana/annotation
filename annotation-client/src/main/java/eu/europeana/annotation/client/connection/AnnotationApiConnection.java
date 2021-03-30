@@ -66,6 +66,15 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	regularUserAuthorizationValue = "Bearer " + getOauthToken(USER_REGULAR);
 	adminUserAuthorizationValue = "Bearer " + getOauthToken(USER_ADMIN);
     }
+    
+    private String getAuthorizationHeaderValue (String user) {
+    	if (user!=null && user.equals(USER_ADMIN)) {
+    		return adminUserAuthorizationValue;
+    	}
+    	else {
+    		return regularUserAuthorizationValue;
+    	}
+    }
 
     /**
      * @param collectionId
@@ -243,12 +252,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * Execute Europeana API request
 	 */
-	if (user!=null && user.equals(USER_ADMIN)) {
-		return postURL(url, annotation, authorizationHeaderName, adminUserAuthorizationValue);
-	}
-	else {
-    	return postURL(url, annotation, authorizationHeaderName, regularUserAuthorizationValue);
-    }
+	return postURL(url, annotation, authorizationHeaderName, getAuthorizationHeaderValue(user));
 	
     }
 
@@ -427,13 +431,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * Execute Europeana API request
 	 */
-	if (user!=null && user.equals(USER_ADMIN)) {
-		return putURL(url, updateAnnotation, authorizationHeaderName, adminUserAuthorizationValue);
-	}
-	else {
-		return putURL(url, updateAnnotation, authorizationHeaderName, regularUserAuthorizationValue);
-    }
-	
+	return putURL(url, updateAnnotation, authorizationHeaderName, getAuthorizationHeaderValue(user));
+
     }
     /**
      * @Deprecated see new specifications for WebAnnotationProtocol This method
@@ -490,12 +489,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * Execute Europeana API request
 	 */
-	if (user!=null && user.equals(USER_ADMIN)) {
-		return deleteURL(url, authorizationHeaderName, adminUserAuthorizationValue);
-	}
-	else {
-		return deleteURL(url, authorizationHeaderName, regularUserAuthorizationValue);
-    }
+	return deleteURL(url, authorizationHeaderName, getAuthorizationHeaderValue(user));
+
 	
     }
 

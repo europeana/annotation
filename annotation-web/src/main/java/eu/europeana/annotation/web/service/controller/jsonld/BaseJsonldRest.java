@@ -413,8 +413,10 @@ public class BaseJsonldRest extends BaseRest {
 	    return annotation;
 	}else {
 	    //not authorized
-	    throw new ApplicationAuthenticationException("Only the creators of the annotation or admins are authorized to perform this operation.",
-		    I18nConstants.OPERATION_NOT_AUTHORIZED);
+		//not authorized
+	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."},
+		    HttpStatus.FORBIDDEN);
 	}
     }
 
@@ -499,8 +501,8 @@ public class BaseJsonldRest extends BaseRest {
 	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (AnnotationValidationException e) {
 	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (ApplicationAuthenticationException e) {
-	    throw new HttpException(e.getMessage(), I18nConstants.USER_NOT_AUTHORIZED, null, HttpStatus.FORBIDDEN, e);
+	} catch (HttpException e) {
+	    throw e;
 	} catch (AnnotationInstantiationException e) {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION,
 		    null, HttpStatus.BAD_REQUEST, e);
