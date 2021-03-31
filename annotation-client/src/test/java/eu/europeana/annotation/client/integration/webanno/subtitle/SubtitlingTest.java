@@ -20,7 +20,7 @@ public class SubtitlingTest extends BaseWebAnnotationProtocolTest {
     }
 
     @Test
-    public void createMinimalTranscription() throws IOException, JsonParseException, IllegalAccessException,
+    public void createMinimalSubtitle() throws IOException, JsonParseException, IllegalAccessException,
 	    IllegalArgumentException, InvocationTargetException {
 
 	String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
