@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -486,10 +487,16 @@ public abstract class BaseAnnotationValidator {
 	// validate body
 	Body body = webAnnotation.getBody();
 	validateFullTextResource(body);
-	// check mandatory field edmRights
+	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
 	if (StringUtils.isBlank(body.getContentType())) {
 	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "subtitle.body.format" });
+	}
+	// check if the body.format field has a valid value
+	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
+	if (!result) {
+	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
+		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "subtitle.body.format" });
 	}
 	
 	// validate target

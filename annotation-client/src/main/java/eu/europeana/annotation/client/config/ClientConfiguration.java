@@ -98,7 +98,7 @@ public class ClientConfiguration {
     public String getServiceUri() {
 	return getProperties().getProperty(PROP_ANNOTATION_SERVICE_URI).trim();
     }
-
+    
     /**
      * This method provides access to the header name defined in the configuration
      * file
