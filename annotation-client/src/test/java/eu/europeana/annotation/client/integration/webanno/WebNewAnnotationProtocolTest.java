@@ -76,7 +76,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 				
 //		update annotation by identifier URL
 		ResponseEntity<String> updateResponse = getApiClient().updateAnnotation(
-				annotation.getAnnotationId().getIdentifier(), requestBody);
+				annotation.getAnnotationId().getIdentifier(), requestBody, null);
 		
 		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(updateResponse);
 		

@@ -17,7 +17,7 @@ public class EdmTranscribingTest extends BaseTranscribingTest {
 	String requestBody = getJsonStringInput(TRANSCRIPTION_MINIMAL);
 	Annotation inputAnno = parseTranscription(requestBody);
 
-	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_MINIMAL);
+	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_MINIMAL, null);
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);

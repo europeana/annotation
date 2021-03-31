@@ -146,26 +146,27 @@ public class BaseWebAnnotationProtocolTest {
 	 * @throws IOException 
 	 */
 	protected ResponseEntity<String> storeTestAnnotation(String jsonFile) throws IOException {
-	    return storeTestAnnotation(jsonFile, true);
+	    return storeTestAnnotation(jsonFile, true, null);
 	}
 	
 
 
 	/**
 	 * This method creates test annotation object and allows choosing if it should be indexed or not.
+	 * @param user 
 	 * 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws IOException 
 	 */
-	private ResponseEntity<String> storeTestAnnotation(String inputFile, boolean indexOnCreate) throws IOException {
+	private ResponseEntity<String> storeTestAnnotation(String inputFile, boolean indexOnCreate, String user) throws IOException {
 
 		String requestBody = getJsonStringInput(inputFile);
 		
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null);
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null, user);
 		return storedResponse;
 	}
 	
@@ -216,15 +217,16 @@ public class BaseWebAnnotationProtocolTest {
 
 	/**
 	 * This method creates test annotation object
+	 * @param user 
 	 * 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws JsonParseException
 	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation(String inputFile) throws JsonParseException, IOException {
+	protected Annotation createTestAnnotation(String inputFile, String user) throws JsonParseException, IOException {
 
-		return createTestAnnotation(inputFile, true);
+		return createTestAnnotation(inputFile, true, user);
 		
 	}
 
@@ -233,14 +235,15 @@ public class BaseWebAnnotationProtocolTest {
 	 * 
 	 * @param inputFile Annotation tag
 	 * @param indexOnCreate Flag to decide if the test annotation should be indexed or not
+	 * @param user 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws JsonParseException
 	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation(String inputFile, boolean indexOnCreate) throws JsonParseException, IOException {
+	protected Annotation createTestAnnotation(String inputFile, boolean indexOnCreate, String user) throws JsonParseException, IOException {
 
-		ResponseEntity<String> response = storeTestAnnotation(inputFile, indexOnCreate);
+		ResponseEntity<String> response = storeTestAnnotation(inputFile, indexOnCreate, user);
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 
 		return annotation;
@@ -332,7 +335,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
 	    ResponseEntity<String> response = getApiClient().createAnnotation(
-			true, requestBody,  WebAnnotationFields.TAG);
+			true, requestBody,  WebAnnotationFields.TAG, null);
 	    Annotation storedAnno = getApiClient().parseResponseBody(response);
 	    return storedAnno;
 	}
@@ -341,6 +344,7 @@ public class BaseWebAnnotationProtocolTest {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				true, requestBody, WebAnnotationFields.LINK 
 				//null 
+, null
 				);
 				
 				
@@ -388,7 +392,7 @@ public class BaseWebAnnotationProtocolTest {
 		
 		Annotation[] testAnnotations = new Annotation[numTestAnno];
 		for( int i = 0; i < numTestAnno; i++) {
-			Annotation annotation = this.createTestAnnotation(TAG_STANDARD);
+			Annotation annotation = this.createTestAnnotation(TAG_STANDARD, null);
 			assertNotNull(annotation);
 			testAnnotations[i] = annotation;
 		}

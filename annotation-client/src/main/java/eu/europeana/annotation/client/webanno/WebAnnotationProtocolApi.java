@@ -12,19 +12,20 @@ public interface WebAnnotationProtocolApi {
 	 * This method creates annotation describing it in body JSON string and
 	 * providing it with associated wskey, provider name and identifier.
 	 * When motivation is not given in JSON - annoType must be set up.
-	 * @param wskey
-	 * @param identifier
 	 * @param indexOnCreate
 	 * @param requestBody Contains the body JSON string
-	 * @param userToken
 	 * @param annoType
+	 * @param user TODO
+	 * @param wskey
+	 * @param identifier
+	 * @param userToken
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> createAnnotation(Boolean indexOnCreate, 
-			String requestBody, String annoType);
+			String requestBody, String annoType, String user);
 	
 	public ResponseEntity<String> createAnnotation(
-			String requestBody, String annoType);
+			String requestBody, String annoType, String user);
 	
 	/**
 	 * This method creates test annotation report object
@@ -106,14 +107,15 @@ public interface WebAnnotationProtocolApi {
 	
 	/**
 	 * This method updates annotation by the given update string in JSON format
-	 * @param wskey
 	 * @param identifier - part of the annotationId 
 	 * @param requestBody
+	 * @param user TODO
+	 * @param wskey
 	 * @param userToken
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> updateAnnotation(
-			String identifier, String requestBody);
+			String identifier, String requestBody, String user);
 
 
 	/**

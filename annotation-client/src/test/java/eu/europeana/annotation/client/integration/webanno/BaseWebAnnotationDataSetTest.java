@@ -83,7 +83,7 @@ public class BaseWebAnnotationDataSetTest {
 	protected ResponseEntity<String> storeTestAnnotation() {
 		ResponseEntity<String> storedResponse = apiClient.createAnnotation(
 				true,
-				defaultRequestBody, null);
+				defaultRequestBody, null, null);
 		return storedResponse;
 	}
 

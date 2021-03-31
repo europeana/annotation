@@ -25,11 +25,11 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> createAnnotation(Boolean indexOnCreate, String annotation, String annoType) {
+    public ResponseEntity<String> createAnnotation(Boolean indexOnCreate, String annotation, String annoType, String user) {
 
 	ResponseEntity<String> res;
 	try {
-	    res = apiConnection.createAnnotation(indexOnCreate, annotation, annoType);
+	    res = apiConnection.createAnnotation(indexOnCreate, annotation, annoType, user);
 	} catch (IOException e) {
 	    throw new TechnicalRuntimeException(
 		    "Exception occured when invoking the AnnotationJsonApi createAnnotation method", e);
@@ -39,15 +39,15 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> createAnnotation(String annotation, String annoType) {
-	return createAnnotation(true, annotation, annoType);
+    public ResponseEntity<String> createAnnotation(String annotation, String annoType, String user) {
+	return createAnnotation(true, annotation, annoType, user);
     }
 
     @Override
     public ResponseEntity<String> deleteAnnotation(String identifier) {
 	ResponseEntity<String> res;
 	try {
-	    res = apiConnection.deleteAnnotation(identifier);
+	    res = apiConnection.deleteAnnotation(identifier, null);
 	} catch (IOException e) {
 	    throw new TechnicalRuntimeException(
 		    "Exception occured when invoking the AnnotationJsonApi deleteAnnotation method", e);
@@ -99,10 +99,10 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> updateAnnotation(String identifier, String annotation) {
+    public ResponseEntity<String> updateAnnotation(String identifier, String annotation, String user) {
 	ResponseEntity<String> res;
 	try {
-	    res = apiConnection.updateAnnotation(identifier, annotation);
+	    res = apiConnection.updateAnnotation(identifier, annotation, user);
 	} catch (IOException e) {
 	    throw new TechnicalRuntimeException(
 		    "Exception occured when invoking the AnnotationJsonApi updateAnnotation method", e);
@@ -113,7 +113,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 
     @Override
     public ResponseEntity<String> createTag(Boolean indexOnCreate, String annotation) {
-	return createAnnotation(indexOnCreate, annotation, WebAnnotationFields.TAG);
+	return createAnnotation(indexOnCreate, annotation, WebAnnotationFields.TAG, null);
     }
 
     @Override

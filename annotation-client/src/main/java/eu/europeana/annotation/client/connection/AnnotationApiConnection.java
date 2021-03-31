@@ -44,8 +44,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
     String regularUserAuthorizationValue = null;
     String adminUserAuthorizationValue = null;
     
-    String USER_REGULAR = "regular";
-    String USER_ADMIN = "admin";
+    public static String USER_REGULAR = "regular";
+    public static String USER_ADMIN = "admin";
 
     /**
      * Create a new connection to the Annotation Service (REST API).
@@ -65,6 +65,15 @@ public class AnnotationApiConnection extends BaseApiConnection {
     private void initConfigurations() {
 	regularUserAuthorizationValue = "Bearer " + getOauthToken(USER_REGULAR);
 	adminUserAuthorizationValue = "Bearer " + getOauthToken(USER_ADMIN);
+    }
+    
+    private String getAuthorizationHeaderValue (String user) {
+    	if (user!=null && user.equals(USER_ADMIN)) {
+    		return adminUserAuthorizationValue;
+    	}
+    	else {
+    		return regularUserAuthorizationValue;
+    	}
     }
 
     /**
@@ -215,18 +224,19 @@ public class AnnotationApiConnection extends BaseApiConnection {
      * http://localhost:8080/annotation/?wskey=apidemo&provider=webanno&&indexOnCreate=false
      * and for tag object with type jsonld
      * http://localhost:8080/annotation/tag.jsonld?wskey=apidemo&provider=webanno&&indexOnCreate=false
-     * 
-     * @param wskey
-     * @param identifier
      * @param indexOnCreate
      * @param annotation    The Annotation body
-     * @param userToken
      * @param annoType
+     * @param user
+     * @param wskey
+     * @param identifier
+     * @param userToken
+     * 
      * @return response entity that comprises response body, headers and status
      *         code.
      * @throws IOException
      */
-    public ResponseEntity<String> createAnnotation(Boolean indexOnCreate, String annotation, String annoType)
+    public ResponseEntity<String> createAnnotation(Boolean indexOnCreate, String annotation, String annoType, String user)
 	    throws IOException {
 
 	String url = getAnnotationServiceUri();
@@ -242,7 +252,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * Execute Europeana API request
 	 */
-	return postURL(url, annotation, authorizationHeaderName, regularUserAuthorizationValue);
+	return postURL(url, annotation, authorizationHeaderName, getAuthorizationHeaderValue(user));
+	
     }
 
     /**
@@ -398,17 +409,18 @@ public class AnnotationApiConnection extends BaseApiConnection {
      * identifier is: http://data.europeana.eu/annotation/webanno/496 and the update
      * JSON string is: { "body": "Buccin Trombone","target":
      * "http://data.europeana.eu/item/09102/_UEDIN_2214" }
-     * 
-     * @param wskey
      * @param identifier       The identifier URL that comprise annotation provider
      *                         and ID
      * @param updateAnnotation The update Annotation body in JSON format
+     * @param user 
+     * @param wskey
      * @param userToken
+     * 
      * @return response entity that comprises response body, headers and status
      *         code.
      * @throws IOException
      */
-    public ResponseEntity<String> updateAnnotation(String identifier, String updateAnnotation) throws IOException {
+    public ResponseEntity<String> updateAnnotation(String identifier, String updateAnnotation, String user) throws IOException {
 
 	// TODO:refactor to use an abstract implementation for building client urls
 	String url = getAnnotationServiceUri();
@@ -419,7 +431,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * Execute Europeana API request
 	 */
-	return putURL(url, updateAnnotation, authorizationHeaderName, regularUserAuthorizationValue);
+	return putURL(url, updateAnnotation, authorizationHeaderName, getAuthorizationHeaderValue(user));
+
     }
     /**
      * @Deprecated see new specifications for WebAnnotationProtocol This method
@@ -459,15 +472,16 @@ public class AnnotationApiConnection extends BaseApiConnection {
      * request:
      * http://localhost:8080/annotation/provider/identifier{.jsonld}?wskey=apidemo
      * where identifier is: http://data.europeana.eu/annotation/webanno/494
-     * 
-     * @param wskey
      * @param identifier The identifier URL that comprise annotation provider and ID
+     * @param user TODO
+     * @param wskey
      * @param userToken
      * @param format
+     * 
      * @return response entity that comprises response headers and status code.
      * @throws IOException
      */
-    public ResponseEntity<String> deleteAnnotation(String identifier) throws IOException {
+    public ResponseEntity<String> deleteAnnotation(String identifier, String user) throws IOException {
 
 	String url = getAnnotationServiceUri();
 	url += WebAnnotationFields.SLASH + identifier;
@@ -475,7 +489,9 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	/**
 	 * Execute Europeana API request
 	 */
-	return deleteURL(url, authorizationHeaderName, regularUserAuthorizationValue);
+	return deleteURL(url, authorizationHeaderName, getAuthorizationHeaderValue(user));
+
+	
     }
 
     /**
