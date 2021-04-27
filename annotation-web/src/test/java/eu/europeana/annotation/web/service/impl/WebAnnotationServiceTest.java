@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
@@ -162,52 +161,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		return ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
 	}
 
-	/**
-	 * not supported in this version
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws AnnotationServiceException
-	 */
-//	@Test
-	public void testMultilingualAnnotation() 
-			throws MalformedURLException, IOException, AnnotationServiceException {
-		
-		Annotation testAnnotation = createTestAnnotation();		
-		
-		SkosConceptBody body = (SkosConceptBody)testAnnotation.getBody();
-		body.addLabelInMapping(
-				"ro", //AnnotationLdTest.TEST_RO_VALUE
-				"ro_value");
-//		SolrAnnotationConst.SolrAnnotationLanguages.RO.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_RO_VALUE);
-		body.addLabelInMapping(
-				"en", //AnnotationLdTest.TEST_EN_VALUE
-				"en_value");
-//		SolrAnnotationConst.SolrAnnotationLanguages.EN.getSolrAnnotationLanguage(), AnnotationLdTest.TEST_EN_VALUE);
-
-		/**
-		 * Store Annotation in database.
-		 */
-		Annotation webAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
-		
-		/**
-		 * Put original types if necessary 
-		 */
-		if (StringUtils.isBlank(webAnnotation.getType())) {
-			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
-		}
-		
-		System.out.println("testAnnotation: " + testAnnotation.toString());
-		System.out.println("webAnnotation: " + webAnnotation.toString());
-		
-		assertTrue(webAnnotation.getAnnotationId() != null && webAnnotation.getAnnotationId().toString().length() > 0);
-		
-		SkosConceptBody body2 = (SkosConceptBody)webAnnotation.getBody();
-		assertTrue(body2.getMultilingual().containsValue(TEST_EN_VALUE) 
-        		&& body2.getMultilingual().containsValue(TEST_RO_VALUE));
-//		assertEquals(testAnnotation, webAnnotation);
-		assertEquals(body, body2);
-	}
-		
 	@Test
 	public void testDeleteAnnotation() 
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {

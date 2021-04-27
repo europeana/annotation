@@ -72,5 +72,14 @@ public interface SolrAnnotation extends Annotation {
 	void setBodyUris(List<String> bodyUris);
 
 	List<String> getBodyUris();
+
+	/**
+	 * This method adds a new language/label association to the multilingual
+	 * map.
+	 * 
+	 * @param language
+	 * @param label
+	 */
+	void addMultilingualValue(String language, String label);
 	
 }
