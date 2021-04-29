@@ -496,7 +496,7 @@ public abstract class BaseAnnotationValidator {
 	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
 	if (!result) {
 	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
-		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "subtitle.body.format" });
+		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { body.getContentType() });
 	}
 	
 	// validate target
