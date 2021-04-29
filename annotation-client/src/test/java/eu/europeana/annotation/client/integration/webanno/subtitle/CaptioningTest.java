@@ -26,7 +26,7 @@ public class CaptioningTest extends BaseWebAnnotationProtocolTest {
 	String requestBody = getJsonStringInput(CAPTION_MINIMAL);
 	Annotation inputAnno = parseCaption(requestBody);
 
-	Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL);
+	Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, null);
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);

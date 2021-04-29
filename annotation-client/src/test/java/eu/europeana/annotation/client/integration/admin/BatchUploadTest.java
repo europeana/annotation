@@ -70,7 +70,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		// updated)
 		Annotation testAnnotation = null;
 		for (int i = 0; i < TEST_NUM_ANNOTATIONS; i++) {
-			testAnnotation = createTestAnnotation(TAG_MINIMAL, false);
+			testAnnotation = createTestAnnotation(TAG_MINIMAL, false, null);
 			testAnnotations.add(testAnnotation);
 			testHttpUrls.add(testAnnotation.getAnnotationId().getIdentifier());
 		}

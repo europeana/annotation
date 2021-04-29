@@ -6,6 +6,8 @@ public interface SolrAnnotationConstants {
 	public static final String ANNO_ID = "anno_id";
 	
 	public static final String BODY_VALUE = "body_value";
+	public static final String BODY_VALUE_PREFIX = "body_value.";
+	public static final String BODY_VALUE_ALL = BODY_VALUE_PREFIX + "*";
 	public static final String BODY_TEXT  = "body_text";
 	
 	public static final String INTERNAL_TYPE = "internal_type";	

@@ -40,7 +40,7 @@ public class AgentTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(WRONG_AGENT_ID_NOT_URL);
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
-			false, requestBody, null);
+			false, requestBody, null, null);
 		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());		
 		
