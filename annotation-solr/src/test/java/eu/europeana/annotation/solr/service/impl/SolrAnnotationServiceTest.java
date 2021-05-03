@@ -313,11 +313,11 @@ public class SolrAnnotationServiceTest {
 		/**
 		 * add multilingual labels
 		 */
-		solrAnnotation.addLabelInMapping("EN", "leaf");
-		solrAnnotation.addLabelInMapping("DE", "blatt");
+		solrAnnotation.addMultilingualValue("EN", "leaf");
+		solrAnnotation.addMultilingualValue("DE", "blatt");
 		
 		Logger.getLogger(getClass().getName()).info("Solr annotation before update. The multilingual map: " + 
-				solrAnnotation.getMultilingual().toString());
+				solrAnnotation.getBodyMultilingualValue().toString());
 
 		solrAnnotationService.update(solrAnnotation);
 		
@@ -359,10 +359,10 @@ public class SolrAnnotationServiceTest {
 			for (SolrAnnotation bean : beans) {
 				Logger.getLogger(getClass().getName()).info(bean.toString());
 				if (withMap 
-						&& ((SolrAnnotationImpl) bean).getMultilingual() != null
-						&& ((SolrAnnotationImpl) bean).getMultilingual().size() > 0) {
+						&& ((SolrAnnotationImpl) bean).getBodyMultilingualValue() != null
+						&& ((SolrAnnotationImpl) bean).getBodyMultilingualValue().size() > 0) {
 					Logger.getLogger(getClass().getName()).info("multilingual map: " + 
-							((SolrAnnotationImpl) bean).getMultilingual().toString());
+							((SolrAnnotationImpl) bean).getBodyMultilingualValue().toString());
 				}
 			}
 		}

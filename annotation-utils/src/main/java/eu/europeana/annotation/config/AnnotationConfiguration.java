@@ -6,6 +6,7 @@ public interface AnnotationConfiguration {
 
     public static final String ANNOTATION_INDEXING_ENABLED = "annotation.indexing.enabled";
     public static final String ANNOTATION_ENVIRONMENT = "annotation.environment";
+    public static final String ANNOTATION_SUBTITLES_FORMATS = "annotation.subtitles.formats";
 
     public static final String SUFFIX_BASEURL = "baseUrl";
     public static final String VALUE_ENVIRONMENT_PRODUCTION = "production";
@@ -42,6 +43,11 @@ public interface AnnotationConfiguration {
      * uses annotation.environment property
      */
     public String getEnvironment();
+
+    /**
+     * uses annotation.subtitles.formats property
+     */
+    public Set<String> getAnnotationSubtitlesFormats();
 
     /**
      * uses annotation.environment.{$environment}.baseUrl property

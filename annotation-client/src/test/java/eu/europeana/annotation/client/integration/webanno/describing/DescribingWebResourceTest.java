@@ -32,7 +32,7 @@ public class DescribingWebResourceTest extends BaseDescribingTest {
 		
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				true, requestBody, 
-				null
+				null, null
 				);
 								
 		assertNotNull(response.getBody());

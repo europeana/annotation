@@ -1,5 +1,6 @@
 package eu.europeana.annotation.config;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -47,6 +48,13 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 	String key = ANNOTATION_ENVIRONMENT + "." + getEnvironment() + "." + SUFFIX_BASEURL;
 	return getAnnotationProperties().getProperty(key);
     }
+    
+    @Override
+    public Set<String> getAnnotationSubtitlesFormats() {
+	String[] subtitlesFormats = getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS).trim().split(",");
+	return new HashSet<>(Arrays.asList(subtitlesFormats));
+    }
+
 
     public String getDefaultWhitelistResourcePath() {
 	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);

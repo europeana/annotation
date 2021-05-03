@@ -47,7 +47,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 	public void createAndDeleteAnnotation() throws JsonParseException, IOException {
 
 		// create
-		Annotation annotation = this.createTestAnnotation(TAG_STANDARD);
+		Annotation annotation = this.createTestAnnotation(TAG_STANDARD, null);
 
 		// read
 		assertNotNull(annotation);
@@ -103,7 +103,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 		try {
 			// create test annotations without indexing it
 			for (int i = 0; i < numAnnotations; i++)
-				annotations.add(this.createTestAnnotation(TAG_INDEXING, false));
+				annotations.add(this.createTestAnnotation(TAG_INDEXING, false, null));
 			assertNotNull(annotations);
 			assertEquals(numAnnotations, annotations.size());
 			
@@ -221,7 +221,7 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 	private List<Annotation> createAnnotationsTestSet(int numAnnotations, String testAnnotationTag, boolean index) throws JsonParseException, IOException {
 		List<Annotation> annotations = new ArrayList<Annotation>();
 		for(int i = 0; i < numAnnotations; i++) 
-			annotations.add(this.createTestAnnotation(testAnnotationTag, index));
+			annotations.add(this.createTestAnnotation(testAnnotationTag, index, null));
 		return annotations;
 	}
 	

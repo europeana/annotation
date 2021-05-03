@@ -1,16 +1,15 @@
 package eu.europeana.annotation.solr.model.internal;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.body.SkosConceptBody;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
@@ -40,6 +39,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String linkRelation;
 	
 	private String bodyValue;
+	private Map<String, String> bodyMultilingualValue;
 	private List<String> bodyUris;
 	
 	/**
@@ -149,15 +149,15 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.bodyValue = bodyValue;
 	}
 
-	public Map<String, String> getMultilingual() {
-		
-		
-		if(getBody()!=null && (getBody() instanceof SkosConceptBody))
-			return ((SkosConceptBody)getBody()).getMultilingual();
-		
-		return null;		
+	@Field(BODY_VALUE_ALL)
+	public void setBodyMultilingualValue(Map<String, String> multilingualText) {
+	    //TODO: convert to language map by removing field when required  
+	    this.bodyMultilingualValue = multilingualText;		
 	}
-
+	
+	public Map<String, String> getBodyMultilingualValue() {
+	    return bodyMultilingualValue;
+	}
 
 	/**
 	 * This method adds a new language/label association to the multilingual
@@ -166,12 +166,15 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	 * @param language
 	 * @param label
 	 */
-	public void addLabelInMapping(String language, String label) {
-		getMultilingual().put(language + "_" + WebAnnotationFields.MULTILINGUAL, label);
-		// if(this.multiLingual == null) {
-		// this.multiLingual = new HashMap<String, String>();
-		// }
-		// this.multiLingual.put(language + "_multilingual", label);
+	@Override
+	public void addMultilingualValue(String language, String label) {
+		if(language == null) {
+		    return;
+		}
+		if(bodyMultilingualValue == null){
+		    bodyMultilingualValue = new HashMap<String, String>();
+		}
+		bodyMultilingualValue.put(BODY_VALUE_PREFIX + language, label);
 	}
 
 	@Override
@@ -302,5 +305,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public void setBodyUris(List<String> bodyUris) {
 		this.bodyUris = bodyUris;
 	}
+	
 
 }
