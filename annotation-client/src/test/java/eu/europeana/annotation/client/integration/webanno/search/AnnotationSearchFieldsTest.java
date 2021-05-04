@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client.integration.webanno.tag;
+package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,13 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
@@ -23,13 +19,12 @@ import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
 import eu.europeana.annotation.definitions.model.entity.impl.EdmPlace;
 import eu.europeana.annotation.definitions.model.graph.Graph;
-import eu.europeana.annotation.definitions.model.search.SearchProfiles;
-import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public class BodyTypesTest extends BaseTaggingTest {
+//TODO: this class is redundant with the individual search for annotation type classes, the test cases need to be moved to the approapriate class and this class should be deleted
+public class AnnotationSearchFieldsTest extends BaseSearchTest {
 
 	static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	static final String VALUE_ID = "anno_id:";
@@ -46,23 +41,6 @@ public class BodyTypesTest extends BaseTaggingTest {
 	static final String VALUE_BODY_SPECIFIC_RESOURCE = "body_uri:\"http://www.geonames.org/2988507\""; // source
 	static final String VALUE_BODY_FULL_TEXT_RESOURCE = "body_value:\"... complete transcribed text in HTML ...\"";
 
-	static final int TOTAL_BY_ID_FOUND = 1;
-	
-	protected Logger log = LogManager.getLogger(getClass());
-	
-	private AnnotationSearchApiImpl annotationSearchApi;
-	
-	
-	/**
-	 * Create annotations data set before each test execution
-	 * 
-	 * @throws IOException
-	 */
-	@BeforeEach
-	public void createAnnotationSearchApi() throws JsonParseException, IOException {
-		annotationSearchApi = new AnnotationSearchApiImpl();
-	}
-	
 	@Test
 	public void createSemanticTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
@@ -339,16 +317,5 @@ public class BodyTypesTest extends BaseTaggingTest {
 		// remove tag
 		deleteAnnotation(storedAnno);
 	}
-
-	/**
-	 * Search annotations by textual body value for different body types
-	 * @param bodyValue
-	 * @param foundAnnotationsNumber
-	 */
-	private void searchByBodyValue(String bodyValue, int foundAnnotationsNumber) {
-		AnnotationPage annPg = annotationSearchApi.searchAnnotations(bodyValue, SearchProfiles.MINIMAL, null);
-		assertNotNull(annPg, "AnnotationPage must not be null");
-		assertTrue(foundAnnotationsNumber <= annPg.getTotalInCollection());
-	}	
 
 }

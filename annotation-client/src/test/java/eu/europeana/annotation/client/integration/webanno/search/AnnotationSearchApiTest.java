@@ -139,8 +139,6 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		List<? extends Annotation> annos = annPg.getAnnotations(); 
 		
 		assertTrue(0 < annos.size());
-		
-		
 	}
 	
 	

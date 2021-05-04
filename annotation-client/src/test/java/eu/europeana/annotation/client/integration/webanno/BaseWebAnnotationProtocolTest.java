@@ -46,6 +46,9 @@ public class BaseWebAnnotationProtocolTest {
 //	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
+	public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
+	public static final String CAPTION_MINIMAL = "/caption/minimal.json";
+
 	
 	public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	public static final String VALUE_ID = "anno_id:";
