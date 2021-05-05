@@ -91,6 +91,8 @@ public class BaseWebAnnotationProtocolTest {
 	
 	public static final String VALUE_BODY_FULL_TEXT_RESOURCE = "... complete transcribed text in HTML ...";
 	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\""+VALUE_BODY_FULL_TEXT_RESOURCE+"\"";
+	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it:(con il grande finale)";
+
 
 	
 	

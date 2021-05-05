@@ -26,6 +26,7 @@ import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
+import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
@@ -42,24 +43,27 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 	@Test
 	public void searchSubtitles() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
-		String requestBody = getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
+	    
+		String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
+		MotivationTypes motivationType = MotivationTypes.SUBTITLING;
+		Annotation inputAnno = parseAnnotation(requestBody, motivationType);
 		
-		Annotation inputAnno = parseTag(requestBody);
-		
-		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		// create indexed subtitle
+		Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
 		
 		assertTrue(BodyInternalTypes.isFullTextResourceTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateSubtitle(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE, TOTAL_BY_ID_FOUND);
-		validateSubtitle(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
-		validateSubtitle(storedAnno);
+		//TODO: restore after updating schema
+		//AnnotationPage annoPage = searchByBodyValue(VALUE_SEARCH_BODY_VALUE_IT, SearchProfiles.STANDARD, TOTAL_BY_ID_FOUND);
+		AnnotationPage annoPage = searchByBodyValue("con il grande finale", SearchProfiles.STANDARD, "1", TOTAL_BY_ID_FOUND);
+		Annotation retrievedAnnotation = (Annotation)annoPage.getAnnotations().get(0);
+		assertEquals(storedAnno.getAnnotationId(), retrievedAnnotation.getAnnotationId());
+		validateSubtitle(retrievedAnnotation);
+//		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
+//		validateSubtitle(storedAnno);
 
 		// remove tag
 		deleteAnnotation(storedAnno);
@@ -71,16 +75,16 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 	 * @param storedAnno
 	 */
 	private void validateSubtitle(Annotation storedAnno) {
-		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TRANSCRIBING.name().toLowerCase()));
+		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.SUBTITLING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.FULL_TEXT_RESOURCE.name());
 		FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());
 		assertNotNull(textBody.getValue());
-		assertTrue(textBody.getValue().equals("... complete transcribed text in HTML ..."));
+		assertTrue(textBody.getValue().contains("con il grande finale"));
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getSource());
-		assertTrue(target.getSource().equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
+		assertTrue(target.getSource().equals("http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"));
 		assertNotNull(target.getScope());
-		assertTrue(target.getScope().equals("http://data.europeana.eu/item/07931/diglit_uah_m1"));
+		assertTrue(target.getScope().equals("http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7"));
 	}
 	
 

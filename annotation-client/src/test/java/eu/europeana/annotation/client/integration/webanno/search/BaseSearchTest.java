@@ -10,6 +10,8 @@ import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.integration.webanno.tag.BaseTaggingTest;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 
 //TODO: should extend BaseWebAnnotationProtocolTest instead
 public class BaseSearchTest extends BaseTaggingTest{
@@ -37,8 +39,16 @@ public class BaseSearchTest extends BaseTaggingTest{
 	 * @param foundAnnotationsNumber
 	 */
 	protected void searchByBodyValue(String bodyValue, int foundAnnotationsNumber) {
-		AnnotationPage annPg = getAnnotationSearchApi().searchAnnotations(bodyValue, SearchProfiles.MINIMAL, null);
+	    searchByBodyValue(bodyValue, SearchProfiles.MINIMAL, null, foundAnnotationsNumber);
+	}
+	
+	protected AnnotationPage searchByBodyValue(String bodyValue, SearchProfiles profile, String limit, int foundAnnotationsNumber) {
+		AnnotationPage annPg = getAnnotationSearchApi().searchAnnotations(bodyValue, null, 
+			WebAnnotationFields.CREATED,
+			"desc", "0", limit, profile, null);
+			
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		assertTrue(foundAnnotationsNumber <= annPg.getTotalInCollection());
-	}	
+		return annPg;
+	}
 }
