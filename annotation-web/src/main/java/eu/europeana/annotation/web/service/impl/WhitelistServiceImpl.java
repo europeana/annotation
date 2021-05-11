@@ -37,7 +37,7 @@ public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements W
      * @throws ParamValidationException 
      */
 	@Override
-	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelistEntry) throws ParamValidationException {
+	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelistEntry) throws WhitelistValidationException {
 
 		validateWhitelistEntry(newWhitelistEntry);
 		// store in mongo database
@@ -107,7 +107,7 @@ public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements W
 	}
 
 
-	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws ParamValidationException{
+	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws WhitelistValidationException{
 		List<? extends WhitelistEntry> res = new ArrayList<WhitelistEntry>();
 		
 		/**

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.springframework.stereotype.Component;
@@ -263,13 +264,12 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    QueryResponse rsp = solrClient.query(query);
 	    res = buildResultSet(rsp);
 	    getLogger().debug("search obj res size: " + res.getResultSize());
-	} catch (SolrServerException | IOException e) {
+	} catch (SolrServerException | IOException | RemoteSolrException e) {
 	    throw new AnnotationServiceException(
-		    "Unexpected exception occured when searching annotations for solrAnnotation: "
-			    + searchQuery.toString(),
+		    "Unexpected exception occured (might be due to an inadequate server URL, port, collection name, etc.) when searching annotations for solrAnnotation: "
+			    + searchQuery.toString() + ". " + e.getMessage(),
 		    e);
 	}
-
 	return res;
     }
 

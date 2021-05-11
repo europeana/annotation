@@ -53,13 +53,11 @@ public class AnnotationPageParser extends JsonLdParser {
 	} catch (JSONException e) {
 	    throw new JsonParseException("Invalid serialization of AnnotationPage (json): " + jsonLdString, e);
 	}
-	try {
-	    annotationPage = parseAnnotationPageJsonLd(jo);
-	} catch (RuntimeException e) {
-	    throw new AnnotationPageValidationException("Cannot parse AnnotationPage! " + e.getMessage(), e);
-	}
+
+	annotationPage = parseAnnotationPageJsonLd(jo);	
 
 	return annotationPage;
+	
     }
 
     /**
@@ -200,7 +198,7 @@ public class AnnotationPageParser extends JsonLdParser {
 
 	default:
 	    logger.warn("Unsupported Property: " + property);
-	    break;
+	    throw new JSONException("Unsupported Property: " + property + " during parsing of the AnnotationPage object.");
 	}
     }
 

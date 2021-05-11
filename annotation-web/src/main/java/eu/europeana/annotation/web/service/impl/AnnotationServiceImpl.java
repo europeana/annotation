@@ -656,8 +656,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
 	}
 
-	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivation.getOaType(),
-		startTimestamp);
+	String motivationOaType = null;
+	if(motivation!=null) { 
+		motivationOaType = motivation.getOaType();
+	}
+	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivationOaType, startTimestamp);
 
 	return res;
     }
