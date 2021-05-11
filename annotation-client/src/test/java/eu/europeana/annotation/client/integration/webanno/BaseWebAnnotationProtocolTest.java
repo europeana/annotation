@@ -46,6 +46,9 @@ public class BaseWebAnnotationProtocolTest {
 //	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
+	public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
+	public static final String CAPTION_MINIMAL = "/caption/minimal.json";
+
 	
 	public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	public static final String VALUE_ID = "anno_id:";
@@ -65,13 +68,15 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 	
 	public static final String VALUE_DESCRIBING_TARGET_SCOPE_URI = "http://data.europeana.eu/item/07931/diglit_uah_m1";
-	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
+	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri:\""+ VALUE_DESCRIBING_TARGET_SCOPE_URI +"\"";
+	
+	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SOURCE = "target_uri:\"http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg\"";
 	
 	public static final String VALUE_TAG_BODY_URI = "http://www.geonames.org/2988507";
 	public static final String VALUE_SEARCH_TAG_BODY_URI = "body_uri:\"" +VALUE_TAG_BODY_URI+ "\"";
 	
-	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"... this is the textual description of the item ...\"";
-	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value:\""+VALUE_DESCRIBING_BODY_VALUE+"\"";
+	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"the textual description of the item\"";
+	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value:\"textual description\"";
 	
 	public static final String VALUE_TAG_BODY_VALUE = "trombone";
 	public static final String VALUE_SEARCH_TAG_BODY_VALUE = "body_value:\""+VALUE_TAG_BODY_VALUE+"\"";
@@ -87,7 +92,9 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String VALUE_SEARCH_BODY_SPECIFIC_RESOURCE = "body_uri:\""+VALUE_BODY_SPECIFIC_RESOURCE+"\""; // source
 	
 	public static final String VALUE_BODY_FULL_TEXT_RESOURCE = "... complete transcribed text in HTML ...";
-	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\""+VALUE_BODY_FULL_TEXT_RESOURCE+"\"";
+	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\"transcribed text in HTML\"";
+	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it:(con il grande finale)";
+
 
 	
 	

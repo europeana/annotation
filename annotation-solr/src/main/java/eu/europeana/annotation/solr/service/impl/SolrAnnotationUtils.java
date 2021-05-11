@@ -140,6 +140,7 @@ public class SolrAnnotationUtils {
 	case FULL_TEXT_RESOURCE:
 	case SPECIFIC_RESOURCE:
 	    solrAnnotation.setBodyValue(textValue);
+	    solrAnnotation.setBodyUris(extractUriValues(body));
 	    solrAnnotation.addMultilingualValue(body.getLanguage(), textValue);
 	    break;
 	case AGENT:
@@ -211,6 +212,11 @@ public class SolrAnnotationUtils {
 	if (specificResource.getScope() != null) {
 	    // specific resource - scope
 	    appendUrlValue(resourceUrls, specificResource.getScope());
+	}
+	
+	if(specificResource.getHttpUri() != null) {
+	    //internet resource with Id
+	    appendUrlValue(resourceUrls, specificResource.getHttpUri());   
 	}
 	
 	return resourceUrls;

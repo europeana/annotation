@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
@@ -138,7 +139,7 @@ public class WhitelistRest extends BaseRest {
     @ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> loadDefaultWhitelist(
 	    HttpServletRequest request)
-	    throws ParamValidationException, ApplicationAuthenticationException, UserAuthorizationException,
+	    throws WhitelistValidationException, ApplicationAuthenticationException, UserAuthorizationException,
 	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
 	verifyWriteAccess(Operations.WHITELIST_CREATE, request);

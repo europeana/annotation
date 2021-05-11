@@ -300,7 +300,7 @@ public class ManagementRest extends BaseRest {
 	// get last active lock check if start date is correct and end date does
 	// not exist
 	PersistentApiWriteLock lastActiveLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-	boolean success = (lastActiveLock.getStarted() instanceof Date && lastActiveLock.getEnded() == null);
+	boolean success = lastActiveLock!=null ? (lastActiveLock.getStarted() instanceof Date && lastActiveLock.getEnded() == null) : false;
 
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/lock");
