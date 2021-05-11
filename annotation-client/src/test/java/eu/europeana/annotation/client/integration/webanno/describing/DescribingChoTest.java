@@ -34,7 +34,7 @@ public class DescribingChoTest extends BaseDescribingTest {
 				true, requestBody, null, null);
 								
 		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		
 		Annotation storedAnno = getApiClient().parseResponseBody(response);
 								

@@ -258,11 +258,16 @@ public abstract class BaseAnnotationValidator {
 	if (isLanguageMandatory && StringUtils.isBlank(body.getLanguage()))
 	    throw new ParamValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.language" });
-
+	
 	// check type
-	if (body.getType() == null || !ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0)))
+	if (body.getType() == null || ! isTextualBodyType(body)) {
 	    throw new ParamValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.type" });
+	}
+    }
+
+    private boolean isTextualBodyType(Body body) {
+	return ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0)) || ResourceTypes.TEXTUAL_BODY.hasJsonValue(body.getType().get(0));
     }
 
     protected void validateTagWithValue(Body body) throws ParamValidationException {

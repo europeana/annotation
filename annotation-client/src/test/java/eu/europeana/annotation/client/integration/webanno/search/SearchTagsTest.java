@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
-import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
-import eu.europeana.annotation.definitions.model.body.impl.TextBody;
 import eu.europeana.annotation.definitions.model.entity.impl.EdmPlace;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -37,22 +35,22 @@ public class SearchTagsTest extends BaseSearchTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation createdAnno = createTag(requestBody);
 		
-		assertTrue(BodyInternalTypes.isSemanticTagBody(storedAnno.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
+		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateSemanticTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TAG_BODY_URI, TOTAL_BY_ID_FOUND);
-		validateSemanticTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
-		validateSemanticTag(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateSemanticTag(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TAG_BODY_URI);
+		validateSemanticTag(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET);
+		validateSemanticTag(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**
@@ -81,20 +79,20 @@ public class SearchTagsTest extends BaseSearchTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation createdAnno = createTag(requestBody);
 		
-		assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isGeoTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
+		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateGeoTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
-		validateGeoTag(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateGeoTag(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET);
+		validateGeoTag(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**
@@ -123,22 +121,22 @@ public class SearchTagsTest extends BaseSearchTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation createdAnno = createTag(requestBody);
 		
-		assertTrue(BodyInternalTypes.isTagBody(storedAnno.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
+		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TAG_BODY_VALUE, TOTAL_BY_ID_FOUND);
-		validateTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET_TAG, TOTAL_BY_ID_FOUND);
-		validateTag(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateTag(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TAG_BODY_VALUE);
+		validateTag(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_TAG);
+		validateTag(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**
@@ -157,45 +155,6 @@ public class SearchTagsTest extends BaseSearchTest {
 		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/000002/_UEDIN_214"));
 	}
 	
-	@Test
-	public void searchTagText() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		String requestBody = getJsonStringInput(DESCRIBING_WEB_RESOURCE);
-		
-		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
-		
-		assertTrue(BodyInternalTypes.isTextualBody(storedAnno.getBody().getInternalType()));
-		
-		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateTagText(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_DESCRIBING_BODY_VALUE, TOTAL_BY_ID_FOUND);
-		validateTagText(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_DESCRIBING_TARGET_SCOPE, TOTAL_BY_ID_FOUND);
-		validateTagText(storedAnno);
-
-		// remove tag
-		deleteAnnotation(storedAnno);
-	}
-
-	/**
-	 * Validate tag text fields after search.
-	 * 
-	 * @param storedAnno
-	 */
-	private void validateTagText(Annotation storedAnno) {
-		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
-		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
-		TextBody textBody = ((TextBody) storedAnno.getBody());
-		assertNotNull(textBody.getValue());
-		assertTrue(textBody.getValue().equals("... this is the textual description of the item ..."));
-		Target target = storedAnno.getTarget();
-		assertNotNull(target.getSource());
-		assertTrue(target.getSource().equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
-		assertNotNull(target.getScope());
-		assertTrue(target.getScope().equals("http://data.europeana.eu/item/07931/diglit_uah_m1"));
-	}
 	
 	@Test
 	public void searchSemanticTagSpecific() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -205,22 +164,22 @@ public class SearchTagsTest extends BaseSearchTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
+		Annotation createdAnno = createTag(requestBody);
 		
-		assertTrue(BodyInternalTypes.isSemanticTagBody(storedAnno.getBody().getInternalType()));
+		assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
+		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateSemanticTagSpecific(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_BODY_SPECIFIC_RESOURCE, TOTAL_BY_ID_FOUND);
-		validateSemanticTagSpecific(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
-		validateSemanticTagSpecific(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateSemanticTagSpecific(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_BODY_SPECIFIC_RESOURCE);
+		validateSemanticTagSpecific(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET);
+		validateSemanticTagSpecific(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**
@@ -239,50 +198,6 @@ public class SearchTagsTest extends BaseSearchTest {
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/09102/_UEDIN_214"));
-	}
-
-	@Test
-	public void searchFullTextResourceTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		String requestBody = getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
-		
-		Annotation inputAnno = parseTag(requestBody);
-		
-		// create indexed tag
-		Annotation storedAnno = createTag(requestBody);
-		
-		assertTrue(BodyInternalTypes.isFullTextResourceTagBody(storedAnno.getBody().getInternalType()));
-		//validate the reflection of input in output!
-		validateOutputAgainstInput(storedAnno, inputAnno);
-		
-		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateFullTextResourceTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE, TOTAL_BY_ID_FOUND);
-		validateFullTextResourceTag(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
-		validateFullTextResourceTag(storedAnno);
-
-		// remove tag
-		deleteAnnotation(storedAnno);
-	}
-
-	/**
-	 * Validate full text resource tag fields after search.
-	 * 
-	 * @param storedAnno
-	 */
-	private void validateFullTextResourceTag(Annotation storedAnno) {
-		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TRANSCRIBING.name().toLowerCase()));
-		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.FULL_TEXT_RESOURCE.name());
-		FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());
-		assertNotNull(textBody.getValue());
-		assertTrue(textBody.getValue().equals("... complete transcribed text in HTML ..."));
-		Target target = storedAnno.getTarget();
-		assertNotNull(target.getSource());
-		assertTrue(target.getSource().equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
-		assertNotNull(target.getScope());
-		assertTrue(target.getScope().equals("http://data.europeana.eu/item/07931/diglit_uah_m1"));
 	}
 
 }

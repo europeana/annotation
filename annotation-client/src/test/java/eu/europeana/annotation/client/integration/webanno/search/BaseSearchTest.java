@@ -1,17 +1,16 @@
 package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.integration.webanno.tag.BaseTaggingTest;
+import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 
 //TODO: should extend BaseWebAnnotationProtocolTest instead
 public class BaseSearchTest extends BaseTaggingTest{
@@ -35,20 +34,27 @@ public class BaseSearchTest extends BaseTaggingTest{
 	
 	/**
 	 * Search annotations by textual body value for different body types
-	 * @param bodyValue
+	 * @param query
 	 * @param foundAnnotationsNumber
 	 */
-	protected void searchByBodyValue(String bodyValue, int foundAnnotationsNumber) {
-	    searchByBodyValue(bodyValue, SearchProfiles.MINIMAL, null, foundAnnotationsNumber);
+	protected Annotation searchLastCreated(String query) {
+	    AnnotationPage annPg = search(query, SearchProfiles.STANDARD, "1");
+	    assertNotNull(annPg);
+	    assert(annPg.getTotalInPage() > 0);
+	    assert(annPg.getTotalInCollection() > 0);
+	    assertNotNull(annPg.getAnnotations());
+	    Annotation anno = annPg.getAnnotations().get(0);
+	    assertNotNull(anno);
+//	    assertTrue(foundAnnotationsNumber <= annPg.getTotalInCollection());
+	    return anno; 
 	}
 	
-	protected AnnotationPage searchByBodyValue(String bodyValue, SearchProfiles profile, String limit, int foundAnnotationsNumber) {
+	protected AnnotationPage search(String bodyValue, SearchProfiles profile, String limit) {
 		AnnotationPage annPg = getAnnotationSearchApi().searchAnnotations(bodyValue, null, 
 			WebAnnotationFields.CREATED,
 			"desc", "0", limit, profile, null);
 			
 		assertNotNull(annPg, "AnnotationPage must not be null");
-		assertTrue(foundAnnotationsNumber <= annPg.getTotalInCollection());
 		return annPg;
 	}
 }

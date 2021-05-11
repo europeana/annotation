@@ -10,6 +10,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
@@ -27,16 +28,16 @@ public class SearchLinksTest extends BaseSearchTest {
 		String requestBody = getJsonStringInput(LINK_STANDARD);
 		
 		// create indexed tag
-		Annotation storedAnno = createLink(requestBody);
+		Annotation createdAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateLink(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET_LINK, TOTAL_BY_ID_FOUND);
-		validateLink(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateLink(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK);
+		validateLink(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**
@@ -57,16 +58,16 @@ public class SearchLinksTest extends BaseSearchTest {
 		String requestBody = getJsonStringInput(LINK_SEMANTIC);
 		
 		// create indexed tag
-		Annotation storedAnno = createLink(requestBody);
+		Annotation createdAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateSemanticLink(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET_LINK_SEMANTIC, TOTAL_BY_ID_FOUND);
-		validateSemanticLink(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateSemanticLink(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
+		validateSemanticLink(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**

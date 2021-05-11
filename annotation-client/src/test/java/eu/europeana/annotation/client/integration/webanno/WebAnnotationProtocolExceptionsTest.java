@@ -113,7 +113,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtoc
 				WRONG_GENERATED_IDENTIFIER
 				);
 		
-		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 	
 	@Test

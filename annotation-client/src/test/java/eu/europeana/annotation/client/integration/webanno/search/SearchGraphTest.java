@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.graph.Graph;
+import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -32,20 +33,20 @@ public class SearchGraphTest extends BaseSearchTest {
 		String requestBody = getJsonStringInput(LINK_SEMANTIC);
 		
 		// create indexed tag
-		Annotation storedAnno = createLink(requestBody);
+		Annotation createdAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
-		searchByBodyValue(VALUE_ID+"\""+storedAnno.getAnnotationId().getIdentifier()+"\"", TOTAL_BY_ID_FOUND);
-		validateGraph(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_BODY_LINK_RESOURCE_URI, TOTAL_BY_ID_FOUND);
-		validateGraph(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_BODY_LINK_RELATION, TOTAL_BY_ID_FOUND);
-		validateGraph(storedAnno);
-		searchByBodyValue(VALUE_SEARCH_TARGET_LINK_SEMANTIC, TOTAL_BY_ID_FOUND);
-		validateGraph(storedAnno);
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		validateGraph(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_BODY_LINK_RESOURCE_URI);
+		validateGraph(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_BODY_LINK_RELATION);
+		validateGraph(retrievedAnno);
+		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
+		validateGraph(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(storedAnno);
+		deleteAnnotation(createdAnno);
 	}
 
 	/**

@@ -7,26 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
-import eu.europeana.annotation.client.AnnotationSearchApiImpl;
-import eu.europeana.annotation.client.integration.webanno.tag.BaseTaggingTest;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.body.GraphBody;
-import eu.europeana.annotation.definitions.model.body.TagBody;
-import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
-import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
-import eu.europeana.annotation.definitions.model.body.impl.TextBody;
-import eu.europeana.annotation.definitions.model.entity.impl.EdmPlace;
-import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
-import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
@@ -57,15 +45,12 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		
 		// search for indexed id and textual values
 		//TODO: restore after updating schema
-		//AnnotationPage annoPage = searchByBodyValue(VALUE_SEARCH_BODY_VALUE_IT, SearchProfiles.STANDARD, TOTAL_BY_ID_FOUND);
-		AnnotationPage annoPage = searchByBodyValue("con il grande finale", SearchProfiles.STANDARD, "1", TOTAL_BY_ID_FOUND);
+		AnnotationPage annoPage = search(VALUE_SEARCH_BODY_VALUE_IT, SearchProfiles.STANDARD, "1");
 		Annotation retrievedAnnotation = (Annotation)annoPage.getAnnotations().get(0);
 		assertEquals(storedAnno.getAnnotationId(), retrievedAnnotation.getAnnotationId());
 		validateSubtitle(retrievedAnnotation);
-//		searchByBodyValue(VALUE_SEARCH_TARGET, TOTAL_BY_ID_FOUND);
-//		validateSubtitle(storedAnno);
 
-		// remove tag
+		// remove annotation
 		deleteAnnotation(storedAnno);
 	}
 

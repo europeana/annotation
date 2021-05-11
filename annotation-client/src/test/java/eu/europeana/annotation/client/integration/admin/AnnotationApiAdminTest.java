@@ -139,7 +139,8 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
 			assertNotNull(annPgAfter, "AnnotationPage must not be null");
 			// Now that the annotation was indexed, it must show up in the
 			// search result
-			assertEquals(outdatedAnnotationsBefore + numAnnotations, annPgAfter.getTotalInCollection());
+			//normally it should be equal, but there might be annotations what were not indexed created by other users
+			assertTrue(annPgAfter.getTotalInCollection() >= outdatedAnnotationsBefore + numAnnotations);
 		} finally {
 			// delete test annotations
 			deleteAnnotations(annotations);
