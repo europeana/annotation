@@ -47,7 +47,7 @@ public interface AnnotationConfiguration {
     /**
      * uses annotation.subtitles.formats property
      */
-    public String getAnnotationSubtitlesFormats();
+    public Set<String> getAnnotationSubtitlesFormats();
 
     /**
      * uses annotation.environment.{$environment}.baseUrl property

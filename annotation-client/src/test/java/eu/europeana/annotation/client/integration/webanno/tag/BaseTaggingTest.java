@@ -50,7 +50,7 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 
 		String requestBody = getJsonStringInput(inputFile);
 
-		Annotation storedAnno = createTestAnnotation(inputFile, indexOnCreate);
+		Annotation storedAnno = createTestAnnotation(inputFile, indexOnCreate, null);
 
 		Annotation inputAnno = parseTag(requestBody);
 
@@ -66,41 +66,5 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 		MotivationTypes motivationType = MotivationTypes.TAGGING;
 		return parseAnnotation(jsonString, motivationType);
 	}
-
-	// protected Annotation createTag(String requestBody) throws
-	// JsonParseException {
-	// ResponseEntity<String> response = getApiClient().createTag(
-	// WebAnnotationFields.PROVIDER_WEBANNO, null, false, requestBody,
-	// TEST_USER_TOKEN);
-	//
-	// assertNotNull(response.getBody());
-	// assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-	//
-	// Annotation storedAnno = getApiClient().parseResponseBody(response);
-	// assertNotNull(storedAnno.getCreator());
-	// assertNotNull(storedAnno.getGenerator());
-	// return storedAnno;
-	// }
-
-	// protected Annotation createTagWithProviderAndUserToken(
-	// String requestBody, String provider, String userToken) throws
-	// JsonParseException {
-	// ResponseEntity<String> response = getApiClient().createTag(
-	// provider, null, false, requestBody, userToken);
-	//
-	// assertNotNull(response.getBody());
-	// assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-	//
-	// Annotation storedAnno = getApiClient().parseResponseBody(response);
-	// assertNotNull(storedAnno.getCreator());
-	// assertNotNull(storedAnno.getGenerator());
-	// return storedAnno;
-	// }
-	
-//	protected ResponseEntity<String> getAnnotation(Annotation anno) {
-//		// add profile
-//		String searchProfile = "dereference";
-//		return getAnnotation(anno, searchProfile);
-//	}
 	
 }

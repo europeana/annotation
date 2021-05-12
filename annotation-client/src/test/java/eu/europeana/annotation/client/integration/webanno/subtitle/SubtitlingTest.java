@@ -12,8 +12,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class SubtitlingTest extends BaseWebAnnotationProtocolTest {
 
-    public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
-
     protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
 	MotivationTypes motivationType = MotivationTypes.SUBTITLING;
 	return parseAnnotation(jsonString, motivationType);
@@ -26,7 +24,7 @@ public class SubtitlingTest extends BaseWebAnnotationProtocolTest {
 	String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
 	Annotation inputAnno = parseSubtitle(requestBody);
 
-	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL);
+	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);

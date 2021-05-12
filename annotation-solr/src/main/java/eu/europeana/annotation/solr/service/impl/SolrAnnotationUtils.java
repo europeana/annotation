@@ -110,9 +110,10 @@ public class SolrAnnotationUtils {
 	if (body == null)
 	    return;
 
+	String textValue = extractTextValues(body);
 	switch (BodyInternalTypes.valueOf(body.getInternalType())) {
 	case TEXT:
-	    solrAnnotation.setBodyValue(extractTextValues(body));
+	    solrAnnotation.setBodyValue(textValue);
 	    break;
 	case GEO_TAG:
 	    // no text payload specified yet
@@ -133,12 +134,14 @@ public class SolrAnnotationUtils {
 	    solrAnnotation.setBodyUris(extractUriValues(body));
 	    break;
 	case TAG:
-	    solrAnnotation.setBodyValue(extractTextValues(body));
+	    solrAnnotation.setBodyValue(textValue);
 	    break;
 
 	case FULL_TEXT_RESOURCE:
 	case SPECIFIC_RESOURCE:
-	    solrAnnotation.setBodyValue(extractTextValues(body));
+	    solrAnnotation.setBodyValue(textValue);
+	    solrAnnotation.setBodyUris(extractUriValues(body));
+	    solrAnnotation.addMultilingualValue(body.getLanguage(), textValue);
 	    break;
 	case AGENT:
 	case VCARD_ADDRESS:
@@ -209,6 +212,11 @@ public class SolrAnnotationUtils {
 	if (specificResource.getScope() != null) {
 	    // specific resource - scope
 	    appendUrlValue(resourceUrls, specificResource.getScope());
+	}
+	
+	if(specificResource.getHttpUri() != null) {
+	    //internet resource with Id
+	    appendUrlValue(resourceUrls, specificResource.getHttpUri());   
 	}
 	
 	return resourceUrls;

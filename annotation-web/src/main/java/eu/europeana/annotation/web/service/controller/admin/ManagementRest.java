@@ -299,14 +299,20 @@ public class ManagementRest extends BaseRest {
 
 	// get last active lock check if start date is correct and end date does
 	// not exist
-	PersistentApiWriteLock lastActiveLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-	boolean success = (lastActiveLock.getStarted() instanceof Date && lastActiveLock.getEnded() == null);
-
+	PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+	//if already locked, an exception is thrown in verifyWriteAccess
+	boolean isLocked = false;
+	if(activeLock == null) {
+	    activeLock = getApiWriteLockService().lock("lockWriteOperations");
+	} 
+	
+	isLocked = isLocked(activeLock);
+	
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/lock");
 
-	response.setStatus(success ? "Server is now locked for changes" : "Unable to set lock");
-	response.success = success;
+	response.setStatus(isLocked ? "Server is now locked for changes" : "Unable to set lock");
+	response.success = isLocked;
 
 	String jsonStr = JsonWebUtils.toJson(response, null);
 	HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -314,12 +320,15 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr, httpStatus);
     }
 
+    private boolean isLocked(PersistentApiWriteLock activeLock) {
+	return activeLock != null && activeLock.getStarted() != null && activeLock.getEnded() == null;
+    }
+
     @RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> unlockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
-
 	verifyWriteAccess(Operations.ADMIN_UNLOCK, request);
 
 	AnnotationOperationResponse response;

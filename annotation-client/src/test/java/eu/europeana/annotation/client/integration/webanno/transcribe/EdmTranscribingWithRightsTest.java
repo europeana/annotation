@@ -23,7 +23,7 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 	String requestBody = getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
 	Annotation inputAnno = parseTranscription(requestBody);
 
-	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS);
+	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS, null);
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);

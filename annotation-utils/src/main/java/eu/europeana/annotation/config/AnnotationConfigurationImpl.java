@@ -1,5 +1,6 @@
 package eu.europeana.annotation.config;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -49,8 +50,9 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     }
     
     @Override
-    public String getAnnotationSubtitlesFormats() {
-	return getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS).trim();
+    public Set<String> getAnnotationSubtitlesFormats() {
+	String[] subtitlesFormats = getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS).trim().split(",");
+	return new HashSet<>(Arrays.asList(subtitlesFormats));
     }
 
 

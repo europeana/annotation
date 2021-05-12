@@ -44,8 +44,8 @@ public class WebAnnotationSearchRest extends BaseRest {
 
     private static Logger logger = LogManager.getRootLogger();
 
-    @RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, method = {
-	    RequestMethod.GET }, produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 }
+    @RequestMapping(value = { "/annotation/search", "/annotation/search.json", "/annotation/search.jsonld" }, method = 
+	    RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 }
 //			,consumes = "application/ld+json"
     )
     @ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "Search annotations", nickname = "search", response = java.lang.Void.class)

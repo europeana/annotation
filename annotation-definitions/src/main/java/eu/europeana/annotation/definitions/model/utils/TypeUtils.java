@@ -114,7 +114,7 @@ public class TypeUtils {
 		try {
 	    	log.debug("getUnixDateStringFromDate curDate: " + curDate);
 			Date resDate = new SimpleDateFormat(ModelConst.DATE_FORMAT).parse(curDate);
-			Long longTime = new Long(resDate.getTime()/1000);
+			Long longTime = new Long(resDate.getTime());
 			log.info("long time: " + longTime);
 			res = String.valueOf(longTime);
 			log.info("res date: " + res);

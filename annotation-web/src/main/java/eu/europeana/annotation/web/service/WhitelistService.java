@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service;
 
 import java.util.List;
 
+import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 
@@ -13,14 +14,14 @@ public interface WhitelistService {
 	 * @return Whitelist entries
 	 * @throws ParamValidationException
 	 */
-	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws ParamValidationException;
+	public List<? extends WhitelistEntry> loadWhitelistFromResources() throws WhitelistValidationException;
 
 	/**
 	 * @param newWhitelist
 	 * @return
 	 * @throws ParamValidationException
 	 */
-	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelist) throws ParamValidationException;
+	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelist) throws WhitelistValidationException;
 
 	/**
 	 * @param whitelist

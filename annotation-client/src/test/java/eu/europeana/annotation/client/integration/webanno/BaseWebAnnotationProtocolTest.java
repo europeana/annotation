@@ -46,6 +46,9 @@ public class BaseWebAnnotationProtocolTest {
 //	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
+	public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
+	public static final String CAPTION_MINIMAL = "/caption/minimal.json";
+
 	
 	public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	public static final String VALUE_ID = "anno_id:";
@@ -65,13 +68,15 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 	
 	public static final String VALUE_DESCRIBING_TARGET_SCOPE_URI = "http://data.europeana.eu/item/07931/diglit_uah_m1";
-	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
+	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri:\""+ VALUE_DESCRIBING_TARGET_SCOPE_URI +"\"";
+	
+	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SOURCE = "target_uri:\"http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg\"";
 	
 	public static final String VALUE_TAG_BODY_URI = "http://www.geonames.org/2988507";
 	public static final String VALUE_SEARCH_TAG_BODY_URI = "body_uri:\"" +VALUE_TAG_BODY_URI+ "\"";
 	
-	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"... this is the textual description of the item ...\"";
-	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value:\""+VALUE_DESCRIBING_BODY_VALUE+"\"";
+	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"the textual description of the item\"";
+	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value:\"textual description\"";
 	
 	public static final String VALUE_TAG_BODY_VALUE = "trombone";
 	public static final String VALUE_SEARCH_TAG_BODY_VALUE = "body_value:\""+VALUE_TAG_BODY_VALUE+"\"";
@@ -87,7 +92,9 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String VALUE_SEARCH_BODY_SPECIFIC_RESOURCE = "body_uri:\""+VALUE_BODY_SPECIFIC_RESOURCE+"\""; // source
 	
 	public static final String VALUE_BODY_FULL_TEXT_RESOURCE = "... complete transcribed text in HTML ...";
-	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\""+VALUE_BODY_FULL_TEXT_RESOURCE+"\"";
+	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\"transcribed text in HTML\"";
+	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it:(con il grande finale)";
+
 
 	
 	
@@ -146,26 +153,27 @@ public class BaseWebAnnotationProtocolTest {
 	 * @throws IOException 
 	 */
 	protected ResponseEntity<String> storeTestAnnotation(String jsonFile) throws IOException {
-	    return storeTestAnnotation(jsonFile, true);
+	    return storeTestAnnotation(jsonFile, true, null);
 	}
 	
 
 
 	/**
 	 * This method creates test annotation object and allows choosing if it should be indexed or not.
+	 * @param user 
 	 * 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws IOException 
 	 */
-	private ResponseEntity<String> storeTestAnnotation(String inputFile, boolean indexOnCreate) throws IOException {
+	private ResponseEntity<String> storeTestAnnotation(String inputFile, boolean indexOnCreate, String user) throws IOException {
 
 		String requestBody = getJsonStringInput(inputFile);
 		
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null);
+		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null, user);
 		return storedResponse;
 	}
 	
@@ -216,15 +224,16 @@ public class BaseWebAnnotationProtocolTest {
 
 	/**
 	 * This method creates test annotation object
+	 * @param user 
 	 * 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws JsonParseException
 	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation(String inputFile) throws JsonParseException, IOException {
+	protected Annotation createTestAnnotation(String inputFile, String user) throws JsonParseException, IOException {
 
-		return createTestAnnotation(inputFile, true);
+		return createTestAnnotation(inputFile, true, user);
 		
 	}
 
@@ -233,14 +242,15 @@ public class BaseWebAnnotationProtocolTest {
 	 * 
 	 * @param inputFile Annotation tag
 	 * @param indexOnCreate Flag to decide if the test annotation should be indexed or not
+	 * @param user 
 	 * @return response entity that contains response body, headers and status
 	 *         code.
 	 * @throws JsonParseException
 	 * @throws IOException 
 	 */
-	protected Annotation createTestAnnotation(String inputFile, boolean indexOnCreate) throws JsonParseException, IOException {
+	protected Annotation createTestAnnotation(String inputFile, boolean indexOnCreate, String user) throws JsonParseException, IOException {
 
-		ResponseEntity<String> response = storeTestAnnotation(inputFile, indexOnCreate);
+		ResponseEntity<String> response = storeTestAnnotation(inputFile, indexOnCreate, user);
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 
 		return annotation;
@@ -332,7 +342,7 @@ public class BaseWebAnnotationProtocolTest {
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
 	    ResponseEntity<String> response = getApiClient().createAnnotation(
-			true, requestBody,  WebAnnotationFields.TAG);
+			true, requestBody,  WebAnnotationFields.TAG, null);
 	    Annotation storedAnno = getApiClient().parseResponseBody(response);
 	    return storedAnno;
 	}
@@ -341,6 +351,7 @@ public class BaseWebAnnotationProtocolTest {
 		ResponseEntity<String> response = getApiClient().createAnnotation(
 				true, requestBody, WebAnnotationFields.LINK 
 				//null 
+, null
 				);
 				
 				
@@ -388,7 +399,7 @@ public class BaseWebAnnotationProtocolTest {
 		
 		Annotation[] testAnnotations = new Annotation[numTestAnno];
 		for( int i = 0; i < numTestAnno; i++) {
-			Annotation annotation = this.createTestAnnotation(TAG_STANDARD);
+			Annotation annotation = this.createTestAnnotation(TAG_STANDARD, null);
 			assertNotNull(annotation);
 			testAnnotations[i] = annotation;
 		}
