@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Set;
@@ -506,12 +507,11 @@ public abstract class BaseAnnotationValidator {
 	}
 	// check if the body.value is valid 
 	try {
-		//SubtitleHandler subtitleHandler = new SubtitleHandler();
 		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
 	}
-	catch (FileFormatException e) {
-	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
-		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.value" }, e);		
+	catch (FileFormatException | IOException e) {
+	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
+		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);		
 	}
 	
 	// validate target

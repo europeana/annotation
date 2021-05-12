@@ -1,97 +1,47 @@
 package eu.europeana.annotation.fulltext.subtitles;
 
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 import com.dotsub.converter.exception.FileFormatException;
 import com.dotsub.converter.importer.SubtitleImportHandler;
 import com.dotsub.converter.importer.impl.DfxpImportHandler;
 import com.dotsub.converter.importer.impl.QtTextImportHandler;
-import com.dotsub.converter.importer.impl.SbvImportHandler;
-import com.dotsub.converter.importer.impl.SccImportHandler;
-import com.dotsub.converter.importer.impl.SrtImportHandler;
-import com.dotsub.converter.importer.impl.SsaImportHandler;
-import com.dotsub.converter.importer.impl.StlImportHandler;
 import com.dotsub.converter.importer.impl.WebVttImportHandler;
 import com.dotsub.converter.model.Configuration;
 import com.dotsub.converter.model.SubtitleItem;
 
 public class SubtitleHandler {
-	private static final String VTT_FORMAT = "vtt";
-	private static final String STL_FORMAT = "stl";
-	private static final String DFXP_FORMAT = "dfxp";
-	private static final String QT_FORMAT = "qt";
-	private static final String SBV_FORMAT = "sbv";
-	private static final String SCC_FORMAT = "scc";
-	private static final String SRT_FORMAT = "srt";
-	private static final String SSA_FORMAT = "ssa";
 	
-    private SubtitleImportHandler QT_HANDLER;
-    private SubtitleImportHandler SRT_HANDLER;
-    private SubtitleImportHandler STL_HANDLER;
-    private SubtitleImportHandler DFXP_HANDLER;
-    private SubtitleImportHandler SSA_HANDLER;
-    private SubtitleImportHandler VTT_HANDLER;
-    private SubtitleImportHandler SBV_HANDLER;
-    private SubtitleImportHandler SCC_HANDLER;
+	private static final String INTERNET_MEDIA_TYPE_VTT_FORMAT = "text/vtt";
+	private static final String INTERNET_MEDIA_TYPE_DFXP_FORMAT = "application/ttml+xml";
+	private static final String INTERNET_MEDIA_TYPE_QT_FORMAT = "video/quicktime";
 	
-	public List<SubtitleItem> parseSubtitle (String text, String format) throws FileFormatException {
+    private static final SubtitleImportHandler QT_HANDLER = new QtTextImportHandler();
+    private static final SubtitleImportHandler DFXP_HANDLER = new DfxpImportHandler();
+    private static final SubtitleImportHandler VTT_HANDLER = new WebVttImportHandler();
+	
+	public List<SubtitleItem> parseSubtitle (String text, String format) throws FileFormatException, IOException {
+		
+		InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));		
 		List<SubtitleItem> items = new ArrayList<SubtitleItem>();
 		switch(format) {
-		  case QT_FORMAT:
-			  if (QT_HANDLER==null) {
-				  QT_HANDLER = new QtTextImportHandler();
-			  }
-			  QT_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());		    
+		  case INTERNET_MEDIA_TYPE_QT_FORMAT:
+			  QT_HANDLER.importFile(stream, new Configuration());		    
 			  break;
-		  case SRT_FORMAT:
-			  if (SRT_HANDLER==null) {
-				SRT_HANDLER = new SrtImportHandler();
-			  }
-			  SRT_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
-			  break;
-		  case STL_FORMAT:
-		      if (STL_HANDLER==null) {
-		    	  STL_HANDLER = new StlImportHandler();
-		      }
-		      STL_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
+		  case INTERNET_MEDIA_TYPE_DFXP_FORMAT:
+		      DFXP_HANDLER.importFile(stream, new Configuration());
 		      break;
-		  case DFXP_FORMAT:
-		      if (DFXP_HANDLER==null) {
-		    	  DFXP_HANDLER = new DfxpImportHandler();
-		      }
-		      DFXP_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
-		      break;
-		  case SSA_FORMAT:
-		      if (SSA_HANDLER==null) {
-		    	  SSA_HANDLER = new SsaImportHandler();
-		      }
-		      SSA_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
-		      break;
-		  case VTT_FORMAT:
-		      if (VTT_HANDLER==null) {
-		    	  VTT_HANDLER = new WebVttImportHandler();
-		      }
-		      VTT_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
-		      break;
-		  case SBV_FORMAT:
-			  if (SBV_HANDLER==null) {
-				  SBV_HANDLER = new SbvImportHandler();
-			  }
-			  SBV_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
-			  break;
-		  case SCC_FORMAT:
-		      if (SCC_HANDLER==null) {
-		    	  SCC_HANDLER = new SccImportHandler();
-		    	  SCC_HANDLER.parseSubtitle(items, IOUtils.lineIterator(new StringReader(text)), new Configuration());
-		      }
+		  case INTERNET_MEDIA_TYPE_VTT_FORMAT:
+		      VTT_HANDLER.importFile(stream, new Configuration());
 		      break;
 		  default:
-			  throw new FileFormatException("File does not match any of the expected formats: "+ 
-				  QT_FORMAT+","+SRT_FORMAT+","+STL_FORMAT+","+DFXP_FORMAT+","+SSA_FORMAT+","+VTT_FORMAT+","+SBV_FORMAT+","+SCC_FORMAT+".");
+			  throw new FileFormatException("The Internet media subtitle format does not match any of the expected formats: "+ 
+				  INTERNET_MEDIA_TYPE_QT_FORMAT+","+INTERNET_MEDIA_TYPE_DFXP_FORMAT+","+INTERNET_MEDIA_TYPE_VTT_FORMAT+".");
 		}		
 		return items;
 	}
