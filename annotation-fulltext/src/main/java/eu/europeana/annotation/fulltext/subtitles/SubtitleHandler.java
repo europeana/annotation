@@ -1,6 +1,5 @@
 package eu.europeana.annotation.fulltext.subtitles;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ public class SubtitleHandler {
     private SubtitleImportHandler SBV_HANDLER;
     private SubtitleImportHandler SCC_HANDLER;
 	
-	public List<SubtitleItem> parseSubtitle (String text, String format) throws IOException {
+	public List<SubtitleItem> parseSubtitle (String text, String format) {
 		List<SubtitleItem> items = new ArrayList<SubtitleItem>();
 		switch(format) {
 		  case QT_FORMAT:

@@ -1,16 +1,12 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.dotsub.converter.exception.FileFormatException;
-import com.dotsub.converter.exception.FileImportException;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -33,6 +29,8 @@ import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public abstract class BaseAnnotationValidator {
+	
+	private static final SubtitleHandler subtitleHandler = new SubtitleHandler();
 
     protected abstract AnnotationConfiguration getConfiguration();
 
@@ -508,10 +506,10 @@ public abstract class BaseAnnotationValidator {
 	}
 	// check if the body.value is valid 
 	try {
-		SubtitleHandler subtitleHandler = new SubtitleHandler();
+		//SubtitleHandler subtitleHandler = new SubtitleHandler();
 		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
 	}
-	catch (IOException e) {
+	catch (FileFormatException | NumberFormatException e) {
 	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
 		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.value" }, e);		
 	}
