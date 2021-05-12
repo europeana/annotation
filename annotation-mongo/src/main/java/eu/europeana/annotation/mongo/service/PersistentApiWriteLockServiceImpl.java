@@ -27,7 +27,7 @@ public class PersistentApiWriteLockServiceImpl extends
 			PersistentApiWriteLock pij = new PersistentApiWriteLockImpl(action);
 			return super.store(pij);
 		} catch(Exception e) {
-			throw new ApiWriteLockException("Unable to set lock.");
+			throw new ApiWriteLockException("Unable to set lock.", e);
 		}
 	}
 	
@@ -43,7 +43,7 @@ public class PersistentApiWriteLockServiceImpl extends
 			PersistentApiWriteLock pij = getDao().findOne(query);
 			return pij;
 		} catch(Exception e) {
-			throw new ApiWriteLockException("Unable to get last lock.");
+			throw new ApiWriteLockException("Unable to get last lock.", e);
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class PersistentApiWriteLockServiceImpl extends
 			PersistentApiWriteLock pij = getDao().findOne(query);
 			return pij;
 		} catch(Exception e) {
-			throw new ApiWriteLockException("Unable to get last lock.");
+			throw new ApiWriteLockException("Unable to get last lock.", e);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class PersistentApiWriteLockServiceImpl extends
 			PersistentApiWriteLock pij = getDao().findOne(query);
 			return pij;
 		} catch(Exception e) {
-			throw new ApiWriteLockException("Unable to get lock by id.");
+			throw new ApiWriteLockException("Unable to get lock by id.", e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class PersistentApiWriteLockServiceImpl extends
 			pij.setEnded(new Date());
 			super.store(pij);
 		} catch(Exception e) {
-			throw new ApiWriteLockException("Unable to unlock api.");
+			throw new ApiWriteLockException("Unable to unlock api.", e);
 		}
 	}
 	
@@ -87,7 +87,7 @@ public class PersistentApiWriteLockServiceImpl extends
 		try {
 			getDao().delete(pij);
 		} catch(Exception e) {
-			throw new ApiWriteLockException("Unable to delete lock.");
+			throw new ApiWriteLockException("Unable to delete lock.", e);
 		}
 	}
 
