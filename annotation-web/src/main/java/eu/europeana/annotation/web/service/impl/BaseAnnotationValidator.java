@@ -509,7 +509,7 @@ public abstract class BaseAnnotationValidator {
 		//SubtitleHandler subtitleHandler = new SubtitleHandler();
 		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
 	}
-	catch (FileFormatException | NumberFormatException e) {
+	catch (FileFormatException e) {
 	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
 		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.value" }, e);		
 	}
