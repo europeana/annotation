@@ -3,8 +3,8 @@
   "body": {
     "type": "FullTextResource",
     "language": "it",
-    "value": " WEBVTT\nNOTE Paragraph\n00:00:00.988 --> 00:00:03.572\nDolo le ultime novità\ndella moda per signora\n...\n00:00:30.359 --> 00:00:33.608\ncon il grande finale:\nCarnevale con il popolo eschimese.\n\n00:00:34.199 --> 00:00:35.780\n <special char/> musica) <special char/> ",
-    "format": "text/vtt"
+    "value": "1\n01:00:00,000 --> 01:00:02,832\n[Brooks]\nDotsub's number one mission is to ensure\n\n2\n01:00:02,832 --> 01:00:05,960\nthat video can be communicated\nto as many people as possible in the world.\n",
+    "format": "srt"
   },
   "target": {
     "scope": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7",
