@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.dotsub.converter.exception.FileFormatException;
 import com.dotsub.converter.importer.SubtitleImportHandler;
 import com.dotsub.converter.importer.impl.DfxpImportHandler;
@@ -26,9 +28,11 @@ public class SubtitleHandler {
     private static final SubtitleImportHandler VTT_HANDLER = new WebVttImportHandler();
 	
 	public List<SubtitleItem> parseSubtitle (String text, String format) throws FileFormatException, IOException {
-		
-		InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));		
+		if (StringUtils.isBlank(text)) {
+			return null;
+		}
 		List<SubtitleItem> items = new ArrayList<SubtitleItem>();
+		InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
 		switch(format) {
 		  case INTERNET_MEDIA_TYPE_QT_FORMAT:
 			  QT_HANDLER.importFile(stream, new Configuration());		    
