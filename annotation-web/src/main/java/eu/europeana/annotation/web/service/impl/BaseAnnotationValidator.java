@@ -504,7 +504,8 @@ public abstract class BaseAnnotationValidator {
 	// validate body
 	Body body = webAnnotation.getBody();
 	validateFullTextResource(body);
-	validateSubtitleBody(body);
+	// TODO: enable this method when the spike ticket is concluded
+	//validateSubtitleBody(body);
 	
 	// validate target
 	// TODO consider moving to validateSpecificResource method
