@@ -504,25 +504,7 @@ public abstract class BaseAnnotationValidator {
 	// validate body
 	Body body = webAnnotation.getBody();
 	validateFullTextResource(body);
-	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
-	if (StringUtils.isBlank(body.getContentType())) {
-	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.format" });
-	}
-	// check if the body.format field has a valid value
-	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
-	if (!result) {
-	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
-		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.format" });
-	}
-	// check if the body.value is valid 
-	try {
-		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
-	}
-	catch (FileFormatException | IOException e) {
-	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
-		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
-	}
+	validateSubtitleBody(body);
 	
 	// validate target
 	// TODO consider moving to validateSpecificResource method
@@ -531,6 +513,28 @@ public abstract class BaseAnnotationValidator {
 		&& StringUtils.isBlank(webAnnotation.getTarget().getSource()))
 	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.source" });
+    }
+    
+    private void validateSubtitleBody (Body body) throws PropertyValidationException {
+    	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
+    	if (StringUtils.isBlank(body.getContentType())) {
+    	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+    		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.format" });
+    	}
+    	// check if the body.format field has a valid value
+    	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
+    	if (!result) {
+    	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
+    		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.format" });
+    	}
+    	// check if the body.value is valid 
+    	try {
+    		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
+    	}
+    	catch (FileFormatException | IOException e) {
+    	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
+    		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
+    	}    	
     }
 
 }
