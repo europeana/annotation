@@ -1,11 +1,14 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
+
+import com.dotsub.converter.exception.FileFormatException;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -19,6 +22,7 @@ import eu.europeana.annotation.definitions.model.entity.Place;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.utils.UriUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
@@ -27,6 +31,8 @@ import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public abstract class BaseAnnotationValidator {
+	
+	private static final SubtitleHandler subtitleHandler = new SubtitleHandler();
 
     protected abstract AnnotationConfiguration getConfiguration();
 
@@ -498,17 +504,8 @@ public abstract class BaseAnnotationValidator {
 	// validate body
 	Body body = webAnnotation.getBody();
 	validateFullTextResource(body);
-	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
-	if (StringUtils.isBlank(body.getContentType())) {
-	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "subtitle.body.format" });
-	}
-	// check if the body.format field has a valid value
-	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
-	if (!result) {
-	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
-		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { body.getContentType() });
-	}
+	// TODO: enable this method when the spike ticket is concluded
+	//validateSubtitleBody(body);
 	
 	// validate target
 	// TODO consider moving to validateSpecificResource method
@@ -517,6 +514,28 @@ public abstract class BaseAnnotationValidator {
 		&& StringUtils.isBlank(webAnnotation.getTarget().getSource()))
 	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.source" });
+    }
+    
+    private void validateSubtitleBody (Body body) throws PropertyValidationException {
+    	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
+    	if (StringUtils.isBlank(body.getContentType())) {
+    	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+    		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.format" });
+    	}
+    	// check if the body.format field has a valid value
+    	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
+    	if (!result) {
+    	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
+    		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.format" });
+    	}
+    	// check if the body.value is valid 
+    	try {
+    		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
+    	}
+    	catch (FileFormatException | IOException e) {
+    	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
+    		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
+    	}    	
     }
 
 }

@@ -88,6 +88,12 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.dotsub.converter</groupId>
+    		<artifactId>subtitle-converter</artifactId>
+			<version>${version.subtitle-converter}</version>
+		</dependency>
 
 	</dependencies>
 	<build>
