@@ -77,10 +77,8 @@
 		<module>annotation-web</module>
 		<module>annotation-client</module>
 		<module>annotation-import</module>
-		<!-- 
-    <module>annotation-fulltext</module>
-     -->
-  </modules>
+		<module>annotation-fulltext</module>
+        </modules>
 	<build>
 		<!--  configure source and output locations -->
 		<directory>target</directory>
