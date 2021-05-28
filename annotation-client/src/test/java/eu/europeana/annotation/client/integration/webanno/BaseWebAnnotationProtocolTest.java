@@ -47,6 +47,7 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
 	public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
+	public static final String SUBTITLE_MINIMAL_QT_RIGHT = "/subtitle/minimal_qt_right.json";
 	public static final String CAPTION_MINIMAL = "/caption/minimal.json";
 
 	
