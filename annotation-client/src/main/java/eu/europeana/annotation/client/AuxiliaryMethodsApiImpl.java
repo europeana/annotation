@@ -1,6 +1,7 @@
 package eu.europeana.annotation.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -31,7 +32,13 @@ public class AuxiliaryMethodsApiImpl extends WebAnnotationProtocolApiImpl {
 	try {
 	    String json = apiConnection.getDeleted(motivation, afterTimestamp);
 	    ObjectMapper objectMapper = new ObjectMapper();
-	    res = objectMapper.readValue(json, new TypeReference<List<BaseAnnotationDeletion>>(){});
+	    List<BaseAnnotationDeletion> resBaseAnnotation = objectMapper.readValue(json, new TypeReference<List<BaseAnnotationDeletion>>(){});
+	    if(resBaseAnnotation!=null) {
+	    	res = new ArrayList<AnnotationDeletion>();
+	    	for (BaseAnnotationDeletion del : resBaseAnnotation) {
+	    		res.add(del);
+	    	}
+	    }
 	
 	} catch (IOException | JsonParseException e) {
 	    throw new TechnicalRuntimeException(

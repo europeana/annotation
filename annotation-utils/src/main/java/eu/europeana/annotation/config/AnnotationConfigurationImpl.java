@@ -1,5 +1,9 @@
 package eu.europeana.annotation.config;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
@@ -8,7 +12,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+
+//@Configuration
+//@ComponentScan("eu.europeana.annotation")
 public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
     private Properties annotationProperties;
@@ -55,6 +67,10 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 	return new HashSet<>(Arrays.asList(subtitlesFormats));
     }
 
+	@Override
+	public String getAnnotationSubtitlesFormatsXml() {
+		return getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS_XML);
+	}
 
     public String getDefaultWhitelistResourcePath() {
 	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
@@ -126,5 +142,6 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     public String getAnnotationApiVersion() {
 	return getAnnotationProperties().getProperty(API_VERSION);
     }
+
 
 }

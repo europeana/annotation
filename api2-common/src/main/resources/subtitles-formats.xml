@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<subtitle-formats>
+  <format mimetype="video/quicktime" name="QuickTime File Format (QTFF)" handler="com.dotsub.converter.importer.impl.QtTextImportHandler"/>
+  <format mimetype="text/vtt" name="WebVTT" handler="com.dotsub.converter.importer.impl.WebVttImportHandler"/>
+  <format mimetype="application/ttml+xml" name="Timed-Text (DFXP)" handler="com.dotsub.converter.importer.impl.DfxpImportHandler"/>
+</subtitle-formats>
