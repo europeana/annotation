@@ -1,4 +1,4 @@
-package eu.europeana.annotation.config;
+package eu.europeana.annotation.definitions.model.impl;
 
 import java.util.List;
 import java.util.Optional;

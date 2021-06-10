@@ -1,4 +1,4 @@
-package eu.europeana.annotation.config;
+package eu.europeana.annotation.definitions.model.impl;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;

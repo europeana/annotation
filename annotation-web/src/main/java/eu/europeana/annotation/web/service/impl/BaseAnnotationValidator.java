@@ -537,8 +537,7 @@ public abstract class BaseAnnotationValidator {
     	try {
     		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
     	}
-    	catch (FileFormatException | IOException | ClassNotFoundException | NoSuchMethodException | SecurityException 
-    			| InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+    	catch (FileFormatException | IOException e) {
     	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
     		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
     	} 	

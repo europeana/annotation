@@ -47,16 +47,6 @@ public interface AnnotationConfiguration {
     public String getEnvironment();
 
     /**
-     * uses annotation.subtitles.formats property
-     */
-    public Set<String> getAnnotationSubtitlesFormats();
-    
-    /**
-     * uses annotation.subtitles.formats.xml property
-     */
-    public String getAnnotationSubtitlesFormatsXml();
-
-    /**
      * uses annotation.environment.{$environment}.baseUrl property
      */
     public String getAnnotationBaseUrl();

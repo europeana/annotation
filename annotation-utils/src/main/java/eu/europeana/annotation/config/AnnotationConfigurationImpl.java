@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
@@ -61,17 +58,6 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 	return getAnnotationProperties().getProperty(key);
     }
     
-    @Override
-    public Set<String> getAnnotationSubtitlesFormats() {
-	String[] subtitlesFormats = getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS).trim().split(",");
-	return new HashSet<>(Arrays.asList(subtitlesFormats));
-    }
-
-	@Override
-	public String getAnnotationSubtitlesFormatsXml() {
-		return getAnnotationProperties().getProperty(ANNOTATION_SUBTITLES_FORMATS_XML);
-	}
-
     public String getDefaultWhitelistResourcePath() {
 	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
     }
