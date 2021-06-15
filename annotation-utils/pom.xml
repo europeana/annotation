@@ -100,7 +100,8 @@
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>${version.javax.annotation}</version>
-		</dependency>				
+		</dependency>
+						
 	</dependencies>
 </project>
 
