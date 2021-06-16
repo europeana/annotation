@@ -15,6 +15,7 @@ The following properties are optional in all annotations:
 </p>
 					<ul id="toc">
 						<li><a href="#tag_bodyValue">Create (Object) Tag - bodyValue</a></li>
+						<li><a href="#tag_SubtitleOrCaption">Create (Object) Subtitle or Caption</a></li>
 						<li><a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a></li>
 						<li><a href="#tag_geoTag">Create (Object) GeoTag</a></li>
 						<li><a href="#semantictag_simple_minimal">Create Semantic Tag - minimal representation</a></li>
@@ -47,6 +48,30 @@ The response will be however, expanded to the TextualBody representation. see al
     "created": "2015-02-27T12:00:43Z",
     "generated": "2015-02-28T13:00:34Z",
     "generator": "http://www.historypin.org"
+}
+</textarea>
+<br>
+
+<h3 id="tag_SubtitleOrCaption">Create (Object) Subtitle or Caption</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Subtitle or Caption annotations</b>.
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:tagging)
+<textarea rows="18" cols="120" name="jsonldtag">
+{
+    "motivation": "subtitling",
+    "body": {
+    "type": "FullTextResource",
+    "language": "it",
+    "value": " WEBVTT\nNOTE Paragraph\n00:00:00.988 --> 00:00:03.572\nDolo le ultime novità\ndella moda per signora\n...\n00:00:30.359 --> 00:00:33.608\ncon il grande finale:\nCarnevale con il popolo eschimese.\n\n00:00:34.199 --> 00:00:35.780\n <special char/> musica) <special char/> ",
+    "format": "text/vtt",
+    "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
+    },
+    "target": {
+    "scope": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7",
+    "source": 
+    "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"
+    }
 }
 </textarea>
 <br>

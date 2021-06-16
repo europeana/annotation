@@ -22,10 +22,10 @@ public class SubtitlingTest extends BaseWebAnnotationProtocolTest {
     public void createMinimalSubtitle() throws IOException, JsonParseException, IllegalAccessException,
 	    IllegalArgumentException, InvocationTargetException {
 
-	String requestBody = getJsonStringInput(SUBTITLE_MINIMAL_QT_RIGHT);
+	String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
 	Annotation inputAnno = parseSubtitle(requestBody);
 
-	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL_QT_RIGHT, null);
+	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
