@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -21,10 +22,12 @@ import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -46,6 +49,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	
 	@Resource 
 	AnnotationService webAnnotationService;
+	
+	@Resource
+	SolrAnnotationService solrService;
 	
 	@Resource 
 	AdminService adminService;
@@ -181,9 +187,11 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Search Annotation.
 		 */
-		List<? extends Annotation> resList = webAnnotationService.searchAnnotations(
-				((PersistentAnnotation) storedAnnotation).getId().toString(), "0", "10");
-		assertTrue(resList == null || resList.size() == 0);
+		AnnotationView anno = solrService.searchById(((PersistentAnnotation) storedAnnotation).getId().toString());
+//		List<? extends Annotation> resList = webAnnotationService. search Annotations(
+//				, "0", "10");
+//		assertTrue(resList == null || resList.size() == 0);
+		assertNull(anno);
 	}
 		
 	@Test
@@ -195,8 +203,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Search Annotation.
 		 */
-		List<? extends Annotation> originalList = webAnnotationService.searchAnnotations(
-				testAnnotation.getBody().getValue(), "0", "10");
+		 long oldEntries = solrService.search(
+				testAnnotation.getBody().getValue(), "0", "1").getResultSize();
 
 		/**
 		 * Store Annotation in database.
@@ -213,9 +221,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Search Annotation.
 		 */
-		List<? extends Annotation> resList = webAnnotationService.searchAnnotations(
-				storedAnnotation.getBody().getValue(), "0", "10");
-		assertTrue(resList.size() == originalList.size());
+		long currentEntries = solrService.search(
+			testAnnotation.getBody().getValue(), "0", "1").getResultSize();
+		assertTrue(currentEntries == oldEntries);
 	}
 		
 	@Test

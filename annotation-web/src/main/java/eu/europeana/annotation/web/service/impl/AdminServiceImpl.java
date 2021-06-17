@@ -135,7 +135,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 					try {
 						count++;
 						if (count % 1000 == 0)
-							getLogger().info("Processing object: " + count);
+							getLogger().info("Processing object: {}", count);
 						// check
 						if (isObjectId) {
 							annotation = getMongoPersistence().findByID(id);

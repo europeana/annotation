@@ -116,23 +116,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @Override
-    @Deprecated
-    /**
-     * To remove this method. Update tests to use the commonly used search methods
-     */
-    public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
-	    throws AnnotationServiceException {
-	return null;
-//		// return getSolrService().search(query, startOn, limit);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public Map<String, Integer> searchAnnotations(String[] qf, List<String> queries) throws AnnotationServiceException {
-	return getSolrService().queryFacetSearch(SolrSyntaxConstants.ALL_SOLR_ENTRIES, qf, queries);
-    }
-
-    @Override
     public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit)
 	    throws StatusLogServiceException {
 	return getMongoStatusLogPersistence().getFilteredStatusLogList(query, startOn, limit);

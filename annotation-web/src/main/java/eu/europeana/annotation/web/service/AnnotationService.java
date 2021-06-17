@@ -117,18 +117,6 @@ public interface AnnotationService {
 	 */
 	public Annotation getAnnotationById(AnnotationId annoId, String userId) throws AnnotationNotFoundException, UserAuthorizationException;
 		
-	/**
-	 * Search for annotations by the given text query, row start position and rows limit. 	 
-	 * @param query
-	 * @param startOn
-	 * @param limit
-	 * @return
-	 * @throws AnnotationServiceException 
-	 */
-	//TODO: change parameters to integers
-	public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit) 
-			throws AnnotationServiceException;
-	
 	
 	/**
 	 * Search for annotation status logs by the given text query, row start position and rows limit.
@@ -140,14 +128,6 @@ public interface AnnotationService {
 	 */
 	public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit) throws StatusLogServiceException;
 
-	/**
-	 * This method is used for query faceting.
-	 * @param qf
-	 * @param queries
-	 * @return
-	 * @throws AnnotationServiceException 
-	 */
-	public Map<String, Integer> searchAnnotations(String [] qf, List<String> queries) throws AnnotationServiceException;
 	
 	/**
 	 * Check whether annotation for given provider and identifier already exist in database.

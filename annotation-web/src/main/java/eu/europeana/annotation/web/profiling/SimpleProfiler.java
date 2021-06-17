@@ -30,7 +30,7 @@ public class SimpleProfiler {
             TaskInfo taskInfo = stopWatch.getLastTaskInfo();            
             String profileMessage = taskInfo.getTaskName() + ":\t" + taskInfo.getTimeMillis() + "ms" +
                     (isExceptionThrown ? " (thrown Exception)" : "");
-            logger.debug("Profiling " + profileMessage);	
+            logger.debug("Profiling {}", profileMessage);	
         }
     }
      

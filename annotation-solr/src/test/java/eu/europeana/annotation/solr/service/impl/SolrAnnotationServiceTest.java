@@ -302,32 +302,32 @@ public class SolrAnnotationServiceTest {
 		assertTrue(resSolrAnnotation.getBodyValue().equals(TEST_VALUE));
 	}
 	
-	@Test
-	public void testSearchSolrAnnotationByMultilingualMapLabel() throws MalformedURLException, IOException, AnnotationServiceException {
-		
-		/**
-		 * Create solr Annotation with new label
-		 */
-		SolrAnnotationImpl solrAnnotation = storeTestObject();
-
-		/**
-		 * add multilingual labels
-		 */
-		solrAnnotation.addMultilingualValue("EN", "leaf");
-		solrAnnotation.addMultilingualValue("DE", "blatt");
-		
-		Logger.getLogger(getClass().getName()).info("Solr annotation before update. The multilingual map: " + 
-				solrAnnotation.getBodyMultilingualValue().toString());
-
-		solrAnnotationService.update(solrAnnotation);
-		
-		/**
-		 * query from SOLR by map key
-		 */
-		ResultSet<? extends AnnotationView> solrAnnotationsByMapKey = solrAnnotationService.searchByMapKey("EN_multilingual", "leaf");			   
-		assertTrue(solrAnnotationsByMapKey.getResultSize() > 0);				
-		//printListWithMap(solrAnnotationsByMapKey, "list with map after query...", true);
-	}
+//	@Test
+//	public void testSearchSolrAnnotationByMultilingualMapLabel() throws MalformedURLException, IOException, AnnotationServiceException {
+//		
+//		/**
+//		 * Create solr Annotation with new label
+//		 */
+//		SolrAnnotationImpl solrAnnotation = storeTestObject();
+//
+//		/**
+//		 * add multilingual labels
+//		 */
+//		solrAnnotation.addMultilingualValue("EN", "leaf");
+//		solrAnnotation.addMultilingualValue("DE", "blatt");
+//		
+//		Logger.getLogger(getClass().getName()).info("Solr annotation before update. The multilingual map: " + 
+//				solrAnnotation.getBodyMultilingualValue().toString());
+//
+//		solrAnnotationService.update(solrAnnotation);
+//		
+//		/**
+//		 * query from SOLR by map key
+//		 */
+//		ResultSet<? extends AnnotationView> solrAnnotationsByMapKey = solrAnnotationService.searchByMapKey("EN_multilingual", "leaf");			   
+//		assertTrue(solrAnnotationsByMapKey.getResultSize() > 0);				
+//		//printListWithMap(solrAnnotationsByMapKey, "list with map after query...", true);
+//	}
 	
 //	@Test
 //	public void testQueryFacetSearch() throws AnnotationServiceException {
