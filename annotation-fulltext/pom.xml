@@ -20,10 +20,16 @@
 			<version>${version.org.junit.jupiter}</version>
 	</dependency>
 	<dependency>
-			<groupId>eu.europeana</groupId>
+			<groupId>com.dotsub.converter</groupId>
     		<artifactId>subtitle-converter</artifactId>
 			<version>${version.subtitle-converter}</version>
 	</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-utils</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
+		
 	</dependencies>
 
 </project>

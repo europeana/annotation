@@ -13,7 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
-
+/*
+ * TODO: for these tests to work, please copy the given deref2json.xsl file to the test/resources folder
+ */
 public class MetisDereferenciationClientTest {
 
     private MetisDereferenciationClient dereferenciationClient;
