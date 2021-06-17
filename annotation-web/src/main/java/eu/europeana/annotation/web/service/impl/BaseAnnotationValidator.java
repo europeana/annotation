@@ -1,9 +1,12 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Set;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
@@ -24,6 +27,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -32,7 +36,8 @@ import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public abstract class BaseAnnotationValidator {
 	
-	private static final SubtitleHandler subtitleHandler = new SubtitleHandler();
+	@Resource
+	private SubtitleHandler subtitleHandler;
 
     protected abstract AnnotationConfiguration getConfiguration();
 
@@ -531,7 +536,7 @@ public abstract class BaseAnnotationValidator {
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.format" });
     	}
     	// check if the body.format field has a valid value
-    	boolean result = getConfiguration().getAnnotationSubtitlesFormats().contains(body.getContentType());
+    	boolean result = subtitleHandler.hasSubtitleFormat(body.getContentType());
     	if (!result) {
     	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
     		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.format" });
@@ -543,7 +548,7 @@ public abstract class BaseAnnotationValidator {
     	catch (FileFormatException | IOException e) {
     	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
     		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
-    	}    	
+    	} 	
     }
 
 }

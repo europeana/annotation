@@ -23,6 +23,7 @@ public class SubtitlingTest extends BaseWebAnnotationProtocolTest {
 	    IllegalArgumentException, InvocationTargetException {
 
 	String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
+
 	Annotation inputAnno = parseSubtitle(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);

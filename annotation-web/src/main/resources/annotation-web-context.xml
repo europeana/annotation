@@ -42,6 +42,31 @@
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
     </beans:bean>
     
+    <beans:bean id="subtitleHandler" class="eu.europeana.annotation.fulltext.subtitles.SubtitleHandler">
+    	<beans:constructor-arg index="0" value="#{annotationProperties['annotation.subtitles.formats.xml']}"/>
+    	<beans:constructor-arg index="1" ref="xmlJacksonMapper"/>
+    	<beans:constructor-arg index="2">
+		  <beans:list> 
+		     <beans:ref bean="qtTextImportHandler"/>
+		     <beans:ref bean="webVttImportHandler"/>
+		     <beans:ref bean="dfxpImportHandler"/>
+		  </beans:list> 
+		</beans:constructor-arg>
+    </beans:bean>
+    
+    <beans:bean id="xmlJacksonMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper">
+    </beans:bean>
+    
+    <beans:bean id="qtTextImportHandler" class="com.dotsub.converter.importer.impl.QtTextImportHandler">
+    </beans:bean>
+    
+    <beans:bean id="webVttImportHandler" class="com.dotsub.converter.importer.impl.WebVttImportHandler">
+    </beans:bean>   
+    
+    <beans:bean id="dfxpImportHandler" class="com.dotsub.converter.importer.impl.DfxpImportHandler">
+    </beans:bean>   
+ 
+    
 	<beans:bean id="whitelistService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
     </beans:bean>
     
