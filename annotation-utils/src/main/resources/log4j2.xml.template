@@ -12,12 +12,11 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="INFO" additivity="false">
+     <Root level="INFO">
       <appender-ref ref="Console"/>
     </Root>
 
-    <Logger name="eu.europeana.annotation" level="INFO" additivity="true">
-		<appender-ref ref="Console"/>
+    <Logger name="eu.europeana.annotation" level="INFO">
 	</Logger>
   </Loggers>
 </Configuration>
