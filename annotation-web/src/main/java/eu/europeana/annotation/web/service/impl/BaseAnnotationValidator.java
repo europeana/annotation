@@ -519,6 +519,14 @@ public abstract class BaseAnnotationValidator {
 		&& StringUtils.isBlank(webAnnotation.getTarget().getSource()))
 	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.source" });
+	
+	// check mandatory field edmRights
+	if (StringUtils.isBlank(body.getEdmRights())) {
+	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.edmRights" });
+	}
+	validateEdmRights(body);
+
     }
     
     private void validateSubtitleBody (Body body) throws PropertyValidationException {
