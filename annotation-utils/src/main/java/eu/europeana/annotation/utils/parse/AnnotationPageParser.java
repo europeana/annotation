@@ -141,26 +141,22 @@ public class AnnotationPageParser extends JsonLdParser {
 	// AnnotationPage.PrevPageUri
 	case WebAnnotationFields.PREV:
 	    String prevPageUri = valueObject.toString();
-	    logger.debug("prevPageUri: " + prevPageUri);
 	    ap.setPrevPageUri(prevPageUri);
 	    break;
 
 	// AnnotationPage.NextPageUri
 	case WebAnnotationFields.NEXT:
 	    String nextPageUri = valueObject.toString();
-	    logger.debug("nextPageUri: " + nextPageUri);
 	    ap.setNextPageUri(nextPageUri);
 	    break;
 
 	// AnnotationPage.CurrentPageUri
 	case WebAnnotationFields.ID:
 	    String currentPageUri = valueObject.toString();
-	    logger.debug("currentPageUri: " + currentPageUri);
 	    ap.setCurrentPageUri(currentPageUri);
 	    // AnnotationPage.CurrentPage (int)
 	    String currentPageVal = QueryUtils.getQueryParamValue(valueObject.toString(), WebAnnotationFields.PAGE);
 	    int currentPageNum = Integer.parseInt(currentPageVal);
-	    logger.debug("currentPage: " + currentPageNum);
 	    ap.setCurrentPage(currentPageNum);
 
 	    break;
@@ -178,18 +174,15 @@ public class AnnotationPageParser extends JsonLdParser {
 	    JSONObject partOfObj = jo.getJSONObject(WebAnnotationFields.PART_OF);
 	    // AnnotationPage.CollectionUri
 	    String collectionUri = partOfObj.get(WebAnnotationFields.ID).toString();
-	    logger.debug("collectionUri: " + collectionUri);
 	    ap.setCollectionUri(collectionUri);
 	    // AnnotationPage.TotalInCollection
 	    long totalInCollection = Long.parseLong(partOfObj.get(WebAnnotationFields.TOTAL).toString());
-	    logger.debug("totalInCollection: " + totalInCollection);
 	    ap.setTotalInCollection(totalInCollection);
 	    break;
 
 	case WebAnnotationFields.TOTAL:
 	    // AnnotationPage.TotalInPage
 	    long totalInPage = Long.parseLong(valueObject.toString());
-	    logger.debug("totalInPage: " + totalInPage);
 	    ap.setTotalInPage(totalInPage);
 	    break;
 
@@ -197,7 +190,6 @@ public class AnnotationPageParser extends JsonLdParser {
 	    break;
 
 	default:
-	    logger.warn("Unsupported Property: " + property);
 	    throw new JSONException("Unsupported Property: " + property + " during parsing of the AnnotationPage object.");
 	}
     }

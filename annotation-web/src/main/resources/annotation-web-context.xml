@@ -41,6 +41,8 @@
     <!--  java api bean -->
 	<beans:bean id="annotationService" class="eu.europeana.annotation.web.service.impl.AnnotationServiceImpl">
     </beans:bean>
+     
+    <beans:bean id="subtitleHandler" class="eu.europeana.annotation.fulltext.subtitles.SubtitleHandler"/>
     
 	<beans:bean id="whitelistService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
     </beans:bean>

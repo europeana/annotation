@@ -242,7 +242,6 @@ public class BaseRest extends BaseRestController {
 		String userToken = null;
 		String userTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		if (userTokenHeader != null) {
-			logger.trace("'Authorization' header value: " + userTokenHeader);
 			String[] headerElems = userTokenHeader.split(" ");
 			if(headerElems.length < 2 )
 				throw new ApplicationAuthenticationException(
@@ -257,7 +256,7 @@ public class BaseRest extends BaseRestController {
 			String encodedUserToken = headerElems[BASE64_ENCODED_STRING_POS];
 			
 			userToken = decodeBase64(encodedUserToken);
-			logger.debug("Decoded user token: " + userToken);
+			logger.debug("Decoded user token: {}", userToken);
 
 		} else {
 			//@deprecated to be removed in the next versions

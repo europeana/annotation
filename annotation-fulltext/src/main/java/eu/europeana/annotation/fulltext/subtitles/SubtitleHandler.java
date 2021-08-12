@@ -1,52 +1,73 @@
 package eu.europeana.annotation.fulltext.subtitles;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.dotsub.converter.exception.FileFormatException;
 import com.dotsub.converter.importer.SubtitleImportHandler;
-import com.dotsub.converter.importer.impl.DfxpImportHandler;
-import com.dotsub.converter.importer.impl.QtTextImportHandler;
-import com.dotsub.converter.importer.impl.WebVttImportHandler;
 import com.dotsub.converter.model.Configuration;
 import com.dotsub.converter.model.SubtitleItem;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import eu.europeana.annotation.definitions.exception.AnnotationServiceInstantiationException;
+import eu.europeana.annotation.definitions.model.impl.SubtitleFormat;
+import eu.europeana.annotation.definitions.model.impl.SubtitleFormats;
 
 public class SubtitleHandler {
-	
-	private static final String INTERNET_MEDIA_TYPE_VTT_FORMAT = "text/vtt";
-	private static final String INTERNET_MEDIA_TYPE_DFXP_FORMAT = "application/ttml+xml";
-	private static final String INTERNET_MEDIA_TYPE_QT_FORMAT = "video/quicktime";
-	
-    private static final SubtitleImportHandler QT_HANDLER = new QtTextImportHandler();
-    private static final SubtitleImportHandler DFXP_HANDLER = new DfxpImportHandler();
-    private static final SubtitleImportHandler VTT_HANDLER = new WebVttImportHandler();
-	
-	public List<SubtitleItem> parseSubtitle (String text, String format) throws FileFormatException, IOException {
-		if (StringUtils.isBlank(text)) {
-			return null;
-		}
-		List<SubtitleItem> items = new ArrayList<SubtitleItem>();
-		InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
-		switch(format) {
-		  case INTERNET_MEDIA_TYPE_QT_FORMAT:
-			  QT_HANDLER.importFile(stream, new Configuration());		    
-			  break;
-		  case INTERNET_MEDIA_TYPE_DFXP_FORMAT:
-		      DFXP_HANDLER.importFile(stream, new Configuration());
-		      break;
-		  case INTERNET_MEDIA_TYPE_VTT_FORMAT:
-		      VTT_HANDLER.importFile(stream, new Configuration());
-		      break;
-		  default:
-			  throw new FileFormatException("The Internet media subtitle format does not match any of the expected formats: "+ 
-				  INTERNET_MEDIA_TYPE_QT_FORMAT+","+INTERNET_MEDIA_TYPE_DFXP_FORMAT+","+INTERNET_MEDIA_TYPE_VTT_FORMAT+".");
-		}		
-		return items;
+
+    static final String SUBTITLE_FORMATS_FILE = "/subtitle-formats.xml";
+    Map<String, SubtitleImportHandler> subtitleHandlers = new HashMap<String, SubtitleImportHandler>();
+
+    public SubtitleHandler(ArrayList<SubtitleImportHandler> subtitleImportHandlersParam) throws IOException {
+	initSubtitleHandlers();
+    }
+
+    void initSubtitleHandlers() {
+	try (InputStream inputStream = getClass().getResourceAsStream(SUBTITLE_FORMATS_FILE)) {
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	    String contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+	    SubtitleFormats subtitlesFormats = (new XmlMapper()).readValue(contents, SubtitleFormats.class);
+	    for (SubtitleFormat format : subtitlesFormats.getFormats()) {
+		SubtitleImportHandler importHandler = (SubtitleImportHandler) Class.forName(format.getHandler()).getDeclaredConstructor().newInstance();
+		subtitleHandlers.put(format.getMimetype(), importHandler);
+	    }
+	}catch (Exception e) {
+	    throw new AnnotationServiceInstantiationException("SubtitleHandler", e);
 	}
+    }
+
+    public List<SubtitleItem> parseSubtitle(String text, String format) throws FileFormatException, IOException {
+	if (StringUtils.isBlank(text)) {
+	    return null;
+	}
+
+	SubtitleImportHandler subtitleImportHandler = getSubtitleHandlers().get(format);
+	if (subtitleImportHandler == null) {
+	    throw new FileFormatException("Subtitle format not supported: " + format);
+	}
+
+	InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
+	return subtitleImportHandler.importFile(stream, new Configuration());
+    }
+
+
+    public boolean hasSubtitleFormat(String format) {
+	return subtitleHandlers.containsKey(format);
+    }
+
+    Map<String, SubtitleImportHandler> getSubtitleHandlers() {
+        return subtitleHandlers;
+    }
+
 }

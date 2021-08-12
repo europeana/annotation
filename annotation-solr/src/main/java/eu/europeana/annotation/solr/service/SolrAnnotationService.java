@@ -113,18 +113,6 @@ public interface SolrAnnotationService {
 	
 
 	/**
-	 * This method retrieves available Annotations by searching for given map key and value.
-	 * @deprecated TODO:rename & redirect
-	
-	 * @param searchKey
-	 * @param searchValue
-	 * @param profile see {@link SearchProfiles}
-	 * @return
-	 * @throws AnnotationServiceException
-	 */
-	public ResultSet<? extends AnnotationView> searchByMapKey(String searchKey, String searchValue)  throws AnnotationServiceException;
-		
-	/**
 	 * This method retrieves available Annotations by searching for given field name and value.
 	 * @param field The field name
 	 * @param searchValue
@@ -142,16 +130,16 @@ public interface SolrAnnotationService {
 	 */
 	public ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException;
 	
-	/**
-	 * This method supports faceting for Annotation.
-	 * @param query
-	 * @param qf
-	 * @param queries
-	 * @return
-	 * @throws AnnotationServiceException
-	 * @deprecated update name and parameter names accordingly
-	 */
-	Map<String, Integer> queryFacetSearch(String query, String[] qf, List<String> queries) throws AnnotationServiceException;
+//	/**
+//	 * This method supports faceting for Annotation.
+//	 * @param query
+//	 * @param qf
+//	 * @param queries
+//	 * @return
+//	 * @throws AnnotationServiceException
+//	 * @deprecated update name and parameter names accordingly
+//	 */
+//	Map<String, Integer> queryFacetSearch(String query, String[] qf, List<String> queries) throws AnnotationServiceException;
 	
 	/**
 	 * This method retrieves available Annotations by searching for given term, row start position and rows limit.

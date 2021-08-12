@@ -143,22 +143,15 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 	// if the profile parameter is given, the header preference is ignored
 	if (profile != null) {
-	    logger.trace("Profile set by profile parameter: " + profile);
 	    return SearchProfiles.valueOf(profile.toUpperCase());
 	}
 
 	String preferHeader = request.getHeader(HttpHeaders.PREFER);
 	if (preferHeader != null) {
-	    logger.trace("'Prefer' header value: " + preferHeader);
 	    preferHeader = preferHeader.replaceAll("\\s+", "");
-	    logger.trace("Normalized 'Prefer' header value: " + preferHeader);
 	    if (preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
-		logger.trace("MINIMAL Profile set by 'Prefer' header value: "
-			+ AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS);
 		return SearchProfiles.MINIMAL;
 	    } else if (preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
-		logger.trace("STANDARD Profile set by 'Prefer' header value: "
-			+ AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS);
 		return SearchProfiles.STANDARD;
 	    }
 	}

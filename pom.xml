@@ -44,16 +44,24 @@
 		<version.java>11</version.java>
 		<version.org.junit.jupiter>5.1.0</version.org.junit.jupiter>
 		<version.junit-platform>1.2.0</version.junit-platform>		
-		<version.spring>5.2.7.RELEASE</version.spring>
+ 		<!--
+		<version.spring>5.2.7.RELEASE</version.spring> 
+		-->
+		<version.spring>5.3.7</version.spring>
+		<!-- 
 		<version.spring.boot>2.3.1.RELEASE</version.spring.boot>
+		 -->
+		<version.spring.boot>2.4.5</version.spring.boot>
 		<version.aspectj>1.8.8</version.aspectj>		
 		<version.corelib>2.1</version.corelib>
 		<version.log4j2>2.9.1</version.log4j2>
 		<version.commonsLang3>3.0</version.commonsLang3>
 		<version.annotationld>1.1.6</version.annotationld>	
 		<version.codehausJackson>1.9.9</version.codehausJackson>
-		<version.jackson>2.9.4</version.jackson>
-		<version.commonsApi>0.3.5-SNAPSHOT</version.commonsApi>
+<!-- 		<version.jackson>2.9.4</version.jackson> -->
+		<version.jackson>2.11.4</version.jackson>
+<!-- 		<version.commonsApi>0.3.5-SNAPSHOT</version.commonsApi> -->
+		<version.commonsApi>0.3.7</version.commonsApi>
 		<version.apiKeyClient>1.1</version.apiKeyClient>
 		<version.apacheSolr>7.7.2</version.apacheSolr>
 		<version.woodstox>3.2.9</version.woodstox>
@@ -65,6 +73,7 @@
 		<version.saxonHE>10.1</version.saxonHE>
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
+		<version.maven-surfire-plugin>2.19.1</version.maven-surfire-plugin>
 		
 	</properties>
 	<modules>
@@ -104,12 +113,12 @@
 		<!--  plugins -->
 		<pluginManagement>
 			<plugins>
-			<!--
+				<!--
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 				</plugin>
-			-->	
+				 -->
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -119,7 +128,18 @@
 					<target>${version.java}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			    <version>${version.maven-surfire-plugin}</version>
+				<configuration>
+	    		<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
 			</plugins>
 		</pluginManagement>	
+
+ 
+          
 	</build>
 </project>

@@ -37,9 +37,7 @@ import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
-import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
-import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
@@ -113,23 +111,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
 	this.dereferenciationClient = dereferenciationClient;
-    }
-
-    @Override
-    @Deprecated
-    /**
-     * To remove this method. Update tests to use the commonly used search methods
-     */
-    public List<? extends Annotation> searchAnnotations(String query, String startOn, String limit)
-	    throws AnnotationServiceException {
-	return null;
-//		// return getSolrService().search(query, startOn, limit);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public Map<String, Integer> searchAnnotations(String[] qf, List<String> queries) throws AnnotationServiceException {
-	return getSolrService().queryFacetSearch(SolrSyntaxConstants.ALL_SOLR_ENTRIES, qf, queries);
     }
 
     @Override

@@ -115,10 +115,10 @@ public class TypeUtils {
 	    	log.debug("getUnixDateStringFromDate curDate: " + curDate);
 			Date resDate = new SimpleDateFormat(ModelConst.DATE_FORMAT).parse(curDate);
 			Long longTime = new Long(resDate.getTime());
-			log.info("long time: " + longTime);
+//			log.info("long time: " + longTime);
 			res = String.valueOf(longTime);
-			log.info("res date: " + res);
-			log.debug("check stored date - convert back to human date: " + getDateFromUnixDate(res));
+//			log.info("res date: " + res);
+//			log.debug("check stored date - convert back to human date: " + getDateFromUnixDate(res));
 		} catch (ParseException e) {
 			log.debug("Conversion of date in string format dd-MM-yyyy to unix date: " + e);
 		}
@@ -134,12 +134,12 @@ public class TypeUtils {
     public static String getUnixDateStringFromDate(Date curDate) {
     	String res = "";
 		try {
-	    	log.debug("getUnixDateStringFromDate curDate: " + curDate);
+//	    	log.debug("getUnixDateStringFromDate curDate: " + curDate);
 			Long longTime = new Long(curDate.getTime()/1000);
-			log.info("long time: " + longTime);
+//			log.info("long time: " + longTime);
 			res = String.valueOf(longTime);
-			log.info("res date: " + res);
-			log.debug("check stored date - convert back to human date: " + getDateFromUnixDate(res));
+//			log.info("res date: " + res);
+//			log.debug("check stored date - convert back to human date: " + getDateFromUnixDate(res));
 		} catch (Exception e) {
 			log.debug("Conversion of date in string format dd-MM-yyyy to unix date: " + e);
 		}

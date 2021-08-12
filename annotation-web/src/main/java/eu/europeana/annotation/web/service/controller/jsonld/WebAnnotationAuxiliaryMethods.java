@@ -90,7 +90,6 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 		startDate, startTimestamp);
 
 	String jsonStr = JsonWebUtils.toJson(deletions, null);
-	logger.debug("Get deleted Annotation id result: " + jsonStr);
 	
 	ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, null, HttpStatus.OK);
 	return response;
