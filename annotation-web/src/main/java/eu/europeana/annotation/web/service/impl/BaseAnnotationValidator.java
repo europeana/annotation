@@ -408,7 +408,7 @@ public abstract class BaseAnnotationValidator {
 	char PATH_DELIMITER = '/';
 	long delimiterCount = rightsClaim.chars().filter(ch -> ch == PATH_DELIMITER).count();
 
-	if (delimiterCount != 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
+	if (delimiterCount < 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
 	    // wrong format, max 6 (including the / after version, for )
 	    throw new RequestBodyValidationException(body.getInputString(), I18nConstants.ANNOTATION_INVALID_RIGHTS,
 		    new String[] { rightsClaim });
@@ -536,8 +536,7 @@ public abstract class BaseAnnotationValidator {
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.format" });
     	}
     	// check if the body.format field has a valid value
-    	boolean result = subtitleHandler.hasSubtitleFormat(body.getContentType());
-    	if (!result) {
+    	if (!subtitleHandler.hasSubtitleFormat(body.getContentType())) {
     	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS,
     		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.format" });
     	}

@@ -52,9 +52,9 @@
 		<mvc:mapping path="/api-docs/**" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
 		
 		<mvc:mapping path="/annotation/" allowed-origins="*" allowed-methods="POST,GET,OPTIONS,HEAD" 
-			exposed-headers="Allow, Vary, Link" max-age="600"/>
+			exposed-headers="Allow, Vary, Link" max-age="600" allow-credentials="false"/>
 		<mvc:mapping path="/annotation/**" allowed-origins="*" allowed-methods="GET, POST, PUT, DELETE, HEAD, OPTIONS" 
-			exposed-headers="Allow, Vary, Link, ETag" max-age="600"/>
+			exposed-headers="Allow, Vary, Link, ETag" max-age="600" allow-credentials="false"/>
 	</mvc:cors>
 
 	<import resource="./annotation-web-context.xml" />

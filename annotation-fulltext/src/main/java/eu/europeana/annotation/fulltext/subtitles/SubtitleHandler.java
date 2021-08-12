@@ -7,8 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,54 +20,54 @@ import com.dotsub.converter.model.Configuration;
 import com.dotsub.converter.model.SubtitleItem;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import eu.europeana.annotation.definitions.exception.AnnotationServiceInstantiationException;
 import eu.europeana.annotation.definitions.model.impl.SubtitleFormat;
 import eu.europeana.annotation.definitions.model.impl.SubtitleFormats;
 
 public class SubtitleHandler {
-	
-	public SubtitleHandler(String subtitleFormatsXMLConfigFile, XmlMapper xmlJacksonMapper, ArrayList<SubtitleImportHandler> subtitleImportHandlersParam) throws IOException {
-		subtitleImportHandlers=new ArrayList<SubtitleImportHandler>(subtitleImportHandlersParam);		
-		try (InputStream inputStream = getClass().getResourceAsStream(subtitleFormatsXMLConfigFile);
-	    		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-	    	    String contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-	    	    subtitlesFormats = xmlJacksonMapper.readValue(contents, SubtitleFormats.class);  
-    	}
+
+    static final String SUBTITLE_FORMATS_FILE = "/subtitle-formats.xml";
+    Map<String, SubtitleImportHandler> subtitleHandlers = new HashMap<String, SubtitleImportHandler>();
+
+    public SubtitleHandler(ArrayList<SubtitleImportHandler> subtitleImportHandlersParam) throws IOException {
+	initSubtitleHandlers();
+    }
+
+    void initSubtitleHandlers() {
+	try (InputStream inputStream = getClass().getResourceAsStream(SUBTITLE_FORMATS_FILE)) {
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	    String contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+	    SubtitleFormats subtitlesFormats = (new XmlMapper()).readValue(contents, SubtitleFormats.class);
+	    for (SubtitleFormat format : subtitlesFormats.getFormats()) {
+		SubtitleImportHandler importHandler = (SubtitleImportHandler) Class.forName(format.getHandler()).getDeclaredConstructor().newInstance();
+		subtitleHandlers.put(format.getMimetype(), importHandler);
+	    }
+	}catch (Exception e) {
+	    throw new AnnotationServiceInstantiationException("SubtitleHandler", e);
 	}
-	
-	List<SubtitleImportHandler> subtitleImportHandlers;
-	
-	SubtitleFormats subtitlesFormats;
-	
-	public List<SubtitleItem> parseSubtitle (String text, String format) throws FileFormatException, IOException {
-		if (StringUtils.isBlank(text)) {
-			return null;
-		}		
-		
-		Optional<SubtitleFormat> subtitleFormat = subtitlesFormats.getFormats().stream().filter(s -> format.equals(s.getMimetype())).findFirst();
-		if (subtitleFormat.isEmpty()) return null;
-		
-		SubtitleImportHandler subtitleImportHandler = getSubtitleImportHandler(subtitleFormat.get().getHandler());
-		if(subtitleImportHandler==null) return null;
-		
-		InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
-		subtitleImportHandler.importFile(stream, new Configuration());
-		
-		List<SubtitleItem> items = new ArrayList<SubtitleItem>();
-		
-		return items;
+    }
+
+    public List<SubtitleItem> parseSubtitle(String text, String format) throws FileFormatException, IOException {
+	if (StringUtils.isBlank(text)) {
+	    return null;
 	}
-	
-	private SubtitleImportHandler getSubtitleImportHandler(String handlerName) {
-		for (SubtitleImportHandler handler: subtitleImportHandlers) {
-			if(handler.getClass().getName().equals(handlerName)) {
-				return handler;
-			}
-		}
-		return null;
+
+	SubtitleImportHandler subtitleImportHandler = getSubtitleHandlers().get(format);
+	if (subtitleImportHandler == null) {
+	    throw new FileFormatException("Subtitle format not supported: " + format);
 	}
-	
-	public boolean hasSubtitleFormat(String format) {
-		return subtitlesFormats.getFormats().stream().anyMatch(s -> format.equals(s.getMimetype()));
-	}
-	
+
+	InputStream stream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
+	return subtitleImportHandler.importFile(stream, new Configuration());
+    }
+
+
+    public boolean hasSubtitleFormat(String format) {
+	return subtitleHandlers.containsKey(format);
+    }
+
+    Map<String, SubtitleImportHandler> getSubtitleHandlers() {
+        return subtitleHandlers;
+    }
+
 }
