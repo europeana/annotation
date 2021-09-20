@@ -79,6 +79,11 @@
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-dereferenciation</artifactId>
 			<version>${version.annotationApi}</version>
+		</dependency>		
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-statistics</artifactId>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		<!-- aspectj /profiling -->
 		<dependency>
