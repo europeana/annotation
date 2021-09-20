@@ -2,6 +2,7 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -35,7 +36,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public List<? extends Annotation> getFilteredAnnotationList (
 			String europeanaId, String provider, String startOn, String limit, boolean isDisabled);
-
+	
 	public List<? extends Annotation> getAnnotationList (List<String> annotationIds);
 	
 	public PersistentAnnotation find(AnnotationId annoId);
@@ -117,6 +118,8 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	@Deprecated
 	List<? extends Annotation> filterDisabled(String queryParams);
+
+	public List<? extends Annotation> getFilteredAnnotations (String annotationScenario);
 
 }
 

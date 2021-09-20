@@ -28,6 +28,13 @@ public interface AnnotationConfiguration {
     public static final String PREFIX_MAX_PAGE_SIZE = "annotation.search.maxpagesize.";
 
     public static final String API_VERSION = "annotation.apiVersion";
+    
+    public static final String ANNOTATION_SCENARIO_TRANSCRIPTIONS = "transcriptions";
+    public static final String ANNOTATION_SCENARIO_SUBTITLES = "subtitles";
+    public static final String ANNOTATION_SCENARIO_SEMANTIC_TAGS = "semantic tags";
+    public static final String ANNOTATION_SCENARIO_SIMPLE_TAGS = "simple tags";
+    public static final String ANNOTATION_SCENARIO_GEO_TAGS = "geo tags";
+    public static final String ANNOTATION_SCENARIO_OBJECT_LINKS = "object links";
 
     public String getComponentName();
 

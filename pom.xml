@@ -60,6 +60,7 @@
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 <!-- 		<version.jackson>2.9.4</version.jackson> -->
 		<version.jackson>2.11.4</version.jackson>
+		<version.jackson-jsonld>0.1.1</version.jackson-jsonld>
 <!-- 		<version.commonsApi>0.3.5-SNAPSHOT</version.commonsApi> -->
 		<version.commonsApi>0.3.7</version.commonsApi>
 		<version.apiKeyClient>1.1</version.apiKeyClient>
@@ -87,7 +88,8 @@
 		<module>annotation-client</module>
 		<module>annotation-import</module>
 		<module>annotation-fulltext</module>
-        </modules>
+    <module>annotation-statistics</module>
+  </modules>
 	<build>
 		<!--  configure source and output locations -->
 		<directory>target</directory>

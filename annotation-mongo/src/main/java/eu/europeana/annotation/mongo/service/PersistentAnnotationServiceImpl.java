@@ -3,6 +3,7 @@ package eu.europeana.annotation.mongo.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -27,6 +28,7 @@ import eu.europeana.annotation.definitions.model.impl.BaseAnnotationDeletion;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.config.AnnotationMongoConfiguration;
@@ -42,7 +44,6 @@ import eu.europeana.annotation.mongo.service.validation.GeoPlaceValidator;
 import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorImpl;
 import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
-
 
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
@@ -290,6 +291,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 						.equal(resourceId);
 			
 		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+	
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
@@ -315,6 +317,85 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
+	}
+	
+	@Override
+	public List<? extends Annotation> getFilteredAnnotations (String annotationScenario) {
+		Query<PersistentAnnotation> query = null;
+		switch (annotationScenario) {
+		case AnnotationConfiguration.ANNOTATION_SCENARIO_TRANSCRIPTIONS:
+			query=queryAnnotationsTranscriptions();			
+			break;
+		case AnnotationConfiguration.ANNOTATION_SCENARIO_SUBTITLES:
+			query=queryAnnotationsSubtitles();			
+			break;
+		case AnnotationConfiguration.ANNOTATION_SCENARIO_SEMANTIC_TAGS:
+			query=queryAnnotationsSemanticTags();			
+			break;
+		case AnnotationConfiguration.ANNOTATION_SCENARIO_SIMPLE_TAGS:
+			query=queryAnnotationsSimpleTags();			
+			break;	
+		case AnnotationConfiguration.ANNOTATION_SCENARIO_GEO_TAGS:
+			query=queryAnnotationsGeoTags();			
+			break;	
+		case AnnotationConfiguration.ANNOTATION_SCENARIO_OBJECT_LINKS:
+			query=queryAnnotationsObjectLinks();			
+			break;
+		default:
+			break;
+		}	
+		
+		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
+		if (results==null) return null;
+		return results.asList();
+	}
+	
+	private Query<PersistentAnnotation> queryAnnotationsTranscriptions() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.disableValidation().filter(PersistentAnnotation.FIELD_MOTIVATION, MotivationTypes.TRANSCRIBING.getOaType());
+		return query;
+	}
+	
+	private Query<PersistentAnnotation> queryAnnotationsSubtitles() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.disableValidation().or(
+		    query.criteria(PersistentAnnotation.FIELD_MOTIVATION).equal(MotivationTypes.CAPTIONING.getOaType()),
+		    query.criteria(PersistentAnnotation.FIELD_MOTIVATION).equal(MotivationTypes.SUBTITLING.getOaType())
+		);
+		return query;
+	}
+	
+	private Query<PersistentAnnotation> queryAnnotationsSemanticTags() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.disableValidation().and(
+		    query.criteria(PersistentAnnotation.FIELD_MOTIVATION).equal(MotivationTypes.TAGGING.getOaType()),
+		    query.criteria(PersistentAnnotation.FIELD_BODY+PersistentAnnotation.FIELDS_SEPARATOR_MONGO+PersistentAnnotation.FIELD_INTERNAL_TYPE).equal(BodyInternalTypes.SEMANTIC_TAG.name())
+		);
+		return query;
+	}
+	
+	private Query<PersistentAnnotation> queryAnnotationsSimpleTags() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.disableValidation().and(
+		    query.criteria(PersistentAnnotation.FIELD_MOTIVATION).equal(MotivationTypes.TAGGING.getOaType()),
+		    query.criteria(PersistentAnnotation.FIELD_BODY+PersistentAnnotation.FIELDS_SEPARATOR_MONGO+PersistentAnnotation.FIELD_INTERNAL_TYPE).equal(BodyInternalTypes.TEXT.name())
+		);
+		return query;
+	}
+	
+	private Query<PersistentAnnotation> queryAnnotationsGeoTags() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.disableValidation().and(
+		    query.criteria(PersistentAnnotation.FIELD_MOTIVATION).equal(MotivationTypes.TAGGING.getOaType()),
+		    query.criteria(PersistentAnnotation.FIELD_BODY+PersistentAnnotation.FIELDS_SEPARATOR_MONGO+PersistentAnnotation.FIELD_INTERNAL_TYPE).equal(BodyInternalTypes.GEO_TAG.name())
+		);
+		return query;
+	}
+	
+	private Query<PersistentAnnotation> queryAnnotationsObjectLinks() {
+		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+		query.disableValidation().filter(PersistentAnnotation.FIELD_MOTIVATION, MotivationTypes.LINKING.getOaType());
+		return query;
 	}
 
 	@Override
