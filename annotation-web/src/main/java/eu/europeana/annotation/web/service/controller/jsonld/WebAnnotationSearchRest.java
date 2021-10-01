@@ -82,6 +82,10 @@ public class WebAnnotationSearchRest extends BaseRest {
 		throw new ParamValidationException(ParamValidationException.MESSAGE_BLANK_PARAMETER_VALUE,
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
+	    if (!SearchProfiles.contains(profile))
+    	throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
+			I18nConstants.ANNOTATION_VALIDATION,
+			new String[] { WebAnnotationFields.PARAM_PROFILE, profile });	
 
 	    String sortFieldStr = null;
 	    if (sortField != null)
