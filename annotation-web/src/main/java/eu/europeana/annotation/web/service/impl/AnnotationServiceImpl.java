@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,6 +38,7 @@ import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -662,4 +664,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     
         return true;
     }
+
+	@Override
+	public Collection<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException {
+		return getSolrService().checkDuplicateAnnotations(annotation);
+	}
 }

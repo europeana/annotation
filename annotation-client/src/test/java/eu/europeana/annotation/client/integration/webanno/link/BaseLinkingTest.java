@@ -8,8 +8,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class BaseLinkingTest extends BaseWebAnnotationProtocolTest {
 
-//	public static final String LINK_MINIMAL = "/tag/minimal.json";
-//	public static final String LINK_STANDARD = "/tag/standard.json";
+	public static final String LINK_MINIMAL = "/link/minimal.json";
+	public static final String LINK_STANDARD = "/link/standard.json";
 	public static final String LINK_EDM_IS_SIMMILAR_TO = "/link/edmIsSimilarTo.json";
 	public static final String LINK_EDM_IS_SIMMILAR_TO_MINIMAL = "/link/edmIsSimilarTo_minimal.json";
 	

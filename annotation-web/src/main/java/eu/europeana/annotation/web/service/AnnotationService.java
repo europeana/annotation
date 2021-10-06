@@ -1,9 +1,9 @@
 package eu.europeana.annotation.web.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
@@ -231,6 +231,11 @@ public interface AnnotationService {
 	 */
 	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String startTimestamp);
 
-	
+	/**
+	 * This method checks for the duplicate annotations in order to ensure the annotation uniqueness.
+	 * @param annotation	an annotation to check for duplicates
+	 * @return
+	 */
+	public Collection<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException;
 	
 }

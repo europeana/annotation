@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,7 +73,6 @@ public class BaseJsonldRest extends BaseRest {
     protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation, boolean indexOnCreate,
 	    String annotation, Authentication authentication) throws HttpException {
 	try {
-
 	    // 0. annotation id
 	    AnnotationId annoId = buildAnnotationId(null);
 
@@ -82,6 +82,12 @@ public class BaseJsonldRest extends BaseRest {
 	    // parse
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
+		//check the annotation uniqueness
+	    Collection<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
+		if(duplicateAnnotationIds!=null) {
+			throw new HttpException("Found duplicate annotations with the ids: " + String.join(",", duplicateAnnotationIds), I18nConstants.ANNOTATION_DUPLICATION, null, HttpStatus.BAD_REQUEST);
+		}
+		
 	    // validate annotation and check that no generator and creator exists in input
 
 	    // set generator and creator

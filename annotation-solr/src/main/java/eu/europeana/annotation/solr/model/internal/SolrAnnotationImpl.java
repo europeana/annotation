@@ -57,9 +57,11 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.setInternalType(annotation.getInternalType());
 		this.setMotivation(annotation.getMotivation());
 		
-		this.setAnnotationId(annotation.getAnnotationId());
-		this.setAnnoUri(annotation.getAnnotationId().getHttpUrl());
-		this.setAnnoId(annotation.getAnnotationId().toRelativeUri());
+		if(annotation.getAnnotationId()!=null) {
+			this.setAnnotationId(annotation.getAnnotationId());
+			this.setAnnoUri(annotation.getAnnotationId().getHttpUrl());
+			this.setAnnoId(annotation.getAnnotationId().toRelativeUri());
+		}
 		
 		if(annotation.getGenerator() != null){
 			this.setGenerator(annotation.getGenerator());
@@ -69,9 +71,11 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		
 		this.setGenerated(annotation.getGenerated());
 		
-		this.setCreator(annotation.getCreator());
-		this.setCreatorName(annotation.getCreator().getName());
-		this.setCreatorUri(annotation.getCreator().getHttpUrl());
+		if(annotation.getCreator()!=null) {
+			this.setCreator(annotation.getCreator());
+			this.setCreatorName(annotation.getCreator().getName());
+			this.setCreatorUri(annotation.getCreator().getHttpUrl());
+		}
 		
 		this.setCreated(annotation.getCreated());
 		//modified is alias to lastUpdate
