@@ -82,10 +82,18 @@ public class WebAnnotationSearchRest extends BaseRest {
 		throw new ParamValidationException(ParamValidationException.MESSAGE_BLANK_PARAMETER_VALUE,
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
-	    if (!SearchProfiles.contains(profile))
+
+	    SearchProfiles searchProfile = getProfile(profile, request);
+	    if (!SearchProfiles.contains(searchProfile.toString()))
     	throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { WebAnnotationFields.PARAM_PROFILE, profile });	
+	    // here we need a query search profile - dereference is not a query search
+	    // profile - we use default
+	    SearchProfiles querySearchProfile = searchProfile;
+	    if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+		querySearchProfile = SearchProfiles.STANDARD;
+	    }
 
 	    String sortFieldStr = null;
 	    if (sortField != null)
@@ -95,15 +103,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 		sortOrderField = SortOrder.desc.name();
 	    if (sortOrder != null)
 		sortOrderField = sortOrder.toString();
-
-	    SearchProfiles searchProfile = getProfile(profile, request);
-
-	    // here we need a query search profile - dereference is not a query search
-	    // profile - we use default
-	    SearchProfiles querySearchProfile = searchProfile;
-	    if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
-		querySearchProfile = SearchProfiles.STANDARD;
-	    }
 
 	    // ** build search query
 	    Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
