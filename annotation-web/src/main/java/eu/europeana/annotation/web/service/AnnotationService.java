@@ -89,8 +89,10 @@ public interface AnnotationService {
 	 * @param persistentAnnotation
 	 * @param webAnnotation
 	 * @return
+	 * @throws AnnotationServiceException 
+	 * @throws HttpException 
 	 */
-	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation);
+	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException;
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 

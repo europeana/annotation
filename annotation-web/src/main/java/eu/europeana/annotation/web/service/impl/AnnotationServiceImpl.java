@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
@@ -236,11 +237,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @Override
-    public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
-	mergeAnnotationProperties(persistentAnnotation, webAnnotation);
-	Annotation res = updateAndReindex(persistentAnnotation);
-
-	return res;
+    public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException {
+		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
+		//check that the updated annotation is unique
+	    Collection<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation);
+		if(duplicateAnnotationIds!=null) {
+			throw new HttpException("Found duplicate annotations with the ids: " + String.join(",", duplicateAnnotationIds), I18nConstants.ANNOTATION_DUPLICATION, null, HttpStatus.BAD_REQUEST);
+		}
+		
+		Annotation res = updateAndReindex(persistentAnnotation);	
+		return res;
     }
 
     @SuppressWarnings("deprecation")
