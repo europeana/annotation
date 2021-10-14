@@ -10,6 +10,9 @@ import org.apache.solr.client.solrj.beans.Field;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
@@ -41,6 +44,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String bodyValue;
 	private Map<String, String> bodyMultilingualValue;
 	private List<String> bodyUris;
+	
+	private String scenarioType;
 	
 	/**
 	 * public default constructor
@@ -83,9 +88,39 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.setTarget(annotation.getTarget());
 		this.setBody(annotation.getBody());
 		
+		this.setScenarioType(findScenarioType(annotation));
+		
 //		this.setStyledBy(annotation.getStyledBy());
 //		this.setCanonical(annotation.getCanonical());
 //		this.setVia(annotation.getVia());
+	}
+	
+	private String findScenarioType(Annotation anno) {
+		if (anno.getMotivation().equals(MotivationTypes.TRANSCRIBING.getOaType())) {
+			return AnnotationScenarioTypes.TRANSCRIPTIONS.getScenarioType();
+		}
+		else if (anno.getMotivation().equals(MotivationTypes.CAPTIONING.getOaType()) || 
+				anno.getMotivation().equals(MotivationTypes.SUBTITLING.getOaType())) {
+			return AnnotationScenarioTypes.SUBTITLES.getScenarioType();
+		}
+		else if (anno.getMotivation().equals(MotivationTypes.TAGGING.getOaType()) &&
+				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.SEMANTIC_TAG.toString())) {
+			return AnnotationScenarioTypes.SEMANTIC_TAGS.getScenarioType();
+		}
+		else if (anno.getMotivation().equals(MotivationTypes.TAGGING.getOaType()) &&
+				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.TEXT.toString())) {
+			return AnnotationScenarioTypes.SIMPLE_TAGS.getScenarioType();
+		}
+		else if (anno.getMotivation().equals(MotivationTypes.TAGGING.getOaType()) &&
+				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.GEO_TAG.toString())) {
+			return AnnotationScenarioTypes.GEO_TAGS.getScenarioType();
+		}
+		else if (anno.getMotivation().equals(MotivationTypes.LINKING.getOaType())) {
+			return AnnotationScenarioTypes.OBJECT_LINKS.getScenarioType();
+		}
+		else {
+			return "";
+		}
 	}
 	
 	@Override
@@ -304,6 +339,17 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field(BODY_URI)
 	public void setBodyUris(List<String> bodyUris) {
 		this.bodyUris = bodyUris;
+	}
+	
+	@Override
+	public String getScenarioType() {
+		return scenarioType;
+	}
+
+	@Override
+	@Field(SCENARIO_TYPE)
+	public void setScenarioType(String scenario) {
+		this.scenarioType = scenario;
 	}
 	
 
