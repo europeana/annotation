@@ -151,5 +151,8 @@ public interface SolrAnnotationService {
 	 * @throws AnnotationServiceException
 	 */
 	public ResultSet<? extends AnnotationView> search(String term, String start, String rows) throws AnnotationServiceException;
+
+
+	long getAnnotationStatistics(String scenarioType) throws AnnotationServiceException;
 	
 }

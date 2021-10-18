@@ -338,6 +338,27 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	return res;
     }
+    
+    @Override
+    public long getAnnotationStatistics (String scenarioType)
+	    throws AnnotationServiceException {
+
+		// Construct a SolrQuery
+		SolrQuery query = new SolrQuery();
+		query.setQuery(SolrAnnotationConstants.SCENARIO_TYPE + SolrSyntaxConstants.DELIMETER + scenarioType);
+		query.setFacet(true);
+		query.setRows(0);
+		// Query the server
+		try {
+		    getLogger().debug("Getting the annotations statstics for the query: {}", query);
+		    QueryResponse rsp = solrClient.query(query);
+		    rsp.getResults().getNumFound();
+		    return rsp.getResults().getNumFound();
+		} catch (SolrServerException | IOException e) {
+		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
+		}
+	
+    }
 
     @Override
     public void update(Annotation anno) throws AnnotationServiceException {
