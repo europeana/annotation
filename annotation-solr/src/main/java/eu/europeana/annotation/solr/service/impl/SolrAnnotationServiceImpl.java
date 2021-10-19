@@ -1,6 +1,7 @@
 package eu.europeana.annotation.solr.service.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +12,10 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.common.util.NamedList;
 import org.springframework.stereotype.Component;
 
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -340,20 +343,31 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
     
     @Override
-    public long getAnnotationStatistics (String scenarioType)
+    public Map<String, Map<String, Long>> getAnnotationStatisticsForFacetField (String facetField)
 	    throws AnnotationServiceException {
 
+    	Map<String,Map<String,Long>> annoStats = new HashMap<String, Map<String, Long>>();
 		// Construct a SolrQuery
 		SolrQuery query = new SolrQuery();
-		query.setQuery(SolrAnnotationConstants.SCENARIO_TYPE + SolrSyntaxConstants.DELIMETER + scenarioType);
+		query.setQuery("*" + SolrSyntaxConstants.DELIMETER + "*");
+		query.addFacetPivotField(facetField+','+SolrAnnotationConstants.SCENARIO_TYPE);
 		query.setFacet(true);
-		query.setRows(0);
+		query.setFacetLimit(10);
+		query.setRows(0);		
 		// Query the server
 		try {
 		    getLogger().debug("Getting the annotations statstics for the query: {}", query);
 		    QueryResponse rsp = solrClient.query(query);
-		    rsp.getResults().getNumFound();
-		    return rsp.getResults().getNumFound();
+		    NamedList<List<PivotField>> pivotFieldsNamedList = rsp.getFacetPivot();
+		    List<PivotField> pivotFields = pivotFieldsNamedList.get(facetField+','+SolrAnnotationConstants.SCENARIO_TYPE);
+		    for (PivotField pf : pivotFields) {
+		    	Map<String,Long> annoStatsScenarios = new HashMap<String, Long>();		    	
+		    	for (PivotField pfNested : pf.getPivot()) {
+		    		annoStatsScenarios.put(pfNested.getValue().toString(), Long.valueOf(pfNested.getCount()));
+		    	}
+		    	annoStats.put(pf.getValue().toString(), annoStatsScenarios);
+		    }
+		    return annoStats;
 		} catch (SolrServerException | IOException e) {
 		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
 		}
@@ -435,5 +449,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     public void index(ModerationRecord moderationRecord) {
 
     }
+    
+
 
 }

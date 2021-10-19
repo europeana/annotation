@@ -97,26 +97,26 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	
 	private String findScenarioType(Annotation anno) {
 		if (anno.getMotivation().equals(MotivationTypes.TRANSCRIBING.getOaType())) {
-			return AnnotationScenarioTypes.TRANSCRIPTIONS.getScenarioType();
+			return AnnotationScenarioTypes.TRANSCRIPTIONS;
 		}
 		else if (anno.getMotivation().equals(MotivationTypes.CAPTIONING.getOaType()) || 
 				anno.getMotivation().equals(MotivationTypes.SUBTITLING.getOaType())) {
-			return AnnotationScenarioTypes.SUBTITLES.getScenarioType();
+			return AnnotationScenarioTypes.SUBTITLES;
 		}
 		else if (anno.getMotivation().equals(MotivationTypes.TAGGING.getOaType()) &&
 				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.SEMANTIC_TAG.toString())) {
-			return AnnotationScenarioTypes.SEMANTIC_TAGS.getScenarioType();
+			return AnnotationScenarioTypes.SEMANTIC_TAGS;
 		}
 		else if (anno.getMotivation().equals(MotivationTypes.TAGGING.getOaType()) &&
-				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.TEXT.toString())) {
-			return AnnotationScenarioTypes.SIMPLE_TAGS.getScenarioType();
+				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.TAG.toString())) {
+			return AnnotationScenarioTypes.SIMPLE_TAGS;
 		}
 		else if (anno.getMotivation().equals(MotivationTypes.TAGGING.getOaType()) &&
 				anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.GEO_TAG.toString())) {
-			return AnnotationScenarioTypes.GEO_TAGS.getScenarioType();
+			return AnnotationScenarioTypes.GEO_TAGS;
 		}
 		else if (anno.getMotivation().equals(MotivationTypes.LINKING.getOaType())) {
-			return AnnotationScenarioTypes.OBJECT_LINKS.getScenarioType();
+			return AnnotationScenarioTypes.OBJECT_LINKS;
 		}
 		else {
 			return "";

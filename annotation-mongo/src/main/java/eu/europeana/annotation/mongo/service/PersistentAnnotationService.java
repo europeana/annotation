@@ -119,7 +119,5 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	@Deprecated
 	List<? extends Annotation> filterDisabled(String queryParams);
 
-	public List<? extends Annotation> getFilteredAnnotations (String annotationScenario);
-
 }
 

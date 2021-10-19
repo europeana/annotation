@@ -28,6 +28,11 @@
 			<artifactId>annotation-solr</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-definitions</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
         <dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>

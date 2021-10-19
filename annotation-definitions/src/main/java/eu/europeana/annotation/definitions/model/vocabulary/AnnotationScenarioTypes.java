@@ -1,21 +1,12 @@
 package eu.europeana.annotation.definitions.model.vocabulary;
 
-public enum AnnotationScenarioTypes {
+public class AnnotationScenarioTypes {
 
-	TRANSCRIPTIONS("transcriptions"), 
-	SUBTITLES("subtitles"), 
-	SEMANTIC_TAGS("semantic_tags"), 
-	SIMPLE_TAGS("simple_tags"), 
-	GEO_TAGS("geo_tags"), 
-	OBJECT_LINKS("object_links");
-	
-	private String scenarioType;
-	
-	AnnotationScenarioTypes(String scenarioType){
-		this.scenarioType = scenarioType;
-	}
+	public static final String TRANSCRIPTIONS = "transcriptions"; 
+	public static final String SUBTITLES = "subtitles";
+	public static final String SEMANTIC_TAGS = "semantic_tags"; 
+	public static final String SIMPLE_TAGS = "simple_tags"; 
+	public static final String GEO_TAGS = "geo_tags"; 
+	public static final String OBJECT_LINKS = "object_links";
 
-	public String getScenarioType() {
-		return scenarioType;
-	}
 }
