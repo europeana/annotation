@@ -84,10 +84,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
 
 	    SearchProfiles searchProfile = getProfile(profile, request);
-	    if (!SearchProfiles.contains(searchProfile.toString()))
-    	throw new ParamValidationException(ParamValidationException.MESSAGE_INVALID_PARAMETER_VALUE,
-			I18nConstants.ANNOTATION_VALIDATION,
-			new String[] { WebAnnotationFields.PARAM_PROFILE, profile });	
 	    // here we need a query search profile - dereference is not a query search
 	    // profile - we use default
 	    SearchProfiles querySearchProfile = searchProfile;
@@ -142,11 +138,17 @@ public class WebAnnotationSearchRest extends BaseRest {
 	}
     }
 
-    private SearchProfiles getProfile(String profile, HttpServletRequest request) {
+    private SearchProfiles getProfile(String profile, HttpServletRequest request) throws ParamValidationException {
 
 	// if the profile parameter is given, the header preference is ignored
 	if (profile != null) {
-	    return SearchProfiles.valueOf(profile.toUpperCase());
+	    if (!SearchProfiles.contains(profile)) {
+	    	throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+				I18nConstants.INVALID_PARAM_VALUE,
+				new String[] { WebAnnotationFields.PARAM_PROFILE, profile });
+	    }
+	    
+	    return SearchProfiles.getByStr(profile);
 	}
 
 	String preferHeader = request.getHeader(HttpHeaders.PREFER);

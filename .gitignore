@@ -4,3 +4,4 @@
 .classpath
 **/classes/
 **/log4j2.xml
+**/*.bk
