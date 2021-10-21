@@ -6,8 +6,7 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.europeana.annotation.statistics.model.AnnotationStatistics;
-import ioinformarics.oss.jackson.module.jsonld.JsonldModule;
+import eu.europeana.annotation.statistics.model.AnnotationMetric;
 
 public class AnnotationStatisticsSerializer {
 
@@ -27,8 +26,7 @@ public class AnnotationStatisticsSerializer {
      * @return the annotation serialization
      * @throws IOException
      */
-    public String serialize(AnnotationStatistics annoStats) throws IOException {
-        mapper.registerModule(new JsonldModule());
+    public String serialize(AnnotationMetric annoStats) throws IOException {
         return mapper.writer().writeValueAsString(annoStats);
     }
 

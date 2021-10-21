@@ -2,9 +2,9 @@ package eu.europeana.annotation.solr.service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -152,6 +152,6 @@ public interface SolrAnnotationService {
 	 */
 	public ResultSet<? extends AnnotationView> search(String term, String start, String rows) throws AnnotationServiceException;
 
-	Map<String, Map<String, Long>> getAnnotationStatisticsForFacetField(String facetField) throws AnnotationServiceException;
+	QueryResponse getAnnotationStatisticsForFacetField(String facetField) throws AnnotationServiceException;
 	
 }

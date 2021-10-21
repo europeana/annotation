@@ -24,14 +24,7 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${version.jackson}</version>
 		</dependency>
-		
-		<dependency>
-		    <groupId>com.io-informatics.oss</groupId>
-		    <artifactId>jackson-jsonld</artifactId>
-		    <version>${version.jackson-jsonld}</version>
-		</dependency>
-		
-		
+
 		<dependency>
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>

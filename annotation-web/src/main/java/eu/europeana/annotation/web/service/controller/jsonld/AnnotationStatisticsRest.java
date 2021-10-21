@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.statistics.model.AnnotationMetric;
 import eu.europeana.annotation.statistics.model.AnnotationStatistics;
 import eu.europeana.annotation.statistics.serializer.AnnotationStatisticsSerializer;
 import eu.europeana.annotation.statistics.service.AnnotationStatisticsService;
@@ -57,9 +58,9 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
 
     private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws IOException, AnnotationServiceException {
         // create metric
-        AnnotationStatistics annoStats = new AnnotationStatistics();
-        annotationStatisticsService.getAnnotationsStatistics(annoStats);
-        String json = serializeMetricView(annoStats);
+        AnnotationMetric annoMetric = new AnnotationMetric();
+        annotationStatisticsService.getAnnotationsStatistics(annoMetric);
+        String json = serializeMetricView(annoMetric);
         return buildUsageStatsResponse(json);
     }
 
@@ -70,9 +71,9 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
         return new ResponseEntity<>(json, headers, HttpStatus.OK);
     }
 
-    private String serializeMetricView(AnnotationStatistics annoStats) throws IOException {
+    private String serializeMetricView(AnnotationMetric annoMetric) throws IOException {
     	AnnotationStatisticsSerializer serializer = new AnnotationStatisticsSerializer();
-        return serializer.serialize(annoStats);
+        return serializer.serialize(annoMetric);
     }
 
 }
