@@ -1,7 +1,6 @@
 package eu.europeana.annotation.solr.service;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrServerException;
@@ -158,5 +157,5 @@ public interface SolrAnnotationService {
 	 * @return the collection of the duplicate annotation ids
 	 * @throws AnnotationServiceException
 	 */
-	public Collection<String> checkDuplicateAnnotations (Annotation anno) throws AnnotationServiceException ;
+	public List<String> checkDuplicateAnnotations (Annotation anno) throws AnnotationServiceException ;
 }

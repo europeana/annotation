@@ -238,6 +238,6 @@ public interface AnnotationService {
 	 * @param annotation	an annotation to check for duplicates
 	 * @return
 	 */
-	public Collection<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException;
+	public List<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException;
 	
 }

@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,6 +50,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
+import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
@@ -83,9 +83,12 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
 		//check the annotation uniqueness
-	    Collection<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
+	    List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
 		if(duplicateAnnotationIds!=null) {
-			throw new HttpException("Found duplicate annotations with the ids: " + String.join(",", duplicateAnnotationIds), I18nConstants.ANNOTATION_DUPLICATION, null, HttpStatus.BAD_REQUEST);
+			String [] i18nParamsAnnoDuplicates = new String [1];
+			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
+			throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
+	    		    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
 		}
 		
 	    // validate annotation and check that no generator and creator exists in input

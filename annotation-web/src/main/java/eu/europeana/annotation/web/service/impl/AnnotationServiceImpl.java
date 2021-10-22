@@ -2,7 +2,6 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,7 +13,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
@@ -42,6 +40,7 @@ import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -240,9 +239,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException {
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		//check that the updated annotation is unique
-	    Collection<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation);
+	    List<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation);
 		if(duplicateAnnotationIds!=null) {
-			throw new HttpException("Found duplicate annotations with the ids: " + String.join(",", duplicateAnnotationIds), I18nConstants.ANNOTATION_DUPLICATION, null, HttpStatus.BAD_REQUEST);
+			String [] i18nParamsAnnoDuplicates = new String [1];
+			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
+			throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
+	    		    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
 		}
 		
 		Annotation res = updateAndReindex(persistentAnnotation);	
@@ -672,7 +674,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
 	@Override
-	public Collection<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException {
+	public List<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException {
 		return getSolrService().checkDuplicateAnnotations(annotation);
 	}
 }
