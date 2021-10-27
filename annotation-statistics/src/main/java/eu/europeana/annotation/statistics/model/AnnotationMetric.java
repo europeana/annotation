@@ -22,6 +22,9 @@ public class AnnotationMetric {
 	@JsonProperty(AnnotationStatisticsConstants.PER_USER)
 	List<AnnotationStatistics> annotationStatisticsUsers;
 
+	@JsonProperty(AnnotationStatisticsConstants.PER_SCENARIO)
+	AnnotationStatistics annotationStatisticsScenarios;
+
     public Date getTimestamp() {
         return timestamp;
     }
@@ -44,6 +47,14 @@ public class AnnotationMetric {
 
 	public void setAnnotationStatisticsUsers(List<AnnotationStatistics> annotationStatisticsUsers) {
 		this.annotationStatisticsUsers = annotationStatisticsUsers;
+	}
+
+	public AnnotationStatistics getAnnotationStatisticsScenarios() {
+		return annotationStatisticsScenarios;
+	}
+
+	public void setAnnotationStatisticsScenarios(AnnotationStatistics annotationStatisticsScenarios) {
+		this.annotationStatisticsScenarios = annotationStatisticsScenarios;
 	}
 
 	

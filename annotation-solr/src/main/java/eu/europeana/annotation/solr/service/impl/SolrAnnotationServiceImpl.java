@@ -341,18 +341,36 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
     
     @Override
-    public QueryResponse getAnnotationStatisticsForFacetField (String facetField)
+    public QueryResponse getAnnotationStatisticsPivotFacets (String facetField)
 	    throws AnnotationServiceException {
 		// Construct a SolrQuery
 		SolrQuery query = new SolrQuery();
 		query.setQuery("*" + SolrSyntaxConstants.DELIMETER + "*");
 		query.addFacetPivotField(facetField+','+SolrAnnotationConstants.SCENARIO);
-		query.setFacet(true);
 		query.setFacetLimit(10);
 		query.setRows(0);		
 		// Query the server
 		try {
-		    getLogger().debug("Getting the annotations statstics for the query: {}", query);
+		    getLogger().debug("Getting the annotations statstics for the pivot facets query: {}", query);
+		    QueryResponse rsp = solrClient.query(query);
+		    return rsp;
+		} catch (SolrServerException | IOException e) {
+		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
+		}
+	
+    }
+    
+    @Override
+    public QueryResponse getAnnotationStatisticsFacets (String facetField)
+	    throws AnnotationServiceException {
+		// Construct a SolrQuery
+		SolrQuery query = new SolrQuery();
+		query.setQuery("*" + SolrSyntaxConstants.DELIMETER + "*");
+		query.addFacetField(facetField);
+		query.setRows(0);		
+		// Query the server
+		try {
+		    getLogger().debug("Getting the annotations statstics for the facets query: {}", query);
 		    QueryResponse rsp = solrClient.query(query);
 		    return rsp;
 		} catch (SolrServerException | IOException e) {

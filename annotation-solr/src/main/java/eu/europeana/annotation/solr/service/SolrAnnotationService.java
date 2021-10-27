@@ -152,6 +152,8 @@ public interface SolrAnnotationService {
 	 */
 	public ResultSet<? extends AnnotationView> search(String term, String start, String rows) throws AnnotationServiceException;
 
-	QueryResponse getAnnotationStatisticsForFacetField(String facetField) throws AnnotationServiceException;
-	
+	QueryResponse getAnnotationStatisticsPivotFacets(String facetField) throws AnnotationServiceException;
+
+	QueryResponse getAnnotationStatisticsFacets(String facetField) throws AnnotationServiceException;
+
 }

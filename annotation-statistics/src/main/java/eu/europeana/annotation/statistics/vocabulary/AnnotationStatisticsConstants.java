@@ -10,5 +10,5 @@ public class AnnotationStatisticsConstants {
     public static final String USER = "user";
     public static final String PER_CLIENT = "perClient";
     public static final String PER_USER = "perUser";
-
+    public static final String PER_SCENARIO = "perScenario";
 }

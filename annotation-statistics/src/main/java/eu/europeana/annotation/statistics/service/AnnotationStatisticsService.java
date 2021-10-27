@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.util.NamedList;
@@ -26,22 +28,48 @@ public class AnnotationStatisticsService {
 	SolrAnnotationService solrService;
 
     public void getAnnotationsStatistics(AnnotationMetric annoMetric) throws AnnotationServiceException {
-    	
     	annoMetric.setTimestamp(new Date());  
-    	//getting the annotations for the clients
-    	List<AnnotationStatistics> annotationStatistics = new ArrayList<AnnotationStatistics>(); 
-    	QueryResponse annoFacetStats = solrService.getAnnotationStatisticsForFacetField(SolrAnnotationConstants.GENERATOR_URI);
-    	extractAnnotationStatistics(annoFacetStats, annotationStatistics, SolrAnnotationConstants.GENERATOR_URI, AnnotationStatisticsConstants.CLIENT);
-    	annoMetric.setAnnotationStatisticsClients(annotationStatistics);
-    	//getting the annotations for the users
-    	annotationStatistics = new ArrayList<AnnotationStatistics>();
-    	annoFacetStats = solrService.getAnnotationStatisticsForFacetField(SolrAnnotationConstants.CREATOR_URI);
-    	extractAnnotationStatistics(annoFacetStats, annotationStatistics, SolrAnnotationConstants.CREATOR_URI, AnnotationStatisticsConstants.USER);
-    	annoMetric.setAnnotationStatisticsUsers(annotationStatistics);
+    	//getting the annotations statistics for the clients
+    	QueryResponse annoFacetStats = solrService.getAnnotationStatisticsPivotFacets(SolrAnnotationConstants.GENERATOR_URI);
+    	extractAnnotationStatisticsClientUser(annoFacetStats, annoMetric, SolrAnnotationConstants.GENERATOR_URI, AnnotationStatisticsConstants.CLIENT);   	
+    	//getting the annotations statistics for the users
+    	annoFacetStats = solrService.getAnnotationStatisticsPivotFacets(SolrAnnotationConstants.CREATOR_URI);
+    	extractAnnotationStatisticsClientUser(annoFacetStats, annoMetric, SolrAnnotationConstants.CREATOR_URI, AnnotationStatisticsConstants.USER);
+    	//getting the overall annotations statistics
+    	annoFacetStats = solrService.getAnnotationStatisticsFacets(SolrAnnotationConstants.SCENARIO); 
+    	extractOverallAnnotationStatistics(annoFacetStats, annoMetric, SolrAnnotationConstants.SCENARIO);
     }
 
-    private void extractAnnotationStatistics (QueryResponse annoFacetStats, List<AnnotationStatistics> annotationStatistics, String facetField, String target) {
-    	
+    /*
+     * This function extracts the overall annotation statistics from the Solr response
+     */
+    private void extractOverallAnnotationStatistics (QueryResponse annoFacetStats, AnnotationMetric annoMetric, String facetField) {
+    	AnnotationStatistics annotationStatisticsAll = new AnnotationStatistics();
+    	FacetField annotationStatisticsFacetField = annoFacetStats.getFacetField(facetField);	
+    	for (Count facetCount : annotationStatisticsFacetField.getValues()) {  
+        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.GEO_TAG)==0) {
+        		annotationStatisticsAll.setGeoTag(facetCount.getCount());
+        	}
+        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.TRANSCRIPTION)==0) {
+        		annotationStatisticsAll.setTranscription(facetCount.getCount());
+        	}
+        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.OBJECT_LINK)==0) {
+        		annotationStatisticsAll.setObjectLink(facetCount.getCount());
+        	}
+        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.SEMANTIC_TAG)==0) {
+        		annotationStatisticsAll.setSemanticTag(facetCount.getCount());
+        	}
+        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.SUBTITLE)==0) {
+        		annotationStatisticsAll.setSubtitle(facetCount.getCount());
+        	}
+    	}
+    	annoMetric.setAnnotationStatisticsScenarios(annotationStatisticsAll);
+    }
+    /*
+     * This function extracts the annotation statistics from the Solr response for the clients and users
+     */
+    private void extractAnnotationStatisticsClientUser (QueryResponse annoFacetStats, AnnotationMetric annoMetric, String facetField, String target) {
+    	List<AnnotationStatistics> annotationStatistics = new ArrayList<AnnotationStatistics>();
 	    NamedList<List<PivotField>> pivotFieldsNamedList = annoFacetStats.getFacetPivot();
 	    List<PivotField> pivotFields = pivotFieldsNamedList.get(facetField+','+SolrAnnotationConstants.SCENARIO);
 	    for (PivotField pf : pivotFields) {
@@ -77,7 +105,13 @@ public class AnnotationStatisticsService {
 	    	}        	
         	annotationStatistics.add(annoStats);
     	}
-
+	    
+		if(target.compareToIgnoreCase(AnnotationStatisticsConstants.CLIENT)==0) {
+			annoMetric.setAnnotationStatisticsClients(annotationStatistics);
+		}
+		else if(target.compareToIgnoreCase(AnnotationStatisticsConstants.USER)==0) {
+			annoMetric.setAnnotationStatisticsUsers(annotationStatistics);
+		}
     }
 
 }
