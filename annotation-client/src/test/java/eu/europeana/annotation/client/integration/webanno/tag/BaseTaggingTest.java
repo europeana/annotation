@@ -20,7 +20,6 @@ public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
 	public static final String TAG_GEOTAG = "/tag/geotag.json";
 	public static final String LINK_STANDARD = "/link/standard.json";
 	public static final String LINK_SEMANTIC = "/link/edmIsSimilarTo.json";
-	public static final String SEMANTICTAG_SIMPLE_MINIMAL = "/semantictag/simple_minimal.json";
 	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
 	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
 	public static final String SEMANTICTAG_SPECIFIC_STANDARD = "/semantictag/specific_standard.json";

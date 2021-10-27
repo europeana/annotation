@@ -60,8 +60,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		//validateResponse(response, HttpStatus.OK);
 		Annotation storedAnno = parseAndVerifyTestAnnotation(response, HttpStatus.OK);
 		validateOutputAgainstInput(storedAnno, annotation);
-	}
-	
+	}	
 					
 	@Test
 	public void updateAnnotation() throws JsonParseException, IOException {
@@ -84,8 +83,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		assertNotNull(response.getBody());
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
 		assertEquals(TAG_STANDARD_TEST_VALUE_TARGET, updatedAnnotation.getTarget().getHttpUri());
-	}
-			
+	}			
 				
 	@Test
 	public void deleteAnnotation() throws JsonParseException, IOException {
@@ -103,6 +101,81 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 	}
-			
+	
+	/*
+	 * For the below duplicate tests to pass please make sure that there are no annotations 
+	 * stored in Solr that are the same as the ones defined in the test, prior to the test execution.
+	 */
+	@Test
+	public void checkAnnotationDuplicatesCreateTranscriptions() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(TRANSCRIPTION_MINIMAL);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+	
+	@Test
+	public void checkAnnotationDuplicatesCreateCaptions() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(CAPTION_MINIMAL);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+	
+	@Test
+	public void checkAnnotationDuplicatesCreateSubtitles() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(SUBTITLE_MINIMAL);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+	
+	@Test
+	public void checkAnnotationDuplicatesCreateTags() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(TAG_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(TAG_MINIMAL);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+	
+	@Test
+	public void checkAnnotationDuplicatesCreateSemanticTags() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+	
+	/*
+	 * For this test to pass please comment out the validation part in the validateWebAnnotation() method
+	 * in the BaseAnnotationValidator class, if the whitelists are not created
+	 */
+	@Test
+	public void checkAnnotationDuplicatesCreateObjectLinks() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(LINK_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(LINK_MINIMAL);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+	
+	/*
+	 * The tests for the other scenario types would be very similar to this one, therefore
+	 * we do not create all of them, since a lot of the code would be dulpicated, and
+	 * the duplications are already tested in the browser.
+	 */
+	@Test
+	public void checkAnnotationDuplicatesUpdateTranscriptions() throws JsonParseException, IOException {
+		ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		response = storeTestAnnotation(TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Annotation annotation = parseAndVerifyTestAnnotation(response);
+		//updated annotation value
+		String requestBody = getJsonStringInput(TRANSCRIPTION_MINIMAL);
+		//update annotation by identifier URL
+		ResponseEntity<String> updateResponse = getApiClient().updateAnnotation(
+				annotation.getAnnotationId().getIdentifier(), requestBody, null);
+		assertEquals(HttpStatus.BAD_REQUEST, updateResponse.getStatusCode());		
+	}
 				
 }
