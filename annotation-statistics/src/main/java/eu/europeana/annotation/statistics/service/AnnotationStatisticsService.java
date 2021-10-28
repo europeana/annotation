@@ -6,11 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.FacetField.Count;
-import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
 
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -30,79 +27,33 @@ public class AnnotationStatisticsService {
     public void getAnnotationsStatistics(AnnotationMetric annoMetric) throws AnnotationServiceException {
     	annoMetric.setTimestamp(new Date());  
     	//getting the annotations statistics for the clients
-    	QueryResponse annoFacetStats = solrService.getAnnotationStatisticsPivotFacets(SolrAnnotationConstants.GENERATOR_URI);
-    	extractAnnotationStatisticsClientUser(annoFacetStats, annoMetric, SolrAnnotationConstants.GENERATOR_URI, AnnotationStatisticsConstants.CLIENT);   	
+    	QueryResponse annoFacetStatsJson = solrService.getAnnotationStatisticsJsonNestedFacets(SolrAnnotationConstants.GENERATOR_URI);
+    	extractAnnotationStatisticsClientUserFromJsonNestedFacet(annoFacetStatsJson, annoMetric, SolrAnnotationConstants.GENERATOR_URI, AnnotationStatisticsConstants.CLIENT);   	
     	//getting the annotations statistics for the users
-    	annoFacetStats = solrService.getAnnotationStatisticsPivotFacets(SolrAnnotationConstants.CREATOR_URI);
-    	extractAnnotationStatisticsClientUser(annoFacetStats, annoMetric, SolrAnnotationConstants.CREATOR_URI, AnnotationStatisticsConstants.USER);
+    	annoFacetStatsJson = solrService.getAnnotationStatisticsJsonNestedFacets(SolrAnnotationConstants.CREATOR_URI);
+    	extractAnnotationStatisticsClientUserFromJsonNestedFacet(annoFacetStatsJson, annoMetric, SolrAnnotationConstants.CREATOR_URI, AnnotationStatisticsConstants.USER);   	
     	//getting the overall annotations statistics
-    	annoFacetStats = solrService.getAnnotationStatisticsFacets(SolrAnnotationConstants.SCENARIO); 
-    	extractOverallAnnotationStatistics(annoFacetStats, annoMetric, SolrAnnotationConstants.SCENARIO);
+    	annoFacetStatsJson = solrService.getAnnotationStatisticsJsonFacets(); 
+    	extractAnnotationStatisticsOverallFromJsonFacet(annoFacetStatsJson, annoMetric);
     }
-
-    /*
-     * This function extracts the overall annotation statistics from the Solr response
-     */
-    private void extractOverallAnnotationStatistics (QueryResponse annoFacetStats, AnnotationMetric annoMetric, String facetField) {
-    	AnnotationStatistics annotationStatisticsAll = new AnnotationStatistics();
-    	FacetField annotationStatisticsFacetField = annoFacetStats.getFacetField(facetField);	
-    	for (Count facetCount : annotationStatisticsFacetField.getValues()) {  
-        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.GEO_TAG)==0) {
-        		annotationStatisticsAll.setGeoTag(facetCount.getCount());
-        	}
-        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.TRANSCRIPTION)==0) {
-        		annotationStatisticsAll.setTranscription(facetCount.getCount());
-        	}
-        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.OBJECT_LINK)==0) {
-        		annotationStatisticsAll.setObjectLink(facetCount.getCount());
-        	}
-        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.SEMANTIC_TAG)==0) {
-        		annotationStatisticsAll.setSemanticTag(facetCount.getCount());
-        	}
-        	if(facetCount.getName().compareToIgnoreCase(AnnotationScenarioTypes.SUBTITLE)==0) {
-        		annotationStatisticsAll.setSubtitle(facetCount.getCount());
-        	}
-    	}
-    	annoMetric.setAnnotationStatisticsScenarios(annotationStatisticsAll);
-    }
-    /*
-     * This function extracts the annotation statistics from the Solr response for the clients and users
-     */
-    private void extractAnnotationStatisticsClientUser (QueryResponse annoFacetStats, AnnotationMetric annoMetric, String facetField, String target) {
+    
+    private void extractAnnotationStatisticsClientUserFromJsonNestedFacet (QueryResponse annoFacetStats, AnnotationMetric annoMetric, String facetField, String target) {
     	List<AnnotationStatistics> annotationStatistics = new ArrayList<AnnotationStatistics>();
-	    NamedList<List<PivotField>> pivotFieldsNamedList = annoFacetStats.getFacetPivot();
-	    List<PivotField> pivotFields = pivotFieldsNamedList.get(facetField+','+SolrAnnotationConstants.SCENARIO);
-	    for (PivotField pf : pivotFields) {
+	    annoFacetStats.getJsonFacetingResponse().getBucketBasedFacets(facetField).getBuckets();
+    	for (BucketJsonFacet mainBucket : annoFacetStats.getJsonFacetingResponse().getBucketBasedFacets(facetField).getBuckets()) {
     		AnnotationStatistics annoStats = null;
     		if(target.compareToIgnoreCase(AnnotationStatisticsConstants.CLIENT)==0) {
     			annoStats = new AnnotationStatisticsClient();
-    			((AnnotationStatisticsClient)annoStats).setClient(pf.getValue().toString());
+    			((AnnotationStatisticsClient)annoStats).setClient(mainBucket.getVal().toString());
     		}
     		else if(target.compareToIgnoreCase(AnnotationStatisticsConstants.USER)==0) {
     			annoStats = new AnnotationStatisticsUser();
-    			((AnnotationStatisticsUser)annoStats).setUser(pf.getValue().toString());
+    			((AnnotationStatisticsUser)annoStats).setUser(mainBucket.getVal().toString());
     		}
     		
     		if (annoStats==null) continue;
 		    	
-	    	for (PivotField pfNested : pf.getPivot()) {
-	    		
-	        	if(pfNested.getValue()!=null && pfNested.getValue().toString().compareToIgnoreCase(AnnotationScenarioTypes.GEO_TAG)==0) {
-	        		annoStats.setGeoTag(Long.valueOf(pfNested.getCount()));
-	        	}
-	        	if(pfNested.getValue()!=null && pfNested.getValue().toString().compareToIgnoreCase(AnnotationScenarioTypes.TRANSCRIPTION)==0) {
-	        		annoStats.setTranscription(Long.valueOf(pfNested.getCount()));
-	        	}
-	        	if(pfNested.getValue()!=null && pfNested.getValue().toString().compareToIgnoreCase(AnnotationScenarioTypes.OBJECT_LINK)==0) {
-	        		annoStats.setObjectLink(Long.valueOf(pfNested.getCount()));
-	        	}
-	        	if(pfNested.getValue()!=null && pfNested.getValue().toString().compareToIgnoreCase(AnnotationScenarioTypes.SEMANTIC_TAG)==0) {
-	        		annoStats.setSemanticTag(Long.valueOf(pfNested.getCount()));
-	        	}
-	        	if(pfNested.getValue()!=null && pfNested.getValue().toString().compareToIgnoreCase(AnnotationScenarioTypes.SUBTITLE)==0) {
-	        		annoStats.setSubtitle(Long.valueOf(pfNested.getCount()));
-	        	}
-	    	}        	
+    		setAnnotationStatisticsFromJsonBuckets(annoStats, mainBucket.getBucketBasedFacets(SolrAnnotationConstants.SCENARIO).getBuckets());
         	annotationStatistics.add(annoStats);
     	}
 	    
@@ -113,5 +64,30 @@ public class AnnotationStatisticsService {
 			annoMetric.setAnnotationStatisticsUsers(annotationStatistics);
 		}
     }
-
+    
+    private void extractAnnotationStatisticsOverallFromJsonFacet (QueryResponse annoFacetStats, AnnotationMetric annoMetric) {
+    	AnnotationStatistics annotationStatisticsOverall = new AnnotationStatistics();	
+    	setAnnotationStatisticsFromJsonBuckets(annotationStatisticsOverall,annoFacetStats.getJsonFacetingResponse().getBucketBasedFacets(SolrAnnotationConstants.SCENARIO).getBuckets());
+    	annoMetric.setAnnotationStatisticsScenarios(annotationStatisticsOverall);
+    }
+    
+    private void setAnnotationStatisticsFromJsonBuckets (AnnotationStatistics annoStats, List<BucketJsonFacet> facetJsonBuckets) {
+    	for (BucketJsonFacet facetJsonBucket : facetJsonBuckets) {  
+        	if(facetJsonBucket.getVal().toString().compareToIgnoreCase(AnnotationScenarioTypes.GEO_TAG)==0) {
+        		annoStats.setGeoTag(facetJsonBucket.getCount());
+        	}
+        	if(facetJsonBucket.getVal().toString().compareToIgnoreCase(AnnotationScenarioTypes.TRANSCRIPTION)==0) {
+        		annoStats.setTranscription(facetJsonBucket.getCount());
+        	}
+        	if(facetJsonBucket.getVal().toString().compareToIgnoreCase(AnnotationScenarioTypes.OBJECT_LINK)==0) {
+        		annoStats.setObjectLink(facetJsonBucket.getCount());
+        	}
+        	if(facetJsonBucket.getVal().toString().compareToIgnoreCase(AnnotationScenarioTypes.SEMANTIC_TAG)==0) {
+        		annoStats.setSemanticTag(facetJsonBucket.getCount());
+        	}
+        	if(facetJsonBucket.getVal().toString().compareToIgnoreCase(AnnotationScenarioTypes.SUBTITLE)==0) {
+        		annoStats.setSubtitle(facetJsonBucket.getCount());
+        	}
+    	}
+    }
 }

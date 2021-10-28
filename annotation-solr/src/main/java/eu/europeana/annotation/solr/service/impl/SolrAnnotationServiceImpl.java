@@ -12,6 +12,8 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
+import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.springframework.stereotype.Component;
@@ -339,44 +341,43 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	return res;
     }
-    
-    @Override
-    public QueryResponse getAnnotationStatisticsPivotFacets (String facetField)
-	    throws AnnotationServiceException {
-		// Construct a SolrQuery
-		SolrQuery query = new SolrQuery();
-		query.setQuery("*" + SolrSyntaxConstants.DELIMETER + "*");
-		query.addFacetPivotField(facetField+','+SolrAnnotationConstants.SCENARIO);
-		query.setFacetLimit(10);
-		query.setRows(0);		
+
+	@Override
+    public QueryResponse getAnnotationStatisticsJsonNestedFacets (String mainFacetField)
+	    throws AnnotationServiceException {		
+		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(mainFacetField).setLimit(10);
+		final TermsFacetMap topManufacturerFacet = new TermsFacetMap(SolrAnnotationConstants.SCENARIO);
+		topCategoriesFacet.withSubFacet(SolrAnnotationConstants.SCENARIO, topManufacturerFacet);
+		final JsonQueryRequest request = new JsonQueryRequest()
+		    .setQuery("*:*")
+		    .setLimit(0)
+		    .withFacet(mainFacetField, topCategoriesFacet);
 		// Query the server
 		try {
-		    getLogger().debug("Getting the annotations statstics for the pivot facets query: {}", query);
-		    QueryResponse rsp = solrClient.query(query);
-		    return rsp;
+		    getLogger().debug("Getting the annotations statstics with the json nested facets for the main facet field: {}, and the nested facet field: {}.", mainFacetField, SolrAnnotationConstants.SCENARIO);
+		    QueryResponse queryResponse = request.process(solrClient);
+		    return queryResponse;
 		} catch (SolrServerException | IOException e) {
 		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
 		}
-	
     }
-    
-    @Override
-    public QueryResponse getAnnotationStatisticsFacets (String facetField)
+	
+	@Override
+    public QueryResponse getAnnotationStatisticsJsonFacets ()
 	    throws AnnotationServiceException {
-		// Construct a SolrQuery
-		SolrQuery query = new SolrQuery();
-		query.setQuery("*" + SolrSyntaxConstants.DELIMETER + "*");
-		query.addFacetField(facetField);
-		query.setRows(0);		
+		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(SolrAnnotationConstants.SCENARIO);
+		final JsonQueryRequest request = new JsonQueryRequest()
+		    .setQuery("*:*")
+		    .setLimit(0)
+		    .withFacet(SolrAnnotationConstants.SCENARIO, topCategoriesFacet);
 		// Query the server
 		try {
-		    getLogger().debug("Getting the annotations statstics for the facets query: {}", query);
-		    QueryResponse rsp = solrClient.query(query);
-		    return rsp;
+		    getLogger().debug("Getting the annotations statstics with the json nested facets for the facet field: {}.", SolrAnnotationConstants.SCENARIO);
+		    QueryResponse queryResponse = request.process(solrClient);
+		    return queryResponse;
 		} catch (SolrServerException | IOException e) {
 		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
 		}
-	
     }
 
     @Override
