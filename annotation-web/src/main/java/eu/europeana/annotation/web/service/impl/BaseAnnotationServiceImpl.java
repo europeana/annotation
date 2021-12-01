@@ -85,8 +85,8 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	this.solrService = solrService;
     }
 
-    @Deprecated
-    public Annotation getAnnotationById(AnnotationId annoId, String userId)
+    //@Deprecated
+    public Annotation getAnnotationById(AnnotationId annoId, String userId, boolean enabled)
 	    throws AnnotationNotFoundException, UserAuthorizationException {
 	Annotation annotation = getMongoPersistence().find(annoId);
 	if (annotation == null)
@@ -94,49 +94,49 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 		    new String[] { annoId.toHttpUrl() });
 
 	try {
-	    // check visibility
-	    checkVisibility(annotation, userId);
+	    // check privacy
+	    checkPrivacy(annotation, userId);
 	} catch (AnnotationStateException e) {
-	    if (annotation.isDisabled())
-		throw new UserAuthorizationException(null, I18nConstants.ANNOTATION_NOT_ACCESSIBLE,
-			new String[] { annotation.getStatus() }, HttpStatus.GONE, e);
-	    else
-		// TODO: either change method parameters to accept wsKey or return different
-		// exception
+		// TODO: either change method parameters to accept wsKey or return different exception
 		throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED, new String[] { userId },
 			e);
+	}
+	
+	if (enabled==true) {
+		try {
+		    // check visibility
+		    checkVisibility(annotation);
+		} catch (AnnotationStateException e) {
+			throw new UserAuthorizationException(null, I18nConstants.ANNOTATION_NOT_ACCESSIBLE,
+				new String[] { annotation.getStatus() }, HttpStatus.GONE, e);
+		}
 	}
 
 	return annotation;
     }
 
+    public void checkVisibility(Annotation annotation) throws AnnotationStateException {
+		// Annotation res = null;
+		// res =
+		// getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
+		// annotation.getAnnotationId().getIdentifier());
+    	if (annotation.isDisabled())
+    	    throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
+    		    AnnotationStates.DISABLED);
+    }
+    
     /*
      * (non-Javadoc)
      * 
      * @see
      * eu.europeana.annotation.web.service.AnnotationService#checkVisibility(eu.
      * europeana.annotation.definitions.model.Annotation, java.lang.String)
-     */
-    public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException {
-	// Annotation res = null;
-	// res =
-	// getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
-	// annotation.getAnnotationId().getIdentifier());
-	if (annotation.isDisabled())
-	    throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
-		    AnnotationStates.DISABLED);
-
-	// if (annotation.
-	// StringUtils.isNotEmpty(user) && !user.equals("null") &&
-	// !res.getAnnotatedBy().getName().equals(user))
-	// throw new AnnotationStateException("Given user (" + user + ") does
-	// not match to the 'annotatedBy' user ("
-	// + res.getAnnotatedBy().getName() + ").");
-	// TODO update when the authorization concept is specified
-	if (annotation.isPrivate() && !annotation.getCreator().getHttpUrl().equals(user))
-	    throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
-		    AnnotationStates.PRIVATE);
-
+	 */
+    public void checkPrivacy(Annotation annotation, String user) throws AnnotationStateException {
+		// TODO update when the authorization concept is specified
+		if (annotation.isPrivate() && !annotation.getCreator().getHttpUrl().equals(user))
+		    throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,
+			    AnnotationStates.PRIVATE);
     }
 
 //	public void indexAnnotation(AnnotationId annoId) {

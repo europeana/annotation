@@ -32,7 +32,7 @@ public class AnnotationBuilder {
 		to.setGenerated(annotation.getGenerated());
 		to.setGenerator(annotation.getGenerator());
 		to.setStyledBy(annotation.getStyledBy());
-		to.setDisabled(annotation.isDisabled());
+		to.setDisabled(annotation.getDisabled());
 		to.setSameAs(annotation.getSameAs());
 		to.setEquivalentTo(annotation.getEquivalentTo());
 		to.setStatus(annotation.getStatus());

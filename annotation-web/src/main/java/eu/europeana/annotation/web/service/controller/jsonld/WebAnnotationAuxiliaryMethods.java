@@ -73,12 +73,13 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 
     @RequestMapping(value = "/annotations/deleted", method = RequestMethod.GET, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(value = "Get ids of deleted Annotations", nickname = "getDeletedAnnotationSet", response = java.lang.Void.class)
+    @ApiOperation(value = "Get ids of deleted Annotations", nickname = "getDeletedAnnotationSet", response = java.lang.Void.class,
+    		notes = "The afterDate parameter should have the format dd-mm-yyyy.")
     public ResponseEntity<String> getDeleted(
 	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 	    @RequestParam(value = "motivation", required = false) String motivation,
 	    @RequestParam(value = "afterDate", required = false) String startDate,
-	    @RequestParam(value = "afterTimestamp", required = false) String startTimestamp, HttpServletRequest request)
+	    HttpServletRequest request)
 	    throws HttpException {
 
 	// SET DEFAULTS
@@ -86,8 +87,7 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 
 	MotivationTypes motivationType = validateMotivation(motivation);
 
-	List<AnnotationDeletion> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType,
-		startDate, startTimestamp);
+	List<AnnotationDeletion> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate);
 
 	String jsonStr = JsonWebUtils.toJson(deletions, null);
 	

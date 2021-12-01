@@ -54,7 +54,9 @@ public interface Annotation {
 	
 	public abstract void setType(String type);
 
-	public abstract void setDisabled(boolean isDisabled);
+	public abstract void setDisabled(Date disabled);
+	
+	public abstract Date getDisabled();
 
 	public abstract boolean isDisabled();
 	

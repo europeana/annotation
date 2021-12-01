@@ -101,6 +101,15 @@ public interface AnnotationService {
 	public Annotation disableAnnotation(AnnotationId annoId);
 	
 	/**
+	 * This method enables the annotation by setting the 'disabled' field to null in the database 
+	 * and creating the solr annotation.
+	 * @param annoId
+	 * @return enabled Annotation
+	 * @throws AnnotationServiceException 
+	 */
+	public Annotation enableAnnotation(AnnotationId annoId) throws AnnotationServiceException;
+	
+	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
 	 * @param annotation The annotation object
@@ -113,9 +122,10 @@ public interface AnnotationService {
 	 * comprises provider and identifier.
 	 * @param annoId - id of the annotation to be retrieved
 	 * @param userId - id of the user sending the request (URI)
+	 * @param enabled - a flag for telling which annotation to get (enabled, when the flag is true, or disabled)
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(AnnotationId annoId, String userId) throws AnnotationNotFoundException, UserAuthorizationException;
+	public Annotation getAnnotationById(AnnotationId annoId, String userId, boolean enabled) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	
 	/**
@@ -153,16 +163,6 @@ public interface AnnotationService {
 	 * @return
 	 */
 	public void logAnnotationStatusUpdate(String user, Annotation annotation);
-	
-	
-	/**
-	 * This method is checking the visibility of the annotation stored in the database.
-	 * @param annotation The stored annotation object
-	 * @param user The name of the current user
-	 * @return annotation object if check was successful, exception otherwise
-	 * @throws AnnotationStateException
-	 */
-	public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException;
 
 	/**
 	 * this method validates the correctness of the provided annotation id (provider and identifier) 
@@ -226,10 +226,9 @@ public interface AnnotationService {
 	/*
 	 * This methods returns annotation ids which where deleted after a given date 
 	 * @param startDate
-	 * @param startTimestamp
 	 * @return deleted annotation ids
 	 */
-	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String startTimestamp);
+	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate);
 
 	
 	

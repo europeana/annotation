@@ -95,5 +95,18 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 //		String action = "delete:/annotation/{identifier}[.{format}]";
 		return deleteAnnotation(identifier, authentication, request);
 	}
+	
+	@RequestMapping(value = {"/annotation/enable/{identifier}"}, method = RequestMethod.POST, 
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@ApiOperation(value = "Enable annotation", nickname = "enableAnnotation", response = java.lang.Void.class)
+	public ResponseEntity<String> enableAnnotation(
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			HttpServletRequest request
+			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+
+		Authentication authentication = verifyWriteAccess(Operations.UPDATE, request);
+
+		return enableAnnotation(identifier, authentication, request);
+	}
 		
 }

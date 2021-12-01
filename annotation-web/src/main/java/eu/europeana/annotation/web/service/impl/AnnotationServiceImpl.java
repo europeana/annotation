@@ -37,6 +37,7 @@ import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -291,7 +292,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	if (webAnnotation.getTarget() != null)
 	    annotation.setTarget(webAnnotation.getTarget());
 	if (annotation.isDisabled() != webAnnotation.isDisabled())
-	    annotation.setDisabled(webAnnotation.isDisabled());
+	    annotation.setDisabled(webAnnotation.getDisabled());
 	if (webAnnotation.getEquivalentTo() != null)
 	    annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
 	if (webAnnotation.getInternalType() != null)
@@ -340,7 +341,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    else
 		persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
 
-	    persistentAnnotation.setDisabled(true);
+	    persistentAnnotation.setDisabled(new Date());
 	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 	} catch (Exception e) {
 	    throw new RuntimeException(e);
@@ -350,6 +351,25 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    removeFromIndex(annotation);
 
 	return persistentAnnotation;
+    }
+    
+    @Override
+    public Annotation enableAnnotation(AnnotationId annoId) throws AnnotationServiceException {
+		PersistentAnnotation persistentAnnotation;
+		try {	    
+			persistentAnnotation = getMongoPersistence().find(annoId);
+		    persistentAnnotation.setDisabled(null);
+		    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
+		} catch (Exception e) {
+		    throw new RuntimeException(e);
+		}
+	
+		if (getConfiguration().isIndexingEnabled()) {
+			getSolrService().store(persistentAnnotation);
+		    // save the time of the last SOLR indexing
+		    updateLastIndexingTime(persistentAnnotation, persistentAnnotation.getLastUpdate());
+		}
+		return persistentAnnotation;
     }
 
     protected void removeFromIndex(Annotation annotation) {
@@ -631,17 +651,18 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return entityIds;
     }
 
-    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate,
-	    String startTimestamp) {
-	if (!StringUtils.isBlank(startDate)) {
-	    startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
+    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate) {
+    	
+	String startTimestampLong = null;
+	if (startDate!=null) {
+		startTimestampLong = TypeUtils.getUnixDateStringFromDate(startDate);
 	}
 
 	String motivationOaType = null;
 	if(motivation!=null) { 
 		motivationOaType = motivation.getOaType();
 	}
-	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivationOaType, startTimestamp);
+	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByTimestamp(motivationOaType, startTimestampLong);
 
 	return res;
     }

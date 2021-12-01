@@ -264,7 +264,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUE,
 						target);
 		}
-		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
@@ -289,7 +289,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 					.field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS)
 						.equal(resourceId);
 			
-		query.filter(PersistentAnnotation.FIELD_DISABLED, false);
+		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
@@ -301,7 +301,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotEmpty(provider))
 			query.filter(PersistentAnnotation.FIELD_PROVIDER, provider);
-		query.filter(PersistentAnnotation.FIELD_DISABLED, isDisabled);
+		if (!isDisabled)
+			query.filter(PersistentAnnotation.FIELD_DISABLED, null);
 		try {
 			if (StringUtils.isNotEmpty(startOn))
 				query.offset(Integer.parseInt(startOn));
@@ -405,7 +406,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			updateOperations.set(WebAnnotationFields.TYPE, persistentAnnotation.getType());
 		if (persistentAnnotation.getInternalType() != null)
 			updateOperations.set(WebAnnotationFields.INTERNAL_TYPE, persistentAnnotation.getInternalType());
-		updateOperations.set(WebAnnotationFields.DISABLED, persistentAnnotation.isDisabled());
+		updateOperations.set(WebAnnotationFields.DISABLED, persistentAnnotation.getDisabled());
 		if (persistentAnnotation.getEquivalentTo() != null)
 			updateOperations.set(WebAnnotationFields.EQUIVALENT_TO, persistentAnnotation.getEquivalentTo());
 		// if (persistentAnnotation.getInternalType() != null)
@@ -495,14 +496,17 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 	
 	
-    public List<AnnotationDeletion> getDeletedByLastUpdateTimestamp(String motivation, String startTimestamp) {
+    public List<AnnotationDeletion> getDeletedByTimestamp(String motivation, String startTimestamp) {
 	Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-	query.field(WebAnnotationFields.DISABLED).equal(true);
-	if (StringUtils.isNotBlank(startTimestamp)) {
-	    // Date start = TypeUtils.convertUnixTimestampStrToDate(startTimestamp);
+	
+	if (startTimestamp!=null) {
 	    Date start = new Date(Long.parseLong(startTimestamp));
-	    query.field(WebAnnotationFields.GENERATED).greaterThan(start);
+	    query.field(WebAnnotationFields.DISABLED).greaterThan(start);
 	}
+	else {
+		query.field(WebAnnotationFields.DISABLED).notEqual(null);
+	}
+	
 	if (StringUtils.isNotBlank(motivation)) {
 	    query.field(WebAnnotationFields.MOTIVATION).equal(motivation);
 	}
@@ -633,7 +637,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 				
 		// Morphia query
-		query.where("this." + PersistentAnnotation.FIELD_DISABLED + " == false && "
+		query.where("this." + PersistentAnnotation.FIELD_DISABLED + " == null && "
 			  + "(this." +WebAnnotationFields.LAST_UPDATE + "> this." + WebAnnotationFields.LAST_INDEXED + " || "
 			  + " this." + WebAnnotationFields.LAST_INDEXED + " == null)");
 		
