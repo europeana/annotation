@@ -3,6 +3,7 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -49,8 +50,9 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 	return storeAnnotations(annotationPage, authentication);
     }
 
-    @RequestMapping(value = { "/annotation/{annoType}", "/annotation/{annoType}.jsonld" }, method = RequestMethod.POST, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+    @RequestMapping(value = { "/annotation/{annoType}", "/annotation/{annoType}.jsonld" }, method = RequestMethod.POST, 
+    		consumes = { MediaType.APPLICATION_JSON },
+    		produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
     public ResponseEntity<String> createAnnotationByTypeJsonld(
 	    @RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
