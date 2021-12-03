@@ -7,11 +7,11 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public class SubtitlingTest extends BaseWebAnnotationProtocolTest {
+public class SubtitlingTest extends BaseWebAnnotationTest {
 
     protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
 	MotivationTypes motivationType = MotivationTypes.SUBTITLING;

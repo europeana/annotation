@@ -23,7 +23,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
  * This class aims at testing of the annotation moderation methods.
  * @author GrafR
  */
-public class WebAnnotationFeedbackTest extends BaseWebAnnotationProtocolTest { 
+public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest { 
 
 	protected Logger log = LogManager.getLogger(getClass());
 

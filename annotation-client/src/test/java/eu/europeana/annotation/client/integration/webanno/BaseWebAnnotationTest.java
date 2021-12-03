@@ -20,8 +20,8 @@ import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.utils.BaseUtils;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
+import eu.europeana.annotation.client.webanno.WebAnnotationApi;
+import eu.europeana.annotation.client.webanno.WebAnnotationApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -30,7 +30,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
-public class BaseWebAnnotationProtocolTest {
+public class BaseWebAnnotationTest {
 
 	protected Logger log = LogManager.getLogger(getClass());
 
@@ -134,14 +134,14 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
-	private static WebAnnotationProtocolApi apiClient;
+	private static WebAnnotationApi apiClient;
 
 	@BeforeAll
 	public static void initObjects() {
-		apiClient = new WebAnnotationProtocolApiImpl();
+		apiClient = new WebAnnotationApiImpl();
 	}
 
-	public WebAnnotationProtocolApi getApiClient() {
+	public WebAnnotationApi getApiClient() {
 		return apiClient;
 	}
 

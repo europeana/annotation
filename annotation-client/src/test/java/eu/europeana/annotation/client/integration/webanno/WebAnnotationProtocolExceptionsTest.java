@@ -18,7 +18,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
  * This class aims at testing of different exceptions related to annotation methods.
  * @author GrafR
  */
-public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationProtocolTest {
+public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 
     @Deprecated	
     public String LINK_JSON_WITHOUT_BLANK = 

@@ -22,14 +22,12 @@ import eu.europeana.annotation.definitions.exception.ModerationRecordValidationE
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
@@ -651,20 +649,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return entityIds;
     }
 
-    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate) {
-    	
-	String startTimestampLong = null;
-	if (startDate!=null) {
-		startTimestampLong = TypeUtils.getUnixDateStringFromDate(startDate);
-	}
+    public List<String> getDeletedAnnotationSet(MotivationTypes motivation, String startDate, String stopDate, int page, int limit) {
 
-	String motivationOaType = null;
-	if(motivation!=null) { 
-		motivationOaType = motivation.getOaType();
-	}
-	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByTimestamp(motivationOaType, startTimestampLong);
-
-	return res;
+    	List<String> res = getMongoPersistence().getDeletedByTimestamp(motivation, startDate, stopDate, page, limit);
+    	return res;
     }
     
     protected boolean validateResource(String url) throws ParamValidationException {

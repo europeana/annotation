@@ -29,7 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 
@@ -38,7 +38,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
  * 
  * @author Sven Schlarb
  */
-public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
+public class BatchUploadTest extends BaseWebAnnotationTest {
 
 	// annotation page test resources
 	public static final String TAG_ANNO_PAGE = "/tag/batch/annotation_page.json";

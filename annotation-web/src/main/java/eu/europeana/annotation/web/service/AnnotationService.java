@@ -3,7 +3,6 @@ package eu.europeana.annotation.web.service;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
@@ -12,7 +11,6 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -20,7 +18,6 @@ import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -222,13 +219,18 @@ public interface AnnotationService {
 	 * @throws JsonParseException 
 	 */
 	public void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages) throws AnnotationDereferenciationException, HttpException;
-	
-	/*
-	 * This methods returns annotation ids which where deleted after a given date 
-	 * @param startDate
-	 * @return deleted annotation ids
+
+
+	/**
+	 * Returns the deleted annotations in the given date range.
+	 * @param motivationType	
+	 * @param startDate	
+	 * @param stopDate
+	 * @param page
+	 * @param limit
+	 * @return
 	 */
-	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate);
+	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String stopDate, int page, int limit);
 
 	
 	

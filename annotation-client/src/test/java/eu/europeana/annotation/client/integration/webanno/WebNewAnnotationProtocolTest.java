@@ -19,7 +19,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
  * This class aims at testing of the annotation methods.
  * @author GrafR
  */
-public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest { 
+public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest { 
 
 		
 	@Test

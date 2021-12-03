@@ -20,7 +20,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
  * This class aims at testing of the annotation methods.
  * @author GrafR
  */
-public class WebAnnotationProtocolTest extends BaseWebAnnotationProtocolTest { 
+public class WebAnnotationProtocolTest extends BaseWebAnnotationTest { 
 
 		
 	@Test

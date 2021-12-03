@@ -275,9 +275,7 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    throws SolrServerException, IOException, JsonParseException, InterruptedException {
 	// getting deleted annotations modified after the given date from the
 	// AnnotationAPI
-
-	List<AnnotationDeletion> disabledResources = annotationAuxiliaryApi
-		.getDeleted(MotivationTypes.TRANSCRIBING.getOaType(), startingDate.getTime());
+	List<AnnotationDeletion> disabledResources = mongoPersistance.getDeletedByLastUpdateTimestamp(MotivationTypes.TRANSCRIBING.getOaType(), startingDate.getTime());
 	if (disabledResources == null || disabledResources.isEmpty()) {
 	    LOGGER.debug("No disabled resources to process!");
 	    return;

@@ -12,12 +12,14 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
-import eu.europeana.annotation.client.AuxiliaryMethodsApiImpl;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.fulltext.api.FulltextAPI;
 import eu.europeana.metadata.api.MetadataAPI;
 
@@ -34,8 +36,11 @@ public class BaseAnnotationSynchronizer {
     public static final String SOLR_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     Properties appProps;
+    
+    @Resource
+    PersistentAnnotationService mongoPersistance;
+    
     AnnotationSearchApiImpl annotationSearchApi;
-    AuxiliaryMethodsApiImpl annotationAuxiliaryApi;
     MetadataAPI metadataAPI;
     FulltextAPI fulltextAPI;
     int pageSize = 100;
@@ -79,7 +84,6 @@ public class BaseAnnotationSynchronizer {
 
 	// initialize annotation search
 	annotationSearchApi = new AnnotationSearchApiImpl();
-	annotationAuxiliaryApi = new AuxiliaryMethodsApiImpl();
 
 	// initialize metadata api
 	String[] metadataURLs = getProperty(PROP_SOLR_METADATA_URL).split(",");

@@ -7,6 +7,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -84,7 +85,9 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 	
-	public List<AnnotationDeletion> getDeletedByTimestamp(String motivation, String startTimestamp);
+    public List<AnnotationDeletion> getDeletedByLastUpdateTimestamp(String motivation, long startTimestamp);
+
+	public List<String> getDeletedByTimestamp(MotivationTypes motivation, String startTimestamp, String stopTimestamp, int page, int limit);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 

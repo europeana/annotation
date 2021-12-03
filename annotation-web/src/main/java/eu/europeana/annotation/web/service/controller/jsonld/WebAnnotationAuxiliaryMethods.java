@@ -11,13 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -76,11 +77,14 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
     @RequestMapping(value = "/annotations/deleted", method = RequestMethod.GET, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(value = "Get ids of deleted Annotations", nickname = "getDeletedAnnotationSet", response = java.lang.Void.class,
-    		notes = "The afterDate parameter should have the format dd-mm-yyyy.")
+    		notes = "The afterDate and beforeDate parameters should have the format dd-mm-yyyy.")
     public ResponseEntity<String> getDeleted(
 	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
 	    @RequestParam(value = "motivation", required = false) String motivation,
 	    @RequestParam(value = "afterDate", required = false) String startDate,
+	    @RequestParam(value = "beforeDate", required = false) String stopDate,
+	    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+	    @RequestParam(value = "limit", required = false, defaultValue = "100") int limit,
 	    HttpServletRequest request)
 	    throws HttpException {
 
@@ -89,11 +93,15 @@ public class WebAnnotationAuxiliaryMethods extends BaseJsonldRest {
 
 	MotivationTypes motivationType = validateMotivation(motivation);
 
-	List<AnnotationDeletion> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate);
+	List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate, stopDate, page, limit);
 
 	String jsonStr = JsonWebUtils.toJson(deletions, null);
 	
-	ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, null, HttpStatus.OK);
+    // build response entity with headers
+    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);
+    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+	
+	ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, HttpStatus.OK);
 	return response;
     }
 
