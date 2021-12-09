@@ -16,12 +16,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApi;
+import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApiImpl;
+import eu.europeana.annotation.client.WebAnnotationProtocolApi;
+import eu.europeana.annotation.client.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.utils.BaseUtils;
-import eu.europeana.annotation.client.webanno.WebAnnotationApi;
-import eu.europeana.annotation.client.webanno.WebAnnotationApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -134,15 +136,21 @@ public class BaseWebAnnotationTest {
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
-	private static WebAnnotationApi apiClient;
+	private static WebAnnotationProtocolApi apiProtocolClient;
+	private static WebAnnotationAuxilaryMethodsApi apiAuxilaryMethodsClient;
 
 	@BeforeAll
 	public static void initObjects() {
-		apiClient = new WebAnnotationApiImpl();
+		apiProtocolClient = new WebAnnotationProtocolApiImpl();
+		apiAuxilaryMethodsClient =  new WebAnnotationAuxilaryMethodsApiImpl();
 	}
 
-	public WebAnnotationApi getApiClient() {
-		return apiClient;
+	public WebAnnotationProtocolApi getApiProtocolClient() {
+		return apiProtocolClient;
+	}
+	
+	public WebAnnotationAuxilaryMethodsApi getApiAuxilaryMethodsClient() {
+		return apiAuxilaryMethodsClient;
 	}
 
 	/**
@@ -173,7 +181,7 @@ public class BaseWebAnnotationTest {
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null, user);
+		ResponseEntity<String> storedResponse = getApiProtocolClient().createAnnotation(indexOnCreate, requestBody, null, user);
 		return storedResponse;
 	}
 	
@@ -194,7 +202,7 @@ public class BaseWebAnnotationTest {
 		/**
 		 * store annotation report
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotationReport(
+		ResponseEntity<String> storedResponse = getApiProtocolClient().createAnnotationReport(
 				apiKey, identifier, userToken);
 		return storedResponse;
 	}
@@ -217,7 +225,7 @@ public class BaseWebAnnotationTest {
 		/**
 		 * get annotation report
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().getModerationReport(
+		ResponseEntity<String> storedResponse = getApiProtocolClient().getModerationReport(
 				apiKey, identifier, userToken);
 		return storedResponse;
 	}
@@ -265,7 +273,7 @@ public class BaseWebAnnotationTest {
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
 		assertEquals(status.value(), response.getStatusCode().value());
 
-		Annotation annotation = getApiClient().parseResponseBody(response);
+		Annotation annotation = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(annotation.getCreator());
 		
 
@@ -280,7 +288,7 @@ public class BaseWebAnnotationTest {
 	protected Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
 		assertEquals(""+status.value(), ""+response.getStatusCode().value());
 
-		Annotation annotation = getApiClient().parseResponseBody(response);
+		Annotation annotation = getApiProtocolClient().parseResponseBody(response);
 
 		return annotation;
 	}
@@ -341,14 +349,14 @@ public class BaseWebAnnotationTest {
 	}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
-	    ResponseEntity<String> response = getApiClient().createAnnotation(
+	    ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 			true, requestBody,  WebAnnotationFields.TAG, null);
-	    Annotation storedAnno = getApiClient().parseResponseBody(response);
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 	    return storedAnno;
 	}
 
 	protected Annotation createLink(String requestBody) throws JsonParseException {
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				true, requestBody, WebAnnotationFields.LINK 
 				//null 
 , null
@@ -358,7 +366,7 @@ public class BaseWebAnnotationTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getCreator());
 //		assertNotNull(storedAnno.getGenerator());
 		return storedAnno;
@@ -407,15 +415,15 @@ public class BaseWebAnnotationTest {
 	}
 		
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
-		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
+		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
 	}
 
 	protected ResponseEntity<String> getAnnotation(Annotation anno, SearchProfiles searchProfile) {
-		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
+		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
 	}
 
 	protected ResponseEntity<String> getAnnotationByJwtToken(Annotation anno, SearchProfiles searchProfile) {
-		return getApiClient().getAnnotation(anno.getAnnotationId().getIdentifier(), searchProfile);
+		return getApiProtocolClient().getAnnotation(anno.getAnnotationId().getIdentifier(), searchProfile);
 	}
 	
 	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
@@ -426,9 +434,8 @@ public class BaseWebAnnotationTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), status);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getAnnotationId());
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
-	}	
-
+	}
 }

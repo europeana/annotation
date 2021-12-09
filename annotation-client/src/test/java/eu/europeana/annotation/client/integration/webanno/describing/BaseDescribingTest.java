@@ -39,7 +39,7 @@ public class BaseDescribingTest extends BaseWebAnnotationTest {
 
 		ResponseEntity<String> response = storeTestAnnotation(inputFile);
 		validateResponse(response);
-		Annotation storedAnno = getApiClient().parseResponseBody(response);				
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);				
 
 		MotivationTypes motivationType = MotivationTypes.DESCRIBING;
 		Annotation inputAnno = parseAnnotation(requestBody, motivationType);
@@ -58,7 +58,7 @@ public class BaseDescribingTest extends BaseWebAnnotationTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), status);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getAnnotationId());
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
 	}

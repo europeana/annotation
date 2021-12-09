@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client.webanno;
+package eu.europeana.annotation.client;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.europeana.annotation.client.BaseAnnotationApi;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
@@ -18,13 +17,13 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
-public class WebAnnotationApiImpl extends BaseAnnotationApi implements WebAnnotationApi {
+public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements WebAnnotationProtocolApi {
 
-    public WebAnnotationApiImpl(ClientConfiguration configuration, AnnotationApiConnection apiConnection) {
+    public WebAnnotationProtocolApiImpl(ClientConfiguration configuration, AnnotationApiConnection apiConnection) {
 	super(configuration, apiConnection);
     }
 
-    public WebAnnotationApiImpl() {
+    public WebAnnotationProtocolApiImpl() {
 	super();
     }
 
@@ -166,21 +165,4 @@ public class WebAnnotationApiImpl extends BaseAnnotationApi implements WebAnnota
 
 	return res;
     }
-    
-    @Override
-    public List<String> getDeleted(String motivation, String afterDate, String beforeDate, int page, int limit) {
-    	List<String> res = null;
-    	
-    	try {
-    	    String json = apiConnection.getDeleted(motivation, afterDate, beforeDate, page, limit);
-    	    ObjectMapper objectMapper = new ObjectMapper();
-    	    res = objectMapper.readValue(json, new TypeReference<List<String>>(){});	
-    	} catch (IOException | JsonParseException e) {
-    	    throw new TechnicalRuntimeException(
-    		    "Exception occured when invoking the AnnotationJsonLdApi for getAnnotationLd method", e);
-    	}
-    	
-    	return res;
-    }
-
 }

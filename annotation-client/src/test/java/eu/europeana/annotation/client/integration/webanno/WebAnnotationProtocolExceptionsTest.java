@@ -58,7 +58,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void createWebannoAnnotationWithoutBody() {
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 			null, null, null);
 		
 		assertEquals( HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -68,7 +68,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void createWebAnnotationWithCorruptedBody() {
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 			false, CORRUPTED_JSON, null, null);
 		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -78,7 +78,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void createWebannoAnnotationLinkWithoutBlanksInMotivation() {
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				true, LINK_JSON_WITHOUT_BLANK, null, null);
 		
 		assertNotNull(response.getBody());
@@ -89,7 +89,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void createWebannoAnnotationLinkWithWrongMotivation() {
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				false, LINK_JSON_WITH_WRONG_MOTIVATION, null, null
 				);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -99,7 +99,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void getWebAnnotationWithWrongIdentifier() {
 		
-		ResponseEntity<String> response = getApiClient().getAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().getAnnotation(
 				getApiKey()
 				, WRONG_GENERATED_IDENTIFIER);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -108,7 +108,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void getWebAnnotationWithWrongWskey() throws IOException {
 		
-		ResponseEntity<String> response = getApiClient().getAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().getAnnotation(
 				UNKNOWN_WSKEY, 
 				WRONG_GENERATED_IDENTIFIER
 				);
@@ -119,7 +119,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	@Test
 	public void createWebannoAnnotationByWrongAnnoTypeJsonld() {
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				false, TAG_JSON_BY_TYPE_JSONLD, INVALID_ANNO_TYPE, null);
 		
 		assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
@@ -132,7 +132,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		
-		ResponseEntity<String> response = getApiClient().updateAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				WRONG_GENERATED_IDENTIFIER, requestBody, null);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}
@@ -143,7 +143,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		
-		ResponseEntity<String> response = getApiClient().updateAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				WRONG_GENERATED_IDENTIFIER, requestBody, null);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}
@@ -155,7 +155,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		 * store annotation and retrieve its identifier URL
 		 */
 		Annotation anno = createTestAnnotation(TAG_STANDARD, null);
-		ResponseEntity<String> response = getApiClient().updateAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				anno.getAnnotationId().getIdentifier(), CORRUPTED_UPDATE_JSON, null);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
@@ -173,7 +173,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		
-		ResponseEntity<String> response = getApiClient().updateAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				anno.getAnnotationId().getIdentifier(), requestBody, AnnotationApiConnection.USER_REGULAR);
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}

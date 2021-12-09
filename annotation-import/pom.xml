@@ -23,13 +23,13 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>annotation-mongo</artifactId>
+			<artifactId>annotation-client</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>annotation-client</artifactId>
-			<version>${version.annotationApi}</version>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-error</artifactId>
+			<version>${version.commonsApi}</version>		
 		</dependency>
 
 		<dependency>

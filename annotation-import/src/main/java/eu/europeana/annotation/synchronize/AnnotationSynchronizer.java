@@ -20,6 +20,7 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.api.commons.definitions.utils.DateUtils;
 import eu.europeana.fulltext.api.FulltextContent;
 import eu.europeana.fulltext.api.FulltextDocument;
 import eu.europeana.utils.SolrErrorHandling;
@@ -125,7 +126,7 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
     protected void removeDisabledAnnotations(Date lastRun)
 	    throws SolrServerException, IOException, JsonParseException, InterruptedException {
 	List<String> toDelete = new ArrayList<String>();
-	updateDeletedAnnotations(lastRun, toDelete, -1, -1);
+	updateDeletedAnnotations(lastRun, toDelete);
 	deleteDocs(toDelete);
     }
 
@@ -271,35 +272,39 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	}
     }
 
-    public void updateDeletedAnnotations(Date startingDate, List<String> toDelete, int page, int pageSize)
+    public void updateDeletedAnnotations(Date startingDate, List<String> toDelete)
 	    throws SolrServerException, IOException, JsonParseException, InterruptedException {
-	// getting deleted annotations modified after the given date from the
-	// AnnotationAPI
-	List<AnnotationDeletion> disabledResources = mongoPersistance.getDeletedByLastUpdateTimestamp(MotivationTypes.TRANSCRIBING.getOaType(), startingDate.getTime());
-	if (disabledResources == null || disabledResources.isEmpty()) {
-	    LOGGER.debug("No disabled resources to process!");
-	    return;
-	}
-	Date lastFulltextUpdate, deletionDate;
-	for (AnnotationDeletion annotationDeletion : disabledResources) {
-	    if (annotationDeletion.getResourceId() == null) {
-		LOGGER.info("annotation doesn't have a resource id {}", annotationDeletion.getAnnotaionId());
-		continue;
-	    }
-	    lastFulltextUpdate = fulltextAPI.getLastAnnotationUpdate(annotationDeletion.getResourceId());
-	    deletionDate = new Date(annotationDeletion.getTimestamp());
-//	    if (lastFulltextUpdate == null || lastFulltextUpdate.after(deletionDate))
-	    if (lastFulltextUpdate == null) {
-		// nothing to do, record doesn't exists in the fulltext or transcription was
-		// already updated by another annotation
-		LOGGER.info(
-			"Fulltext record {} doesn't exist for annotation {}  or the record was updated with a later timestamp than the curent one {}: {}",
-			annotationDeletion.getResourceId(), annotationDeletion.getAnnotaionId(), deletionDate,
-			lastFulltextUpdate);
-	    } else {
-		toDelete.add(annotationDeletion.getResourceId());
-	    }
-	}
+    	int page=0;
+    	int limit=1000;
+    	List<AnnotationDeletion> deletedAnnos = annotationAuxilaryMethodsApi.getDeletedWithAdditionalInfo(null, DateUtils.convertDateToStr(startingDate), null, page, limit);
+    	if (deletedAnnos == null) {
+    	    LOGGER.debug("No disabled resources to process!");
+    	    return;
+    	}
+    	while(deletedAnnos!=null && deletedAnnos.size()>0) {
+			Date lastFulltextUpdate, deletionDate;
+			for (AnnotationDeletion annotationDeletion : deletedAnnos) {
+			    if (annotationDeletion.getResourceId() == null) {
+				LOGGER.info("annotation doesn't have a resource id {}", annotationDeletion.getAnnotaionId());
+				continue;
+			    }
+			    lastFulltextUpdate = fulltextAPI.getLastAnnotationUpdate(annotationDeletion.getResourceId());
+			    deletionDate = new Date(annotationDeletion.getTimestamp());
+    			//if (lastFulltextUpdate == null || lastFulltextUpdate.after(deletionDate))
+			    if (lastFulltextUpdate == null) {
+				//nothing to do, record doesn't exists in the fulltext or transcription was
+				//already updated by another annotation
+				LOGGER.info(
+					"Fulltext record {} doesn't exist for annotation {}  or the record was updated with a later timestamp than the curent one {}: {}",
+					annotationDeletion.getResourceId(), annotationDeletion.getAnnotaionId(), deletionDate,
+					lastFulltextUpdate);
+			    } else {
+				toDelete.add(annotationDeletion.getResourceId());
+			    }
+			}			
+			page+=1;
+			deletedAnnos = annotationAuxilaryMethodsApi.getDeletedWithAdditionalInfo(null, DateUtils.convertDateToStr(startingDate), null, page, limit);
+		}
     }
 
 }

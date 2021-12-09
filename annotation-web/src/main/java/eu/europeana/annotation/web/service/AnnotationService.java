@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
+import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -145,8 +147,9 @@ public interface AnnotationService {
 	 * Check whether moderation record for given provider and identifier already exist in database.
 	 * @param annoId
 	 * @return
+	 * @throws ModerationMongoException
 	 */
-	public boolean existsModerationInDb(AnnotationId annoId);
+	public boolean existsModerationInDb(AnnotationId annoId) throws ModerationMongoException;
 		
 	/**
 	 * This method updates annotation status.
@@ -230,8 +233,8 @@ public interface AnnotationService {
 	 * @param limit
 	 * @return
 	 */
-	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String stopDate, int page, int limit);
+	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
 
-	
+	public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit);
 	
 }

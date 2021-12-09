@@ -37,7 +37,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		validateResponse(response);
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
@@ -54,7 +54,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		validateResponse(response);
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
@@ -66,7 +66,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		/**
 		 * get annotation by provider and identifier
 		 */
-		ResponseEntity<String> getResponse = getApiClient().getModerationReport(
+		ResponseEntity<String> getResponse = getApiProtocolClient().getModerationReport(
 				TEST_API_KEY
 				, storedAnno.getAnnotationId().getIdentifier()
 				, TEST_USER_TOKEN
@@ -95,7 +95,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), status);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getAnnotationId());
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
 	}

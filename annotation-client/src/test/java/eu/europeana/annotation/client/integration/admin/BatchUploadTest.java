@@ -87,7 +87,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(
+		ResponseEntity<String> uploadResponse = getApiProtocolClient().uploadAnnotations(
 			requestBody, true);
 
 		// response status must be 201 CREATED
@@ -102,7 +102,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		Annotation storedAnnotation;
 		for (int i = 0; i < testAnnotations.size(); i++) {
 			response =  getAnnotation(testAnnotations.get(i));
-			storedAnnotation = getApiClient().parseResponseBody(response);
+			storedAnnotation = getApiProtocolClient().parseResponseBody(response);
 			String value = storedAnnotation.getBody().getValue();
 			assertTrue(value.startsWith("tag"));
 			// assuming equal order of test annotations and updated annotations
@@ -134,7 +134,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		assertNotNull(requestBody);
 
 		// batch upload request (using pundit provider, ID must be provided by via field)
-		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(
+		ResponseEntity<String> uploadResponse = getApiProtocolClient().uploadAnnotations(
 				requestBody, true);
 
 		// response status must be 201 CREATED
@@ -158,7 +158,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE_NONEXISTING_ERROR), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(
+		ResponseEntity<String> response = getApiProtocolClient().uploadAnnotations(
 				requestBody, false);
 
 		// response status must be 404 NOT FOUND
@@ -212,7 +212,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VALIDATION_ERROR);
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(
+		ResponseEntity<String> response = getApiProtocolClient().uploadAnnotations(
 				requestBody, false);
 
 		// response status must be 400 BAD_REQUEST

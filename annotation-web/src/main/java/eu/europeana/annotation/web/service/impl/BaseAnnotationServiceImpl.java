@@ -84,8 +84,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
     public void setSolrService(SolrAnnotationService solrService) {
 	this.solrService = solrService;
     }
-
-    //@Deprecated
+    
     public Annotation getAnnotationById(AnnotationId annoId, String userId, boolean enabled)
 	    throws AnnotationNotFoundException, UserAuthorizationException {
 	Annotation annotation = getMongoPersistence().find(annoId);
@@ -115,7 +114,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	return annotation;
     }
 
-    public void checkVisibility(Annotation annotation) throws AnnotationStateException {
+    protected void checkVisibility(Annotation annotation) throws AnnotationStateException {
 		// Annotation res = null;
 		// res =
 		// getMongoPersistence().find(annotation.getAnnotationId().getProvider(),
@@ -132,7 +131,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
      * eu.europeana.annotation.web.service.AnnotationService#checkVisibility(eu.
      * europeana.annotation.definitions.model.Annotation, java.lang.String)
 	 */
-    public void checkPrivacy(Annotation annotation, String user) throws AnnotationStateException {
+    protected void checkPrivacy(Annotation annotation, String user) throws AnnotationStateException {
 		// TODO update when the authorization concept is specified
 		if (annotation.isPrivate() && !annotation.getCreator().getHttpUrl().equals(user))
 		    throw new AnnotationStateException(AnnotationStateException.MESSAGE_NOT_ACCESSIBLE,

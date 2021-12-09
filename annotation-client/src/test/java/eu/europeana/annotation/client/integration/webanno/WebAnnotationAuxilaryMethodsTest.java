@@ -3,7 +3,6 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,8 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.api.commons.definitions.utils.DateUtils;
 
 public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest { 
 	
@@ -22,17 +23,20 @@ public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest {
 		Annotation anno_subtitle = createTestAnnotation(SUBTITLE_MINIMAL, null);
 		
 		//delete both annotations
-		getApiClient().deleteAnnotation(anno_tag.getAnnotationId().getIdentifier());
-		getApiClient().deleteAnnotation(anno_subtitle.getAnnotationId().getIdentifier());
+		getApiProtocolClient().deleteAnnotation(anno_tag.getAnnotationId().getIdentifier());
+		getApiProtocolClient().deleteAnnotation(anno_subtitle.getAnnotationId().getIdentifier());
 		
-		final String pattern = "dd-MM-yyyy";
-		String startDate = new SimpleDateFormat(pattern).format(new Date());
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.DATE, 1); //getting the tommorow's date
-		String stopDate = new SimpleDateFormat(pattern).format(c.getTime());
-
-		List<String> result = getApiClient().getDeleted(null, startDate, stopDate, 0, 100);
-		assertTrue(result.size()>0);
+		Date now = new Date();
+		Calendar calendar = Calendar.getInstance(); 
+		calendar.setTime(now); 
+		calendar.add(Calendar.DATE, -1);
+		Date startDate = calendar.getTime();
+		calendar.add(Calendar.DATE, 2);
+		Date stopDate = calendar.getTime();
+		
+		List<String> result = getApiAuxilaryMethodsClient().getDeleted(null, DateUtils.convertDateToStr(startDate), DateUtils.convertDateToStr(stopDate), 0, 100);
+		assertTrue(result.contains(WebAnnotationFields.ANNOTATION_ID_PREFIX + "/" + anno_tag.getAnnotationId().getIdentifier()));
+		assertTrue(result.contains(WebAnnotationFields.ANNOTATION_ID_PREFIX + "/" + anno_subtitle.getAnnotationId().getIdentifier()));
 	}
 			
 				

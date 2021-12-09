@@ -1066,23 +1066,26 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	return postURL(url, tag, authorizationHeaderName, regularUserAuthorizationValue);
     }
 
-    public String getDeleted(String motivation, String afterDate, String beforeDate, int page, int limit) throws IOException, JsonParseException {
+    public String getDeleted(String motivation, String from, String to, int page, int limit, boolean withAdditionalInfo) throws IOException, JsonParseException {
 	String url = getAnnotationServiceUri() + "s";
-	url += WebAnnotationFields.SLASH + "deleted";
+	if(withAdditionalInfo) 
+		url += WebAnnotationFields.SLASH + "deleted_with_additional_info";
+	else
+		url += WebAnnotationFields.SLASH + "deleted";
 	boolean hasAtLeastOneParam = false;
-	if(afterDate!=null) {
+	if(from!=null) {
 		if(!hasAtLeastOneParam) {
-			url += "?afterDate" + EQUALS + afterDate;
+			url += "?from" + EQUALS + from;
 			hasAtLeastOneParam=true;
 		}
-		else url += AND + "afterDate" + EQUALS + afterDate;
+		else url += AND + "from" + EQUALS + from;
 	}
-	if(beforeDate!=null) {
+	if(to!=null) {
 		if(!hasAtLeastOneParam) {
-			url += "?beforeDate" + EQUALS + beforeDate;
+			url += "?to" + EQUALS + to;
 			hasAtLeastOneParam=true;
 		}
-		else url += AND + "beforeDate" + EQUALS + beforeDate;
+		else url += AND + "to" + EQUALS + to;
 	}
 	url += AND + "page" + EQUALS + page;
 	url += AND + "limit" + EQUALS + limit;

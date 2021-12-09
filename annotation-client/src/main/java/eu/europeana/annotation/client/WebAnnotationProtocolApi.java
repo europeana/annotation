@@ -1,4 +1,4 @@
-package eu.europeana.annotation.client.webanno;
+package eu.europeana.annotation.client;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 
-public interface WebAnnotationApi {
+public interface WebAnnotationProtocolApi {
 
 	/**
 	 * This method creates annotation describing it in body JSON string and
@@ -130,7 +130,5 @@ public interface WebAnnotationApi {
 
 		
 	public ResponseEntity<String> uploadAnnotations(String annotations, Boolean indexOnCreate);
-
-    public List<String> getDeleted(String motivation, String afterDate, String beforeDate, int page, int limit);
 
 }

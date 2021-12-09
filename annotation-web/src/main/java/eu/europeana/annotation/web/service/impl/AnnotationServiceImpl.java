@@ -22,6 +22,7 @@ import eu.europeana.annotation.definitions.exception.ModerationRecordValidationE
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
+import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
@@ -321,29 +322,22 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public Annotation disableAnnotation(AnnotationId annoId) {
-	try {
 	    // disable annotation
 	    Annotation res = getMongoPersistence().find(annoId);
 	    return disableAnnotation(res);
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
     }
 
     @Override
     public Annotation disableAnnotation(Annotation annotation) {
 	PersistentAnnotation persistentAnnotation;
-	try {
-	    if (annotation instanceof PersistentAnnotation)
-		persistentAnnotation = (PersistentAnnotation) annotation;
-	    else
-		persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
 
-	    persistentAnnotation.setDisabled(new Date());
-	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
+    if (annotation instanceof PersistentAnnotation)
+	persistentAnnotation = (PersistentAnnotation) annotation;
+    else
+	persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
+
+    persistentAnnotation.setDisabled(new Date());
+    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 
 	if (getConfiguration().isIndexingEnabled())
 	    removeFromIndex(annotation);
@@ -354,13 +348,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     @Override
     public Annotation enableAnnotation(AnnotationId annoId) throws AnnotationServiceException {
 		PersistentAnnotation persistentAnnotation;
-		try {	    
-			persistentAnnotation = getMongoPersistence().find(annoId);
-		    persistentAnnotation.setDisabled(null);
-		    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
-		} catch (Exception e) {
-		    throw new RuntimeException(e);
-		}
+		persistentAnnotation = getMongoPersistence().find(annoId);
+	    persistentAnnotation.setDisabled(null);
+	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 	
 		if (getConfiguration().isIndexingEnabled()) {
 			getSolrService().store(persistentAnnotation);
@@ -409,24 +399,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public List<? extends Annotation> getExisting(List<String> annotationHttpUrls) {
-	try {
 	    List<? extends Annotation> dbRes = getMongoPersistence().getAnnotationList(annotationHttpUrls);
 	    return dbRes;
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
     }
 
-    public boolean existsModerationInDb(AnnotationId annoId) {
-	boolean res = false;
-	try {
+    public boolean existsModerationInDb(AnnotationId annoId) throws ModerationMongoException {
+    	boolean res = false;
 	    ModerationRecord dbRes = getMongoModerationRecordPersistence().find(annoId);
 	    if (dbRes != null)
 		res = true;
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
-	return res;
+	    return res;
     }
 
     /*
@@ -649,9 +631,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return entityIds;
     }
 
-    public List<String> getDeletedAnnotationSet(MotivationTypes motivation, String startDate, String stopDate, int page, int limit) {
-
-    	List<String> res = getMongoPersistence().getDeletedByTimestamp(motivation, startDate, stopDate, page, limit);
+    public List<String> getDeletedAnnotationSet(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
+    	List<String> res = getMongoPersistence().getDisabled(motivation, startDate, stopDate, page, limit);
+    	return res;
+    }
+    
+    public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
+    	List<AnnotationDeletion> res = getMongoPersistence().getDisabledWithAdditionalInfo(motivation, startDate, stopDate, page, limit);
     	return res;
     }
     
