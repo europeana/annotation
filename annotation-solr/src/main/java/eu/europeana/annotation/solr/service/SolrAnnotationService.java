@@ -152,7 +152,6 @@ public interface SolrAnnotationService {
 	 */
 	public ResultSet<? extends AnnotationView> search(String term, String start, String rows) throws AnnotationServiceException;
 
-	QueryResponse getAnnotationStatisticsJsonNestedFacets(String mainFacetField) throws AnnotationServiceException;
+    public QueryResponse getAnnotationStatisticsJsonFacets (String fieldName) throws AnnotationServiceException;
 
-	QueryResponse getAnnotationStatisticsJsonFacets() throws AnnotationServiceException;
 }

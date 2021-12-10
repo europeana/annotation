@@ -1,7 +1,6 @@
 package eu.europeana.annotation.statistics.model;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,42 +11,15 @@ import eu.europeana.annotation.statistics.vocabulary.AnnotationStatisticsConstan
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnnotationMetric {
-    
-	@JsonProperty(AnnotationStatisticsConstants.CREATED)
-    private Date timestamp;
-
-	@JsonProperty(AnnotationStatisticsConstants.PER_CLIENT)
-	List<AnnotationStatistics> annotationStatisticsClients;
-
-	@JsonProperty(AnnotationStatisticsConstants.PER_USER)
-	List<AnnotationStatistics> annotationStatisticsUsers;
 
 	@JsonProperty(AnnotationStatisticsConstants.PER_SCENARIO)
 	AnnotationStatistics annotationStatisticsScenarios;
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
+	@JsonProperty(AnnotationStatisticsConstants.PER_CLIENT)
+	Map<String, Long> annotationStatisticsClients;
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-	public List<AnnotationStatistics> getAnnotationStatisticsClients() {
-		return annotationStatisticsClients;
-	}
-
-	public void setAnnotationStatisticsClients(List<AnnotationStatistics> annotationStatisticsClients) {
-		this.annotationStatisticsClients = annotationStatisticsClients;
-	}
-
-	public List<AnnotationStatistics> getAnnotationStatisticsUsers() {
-		return annotationStatisticsUsers;
-	}
-
-	public void setAnnotationStatisticsUsers(List<AnnotationStatistics> annotationStatisticsUsers) {
-		this.annotationStatisticsUsers = annotationStatisticsUsers;
-	}
+	@JsonProperty(AnnotationStatisticsConstants.PER_USER)
+	Map<String, Long> annotationStatisticsUsers;
 
 	public AnnotationStatistics getAnnotationStatisticsScenarios() {
 		return annotationStatisticsScenarios;
@@ -56,6 +28,20 @@ public class AnnotationMetric {
 	public void setAnnotationStatisticsScenarios(AnnotationStatistics annotationStatisticsScenarios) {
 		this.annotationStatisticsScenarios = annotationStatisticsScenarios;
 	}
-
 	
+	public Map<String, Long> getAnnotationStatisticsClients() {
+		return annotationStatisticsClients;
+	}
+
+	public void setAnnotationStatisticsClients(Map<String, Long> annotationStatisticsClients) {
+		this.annotationStatisticsClients = annotationStatisticsClients;
+	}
+
+	public Map<String, Long> getAnnotationStatisticsUsers() {
+		return annotationStatisticsUsers;
+	}
+
+	public void setAnnotationStatisticsUsers(Map<String, Long> annotationStatisticsUsers) {
+		this.annotationStatisticsUsers = annotationStatisticsUsers;
+	}
 }

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.statistics.model.AnnotationMetric;
-import eu.europeana.annotation.statistics.model.AnnotationStatistics;
 import eu.europeana.annotation.statistics.serializer.AnnotationStatisticsSerializer;
 import eu.europeana.annotation.statistics.service.AnnotationStatisticsService;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -28,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @SwaggerSelect
-@Api(tags = "Annotation Statistics API")
+@Api(tags = "Annotation Statistics", description=" ")
 public class AnnotationStatisticsRest extends BaseJsonldRest {
 
 	@Resource

@@ -38,7 +38,6 @@ public class SwaggerConfig {
 
 	@Value("${springfox.api.hiddenPackages}")
 	private String hiddenPackages;
-
 	
 	private Docket docketConfig;
 
@@ -56,6 +55,7 @@ public class SwaggerConfig {
 					// excludes SwaggerIgnore
 					.apis(not(or(withMethodAnnotation(SwaggerIgnore.class), 
 							withClassAnnotation(SwaggerIgnore.class))));
+
 			//exclude ignored packages
 			if(StringUtils.isNotBlank(hiddenPackages)){
 				String[] packages = hiddenPackages.split(",");

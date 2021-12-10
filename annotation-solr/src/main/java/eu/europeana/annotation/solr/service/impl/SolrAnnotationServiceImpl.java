@@ -343,43 +343,22 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
 
 	@Override
-    public QueryResponse getAnnotationStatisticsJsonNestedFacets (String mainFacetField)
-	    throws AnnotationServiceException {		
-		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(mainFacetField).setLimit(10);
-		final TermsFacetMap topManufacturerFacet = new TermsFacetMap(SolrAnnotationConstants.SCENARIO);
-		topCategoriesFacet.withSubFacet(SolrAnnotationConstants.SCENARIO, topManufacturerFacet);
-		final JsonQueryRequest request = new JsonQueryRequest()
-		    .setQuery("*:*")
-		    .setLimit(0)
-		    .withFacet(mainFacetField, topCategoriesFacet);
-		// Query the server
-		try {
-		    getLogger().debug("Getting the annotations statstics with the json nested facets for the main facet field: {}, and the nested facet field: {}.", mainFacetField, SolrAnnotationConstants.SCENARIO);
-		    QueryResponse queryResponse = request.process(solrClient);
-		    return queryResponse;
-		} catch (SolrServerException | IOException e) {
-		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
-		}
-    }
-	
-	@Override
-    public QueryResponse getAnnotationStatisticsJsonFacets ()
+    public QueryResponse getAnnotationStatisticsJsonFacets (String fieldName)
 	    throws AnnotationServiceException {
-		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(SolrAnnotationConstants.SCENARIO);
+		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(fieldName);
 		final JsonQueryRequest request = new JsonQueryRequest()
 		    .setQuery("*:*")
 		    .setLimit(0)
-		    .withFacet(SolrAnnotationConstants.SCENARIO, topCategoriesFacet);
+		    .withFacet(fieldName, topCategoriesFacet);
 		// Query the server
 		try {
-		    getLogger().debug("Getting the annotations statstics with the json nested facets for the facet field: {}.", SolrAnnotationConstants.SCENARIO);
+		    getLogger().debug("Getting the annotations statstics with the json nested facets for the facet field: {}.", fieldName);
 		    QueryResponse queryResponse = request.process(solrClient);
 		    return queryResponse;
 		} catch (SolrServerException | IOException e) {
 		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
 		}
     }
-
     @Override
     public void update(Annotation anno) throws AnnotationServiceException {
 	update(anno, null);
