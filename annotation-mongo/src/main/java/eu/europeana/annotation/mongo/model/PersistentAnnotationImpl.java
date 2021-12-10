@@ -52,7 +52,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 
 	private Date lastIndexed;
 
-	private boolean disabled;
+	private Date disabled;
 	private String sameAs;
 	private String equivalentTo;
 	
@@ -191,11 +191,17 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	@Override
 	public boolean isDisabled() {
-		return disabled;
+		return disabled!=null;
 	}
 
-	public void setDisabled(boolean disabled) {
+	@Override
+	public void setDisabled(Date disabled) {
 		this.disabled = disabled;
+	}
+	
+	@Override
+	public Date getDisabled() {
+		return disabled;
 	}
 	
 	public String toString() {

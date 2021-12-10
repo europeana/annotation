@@ -16,13 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 
 
 //TODO: enabled when whitelistEntry API is enabled
 //@Ignore 
-public class WhitelistJsonApiTest extends BaseWebAnnotationProtocolTest {
+public class WhitelistJsonApiTest extends BaseWebAnnotationTest {
 
 	private static String TEST_HTTP_URI = "http://test.data.europeana.eu";
 	

@@ -1066,11 +1066,37 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	return postURL(url, tag, authorizationHeaderName, regularUserAuthorizationValue);
     }
 
-    public String getDeleted(String motivation, Long afterTimestamp) throws IOException, JsonParseException {
+    public String getDeleted(String motivation, String from, String to, int page, int limit, boolean withAdditionalInfo) throws IOException, JsonParseException {
 	String url = getAnnotationServiceUri() + "s";
-	url += WebAnnotationFields.SLASH;
-	url += "deleted?afterTimestamp" + EQUALS + afterTimestamp;
-	url += AND + WebAnnotationFields.MOTIVATION + EQUALS + motivation;
+	if(withAdditionalInfo) 
+		url += WebAnnotationFields.SLASH + "deleted_with_additional_info";
+	else
+		url += WebAnnotationFields.SLASH + "deleted";
+	boolean hasAtLeastOneParam = false;
+	if(from!=null) {
+		if(!hasAtLeastOneParam) {
+			url += "?from" + EQUALS + from;
+			hasAtLeastOneParam=true;
+		}
+		else url += AND + "from" + EQUALS + from;
+	}
+	if(to!=null) {
+		if(!hasAtLeastOneParam) {
+			url += "?to" + EQUALS + to;
+			hasAtLeastOneParam=true;
+		}
+		else url += AND + "to" + EQUALS + to;
+	}
+	url += AND + "page" + EQUALS + page;
+	url += AND + "limit" + EQUALS + limit;
+	if(motivation!=null) {
+		if(!hasAtLeastOneParam) {
+			url += WebAnnotationFields.MOTIVATION + EQUALS + motivation;
+			hasAtLeastOneParam=true;
+		}
+		else url += AND + WebAnnotationFields.MOTIVATION + EQUALS + motivation;
+	}
+	
 	url += AND + WebAnnotationFields.PARAM_WSKEY + EQUALS + getApiKey();
 
 	logger.debug("Get deleted annotation ids with URL: " + url);

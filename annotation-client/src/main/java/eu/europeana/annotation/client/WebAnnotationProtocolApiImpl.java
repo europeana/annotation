@@ -1,11 +1,14 @@
-package eu.europeana.annotation.client.webanno;
+package eu.europeana.annotation.client;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.ResponseEntity;
 
-import eu.europeana.annotation.client.BaseAnnotationApi;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
@@ -162,5 +165,4 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 
 	return res;
     }
-
 }
