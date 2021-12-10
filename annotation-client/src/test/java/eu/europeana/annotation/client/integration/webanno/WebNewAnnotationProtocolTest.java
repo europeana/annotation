@@ -3,7 +3,7 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest.*;
+import static eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest.*;
 
 
 import java.io.IOException;

@@ -120,6 +120,8 @@ public class BaseWebAnnotationTest {
 	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3 = "/semantictag/dereferenced_semantictag_viaf_test_entity3.json";
 	public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
 	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
+	public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
+	public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
 	
 	
 	
