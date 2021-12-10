@@ -83,6 +83,14 @@ public class WebAnnotationSearchRest extends BaseRest {
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
 
+	    SearchProfiles searchProfile = getProfile(profile, request);
+	    // here we need a query search profile - dereference is not a query search
+	    // profile - we use default
+	    SearchProfiles querySearchProfile = searchProfile;
+	    if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
+		querySearchProfile = SearchProfiles.STANDARD;
+	    }
+
 	    String sortFieldStr = null;
 	    if (sortField != null)
 		sortFieldStr = sortField.getSolrField();
@@ -91,15 +99,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 		sortOrderField = SortOrder.desc.name();
 	    if (sortOrder != null)
 		sortOrderField = sortOrder.toString();
-
-	    SearchProfiles searchProfile = getProfile(profile, request);
-
-	    // here we need a query search profile - dereference is not a query search
-	    // profile - we use default
-	    SearchProfiles querySearchProfile = searchProfile;
-	    if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
-		querySearchProfile = SearchProfiles.STANDARD;
-	    }
 
 	    // ** build search query
 	    Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
@@ -139,11 +138,17 @@ public class WebAnnotationSearchRest extends BaseRest {
 	}
     }
 
-    private SearchProfiles getProfile(String profile, HttpServletRequest request) {
+    private SearchProfiles getProfile(String profile, HttpServletRequest request) throws ParamValidationException {
 
 	// if the profile parameter is given, the header preference is ignored
 	if (profile != null) {
-	    return SearchProfiles.valueOf(profile.toUpperCase());
+	    if (!SearchProfiles.contains(profile)) {
+	    	throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+				I18nConstants.INVALID_PARAM_VALUE,
+				new String[] { WebAnnotationFields.PARAM_PROFILE, profile });
+	    }
+	    
+	    return SearchProfiles.getByStr(profile);
 	}
 
 	String preferHeader = request.getHeader(HttpHeaders.PREFER);

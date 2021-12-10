@@ -29,7 +29,6 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
-import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
@@ -37,6 +36,7 @@ import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -291,7 +291,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	if (webAnnotation.getTarget() != null)
 	    annotation.setTarget(webAnnotation.getTarget());
 	if (annotation.isDisabled() != webAnnotation.isDisabled())
-	    annotation.setDisabled(webAnnotation.isDisabled());
+	    annotation.setDisabled(webAnnotation.getDisabled());
 	if (webAnnotation.getEquivalentTo() != null)
 	    annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
 	if (webAnnotation.getInternalType() != null)
@@ -322,34 +322,42 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public Annotation disableAnnotation(AnnotationId annoId) {
-	try {
 	    // disable annotation
 	    Annotation res = getMongoPersistence().find(annoId);
 	    return disableAnnotation(res);
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
     }
 
     @Override
     public Annotation disableAnnotation(Annotation annotation) {
 	PersistentAnnotation persistentAnnotation;
-	try {
-	    if (annotation instanceof PersistentAnnotation)
-		persistentAnnotation = (PersistentAnnotation) annotation;
-	    else
-		persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
 
-	    persistentAnnotation.setDisabled(true);
-	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
+    if (annotation instanceof PersistentAnnotation)
+	persistentAnnotation = (PersistentAnnotation) annotation;
+    else
+	persistentAnnotation = getMongoPersistence().find(annotation.getAnnotationId());
+
+    persistentAnnotation.setDisabled(new Date());
+    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 
 	if (getConfiguration().isIndexingEnabled())
 	    removeFromIndex(annotation);
 
 	return persistentAnnotation;
+    }
+    
+    @Override
+    public Annotation enableAnnotation(AnnotationId annoId) throws AnnotationServiceException {
+		PersistentAnnotation persistentAnnotation;
+		persistentAnnotation = getMongoPersistence().find(annoId);
+	    persistentAnnotation.setDisabled(null);
+	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
+	
+		if (getConfiguration().isIndexingEnabled()) {
+			getSolrService().store(persistentAnnotation);
+		    // save the time of the last SOLR indexing
+		    updateLastIndexingTime(persistentAnnotation, persistentAnnotation.getLastUpdate());
+		}
+		return persistentAnnotation;
     }
 
     protected void removeFromIndex(Annotation annotation) {
@@ -391,24 +399,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public List<? extends Annotation> getExisting(List<String> annotationHttpUrls) {
-	try {
 	    List<? extends Annotation> dbRes = getMongoPersistence().getAnnotationList(annotationHttpUrls);
 	    return dbRes;
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
     }
 
-    public boolean existsModerationInDb(AnnotationId annoId) {
-	boolean res = false;
-	try {
+    public boolean existsModerationInDb(AnnotationId annoId) throws ModerationMongoException {
+    	boolean res = false;
 	    ModerationRecord dbRes = getMongoModerationRecordPersistence().find(annoId);
 	    if (dbRes != null)
 		res = true;
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	}
-	return res;
+	    return res;
     }
 
     /*
@@ -631,19 +631,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	return entityIds;
     }
 
-    public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivation, String startDate,
-	    String startTimestamp) {
-	if (!StringUtils.isBlank(startDate)) {
-	    startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
-	}
-
-	String motivationOaType = null;
-	if(motivation!=null) { 
-		motivationOaType = motivation.getOaType();
-	}
-	List<AnnotationDeletion> res = getMongoPersistence().getDeletedByLastUpdateTimestamp(motivationOaType, startTimestamp);
-
-	return res;
+    public List<String> getDeletedAnnotationSet(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
+    	List<String> res = getMongoPersistence().getDisabled(motivation, startDate, stopDate, page, limit);
+    	return res;
+    }
+    
+    public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
+    	List<AnnotationDeletion> res = getMongoPersistence().getDisabledWithAdditionalInfo(motivation, startDate, stopDate, page, limit);
+    	return res;
     }
     
     protected boolean validateResource(String url) throws ParamValidationException {

@@ -29,7 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 
@@ -38,7 +38,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
  * 
  * @author Sven Schlarb
  */
-public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
+public class BatchUploadTest extends BaseWebAnnotationTest {
 
 	// annotation page test resources
 	public static final String TAG_ANNO_PAGE = "/tag/batch/annotation_page.json";
@@ -87,7 +87,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(
+		ResponseEntity<String> uploadResponse = getApiProtocolClient().uploadAnnotations(
 			requestBody, true);
 
 		// response status must be 201 CREATED
@@ -102,7 +102,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		Annotation storedAnnotation;
 		for (int i = 0; i < testAnnotations.size(); i++) {
 			response =  getAnnotation(testAnnotations.get(i));
-			storedAnnotation = getApiClient().parseResponseBody(response);
+			storedAnnotation = getApiProtocolClient().parseResponseBody(response);
 			String value = storedAnnotation.getBody().getValue();
 			assertTrue(value.startsWith("tag"));
 			// assuming equal order of test annotations and updated annotations
@@ -134,7 +134,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		assertNotNull(requestBody);
 
 		// batch upload request (using pundit provider, ID must be provided by via field)
-		ResponseEntity<String> uploadResponse = getApiClient().uploadAnnotations(
+		ResponseEntity<String> uploadResponse = getApiProtocolClient().uploadAnnotations(
 				requestBody, true);
 
 		// response status must be 201 CREATED
@@ -158,7 +158,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = replaceIdentifiers(getJsonStringInput(TAG_ANNO_PAGE_NONEXISTING_ERROR), "httpurl");
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(
+		ResponseEntity<String> response = getApiProtocolClient().uploadAnnotations(
 				requestBody, false);
 
 		// response status must be 404 NOT FOUND
@@ -212,7 +212,7 @@ public class BatchUploadTest extends BaseWebAnnotationProtocolTest {
 		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VALIDATION_ERROR);
 
 		// batch upload request
-		ResponseEntity<String> response = getApiClient().uploadAnnotations(
+		ResponseEntity<String> response = getApiProtocolClient().uploadAnnotations(
 				requestBody, false);
 
 		// response status must be 400 BAD_REQUEST

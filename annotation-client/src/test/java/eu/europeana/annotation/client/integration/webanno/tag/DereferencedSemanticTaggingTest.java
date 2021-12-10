@@ -95,7 +95,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		
 		assertNotNull(response.getBody());
 		
-		Annotation retrievedAnnotation = getApiClient().parseResponseBody(response);
+		Annotation retrievedAnnotation = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(retrievedAnnotation.getBody().getHttpUri());		
 		assertEquals(retrievedAnnotation.getBody().getHttpUri(),storedAnno.getBody().getValue());		
 		assertNotNull(((EdmAgent) ((EdmAgentBody) retrievedAnnotation.getBody()).getAgent()).getDateOfBirth());		
@@ -126,7 +126,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		
 		assertNotNull(response.getBody());
 		
-		Annotation retrievedAnnotation = getApiClient().parseResponseBody(response);
+		Annotation retrievedAnnotation = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(retrievedAnnotation.getBody().getHttpUri());		
 		assertEquals(retrievedAnnotation.getBody().getHttpUri(),storedAnno.getBody().getValue());		
 		assertNotNull(((EdmAgent) ((EdmAgentBody) retrievedAnnotation.getBody()).getAgent()).getDateOfBirth());		

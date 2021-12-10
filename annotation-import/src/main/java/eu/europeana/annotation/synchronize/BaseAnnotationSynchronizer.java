@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
-import eu.europeana.annotation.client.AuxiliaryMethodsApiImpl;
+import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApiImpl;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.fulltext.api.FulltextAPI;
 import eu.europeana.metadata.api.MetadataAPI;
@@ -34,8 +34,9 @@ public class BaseAnnotationSynchronizer {
     public static final String SOLR_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     Properties appProps;
+    
     AnnotationSearchApiImpl annotationSearchApi;
-    AuxiliaryMethodsApiImpl annotationAuxiliaryApi;
+    WebAnnotationAuxilaryMethodsApiImpl annotationAuxilaryMethodsApi;
     MetadataAPI metadataAPI;
     FulltextAPI fulltextAPI;
     int pageSize = 100;
@@ -77,9 +78,9 @@ public class BaseAnnotationSynchronizer {
 	if (solrFulltextCollection == null || solrFulltextCollection.isEmpty())
 	    throw new IllegalArgumentException(PROP_SOLR_FULLTEXT_COLLECTION + " should not be null or empty!");
 
-	// initialize annotation search
 	annotationSearchApi = new AnnotationSearchApiImpl();
-	annotationAuxiliaryApi = new AuxiliaryMethodsApiImpl();
+
+	annotationAuxilaryMethodsApi = new WebAnnotationAuxilaryMethodsApiImpl();
 
 	// initialize metadata api
 	String[] metadataURLs = getProperty(PROP_SOLR_METADATA_URL).split(",");

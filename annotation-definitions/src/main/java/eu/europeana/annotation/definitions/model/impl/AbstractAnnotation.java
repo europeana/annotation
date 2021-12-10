@@ -28,7 +28,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	private String motivation;
 	private Style styledBy;	
 	protected MotivationTypes motivationType;	
-	private boolean disabled;	
+	private Date disabled;	
 	private String sameAs;
 	private String equivalentTo;
 	private String status;
@@ -312,11 +312,17 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	
 	@Override
 	public boolean isDisabled() {
-		return disabled;
+		return disabled!=null;
 	}
 
-	public void setDisabled(boolean disabled) {
+	@Override
+	public void setDisabled(Date disabled) {
 		this.disabled = disabled;
+	}
+	
+	@Override
+	public Date getDisabled() {
+		return disabled;
 	}
 		
 	public String getSameAs() {

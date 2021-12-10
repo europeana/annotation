@@ -8,6 +8,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationValidationExcepti
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
@@ -25,18 +26,6 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public List<? extends Annotation> getAnnotationListByResourceId(String resourceId);
 
-	/**
-	 * This method retrieves annotations applying filters.
-	 * @param europeanaId
-	 * @param provider
-	 * @param startOn
-	 * @param limit
-	 * @param isDisabled
-	 * @return the list of annotations
-	 */
-	public List<? extends Annotation> getFilteredAnnotationList (
-			String europeanaId, String provider, String startOn, String limit, boolean isDisabled);
-	
 	public List<? extends Annotation> getAnnotationList (List<String> annotationIds);
 	
 	public PersistentAnnotation find(AnnotationId annoId);
@@ -85,7 +74,9 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 	
-	public List<AnnotationDeletion> getDeletedByLastUpdateTimestamp(String motivation, String startTimestamp);
+    public List<AnnotationDeletion> getDisabledWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit);
+
+	public List<String> getDisabled(MotivationTypes motivation, Date startTimestamp, Date stopTimestamp, int page, int limit);
 
 	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
 
