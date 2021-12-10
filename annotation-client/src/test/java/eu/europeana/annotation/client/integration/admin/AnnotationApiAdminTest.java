@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -27,7 +27,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
  * 
  * @author Sven Schlarb
  */
-public class AnnotationApiAdminTest extends BaseWebAnnotationProtocolTest {
+public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 
 	public static final String TAG_INDEXING = "/tag/tag_indexing.json";
 	

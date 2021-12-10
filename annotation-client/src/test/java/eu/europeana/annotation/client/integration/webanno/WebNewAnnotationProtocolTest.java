@@ -19,7 +19,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
  * This class aims at testing of the annotation methods.
  * @author GrafR
  */
-public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest { 
+public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest { 
 
 		
 	@Test
@@ -39,7 +39,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), status);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getAnnotationId());
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
 	}
@@ -52,7 +52,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		/**
 		 * get annotation by provider and identifier
 		 */
-		ResponseEntity<String> response = getApiClient().getAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().getAnnotation(
 				getApiKey()
 				, annotation.getAnnotationId().getIdentifier()
 				);
@@ -74,7 +74,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 				
 //		update annotation by identifier URL
-		ResponseEntity<String> updateResponse = getApiClient().updateAnnotation(
+		ResponseEntity<String> updateResponse = getApiProtocolClient().updateAnnotation(
 				annotation.getAnnotationId().getIdentifier(), requestBody, null);
 		
 		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(updateResponse);
@@ -93,7 +93,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationProtocolTest 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
 		
 //		delete annotation by identifier URL
-		ResponseEntity<String> response = getApiClient().deleteAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().deleteAnnotation(
 				annotation.getAnnotationId().getIdentifier());
 		
 		log.debug("Response body: " + response.getBody());

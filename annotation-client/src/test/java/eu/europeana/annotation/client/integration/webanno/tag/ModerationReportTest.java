@@ -67,7 +67,7 @@ public class ModerationReportTest extends BaseTaggingTest {
 					TEST_USER_TOKEN);
 			validateReportResponse(reportResponse, HttpStatus.CREATED);
 
-			ResponseEntity<String> response = getApiClient().deleteAnnotation(
+			ResponseEntity<String> response = getApiProtocolClient().deleteAnnotation(
 					identifier);
 			validateReportResponse(response, HttpStatus.NO_CONTENT);
 		}

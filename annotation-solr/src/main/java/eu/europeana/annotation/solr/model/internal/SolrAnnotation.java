@@ -82,4 +82,9 @@ public interface SolrAnnotation extends Annotation {
 	 */
 	void addMultilingualValue(String language, String label);
 	
+	void setScenario(String scenario);
+
+	String getScenario();
+
+	
 }

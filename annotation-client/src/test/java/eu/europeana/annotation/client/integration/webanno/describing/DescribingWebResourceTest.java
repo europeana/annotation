@@ -30,7 +30,7 @@ public class DescribingWebResourceTest extends BaseDescribingTest {
 		
 		String requestBody = getJsonStringInput(DESCRIBING_WEB_RESOURCE);
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				true, requestBody, 
 				null, null
 				);
@@ -38,7 +38,7 @@ public class DescribingWebResourceTest extends BaseDescribingTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 				
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);
