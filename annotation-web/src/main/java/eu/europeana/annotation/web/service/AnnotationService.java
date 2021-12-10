@@ -1,9 +1,9 @@
 package eu.europeana.annotation.web.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
@@ -20,7 +20,6 @@ import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
@@ -101,6 +100,15 @@ public interface AnnotationService {
 	public Annotation disableAnnotation(AnnotationId annoId);
 	
 	/**
+	 * This method enables the annotation by setting the 'disabled' field to null in the database 
+	 * and creating the solr annotation.
+	 * @param annoId
+	 * @return enabled Annotation
+	 * @throws AnnotationServiceException 
+	 */
+	public Annotation enableAnnotation(AnnotationId annoId) throws AnnotationServiceException;
+	
+	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
 	 * @param annotation The annotation object
@@ -113,9 +121,10 @@ public interface AnnotationService {
 	 * comprises provider and identifier.
 	 * @param annoId - id of the annotation to be retrieved
 	 * @param userId - id of the user sending the request (URI)
+	 * @param enabled - a flag for telling which annotation to get (enabled, when the flag is true, or disabled)
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(AnnotationId annoId, String userId) throws AnnotationNotFoundException, UserAuthorizationException;
+	public Annotation getAnnotationById(AnnotationId annoId, String userId, boolean enabled) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	
 	/**
@@ -138,8 +147,9 @@ public interface AnnotationService {
 	 * Check whether moderation record for given provider and identifier already exist in database.
 	 * @param annoId
 	 * @return
+	 * @throws ModerationMongoException
 	 */
-	public boolean existsModerationInDb(AnnotationId annoId);
+	public boolean existsModerationInDb(AnnotationId annoId) throws ModerationMongoException;
 		
 	/**
 	 * This method updates annotation status.
@@ -153,16 +163,6 @@ public interface AnnotationService {
 	 * @return
 	 */
 	public void logAnnotationStatusUpdate(String user, Annotation annotation);
-	
-	
-	/**
-	 * This method is checking the visibility of the annotation stored in the database.
-	 * @param annotation The stored annotation object
-	 * @param user The name of the current user
-	 * @return annotation object if check was successful, exception otherwise
-	 * @throws AnnotationStateException
-	 */
-	public void checkVisibility(Annotation annotation, String user) throws AnnotationStateException;
 
 	/**
 	 * this method validates the correctness of the provided annotation id (provider and identifier) 
@@ -222,15 +222,19 @@ public interface AnnotationService {
 	 * @throws JsonParseException 
 	 */
 	public void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages) throws AnnotationDereferenciationException, HttpException;
-	
-	/*
-	 * This methods returns annotation ids which where deleted after a given date 
-	 * @param startDate
-	 * @param startTimestamp
-	 * @return deleted annotation ids
-	 */
-	public List<AnnotationDeletion> getDeletedAnnotationSet(MotivationTypes motivationType, String startDate, String startTimestamp);
 
-	
+
+	/**
+	 * Returns the deleted annotations in the given date range.
+	 * @param motivationType	
+	 * @param startDate	
+	 * @param stopDate
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
+	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
+
+	public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit);
 	
 }

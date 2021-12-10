@@ -2,11 +2,11 @@ package eu.europeana.annotation.client.integration.webanno.link;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public class BaseLinkingTest extends BaseWebAnnotationProtocolTest {
+public class BaseLinkingTest extends BaseWebAnnotationTest {
 
 //	public static final String LINK_MINIMAL = "/tag/minimal.json";
 //	public static final String LINK_STANDARD = "/tag/standard.json";

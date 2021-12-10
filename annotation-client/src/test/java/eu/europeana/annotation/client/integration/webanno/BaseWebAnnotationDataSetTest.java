@@ -15,10 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import eu.europeana.annotation.client.WebAnnotationProtocolApi;
+import eu.europeana.annotation.client.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 
 public class BaseWebAnnotationDataSetTest {

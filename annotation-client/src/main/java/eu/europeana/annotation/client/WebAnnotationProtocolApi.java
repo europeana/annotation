@@ -1,4 +1,6 @@
-package eu.europeana.annotation.client.webanno;
+package eu.europeana.annotation.client;
+
+import java.util.List;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.ResponseEntity;
@@ -128,7 +130,5 @@ public interface WebAnnotationProtocolApi {
 
 		
 	public ResponseEntity<String> uploadAnnotations(String annotations, Boolean indexOnCreate);
-
-	
 
 }

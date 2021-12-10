@@ -5,11 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.stanbol.commons.exception.JsonParseException;
 
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public class BaseTaggingTest extends BaseWebAnnotationProtocolTest {
+public class BaseTaggingTest extends BaseWebAnnotationTest {
 
 	public static final String TAG_MINIMAL = "/tag/minimal.json";
 	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
