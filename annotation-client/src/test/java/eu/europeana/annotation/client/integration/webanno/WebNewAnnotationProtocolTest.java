@@ -3,6 +3,8 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest.*;
+
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -173,7 +175,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		//updated annotation value
 		String requestBody = getJsonStringInput(TRANSCRIPTION_MINIMAL);
 		//update annotation by identifier URL
-		ResponseEntity<String> updateResponse = getApiClient().updateAnnotation(
+		ResponseEntity<String> updateResponse = getApiProtocolClient().updateAnnotation(
 				annotation.getAnnotationId().getIdentifier(), requestBody, null);
 		assertEquals(HttpStatus.BAD_REQUEST, updateResponse.getStatusCode());		
 	}

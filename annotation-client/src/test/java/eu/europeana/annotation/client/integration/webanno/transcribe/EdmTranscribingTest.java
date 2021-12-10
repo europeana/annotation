@@ -1,5 +1,6 @@
 package eu.europeana.annotation.client.integration.webanno.transcribe;
 
+import static eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 

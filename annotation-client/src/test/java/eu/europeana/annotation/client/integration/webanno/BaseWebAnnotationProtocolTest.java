@@ -16,12 +16,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import eu.europeana.annotation.client.WebAnnotationProtocolApi;
+import eu.europeana.annotation.client.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.utils.BaseUtils;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
