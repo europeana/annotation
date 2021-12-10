@@ -154,4 +154,11 @@ public interface SolrAnnotationService {
 
     public QueryResponse getAnnotationStatisticsJsonFacets (String fieldName) throws AnnotationServiceException;
 
+	/**
+	 * This method checks for the duplicate annotations, to ensure the annotation uniqueness.
+	 * @param anno
+	 * @return the collection of the duplicate annotation ids
+	 * @throws AnnotationServiceException
+	 */
+	public List<String> checkDuplicateAnnotations (Annotation anno) throws AnnotationServiceException ;
 }

@@ -88,8 +88,10 @@ public interface AnnotationService {
 	 * @param persistentAnnotation
 	 * @param webAnnotation
 	 * @return
+	 * @throws AnnotationServiceException 
+	 * @throws HttpException 
 	 */
-	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation);
+	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException;
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -223,7 +225,12 @@ public interface AnnotationService {
 	 */
 	public void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages) throws AnnotationDereferenciationException, HttpException;
 
-
+	/**
+	 * This method checks for the duplicate annotations in order to ensure the annotation uniqueness.
+	 * @param annotation	an annotation to check for duplicates
+	 * @return*/
+	public List<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException;
+	
 	/**
 	 * Returns the deleted annotations in the given date range.
 	 * @param motivationType	
@@ -236,5 +243,6 @@ public interface AnnotationService {
 	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
 
 	public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit);
+	
 	
 }

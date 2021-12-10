@@ -97,7 +97,32 @@ public class BaseWebAnnotationTest {
 	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value=\"transcribed text in HTML\"";
 	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it=(con il grande finale)";
 
-
+	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
+	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
+	public static final String TAG_GEO_WRONG_LAT = "/tag/wrong/geotag_wrong_lat.json";
+	public static final String TAG_GEO_WRONG_LONG = "/tag/wrong/geotag_wrong_long.json";
+	public static final String TAG_GEOTAG = "/tag/geotag.json";
+	public static final String LINK_SEMANTIC = "/link/edmIsSimilarTo.json";
+	public static final String SEMANTICTAG_SIMPLE_MINIMAL = "/semantictag/simple_minimal.json";
+	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
+	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
+	public static final String SEMANTICTAG_SPECIFIC_STANDARD = "/semantictag/specific_standard.json";
+	public static final String SEMANTICTAG_WEB_RESOURCE = "/semantictag/web_resource.json";
+	public static final String SEMANTICTAG_ENTITY = "/semantictag/semantictag_entity.json";
+	public static final String SEMANTICTAG_AGENT_ENTITY = "/semantictag/semantictag_agent_entity.json";
+	public static final String SEMANTICTAG_VCARD_ADDRESS = "/semantictag/vcard_address.json";
+	public static final String TAG_CANONICAL = "/tag/canonical.json";
+	public static final String TAG_VIA_STRING = "/tag/via_string.json";
+	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
+	public static final String DEREFERENCED_SEMANTICTAG_MOZART_ENTITY = "/semantictag/dereferenced_semantictag_mozart_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_viaf_test_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2 = "/semantictag/dereferenced_semantictag_viaf_test_entity2.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3 = "/semantictag/dereferenced_semantictag_viaf_test_entity3.json";
+	public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
+	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
+	public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
+	public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
+	
 	
 	
 	String START = "{";
