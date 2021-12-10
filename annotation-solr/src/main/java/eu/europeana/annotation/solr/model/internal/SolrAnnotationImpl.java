@@ -10,6 +10,9 @@ import org.apache.solr.client.solrj.beans.Field;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
+import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
@@ -41,6 +44,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String bodyValue;
 	private Map<String, String> bodyMultilingualValue;
 	private List<String> bodyUris;
+	
+	private String scenario;
 	
 	/**
 	 * public default constructor
@@ -83,9 +88,36 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.setTarget(annotation.getTarget());
 		this.setBody(annotation.getBody());
 		
+		this.setScenario(findScenarioType(annotation));
+		
 //		this.setStyledBy(annotation.getStyledBy());
 //		this.setCanonical(annotation.getCanonical());
 //		this.setVia(annotation.getVia());
+	}
+	
+	private String findScenarioType(Annotation anno) {		
+		switch(anno.getMotivationType()) {
+		case TRANSCRIBING:
+			return AnnotationScenarioTypes.TRANSCRIPTION;
+		case CAPTIONING:
+			return AnnotationScenarioTypes.SUBTITLE;
+		case SUBTITLING:
+			return AnnotationScenarioTypes.SUBTITLE;
+		case TAGGING:
+			if(anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.SEMANTIC_TAG.toString())) {
+				return AnnotationScenarioTypes.SEMANTIC_TAG;
+			}
+			else if(anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.TAG.toString())) {
+				return AnnotationScenarioTypes.SIMPLE_TAG;
+			}
+			else if(anno.getBody().getInternalType().equalsIgnoreCase(BodyInternalTypes.GEO_TAG.toString())) {
+				return AnnotationScenarioTypes.GEO_TAG;
+			}
+		case LINKING:
+			return AnnotationScenarioTypes.OBJECT_LINK;
+		default:
+			return "";
+		}		
 	}
 	
 	@Override
@@ -304,6 +336,17 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	@Field(BODY_URI)
 	public void setBodyUris(List<String> bodyUris) {
 		this.bodyUris = bodyUris;
+	}
+	
+	@Override
+	public String getScenario() {
+		return scenario;
+	}
+
+	@Override
+	@Field(SCENARIO)
+	public void setScenario(String scenario) {
+		this.scenario = scenario;
 	}
 	
 
