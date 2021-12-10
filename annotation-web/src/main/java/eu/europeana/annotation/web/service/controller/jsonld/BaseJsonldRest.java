@@ -50,6 +50,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
+import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
@@ -72,7 +73,6 @@ public class BaseJsonldRest extends BaseRest {
     protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation, boolean indexOnCreate,
 	    String annotation, Authentication authentication) throws HttpException {
 	try {
-
 	    // 0. annotation id
 	    AnnotationId annoId = buildAnnotationId(null);
 
@@ -82,6 +82,15 @@ public class BaseJsonldRest extends BaseRest {
 	    // parse
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
+		//check the annotation uniqueness
+	    List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
+		if(duplicateAnnotationIds!=null) {
+			String [] i18nParamsAnnoDuplicates = new String [1];
+			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
+			throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
+	    		    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+		}
+		
 	    // validate annotation and check that no generator and creator exists in input
 
 	    // set generator and creator

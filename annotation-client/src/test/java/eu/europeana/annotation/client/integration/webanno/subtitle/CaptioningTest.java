@@ -20,7 +20,7 @@ public class CaptioningTest extends BaseWebAnnotationTest {
     }
 
     @Test
-    public void createMinimalTranscription() throws IOException, JsonParseException, IllegalAccessException,
+    public void createMinimalCaption() throws IOException, JsonParseException, IllegalAccessException,
 	    IllegalArgumentException, InvocationTargetException {
 
 	String requestBody = getJsonStringInput(CAPTION_MINIMAL);

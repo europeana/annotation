@@ -39,6 +39,7 @@ import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -234,11 +235,19 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @Override
-    public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) {
-	mergeAnnotationProperties(persistentAnnotation, webAnnotation);
-	Annotation res = updateAndReindex(persistentAnnotation);
-
-	return res;
+    public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException {
+		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
+		//check that the updated annotation is unique
+	    List<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation);
+		if(duplicateAnnotationIds!=null) {
+			String [] i18nParamsAnnoDuplicates = new String [1];
+			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
+			throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
+	    		    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+		}
+		
+		Annotation res = updateAndReindex(persistentAnnotation);	
+		return res;
     }
 
     @SuppressWarnings("deprecation")
@@ -657,4 +666,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     
         return true;
     }
+
+	@Override
+	public List<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException {
+		return getSolrService().checkDuplicateAnnotations(annotation);
+	}
 }

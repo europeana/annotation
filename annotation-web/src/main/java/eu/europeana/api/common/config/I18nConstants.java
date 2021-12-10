@@ -16,6 +16,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	static final String ANNOTATION_CANT_PARSE_BODY = "error.annotation_cant_parse_body";
 	static final String API_WRITE_LOCK = "error.annotation_write_lock";
 	static final String ANNOTATION_VALIDATION = "error.annotation_validation";
+	static final String ANNOTATION_DUPLICATION = "error.annotation_duplication";
 	static final String APIKEY_FILE_NOT_FOUND = "error.annotation_apikey_file_not_found";
 //	static final String INVALID_APIKEY = "error.annotation_invalid_apikey";
 	static final String TEST_USER_FORBIDDEN = "error.annotation_test_user_forbidden";
