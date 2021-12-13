@@ -20,11 +20,17 @@
 			<groupId>eu.europeana.search-tools</groupId>
 			<artifactId>search-fulltext-api</artifactId>
 			<version>${version.europeana-search-tools}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-client</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${version.annotationApi}</version>			
 		</dependency>
 
 		<dependency>
