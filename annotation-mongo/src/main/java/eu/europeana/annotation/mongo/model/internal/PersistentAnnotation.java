@@ -25,8 +25,10 @@ public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 	public final static String FIELD_VALUES = "values";
 	public final static String FIELD_RESOURCE_IDS = "resourceIds";
 	public final static String FIELD_TARGET = "target.";
-	
-	
+	public final static String FIELD_MOTIVATION = "motivation";
+	public final static String FIELD_BODY = "body";
+	public final static String FIELD_INTERNAL_TYPE = "internalType";
+	public final static String FIELDS_SEPARATOR_MONGO = ".";
 	/**
 	 * 
 	 * @return the generated mongo id

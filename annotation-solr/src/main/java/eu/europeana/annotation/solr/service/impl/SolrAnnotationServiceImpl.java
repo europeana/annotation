@@ -11,6 +11,8 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
+import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
@@ -345,6 +347,22 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
 
     @Override
+    public QueryResponse getAnnotationStatistics(String fieldName)	    throws AnnotationServiceException {
+		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(fieldName);
+		final JsonQueryRequest request = new JsonQueryRequest()
+		    .setQuery("*:*")
+		    .setLimit(0)
+		    .withFacet(fieldName, topCategoriesFacet);
+		// Query the server
+		try {
+		    getLogger().debug("Getting the annotations statstics with the json nested facets for the facet field: {}.", fieldName);
+		    QueryResponse queryResponse = request.process(solrClient);
+		    return queryResponse;
+		} catch (SolrServerException | IOException e) {
+		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
+		}
+    }
+    @Override
     public void update(Annotation anno) throws AnnotationServiceException {
 	update(anno, null);
     }
@@ -419,6 +437,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     public void index(ModerationRecord moderationRecord) {
 
     }
+    
+
 
 	@Override
 	public List<String> checkDuplicateAnnotations(Annotation anno) throws AnnotationServiceException {

@@ -83,5 +83,8 @@
     <beans:bean id="i18nService" class="eu.europeana.api.commons.config.i18n.I18nServiceImpl">
     	<beans:property name="messageSource" ref="annotation_i18n_messageSource"/>
     </beans:bean>
+    
+    <beans:bean id="annotationStatisticsService" class="eu.europeana.annotation.statistics.service.AnnotationStatisticsService">
+    </beans:bean>
    
 </beans:beans>

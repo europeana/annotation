@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
@@ -149,8 +150,11 @@ public interface SolrAnnotationService {
 	 * @return found rows
 	 * @throws AnnotationServiceException
 	 */
-	public ResultSet<? extends AnnotationView> search(String term, String start, String rows) throws AnnotationServiceException;
-	
+	public ResultSet<? extends AnnotationView> search(String term, String start, String rows)
+		throws AnnotationServiceException;
+
+	public QueryResponse getAnnotationStatistics(String fieldName) throws AnnotationServiceException;
+
 	/**
 	 * This method checks for the duplicate annotations, to ensure the annotation uniqueness.
 	 * @param anno

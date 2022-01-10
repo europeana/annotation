@@ -1,7 +1,6 @@
 package eu.europeana.annotation.definitions.model.vocabulary;
 
 public class AnnotationScenarioTypes {
-
 	public static final String TRANSCRIPTION = "transcription"; 
 	public static final String SUBTITLE = "subtitle";
 	public static final String SEMANTIC_TAG = "semanticTag"; 
