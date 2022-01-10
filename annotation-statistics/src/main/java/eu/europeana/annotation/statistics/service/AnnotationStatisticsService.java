@@ -31,8 +31,7 @@ public class AnnotationStatisticsService {
     public void getAnnotationsStatistics(AnnotationMetric annoMetric) throws AnnotationServiceException {
     	//getting the annotations statistics for the scenarios
     	QueryResponse annoFacetStatsJson = solrService.getAnnotationStatistics(SolrAnnotationConstants.SCENARIO); 
-    	AnnotationStatistics annotationStatisticsScenarios = new AnnotationStatistics();	
-    	setAnnotationStatisticsScenariosFromJsonBuckets(annotationStatisticsScenarios, annoFacetStatsJson.getJsonFacetingResponse().getBucketBasedFacets(SolrAnnotationConstants.SCENARIO).getBuckets());
+    	AnnotationStatistics annotationStatisticsScenarios = getStatisticsPerScenario(annoFacetStatsJson.getJsonFacetingResponse().getBucketBasedFacets(SolrAnnotationConstants.SCENARIO).getBuckets());
     	annoMetric.setAnnotationStatisticsScenarios(annotationStatisticsScenarios);
     	
     	//getting the annotations statistics for the users
@@ -47,7 +46,8 @@ public class AnnotationStatisticsService {
 
     }
   
-    private void setAnnotationStatisticsScenariosFromJsonBuckets (AnnotationStatistics annoStats, List<BucketJsonFacet> facetJsonBuckets) {
+    private AnnotationStatistics getStatisticsPerScenario (List<BucketJsonFacet> facetJsonBuckets) {
+        AnnotationStatistics annoStats = new AnnotationStatistics();  
     	for (BucketJsonFacet facetJsonBucket : facetJsonBuckets) {
     	  switch (facetJsonBucket.getVal().toString()) {
             case AnnotationScenarioTypes.GEO_TAG:
@@ -71,6 +71,7 @@ public class AnnotationStatisticsService {
               break;
           }  
     	}
+    	return annoStats;
     }
     
     private Map<String, Long> facetBucketsToMap (List<BucketJsonFacet> facetJsonBuckets) {
