@@ -150,9 +150,10 @@ public interface SolrAnnotationService {
 	 * @return found rows
 	 * @throws AnnotationServiceException
 	 */
-	public ResultSet<? extends AnnotationView> search(String term, String start, String rows) throws AnnotationServiceException;
+	public ResultSet<? extends AnnotationView> search(String term, String start, String rows)
+		throws AnnotationServiceException;
 
-    public QueryResponse getAnnotationStatisticsJsonFacets (String fieldName) throws AnnotationServiceException;
+	public QueryResponse getAnnotationStatistics(String fieldName) throws AnnotationServiceException;
 
 	/**
 	 * This method checks for the duplicate annotations, to ensure the annotation uniqueness.

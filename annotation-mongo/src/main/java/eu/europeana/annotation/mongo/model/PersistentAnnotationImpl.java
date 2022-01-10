@@ -33,7 +33,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private MongoAnnotationId annotationId;
 	
 	private String type;
-
 	private String internalType;
 	
 	@Embedded
@@ -45,14 +44,11 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	@Embedded(PersistentAnnotation.FIELD_BODY)
 	private Body body;
-	
 	@Embedded
-//	@Reference(lazy=true)
 	private Target target;
 	
 	@Property(PersistentAnnotation.FIELD_MOTIVATION)
 	private String motivation;
-	
 	private Style styledBy;
 
 	private Date lastIndexed;

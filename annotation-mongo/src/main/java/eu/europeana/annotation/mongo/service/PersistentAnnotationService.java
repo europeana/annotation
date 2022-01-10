@@ -2,7 +2,6 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;

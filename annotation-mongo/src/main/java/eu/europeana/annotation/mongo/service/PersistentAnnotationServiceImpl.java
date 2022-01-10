@@ -45,6 +45,7 @@ import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorIm
 import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
+
 @Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
@@ -289,6 +290,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		query.disableValidation()
 					.field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS)
 						.equal(resourceId);
+			
 		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
@@ -316,7 +318,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
 		return results.asList();
 	}
-	
+
 	@Override
 	public PersistentAnnotation find(AnnotationId annoId) {
 

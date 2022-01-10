@@ -346,9 +346,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	return res;
     }
 
-	@Override
-    public QueryResponse getAnnotationStatisticsJsonFacets (String fieldName)
-	    throws AnnotationServiceException {
+    @Override
+    public QueryResponse getAnnotationStatistics(String fieldName)	    throws AnnotationServiceException {
 		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(fieldName);
 		final JsonQueryRequest request = new JsonQueryRequest()
 		    .setQuery("*:*")
