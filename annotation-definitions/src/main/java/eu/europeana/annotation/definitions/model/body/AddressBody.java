@@ -1,6 +1,6 @@
 package eu.europeana.annotation.definitions.model.body;
 
-import eu.europeana.corelib.definitions.edm.entity.Address;
+import eu.europeana.annotation.definitions.model.Address;
 
 public interface AddressBody {
 
