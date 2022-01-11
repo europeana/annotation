@@ -9,6 +9,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.Property;
 
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -41,18 +42,18 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Date created;
 	private Date generated;
 	
-	@Embedded
+	@Embedded(PersistentAnnotation.FIELD_BODY)
 	private Body body;
 	@Embedded
-//	@Reference(lazy=true)
 	private Target target;
 	
+	@Property(PersistentAnnotation.FIELD_MOTIVATION)
 	private String motivation;
 	private Style styledBy;
 
 	private Date lastIndexed;
 
-	private boolean disabled;
+	private Date disabled;
 	private String sameAs;
 	private String equivalentTo;
 	
@@ -191,11 +192,17 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	
 	@Override
 	public boolean isDisabled() {
-		return disabled;
+		return disabled!=null;
 	}
 
-	public void setDisabled(boolean disabled) {
+	@Override
+	public void setDisabled(Date disabled) {
 		this.disabled = disabled;
+	}
+	
+	@Override
+	public Date getDisabled() {
+		return disabled;
 	}
 	
 	public String toString() {

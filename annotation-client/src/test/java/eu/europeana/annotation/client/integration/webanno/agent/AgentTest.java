@@ -23,7 +23,7 @@ public class AgentTest extends BaseTaggingTest {
 		
 		ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT);
 		validateResponse(response);
-		Annotation storedAnno = getApiClient().parseResponseBody(response);				
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);				
 		
 		String requestBody = getJsonStringInput(FULL_AGENT);
 		Annotation inputAnno = parseTag(requestBody);
@@ -39,7 +39,7 @@ public class AgentTest extends BaseTaggingTest {
 		
 		String requestBody = getJsonStringInput(WRONG_AGENT_ID_NOT_URL);
 		
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 			false, requestBody, null, null);
 		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());		

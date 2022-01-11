@@ -50,6 +50,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
+import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
@@ -72,7 +73,6 @@ public class BaseJsonldRest extends BaseRest {
     protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation, boolean indexOnCreate,
 	    String annotation, Authentication authentication) throws HttpException {
 	try {
-
 	    // 0. annotation id
 	    AnnotationId annoId = buildAnnotationId(null);
 
@@ -82,6 +82,15 @@ public class BaseJsonldRest extends BaseRest {
 	    // parse
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
+		//check the annotation uniqueness
+	    List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
+		if(duplicateAnnotationIds!=null) {
+			String [] i18nParamsAnnoDuplicates = new String [1];
+			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
+			throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
+	    		    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+		}
+		
 	    // validate annotation and check that no generator and creator exists in input
 
 	    // set generator and creator
@@ -316,7 +325,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 	    // annotation id doesn’t exists )
 	    // 4.or 410 (if the user is not allowed to access the annotation);
-	    Annotation annotation = getAnnotationService().getAnnotationById(annoId, null);
+	    Annotation annotation = getAnnotationService().getAnnotationById(annoId, null, true);
 
 	    SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
 	    // will update body if dereference profile is used
@@ -395,16 +404,17 @@ public class BaseJsonldRest extends BaseRest {
      * 
      * @param identifier
      * @param userId
+     * @param enabled
      * @return
      * @return annotation object
      * @throws HttpException
      */
-    private Annotation verifyOwnerOrAdmin(String identifier, Authentication authentication) throws HttpException {
+    private Annotation verifyOwnerOrAdmin(String identifier, Authentication authentication, boolean enabled) throws HttpException {
 
 	//Retrieve an annotation based on its identifier;
 	AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 	String userId = buildCreatorUri((String)authentication.getPrincipal());
-	Annotation annotation = getAnnotationService().getAnnotationById(annoId, userId);
+	Annotation annotation = getAnnotationService().getAnnotationById(annoId, userId, enabled);
 	
 	//verify ownership
 	boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
@@ -454,7 +464,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // getAuthorizationService().authorizeUser(userId, authentication, annoId,
 	    // Operations.UPDATE);
 	    // check permissions for update
-	    Annotation storedAnnotation = verifyOwnerOrAdmin(identifier, authentication);
+	    Annotation storedAnnotation = verifyOwnerOrAdmin(identifier, authentication, true);
 
 	    // 2. check time stamp
 	    // 3. validate new description for format and fields
@@ -534,7 +544,7 @@ public class BaseJsonldRest extends BaseRest {
 
 	    // Retrieve an annotation based on its id;
 	    // Verify if user is allowed to perform the deletion.
-	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication);
+	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, true);
 
 	    // validate annotation
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
@@ -550,6 +560,50 @@ public class BaseJsonldRest extends BaseRest {
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 
 	    ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
+
+	    return response;
+
+	} catch (HttpException e) {
+	    // avoid wrapping HttpExceptions
+	    // TODO: change this when OAUTH is implemented and the user information is
+	    // available in service
+	    throw e;
+	} catch (Exception e) {
+	    throw new InternalServerException(e);
+	}
+    }
+
+    /**
+     * This method enables the disabled annotation. It validates the input values, 
+     * updates the annotation object in the database and creates it in solr.
+     * @param identifier
+     * @param authentication Contains user name
+     * @param request An HttpServletRequest
+     * @return response entity that comprises response body, headers and status code
+     * @throws HttpException
+     */
+    protected ResponseEntity<String> enableAnnotation(String identifier, Authentication authentication, HttpServletRequest request)
+	    throws HttpException {
+
+	try {
+	    // Retrieve an annotation based on its id.
+	    // Verify if user is allowed to perform the action.
+	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, false);
+
+	    // validate annotation
+	    String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+	    checkIfMatchHeader(eTagOrigin, request);
+
+	    getAnnotationService().enableAnnotation(storedAnno.getAnnotationId());
+
+	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+	    
+	    JsonLd annotationLd = new AnnotationLdSerializer(storedAnno);
+	    String jsonLd = annotationLd.toString(4);
+
+	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
 

@@ -16,12 +16,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApi;
+import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApiImpl;
+import eu.europeana.annotation.client.WebAnnotationProtocolApi;
+import eu.europeana.annotation.client.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.utils.BaseUtils;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApi;
-import eu.europeana.annotation.client.webanno.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -30,7 +32,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
-public class BaseWebAnnotationProtocolTest {
+public class BaseWebAnnotationTest {
 
 	protected Logger log = LogManager.getLogger(getClass());
 
@@ -95,7 +97,32 @@ public class BaseWebAnnotationProtocolTest {
 	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value=\"transcribed text in HTML\"";
 	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it=(con il grande finale)";
 
-
+	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
+	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
+	public static final String TAG_GEO_WRONG_LAT = "/tag/wrong/geotag_wrong_lat.json";
+	public static final String TAG_GEO_WRONG_LONG = "/tag/wrong/geotag_wrong_long.json";
+	public static final String TAG_GEOTAG = "/tag/geotag.json";
+	public static final String LINK_SEMANTIC = "/link/edmIsSimilarTo.json";
+	public static final String SEMANTICTAG_SIMPLE_MINIMAL = "/semantictag/simple_minimal.json";
+	public static final String SEMANTICTAG_SIMPLE_STANDARD = "/semantictag/simple_standard.json";
+	public static final String SEMANTICTAG_SPECIFIC_MINIMAL = "/semantictag/specific_minimal.json";
+	public static final String SEMANTICTAG_SPECIFIC_STANDARD = "/semantictag/specific_standard.json";
+	public static final String SEMANTICTAG_WEB_RESOURCE = "/semantictag/web_resource.json";
+	public static final String SEMANTICTAG_ENTITY = "/semantictag/semantictag_entity.json";
+	public static final String SEMANTICTAG_AGENT_ENTITY = "/semantictag/semantictag_agent_entity.json";
+	public static final String SEMANTICTAG_VCARD_ADDRESS = "/semantictag/vcard_address.json";
+	public static final String TAG_CANONICAL = "/tag/canonical.json";
+	public static final String TAG_VIA_STRING = "/tag/via_string.json";
+	public static final String TAG_VIA_ARRAY = "/tag/via_array.json";
+	public static final String DEREFERENCED_SEMANTICTAG_MOZART_ENTITY = "/semantictag/dereferenced_semantictag_mozart_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY = "/semantictag/dereferenced_semantictag_viaf_test_entity.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2 = "/semantictag/dereferenced_semantictag_viaf_test_entity2.json";
+	public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3 = "/semantictag/dereferenced_semantictag_viaf_test_entity3.json";
+	public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
+	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
+	public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
+	public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
+	
 	
 	
 	String START = "{";
@@ -134,15 +161,21 @@ public class BaseWebAnnotationProtocolTest {
 
 	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
 
-	private static WebAnnotationProtocolApi apiClient;
+	private static WebAnnotationProtocolApi apiProtocolClient;
+	private static WebAnnotationAuxilaryMethodsApi apiAuxilaryMethodsClient;
 
 	@BeforeAll
 	public static void initObjects() {
-		apiClient = new WebAnnotationProtocolApiImpl();
+		apiProtocolClient = new WebAnnotationProtocolApiImpl();
+		apiAuxilaryMethodsClient =  new WebAnnotationAuxilaryMethodsApiImpl();
 	}
 
-	public WebAnnotationProtocolApi getApiClient() {
-		return apiClient;
+	public WebAnnotationProtocolApi getApiProtocolClient() {
+		return apiProtocolClient;
+	}
+	
+	public WebAnnotationAuxilaryMethodsApi getApiAuxilaryMethodsClient() {
+		return apiAuxilaryMethodsClient;
 	}
 
 	/**
@@ -173,7 +206,7 @@ public class BaseWebAnnotationProtocolTest {
 		/**
 		 * store annotation
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotation(indexOnCreate, requestBody, null, user);
+		ResponseEntity<String> storedResponse = getApiProtocolClient().createAnnotation(indexOnCreate, requestBody, null, user);
 		return storedResponse;
 	}
 	
@@ -194,7 +227,7 @@ public class BaseWebAnnotationProtocolTest {
 		/**
 		 * store annotation report
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().createAnnotationReport(
+		ResponseEntity<String> storedResponse = getApiProtocolClient().createAnnotationReport(
 				apiKey, identifier, userToken);
 		return storedResponse;
 	}
@@ -217,7 +250,7 @@ public class BaseWebAnnotationProtocolTest {
 		/**
 		 * get annotation report
 		 */
-		ResponseEntity<String> storedResponse = getApiClient().getModerationReport(
+		ResponseEntity<String> storedResponse = getApiProtocolClient().getModerationReport(
 				apiKey, identifier, userToken);
 		return storedResponse;
 	}
@@ -265,7 +298,7 @@ public class BaseWebAnnotationProtocolTest {
 	protected Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
 		assertEquals(status.value(), response.getStatusCode().value());
 
-		Annotation annotation = getApiClient().parseResponseBody(response);
+		Annotation annotation = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(annotation.getCreator());
 		
 
@@ -280,7 +313,7 @@ public class BaseWebAnnotationProtocolTest {
 	protected Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
 		assertEquals(""+status.value(), ""+response.getStatusCode().value());
 
-		Annotation annotation = getApiClient().parseResponseBody(response);
+		Annotation annotation = getApiProtocolClient().parseResponseBody(response);
 
 		return annotation;
 	}
@@ -341,14 +374,14 @@ public class BaseWebAnnotationProtocolTest {
 	}
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
-	    ResponseEntity<String> response = getApiClient().createAnnotation(
+	    ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 			true, requestBody,  WebAnnotationFields.TAG, null);
-	    Annotation storedAnno = getApiClient().parseResponseBody(response);
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 	    return storedAnno;
 	}
 
 	protected Annotation createLink(String requestBody) throws JsonParseException {
-		ResponseEntity<String> response = getApiClient().createAnnotation(
+		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				true, requestBody, WebAnnotationFields.LINK 
 				//null 
 , null
@@ -358,7 +391,7 @@ public class BaseWebAnnotationProtocolTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getCreator());
 //		assertNotNull(storedAnno.getGenerator());
 		return storedAnno;
@@ -407,15 +440,15 @@ public class BaseWebAnnotationProtocolTest {
 	}
 		
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
-		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
+		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
 	}
 
 	protected ResponseEntity<String> getAnnotation(Annotation anno, SearchProfiles searchProfile) {
-		return getApiClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
+		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
 	}
 
 	protected ResponseEntity<String> getAnnotationByJwtToken(Annotation anno, SearchProfiles searchProfile) {
-		return getApiClient().getAnnotation(anno.getAnnotationId().getIdentifier(), searchProfile);
+		return getApiProtocolClient().getAnnotation(anno.getAnnotationId().getIdentifier(), searchProfile);
 	}
 	
 	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
@@ -426,9 +459,8 @@ public class BaseWebAnnotationProtocolTest {
 		assertNotNull(response.getBody());
 		assertEquals(response.getStatusCode(), status);
 		
-		Annotation storedAnno = getApiClient().parseResponseBody(response);
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getAnnotationId());
 		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
-	}	
-
+	}
 }

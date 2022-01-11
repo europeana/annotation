@@ -79,6 +79,11 @@
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-dereferenciation</artifactId>
 			<version>${version.annotationApi}</version>
+		</dependency>		
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-statistics</artifactId>
+			<version>${version.annotationApi}</version>
 		</dependency>
 		<!-- aspectj /profiling -->
 		<dependency>
@@ -229,7 +234,12 @@
 				</exclusion>
 			</exclusions>
 			-->
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-error</artifactId>
+			<version>${version.commonsApi}</version>		
+		</dependency>			
 <!-- 	
 		<dependency>
 		    <groupId>eu.europeana.apikey-utils</groupId>

@@ -6,11 +6,11 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 
-import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationProtocolTest;
+import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
-public class CaptioningTest extends BaseWebAnnotationProtocolTest {
+public class CaptioningTest extends BaseWebAnnotationTest {
 
     public static final String CAPTION_MINIMAL = "/caption/minimal.json";
 
@@ -20,7 +20,7 @@ public class CaptioningTest extends BaseWebAnnotationProtocolTest {
     }
 
     @Test
-    public void createMinimalTranscription() throws IOException, JsonParseException, IllegalAccessException,
+    public void createMinimalCaption() throws IOException, JsonParseException, IllegalAccessException,
 	    IllegalArgumentException, InvocationTargetException {
 
 	String requestBody = getJsonStringInput(CAPTION_MINIMAL);

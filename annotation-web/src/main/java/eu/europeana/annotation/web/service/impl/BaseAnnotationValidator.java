@@ -1,19 +1,15 @@
 package eu.europeana.annotation.web.service.impl;
 
+import static eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes.LINKING;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
-
 import com.dotsub.converter.exception.FileFormatException;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
@@ -27,12 +23,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.utils.UriUtils;
-import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.api.common.config.I18nConstants;
-import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public abstract class BaseAnnotationValidator {
 	
@@ -50,8 +44,7 @@ public abstract class BaseAnnotationValidator {
      * @throws ParamValidationException
      * @throws PropertyValidationException
      */
-    protected void validateAgentBody(Body body) throws ParamValidationException, PropertyValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    void validateAgentBody(Body body) throws ParamValidationException, PropertyValidationException {
 	if (body.getType() == null || !(body.getType().size() == 1)) {
 	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
@@ -75,8 +68,7 @@ public abstract class BaseAnnotationValidator {
      * @throws ParamValidationException
      * @throws PropertyValidationException
      */
-    protected void validateAgentEntityBody(Body body) throws ParamValidationException, PropertyValidationException {
-    Assert.notNull(body, "The body field should not be null.");	
+    void validateAgentEntityBody(Body body) throws ParamValidationException, PropertyValidationException {
 	EdmAgent agent = (EdmAgent) ((EdmAgentBody) body).getAgent();
 
 	// check mandatory field prefLabel
@@ -102,8 +94,7 @@ public abstract class BaseAnnotationValidator {
 	// dateOfDeath, placeOfBirth, placeOfDeath" });
     }
 
-    protected void validateGeoTag(Body body) throws ParamValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    void validateGeoTag(Body body) throws ParamValidationException, PropertyValidationException {
 	if (!(body instanceof PlaceBody))
 	    throw new ParamValidationException(I18nConstants.INVALID_PROPERTY_VALUE,
 		    I18nConstants.INVALID_PROPERTY_VALUE,
@@ -121,8 +112,7 @@ public abstract class BaseAnnotationValidator {
 
     }
 
-    protected void validateTagWithSpecificResource(Body body) throws ParamValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    void validateTagWithSpecificResource(Body body) throws ParamValidationException, PropertyValidationException {
 	// check mandatory fields
 	if (StringUtils.isBlank(body.getInternalType().toString()))
 	    throw new ParamValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
@@ -168,8 +158,7 @@ public abstract class BaseAnnotationValidator {
     }
 
     private void validateFullTextResource(Body body) throws PropertyValidationException {
-    Assert.notNull(body, "The body field should not be null.");
-	if (body.getType() == null || !(body.getType().size() == 1)) {
+    if (body.getType() == null || !(body.getType().size() == 1)) {
 	    // (external) Type is mandatory
 	    // temporarily commented out to verify if type is mandatory
 	    // throw new
@@ -215,9 +204,9 @@ public abstract class BaseAnnotationValidator {
      * @throws ParamValidationException
      * @throws PropertyValidationException
      */
-    protected void validateSemanticTagVcardAddressBody(Body body)
+    void validateSemanticTagVcardAddressBody(Body body)
 	    throws ParamValidationException, PropertyValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    
 	// check type
 	if (body.getType() == null || !(body.getType().size() == 1)) {
 	    // (external) Type is mandatory
@@ -262,9 +251,9 @@ public abstract class BaseAnnotationValidator {
      * @param body
      * @param isLanguageMandatory Flag for the cases when language is not mandatory
      * @throws ParamValidationException
+     * @throws PropertyValidationException 
      */
-    protected void validateTextualBody(Body body, boolean isLanguageMandatory) throws ParamValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    protected void validateTextualBody(Body body, boolean isLanguageMandatory) throws ParamValidationException, PropertyValidationException {
 	// check mandatory field value
 	if (StringUtils.isBlank(body.getValue()))
 	    throw new ParamValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
@@ -286,8 +275,7 @@ public abstract class BaseAnnotationValidator {
 	return ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0)) || ResourceTypes.TEXTUAL_BODY.hasJsonValue(body.getType().get(0));
     }
 
-    protected void validateTagWithValue(Body body) throws ParamValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    void validateTagWithValue(Body body) throws ParamValidationException, PropertyValidationException {
 	String value = body.getValue();
 
 	value = value.trim();
@@ -317,7 +305,7 @@ public abstract class BaseAnnotationValidator {
 		    I18nConstants.MESSAGE_INVALID_TAG_SIZE, new String[] { String.valueOf(value.length()) });
     }
 
-    protected void validateSemanticTagUrl(Body body) {
+    void validateSemanticTagUrl(Body body) {
 	// TODO Add whitelist based validation here
 
     }
@@ -351,31 +339,39 @@ public abstract class BaseAnnotationValidator {
 	    }
 	}
 
+	if(!LINKING.equals(webAnnotation.getMotivationType())) {
+	    //all annotations must have a body except for the links
+	    validateBodyExists(webAnnotation.getBody());  
+	}
 	switch (webAnnotation.getMotivationType()) {
 	case LINKING:
 	    // validate target URLs against whitelist
 	    if (webAnnotation.getTarget() != null) {
-		if (webAnnotation.getTarget().getValue() != null)
-		    validateResource(webAnnotation.getTarget().getValue());
-
-		if (webAnnotation.getTarget().getValues() != null)
-		    for (String url : webAnnotation.getTarget().getValues()) {
-			validateResource(url);
-		    }
+			if (webAnnotation.getTarget().getValue() != null)
+			    validateResource(webAnnotation.getTarget().getValue());
+		
+			if (webAnnotation.getTarget().getValues() != null)
+			    for (String url : webAnnotation.getTarget().getValues()) {
+				validateResource(url);
+			    }
 	    }
 	    break;
 	case DESCRIBING:
 	    validateDescribing(webAnnotation);
 	case TAGGING:
+	    validateBodyExists(webAnnotation.getBody());
 	    validateTag(webAnnotation);
 	    break;
 	case TRANSCRIBING:
+	    validateBodyExists(webAnnotation.getBody());
 	    validateTranscription(webAnnotation);
 	    break;
 	case SUBTITLING:
+	    validateBodyExists(webAnnotation.getBody());
 	    validateSubtitleOrCaption(webAnnotation);
 	    break;
 	case CAPTIONING:
+	    validateBodyExists(webAnnotation.getBody());
 	    validateSubtitleOrCaption(webAnnotation);
 	    break;
 	default:
@@ -398,9 +394,9 @@ public abstract class BaseAnnotationValidator {
      * @return true if provided right is in a list of valid licenses
      * @throws ParamValidationException
      * @throws RequestBodyValidationException
+     * @throws PropertyValidationException 
      */
-    protected void validateEdmRights(Body body) throws ParamValidationException, RequestBodyValidationException {
-    Assert.notNull(body, "The body field should not be null.");
+    void validateEdmRights(Body body) throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
 	// if rights are provided, check if it belongs to the valid license list
 	String rightsClaim = body.getEdmRights();
 	String licence = null;
@@ -445,8 +441,6 @@ public abstract class BaseAnnotationValidator {
     protected void validateTag(Annotation webAnnotation) throws ParamValidationException, PropertyValidationException {
 	// webAnnotation.
 	Body body = webAnnotation.getBody();
-	Assert.notNull(body, "The body field should not be null.");
-	// TODO: the body type shouldn't be null at this stage
 	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 	    validateTagWithSpecificResource(body);
 	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
@@ -467,10 +461,10 @@ public abstract class BaseAnnotationValidator {
      * 
      * @param webAnnotation
      * @throws ParamValidationException
+     * @throws PropertyValidationException 
      */
-    protected void validateDescribing(Annotation webAnnotation) throws ParamValidationException {
+    protected void validateDescribing(Annotation webAnnotation) throws ParamValidationException, PropertyValidationException {
 	Body body = webAnnotation.getBody();
-	Assert.notNull(body, "The body field should not be null.");
 	if (body.getType() != null && !ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0))) {
 	    validateTextualBody(body, true);
 	}
@@ -548,6 +542,13 @@ public abstract class BaseAnnotationValidator {
     	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
     		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
     	} 	
+    }
+    
+    private void validateBodyExists(Body body) throws PropertyValidationException {
+    	if (body == null) {
+    	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+    		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
+    	}
     }
 
 }

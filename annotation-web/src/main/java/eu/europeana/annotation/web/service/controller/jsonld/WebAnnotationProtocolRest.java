@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -94,6 +95,20 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		
 //		String action = "delete:/annotation/{identifier}[.{format}]";
 		return deleteAnnotation(identifier, authentication, request);
+	}
+	
+	@RequestMapping(value = {"/annotation/{identifier}"}, method = RequestMethod.POST,
+			consumes = { MediaType.TEXT_PLAIN },
+			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@ApiOperation(value = "Enable annotation", nickname = "enableAnnotation", response = java.lang.Void.class)
+	public ResponseEntity<String> enableAnnotation(
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			HttpServletRequest request
+			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+
+		Authentication authentication = verifyWriteAccess(Operations.UPDATE, request);
+
+		return enableAnnotation(identifier, authentication, request);
 	}
 		
 }
