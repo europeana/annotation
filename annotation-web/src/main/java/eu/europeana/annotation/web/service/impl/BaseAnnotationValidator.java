@@ -1,19 +1,15 @@
 package eu.europeana.annotation.web.service.impl;
 
 import static eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes.LINKING;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
-
 import com.dotsub.converter.exception.FileFormatException;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
@@ -31,7 +27,6 @@ import eu.europeana.annotation.web.exception.request.ParamValidationException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.api.common.config.I18nConstants;
-import eu.europeana.corelib.definitions.edm.entity.Address;
 
 public abstract class BaseAnnotationValidator {
 	
