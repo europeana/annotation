@@ -33,7 +33,6 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @SwaggerSelect
 @Api(tags = "Web Annotation Protocol", description=" ")
-@Component
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 
