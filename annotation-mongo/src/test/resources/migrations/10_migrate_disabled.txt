@@ -1,0 +1,6 @@
+#DELETE DISABLED
+db.getCollection('annotation').deleteMany({"disabled":true})
+#if these annotations are still needed the disabled field could be set to a date 
+
+#UNSET DISABLED
+db.getCollection('annotation').updateMany({},{$unset:{"disabled":null}})
