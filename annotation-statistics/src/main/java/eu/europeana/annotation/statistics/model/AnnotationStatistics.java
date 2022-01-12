@@ -30,6 +30,9 @@ public class AnnotationStatistics {
     @JsonProperty(AnnotationScenarioTypes.SEMANTIC_TAG)
     private long semanticTag;
     
+    @JsonProperty(AnnotationScenarioTypes.SIMPLE_TAG)
+    private long simpleTag;
+    
     @JsonProperty(AnnotationScenarioTypes.SUBTITLE)
     private long subtitle;
 
@@ -72,5 +75,13 @@ public class AnnotationStatistics {
 	public void setSubtitle(long subtitle) {
 		this.subtitle = subtitle;
 	}
+
+  public long getSimpleTag() {
+    return simpleTag;
+  }
+
+  public void setSimpleTag(long simpleTag) {
+    this.simpleTag = simpleTag;
+  }
 	
 }

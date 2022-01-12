@@ -62,6 +62,9 @@ public class AnnotationStatisticsService {
             case AnnotationScenarioTypes.SEMANTIC_TAG:
               annoStats.setSemanticTag(facetJsonBucket.getCount());
               break;
+            case AnnotationScenarioTypes.SIMPLE_TAG:
+              annoStats.setSimpleTag(facetJsonBucket.getCount());
+              break;
             case AnnotationScenarioTypes.SUBTITLE:
               annoStats.setSubtitle(facetJsonBucket.getCount());
               break;
