@@ -52,11 +52,13 @@ The response will be however, expanded to the TextualBody representation. see al
 </textarea>
 <br>
 
-<h3 id="tag_SubtitleOrCaption">Create (Object) Subtitle or Caption</h3>
-The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Subtitle or Caption annotations</b>.
+<h3 id="tag_SubtitleOrCaption">Create Subtitle or Caption</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>Subtitle or Caption</b> annotations. The representation of the subtitles and captions is identical the difference between these two annotation types is in the motivation.
+<br>
+NOTE: body value is verifies to be correct according to the specified format. For the time being the application accepts only the following subtitling formats:"video/quicktime" "text/vtt", "application/ttml+xml"
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
-(motivation:tagging)
+(motivation:subtitling OR motivation:subtitling)
 <textarea rows="18" cols="120" name="jsonldtag">
 {
     "motivation": "subtitling",
