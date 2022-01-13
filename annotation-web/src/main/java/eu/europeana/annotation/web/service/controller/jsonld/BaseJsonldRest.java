@@ -82,17 +82,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // parse
 	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
-		//check the annotation uniqueness
-	    List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
-		if(duplicateAnnotationIds!=null) {
-			String [] i18nParamsAnnoDuplicates = new String [1];
-			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
-			throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
-	    		    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
-		}
-		
-	    // validate annotation and check that no generator and creator exists in input
-
+		// validate annotation and check that no generator and creator exists in input
 	    // set generator and creator
 	    String userId = authentication.getPrincipal().toString();
 	    String apikeyId = authentication.getDetails().toString();
@@ -111,6 +101,15 @@ public class BaseJsonldRest extends BaseRest {
 			new String[] { "/provider/identifier", annoId.toRelativeUri() });
 	    // 2.1 validate annotation properties
 	    getAnnotationService().validateWebAnnotation(webAnnotation);
+	    
+	    //check the annotation uniqueness, only after validation 
+        List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
+        if(duplicateAnnotationIds!=null) {
+            String [] i18nParamsAnnoDuplicates = new String [1];
+            i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
+            throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
+                    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+        }
 
 	    // 3-6 create ID and annotation + backend validation
 	    webAnnotation.setAnnotationId(annoId);

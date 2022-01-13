@@ -310,73 +310,75 @@ public abstract class BaseAnnotationValidator {
 
     }
 
-    public void validateWebAnnotation(Annotation webAnnotation)
-	    throws ParamValidationException, RequestBodyValidationException, PropertyValidationException {
+    public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException,
+        RequestBodyValidationException, PropertyValidationException {
 
-	// validate canonical to be an absolute URI
-	if (webAnnotation.getCanonical() != null) {
-	    try {
-		URI cannonicalUri = URI.create(webAnnotation.getCanonical());
-		if (!cannonicalUri.isAbsolute())
-		    throw new ParamValidationException("The canonical URI is not absolute:",
-			    I18nConstants.ANNOTATION_VALIDATION,
-			    new String[] { WebAnnotationFields.CANONICAL, webAnnotation.getCanonical() });
-	    } catch (IllegalArgumentException e) {
-		throw new ParamValidationException("Error when validating canonical URI:",
-			I18nConstants.ANNOTATION_VALIDATION,
-			new String[] { WebAnnotationFields.CANONICAL, webAnnotation.getCanonical() }, e);
-	    }
-	}
+      // all annotations must have a body except for the links
+      if (!LINKING.equals(webAnnotation.getMotivationType())) {
+        validateBodyExists(webAnnotation.getBody());
+      }
 
-	// validate via to be valid URL(s)
-	if (webAnnotation.getVia() != null) {
-	    if (webAnnotation.getVia() instanceof String[]) {
-		for (String via : webAnnotation.getVia()) {
-		    if (!(UriUtils.isUrl(via)))
-			throw new ParamValidationException("This is not a valid URL:",
-				I18nConstants.ANNOTATION_VALIDATION, new String[] { WebAnnotationFields.VIA, via });
-		}
-	    }
-	}
+      // validate canonical to be an absolute URI
+      if (webAnnotation.getCanonical() != null) {
+        try {
+          URI cannonicalUri = URI.create(webAnnotation.getCanonical());
+          if (!cannonicalUri.isAbsolute())
+            throw new ParamValidationException("The canonical URI is not absolute:",
+                I18nConstants.ANNOTATION_VALIDATION,
+                new String[] {WebAnnotationFields.CANONICAL, webAnnotation.getCanonical()});
+        } catch (IllegalArgumentException e) {
+          throw new ParamValidationException("Error when validating canonical URI:",
+              I18nConstants.ANNOTATION_VALIDATION,
+              new String[] {WebAnnotationFields.CANONICAL, webAnnotation.getCanonical()}, e);
+        }
+      }
 
-	if(!LINKING.equals(webAnnotation.getMotivationType())) {
-	    //all annotations must have a body except for the links
-	    validateBodyExists(webAnnotation.getBody());  
-	}
-	switch (webAnnotation.getMotivationType()) {
-	case LINKING:
-	    // validate target URLs against whitelist
-	    if (webAnnotation.getTarget() != null) {
-			if (webAnnotation.getTarget().getValue() != null)
-			    validateResource(webAnnotation.getTarget().getValue());
-		
-			if (webAnnotation.getTarget().getValues() != null)
-			    for (String url : webAnnotation.getTarget().getValues()) {
-				validateResource(url);
-			    }
-	    }
-	    break;
-	case DESCRIBING:
-	    validateDescribing(webAnnotation);
-	case TAGGING:
-	    validateBodyExists(webAnnotation.getBody());
-	    validateTag(webAnnotation);
-	    break;
-	case TRANSCRIBING:
-	    validateBodyExists(webAnnotation.getBody());
-	    validateTranscription(webAnnotation);
-	    break;
-	case SUBTITLING:
-	    validateBodyExists(webAnnotation.getBody());
-	    validateSubtitleOrCaption(webAnnotation);
-	    break;
-	case CAPTIONING:
-	    validateBodyExists(webAnnotation.getBody());
-	    validateSubtitleOrCaption(webAnnotation);
-	    break;
-	default:
-	    break;
-	}
+      // validate via to be valid URL(s)
+      if (webAnnotation.getVia() != null) {
+        if (webAnnotation.getVia() instanceof String[]) {
+          for (String via : webAnnotation.getVia()) {
+            if (!(UriUtils.isUrl(via)))
+              throw new ParamValidationException("This is not a valid URL:",
+                  I18nConstants.ANNOTATION_VALIDATION, new String[] {WebAnnotationFields.VIA, via});
+          }
+        }
+      }
+
+      switch (webAnnotation.getMotivationType()) {
+        case LINKING:
+          // validate target URLs against whitelist
+          if (webAnnotation.getTarget() != null) {
+            if (webAnnotation.getTarget().getValue() != null)
+              validateResource(webAnnotation.getTarget().getValue());
+
+            if (webAnnotation.getTarget().getValues() != null)
+              for (String url : webAnnotation.getTarget().getValues()) {
+                validateResource(url);
+              }
+          }
+          break;
+        case DESCRIBING:
+          validateBodyExists(webAnnotation.getBody());
+          validateDescribing(webAnnotation);
+        case TAGGING:
+          validateBodyExists(webAnnotation.getBody());
+          validateTag(webAnnotation);
+          break;
+        case TRANSCRIBING:
+          validateBodyExists(webAnnotation.getBody());
+          validateTranscription(webAnnotation);
+          break;
+        case SUBTITLING:
+          validateBodyExists(webAnnotation.getBody());
+          validateSubtitleOrCaption(webAnnotation);
+          break;
+        case CAPTIONING:
+          validateBodyExists(webAnnotation.getBody());
+          validateSubtitleOrCaption(webAnnotation);
+          break;
+        default:
+          break;
+      }
     }
 
     public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException {
@@ -545,7 +547,7 @@ public abstract class BaseAnnotationValidator {
     }
     
     private void validateBodyExists(Body body) throws PropertyValidationException {
-    	if (body == null) {
+    	if (body == null || body.getValue() == null) {
     	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
     	}

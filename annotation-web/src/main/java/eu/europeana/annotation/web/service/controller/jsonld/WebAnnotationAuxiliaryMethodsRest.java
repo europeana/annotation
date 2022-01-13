@@ -49,7 +49,6 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
     }
 
     @RequestMapping(value = { "/annotation/{annoType}", "/annotation/{annoType}.jsonld" }, method = RequestMethod.POST, 
-    		consumes = { MediaType.APPLICATION_JSON },
     		produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
     public ResponseEntity<String> createAnnotationByTypeJsonld(
