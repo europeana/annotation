@@ -2,7 +2,7 @@ package eu.europeana.annotation.solr.service;
 
 import java.io.IOException;
 import java.util.List;
-
+import java.util.Map;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
@@ -162,4 +162,7 @@ public interface SolrAnnotationService {
 	 * @throws AnnotationServiceException
 	 */
 	public List<String> checkDuplicateAnnotations (Annotation anno) throws AnnotationServiceException ;
+
+    public Map<String, Map<String, Long>> getAnnotationStatisticsForFacetField(String facetField) throws AnnotationServiceException;
+    
 }
