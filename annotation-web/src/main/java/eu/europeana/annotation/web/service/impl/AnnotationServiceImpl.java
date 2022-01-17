@@ -8,12 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -40,7 +37,7 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.model.BatchReportable;
@@ -457,7 +454,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		validateWebAnnotation(webanno);
 		// TODO: validate via, size must be 1
 		batchReportable.incrementSuccessCount();
-	    } catch (ParamValidationException | RequestBodyValidationException | PropertyValidationException e) {
+	    } catch (ParamValidationI18NException | RequestBodyValidationException | PropertyValidationException e) {
 		batchReportable.incrementFailureCount();
 		String message = i18nService.getMessage(e.getI18nKey(), e.getI18nParams());
 		batchReportable.addError(webanno.getAnnotationId().toHttpUrl(), message);
@@ -650,17 +647,21 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     	return res;
     }
     
-    protected boolean validateResource(String url) throws ParamValidationException {
+    @Deprecated
+    /**
+     * @deprecated change to property validation exception
+     */
+    protected boolean validateResource(String url) throws ParamValidationI18NException {
 	    
         String domainName;
         try {
             domainName = getMongoWhitelistPersistence().getDomainName(url);
             Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
             if (!domains.contains(domainName))
-        	throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+        	throw new ParamValidationI18NException(I18nConstants.INVALID_PARAM_VALUE,
         		I18nConstants.INVALID_PARAM_VALUE, new String[] { "target.value", url });
         } catch (URISyntaxException e) {
-            throw new ParamValidationException(ParamValidationException.MESSAGE_URL_NOT_VALID,
+            throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_URL_NOT_VALID,
         	    I18nConstants.MESSAGE_URL_NOT_VALID, new String[] { "target.value", url });
         }
     

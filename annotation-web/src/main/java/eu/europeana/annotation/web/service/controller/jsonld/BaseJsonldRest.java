@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -19,9 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import com.google.gson.Gson;
-
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -51,7 +47,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
@@ -96,7 +92,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // check whether annotation with the given provider and identifier
 	    // already exist in the database
 	    if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
-		throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
+		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { "/provider/identifier", annoId.toRelativeUri() });
 	    // 2.1 validate annotation properties
@@ -636,7 +632,7 @@ public class BaseJsonldRest extends BaseRest {
 	    String userId = authentication.getPrincipal().toString();
 	    AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 	    if(!getAnnotationService().existsInDb(annoId)) {
-		throw new ParamValidationException(ParamValidationException.MESSAGE_ANNOTATION_ID_EXISTS,
+		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { "/provider/identifier", annoId.toRelativeUri() });
 	    }
