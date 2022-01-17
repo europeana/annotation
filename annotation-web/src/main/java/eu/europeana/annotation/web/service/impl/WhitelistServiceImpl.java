@@ -15,7 +15,7 @@ import eu.europeana.annotation.definitions.exception.WhitelistValidationExceptio
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.service.WhitelistService;
 
 public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements WhitelistService {
@@ -34,7 +34,7 @@ public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements W
 
 	/**
      * Whitelist methods
-     * @throws ParamValidationException 
+     * @throws ParamValidationI18NException 
      */
 	@Override
 	public WhitelistEntry storeWhitelistEntry(WhitelistEntry newWhitelistEntry) throws WhitelistValidationException {

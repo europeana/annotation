@@ -24,7 +24,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
@@ -161,12 +161,12 @@ public class BaseRest extends BaseRestController {
 		return response;
 	}
 
-	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationException {
+	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationI18NException {
 
 		return buildAnnotationId(identifier, true);
 	}
 
-	protected AnnotationId buildAnnotationId(String identifier, boolean validation) throws ParamValidationException {
+	protected AnnotationId buildAnnotationId(String identifier, boolean validation) throws ParamValidationI18NException {
 
 		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 
