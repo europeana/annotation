@@ -22,7 +22,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -169,13 +169,13 @@ public interface AnnotationService {
 	/**
 	 * this method validates the correctness of the provided annotation id (provider and identifier) 
 	 * @param annoId
-	 * @throws ParamValidationException 
+	 * @throws ParamValidationI18NException 
 	 */
-	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationException;
+	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationI18NException;
 
-	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationException, RequestBodyValidationException, PropertyValidationException;
+	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException;
 
-	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationException;
+	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationI18NException;
 	
 	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
 			List<String> annotationHttpUrls);

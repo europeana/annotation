@@ -158,25 +158,6 @@
 			</exclusions>
 		</dependency>
 
-<!--  TODO: move exclusion to correct project and use managed library version -->
-<!-- 
-		<dependency>
-			<groupId>com.github.jsonld-java</groupId>
-			<artifactId>jsonld-java-jena</artifactId>
-			
-			<version>0.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
---> 
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
@@ -208,51 +189,18 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-oauth</artifactId>
-			<version>${version.commonsApi}</version>
-			<!--
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-webmvc</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-web</artifactId>
-				</exclusion>
-			</exclusions>
-			-->
+			<version>${version.commonsApi}</version>			
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-web</artifactId>
 			<version>${version.commonsApi}</version>
-			<!--
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-webmvc</artifactId>
-				</exclusion>
-			</exclusions>
-			-->
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-error</artifactId>
 			<version>${version.commonsApi}</version>		
 		</dependency>			
-<!-- 	
-		<dependency>
-		    <groupId>eu.europeana.apikey-utils</groupId>
-		    <artifactId>apikey-client</artifactId>
-		    <version>${version.apiKeyClient}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpclient</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
- -->	
  <!--  -->
 		<dependency>
 			<groupId>commons-httpclient</groupId>

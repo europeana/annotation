@@ -2,6 +2,7 @@ package eu.europeana.annotation.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.apache.commons.lang3.StringUtils;
 
 public class UriUtils {
 
@@ -14,11 +15,11 @@ public class UriUtils {
 	 */
 	public static boolean isUrl(String value) {
 		try {
-			new URL(value);
+			URL url = new URL(value);
+			return StringUtils.isBlank(url.getProtocol());
 		} catch (MalformedURLException e) {
 			return false;
 		}
-		return true;
 	}
 
 }

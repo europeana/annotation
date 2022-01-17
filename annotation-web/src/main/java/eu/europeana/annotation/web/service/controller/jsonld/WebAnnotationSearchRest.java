@@ -22,7 +22,7 @@ import eu.europeana.annotation.solr.vocabulary.search.SortFields;
 import eu.europeana.annotation.solr.vocabulary.search.SortOrder;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -79,7 +79,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    // ** Process input params
 	    queryString = queryString.trim();
 	    if (StringUtils.isBlank(queryString))
-		throw new ParamValidationException(ParamValidationException.MESSAGE_BLANK_PARAMETER_VALUE,
+		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_BLANK_PARAMETER_VALUE,
 			I18nConstants.ANNOTATION_VALIDATION,
 			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
 
@@ -138,12 +138,12 @@ public class WebAnnotationSearchRest extends BaseRest {
 	}
     }
 
-    private SearchProfiles getProfile(String profile, HttpServletRequest request) throws ParamValidationException {
+    private SearchProfiles getProfile(String profile, HttpServletRequest request) throws ParamValidationI18NException, ParamValidationI18NException {
 
 	// if the profile parameter is given, the header preference is ignored
 	if (profile != null) {
 	    if (!SearchProfiles.contains(profile)) {
-	    	throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+	        throw new ParamValidationI18NException(I18nConstants.INVALID_PARAM_VALUE,
 				I18nConstants.INVALID_PARAM_VALUE,
 				new String[] { WebAnnotationFields.PARAM_PROFILE, profile });
 	    }

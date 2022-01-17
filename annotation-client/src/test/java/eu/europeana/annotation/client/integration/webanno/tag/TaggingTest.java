@@ -89,6 +89,19 @@ public class TaggingTest extends BaseTaggingTest {
 	}
 	
 	@Test
+    public void createTagWithoutBody() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        
+        String requestBody = getJsonStringInput(TAG_WITHOUT_BODY);
+        
+        ResponseEntity<String> response = getApiProtocolClient().createTag(
+                true, requestBody);
+        
+        assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+        //log.debug("Error message: " + );
+    }
+	
+	
+	@Test
 	public void createWrongGeoTagLat() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		String requestBody = getJsonStringInput(TAG_GEO_WRONG_LAT);

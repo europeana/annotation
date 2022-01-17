@@ -2,15 +2,11 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -39,7 +34,6 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @SwaggerSelect
 @Api(tags = "Web Annotation Auxiliary Methods", description = " ")
-@Component
 public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 
     @RequestMapping(value = "/annotations/", method = RequestMethod.POST, produces = {
@@ -54,7 +48,6 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
     }
 
     @RequestMapping(value = { "/annotation/{annoType}", "/annotation/{annoType}.jsonld" }, method = RequestMethod.POST, 
-    		consumes = { MediaType.APPLICATION_JSON },
     		produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation of given type", nickname = "createAnnotationByType", response = java.lang.Void.class)
     public ResponseEntity<String> createAnnotationByTypeJsonld(
@@ -112,7 +105,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	return response;
     }
     
-    @RequestMapping(value = "/annotations/deleted_with_additional_info", method = RequestMethod.GET, produces = {
+    @RequestMapping(value = "/annotations/getDeletedWithAdditionalInfo", method = RequestMethod.GET, produces = {
     	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
         @ApiOperation(value = "Get deleted Annotations where not only the id is returned but some additional information.", nickname = "getDeletedWithAdditionalInfo", response = java.lang.Void.class,
         		notes = "The from and to parameters should have the format yyyy-mm-dd'T'hh:mm:ss'Z', e.g. 1970-01-01T00:00:00Z.")
@@ -156,7 +149,4 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	}
 	return motivationType;
     }
-    
-    
-
 }

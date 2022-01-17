@@ -132,7 +132,7 @@ public class ManagementRest extends BaseRest {
 	}
     }
 
-    @RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.GET, produces = {
+    @RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex by annotation id", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationByAnnotationId(
@@ -151,7 +151,7 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.GET, produces = {
+    @RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex a set of annotations defined by selection criteria", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = Actions.REINDEX_ANNOTATION_SELECTION, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationSelection(
@@ -174,7 +174,7 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.POST, produces = {
+    @RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex a set of annotations", nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationSet(
@@ -206,7 +206,7 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr, httpStatus);
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.GET, produces = {
+    @RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex all annotations", nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAll(
@@ -232,7 +232,7 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.GET, produces = {
+    @RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Index new and reindex outdated annotations", nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
     public ResponseEntity<String> reindexOutdated(HttpServletRequest request)
