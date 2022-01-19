@@ -3,9 +3,7 @@ package eu.europeana.annotation.mongo.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-
 import javax.annotation.Resource;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

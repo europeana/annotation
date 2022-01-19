@@ -76,6 +76,9 @@
 			<artifactId>api2-common</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
+		
+
+		
 	</dependencies>
 
 	<organization>

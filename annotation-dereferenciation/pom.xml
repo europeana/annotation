@@ -58,6 +58,7 @@
 			<version>${version.junit-platform}</version>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
 
 	<build>

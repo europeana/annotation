@@ -3,9 +3,7 @@ package eu.europeana.annotation.mongo.dao;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mongodb.morphia.Datastore;

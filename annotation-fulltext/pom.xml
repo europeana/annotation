@@ -29,7 +29,6 @@
 			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-		
 	</dependencies>
 
 </project>

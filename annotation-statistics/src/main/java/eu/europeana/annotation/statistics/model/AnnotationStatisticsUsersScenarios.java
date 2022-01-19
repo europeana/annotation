@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
+import eu.europeana.annotation.statistics.vocabulary.AnnotationStatisticsConstants;
 
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AnnotationStatistics {
+public class AnnotationStatisticsUsersScenarios {
 	    
-    public AnnotationStatistics() {
+    public AnnotationStatisticsUsersScenarios() {
+        this.user = null;
 		this.transcription = 0;
 		this.geoTag = 0;
 		this.objectLink = 0;
@@ -18,6 +20,9 @@ public class AnnotationStatistics {
 		this.subtitle = 0;
 	}
 
+    @JsonProperty(AnnotationStatisticsConstants.USER)
+    private String user;
+    
     @JsonProperty(AnnotationScenarioTypes.TRANSCRIPTION)
     private long transcription;
     
@@ -82,6 +87,14 @@ public class AnnotationStatistics {
 
   public void setSimpleTag(long simpleTag) {
     this.simpleTag = simpleTag;
+  }
+
+  public String getUser() {
+    return user;
+  }
+
+  public void setUser(String user) {
+    this.user = user;
   }
 	
 }

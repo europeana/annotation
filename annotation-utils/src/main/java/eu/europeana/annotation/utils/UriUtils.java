@@ -15,8 +15,12 @@ public class UriUtils {
 	 */
 	public static boolean isUrl(String value) {
 		try {
-			URL url = new URL(value);
-			return !StringUtils.isBlank(url.getProtocol());
+		    //only http URLs are supported in targets so do quickcheck first
+			if(!value.startsWith("http")) {
+			  return false;
+			}
+		    URL url = new URL(value);
+			return StringUtils.isNotBlank(url.getProtocol());
 		} catch (MalformedURLException e) {
 			return false;
 		}
