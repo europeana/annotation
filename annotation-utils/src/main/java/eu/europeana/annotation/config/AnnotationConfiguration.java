@@ -28,6 +28,8 @@ public interface AnnotationConfiguration {
     public static final String PREFIX_MAX_PAGE_SIZE = "annotation.search.maxpagesize.";
 
     public static final String API_VERSION = "annotation.apiVersion";
+    
+    public static final String SOLR_STATS_FACETS = "solr.stats.facets";
 
     public String getComponentName();
 
@@ -92,5 +94,7 @@ public interface AnnotationConfiguration {
     int getMetisConnectionTimeout();
 
     int getMetisConnectionRetries();
+
+    int getStatsFacets();
 
 }

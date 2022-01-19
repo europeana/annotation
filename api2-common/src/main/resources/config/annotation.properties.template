@@ -50,6 +50,7 @@ solr.annotation.url = http://localhost:9090/solr/anno-up
 solr.annotation.timeout = 60000
 
 solr.facetLimit=750
+solr.stats.facets=100
 
 #URL of the APIKEY service
 europeana.apikey.serviceurl=http://localhost:8080/apikey
