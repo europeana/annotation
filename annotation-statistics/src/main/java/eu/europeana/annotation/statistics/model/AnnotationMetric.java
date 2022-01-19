@@ -1,5 +1,6 @@
 package eu.europeana.annotation.statistics.model;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,35 +14,59 @@ import eu.europeana.annotation.statistics.vocabulary.AnnotationStatisticsConstan
 public class AnnotationMetric {
 
 	@JsonProperty(AnnotationStatisticsConstants.PER_SCENARIO)
-	AnnotationStatistics annotationStatisticsScenarios;
+	AnnotationStatisticsScenarios scenariosTotal;
 
 	@JsonProperty(AnnotationStatisticsConstants.PER_CLIENT)
-	Map<String, Long> annotationStatisticsClients;
+	Map<String, Long> clientsTotal;
 
 	@JsonProperty(AnnotationStatisticsConstants.PER_USER)
-	Map<String, Long> annotationStatisticsUsers;
+	Map<String, Long> usersTotal;
 
-	public AnnotationStatistics getAnnotationStatisticsScenarios() {
-		return annotationStatisticsScenarios;
-	}
-
-	public void setAnnotationStatisticsScenarios(AnnotationStatistics annotationStatisticsScenarios) {
-		this.annotationStatisticsScenarios = annotationStatisticsScenarios;
-	}
+	@JsonProperty(AnnotationStatisticsConstants.PER_CLIENT_SCENARIO)
+    List<AnnotationStatisticsClientsScenarios> clientsScenarios;
 	
-	public Map<String, Long> getAnnotationStatisticsClients() {
-		return annotationStatisticsClients;
-	}
+	@JsonProperty(AnnotationStatisticsConstants.PER_USER_SCENARIO)
+    List<AnnotationStatisticsUsersScenarios> usersScenarios;
 
-	public void setAnnotationStatisticsClients(Map<String, Long> annotationStatisticsClients) {
-		this.annotationStatisticsClients = annotationStatisticsClients;
-	}
+  public AnnotationStatisticsScenarios getScenariosTotal() {
+    return scenariosTotal;
+  }
 
-	public Map<String, Long> getAnnotationStatisticsUsers() {
-		return annotationStatisticsUsers;
-	}
+  public void setScenariosTotal(AnnotationStatisticsScenarios scenariosTotal) {
+    this.scenariosTotal = scenariosTotal;
+  }
 
-	public void setAnnotationStatisticsUsers(Map<String, Long> annotationStatisticsUsers) {
-		this.annotationStatisticsUsers = annotationStatisticsUsers;
-	}
+  public Map<String, Long> getClientsTotal() {
+    return clientsTotal;
+  }
+
+  public void setClientsTotal(Map<String, Long> clientsTotal) {
+    this.clientsTotal = clientsTotal;
+  }
+
+  public Map<String, Long> getUsersTotal() {
+    return usersTotal;
+  }
+
+  public void setUsersTotal(Map<String, Long> usersTotal) {
+    this.usersTotal = usersTotal;
+  }
+
+  public List<AnnotationStatisticsClientsScenarios> getClientsScenarios() {
+    return clientsScenarios;
+  }
+
+  public void setClientsScenarios(List<AnnotationStatisticsClientsScenarios> clientsScenarios) {
+    this.clientsScenarios = clientsScenarios;
+  }
+
+  public List<AnnotationStatisticsUsersScenarios> getUsersScenarios() {
+    return usersScenarios;
+  }
+
+  public void setUsersScenarios(List<AnnotationStatisticsUsersScenarios> usersScenarios) {
+    this.usersScenarios = usersScenarios;
+  }
+	
+
 }

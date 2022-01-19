@@ -11,4 +11,6 @@ public class AnnotationStatisticsConstants {
     public static final String PER_CLIENT = "perClient";
     public static final String PER_USER = "perUser";
     public static final String PER_SCENARIO = "perScenario";
+    public static final String PER_CLIENT_SCENARIO = "perClientScenario";
+    public static final String PER_USER_SCENARIO = "perUserScenario";
 }
