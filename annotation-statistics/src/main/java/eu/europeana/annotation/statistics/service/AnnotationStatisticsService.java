@@ -31,27 +31,27 @@ public class AnnotationStatisticsService {
 
     public void getAnnotationsStatistics(AnnotationMetric annoMetric) throws AnnotationServiceException {
     	//getting the annotations statistics for the scenarios
-    	QueryResponse annoFacetStatsJson = solrService.getAnnotationStatistics(SolrAnnotationConstants.SCENARIO); 
+    	QueryResponse annoFacetStatsJson = solrService.getStatisticsByField(SolrAnnotationConstants.SCENARIO); 
     	AnnotationStatisticsScenarios annotationStatisticsScenarios = getStatisticsPerScenario(annoFacetStatsJson.getJsonFacetingResponse().getBucketBasedFacets(SolrAnnotationConstants.SCENARIO).getBuckets());
     	annoMetric.setScenariosTotal(annotationStatisticsScenarios);
     	
     	//getting the annotations statistics for the users, total
-    	annoFacetStatsJson = solrService.getAnnotationStatistics(SolrAnnotationConstants.CREATOR_URI);
+    	annoFacetStatsJson = solrService.getStatisticsByField(SolrAnnotationConstants.CREATOR_URI);
     	Map<String, Long> annotationStatisticsUsers = facetBucketsToMap (annoFacetStatsJson.getJsonFacetingResponse().getBucketBasedFacets(SolrAnnotationConstants.CREATOR_URI).getBuckets());
     	annoMetric.setUsersTotal(annotationStatisticsUsers);
 
     	//getting the annotations statistics for the clients, total
-    	annoFacetStatsJson = solrService.getAnnotationStatistics(SolrAnnotationConstants.GENERATOR_URI);
+    	annoFacetStatsJson = solrService.getStatisticsByField(SolrAnnotationConstants.GENERATOR_URI);
     	Map<String, Long> annotationStatisticsClients = facetBucketsToMap(annoFacetStatsJson.getJsonFacetingResponse().getBucketBasedFacets(SolrAnnotationConstants.GENERATOR_URI).getBuckets());
     	annoMetric.setClientsTotal(annotationStatisticsClients);
 
     	//getting the annotations statistics for the users, per scenario
-        Map<String, Map<String, Long>> numAnnotations = solrService.getAnnotationStatisticsForFacetField(SolrAnnotationConstants.CREATOR_URI);
+        Map<String, Map<String, Long>> numAnnotations = solrService.getStatisticsByFieldAndScenario(SolrAnnotationConstants.CREATOR_URI);
         List<AnnotationStatisticsUsersScenarios> annotationStatisticsUsersScenarios = getStatisticsPerUserScenario(numAnnotations);
         annoMetric.setUsersScenarios(annotationStatisticsUsersScenarios);
         
         //getting the annotations statistics for the clients, per scenario
-        numAnnotations = solrService.getAnnotationStatisticsForFacetField(SolrAnnotationConstants.GENERATOR_URI);
+        numAnnotations = solrService.getStatisticsByFieldAndScenario(SolrAnnotationConstants.GENERATOR_URI);
         List<AnnotationStatisticsClientsScenarios> annotationStatisticsClientsScenarios = getStatisticsPerClientScenario(numAnnotations);
         annoMetric.setClientsScenarios(annotationStatisticsClientsScenarios);
     }

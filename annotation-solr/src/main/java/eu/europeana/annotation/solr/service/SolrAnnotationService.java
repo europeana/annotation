@@ -130,16 +130,6 @@ public interface SolrAnnotationService {
 	 */
 	public ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException;
 	
-//	/**
-//	 * This method supports faceting for Annotation.
-//	 * @param query
-//	 * @param qf
-//	 * @param queries
-//	 * @return
-//	 * @throws AnnotationServiceException
-//	 * @deprecated update name and parameter names accordingly
-//	 */
-//	Map<String, Integer> queryFacetSearch(String query, String[] qf, List<String> queries) throws AnnotationServiceException;
 	
 	/**
 	 * This method retrieves available Annotations by searching for given term, row start position and rows limit.
@@ -153,7 +143,7 @@ public interface SolrAnnotationService {
 	public ResultSet<? extends AnnotationView> search(String term, String start, String rows)
 		throws AnnotationServiceException;
 
-	public QueryResponse getAnnotationStatistics(String fieldName) throws AnnotationServiceException;
+	public QueryResponse getStatisticsByField(String fieldName) throws AnnotationServiceException;
 
 	/**
 	 * This method checks for the duplicate annotations, to ensure the annotation uniqueness.
@@ -163,6 +153,12 @@ public interface SolrAnnotationService {
 	 */
 	public List<String> checkDuplicateAnnotations (Annotation anno) throws AnnotationServiceException ;
 
-    public Map<String, Map<String, Long>> getAnnotationStatisticsForFacetField(String facetField) throws AnnotationServiceException;
+	/**
+	 * returns statistics per facetField tailored by annotation scenario
+	 * @param facetField
+	 * @return
+	 * @throws AnnotationServiceException
+	 */
+    public Map<String, Map<String, Long>> getStatisticsByFieldAndScenario(String facetField) throws AnnotationServiceException;
     
 }

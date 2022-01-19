@@ -223,7 +223,7 @@ public class SolrAnnotationUtils {
     }
 
     private void appendUrlValue(List<String> resourceUrls, String value) {
-	if(UriUtils.isUrl(value)) {
+	if(UriUtils.isUrl(value) && !resourceUrls.contains(value)) {
 	    resourceUrls.add(value);
 	}
     }
