@@ -16,7 +16,7 @@ public class UriUtils {
 	public static boolean isUrl(String value) {
 		try {
 			URL url = new URL(value);
-			return StringUtils.isBlank(url.getProtocol());
+			return !StringUtils.isBlank(url.getProtocol());
 		} catch (MalformedURLException e) {
 			return false;
 		}
