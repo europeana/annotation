@@ -1,7 +1,7 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.io.IOException;
-
+import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,6 +58,7 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
     private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws IOException, AnnotationServiceException {
         // create metric
         AnnotationMetric annoMetric = new AnnotationMetric();
+        annoMetric.setCreated(new Date());
         annotationStatisticsService.getAnnotationsStatistics(annoMetric);
         String json = serializeMetricView(annoMetric);
         return buildUsageStatsResponse(json);

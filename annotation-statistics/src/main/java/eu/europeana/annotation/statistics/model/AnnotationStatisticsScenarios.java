@@ -16,6 +16,7 @@ public class AnnotationStatisticsScenarios {
 		this.objectLink = 0;
 		this.semanticTag = 0;
 		this.subtitle = 0;
+		this.caption = 0;
 	}
 
     @JsonProperty(AnnotationScenarioTypes.TRANSCRIPTION)
@@ -35,6 +36,9 @@ public class AnnotationStatisticsScenarios {
     
     @JsonProperty(AnnotationScenarioTypes.SUBTITLE)
     private long subtitle;
+    
+    @JsonProperty(AnnotationScenarioTypes.CAPTION)
+    private long caption;
 
 	public long getTranscription() {
 		return transcription;
@@ -82,6 +86,14 @@ public class AnnotationStatisticsScenarios {
 
   public void setSimpleTag(long simpleTag) {
     this.simpleTag = simpleTag;
+  }
+
+  public long getCaption() {
+    return caption;
+  }
+
+  public void setCaption(long caption) {
+    this.caption = caption;
   }
 	
 }
