@@ -100,7 +100,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		case TRANSCRIBING:
 			return AnnotationScenarioTypes.TRANSCRIPTION;
 		case CAPTIONING:
-			return AnnotationScenarioTypes.SUBTITLE;
+			return AnnotationScenarioTypes.CAPTION;
 		case SUBTITLING:
 			return AnnotationScenarioTypes.SUBTITLE;
 		case TAGGING:

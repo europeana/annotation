@@ -78,6 +78,9 @@ public class AnnotationStatisticsService {
             case AnnotationScenarioTypes.SUBTITLE:
               annoStats.setSubtitle(facetJsonBucket.getCount());
               break;
+            case AnnotationScenarioTypes.CAPTION:
+              annoStats.setCaption(facetJsonBucket.getCount());
+              break;
 
             default:
               getLogger().debug("Scenario not supported in statistics service: {}", facetJsonBucket.getVal());
@@ -122,6 +125,10 @@ public class AnnotationStatisticsService {
           if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.SUBTITLE)!=null) {
             clientsScenariosElem.setSubtitle(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.SUBTITLE).longValue());
           }
+          if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION)!=null) {
+            clientsScenariosElem.setCaption(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION).longValue());
+          }
+
           clientsScenarios.add(clientsScenariosElem);
       }
       return clientsScenarios;
@@ -150,6 +157,10 @@ public class AnnotationStatisticsService {
           if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.SUBTITLE)!=null) {
             usersScenariosElem.setSubtitle(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.SUBTITLE).longValue());
           }
+          if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION)!=null) {
+            usersScenariosElem.setCaption(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION).longValue());
+          }
+
           usersScenarios.add(usersScenariosElem);
       }
       return usersScenarios;

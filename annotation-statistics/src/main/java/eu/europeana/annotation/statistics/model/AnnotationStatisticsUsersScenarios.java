@@ -18,6 +18,7 @@ public class AnnotationStatisticsUsersScenarios {
 		this.objectLink = 0;
 		this.semanticTag = 0;
 		this.subtitle = 0;
+		this.caption = 0;
 	}
 
     @JsonProperty(AnnotationStatisticsConstants.USER)
@@ -40,6 +41,9 @@ public class AnnotationStatisticsUsersScenarios {
     
     @JsonProperty(AnnotationScenarioTypes.SUBTITLE)
     private long subtitle;
+    
+    @JsonProperty(AnnotationScenarioTypes.CAPTION)
+    private long caption;
 
 	public long getTranscription() {
 		return transcription;
@@ -95,6 +99,14 @@ public class AnnotationStatisticsUsersScenarios {
 
   public void setUser(String user) {
     this.user = user;
+  }
+
+  public long getCaption() {
+    return caption;
+  }
+
+  public void setCaption(long caption) {
+    this.caption = caption;
   }
 	
 }

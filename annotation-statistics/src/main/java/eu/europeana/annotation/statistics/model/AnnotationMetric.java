@@ -1,5 +1,6 @@
 package eu.europeana.annotation.statistics.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,9 @@ import eu.europeana.annotation.statistics.vocabulary.AnnotationStatisticsConstan
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnnotationMetric {
+  
+    @JsonProperty(AnnotationStatisticsConstants.CREATED)
+    Date created;
 
 	@JsonProperty(AnnotationStatisticsConstants.PER_SCENARIO)
 	AnnotationStatisticsScenarios scenariosTotal;
@@ -66,6 +70,14 @@ public class AnnotationMetric {
 
   public void setUsersScenarios(List<AnnotationStatisticsUsersScenarios> usersScenarios) {
     this.usersScenarios = usersScenarios;
+  }
+
+  public Date getCreated() {
+    return created;
+  }
+
+  public void setCreated(Date created) {
+    this.created = created;
   }
 	
 
