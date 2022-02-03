@@ -8,4 +8,5 @@ public class AnnotationScenarioTypes {
 	public static final String SIMPLE_TAG = "simpleTag"; 
 	public static final String GEO_TAG = "geoTag"; 
 	public static final String OBJECT_LINK = "objectLink";
+	public static final String CONTRIBUTE_LINK = "contributeLink";
 }

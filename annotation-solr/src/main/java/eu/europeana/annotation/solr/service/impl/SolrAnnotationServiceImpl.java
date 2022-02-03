@@ -503,6 +503,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		case LINKING :
 			queryStr=solrUniquenessQueryLinking(anno);
 		    break;
+	    case LINKFORCONTRIBUTING :
+            queryStr=solrUniquenessQueryLinkForContributing(anno);
+            break;
 		default:
 		    break;
 
@@ -589,6 +592,35 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		solrQuery+=")";
 		return solrQuery;
 	}
+	
+	private String solrUniquenessQueryLinkForContributing(Annotation anno) {
+      String solrQuery = "(" + WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"";
+      
+      List<String> targetValues = anno.getTarget().getValues();
+      if(targetValues!=null) {
+        for (String targetValue : targetValues) {
+            solrQuery+=" AND " + SolrAnnotationConstants.TARGET_URI + ":\"" + targetValue + "\"";
+        }
+      }
+      
+      if(anno.getTarget().getValue()!=null) {
+        solrQuery+=" AND " + SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"";
+      }
+
+      List<String> bodyUris = extractUriValues(anno.getBody());
+      if(bodyUris!=null) {
+        for (String bodyUri : bodyUris) {
+            solrQuery+=" AND " + SolrAnnotationConstants.BODY_URI + ":\"" + bodyUri + "\""; 
+        }
+      }
+      
+      if(anno.getBody().getValue()!=null) {
+        solrQuery+=" AND " + SolrAnnotationConstants.BODY_VALUE + ":\"" + anno.getBody().getValue() + "\"";
+      }
+      
+      solrQuery+=")";
+      return solrQuery;
+  }
 
   public AnnotationConfiguration getConfiguration() {
     return configuration;

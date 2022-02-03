@@ -19,6 +19,7 @@ public class AnnotationStatisticsUsersScenarios {
 		this.semanticTag = 0;
 		this.subtitle = 0;
 		this.caption = 0;
+		this.contributeLink = 0;
 	}
 
     @JsonProperty(AnnotationStatisticsConstants.USER)
@@ -44,6 +45,9 @@ public class AnnotationStatisticsUsersScenarios {
     
     @JsonProperty(AnnotationScenarioTypes.CAPTION)
     private long caption;
+    
+    @JsonProperty(AnnotationScenarioTypes.CONTRIBUTE_LINK)
+    private long contributeLink;
 
 	public long getTranscription() {
 		return transcription;
@@ -109,4 +113,11 @@ public class AnnotationStatisticsUsersScenarios {
     this.caption = caption;
   }
 	
+  public long getContributeLink() {
+    return contributeLink;
+  }
+
+  public void setContributeLink(long contributeLink) {
+    this.contributeLink = contributeLink;
+  }
 }

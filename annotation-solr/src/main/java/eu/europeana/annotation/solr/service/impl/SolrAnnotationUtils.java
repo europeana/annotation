@@ -163,12 +163,11 @@ public class SolrAnnotationUtils {
     }
 
     protected String extractTextValues(Body body) {
-	String value = "";
 	if (body.getValue() != null)
-	    value += body.getValue();
+	    return body.getValue();
 	else if (body.getValues() != null)
-	    value += Arrays.toString(body.getValues().toArray());
-	return value;
+	    return Arrays.toString(body.getValues().toArray());
+	else return null;
     }
 
     protected void processTargetUris(SolrAnnotation solrAnnotation) {

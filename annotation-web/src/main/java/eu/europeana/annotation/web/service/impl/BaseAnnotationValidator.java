@@ -384,6 +384,9 @@ public abstract class BaseAnnotationValidator {
           validateBodyExists(webAnnotation.getBody());
           validateSubtitleOrCaption(webAnnotation);
           break;
+        case LINKFORCONTRIBUTING:
+          validateLinkForContributing(webAnnotation);
+          break;
         default:
           break;
       }
@@ -533,6 +536,19 @@ public abstract class BaseAnnotationValidator {
 
     }
     
+    protected void validateLinkForContributing(Annotation webAnnotation)
+        throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
+
+      validateBodyExists(webAnnotation.getBody());
+
+      if (webAnnotation.getTarget() == null) 
+        throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target" });
+      else if (webAnnotation.getTarget().getValue().isBlank())
+        throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.value" });
+    }
+    
     private void validateSubtitleBody (Body body) throws PropertyValidationException {
     	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
     	if (StringUtils.isBlank(body.getContentType())) {
@@ -555,7 +571,7 @@ public abstract class BaseAnnotationValidator {
     }
     
     private void validateBodyExists(Body body) throws PropertyValidationException {
-    	if (body == null || body.getValue() == null) {
+    	if (body == null) {
     	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
     	}
