@@ -9,7 +9,10 @@ public class ClientConfiguration {
 
     protected static final String ANNOTATION_CLIENT_PROPERTIES_FILE = "/annotation-client.properties";
     protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
-    protected static final String PROP_ANNOTATION_SERVICE_URI = "annotation.service.uri";
+    protected static final String PROP_ANNOTATION_SERVICE_BASE_URI = "annotation.service.uri";
+    protected static final String PROP_ANNOTATION_ID_BASE_URI = "annotation.id.baseUrl";
+    
+    
     protected static final String PROP_AUTHORIZATION_HEADER_NAME = "annotation.header.name";
     protected static final String PROP_REGULAR_AUTHORIZATION_HEADER_VALUE = "annotation.regular.authorization.value";
     protected static final String PROP_ADMIN_ANNOTATION_HEADER_VALUE = "annotation.admin.authorization.value";
@@ -96,8 +99,22 @@ public class ClientConfiguration {
      * @return
      */
     public String getServiceUri() {
-	return getProperties().getProperty(PROP_ANNOTATION_SERVICE_URI).trim();
+	return getProperties().getProperty(PROP_ANNOTATION_SERVICE_BASE_URI).trim();
     }
+    
+    /**
+     * This method provides access to the annotation id base uri value defined in the
+     * configuration file
+     * 
+     * @see PROP_EUROPEANA_SEARCH_URI
+     * 
+     * @return
+     */
+    public String getAnnotationIdBaseUri() {
+    return getProperties().getProperty(PROP_ANNOTATION_ID_BASE_URI).trim();
+    }
+    
+   
     
     /**
      * This method provides access to the header name defined in the configuration

@@ -3,9 +3,7 @@ package eu.europeana.annotation.mongo.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +15,6 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.stereotype.Component;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -260,10 +257,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotEmpty(target)) {
 			if (multiple)
-				query.disableValidation().field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUES)
+				query.disableValidation().field(PersistentAnnotation.FIELD_TARGET + '.' + PersistentAnnotation.FIELD_VALUES)
 						.equal(target);
 			else
-				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_VALUE,
+				query.disableValidation().filter(PersistentAnnotation.FIELD_TARGET + '.' + PersistentAnnotation.FIELD_VALUE,
 						target);
 		}
 		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
@@ -288,7 +285,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		//add resourceID filter
 		query.disableValidation()
-					.field(PersistentAnnotation.FIELD_TARGET + PersistentAnnotation.FIELD_RESOURCE_IDS)
+					.field(PersistentAnnotation.FIELD_TARGET +'.' + PersistentAnnotation.FIELD_RESOURCE_IDS)
 						.equal(resourceId);
 			
 		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
@@ -497,26 +494,51 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return response;
 	}
 	
+	/**
+	 * Returns the list of annotation IDs.
+	 * @param motivation
+	 * @param startDate
+	 * @param stopDate
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
     protected List<PersistentAnnotation> queryDisabled(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
-    	Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
-		query.field(WebAnnotationFields.DISABLED).greaterThanOrEq(startDate);
-		query.field(WebAnnotationFields.DISABLED).lessThanOrEq(stopDate);
-	
-		if(motivation!=null) {
-			query.field(WebAnnotationFields.MOTIVATION).equal(motivation.getOaType());
-		}
-	
-		//descending order by disabling date
-		query.order("-" + WebAnnotationFields.DISABLED);
-	
-		//the pagination
-		page = page<0 ? 0 : page;
-		limit = limit<=0 ? 100 : (limit>1000 ? 1000 : limit);
-		return query.asList(new FindOptions().limit(limit).skip(page * limit));
+    	return queryDisabled(motivation, startDate, stopDate, page, limit, (String[]) null);
     }
+    
+    protected List<PersistentAnnotation> queryDisabled(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit, String... additionalFields) {
+      
+      
+      Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
+      query.field(WebAnnotationFields.DISABLED).greaterThanOrEq(startDate);
+      query.field(WebAnnotationFields.DISABLED).lessThanOrEq(stopDate);
+      
+      //return only annotation Ids
+      query.project(PersistentAnnotation.FIELD_ANNOTATION_ID, true);
+      if(additionalFields != null) {
+        for (String fieldToInclude : additionalFields) {
+          query.project(fieldToInclude, true);
+        }
+      }
+  
+      if(motivation!=null) {
+          query.field(WebAnnotationFields.MOTIVATION).equal(motivation.getOaType());
+      }
+  
+      //descending order by disabling date
+      query.order("-" + WebAnnotationFields.DISABLED);
+  
+      //the pagination
+      page = page<0 ? 0 : page;
+      limit = limit<=0 ? 100 : (limit>1000 ? 1000 : limit);
+      return query.asList(new FindOptions().limit(limit).skip(page * limit));
+  }
+    
 
     public List<AnnotationDeletion> getDisabledWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
-		List<PersistentAnnotation> disabledAnnos = queryDisabled(motivation, startDate, stopDate, page, limit);
+      String[] additionalFields = new String[] {PersistentAnnotation.FIELD_TARGET, PersistentAnnotation.FIELD_GENERATED}; 
+		List<PersistentAnnotation> disabledAnnos = queryDisabled(motivation, startDate, stopDate, page, limit, additionalFields);
 		if(disabledAnnos == null || disabledAnnos.isEmpty()) {
 		    return null;
 		}		
@@ -538,7 +560,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		}		
 		List<String> results = new ArrayList<String>();
 		for (Annotation annotation : disabledAnnos) {
-			results.add(WebAnnotationFields.ANNOTATION_ID_PREFIX + "/" + annotation.getAnnotationId().getIdentifier());
+			results.add(annotation.getAnnotationId().getHttpUrl());
 		}		
 		return results;
     }
