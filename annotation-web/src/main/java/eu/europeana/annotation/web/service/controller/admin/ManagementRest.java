@@ -134,7 +134,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex by annotation id", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
+    @ApiOperation(value = "Reindex by annotation id. Authorization required.", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationByAnnotationId(
 	    @RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException {
@@ -153,7 +153,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex a set of annotations defined by selection criteria", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = Actions.REINDEX_ANNOTATION_SELECTION, response = java.lang.Void.class)
+    @ApiOperation(value = "Reindex a set of annotations defined by selection criteria. Authorization required.", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = Actions.REINDEX_ANNOTATION_SELECTION, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationSelection(
 	    @RequestParam(value = "startDate", required = false) String startDate,
 	    @RequestParam(value = "endDate", required = false) String endDate,
@@ -176,10 +176,8 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex a set of annotations", nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+    @ApiOperation(value = "Reindex a set of annotations. Authorization required.", nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationSet(
-	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-	    @RequestParam(value = WebAnnotationFields.USER_TOKEN, required = false, defaultValue = WebAnnotationFields.USER_ANONYMOUNS) String userToken,
 	    @RequestBody String uris, HttpServletRequest request) throws UserAuthorizationException, HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
@@ -194,7 +192,7 @@ public class ManagementRest extends BaseRest {
 	}
 
 	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse(apiKey, "/admin/annotation/reindexset");
+	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexset");
 	response.setStatus(
 		"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
 	// only if at least one item was successfully reindexed
@@ -208,7 +206,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex all annotations", nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
+    @ApiOperation(value = "Reindex all annotations. Authorization required.", nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAll(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException {
 
@@ -234,7 +232,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.PUT, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Index new and reindex outdated annotations", nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
+    @ApiOperation(value = "Index new and reindex outdated annotations. Authorization required.", nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
     public ResponseEntity<String> reindexOutdated(HttpServletRequest request)
 	    throws UserAuthorizationException, HttpException {
 
@@ -262,7 +260,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Update record identifiers with new ones", nickname = "updateRecordId", response = java.lang.Void.class)
+    @ApiOperation(value = "Update record identifiers with new ones. Authorization required.", nickname = "updateRecordId", response = java.lang.Void.class)
     public ResponseEntity<String> updateRecordId(
 	    @RequestParam(value = WebAnnotationFields.OLD_RECORD_ID, required = true) String oldId,
 	    @RequestParam(value = WebAnnotationFields.NEW_RECORD_ID, required = true) String newId,
@@ -291,7 +289,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8,
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Lock write operations", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+    @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> lockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
 

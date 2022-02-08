@@ -424,7 +424,7 @@ public class BaseWebAnnotationTest {
   protected void deleteAnnotation(String identifier) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(identifier);
-		assertEquals(HttpStatus.NO_CONTENT, re.getStatusCode());
+		assertEquals(HttpStatus.GONE, re.getStatusCode());
 		log.trace("Annotation deleted: /" + identifier);
 	}
 	
