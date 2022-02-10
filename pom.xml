@@ -12,16 +12,17 @@
 		<repository>
 			<id>libs-release</id>
 			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
+			<url>https://artifactory.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
+			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
 		
 		
 		<!--  disable ibiblio.org mirror because of corrupted jars -->
+		<!--
 		<repository>
 			<id>ibiblio</id>
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
@@ -32,7 +33,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
-		
+		-->
 	</repositories>
 	
 	
