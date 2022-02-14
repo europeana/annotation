@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.impl;
 
 import static eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes.LINKING;
+import static eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes.LINKFORCONTRIBUTING;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
@@ -322,7 +323,8 @@ public abstract class BaseAnnotationValidator {
         RequestBodyValidationException, PropertyValidationException {
 
       // all annotations must have a body except for the links
-      if (!LINKING.equals(webAnnotation.getMotivationType())) {
+      if (!LINKING.equals(webAnnotation.getMotivationType()) 
+          && !LINKFORCONTRIBUTING.equals(webAnnotation.getMotivationType())) {
         validateBodyExists(webAnnotation.getBody());
       }
 
@@ -539,14 +541,17 @@ public abstract class BaseAnnotationValidator {
     protected void validateLinkForContributing(Annotation webAnnotation)
         throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
 
-      validateBodyExists(webAnnotation.getBody());
-
-      if (webAnnotation.getTarget() == null) 
+      /* the body can be either a string (having only the value) or a json object with the id key
+       * in which case it will have the httpUri value
+       */
+      if (webAnnotation.getBody() == null 
+          || (webAnnotation.getBody().getHttpUri() == null && webAnnotation.getBody().getValue() == null))
         throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target" });
-      else if (webAnnotation.getTarget().getValue().isBlank())
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
+      
+      if (webAnnotation.getTarget() == null || webAnnotation.getTarget().getValue().isBlank()) 
         throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.value" });
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target" });
     }
     
     private void validateSubtitleBody (Body body) throws PropertyValidationException {
@@ -571,7 +576,7 @@ public abstract class BaseAnnotationValidator {
     }
     
     private void validateBodyExists(Body body) throws PropertyValidationException {
-    	if (body == null) {
+    	if (body == null  || body.getValue() == null) {
     	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
     	}
