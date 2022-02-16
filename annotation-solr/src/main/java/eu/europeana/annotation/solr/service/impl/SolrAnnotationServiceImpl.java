@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -19,7 +18,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.util.NamedList;
 import org.springframework.stereotype.Component;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -566,15 +564,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
       List<String> bodyUris = extractUriValues(anno.getBody());
-      //using a single filter here (see please: https://solr.apache.org/guide/8_11/common-query-parameters.html#fq-filter-query-parameter, for more information)
-      String bodyUrisFilter = "";
-      for (int i=0; i<bodyUris.size(); i++) {
-        if(i==0) 
-          bodyUrisFilter += "+" + SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"";
-        else 
-          bodyUrisFilter += " " + "+" + SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"";
+      for (int i=0; i<bodyUris.size(); i++) { 
+        query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
       }
-      query.addFilterQuery(bodyUrisFilter);
       return query;
 	}
 	
@@ -589,20 +581,13 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	
 	private SolrQuery solrUniquenessQueryLinking(Annotation anno) {
       SolrQuery query = new SolrQuery();
+      query.setQuery("*:*");
       List<String> targetValues = anno.getTarget().getValues();
       if(targetValues!=null) {
-        String targetUrisQuery = "";
-        for (int i=0; i<targetValues.size(); i++) {
-          if(i==0)
-            targetUrisQuery += SolrAnnotationConstants.TARGET_URI + ":\"" + targetValues.get(i) + "\"";
-          else
-            targetUrisQuery +=" AND " + SolrAnnotationConstants.TARGET_URI + ":\"" + targetValues.get(i) + "\"";
+        for(String target: targetValues) {
+          query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + target + "\"");
         }
-        query.setQuery(targetUrisQuery);
-      }
-      else
-        query.setQuery("*:*");
-      
+      }      
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKING.getOaType() + "\"");
       return query;	  
 	}
@@ -612,15 +597,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
       List<String> bodyUris = extractUriValues(anno.getBody());
-      //using a single filter here (see please: https://solr.apache.org/guide/8_11/common-query-parameters.html#fq-filter-query-parameter, for more information)
-      String bodyUrisFilter = "";
       for (int i=0; i<bodyUris.size(); i++) {
-        if(i==0) 
-          bodyUrisFilter += "+" + SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"";
-        else 
-          bodyUrisFilter += " " + "+" + SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"";
+        query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
       }
-      query.addFilterQuery(bodyUrisFilter);
       return query;
   }
 

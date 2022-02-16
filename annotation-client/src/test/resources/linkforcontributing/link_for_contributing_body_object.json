@@ -2,6 +2,8 @@
   "@context": "http://www.w3.org/ns/anno.jsonld",
   "type": "Annotation",
   "motivation": "linkForContributing",
-  "body": "https://europeana.transcribathon.eu/documents/story/?story=151095",
+  "body": {
+       "id": "http://europeana.transcribathon.eu/documents/story/?story=151095"
+  },
   "target": "http://data.europeana.eu/item/151095/SomeResource_1000093324568"
 }	

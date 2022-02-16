@@ -1,9 +1,0 @@
-{
-  "@context": "http://www.w3.org/ns/anno.jsonld",
-  "type": "Annotation",
-  "motivation": "linkForContributing",
-  "body": {
-       "id": "https://europeana.transcribathon.eu/documents/story/?story=151095"
-  },
-  "target": "http://data.europeana.eu/item/07931/diglit_uah_m1"
-}	

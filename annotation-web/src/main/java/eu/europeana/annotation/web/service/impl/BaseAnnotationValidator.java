@@ -145,7 +145,7 @@ public abstract class BaseAnnotationValidator {
      * @throws PropertyValidationException
      * @throws RequestBodyValidationException
      */
-    protected void validateTranscriptionWithFullTextResource(Body body)
+    protected void validateTranscriptionBodyWithFullTextResource(Body body)
 	    throws ParamValidationI18NException, PropertyValidationException, RequestBodyValidationException {
 	// the body type shouldn't be null at this stage
 	validateFullTextResource(body);
@@ -322,12 +322,6 @@ public abstract class BaseAnnotationValidator {
     public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException,
         RequestBodyValidationException, PropertyValidationException {
 
-      // all annotations must have a body except for the links
-      if (!LINKING.equals(webAnnotation.getMotivationType()) 
-          && !LINKFORCONTRIBUTING.equals(webAnnotation.getMotivationType())) {
-        validateBodyExists(webAnnotation.getBody());
-      }
-
       // validate canonical to be an absolute URI
       if (webAnnotation.getCanonical() != null) {
         try {
@@ -368,22 +362,17 @@ public abstract class BaseAnnotationValidator {
           }
           break;
         case DESCRIBING:
-          validateBodyExists(webAnnotation.getBody());
           validateDescribing(webAnnotation);
         case TAGGING:
-          validateBodyExists(webAnnotation.getBody());
           validateTag(webAnnotation);
           break;
         case TRANSCRIBING:
-          validateBodyExists(webAnnotation.getBody());
           validateTranscription(webAnnotation);
           break;
         case SUBTITLING:
-          validateBodyExists(webAnnotation.getBody());
           validateSubtitleOrCaption(webAnnotation);
           break;
         case CAPTIONING:
-          validateBodyExists(webAnnotation.getBody());
           validateSubtitleOrCaption(webAnnotation);
           break;
         case LINKFORCONTRIBUTING:
@@ -456,6 +445,7 @@ public abstract class BaseAnnotationValidator {
     protected void validateTag(Annotation webAnnotation) throws ParamValidationI18NException, PropertyValidationException {
 	// webAnnotation.
 	Body body = webAnnotation.getBody();
+	validateBodyExists(webAnnotation.getBody());
 	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 	    validateTagWithSpecificResource(body);
 	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
@@ -480,6 +470,7 @@ public abstract class BaseAnnotationValidator {
      */
     protected void validateDescribing(Annotation webAnnotation) throws ParamValidationI18NException, PropertyValidationException {
 	Body body = webAnnotation.getBody();
+	validateBodyExists(webAnnotation.getBody());
 	if (body.getType() != null && !ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0))) {
 	    validateTextualBody(body, true);
 	}
@@ -494,8 +485,8 @@ public abstract class BaseAnnotationValidator {
      */
     protected void validateTranscription(Annotation webAnnotation)
 	    throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
-	validateTranscriptionWithFullTextResource(webAnnotation.getBody());
-
+    validateBodyExists(webAnnotation.getBody());
+	validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody());
 	// validate target
 	// TODO consider moving to validateSpecificResource method
 	// "source" becomes mandatory as soon as you have a "scope" in the target
@@ -517,6 +508,7 @@ public abstract class BaseAnnotationValidator {
 
 	// validate body
 	Body body = webAnnotation.getBody();
+	validateBodyExists(body);
 	validateFullTextResource(body);
 	// TODO: enable this method when the spike ticket is concluded
 	validateSubtitleBody(body);
@@ -541,13 +533,18 @@ public abstract class BaseAnnotationValidator {
     protected void validateLinkForContributing(Annotation webAnnotation)
         throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
 
-      /* the body can be either a string (having only the value) or a json object with the id key
-       * in which case it will have the httpUri value
-       */
-      if (webAnnotation.getBody() == null 
-          || (webAnnotation.getBody().getHttpUri() == null && webAnnotation.getBody().getValue() == null))
-        throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
+      validateBodyExists(webAnnotation.getBody());
+      
+      //validate that body url starts with the https
+      String bodyUrl = webAnnotation.getBody().getValue();
+      if(bodyUrl==null) {
+        bodyUrl = webAnnotation.getBody().getHttpUri();
+      }
+      if (!UriUtils.urlStartsWithHttps(bodyUrl)) {
+        throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+            new String[] { "body.id or body.value: ", bodyUrl });
+      }
+      
       
       if (webAnnotation.getTarget() == null || webAnnotation.getTarget().getValue().isBlank()) 
         throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
@@ -576,7 +573,9 @@ public abstract class BaseAnnotationValidator {
     }
     
     private void validateBodyExists(Body body) throws PropertyValidationException {
-    	if (body == null  || body.getValue() == null) {
+        // the body must either have a value or an httpUri which is set from the id field from the body json input
+    	if (body == null
+    	    || (body.getHttpUri() == null && body.getValue() == null)) {
     	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
     	}
