@@ -136,7 +136,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	/**
 	 * AnnotationId
 	 */
-	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotation";
+//	public static final String ANNOTATION_ID_PREFIX = "http://data.europeana.eu/annotation";
 	public static final String SLASH = "/";
 	public static final int MIN_ANNOTATION_ID_COMPONENT_COUNT = 4;
 	public static final String PROVIDER_EUROPEANA_DEV = "eanadev";

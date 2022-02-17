@@ -82,6 +82,12 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     }
 
     @Override
+    public int getStatsFacets() {
+      return toInt(getAnnotationProperties().getProperty(SOLR_STATS_FACETS));
+    }
+    
+    
+    @Override
     /*
      * (non-Javadoc)
      * 

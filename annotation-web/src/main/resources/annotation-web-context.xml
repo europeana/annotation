@@ -58,6 +58,9 @@
     <beans:bean id="annotationSearchService" class="eu.europeana.annotation.web.service.impl.AnnotationSearchServiceImpl">
     </beans:bean>
     
+    <beans:bean id="annotationStatisticsService" class="eu.europeana.annotation.statistics.service.AnnotationStatisticsService">
+    </beans:bean>
+    
     <!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
     <context:component-scan base-package="eu.europeana.annotation.web.service" />
     <!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
@@ -83,5 +86,6 @@
     <beans:bean id="i18nService" class="eu.europeana.api.commons.config.i18n.I18nServiceImpl">
     	<beans:property name="messageSource" ref="annotation_i18n_messageSource"/>
     </beans:bean>
+    
    
 </beans:beans>

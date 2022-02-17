@@ -99,7 +99,8 @@ public class BaseWebAnnotationTest {
 
 	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
 	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
-	public static final String TAG_GEO_WRONG_LAT = "/tag/wrong/geotag_wrong_lat.json";
+	public static final String TAG_WITHOUT_BODY = "/tag/wrong/without_body.json";
+    public static final String TAG_GEO_WRONG_LAT = "/tag/wrong/geotag_wrong_lat.json";
 	public static final String TAG_GEO_WRONG_LONG = "/tag/wrong/geotag_wrong_long.json";
 	public static final String TAG_GEOTAG = "/tag/geotag.json";
 	public static final String LINK_SEMANTIC = "/link/edmIsSimilarTo.json";
@@ -423,7 +424,7 @@ public class BaseWebAnnotationTest {
   protected void deleteAnnotation(String identifier) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(identifier);
-		assertEquals(HttpStatus.NO_CONTENT, re.getStatusCode());
+		assertEquals(HttpStatus.GONE, re.getStatusCode());
 		log.trace("Annotation deleted: /" + identifier);
 	}
 	

@@ -23,7 +23,7 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
-import eu.europeana.annotation.web.exception.request.ParamValidationException;
+import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.model.vocabulary.Operations;

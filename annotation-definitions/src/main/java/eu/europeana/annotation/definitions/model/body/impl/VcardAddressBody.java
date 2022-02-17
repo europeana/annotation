@@ -1,8 +1,8 @@
 package eu.europeana.annotation.definitions.model.body.impl;
 
+import eu.europeana.annotation.definitions.model.Address;
+import eu.europeana.annotation.definitions.model.BaseAddress;
 import eu.europeana.annotation.definitions.model.body.AddressBody;
-import eu.europeana.api.commons.definitions.entities.BaseAddress;
-import eu.europeana.corelib.definitions.edm.entity.Address;
 
 /**
  * This is a class for semantic tag with Vcard address body.

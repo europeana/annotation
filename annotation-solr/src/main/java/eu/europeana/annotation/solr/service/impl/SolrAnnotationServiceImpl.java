@@ -2,8 +2,9 @@ package eu.europeana.annotation.solr.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,12 +12,16 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
+import org.apache.solr.client.solrj.request.json.TermsFacetMap;
+import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.util.NamedList;
 import org.springframework.stereotype.Component;
-
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
@@ -38,6 +43,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
     @Resource
     SolrClient solrClient;
+    @Resource
+    AnnotationConfiguration configuration;
 
     public void setSolrClient(SolrClient solrServer) {
 	this.solrClient = solrServer;
@@ -345,6 +352,57 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
 
     @Override
+    public QueryResponse getStatisticsByField(String fieldName) throws AnnotationServiceException {
+		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(fieldName);
+		final JsonQueryRequest request = new JsonQueryRequest()
+		    .setQuery("*:*")
+		    .setLimit(0)
+		    .withFacet(fieldName, topCategoriesFacet);
+		// Query the server
+		try {
+		    getLogger().debug("Getting the annotations statstics with the json nested facets for the facet field: {}.", fieldName);
+		    QueryResponse queryResponse = request.process(solrClient);
+		    return queryResponse;
+		} catch (SolrServerException | IOException e) {
+		    throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
+		}
+    }
+    
+    @Override
+    public Map<String, Map<String, Long>> getStatisticsByFieldAndScenario (String mainFacetField) throws AnnotationServiceException {
+
+        Map<String,Map<String,Long>> statsPerByFieldAndScenario = new HashMap<String, Map<String, Long>>();
+        // Construct a SolrQuery
+        SolrQuery query = new SolrQuery();
+        query.setQuery("*:*");
+        //for nested facets the faceted fields need to be concatenated, otherwise the results simple independent facets
+        String nestedFacetsFields = mainFacetField + ',' + SolrAnnotationConstants.SCENARIO;
+        query.addFacetPivotField(nestedFacetsFields);
+        query.setFacet(true);
+        if(getConfiguration().getStatsFacets() > 0) {
+          query.setFacetLimit(getConfiguration().getStatsFacets());
+        }  
+        query.setRows(0);       
+        // Query the server
+        try {
+            getLogger().debug("Getting the annotations statstics for the query: {}", query);
+            QueryResponse rsp = solrClient.query(query);
+            List<PivotField> nestedFacets = rsp.getFacetPivot().get(nestedFacetsFields);
+            for (PivotField mainFacetFieldFacet : nestedFacets) {
+                Map<String,Long> statsPerScenario = new HashMap<String, Long>();              
+                for (PivotField scenarioFacet : mainFacetFieldFacet.getPivot()) {
+                    statsPerScenario.put(scenarioFacet.getValue().toString(), Long.valueOf(scenarioFacet.getCount()));
+                }
+                statsPerByFieldAndScenario.put(mainFacetFieldFacet.getValue().toString(), statsPerScenario);
+            }
+            return statsPerByFieldAndScenario;
+        } catch (SolrServerException | IOException e) {
+            throw new AnnotationServiceException("Unexpected exception occured when getting the annotations statistics", e);
+        }
+    
+    }
+    
+    @Override
     public void update(Annotation anno) throws AnnotationServiceException {
 	update(anno, null);
     }
@@ -419,6 +477,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     public void index(ModerationRecord moderationRecord) {
 
     }
+    
+
 
 	@Override
 	public List<String> checkDuplicateAnnotations(Annotation anno) throws AnnotationServiceException {
@@ -529,5 +589,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		solrQuery+=")";
 		return solrQuery;
 	}
+
+  public AnnotationConfiguration getConfiguration() {
+    return configuration;
+  }
 
 }
