@@ -227,9 +227,12 @@ public interface AnnotationService {
 
 	/**
 	 * This method checks for the duplicate annotations in order to ensure the annotation uniqueness.
-	 * @param annotation	an annotation to check for duplicates
-	 * @return*/
-	public List<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException;
+	 * @param annotation
+	 * @param noSelfCheck
+	 * @return
+	 * @throws AnnotationServiceException
+	 */
+	public List<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck) throws AnnotationServiceException;
 	
 	/**
 	 * Returns the deleted annotations in the given date range.

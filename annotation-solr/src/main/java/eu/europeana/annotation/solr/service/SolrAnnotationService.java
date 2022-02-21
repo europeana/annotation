@@ -151,7 +151,7 @@ public interface SolrAnnotationService {
 	 * @return the collection of the duplicate annotation ids
 	 * @throws AnnotationServiceException
 	 */
-	public List<String> checkDuplicateAnnotations (Annotation anno) throws AnnotationServiceException ;
+	public List<String> checkDuplicateAnnotations (Annotation anno, boolean noSelfCheck) throws AnnotationServiceException ;
 
 	/**
 	 * returns statistics per facetField tailored by annotation scenario

@@ -235,7 +235,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException {
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		//check that the updated annotation is unique
-	    List<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation);
+	    List<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation, true);
 		if(duplicateAnnotationIds!=null) {
 			String [] i18nParamsAnnoDuplicates = new String [1];
 			i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
@@ -669,7 +669,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
 	@Override
-	public List<String> checkDuplicateAnnotations(Annotation annotation) throws AnnotationServiceException {
-		return getSolrService().checkDuplicateAnnotations(annotation);
+	public List<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck) throws AnnotationServiceException {
+		return getSolrService().checkDuplicateAnnotations(annotation, noSelfCheck);
 	}
 }
