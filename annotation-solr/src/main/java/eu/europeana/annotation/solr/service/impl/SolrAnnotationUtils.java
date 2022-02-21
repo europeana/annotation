@@ -164,9 +164,8 @@ public class SolrAnnotationUtils {
     }
 
     protected String extractTextValues(Body body) {
-	String value = "";
 	if (body.getValue() != null && !UriUtils.isUrl(body.getValue())) {
-	    value += body.getValue();
+	    return body.getValue();
 	}
 	else if (body.getValues() != null) {
 	  List<String> notUrlValues = new ArrayList<String>();
@@ -175,9 +174,14 @@ public class SolrAnnotationUtils {
 	      notUrlValues.add(elem);
 	    }
 	  }
-	  value += Arrays.toString(notUrlValues.toArray());
+	  if(notUrlValues.size()>0) {
+	    return Arrays.toString(notUrlValues.toArray());
+	  }
+	  else {
+	    return null;
+	  }
 	}
-	return value;
+	else return null;
     }
 
     protected void processTargetUris(SolrAnnotation solrAnnotation) {

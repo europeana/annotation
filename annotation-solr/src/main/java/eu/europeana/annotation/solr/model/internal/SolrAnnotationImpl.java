@@ -115,6 +115,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 			}
 		case LINKING:
 			return AnnotationScenarioTypes.OBJECT_LINK;
+	    case LINKFORCONTRIBUTING:
+            return AnnotationScenarioTypes.CONTRIBUTE_LINK;
 		default:
 			return "";
 		}		
@@ -200,12 +202,15 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	 */
 	@Override
 	public void addMultilingualValue(String language, String label) {
-		if(language!=null) {
-	        if(bodyMultilingualValue == null){
-	            bodyMultilingualValue = new HashMap<String, String>();
-	        }
-	        bodyMultilingualValue.put(BODY_VALUE_PREFIX + language, label);
-		}
+	  if(bodyMultilingualValue == null){
+        bodyMultilingualValue = new HashMap<String, String>();
+      }
+	  if(language!=null) {
+	    bodyMultilingualValue.put(BODY_VALUE_PREFIX + language, label);
+	  }
+	  else {
+	    bodyMultilingualValue.put(BODY_VALUE_PREFIX, label);
+	  }
 	}
 
 	@Override

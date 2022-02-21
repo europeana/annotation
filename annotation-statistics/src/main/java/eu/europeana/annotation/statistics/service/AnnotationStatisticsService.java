@@ -81,6 +81,9 @@ public class AnnotationStatisticsService {
             case AnnotationScenarioTypes.CAPTION:
               annoStats.setCaption(facetJsonBucket.getCount());
               break;
+            case AnnotationScenarioTypes.CONTRIBUTE_LINK:
+              annoStats.setContributeLink(facetJsonBucket.getCount());
+              break;
 
             default:
               getLogger().debug("Scenario not supported in statistics service: {}", facetJsonBucket.getVal());
@@ -128,6 +131,9 @@ public class AnnotationStatisticsService {
           if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION)!=null) {
             clientsScenariosElem.setCaption(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION).longValue());
           }
+          if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK)!=null) {
+            clientsScenariosElem.setContributeLink(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
+          }
 
           clientsScenarios.add(clientsScenariosElem);
       }
@@ -159,6 +165,9 @@ public class AnnotationStatisticsService {
           }
           if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION)!=null) {
             usersScenariosElem.setCaption(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION).longValue());
+          }
+          if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK)!=null) {
+            usersScenariosElem.setContributeLink(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
           }
 
           usersScenarios.add(usersScenariosElem);
