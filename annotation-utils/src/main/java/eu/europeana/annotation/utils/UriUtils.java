@@ -25,5 +25,15 @@ public class UriUtils {
 			return false;
 		}
 	}
+	
+    public static boolean urlStartsWithHttps(String value) {
+        //only URLs that start with "https" are allowed
+        if(value.startsWith("https")) {
+          return true;
+        }
+        else {
+          return false;
+        }
+    }
 
 }

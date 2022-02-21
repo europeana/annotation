@@ -1013,10 +1013,10 @@ public class AnnotationLdParser extends JsonLdParser {
 		switch (motivation) {
 		case LINKING:
 			return BodyInternalTypes.LINK;
-
 		case TAGGING:
 			return guesBodyTagSubType(value);
-
+		case LINKFORCONTRIBUTING:
+          return BodyInternalTypes.SPECIFIC_RESOURCE;
 		default:
 			break;
 		}
@@ -1064,6 +1064,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
+		case LINKFORCONTRIBUTING:
+          return BodyInternalTypes.SPECIFIC_RESOURCE;
 		default:
 			break;
 

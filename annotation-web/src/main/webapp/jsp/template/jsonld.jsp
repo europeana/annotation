@@ -25,6 +25,8 @@ The following properties are optional in all annotations:
 						<li><a href="#objectlink_specificRelation">Create Object Link - by specifying a relation type</a></li>
 						<li><a href="#transcription">Create Transcription</a></li>
 						<li><a href="#tag_webResource">Create (Object) tag - web resource</a></li>
+						<li><a href="#linkForContributing_bodyAsObject">Create Link For Contributing - Body As Object</a></li>
+						<li><a href="#linkForContributing_bodyAsString">Create Link For Contributing - Body As String</a></li>
 					</ul>
 
 <h3 id="tag_bodyValue">Create (Object) Tag</h3>
@@ -267,5 +269,45 @@ The json-ld serialization available in the following box is a valid input to be 
 }
 </textarea>
 
-<br>			
+<br>	
+
+<h3 id="linkForContributing_bodyAsObject">Create Link For Contributing - Body As Object</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>link for contributing</b> annotations with a body as a json object.
+<br>
+NOTE: The body should contain the URI starting with the https.
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:linkForContributing)
+<textarea rows="10" cols="80" name="jsonldtag">
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "type": "Annotation",
+  "motivation": "linkForContributing",
+  "body": {
+       "id": "https://europeana.transcribathon.eu/documents/story/?story=151095"
+  },
+  "target": "http://data.europeana.eu/story/151095/SomeResource_1000093324568"
+}
+</textarea>
+<br>		
+
+<h3 id="linkForContributing_bodyAsString">Create Link For Contributing - Body As String</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of <b>link for contributing</b> annotations with a string body.
+<br>
+NOTE: The body should contain the URI starting with the https.
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:linkForContributing)
+<textarea rows="8" cols="80" name="jsonldtag">
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "type": "Annotation",
+  "motivation": "linkForContributing",
+  "body": "https://europeana.transcribathon.eu/documents/story/?story=151095",
+  "target": "http://data.europeana.eu/story/151095/SomeResource_1000093324568"
+}	
+
+</textarea>
+<br>		
+
 <%@include file="footer.html"%>
