@@ -202,13 +202,15 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	 */
 	@Override
 	public void addMultilingualValue(String language, String label) {
-		if(language == null) {
-		    return;
-		}
-		if(bodyMultilingualValue == null){
-		    bodyMultilingualValue = new HashMap<String, String>();
-		}
-		bodyMultilingualValue.put(BODY_VALUE_PREFIX + language, label);
+	  if(bodyMultilingualValue == null){
+        bodyMultilingualValue = new HashMap<String, String>();
+      }
+	  if(language!=null) {
+	    bodyMultilingualValue.put(BODY_VALUE_PREFIX + language, label);
+	  }
+	  else {
+	    bodyMultilingualValue.put(BODY_VALUE_PREFIX, label);
+	  }
 	}
 
 	@Override

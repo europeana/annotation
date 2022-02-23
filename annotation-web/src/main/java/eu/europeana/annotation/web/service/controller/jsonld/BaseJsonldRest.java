@@ -99,7 +99,7 @@ public class BaseJsonldRest extends BaseRest {
 	    getAnnotationService().validateWebAnnotation(webAnnotation);
 	    
 	    //check the annotation uniqueness, only after validation 
-        List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation);
+        List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation, false);
         if(duplicateAnnotationIds!=null) {
             String [] i18nParamsAnnoDuplicates = new String [1];
             i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);

@@ -479,29 +479,31 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 
 	@Override
-	public List<String> checkDuplicateAnnotations(Annotation anno) throws AnnotationServiceException {
-		SolrQuery query = null;	
+	public List<String> checkDuplicateAnnotations(Annotation anno, boolean noSelfCheck) throws AnnotationServiceException {
+		SolrQuery query = null;
 		switch (anno.getMotivationType()) {
 		case TRANSCRIBING  :
-		    query=solrUniquenessQueryTranscriptions(anno);
+			query=solrUniquenessQueryTranscriptions(anno, noSelfCheck);
 		    break;
 		case CAPTIONING :
-		    query=solrUniquenessQueryCaptions(anno);
+			query=solrUniquenessQueryCaptions(anno, noSelfCheck);
 		    break;
 		case SUBTITLING :
-		    query=solrUniquenessQuerySubtitles(anno);
+			query=solrUniquenessQuerySubtitles(anno, noSelfCheck);
 		    break;
 		case TAGGING :
-			if(BodyInternalTypes.isSemanticTagBody(anno.getBody().getInternalType())) 
-			    query=solrUniquenessQuerySemanticTagging(anno);
-			else if(BodyInternalTypes.isSimpleTagBody(anno.getBody().getInternalType())) 
-			    query=solrUniquenessQuerySimpleTagging(anno);
+			if(BodyInternalTypes.isSemanticTagBody(anno.getBody().getInternalType())) {
+				query=solrUniquenessQuerySemanticTagging(anno, noSelfCheck);
+			}
+			else if(BodyInternalTypes.isSimpleTagBody(anno.getBody().getInternalType())) {
+				query=solrUniquenessQuerySimpleTagging(anno, noSelfCheck);
+			}
 		    break;
-		case LINKING :
-		    query=solrUniquenessQueryLinking(anno);
-		    break;
+//		case LINKING :
+//			query=solrUniquenessQueryLinking(anno, noSelfCheck);
+//		    break;
 	    case LINKFORCONTRIBUTING :
-	        query=solrUniquenessQueryLinkForContributing(anno);
+	        query=solrUniquenessQueryLinkForContributing(anno, noSelfCheck);
             break;
 		default:
 		    break;
@@ -536,30 +538,39 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		
 	}
 	
-	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno) {
+	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfCheck) {
 	  SolrQuery query = new SolrQuery();
 	  query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
 	  query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TRANSCRIBING.getOaType() + "\"");
 	  query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
+      if(noSelfCheck) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+      }
 	  return query;
 	}
 	
-	private SolrQuery solrUniquenessQueryCaptions(Annotation anno) {
+	private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfCheck) {
       SolrQuery query = new SolrQuery();
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
+      if(noSelfCheck) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+      }
       return query;
 	}
 	
-	private SolrQuery solrUniquenessQuerySubtitles(Annotation anno) {
+	private SolrQuery solrUniquenessQuerySubtitles(Annotation anno, boolean noSelfCheck) {
       SolrQuery query = new SolrQuery();
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.SUBTITLING.getOaType() + "\"");
       query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
+      if(noSelfCheck) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+      }
       return query;
 	}
 	
-	private SolrQuery solrUniquenessQuerySemanticTagging(Annotation anno) {
+	private SolrQuery solrUniquenessQuerySemanticTagging(Annotation anno, boolean noSelfCheck) {
       SolrQuery query = new SolrQuery();
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
@@ -567,38 +578,54 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       for (int i=0; i<bodyUris.size(); i++) { 
         query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
       }
+      if(noSelfCheck) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+      }
       return query;
 	}
 	
-	private SolrQuery solrUniquenessQuerySimpleTagging(Annotation anno) {
-
+	private SolrQuery solrUniquenessQuerySimpleTagging(Annotation anno, boolean noSelfCheck) {
       SolrQuery query = new SolrQuery();
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE + ":\"" + anno.getBody().getValue() + "\"");
+      if(anno.getBody().getLanguage()!=null) {
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":\"" + anno.getBody().getValue() + "\""); 
+      }
+      else {
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":\"" + anno.getBody().getValue() + "\"");
+      }
+      if(noSelfCheck) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+      }
       return query;
 	}
-	
-	private SolrQuery solrUniquenessQueryLinking(Annotation anno) {
-      SolrQuery query = new SolrQuery();
-      query.setQuery("*:*");
-      List<String> targetValues = anno.getTarget().getValues();
-      if(targetValues!=null) {
-        for(String target: targetValues) {
-          query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + target + "\"");
-        }
-      }      
-      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKING.getOaType() + "\"");
-      return query;	  
-	}
-	
-	private SolrQuery solrUniquenessQueryLinkForContributing(Annotation anno) {
+
+//	private SolrQuery solrUniquenessQueryLinking(Annotation anno, boolean noSelfCheck) {
+//      SolrQuery query = new SolrQuery();
+//      query.setQuery("*:*");
+//      List<String> targetValues = anno.getTarget().getValues();
+//      if(targetValues!=null) {
+//        for(String target: targetValues) {
+//          query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + target + "\"");
+//        }
+//      }      
+//      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKING.getOaType() + "\"");
+//      if(noSelfCheck) {
+//        query.addFilterQuery(SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+//      }
+//      return query;
+//	}
+
+	private SolrQuery solrUniquenessQueryLinkForContributing(Annotation anno, boolean noSelfCheck) {
       SolrQuery query = new SolrQuery();
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
       List<String> bodyUris = extractUriValues(anno.getBody());
       for (int i=0; i<bodyUris.size(); i++) {
         query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
+      }
+      if(noSelfCheck) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
       }
       return query;
   }
