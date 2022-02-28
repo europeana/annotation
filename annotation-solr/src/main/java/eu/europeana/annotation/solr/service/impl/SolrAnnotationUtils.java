@@ -135,6 +135,7 @@ public class SolrAnnotationUtils {
 	    break;
 	case TAG:
 	    solrAnnotation.setBodyValue(textValue);
+	    solrAnnotation.addMultilingualValue(body.getLanguage(), textValue);
 	    break;
 
 	case FULL_TEXT_RESOURCE:
@@ -163,12 +164,24 @@ public class SolrAnnotationUtils {
     }
 
     protected String extractTextValues(Body body) {
-	String value = "";
-	if (body.getValue() != null)
-	    value += body.getValue();
-	else if (body.getValues() != null)
-	    value += Arrays.toString(body.getValues().toArray());
-	return value;
+	if (body.getValue() != null && !UriUtils.isUrl(body.getValue())) {
+	    return body.getValue();
+	}
+	else if (body.getValues() != null) {
+	  List<String> notUrlValues = new ArrayList<String>();
+	  for(String elem : body.getValues()) {
+	    if(!UriUtils.isUrl(elem)) {
+	      notUrlValues.add(elem);
+	    }
+	  }
+	  if(notUrlValues.size()>0) {
+	    return Arrays.toString(notUrlValues.toArray());
+	  }
+	  else {
+	    return null;
+	  }
+	}
+	else return null;
     }
 
     protected void processTargetUris(SolrAnnotation solrAnnotation) {
