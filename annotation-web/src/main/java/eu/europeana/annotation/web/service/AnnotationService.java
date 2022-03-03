@@ -245,7 +245,4 @@ public interface AnnotationService {
 	 */
 	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
 
-	public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit);
-	
-	
 }

@@ -1066,12 +1066,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	return postURL(url, tag, authorizationHeaderName, regularUserAuthorizationValue);
     }
 
-    public String getDeleted(String motivation, String from, String to, int page, int limit, boolean withAdditionalInfo) throws IOException, JsonParseException {
-	String url = getAnnotationServiceUri() + "s";
-	if(withAdditionalInfo) 
-		url += WebAnnotationFields.SLASH + "deleted_with_additional_info";
-	else
-		url += WebAnnotationFields.SLASH + "deleted";
+    public String getDeleted(String motivation, String from, String to, int page, int limit) throws IOException, JsonParseException {
+	String url = getAnnotationServiceUri() + "s" + WebAnnotationFields.SLASH + "deleted";
 	boolean hasAtLeastOneParam = false;
 	if(from!=null) {
 		if(!hasAtLeastOneParam) {
