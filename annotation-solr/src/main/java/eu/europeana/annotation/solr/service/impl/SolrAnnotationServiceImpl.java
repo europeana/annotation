@@ -616,10 +616,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       SolrQuery query = new SolrQuery();
       query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
       query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
-      List<String> bodyUris = extractUriValues(anno.getBody());
-      for (int i=0; i<bodyUris.size(); i++) {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
-      }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
   }
