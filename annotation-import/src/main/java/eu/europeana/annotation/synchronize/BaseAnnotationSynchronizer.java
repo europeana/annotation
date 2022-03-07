@@ -21,6 +21,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.fulltext.api.FulltextAPI;
 import eu.europeana.metadata.api.MetadataAPI;
 
+@Deprecated
 public class BaseAnnotationSynchronizer {
 
     public static final String PROP_SOLR_METADATA_URL = "solr.metadata.url";

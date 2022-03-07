@@ -26,33 +26,11 @@ public class WebAnnotationAuxilaryMethodsApiImpl extends BaseAnnotationApi imple
     }
     
     @Override
-    public List<AnnotationDeletion> getDeletedWithAdditionalInfo(String motivation, String from, String to, int page, int limit) {
-    	List<AnnotationDeletion> res = null;
-    	
-    	try {
-    	    String json = apiConnection.getDeleted(motivation, from, to, page, limit, true);
-    	    ObjectMapper objectMapper = new ObjectMapper();    	    
-    	    List<BaseAnnotationDeletion> resBaseAnnotation = objectMapper.readValue(json, new TypeReference<List<BaseAnnotationDeletion>>(){});
-    	    if(resBaseAnnotation!=null) {
-    	    	res = new ArrayList<AnnotationDeletion>();
-    	    	for (BaseAnnotationDeletion del : resBaseAnnotation) {
-    	    		res.add(del);
-    	    	}
-    	    }
-    	} catch (IOException | JsonParseException e) {
-    	    throw new TechnicalRuntimeException(
-    		    "Exception occured when invoking the AnnotationJsonLdApi for getAnnotationLd method", e);
-    	}
-    	
-    	return res;
-    }
-    
-    @Override
     public List<String> getDeleted(String motivation, String from, String to, int page, int limit) {
     	List<String> res = null;
     	
     	try {
-    	    String json = apiConnection.getDeleted(motivation, from, to, page, limit, false);
+    	    String json = apiConnection.getDeleted(motivation, from, to, page, limit);
     	    ObjectMapper objectMapper = new ObjectMapper();
     	    res = objectMapper.readValue(json, new TypeReference<List<String>>(){});	
     	} catch (IOException | JsonParseException e) {

@@ -642,11 +642,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     	return res;
     }
     
-    public List<AnnotationDeletion> getDeletedAnnotationSetWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
-    	List<AnnotationDeletion> res = getMongoPersistence().getDisabledWithAdditionalInfo(motivation, startDate, stopDate, page, limit);
-    	return res;
-    }
-    
     @Deprecated
     /**
      * @deprecated change to property validation exception
