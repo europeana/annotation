@@ -565,6 +565,22 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
     }
   }
+  
+  private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
+    if(anno.getTarget()!=null) {
+      // extract URIs for target_uri field
+      List<String> targetUris = extractUriValues(anno.getTarget());
+      if(targetUris!=null) {
+        // Extract URIs for target_record_id
+        List<String> recordIds = extractRecordIds(targetUris);
+        if(recordIds != null) {
+          for(String recordIdElem: recordIds) {
+            query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
+          }
+        }  
+      }
+    }
+  }
 	
 	private SolrQuery solrUniquenessQuerySubtitles(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
@@ -584,17 +600,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
       
-      if(anno.getTarget()!=null) {
-        // extract URIs for target_uri field
-        List<String> targetUris = extractUriValues(anno.getTarget());
-        // Extract URIs for target_record_id
-        List<String> recordIds = extractRecordIds(targetUris);
-        if(recordIds != null) {
-          for(String recordIdElem: recordIds) {
-            query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
-          }
-        }  
-      }     
+      addTargetRecordIdFilter(anno, query);   
       
       List<String> bodyUris = extractUriValues(anno.getBody());
       for (int i=0; i<bodyUris.size(); i++) { 
@@ -608,17 +614,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
       
-      if(anno.getTarget()!=null) {
-        // extract URIs for target_uri field
-        List<String> targetUris = extractUriValues(anno.getTarget());
-        // Extract URIs for target_record_id
-        List<String> recordIds = extractRecordIds(targetUris);
-        if(recordIds != null) {
-          for(String recordIdElem: recordIds) {
-            query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
-          }
-        }  
-      }
+      addTargetRecordIdFilter(anno, query);
       
       String bodyMultilingualValue = extractMultilingualValue(anno.getBody());
       if(anno.getBody().getLanguage()!=null) {
@@ -652,18 +648,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
 
-      if(anno.getTarget()!=null) {
-        // extract URIs for target_uri field
-        List<String> targetUris = extractUriValues(anno.getTarget());
-        // Extract URIs for target_record_id
-        List<String> recordIds = extractRecordIds(targetUris);
-        if(recordIds != null) {
-          for(String recordIdElem: recordIds) {
-            query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
-          }
-        }  
-      }
-      
+      addTargetRecordIdFilter(anno, query);
+
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
   }

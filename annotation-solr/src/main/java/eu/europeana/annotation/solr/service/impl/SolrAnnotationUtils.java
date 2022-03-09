@@ -212,9 +212,11 @@ public class SolrAnnotationUtils {
 	List<String> targetUris = extractUriValues(internetResource);
 	solrAnnotation.setTargetUris(targetUris);
 
-	// Extract URIs for target_record_id
-	List<String> recordIds = extractRecordIds(targetUris);
-	solrAnnotation.setTargetRecordIds(recordIds);
+	if(targetUris!=null) {
+    	// Extract URIs for target_record_id
+    	List<String> recordIds = extractRecordIds(targetUris);
+    	solrAnnotation.setTargetRecordIds(recordIds);
+	}
     }
 
     protected List<String> extractUriValues(SpecificResource specificResource) {

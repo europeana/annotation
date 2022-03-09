@@ -494,33 +494,14 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		return response;
 	}
 	
-	/**
-	 * Returns the list of annotation IDs.
-	 * @param motivation
-	 * @param startDate
-	 * @param stopDate
-	 * @param page
-	 * @param limit
-	 * @return
-	 */
     protected List<PersistentAnnotation> queryDisabled(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
-    	return queryDisabled(motivation, startDate, stopDate, page, limit, (String[]) null);
-    }
-    
-    protected List<PersistentAnnotation> queryDisabled(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit, String... additionalFields) {
-      
       
       Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
       query.field(WebAnnotationFields.DISABLED).greaterThanOrEq(startDate);
       query.field(WebAnnotationFields.DISABLED).lessThanOrEq(stopDate);
       
       //return only annotation Ids
-      query.project(PersistentAnnotation.FIELD_ANNOTATION_ID, true);
-      if(additionalFields != null) {
-        for (String fieldToInclude : additionalFields) {
-          query.project(fieldToInclude, true);
-        }
-      }
+      query.project(PersistentAnnotation.FIELD_ANNOTATION_ID, true);    
   
       if(motivation!=null) {
           query.field(WebAnnotationFields.MOTIVATION).equal(motivation.getOaType());
@@ -534,31 +515,14 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
       limit = limit<=0 ? 100 : (limit>1000 ? 1000 : limit);
       return query.asList(new FindOptions().limit(limit).skip(page * limit));
   }
-    
 
-    public List<AnnotationDeletion> getDisabledWithAdditionalInfo(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
-      String[] additionalFields = new String[] {PersistentAnnotation.FIELD_TARGET, PersistentAnnotation.FIELD_GENERATED}; 
-		List<PersistentAnnotation> disabledAnnos = queryDisabled(motivation, startDate, stopDate, page, limit, additionalFields);
-		if(disabledAnnos == null || disabledAnnos.isEmpty()) {
-		    return null;
-		}		
-		List<AnnotationDeletion> results = new ArrayList<AnnotationDeletion>(disabledAnnos.size());
-		for (Annotation annotation : disabledAnnos) {
-			AnnotationDeletion deletion = new BaseAnnotationDeletion();
-		    deletion.setAnnotaionId(annotation.getAnnotationId().getHttpUrl());
-		    deletion.setResourceId(annotation.getTarget().getResourceId());
-		    deletion.setTimestamp(annotation.getGenerated().getTime());
-		    results.add(deletion);
-		}		
-		return results;
-    }
-	
     public List<String> getDisabled(MotivationTypes motivation, Date startDate, Date stopDate, int page, int limit) {
-		List<PersistentAnnotation> disabledAnnos = queryDisabled(motivation, startDate, stopDate, page, limit);
+      List<String> results = new ArrayList<String>();
+      List<PersistentAnnotation> disabledAnnos = queryDisabled(motivation, startDate, stopDate, page, limit);
 		if(disabledAnnos == null || disabledAnnos.isEmpty()) {
-		    return null;
+		    return results;
 		}		
-		List<String> results = new ArrayList<String>();
+		
 		for (Annotation annotation : disabledAnnos) {
 			results.add(annotation.getAnnotationId().getHttpUrl());
 		}		
