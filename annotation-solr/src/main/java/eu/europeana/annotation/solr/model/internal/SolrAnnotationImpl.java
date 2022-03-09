@@ -183,6 +183,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		this.bodyValue = bodyValue;
 	}
 
+	@Override
 	@Field(BODY_VALUE_ALL)
 	public void setBodyMultilingualValue(Map<String, String> multilingualText) {
 	    //TODO: convert to language map by removing field when required  
@@ -193,31 +194,12 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	    return bodyMultilingualValue;
 	}
 
-	/**
-	 * This method adds a new language/label association to the multilingual
-	 * map.
-	 * 
-	 * @param language
-	 * @param label
-	 */
-	@Override
-	public void addMultilingualValue(String language, String label) {
-	  if(language!=null) {
-	    if(bodyMultilingualValue==null) {
-	      bodyMultilingualValue = new HashMap<String, String>();
-	    }
-	    bodyMultilingualValue.put(BODY_VALUE_PREFIX + language, label);
-	  }
-	}
-
 	@Override
 	@Field(ANNO_URI)
 	public void setAnnoUri(String annotationIdUrl) {
 		this.annoUri = annotationIdUrl;
 	}
 	
-
-
 	@Override
 //	@Field(INTERNAL_TYPE)
 	public void setInternalType(String internalType) {
