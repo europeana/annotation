@@ -3,8 +3,6 @@ package eu.europeana.annotation.mongo.model;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
 
@@ -16,7 +14,7 @@ public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentO
 	
 	private String user;
 	private String status;
-	private AnnotationId annotationId;
+	private long identifier;
 	private long date;
 
 	//getters and setters
@@ -33,7 +31,7 @@ public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentO
 		return "PersistentStatusLog [" + "user:" + getUser() 
 				+ "Id:" + getId() 
 				+ ", status:" + getStatus()
-				+ ", annotationId:" + getAnnotationId().toString() 
+				+ ", identifier:" + String.valueOf(identifier) 
 				+ ", date: " + getDate() + "]";
 	}
 
@@ -68,16 +66,6 @@ public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentO
 	}
 
 	@Override
-	public void setAnnotationId(AnnotationId annotationId) {
-		this.annotationId = annotationId;
-	}
-
-	@Override
-	public AnnotationId getAnnotationId() {
-		return annotationId;
-	}
-
-	@Override
 	public void setLastIndexedTimestamp(Long lastIndexedTimestamp) {
 		// TODO Auto-generated method stub
 		
@@ -89,4 +77,11 @@ public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentO
 		return null;
 	}
 
+    public long getIdentifier() {
+      return identifier;
+    }
+
+    public void setIdentifier(long identifier) {
+      this.identifier = identifier;
+    }
 }

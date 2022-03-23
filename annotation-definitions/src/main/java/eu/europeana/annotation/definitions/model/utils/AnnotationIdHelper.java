@@ -1,15 +1,12 @@
 package eu.europeana.annotation.definitions.model.utils;
 
 import org.apache.commons.lang3.StringUtils;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationIdHelper {
-
+  
     /**
      * This method extracts resourceId from passed httpUri. 
      * 
@@ -107,33 +104,6 @@ public class AnnotationIdHelper {
 	return res;
     }
 
-
-
-    /**
-     * This method initializes AnnotationId object by passed identifier when
-     * identifier is an URL and contains provider. e.g. identifier
-     * 'http://data.europeana.eu/annotation/1'
-     * 
-     * @param uri
-     * @return AnnotationId object
-     */
-    public AnnotationId parseAnnotationId(String uri) {
-
-	if(uri == null)
-	    return null;
-	
-	AnnotationId annotationId = new BaseAnnotationId();
-	String id = StringUtils.substringAfterLast(uri, WebAnnotationFields.SLASH);
-	annotationId.setIdentifier(id);
-
-	String baseUrl = StringUtils.substringBeforeLast(uri, WebAnnotationFields.SLASH);
-	annotationId.setBaseUrl(baseUrl);
-
-	//force generation of httpUrl
-	annotationId.getHttpUrl();
-	return annotationId;
-    }
-
     /**
      * Get ID part form URI string
      * 
@@ -144,15 +114,5 @@ public class AnnotationIdHelper {
 	return uriStr.substring(uriStr.lastIndexOf('/') + 1, uriStr.length());
     }
 
-    /**
-     * Create annotation ID based on via URL
-     * 
-     * @param baseUrl Base URL for annotation id
-     * @param via     via URL
-     * @return new annotation ID
-     */
-    public BaseAnnotationId getAnnotationIdBasedOnVia(String baseUrl, String via) {
-	return new BaseAnnotationId(baseUrl, getIdPartFromUri(via));
-    }
-
+    
 }

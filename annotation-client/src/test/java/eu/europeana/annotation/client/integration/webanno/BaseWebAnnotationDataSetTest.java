@@ -2,26 +2,28 @@ package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 
 public class BaseWebAnnotationDataSetTest {
+  
+    @Resource
+    protected AnnotationConfiguration configuration;
 	
 	protected Logger log = LogManager.getLogger(getClass());
 
@@ -142,7 +144,7 @@ public class BaseWebAnnotationDataSetTest {
 		}	
 		for (Annotation annotation : annotations) {
 			ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(
-					annotation.getAnnotationId().getIdentifier());
+					annotation.getIdentifier());
 			assertEquals(re.getStatusCode(), HttpStatus.NO_CONTENT);
 		}
 	}

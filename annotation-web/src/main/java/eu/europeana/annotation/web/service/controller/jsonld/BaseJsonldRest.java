@@ -2,7 +2,6 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,11 +20,9 @@ import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstanti
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.Vote;
@@ -39,11 +35,8 @@ import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPa
 import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
-import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
-import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
@@ -70,7 +63,7 @@ public class BaseJsonldRest extends BaseRest {
 	    String annotation, Authentication authentication) throws HttpException {
 	try {
 	    // 0. annotation id
-	    AnnotationId annoId = buildAnnotationId(null);
+	    long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
 
 	    // 1. authorize user
 	    // already performed in verify write access
@@ -91,10 +84,10 @@ public class BaseJsonldRest extends BaseRest {
 	    // 2. validate
 	    // check whether annotation with the given provider and identifier
 	    // already exist in the database
-	    if (annoId.getIdentifier() != null && getAnnotationService().existsInDb(annoId))
+	    if (getAnnotationService().existsInDb(annoIdentifier))
 		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
 			I18nConstants.ANNOTATION_VALIDATION,
-			new String[] { "/provider/identifier", annoId.toRelativeUri() });
+			new String[] { "identifier", String.valueOf(annoIdentifier) });
 	    // 2.1 validate annotation properties
 	    getAnnotationService().validateWebAnnotation(webAnnotation);
 	    
@@ -108,7 +101,7 @@ public class BaseJsonldRest extends BaseRest {
         }
 
 	    // 3-6 create ID and annotation + backend validation
-	    webAnnotation.setAnnotationId(annoId);
+	    webAnnotation.setIdentifier(annoIdentifier);
 
 	    // validate api key ... and request limit only if the request is
 	    // correct (avoid useless DB requests)
@@ -118,9 +111,8 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
 
 	    // serialize to jsonld
-	    JsonLd annotationLd = new AnnotationLdSerializer(storedAnnotation);
-	    String jsonLd = annotationLd.toString(4);
-	    // return JsonWebUtils.toJson(jsonLd, null);
+	    annotationLdSerializer.setAnnotation(storedAnnotation);
+	    String jsonLd = annotationLdSerializer.toString();
 
 	    // build response entity with headers
 	    // TODO: clarify serialization ETag: "_87e52ce126126"
@@ -157,11 +149,11 @@ public class BaseJsonldRest extends BaseRest {
     }
 
     protected String buildCreatorUri(String userId) {
-	return WebFields.DEFAULT_CREATOR_URL + userId;
+      return getConfiguration().getAnnoUserDataEndpoint() + "/" + userId;
     }
 
     protected String buildGeneratorUri(String apikeyId) {
-	return WebAnnotationFields.DEFAULT_GENERATOR_URL + apikeyId;
+      return getConfiguration().getAnnoClientApiEndpoint() + "/" + apikeyId;
     }
 
     /**
@@ -204,11 +196,11 @@ public class BaseJsonldRest extends BaseRest {
 	    uploadStatus.setNumberOfAnnotationsWithId(annosWithId.size());
 
 	    // verify if the annotations with ID exist in the database
-	    List<String> httpUrls = annosWithId.getHttpUrls();
+	    List<Long> annoIdentifiers = annosWithId.getIdentifiers();
 	    AnnotationsList existingInDb;
 
-	    if (!httpUrls.isEmpty())
-		existingInDb = new AnnotationsList(getAnnotationService().getExisting(httpUrls));
+	    if (!annoIdentifiers.isEmpty())
+		existingInDb = new AnnotationsList(getAnnotationService().getExisting(annoIdentifiers));
 	    else
 		existingInDb = new AnnotationsList(new ArrayList<AbstractAnnotation>(0));
 
@@ -216,19 +208,18 @@ public class BaseJsonldRest extends BaseRest {
 	    uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
 	    if (annosWithId.size() != existingInDb.size()) {
 		// remove existing HTTP URLs, the remaining list contains only missing HTTP URLs
-		httpUrls.removeAll(existingInDb.getHttpUrls());
-		getAnnotationService().reportNonExisting(annotations, uploadStatus, httpUrls);
+	    annoIdentifiers.removeAll(existingInDb.getIdentifiers());
+		getAnnotationService().reportNonExisting(annotations, uploadStatus, annoIdentifiers);
 		throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
 	    }
 
 	    LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap = webAnnotations.getAnnotationsMap();
 
 	    // update existing annotations
-	    HashMap<String, ? extends Annotation> updateAnnos = annosWithId.getHttpUrlAnnotationsMap();
-	    if (updateAnnos.size() > 0) {
+	    if (annosWithId.getAnnotations().size() > 0) {
 		uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
 		getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(),
-			updateAnnos, webAnnoStoredAnnoAnnoMap);
+		    annosWithId.getAnnotations(), webAnnoStoredAnnoAnnoMap);
 	    }
 	    // annotations are separated into those with identifier (assumed updates)
 	    // and those without identifier (new annotations which should be created);
@@ -261,8 +252,9 @@ public class BaseJsonldRest extends BaseRest {
 	    apRes.setTotalInPage(resList.size());
 //			apRes.setCurrentPageUri("http://UNDEFINED");
 
-	    String jsonLd = (new AnnotationPageSerializer(apRes)).serialize(SearchProfiles.STANDARD);
-
+	    annotationPageSerializer.setProtocolPage(apRes);
+	    String jsonLd = annotationPageSerializer.serialize(SearchProfiles.STANDARD);
+	    
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(3);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
@@ -309,25 +301,22 @@ public class BaseJsonldRest extends BaseRest {
      * @return
      * @throws HttpException
      */
-    protected ResponseEntity<String> getAnnotationById(String identifier, String profileStr, String language)
+    protected ResponseEntity<String> getAnnotationById(long identifier, String profileStr, String language)
 	    throws HttpException {
 
 	try {
 
-	    // 3. Retrieve an annotation based on its identifier;
-	    AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
-
 	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 	    // annotation id doesn’t exists )
 	    // 4.or 410 (if the user is not allowed to access the annotation);
-	    Annotation annotation = getAnnotationService().getAnnotationById(annoId, null, true);
+	    Annotation annotation = getAnnotationService().getAnnotationById(identifier, null, true);
 
 	    SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
 	    // will update body if dereference profile is used
 	    getAnnotationService().dereferenceSemanticTags(annotation, searchProfile, language);
 
-	    JsonLd annotationLd = new AnnotationLdSerializer(annotation);
-	    String jsonLd = annotationLd.toString(4);
+	    annotationLdSerializer.setAnnotation(annotation);
+	    String jsonLd = annotationLdSerializer.toString();
 
 	    String apiVersion = getConfiguration().getAnnotationApiVersion();
 	    String eTag = generateETag(annotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
@@ -353,21 +342,18 @@ public class BaseJsonldRest extends BaseRest {
 	}
     }
 
-    protected ResponseEntity<String> getModerationReportSummary(String wsKey, String identifier) throws HttpException {
+    protected ResponseEntity<String> getModerationReportSummary(String wsKey, long identifier) throws HttpException {
 
 	try {
 
 	    // 2. Check client access (a valid “wskey” must be provided)
 //			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
-	    // 3. Retrieve an annotation based on its identifier;
-	    AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
-
 	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 	    // moderation id doesn’t exists )
-	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
+	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(identifier);
 	    if (moderationRecord == null)
-		moderationRecord = buildNewModerationRecord(annoId, null);
+		moderationRecord = buildNewModerationRecord(identifier, null);
 
 	    Gson gsonObj = new Gson();
 	    String jsonString = gsonObj.toJson(moderationRecord.getSummary());
@@ -404,12 +390,10 @@ public class BaseJsonldRest extends BaseRest {
      * @return annotation object
      * @throws HttpException
      */
-    private Annotation verifyOwnerOrAdmin(String identifier, Authentication authentication, boolean enabled) throws HttpException {
+    private Annotation verifyOwnerOrAdmin(long identifier, Authentication authentication, boolean enabled) throws HttpException {
 
-	//Retrieve an annotation based on its identifier;
-	AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
 	String userId = buildCreatorUri((String)authentication.getPrincipal());
-	Annotation annotation = getAnnotationService().getAnnotationById(annoId, userId, enabled);
+	Annotation annotation = getAnnotationService().getAnnotationById(identifier, userId, enabled);
 	
 	//verify ownership
 	boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
@@ -448,7 +432,7 @@ public class BaseJsonldRest extends BaseRest {
      * @return response entity that comprises response body, headers and status code
      * @throws HttpException
      */
-    protected ResponseEntity<String> updateAnnotation(String identifier, String annotation,
+    protected ResponseEntity<String> updateAnnotation(long identifier, String annotation,
 	    Authentication authentication, HttpServletRequest request) throws HttpException {
 
 	try {
@@ -488,8 +472,8 @@ public class BaseJsonldRest extends BaseRest {
 	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 
 	    // serialize to jsonld
-	    JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation);
-	    String jsonLd = annotationLd.toString(4);
+        annotationLdSerializer.setAnnotation(updatedAnnotation);
+        String jsonLd = annotationLdSerializer.toString();
 
 	    // build response entity with headers
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -527,7 +511,7 @@ public class BaseJsonldRest extends BaseRest {
      * @return response entity that comprises response body, headers and status code
      * @throws HttpException
      */
-    protected ResponseEntity<String> deleteAnnotation(String identifier, Authentication authentication, HttpServletRequest request)
+    protected ResponseEntity<String> deleteAnnotation(long identifier, Authentication authentication, HttpServletRequest request)
 	    throws HttpException {
 
 	try {
@@ -577,7 +561,7 @@ public class BaseJsonldRest extends BaseRest {
      * @return response entity that comprises response body, headers and status code
      * @throws HttpException
      */
-    protected ResponseEntity<String> enableAnnotation(String identifier, Authentication authentication, HttpServletRequest request)
+    protected ResponseEntity<String> enableAnnotation(long identifier, Authentication authentication, HttpServletRequest request)
 	    throws HttpException {
 
 	try {
@@ -590,13 +574,13 @@ public class BaseJsonldRest extends BaseRest {
 	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 	    checkIfMatchHeader(eTagOrigin, request);
 
-	    getAnnotationService().enableAnnotation(storedAnno.getAnnotationId());
+	    getAnnotationService().enableAnnotation(storedAnno.getIdentifier());
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 	    
-	    JsonLd annotationLd = new AnnotationLdSerializer(storedAnno);
-	    String jsonLd = annotationLd.toString(4);
+	    annotationLdSerializer.setAnnotation(storedAnno);
+        String jsonLd = annotationLdSerializer.toString();
 
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
@@ -620,7 +604,7 @@ public class BaseJsonldRest extends BaseRest {
      * @return
      * @throws HttpException
      */
-    protected ResponseEntity<String> storeAnnotationReport(String identifier, Authentication authentication)
+    protected ResponseEntity<String> storeAnnotationReport(long identifier, Authentication authentication)
 	    throws HttpException {
 	try {
 	
@@ -630,11 +614,10 @@ public class BaseJsonldRest extends BaseRest {
 
 	    // 2. build and verify annotation ID
 	    String userId = authentication.getPrincipal().toString();
-	    AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
-	    if(!getAnnotationService().existsInDb(annoId)) {
+	    if(!getAnnotationService().existsInDb(identifier)) {
 		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
 			I18nConstants.ANNOTATION_VALIDATION,
-			new String[] { "/provider/identifier", annoId.toRelativeUri() });
+			new String[] { "identifier", String.valueOf(identifier) });
 	    }
 	    	
 	    // build vote
@@ -642,9 +625,9 @@ public class BaseJsonldRest extends BaseRest {
 	    Vote vote = buildVote(buildAgent(userId), reportDate);
 
 	    // 3. Check if the user has already reported this annotation
-	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(annoId);
+	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(identifier);
 	    if (moderationRecord == null)
-		moderationRecord = buildNewModerationRecord(annoId, reportDate);
+		moderationRecord = buildNewModerationRecord(identifier, reportDate);
 	    else
 		validateVote(moderationRecord, vote);
 
@@ -683,10 +666,10 @@ public class BaseJsonldRest extends BaseRest {
 	}
     }
 
-    protected ModerationRecord buildNewModerationRecord(AnnotationId annoId, Date reportDate) {
+    protected ModerationRecord buildNewModerationRecord(long annoIdentifier, Date reportDate) {
 	// create moderation record
 	ModerationRecord moderationRecord = new BaseModerationRecord();
-	moderationRecord.setAnnotationId(annoId);
+	moderationRecord.setIdentifier(annoIdentifier);
 
 	// SET DEFAULTS
 	moderationRecord.setCreated(reportDate);

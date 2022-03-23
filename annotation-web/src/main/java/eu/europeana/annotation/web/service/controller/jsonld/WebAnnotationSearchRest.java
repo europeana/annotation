@@ -112,8 +112,8 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    }
 
 	    // ** serialize page
-	    AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage);
-	    String jsonLd = serializer.serialize(searchProfile);
+	    annotationPageSerializer.setProtocolPage(annotationPage);
+	    String jsonLd = annotationPageSerializer.serialize(searchProfile);
 
 	    // ** build response
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);

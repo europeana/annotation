@@ -3,15 +3,11 @@ package eu.europeana.annotation.mongo.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.Vote;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
@@ -21,15 +17,13 @@ import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
 @Entity("moderationRecord")
-@Indexes({@Index(PersistentAnnotation.FIELD_BASEURL + ", "+ PersistentAnnotation.FIELD_PROVIDER + ", " + PersistentAnnotation.FIELD_IDENTIFIER), 
-	@Index("provider, identifier")})
+@Indexes(@Index(PersistentAnnotation.FIELD_IDENTIFIER))
 public class PersistentModerationRecordImpl implements PersistentModerationRecord, PersistentObject {
 
 	@Id
 	private ObjectId id;
 	
-	@Embedded
-	private MongoAnnotationId annotationId;
+	private long identifier;
 	
 //	private AnnotationId annotationId;
 	private List<Vote> endorseList;
@@ -52,26 +46,11 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 	public String toString() {
 		String res = "\t### PersistentModerationRecord ###\n";
 		
-		if (getAnnotationId() != null) 
-			res = res + "\t\t" + "Id:" + getAnnotationId() + "\n";
+		if (getIdentifier() != 0) 
+			res = res + "\t\t" + "Identifier:" + String.valueOf(identifier) + "\n";
 		return res;
 	}
 	
-	public AnnotationId getAnnotationId() {
-		return annotationId;
-	}
-
-	public void setAnnotationId(AnnotationId annotationId) {
-//		this.annotationId = annotationId;
-		if(annotationId instanceof MongoAnnotationId)
-			this.annotationId = (MongoAnnotationId) annotationId;
-		else{
-			MongoAnnotationId id = new MongoAnnotationId();
-			id.copyFrom(annotationId);
-			this.annotationId = id;
-		}
-	}
-
 	public List<Vote> getEndorseList() {
 		return endorseList;
 	}
@@ -141,5 +120,13 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 	public boolean equalsContent(Object other) {
 		throw new RuntimeException(new ModerationMongoException("Method not supported"));
 	}
+	
+    public long getIdentifier() {
+      return identifier;
+    }
+
+    public void setIdentifier(long identifier) {
+      this.identifier = identifier;
+    }
 
 }

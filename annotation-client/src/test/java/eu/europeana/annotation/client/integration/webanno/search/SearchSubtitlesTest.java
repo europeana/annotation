@@ -17,6 +17,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
  * This class implements tests for searching textual values in 
@@ -47,7 +48,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		//TODO: restore after updating schema
 		AnnotationPage annoPage = search(VALUE_SEARCH_BODY_VALUE_IT, SearchProfiles.STANDARD, "1");
 		Annotation retrievedAnnotation = (Annotation)annoPage.getAnnotations().get(0);
-		assertEquals(storedAnno.getAnnotationId(), retrievedAnnotation.getAnnotationId());
+		assertEquals(storedAnno.getIdentifier(), retrievedAnnotation.getIdentifier());
 		validateSubtitle(retrievedAnnotation);
 
 		// remove annotation
@@ -69,7 +70,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		assertNotNull(target.getSource());
 		assertTrue(target.getSource().equals("http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"));
 		assertNotNull(target.getScope());
-		assertTrue(target.getScope().equals("http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7"));
+		assertTrue(target.getScope().equals(configuration.getAnnoItemDataEndpoint() + "/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7"));
 	}
 	
 

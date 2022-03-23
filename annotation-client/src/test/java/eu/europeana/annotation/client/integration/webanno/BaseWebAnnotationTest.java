@@ -3,19 +3,16 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApi;
 import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApiImpl;
 import eu.europeana.annotation.client.WebAnnotationProtocolApi;
@@ -24,6 +21,7 @@ import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.utils.BaseUtils;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -33,7 +31,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 
 public class BaseWebAnnotationTest {
-
+    
 	protected Logger log = LogManager.getLogger(getClass());
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
@@ -44,8 +42,11 @@ public class BaseWebAnnotationTest {
 	public static final String TAG_MINIMAL = "/tag/minimal.json";
 	public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
 	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
-	public static final String TAG_STANDARD_TEST_VALUE_TARGET = "http://data.europeana.eu/item/09102/_UEDIN_214";
-//	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
+
+	protected String get_TAG_STANDARD_TEST_VALUE_TARGET() {
+	  return configuration.getAnnoItemDataEndpoint() + "/09102/_UEDIN_214";
+	}
+	//	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
 	public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
@@ -55,24 +56,7 @@ public class BaseWebAnnotationTest {
 	
 	public static final String VALUE_TESTSET = "generator_uri= \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	public static final String VALUE_ID = "anno_id=";
-	
-	public static final String VALUE_TARGET_URI = "http://data.europeana.eu/item/09102/_UEDIN_214";
-	public static final String VALUE_SEARCH_TARGET = "target_uri=\""+ VALUE_TARGET_URI +"\"";
-	
-	public static final String VALUE_TARGET_TAG_URI = "http://data.europeana.eu/item/000002/_UEDIN_214";
-	public static final String VALUE_SEARCH_TARGET_TAG = "target_uri=\""+ VALUE_TARGET_TAG_URI +"\"";
-	
-	
-	public static final String VALUE_TARGET_LINK_URI = "http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584";
-	public static final String VALUE_SEARCH_TARGET_LINK = "target_uri=\""+ VALUE_TARGET_LINK_URI +"\"";
-	
-//	public static final String VALUE_TARGET_LINK_SEMANTIC_URI = "http://data.europeana.eu/item/2059207/data_sounds_T471_5";
-	public static final String VALUE_TARGET_LINK_SEMANTIC_URI = "http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
-	public static final String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri=\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
-	
-	public static final String VALUE_DESCRIBING_TARGET_SCOPE_URI = "http://data.europeana.eu/item/07931/diglit_uah_m1";
-	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri=\""+ VALUE_DESCRIBING_TARGET_SCOPE_URI +"\"";
-	
+		
 	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SOURCE = "target_uri=\"http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg\"";
 	
 	public static final String VALUE_TAG_BODY_URI = "http://www.geonames.org/2988507";
@@ -140,29 +124,42 @@ public class BaseWebAnnotationTest {
 
 	String EQUIVALENT_TO = "\"oa:equivalentTo\": \"https://www.historypin.org/en/item/456\",";
 
-	public String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyValue\": \"church\","
-			+ "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
-
 	public String BODY_VALUE_TO_TRIM = " überhaupt ";
 	public String BODY_VALUE_AFTER_TRIMMING = "überhaupt";
 
-	public String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
-			 "\"motivation\": \"oa:tagging\"," +
-		     "\"bodyValue\": \"" + BODY_VALUE_TO_TRIM + "\"," +
-			 "\"target\": \"http://data.europeana.eu/item/123/xyz\"," + EQUIVALENT_TO;
-
-	public String TAG_JSON_BY_TYPE_JSONLD = START + TAG_CORE + END;
+	protected String get_TAG_JSON_BY_TYPE_JSONLD() {
+	  String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyValue\": \"church\","
+          + "\"target\": \"" + configuration.getAnnoItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
+	  return START + TAG_CORE + END;
+	}
 	
-	public String TAG_JSON_VALIDATION = START + TAG_CORE_VALIDATION + END;
+	protected String get_TAG_JSON_VALIDATION() {
+	   String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
+	       "\"motivation\": \"oa:tagging\"," +
+	       "\"bodyValue\": \"" + BODY_VALUE_TO_TRIM + "\"," +
+	       "\"target\": \"" + configuration.getAnnoItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
+	  return START + TAG_CORE_VALIDATION + END;
+	}
+
+	protected String get_LINK_CORE() {
+	   String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
+	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/123/xyz.html\","
+	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+	  return LINK_CORE;
+	}
+
+	protected String get_LINK_JSON_BY_TYPE_JSONLD() {
+	   String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
+	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/123/xyz.html\","
+	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+	  return START + LINK_CORE + END;
+	}
+
+//	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
+
+	@Resource
+	protected AnnotationConfiguration configuration;
 	
-	public String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
-			+ "\"http://data.europeana.eu/item/123/xyz.html\","
-			+ "\"http://data.europeana.eu/item/333/xyz.html\"" + "]," + EQUIVALENT_TO;
-
-	public String LINK_JSON_BY_TYPE_JSONLD = START + LINK_CORE + END;
-
-	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
-
 	private static WebAnnotationProtocolApi apiProtocolClient;
 	private static WebAnnotationAuxilaryMethodsApi apiAuxilaryMethodsClient;
 
@@ -223,7 +220,7 @@ public class BaseWebAnnotationTest {
 	 */
 	protected ResponseEntity<String> storeTestAnnotationReport(
 			String apiKey
-			, String identifier
+			, long identifier
 			, String userToken) {
 
 		/**
@@ -246,7 +243,7 @@ public class BaseWebAnnotationTest {
 	protected ResponseEntity<String> getModerationReport(
 			String apiKey
 			, String provider
-			, String identifier
+			, long identifier
 			, String userToken) {
 
 		/**
@@ -418,11 +415,10 @@ public class BaseWebAnnotationTest {
 	 * @param annotation
 	 */
 	protected void deleteAnnotation(Annotation annotation) {
-		deleteAnnotation(
-				annotation.getAnnotationId().getIdentifier());
+		deleteAnnotation(annotation.getIdentifier());
 	}
 	
-  protected void deleteAnnotation(String identifier) {
+  protected void deleteAnnotation(long identifier) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(identifier);
 		assertEquals(HttpStatus.GONE, re.getStatusCode());
@@ -442,15 +438,15 @@ public class BaseWebAnnotationTest {
 	}
 		
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
-		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier());
+		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getIdentifier());
 	}
 
 	protected ResponseEntity<String> getAnnotation(Annotation anno, SearchProfiles searchProfile) {
-		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getAnnotationId().getIdentifier(), searchProfile);
+		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getIdentifier(), searchProfile);
 	}
 
 	protected ResponseEntity<String> getAnnotationByJwtToken(Annotation anno, SearchProfiles searchProfile) {
-		return getApiProtocolClient().getAnnotation(anno.getAnnotationId().getIdentifier(), searchProfile);
+		return getApiProtocolClient().getAnnotation(anno.getIdentifier(), searchProfile);
 	}
 	
 	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
@@ -462,7 +458,6 @@ public class BaseWebAnnotationTest {
 		assertEquals(response.getStatusCode(), status);
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getAnnotationId());
-		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+		assertNotNull(storedAnno.getIdentifier());
 	}
 }

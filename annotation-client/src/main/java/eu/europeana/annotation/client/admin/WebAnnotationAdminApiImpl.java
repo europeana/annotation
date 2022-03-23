@@ -25,7 +25,7 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 	}
 
 	@Override
-	public ResponseEntity<String> deleteAnnotation(String identifier) {
+	public ResponseEntity<String> deleteAnnotation(long identifier) {
 		try {
 			return apiConnection.deleteAnnotation(identifier, null);
 		} catch (IOException e) {

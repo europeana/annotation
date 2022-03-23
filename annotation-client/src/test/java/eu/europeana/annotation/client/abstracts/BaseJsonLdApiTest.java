@@ -2,15 +2,12 @@ package eu.europeana.annotation.client.abstracts;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.BeforeEach;
-
 import eu.europeana.annotation.client.EuropeanaLdApiImpl;
 import eu.europeana.annotation.client.utils.BaseUtils;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -41,10 +38,10 @@ public class BaseJsonLdApiTest {
 	protected void validateAnnotation(String provider, long annotationNr, Annotation annotation)
 			throws JsonParseException {
 		
-		System.out.println("Annotation URI: " + annotation.getAnnotationId().toRelativeUri());
+		System.out.println("Annotation URI: " + annotation.getIdentifier());
 		
-		assertTrue(annotation.getAnnotationId().getIdentifier() != null);
-		assertEquals((Long)annotationNr, Long.valueOf(annotation.getAnnotationId().getIdentifier()));		
+		assertTrue(annotation.getIdentifier() != 0);
+		assertEquals(annotationNr, annotation.getIdentifier());		
 	}
 	
 	/**

@@ -3,10 +3,8 @@ package eu.europeana.annotation.client.integration.webanno.tag;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
@@ -70,7 +67,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 	protected void deleteAnnotations(Annotation[] annotations) {
 		for (Annotation annotation : annotations) {
 			deleteAnnotation(
-					annotation.getAnnotationId().getIdentifier());
+					annotation.getIdentifier());
 		}
 	}
 	
@@ -102,7 +99,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(((EdmAgent) ((EdmAgentBody) retrievedAnnotation.getBody()).getAgent()).getDateOfDeath());		
 		log.info("Input body:" + storedAnno.getBody());
 		log.info("Output body dereferenced:" + retrievedAnnotation.getBody());
-		log.info("ID of dereferenced annotation:" + retrievedAnnotation.getAnnotationId());
+		log.info("Identifier of the dereferenced annotation:" + retrievedAnnotation.getIdentifier());
 	}
 
 	/**
@@ -133,7 +130,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(((EdmAgent) ((EdmAgentBody) retrievedAnnotation.getBody()).getAgent()).getDateOfDeath());		
 		log.info("Input body:" + storedAnno.getBody());
 		log.info("Output body dereferenced:" + retrievedAnnotation.getBody());
-		log.info("ID of dereferenced annotation:" + retrievedAnnotation.getAnnotationId());
+		log.info("Identifier of the dereferenced annotation:" + retrievedAnnotation.getIdentifier());
 	}
 
 	/**
@@ -152,7 +149,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertTrue(0 <= annPg.getTotalInCollection());
 		assertEquals(annPg.getCurrentPage(), 0);
 		for (Annotation foundAnnotation : annPg.getAnnotations()) {
-			log.info(foundAnnotation.getAnnotationId());
+			log.info(foundAnnotation.getIdentifier());
 			log.info(foundAnnotation.getBody().getHttpUri());
 			assertEquals(foundAnnotation.getBody().getHttpUri(),QUERY_ID);
 		}
@@ -175,7 +172,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertTrue(0 <= annPg.getTotalInCollection());
 		assertEquals(annPg.getCurrentPage(), 0);
 		for (Annotation foundAnnotation : annPg.getAnnotations()) {
-			log.info(foundAnnotation.getAnnotationId());
+			log.info(foundAnnotation.getIdentifier());
 			log.info(foundAnnotation.getBody().getHttpUri());
 			assertEquals(foundAnnotation.getBody().getHttpUri(),QUERY_ID);
 		}

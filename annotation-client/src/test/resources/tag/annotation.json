@@ -1,6 +1,6 @@
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
-    "id": "http://data.europeana.eu/annotation/base/1",
+    "id": "1",
     "type": "Annotation",
     "created": "2015-01-31T12:03:45Z",
     "creator": "http://data.europeana.eu/user/55376",

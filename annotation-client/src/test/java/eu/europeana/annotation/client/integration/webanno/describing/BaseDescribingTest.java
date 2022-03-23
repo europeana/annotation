@@ -59,8 +59,7 @@ public class BaseDescribingTest extends BaseWebAnnotationTest {
 		assertEquals(response.getStatusCode(), status);
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getAnnotationId());
-		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+		assertNotNull(storedAnno.getIdentifier());
 	}
 	
 }

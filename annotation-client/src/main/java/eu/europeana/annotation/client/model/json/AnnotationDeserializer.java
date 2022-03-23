@@ -3,7 +3,6 @@ package eu.europeana.annotation.client.model.json;
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
@@ -12,12 +11,9 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.selector.shape.Point;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
@@ -48,7 +44,6 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 		
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(Point.class, new ShapeDeserializer());
-		gsonBuilder.registerTypeAdapter(AnnotationId.class, new AnnotationIdDeserializer());
 //		gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());//setDateFormat(ModelConst.GSON_DATE_FORMAT);
 		gsonBuilder.registerTypeAdapter(Date.class, new JsonDateDeserializer());
 		//		gsonBuilder.setDateFormat(ModelConst.GSON_DATE_FORMAT);
@@ -105,20 +100,6 @@ public class AnnotationDeserializer implements JsonDeserializer<Annotation>{
 	      Date d = new Date(l);
 	      return d; 
 	   } 
-	}
-
-	public class AnnotationIdDeserializer implements InstanceCreator<AnnotationId> {
-
-
-		@Override
-		public AnnotationId createInstance(Type type) {
-			System.out.println("##### createInstance() type: " + type.toString());
-//			return new BaseAnnotationId(type.toString());
-			return new BaseAnnotationId();
-//			return new GeneratedAnnotationIdImpl(this.createInstance(type).getResourceId()
-//					, this.createInstance(type).getAnnotationNr());
-		}
-
 	}
 	
 //	public class AgentDeserializer extends StdDeserializer<Agent> {

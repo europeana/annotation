@@ -3,28 +3,20 @@ package eu.europeana.annotation.web.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -47,6 +39,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	public static String TEST_RO_VALUE = "Vlad Tepes";
 	public static String TEST_EN_VALUE = "Vlad the Impaler";
 	
+    @Resource
+    AnnotationLdSerializer annotationLdSerializer;
+
 	@Resource 
 	AnnotationService webAnnotationService;
 	
@@ -91,7 +86,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		System.out.println("testAnnotation: " + testAnnotation.toString());
 		System.out.println("webAnnotation: " + webAnnotation.toString());
 		
-		assertTrue(webAnnotation.getAnnotationId() != null && webAnnotation.getAnnotationId().toString().length() > 0);
+		assertTrue(webAnnotation.getIdentifier() != 0);
 		assertEquals(testAnnotation.getBody(), webAnnotation.getBody());
 		assertEquals(testAnnotation.getTarget(), webAnnotation.getTarget());
 		
@@ -99,14 +94,14 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Serialize Annotation object that was retrieved from a database.
 		 */
 //		(JsonLd) webAnnotation
-		AnnotationLdSerializer serializer = new AnnotationLdSerializer(webAnnotation);
+		annotationLdSerializer.setAnnotation(webAnnotation);
         AnnotationLdParser parser = new AnnotationLdParser();
         
-        String actual = serializer.toString();
+        String actual = annotationLdSerializer.toString();
         System.out.println(actual);
 //        AnnotationLd.toConsole("", actual);
         
-        String actualIndent = serializer.toString(4);
+        String actualIndent = annotationLdSerializer.toString(4);
 //        AnnotationLd.toConsole("", actualIndent);
         
         /**
@@ -116,9 +111,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
         
         /**
          * Compare original Annotation object with retrieved serialized Annotation object.
-         */     
-        // Original object does not have EuropeanaUri
-        annotationFromAnnotationLd.setAnnotationId(testAnnotation.getAnnotationId());
+         */
         //TODO: update test criteria
         assertEquals(annotationFromAnnotationLd.getTarget(), testAnnotation.getTarget());
         assertEquals(annotationFromAnnotationLd.getBody(), testAnnotation.getBody());
@@ -142,12 +135,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		System.out.println("testAnnotation: " + testAnnotation.toString());
 		System.out.println("webAnnotation: " + webAnnotation.toString());
 		
-		assertTrue(webAnnotation.getAnnotationId() != null 
-			&& webAnnotation.getAnnotationId().toHttpUrl().contains( 
-				getBaseUrl() 
-//				+ AnnotationTestObjectBuilder.TEST_EUROPEANA_ID
-				+ WebAnnotationFields.SLASH )
-			);
+		assertTrue(webAnnotation.getIdentifier() != 0);
 	}
 
 	/**
@@ -155,11 +143,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	 * @return Annotation
 	 */
 	Annotation createTestAnnotation() {
-		Annotation testAnnotation = createBaseObjectTagInstance();
-		
-		AnnotationId annoId = new BaseAnnotationId(getBaseUrl(), null);
-				
-		testAnnotation.setAnnotationId(annoId);					
+		Annotation testAnnotation = createBaseObjectTagInstance();			
 		return testAnnotation;
 	}
 
@@ -182,7 +166,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Delete Annotation.
 		 */
 		adminService.deleteAnnotation(
-				storedAnnotation.getAnnotationId());
+				storedAnnotation.getIdentifier());
 		
 		/**
 		 * Search Annotation.
@@ -242,7 +226,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 */
 		Annotation disabledAnnotation = webAnnotationService.disableAnnotation(
 //				storedAnnotation.getAnnotationId().getResourceId()
-				storedAnnotation.getAnnotationId());
+				storedAnnotation.getIdentifier());
 		
 		/**
 		 * Search Annotation.

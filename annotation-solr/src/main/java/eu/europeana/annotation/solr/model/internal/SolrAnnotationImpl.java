@@ -4,15 +4,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.annotation.Resource;
 import org.apache.solr.client.solrj.beans.Field;
-
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
@@ -23,8 +22,11 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
  */
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation, SolrAnnotationConstants {
 
+    @Resource
+    AnnotationConfiguration configuration;
+  
 	private String annoUri;
-	private String annoId;
+	private long annoId;
 	
 	private String generatorUri;
 	private String generatorName;
@@ -61,10 +63,10 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		
 		this.setInternalType(annotation.getInternalType());
 		this.setMotivation(annotation.getMotivation());
-		
-		this.setAnnotationId(annotation.getAnnotationId());
-		this.setAnnoUri(annotation.getAnnotationId().getHttpUrl());
-		this.setAnnoId(annotation.getAnnotationId().toRelativeUri());
+
+		this.setIdentifier(annotation.getIdentifier());
+		this.setAnnoUri(String.valueOf(annotation.getIdentifier()));
+		this.setAnnoId(annotation.getIdentifier());
 		
 		if(annotation.getGenerator() != null){
 			this.setGenerator(annotation.getGenerator());
@@ -266,13 +268,13 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	public String getAnnoId() {
+	public long getAnnoId() {
 		return annoId;
 	}
 
 	@Field(ANNO_ID)
 	@Override
-	public void setAnnoId(String annoId) {
+	public void setAnnoId(long annoId) {
 		this.annoId = annoId;
 	}
 	
@@ -352,6 +354,5 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public void setScenario(String scenario) {
 		this.scenario = scenario;
 	}
-	
 
 }

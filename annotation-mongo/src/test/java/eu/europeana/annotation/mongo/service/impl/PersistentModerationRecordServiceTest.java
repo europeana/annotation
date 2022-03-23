@@ -1,18 +1,15 @@
 package eu.europeana.annotation.mongo.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
-
 import javax.annotation.Resource;
-
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
@@ -34,7 +31,7 @@ public class PersistentModerationRecordServiceTest {
 	private PersistentModerationRecordService moderationRecordService;
 
 	@Resource(name = "annotation_db_moderationRecordDao")
-	NosqlDao<PersistentModerationRecord, String> moderationRecordDao;
+	NosqlDao<PersistentModerationRecord, ObjectId> moderationRecordDao;
 
 	/**
 	 * Initialize the testing session

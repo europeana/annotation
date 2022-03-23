@@ -1,6 +1,5 @@
 package eu.europeana.annotation.definitions.model.impl;
 
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
 
 
@@ -9,9 +8,8 @@ public class BaseStatusLog implements StatusLog {
 	private String user;
 	private String status;
 	private long date;
-	private AnnotationId annotationId;
+	private long identifier;
 
-	
 	public BaseStatusLog(){
 		super();
 	}
@@ -48,8 +46,7 @@ public class BaseStatusLog implements StatusLog {
 	    	res = false;
 	    }
 	    
-	    if ((this.getAnnotationId() != null) && (that.getAnnotationId() != null) &&
-	    		(!this.getAnnotationId().equals(that.getAnnotationId()))) {
+	    if (this.getIdentifier() != that.getIdentifier()) {
 	    	System.out.println("StatusLog objects have different 'AnnotationId' fields.");
 	    	res = false;
 	    }
@@ -66,8 +63,8 @@ public class BaseStatusLog implements StatusLog {
 			res = res + "\t" + "status:" + status + "\n";
 		if (date > 0) 
 			res = res + "\t" + "date:" + date + "\n";
-		if (annotationId != null) 
-			res = res + "\t" + "annotationId:" + annotationId.toString() + "\n";
+		if (identifier != 0) 
+			res = res + "\t" + "identifier:" + String.valueOf(identifier) + "\n";
 		return res;
 	}
 
@@ -106,17 +103,12 @@ public class BaseStatusLog implements StatusLog {
 	public long getDate() {
 		return date;
 	}
-
-
-	@Override
-	public void setAnnotationId(AnnotationId annotationId) {
-		this.annotationId = annotationId;
-	}
-
-
-	@Override
-	public AnnotationId getAnnotationId() {
-		return annotationId;
-	}	
 	
+    public long getIdentifier() {
+      return identifier;
+    }
+
+    public void setIdentifier(long identifier) {
+      this.identifier = identifier;
+    }
 }

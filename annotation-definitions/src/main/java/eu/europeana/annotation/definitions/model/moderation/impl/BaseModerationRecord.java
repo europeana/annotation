@@ -3,8 +3,6 @@ package eu.europeana.annotation.definitions.model.moderation.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.Vote;
@@ -15,7 +13,7 @@ import eu.europeana.annotation.definitions.model.moderation.Vote;
  */
 public class BaseModerationRecord implements ModerationRecord {
 
-	private AnnotationId id;
+	private long identifier;
 	private List<Vote> endorseList;
 	private List<Vote> reportList;
 	private Summary summary;
@@ -24,15 +22,6 @@ public class BaseModerationRecord implements ModerationRecord {
 
 	
 	public BaseModerationRecord(){}
-	
-	
-	public AnnotationId getAnnotationId() {
-		return id;
-	}
-
-	public void setAnnotationId(AnnotationId id) {
-		this.id = id;
-	}
 
 	public List<Vote> getEndorseList() {
 		return endorseList;
@@ -95,9 +84,8 @@ public class BaseModerationRecord implements ModerationRecord {
 	    /**
 	     * equality check for all relevant fields.
 	     */
-	    if ((this.getAnnotationId() != null) && (that.getAnnotationId() != null) &&
-	    		(!this.getAnnotationId().equals(that.getAnnotationId()))) {
-	    	System.out.println("Moderation objects have different 'Id' fields.");
+	    if (this.getIdentifier() != that.getIdentifier()) {
+	    	System.out.println("Moderation objects have different 'identifier' fields.");
 	    	res = false;
 	    }
 	    
@@ -108,9 +96,7 @@ public class BaseModerationRecord implements ModerationRecord {
 	@Override
 	public String toString() {
 		String res = "\t### Moderation ###\n";
-		
-		if (getAnnotationId() != null) 
-			res = res + "\t\t" + "Id:" + getAnnotationId() + "\n";
+		res = res + "\t\t" + "identifier:" + String.valueOf(identifier) + "\n";
 		return res;
 	}
 	
@@ -131,4 +117,11 @@ public class BaseModerationRecord implements ModerationRecord {
 		
 	}	
 	
+	public long getIdentifier() {
+	  return identifier;
+	}
+
+	public void setIdentifier(long identifier) {
+	  this.identifier = identifier;
+	}
 }

@@ -2,7 +2,7 @@ package eu.europeana.annotation.utils.parse;
 
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -48,7 +48,6 @@ public class BaseJsonParser {
  		list = list.replaceAll(",", " ");
  		
  		String[] values = StringUtils.split(list);
- 		
         return Arrays.asList(values);
     }
 }

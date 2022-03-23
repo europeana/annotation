@@ -8,7 +8,7 @@
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 		},
 		{
-			"id": "http://localhost:8080/annotation/webanno/nonexisting1",
+			"id": "-1",
 			"bodyValue": "tag2",
 			"motivation": "tagging",
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
@@ -30,7 +30,7 @@
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 		},
 		{
-			"id": "http://localhost:8080/annotation/webanno/nonexisting2",
+			"id": "-2",
 			"bodyValue": "tag6",
 			"motivation": "tagging",
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
@@ -42,7 +42,7 @@
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 		},
 		{
-			"id": "http://localhost:8080/annotation/webanno/nonexisting3",
+			"id": "-3",
 			"bodyValue": "tag8",
 			"motivation": "tagging",
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"

@@ -2,8 +2,6 @@ package eu.europeana.annotation.web.service;
 
 import java.util.Date;
 import java.util.List;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
@@ -20,10 +18,10 @@ public interface AdminService {
 	 * This method finds annotation object in database by annotation ID and
 	 * reindexes it in Solr.
 	 * 
-	 * @param annoId
+	 * @param annoIdentifier
 	 * @return success of reindexing operation
 	 */
-	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing);
+	public boolean reindexAnnotationById(long annoIdentifier, Date lastIndexing);
 
 	/**
 	 * This method performs Solr reindexing for all annotation objects stored in
@@ -50,12 +48,12 @@ public interface AdminService {
 	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList);
 	
 	/**
-	 * This method deletes annotation by annotationId values.
-	 * @param annoId
+	 * This method deletes annotation by the identifier values.
+	 * @param annoIdentifier
 	 * @throws InternalServerException 
 	 * @throws AnnotationServiceException 
 	 */
-	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
+	public void deleteAnnotation(long annoIdentifier) throws InternalServerException, AnnotationServiceException;
 
 	
 	/**

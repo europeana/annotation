@@ -1,5 +1,4 @@
 {
-  "id": "http://data.europeana.eu/annotation/transcribathon/12345",
   "motivation": "tagging",
   "body": "https://www.wikidata.org/entity/Q49845",
   "target": {

@@ -9,10 +9,10 @@ import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public interface Annotation {
+  
+    public void setIdentifier(long identifier);
 
-	public void setAnnotationId(AnnotationId annotationId);
-	
-	public AnnotationId getAnnotationId();
+    public long getIdentifier();
 
 	public abstract String getType();
 
@@ -93,12 +93,6 @@ public interface Annotation {
 
 	public boolean isPrivate();
 	
-	/**
-	 * @deprecated should be moved to business layer (services)
-	 * @return
-	 */
-	public boolean hasHttpUrl();
-
 	boolean equalsContent(Object other);
 	
 	public abstract void setCanonical(String canonical);
@@ -108,11 +102,5 @@ public interface Annotation {
 	public abstract void setVia(String[] via);
 	
 	public abstract String[] getVia();
-
-	/**
-	 * @deprecated should use the methods from AnnotationId directly
-	 * @return
-	 */
-	public String getHttpUrl();
 	
 }

@@ -1,5 +1,4 @@
 {
-  "id": "http://data.europeana.eu/annotation/transcribathon/12345",
   "motivation": "describing",
   "body": {
     "type": "TextualBody",

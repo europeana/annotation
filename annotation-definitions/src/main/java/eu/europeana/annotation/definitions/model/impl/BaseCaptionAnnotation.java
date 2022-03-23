@@ -9,4 +9,5 @@ public class BaseCaptionAnnotation extends AbstractAnnotation implements Annotat
 		super();
 		setMotivation(MotivationTypes.CAPTIONING.getOaType());
 	}
+
 }

@@ -2,18 +2,12 @@ package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest.*;
-
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
@@ -42,8 +36,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		assertEquals(response.getStatusCode(), status);
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getAnnotationId());
-		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+		assertNotNull(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -56,7 +49,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		 */
 		ResponseEntity<String> response = getApiProtocolClient().getAnnotation(
 				getApiKey()
-				, annotation.getAnnotationId().getIdentifier()
+				, annotation.getIdentifier()
 				);
 		
 		//validateResponse(response, HttpStatus.OK);
@@ -77,14 +70,14 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 				
 //		update annotation by identifier URL
 		ResponseEntity<String> updateResponse = getApiProtocolClient().updateAnnotation(
-				annotation.getAnnotationId().getIdentifier(), requestBody, null);
+				annotation.getIdentifier(), requestBody, null);
 		
 		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(updateResponse);
 		
 		assertEquals( HttpStatus.CREATED, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
-		assertEquals(TAG_STANDARD_TEST_VALUE_TARGET, updatedAnnotation.getTarget().getHttpUri());
+		assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(), updatedAnnotation.getTarget().getHttpUri());
 	}			
 				
 	@Test
@@ -96,7 +89,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		
 //		delete annotation by identifier URL
 		ResponseEntity<String> response = getApiProtocolClient().deleteAnnotation(
-				annotation.getAnnotationId().getIdentifier());
+				annotation.getIdentifier());
 		
 		log.debug("Response body: " + response.getBody());
 		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
@@ -176,7 +169,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		String requestBody = getJsonStringInput(TRANSCRIPTION_MINIMAL);
 		//update annotation by identifier URL
 		ResponseEntity<String> updateResponse = getApiProtocolClient().updateAnnotation(
-				annotation.getAnnotationId().getIdentifier(), requestBody, null);
+				annotation.getIdentifier(), requestBody, null);
 		assertEquals(HttpStatus.BAD_REQUEST, updateResponse.getStatusCode());		
 	}
 				

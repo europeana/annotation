@@ -21,7 +21,6 @@ import org.apache.solr.common.SolrDocumentList;
 import org.springframework.stereotype.Component;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -81,6 +80,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		indexedAnno = (SolrAnnotation) anno;
 	    else {
 		indexedAnno = copyIntoSolrAnnotation(anno, null);
+		addBaseUrlToAnnoUri(indexedAnno);
 	    }
 	    
 	    UpdateResponse rsp = solrClient.addBean(indexedAnno);
@@ -89,13 +89,17 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		solrClient.commit();
 	} catch (SolrServerException ex) {
 	    throw new AnnotationServiceException(
-		    "Unexpected Solr server exception occured when storing annotations for: " + anno.getAnnotationId(),
+		    "Unexpected Solr server exception occured when storing annotations for: " + String.valueOf(anno.getIdentifier()),
 		    ex);
 	} catch (IOException ex) {
 	    throw new AnnotationServiceException(
-		    "Unexpected IO exception occured when storing annotations for: " + anno.getAnnotationId(), ex);
+		    "Unexpected IO exception occured when storing annotations for: " + String.valueOf(anno.getIdentifier()), ex);
 	}
 
+    }
+    
+    private void addBaseUrlToAnnoUri(SolrAnnotation anno) {
+      anno.setAnnoUri(configuration.getAnnotationBaseUrl() + "/" + anno.getAnnoId());
     }
 
     @Override
@@ -408,7 +412,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException {
 	getLogger().debug("update solr annotation: {}", anno);
 
-	delete(anno.getAnnotationId());
+	delete(anno.getIdentifier());
 	if (anno.isDisabled()) {
 	    // index annotation only if not disabled
 	    return true;
@@ -418,10 +422,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	}
     }
 
-    public void delete(AnnotationId annotationId) throws AnnotationServiceException {
-	String annoId = annotationId.toHttpUrl();
-	delete(annoId);
-
+    public void delete(long annotationIdentifier) throws AnnotationServiceException {
+	String annoUri = configuration.getAnnotationBaseUrl() + "/" + String.valueOf(annotationIdentifier);
+	delete(annoUri);
     }
 
     /**
@@ -530,7 +533,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		if(docs!=null && docs.size()>0) {
 			responseAnnotationIds = new ArrayList<String>();
 			for (SolrDocument returnedDoc : docs) {
-				responseAnnotationIds.add((String)returnedDoc.getFieldValue("anno_id"));
+				responseAnnotationIds.add(String.valueOf(returnedDoc.getFieldValue("anno_id")));
 			}
 		}
 
@@ -556,8 +559,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	}
 
   private void addNotSelfDupplicateFilter(Annotation anno, SolrQuery query, boolean noSelfDupplicate) {
-    if(noSelfDupplicate && anno.getAnnotationId().getIdentifier()!= null) {
-      query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
+    if(noSelfDupplicate && anno.getIdentifier() != 0) {
+      query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + String.valueOf(anno.getIdentifier()) + "\"");
     }
   }
 	

@@ -1,14 +1,8 @@
 package eu.europeana.annotation.client;
 
 import java.io.IOException;
-import java.util.List;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.ResponseEntity;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
@@ -47,7 +41,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> deleteAnnotation(String identifier) {
+    public ResponseEntity<String> deleteAnnotation(long identifier) {
 	ResponseEntity<String> res;
 	try {
 	    res = apiConnection.deleteAnnotation(identifier, null);
@@ -60,7 +54,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> getAnnotation(String wskey, String identifier) {
+    public ResponseEntity<String> getAnnotation(String wskey, long identifier) {
 
 	ResponseEntity<String> res;
 	try {
@@ -74,7 +68,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> getAnnotation(String wskey, String identifier, SearchProfiles searchProfile) {
+    public ResponseEntity<String> getAnnotation(String wskey, long identifier, SearchProfiles searchProfile) {
 
 	ResponseEntity<String> res;
 	try {
@@ -88,7 +82,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> getAnnotation(String identifier, SearchProfiles searchProfile) {
+    public ResponseEntity<String> getAnnotation(long identifier, SearchProfiles searchProfile) {
 
 	ResponseEntity<String> res;
 	try {
@@ -102,7 +96,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> updateAnnotation(String identifier, String annotation, String user) {
+    public ResponseEntity<String> updateAnnotation(long identifier, String annotation, String user) {
 	ResponseEntity<String> res;
 	try {
 	    res = apiConnection.updateAnnotation(identifier, annotation, user);
@@ -127,7 +121,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> createAnnotationReport(String wskey, String identifier, String userToken) {
+    public ResponseEntity<String> createAnnotationReport(String wskey, long identifier, String userToken) {
 
 	ResponseEntity<String> res;
 	try {
@@ -141,7 +135,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
     }
 
     @Override
-    public ResponseEntity<String> getModerationReport(String wskey, String identifier, String userToken) {
+    public ResponseEntity<String> getModerationReport(String wskey, long identifier, String userToken) {
 
 	ResponseEntity<String> res;
 	try {

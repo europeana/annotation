@@ -3,21 +3,17 @@ package eu.europeana.annotation.solr.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-
 import javax.annotation.Resource;
-
 //import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -267,7 +263,7 @@ public class SolrAnnotationServiceTest {
 		/**
 		 * delete the SolrAnnotation object from SOLR
 		 */
-		solrAnnotationService.delete(solrAnnotations.getResults().get(0).getIdAsString());
+		solrAnnotationService.delete(Long.parseLong(solrAnnotations.getResults().get(0).getIdentifierAsString()));
 		
 //		printList(solrAnnotationService.getAll(), "list after delete method ...");
 

@@ -2,11 +2,8 @@ package eu.europeana.annotation.mongo.service;
 
 import java.util.Date;
 import java.util.List;
-
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
@@ -18,23 +15,21 @@ import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 public interface PersistentAnnotationService extends AbstractNoSqlService<PersistentAnnotation, String>{
 
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
-	
-	public List<? extends Annotation> getAnnotationList(String europeanaId);
 
 	public List<? extends Annotation> getAnnotationListByTarget(String target);
 
 	public List<? extends Annotation> getAnnotationListByResourceId(String resourceId);
 
-	public List<? extends Annotation> getAnnotationList (List<String> annotationIds);
+	public List<? extends Annotation> getAnnotationList (List<Long> annotationIdentifiers);
 	
-	public PersistentAnnotation find(AnnotationId annoId);
+	public PersistentAnnotation find(long annoIdentifier);
 	
 	/**
 	 * 
 	 * @param annoId
 	 * @throws AnnotationMongoRuntimeException - less or more than 1 object is found for the given arguments
 	 */
-	public void remove(AnnotationId annoId) throws AnnotationMongoException;
+	public void remove(long annoIdentifier) throws AnnotationMongoException;
 	
 	/**
 	 * This method performs update for the passed annotation object
@@ -57,10 +52,10 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 */
 	public Annotation updateStatus(Annotation newAnnotation);
 	
-	public abstract AnnotationId generateAnnotationId();
+	public abstract long generateAnnotationIdentifier();
 //	public abstract AnnotationId generateAnnotationId(String provider);
 	
-	public abstract List<AnnotationId> generateAnnotationIdSequence(Integer seqLength);
+	public abstract List<Long> generateAnnotationIdentifierSequence(Integer seqLength);
 //	public abstract List<AnnotationId> generateAnnotationIdSequence(String provider, Integer seqLength);
 
 	public abstract Annotation findByTagId(String tagId);

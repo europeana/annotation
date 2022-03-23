@@ -94,6 +94,13 @@
     		<artifactId>subtitle-converter</artifactId>
 			<version>${version.subtitle-converter}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${version.spring}</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 	<build>

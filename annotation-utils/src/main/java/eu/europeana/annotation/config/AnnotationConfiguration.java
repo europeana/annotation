@@ -10,7 +10,6 @@ public interface AnnotationConfiguration {
     public static final String ANNOTATION_SUBTITLES_FORMATS_XML = "annotation.subtitles.formats.xml";
     public static final String BEAN_SUBTITLES_FORMATS = "subtitlesFormats";
 
-    public static final String SUFFIX_BASEURL = "baseUrl";
     public static final String VALUE_ENVIRONMENT_PRODUCTION = "production";
     public static final String VALUE_ENVIRONMENT_TEST = "test";
     public static final String VALUE_ENVIRONMENT_DEVELOPMENT = "development";
@@ -30,7 +29,13 @@ public interface AnnotationConfiguration {
     public static final String API_VERSION = "annotation.apiVersion";
     
     public static final String SOLR_STATS_FACETS = "solr.stats.facets";
-
+    
+    public static final String ANNO_API_ENDPOINT = "annotation.api.endpoint";
+    public static final String ANNO_DATA_ENDPOINT = "annotation.data.endpoint";
+    public static final String ANNO_USER_DATA_ENDPOINT = "annotation.user.data.endpoint";
+    public static final String ANNO_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
+    public static final String ANNO_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
+    
     public String getComponentName();
 
     /**
@@ -96,5 +101,9 @@ public interface AnnotationConfiguration {
     int getMetisConnectionRetries();
 
     int getStatsFacets();
-
+    
+    String getAnnoApiEndpoint();
+    String getAnnoUserDataEndpoint();
+    String getAnnoClientApiEndpoint();
+    String getAnnoItemDataEndpoint();
 }

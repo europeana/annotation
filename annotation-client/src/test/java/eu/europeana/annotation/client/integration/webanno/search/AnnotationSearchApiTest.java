@@ -30,9 +30,7 @@ import eu.europeana.annotation.utils.parse.AnnotationPageParser;
  */
 public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 
-	static final String VALUE_ALL = "*:*";
-	static final String VALUE_TESTSET = "generator_uri: \"http://data.europeana.eu/apikey/annotations\"";
-
+	static final String VALUE_ALL = "*:*";	
 	static final int TOTAL_IN_PAGE = 10;
 	static final int TOTAL_IN_COLLECTION = 21;
 
@@ -86,7 +84,8 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_TESTSET, SearchProfiles.MINIMAL, null);
+		String valueTestSet = "generator_uri: " + "\"" + configuration.getAnnoClientApiEndpoint() + "/" + "annotations" +"\"";
+		AnnotationPage annPg = annSearchApi.searchAnnotations(valueTestSet, SearchProfiles.MINIMAL, null);
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
@@ -112,7 +111,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		
 		// last page
 		int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
-		AnnotationPage lastPage = annSearchApi.searchAnnotations(VALUE_TESTSET, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
+		AnnotationPage lastPage = annSearchApi.searchAnnotations(valueTestSet, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
 		assertEquals(lastPage.getCurrentPage(), lastPageNum);
 		
 	}

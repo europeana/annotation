@@ -2,9 +2,7 @@ package eu.europeana.annotation.definitions.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -37,7 +35,6 @@ public class AnnotationTestObjectBuilder {
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
 	public final static String TEST_COLLECTION   = "testCollection";
 	public final static String TEST_OBJECT       = "testObject";
-	public final static String ANNOTATION_BASEURL = "http://data.europeana.eu/annotation";
 	
 	public static Body buildSemanticTagBody(String text, String language) {
 		

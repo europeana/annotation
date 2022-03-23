@@ -2,11 +2,8 @@ package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.mongodb.BulkWriteResult;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -24,9 +21,9 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	/**
 	 * @return AnnotationId object with the generated ID based on database sequence
 	 */
-	AnnotationId generateNextAnnotationId();
+	long generateNextAnnotationIdentifier();
 	
-	List<AnnotationId> generateNextAnnotationIds(Integer sequenceIncrement);
+	List<Long> generateNextAnnotationIdentifiers(Integer sequenceIncrement);
 	
 	Long getLastAnnotationNr();
 

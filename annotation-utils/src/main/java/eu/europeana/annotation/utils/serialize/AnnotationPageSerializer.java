@@ -2,7 +2,7 @@ package eu.europeana.annotation.utils.serialize;
 
 import java.util.Map;
 import java.util.TreeMap;
-
+import javax.annotation.Resource;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
@@ -20,6 +20,9 @@ import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationPageSerializer extends JsonLd {
+  
+    @Resource
+    protected AnnotationLdSerializer annotationLdSerializer;
 
     TypeUtils typeHelper = new TypeUtils();
     AnnotationPage protocolPage;
@@ -30,6 +33,12 @@ public class AnnotationPageSerializer extends JsonLd {
 	setPropOrderComparator(new AnnotationsJsonComparator());
 	this.protocolPage = protocolPage;
 	registerContainerProperty(WebAnnotationFields.ITEMS);
+    }
+    
+    public AnnotationPageSerializer() {
+    super();
+    setPropOrderComparator(new AnnotationsJsonComparator());
+    registerContainerProperty(WebAnnotationFields.ITEMS);
     }
 
     public TypeUtils getTypeHelper() {
@@ -168,7 +177,7 @@ public class AnnotationPageSerializer extends JsonLd {
 	String[] items = new String[(int) getPageItems().getResults().size()];
 	int i = 0;
 	for (AnnotationView anno : getPageItems().getResults()) {
-	    items[i++] = anno.getIdAsString();
+	    items[i++] = anno.getIdentifierAsString();
 	}
 
 	if (items.length > 0)
@@ -181,11 +190,9 @@ public class AnnotationPageSerializer extends JsonLd {
 	    return;
 
 	JsonLdProperty itemsProp = new JsonLdProperty(WebAnnotationFields.ITEMS);
-	AnnotationLdSerializer annoLdSerializer;
 	for (Annotation annotation : protocolPage.getAnnotations()) {
 	    // transform annotation object to json-ld
-	    annoLdSerializer = new AnnotationLdSerializer();
-	    JsonLdResource annotationLd = annoLdSerializer.setAnnotation(annotation);
+	    JsonLdResource annotationLd = annotationLdSerializer.setAnnotation(annotation);
 
 	    // build property value for the given annotation
 	    JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
@@ -204,5 +211,9 @@ public class AnnotationPageSerializer extends JsonLd {
 	
 	// implementation is
 	return super.isContainerProperty(property);
+    }
+
+    public void setProtocolPage(AnnotationPage protocolPage) {
+      this.protocolPage = protocolPage;
     }
 }

@@ -3,7 +3,7 @@ package eu.europeana.annotation.mongo.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import javax.annotation.Resource;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
@@ -12,7 +12,6 @@ import eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
@@ -27,8 +26,12 @@ import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 
 public class AnnotationTestDataBuilder {
+  
+    @Resource
+    protected PersistentAnnotationService mongoPersistance;
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
 	public final static String TEST_DRACULA_ID = "/15502/GG_8285";
@@ -55,7 +58,7 @@ public class AnnotationTestDataBuilder {
 //		assertEquals(persistantObject.getAnnotationId().getResourceId(),
 //				storedAnnotation.getAnnotationId().getResourceId());
 	
-		assertNotNull(storedAnnotation.getAnnotationId().getIdentifier());
+		assertNotNull(storedAnnotation.getIdentifier());
 		assertNotNull(((PersistentAnnotation) storedAnnotation)
 				.getCreated());
 		assertEquals(
@@ -77,7 +80,7 @@ public class AnnotationTestDataBuilder {
 		creator.setName("unit test");
 		creator.setHomepage("http://www.pro.europeana.eu/web/europeana-creative");
 		persistentObject.setCreator(creator);
-		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), null));
+		persistentObject.setIdentifier(mongoPersistance.generateAnnotationIdentifier());
 		return persistentObject;
 	}
 
@@ -136,7 +139,7 @@ public class AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId(getBaseAnnotationUrl(), null));
+		persistentObject.setIdentifier(mongoPersistance.generateAnnotationIdentifier());
 		return persistentObject;
 	}
 

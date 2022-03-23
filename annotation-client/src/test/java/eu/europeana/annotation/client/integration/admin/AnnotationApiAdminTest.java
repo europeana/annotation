@@ -3,17 +3,14 @@ package eu.europeana.annotation.client.integration.admin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
@@ -51,8 +48,8 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 
 		// read
 		assertNotNull(annotation);
-		assertNotNull(annotation.getAnnotationId().getIdentifier());
-		log.debug("Created annotation: " + annotation.getAnnotationId().getHttpUrl());
+		assertNotNull(annotation.getIdentifier());
+		log.debug("Created annotation: " + annotation.getIdentifier());
 
 		// delete
 		this.deleteAnnotation(annotation);

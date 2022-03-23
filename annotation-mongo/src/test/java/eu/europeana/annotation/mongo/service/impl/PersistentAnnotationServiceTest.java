@@ -5,14 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
-
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -21,11 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -34,7 +30,6 @@ import eu.europeana.annotation.definitions.model.body.TagBody;
 import eu.europeana.annotation.definitions.model.body.impl.PlainTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.selector.Rectangle;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
@@ -49,7 +44,6 @@ import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
-import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 @ExtendWith(SpringExtension.class)
@@ -68,7 +62,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	@Resource AnnotationConfiguration configuration;
 
 	@Resource(name = "annotation_db_annotationDao")
-	NosqlDao<PersistentAnnotation, AnnotationId> annotationDao;
+	NosqlDao<PersistentAnnotation, ObjectId> annotationDao;
 
 	/**
 	 * Initialize the testing session
@@ -168,8 +162,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		// store second annotation
 		Annotation secondAnnotation = annotationService.store(secondObject);
 
-		assertFalse(firstAnnotation.getAnnotationId().equals(secondAnnotation.getAnnotationId()));
-		assertFalse(firstAnnotation.getAnnotationId().toString().equals(secondAnnotation.getAnnotationId().toString()));
+		assertFalse(firstAnnotation.getIdentifier() == secondAnnotation.getIdentifier());
 		
 		assertFalse(firstAnnotation.getBody().equals(secondAnnotation.getBody()));
 		
@@ -183,9 +176,10 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 
 	@Test
 	public void testGetObjectList(){
+	    List<Long> annosIdentifiers = new ArrayList<Long>();
 		//*** STORE OBJECTS ****
 		ObjectTag firstObject = buildObjectTag();
-
+		annosIdentifiers.add(firstObject.getIdentifier());
 		SemanticTagBody body = buildSemanticTagBody();
 		firstObject.setBody(body);
 
@@ -193,6 +187,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		annotationService.store(firstObject);
 
 		ObjectTag secondObject = buildObjectTag();
+		annosIdentifiers.add(secondObject.getIdentifier());
 
 		// set body
 		SemanticTagBody bodyEn = buildSemanticTagBody();
@@ -204,8 +199,9 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		// store second annotation
 		annotationService.store(secondObject);
 		
+		
 		//** RETRIEVE OBJECTS **
-		List<? extends Annotation> results = annotationService.getAnnotationList(TEST_DRACULA_ID);
+		List<? extends Annotation> results = annotationService.getAnnotationList(annosIdentifiers);
 		
 		//** CHECK OBJECTS **
 		assertNotNull(results);
@@ -232,10 +228,10 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				assertNull(tagId);
 				
 				//delete object
-				annotationService.remove(storedObject.getAnnotationId());
+				annotationService.remove(storedObject.getIdentifier());
 				
 				//check deletion
-				Annotation anno = annotationService.find(storedObject.getAnnotationId());
+				Annotation anno = annotationService.find(storedObject.getIdentifier());
 				assertNull(anno);				
 	}
 	
@@ -309,7 +305,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setAnnotationId(new BaseAnnotationId(configuration.getAnnotationBaseUrl(), null));
+		persistentObject.setIdentifier(annotationService.generateAnnotationIdentifier());
 		return persistentObject;
 	}
 	
@@ -328,7 +324,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				"testCreatePersistentAnnotation persistent annotation after update: " + persistentAnnotation.toString());
 
 		assertNotNull(persistentAnnotation.getLastIndexed());
-		annotationService.remove(persistentAnnotation.getAnnotationId());
+		annotationService.remove(persistentAnnotation.getIdentifier());
 	}
 	
 	
@@ -445,58 +441,17 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	
 
 	protected List<Annotation> getTestAnnotationList(Integer numAnnotations) {
-		List<AnnotationId> annoIdSequence = annotationService.generateAnnotationIdSequence(numAnnotations);
-//		List<AnnotationId> annoIdSequence = annotationService.generateAnnotationIdSequence("rollbacktest", numAnnotations);
+		List<Long> annoIdSequence = annotationService.generateAnnotationIdentifierSequence(numAnnotations);
 		List<Annotation> annoList = new ArrayList<Annotation>(numAnnotations);
-		AnnotationId newAnnoId;
 		Annotation anno;
-		AnnotationId genAnnoId;
 		for(int i = 0; i < numAnnotations; i++) {
 			anno = createPersistentAnnotationInstance();
-			genAnnoId = annoIdSequence.get(i);
-			newAnnoId = new BaseAnnotationId("http://localhost:8080/annotation", genAnnoId.getIdentifier());
-			anno.setAnnotationId(newAnnoId);
+			anno.setIdentifier(annoIdSequence.get(i));
 			annoList.add(i, anno);
 		}
 		return annoList;
 	}
 	
-	@Test
-	public void testRollbackInserts() throws AnnotationMongoException {
-		
-		int annotationListSize = 5;		
-		
-		List<Annotation> annoList = getTestAnnotationList(annotationListSize);
-		
-		// failed index: 3
-		//
-		// annotation[0]: random 					(inserted)
-		// annotation[1]: random  					(inserted)
-		// annotation[2]: id 999999999  			(inserted)
-		// annotation[3]: id 999999999 				(not inserted, duplicate error!)
-		// annotation[4]: random 					(not inserted)
-
-		annoList.get(annotationListSize-3).getAnnotationId().setIdentifier("999999999");
-		annoList.get(annotationListSize-3).getAnnotationId().setHttpUrl("http://localhost:8080/annotation/999999999");
-		
-		annoList.get(annotationListSize-2).getAnnotationId().setIdentifier("999999999");		
-		annoList.get(annotationListSize-2).getAnnotationId().setHttpUrl("http://localhost:8080/annotation/999999999");
-		
-		assertNotNull(annoList);
-		assertEquals(annotationListSize, annoList.size());
-		
-		try {
-			annotationService.create(annoList);
-        } catch (BulkOperationException e) {
-        	assertEquals(1, e.getFailedIndices().size());
-        	Integer failedIndex = e.getFailedIndices().get(0);
-        	assertTrue(failedIndex == 3);
-        	assertEquals("Bulk write operation failed", e.getMessage());
-        }
-		
-	}
-	
-
 	@Test
 	public void testRollbackUpdates() throws AnnotationMongoException, AnnotationValidationException, BulkOperationException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		
@@ -507,9 +462,10 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 			annotationService.create(annoList);
 			assertNotNull(annoList);
 			
-			List<String> httpUrls = AnnotationListUtils.getHttpUrls(annoList);
+			List<Long> annoIdentifiers = annoList.stream().map(Annotation::getIdentifier).collect(Collectors.toList());
+
 			@SuppressWarnings("unchecked")
-			List<PersistentAnnotation> annoListFromDb = (List<PersistentAnnotation>)annotationService.getAnnotationList(httpUrls);
+			List<PersistentAnnotation> annoListFromDb = (List<PersistentAnnotation>)annotationService.getAnnotationList(annoIdentifiers);
 			assertNotNull(annoListFromDb);
 			assertEquals(annoList.size(), annoListFromDb.size());
 			

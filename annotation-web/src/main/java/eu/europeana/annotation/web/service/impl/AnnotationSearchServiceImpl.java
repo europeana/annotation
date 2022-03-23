@@ -1,18 +1,17 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.web.util.UrlUtils;
-
 import com.google.common.base.Strings;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -105,10 +104,10 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		
 		//if mongo query is needed
 		if(isIncludeAnnotationsSearch(query) && resultSet.getResults().size() > 0){
-			List<String> annotationIds = new ArrayList<String>(resultSet.getResults().size());
+			List<Long> annotationIds = new ArrayList<Long>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
-				annotationIds.add(annotationView.getIdAsString());		
+				annotationIds.add(Long.parseLong(annotationView.getIdentifierAsString()));		
 			}
 			
 			//fetch annotation objects
@@ -173,9 +172,15 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		
 		//add mandatory parameters
 		queryString += ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString()); 
-		
-		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(),
-				request.getRequestURI(), queryString);
+
+		String result = configuration.getAnnoApiEndpoint() + "/search?";
+		try {
+		  result += URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+          logger.log(Level.ERROR, "The UnsupportedEncodingException during the URL encoding of the string.", e);
+          result += queryString;
+        }
+		return result;
 	}
 
 	protected String removeParam(final String queryParam, String queryParams) {

@@ -2,10 +2,8 @@ package eu.europeana.annotation.web.service.controller.admin;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -75,7 +70,7 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAnnotationById(
-	    @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) String identifier,
+	    @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) long identifier,
 	    HttpServletRequest request) throws HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_ALL, request);
@@ -94,13 +89,13 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> deleteAnnotationSet(
-	    @RequestBody String uris, HttpServletRequest request) throws HttpException {
+	    @RequestBody String identifiers, HttpServletRequest request) throws HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_ALL, request);
 
-	List<String> uriList = BaseJsonParser.toStringList(uris, true);
+	List<String> identifiersList = BaseJsonParser.toStringList(identifiers, true);
 
-	BatchProcessingStatus status = getAdminService().deleteAnnotationSet(uriList);
+	BatchProcessingStatus status = getAdminService().deleteAnnotationSet(identifiersList);
 
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/annotation/deleteset");
@@ -114,19 +109,10 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    protected void deleteAnnotationForGood(String identifier) throws HttpException {
-
-	// 0. annotation id
-	AnnotationId annoId = buildAnnotationId(identifier, false);
-
-	deleteAnnotationForGood(annoId);
-    }
-
-    protected void deleteAnnotationForGood(AnnotationId annoId) throws InternalServerException,
+    protected void deleteAnnotationForGood(long identifier) throws InternalServerException,
 	    UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-
 	try {
-	    getAdminService().deleteAnnotation(annoId);
+	    getAdminService().deleteAnnotation(identifier);
 	} catch (AnnotationServiceException e) {
 	    throw new InternalServerException(e);
 	}
@@ -136,13 +122,12 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex by annotation id. Authorization required.", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationByAnnotationId(
-	    @RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
+	    @RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) long identifier,
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
-	BaseAnnotationId baseAnnotationId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
-	getAdminService().reindexAnnotationById(baseAnnotationId, new Date());
+	getAdminService().reindexAnnotationById(identifier, new Date());
 
 	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindex");
 

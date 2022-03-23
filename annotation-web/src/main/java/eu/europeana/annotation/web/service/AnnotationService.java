@@ -4,15 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
-
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.StatusLog;
-import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -37,10 +33,10 @@ public interface AnnotationService {
 	
 	/**
 	 * This method retrieves all not disabled annotations.
-	 * @param resourceId
+	 * @param identifiers
 	 * @return the list of not disabled annotations
 	 */
-	public List<? extends Annotation> getAnnotationList (String resourceId);
+	public List<? extends Annotation> getAnnotationList (List<Long> identifiers);
 	
 	
 	/**
@@ -96,19 +92,19 @@ public interface AnnotationService {
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
 	 * from the solr/annotation.
-	 * @param annoId
+	 * @param annoIdentifier
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(AnnotationId annoId);
+	public Annotation disableAnnotation(long annoIdentifier);
 	
 	/**
 	 * This method enables the annotation by setting the 'disabled' field to null in the database 
 	 * and creating the solr annotation.
-	 * @param annoId
+	 * @param annoIdentifier
 	 * @return enabled Annotation
 	 * @throws AnnotationServiceException 
 	 */
-	public Annotation enableAnnotation(AnnotationId annoId) throws AnnotationServiceException;
+	public Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException;
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -119,14 +115,13 @@ public interface AnnotationService {
 	public Annotation disableAnnotation(Annotation annotation);
 	
 	/**
-	 * This method returns annotation object for given annotationId that
-	 * comprises provider and identifier.
-	 * @param annoId - id of the annotation to be retrieved
+	 * This method returns annotation object for the given identifier.
+	 * @param annoIdentifier - id of the annotation to be retrieved
 	 * @param userId - id of the user sending the request (URI)
 	 * @param enabled - a flag for telling which annotation to get (enabled, when the flag is true, or disabled)
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(AnnotationId annoId, String userId, boolean enabled) throws AnnotationNotFoundException, UserAuthorizationException;
+	public Annotation getAnnotationById(long annoIdentifier, String userId, boolean enabled) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	
 	/**
@@ -141,17 +136,17 @@ public interface AnnotationService {
 
 	
 	/**
-	 * Check whether annotation for given provider and identifier already exist in database.
+	 * Check whether annotation with the given identifier already exists in database.
 	 */
-	public boolean existsInDb(AnnotationId annoId); 
+	public boolean existsInDb(long annoIdentifier); 
 	
 	/**
-	 * Check whether moderation record for given provider and identifier already exist in database.
-	 * @param annoId
+	 * Check whether moderation record with the given identifier already exists in database.
+	 * @param annoIdentifier
 	 * @return
 	 * @throws ModerationMongoException
 	 */
-	public boolean existsModerationInDb(AnnotationId annoId) throws ModerationMongoException;
+	public boolean existsModerationInDb(long annoIdentifier) throws ModerationMongoException;
 		
 	/**
 	 * This method updates annotation status.
@@ -166,19 +161,12 @@ public interface AnnotationService {
 	 */
 	public void logAnnotationStatusUpdate(String user, Annotation annotation);
 
-	/**
-	 * this method validates the correctness of the provided annotation id (provider and identifier) 
-	 * @param annoId
-	 * @throws ParamValidationI18NException 
-	 */
-	public void validateAnnotationId(AnnotationId annoId) throws ParamValidationI18NException;
-
 	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException;
 
 	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationI18NException;
 	
 	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
-			List<String> annotationHttpUrls);
+			List<Long> missingIdentifiers);
 
 	/**
 	 * This method stores moderation record in database
@@ -188,17 +176,17 @@ public interface AnnotationService {
 	public ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord);
 	
 	/**
-	 * @param annoId
+	 * @param annoIdentifier
 	 * @return
 	 * @throws ModerationNotFoundException
 	 * @throws ModerationMongoException
 	 */
-	public ModerationRecord findModerationRecordById(AnnotationId annoId) 
+	public ModerationRecord findModerationRecordById(long annoIdentifier) 
 			throws ModerationNotFoundException, ModerationMongoException;
 
-	public List<? extends Annotation> getExisting(List<String> annotationHttpUrls);
+	public List<? extends Annotation> getExisting(List<Long> annotationIdentifiers);
 
-	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, HashMap<String, ? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, List<? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
 	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
 
