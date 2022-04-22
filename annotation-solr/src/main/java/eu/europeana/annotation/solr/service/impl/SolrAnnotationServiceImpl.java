@@ -539,18 +539,23 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	}
 	
 	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
-	  SolrQuery query = new SolrQuery();
-	  query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
-	  query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TRANSCRIBING.getOaType() + "\"");
-	  query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
+	  SolrQuery query = new SolrQuery();	
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TRANSCRIBING.getOaType() + "\"");
+      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+      if(anno.getBody().getLanguage()!=null) {
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*"); 
+      }
+      else {
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
+      }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
 	  return query;
 	}
 	
 	private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
-      query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
-      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
+      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
 	}
@@ -560,20 +565,43 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
     }
   }
+  
+  private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
+    if(anno.getTarget()!=null) {
+      // extract URIs for target_uri field
+      List<String> targetUris = extractUriValues(anno.getTarget());
+      if(targetUris!=null) {
+        // Extract URIs for target_record_id
+        List<String> recordIds = extractRecordIds(targetUris);
+        if(recordIds != null) {
+          for(String recordIdElem: recordIds) {
+            query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
+          }
+        }  
+      }
+    }
+  }
 	
 	private SolrQuery solrUniquenessQuerySubtitles(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
-      query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
-      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.SUBTITLING.getOaType() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.SUBTITLING.getOaType() + "\"");
+      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+      if(anno.getBody().getLanguage()!=null) {
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*"); 
+      }
+      else {
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
+      }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
 	}
 	
 	private SolrQuery solrUniquenessQuerySemanticTagging(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
-      query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
-      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
+      
+      addTargetRecordIdFilter(anno, query);   
+      
       List<String> bodyUris = extractUriValues(anno.getBody());
       for (int i=0; i<bodyUris.size(); i++) { 
         query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
@@ -584,14 +612,18 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	
 	private SolrQuery solrUniquenessQuerySimpleTagging(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
-      query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
-      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
+      
+      addTargetRecordIdFilter(anno, query);
+      
+      String bodyMultilingualValue = extractMultilingualValue(anno.getBody());
       if(anno.getBody().getLanguage()!=null) {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":\"" + anno.getBody().getValue() + "\""); 
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":\"" + bodyMultilingualValue + "\""); 
       }
       else {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":\"" + anno.getBody().getValue() + "\"");
+        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":\"" + bodyMultilingualValue + "\"");
       }
+      
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
 	}
@@ -614,8 +646,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
 	private SolrQuery solrUniquenessQueryLinkForContributing(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
-      query.setQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getValue() + "\"");
-      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
+
+      addTargetRecordIdFilter(anno, query);
+
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
   }
