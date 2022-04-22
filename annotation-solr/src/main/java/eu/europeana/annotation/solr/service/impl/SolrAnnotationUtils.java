@@ -2,8 +2,9 @@ package eu.europeana.annotation.solr.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -135,14 +136,14 @@ public class SolrAnnotationUtils {
 	    break;
 	case TAG:
 	    solrAnnotation.setBodyValue(textValue);
-	    solrAnnotation.addMultilingualValue(body.getLanguage(), textValue);
+	    setBodyMultilingualValue(solrAnnotation);
 	    break;
 
 	case FULL_TEXT_RESOURCE:
 	case SPECIFIC_RESOURCE:
 	    solrAnnotation.setBodyValue(textValue);
 	    solrAnnotation.setBodyUris(extractUriValues(body));
-	    solrAnnotation.addMultilingualValue(body.getLanguage(), textValue);
+	    setBodyMultilingualValue(solrAnnotation);
 	    break;
 	case AGENT:
 	case VCARD_ADDRESS:
@@ -151,6 +152,26 @@ public class SolrAnnotationUtils {
 	    break;
 
 	}
+    }
+    
+    protected void setBodyMultilingualValue(SolrAnnotation solrAnnotation) {
+      String bodyMultiLingualText = extractMultilingualValue(solrAnnotation.getBody());
+      Map<String, String> bodyMultilingualValue = new HashMap<String, String>();
+      if(solrAnnotation.getBody().getLanguage()!=null) {
+        bodyMultilingualValue.put(SolrAnnotationConstants.BODY_VALUE_PREFIX + solrAnnotation.getBody().getLanguage(), bodyMultiLingualText);
+      }
+      else {
+        bodyMultilingualValue.put(SolrAnnotationConstants.BODY_VALUE_PREFIX, bodyMultiLingualText);
+      }
+      solrAnnotation.setBodyMultilingualValue(bodyMultilingualValue);
+    }
+    
+    /*
+     * This method is used in the duplication check, that is why it is separated here, 
+     * so that in case of changing what goes into the multilingual values, only this function needs to be changed
+     */
+    protected String extractMultilingualValue(Body body) {
+      return extractTextValues(body);
     }
 
     protected void processGraphBody(SolrAnnotation solrAnnotation, GraphBody gb) {
@@ -191,13 +212,11 @@ public class SolrAnnotationUtils {
 	List<String> targetUris = extractUriValues(internetResource);
 	solrAnnotation.setTargetUris(targetUris);
 
-	// Extract URIs for target_record_id
-	List<String> recordIds = extractRecordIds(targetUris);
-	// specific resource - scope
-	if (internetResource.getScope() != null)
-	    addRecordIdToList(internetResource.getScope(), recordIds);
-
-	solrAnnotation.setTargetRecordIds(recordIds);
+	if(targetUris!=null) {
+    	// Extract URIs for target_record_id
+    	List<String> recordIds = extractRecordIds(targetUris);
+    	solrAnnotation.setTargetRecordIds(recordIds);
+	}
     }
 
     protected List<String> extractUriValues(SpecificResource specificResource) {
