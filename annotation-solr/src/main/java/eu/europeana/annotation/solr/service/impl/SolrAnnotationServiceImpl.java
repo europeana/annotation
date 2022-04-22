@@ -270,9 +270,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    getLogger().trace("search obj res size: {}", res.getResultSize());
 	} catch (SolrServerException | IOException | RemoteSolrException e) {
 	    throw new AnnotationServiceException(
-		    "Unexpected exception occured (might be due to an inadequate server URL, port, collection name, etc.) when searching annotations for solrAnnotation: "
-			    + searchQuery.toString() + ". " + e.getMessage(),
-		    e);
+		    "Unexpected exception occured (might be due to an inadequate server URL, port, collection name, query, etc.) when searching annotations for solrAnnotation: "
+			    + searchQuery.toString() + ".");
 	}
 	return res;
     }
