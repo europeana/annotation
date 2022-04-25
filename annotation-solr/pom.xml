@@ -41,19 +41,6 @@
 			<artifactId>solr-solrj</artifactId>
 			<version>${version.apacheSolr}</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-core</artifactId>
-			<version>${version.apacheSolr}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jdk.tools</artifactId>
-					<groupId>jdk.tools</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		 -->
 
 		<!-- Other -->
 		<dependency>

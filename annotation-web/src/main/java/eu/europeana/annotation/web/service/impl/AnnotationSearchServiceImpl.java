@@ -89,7 +89,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		try {
 			return getSolrService().search(query);
 		} catch (AnnotationServiceException e) {
-			throw new HttpException("Solr Search Exception", I18nConstants.SOLR_EXCEPTION, null, HttpStatus.INTERNAL_SERVER_ERROR, e);
+			throw new HttpException("Solr Search Exception.", I18nConstants.SOLR_EXCEPTION, null, HttpStatus.INTERNAL_SERVER_ERROR, e);
 		}
 	}
 
