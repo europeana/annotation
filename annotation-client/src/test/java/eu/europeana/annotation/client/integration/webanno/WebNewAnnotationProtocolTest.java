@@ -166,6 +166,16 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
+	@Test
+    public void checkAnnotationDuplicatesCreateLinkForContributing() throws JsonParseException, IOException {
+        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());        
+        removeAnnotation(storedAnno.getIdentifier());
+    }
+	
 	/*
 	 * For this test to pass please comment out the validation part in the validateWebAnnotation() method
 	 * in the BaseAnnotationValidator class, if the whitelists are not created
