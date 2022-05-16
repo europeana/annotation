@@ -3,13 +3,11 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -17,7 +15,6 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**
  * This class implements tests for searching textual values in 
@@ -52,7 +49,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		validateSubtitle(retrievedAnnotation);
 
 		// remove annotation
-		deleteAnnotation(storedAnno);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 	/**
@@ -70,7 +67,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		assertNotNull(target.getSource());
 		assertTrue(target.getSource().equals("http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"));
 		assertNotNull(target.getScope());
-		assertTrue(target.getScope().equals(configuration.getAnnoItemDataEndpoint() + "/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7"));
+		assertTrue(target.getScope().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7"));
 	}
 	
 

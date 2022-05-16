@@ -66,7 +66,7 @@ public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBu
     }
 	
 	
-	@Test
+	//@Test
 	public void testValidateClientApiKey() 
 			throws MalformedURLException, IOException, ApplicationAuthenticationException {
 						
@@ -76,7 +76,7 @@ public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBu
 	}
 
 	
-	@Test
+	//@Test
 	public void testValidateNotExistingClientApiKey() 
 			throws MalformedURLException, IOException, ApplicationAuthenticationException {
 								  
@@ -100,7 +100,7 @@ public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBu
 	}
 
 	
-    @Test
+    //@Test
     public void testAllRegisteredApiKeysUsingApiKeyClient() throws ApplicationAuthenticationException {
   	  	
   	    for (Map.Entry<String, String> entry : apyKeyMap.entrySet()) {

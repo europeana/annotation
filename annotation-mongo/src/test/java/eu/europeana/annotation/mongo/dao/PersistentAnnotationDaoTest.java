@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration({"/annotation-mongo-context.xml", "/annotation-mongo-test.xml"})
+@ContextConfiguration({"/annotation-mongo-test.xml"})
 public class PersistentAnnotationDaoTest {
 
 	@Resource(name = "annotation_db_annotationDao")

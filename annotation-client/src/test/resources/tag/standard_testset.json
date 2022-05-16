@@ -15,7 +15,7 @@
 		"type": "Software"
 	},
 	"body": {
-		"value": "test",
+		"value": "%test_body_to_replace%",
 		"language": "en"
 	},
 	"target": "http://data.europeana.eu/item/09102/_UEDIN_214"

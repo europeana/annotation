@@ -62,13 +62,14 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	
 
 	@Test
-	public void createWebannoAnnotationLinkWithoutBlanksInMotivation() {
+	public void createWebannoAnnotationLinkWithoutBlanksInMotivation() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				true, get_LINK_JSON_WITHOUT_BLANK(), null, null);
-		
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 
@@ -99,7 +100,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 				WRONG_GENERATED_IDENTIFIER
 				);
 		
-		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	@Test
@@ -108,24 +109,44 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				false, get_TAG_JSON_BY_TYPE_JSONLD(), INVALID_ANNO_TYPE, null);
 		
-		assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
 	
-
-	
+    @Test
+    public void createDescribingAnnoWithoutBodyLanguage() throws IOException { 
+        
+        String requestBody = getJsonStringInput(DESCRIBING_WITHOUT_BODY_LANGUAGE);
+        
+        ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
+            false, requestBody, null, null);
+    
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
+    @Test
+    public void createTaggingAnnoBodyAddressWithoutType() throws IOException { 
+        
+        String requestBody = getJsonStringInput(TAGGING_BODY_ADDRESS_NO_TYPE);
+        
+        ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
+            false, requestBody, null, null);
+    
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
+    @Test
+    public void createTaggingAnnoBodyAddressWithoutStreetAddress() throws IOException { 
+        
+        String requestBody = getJsonStringInput(TAGGING_BODY_ADDRESS_NO_STREET_ADDRESS);
+        
+        ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
+            false, requestBody, null, null);
+    
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
 	@Test
 	public void updateWebannoAnnotationWithWrongIdentifierNumber() throws IOException { 
-		
-		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
-		
-		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
-				WRONG_GENERATED_IDENTIFIER, requestBody, null);
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-	}
-	
-		
-	@Test
-	public void updateWebannoAnnotationWithWrongIdentifier() throws IOException { 
 		
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		
@@ -148,6 +169,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				anno.getIdentifier(), CORRUPTED_UPDATE_JSON, null);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		removeAnnotation(anno.getIdentifier());
 	}
 	
 		
@@ -166,6 +188,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				anno.getIdentifier(), requestBody, AnnotationApiConnection.USER_REGULAR);
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+		removeAnnotation(anno.getIdentifier());
 	}
 	
 		

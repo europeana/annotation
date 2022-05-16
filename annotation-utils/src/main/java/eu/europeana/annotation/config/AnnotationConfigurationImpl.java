@@ -145,4 +145,20 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     public String getAnnoItemDataEndpoint() {
     return getAnnotationProperties().getProperty(ANNO_ITEM_DATA_ENDPOINT);
     }
+
+    @Override
+    public String getMongoDatabaseName() {
+      return getAnnotationProperties().getProperty(MONGO_DATABASE_NAME);
+    }
+
+    @Override
+    public boolean getAnnoRemoveAuthorization() {
+      String value = getAnnotationProperties().getProperty(ANNO_REMOVE_AUTHORIZATION);
+      return Boolean.valueOf(value);
+    }
+
+    @Override
+    public String getSolrUrls() {
+      return getAnnotationProperties().getProperty(SOLR_URLS);
+    }
 }

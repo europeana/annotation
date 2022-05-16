@@ -20,7 +20,6 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPageImpl;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
@@ -49,12 +48,6 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
 	Logger logger = LogManager.getLogger(getClass());
 	
-	final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper(); 
-
-	public AnnotationIdHelper getAnnotationIdHelper() {
-		return annotationIdHelper;
-	}
-
 //	public AuthenticationService getAuthenticationService() {
 //		return authenticationService;
 //	}
@@ -107,7 +100,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 			List<Long> annotationIds = new ArrayList<Long>(resultSet.getResults().size());
 			//parse annotation urls to AnnotationId objects
 			for (AnnotationView annotationView : resultSet.getResults()) {
-				annotationIds.add(Long.parseLong(annotationView.getIdentifierAsString()));		
+				annotationIds.add(annotationView.getIdentifierAsNumber());		
 			}
 			
 			//fetch annotation objects
@@ -174,12 +167,15 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		queryString += ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString()); 
 
 		String result = configuration.getAnnoApiEndpoint() + "/search?";
-		try {
-		  result += URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-          logger.log(Level.ERROR, "The UnsupportedEncodingException during the URL encoding of the string.", e);
-          result += queryString;
-        }
+
+//		  try {
+//		  result += URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString());
+//        } catch (UnsupportedEncodingException e) {
+//          logger.log(Level.ERROR, "The UnsupportedEncodingException during the URL encoding of the string.", e);
+//          result += queryString;
+//        }
+		result += queryString;
+		
 		return result;
 	}
 

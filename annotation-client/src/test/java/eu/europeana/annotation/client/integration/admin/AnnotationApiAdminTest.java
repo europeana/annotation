@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +52,8 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		assertNotNull(annotation.getIdentifier());
 		log.debug("Created annotation: " + annotation.getIdentifier());
 
-		// delete
-		this.deleteAnnotation(annotation);
+		// remove from mongo and solr
+		removeAnnotation(annotation.getIdentifier());
 	}
 
 	/**
@@ -139,8 +140,11 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 			//normally it should be equal, but there might be annotations what were not indexed created by other users
 			assertTrue(annPgAfter.getTotalInCollection() >= outdatedAnnotationsBefore + numAnnotations);
 		} finally {
-			// delete test annotations
-			deleteAnnotations(annotations);
+			if(annotations!=null) {
+			  for (Annotation anno : annotations) {
+			    removeAnnotation(anno.getIdentifier());
+			  }
+			}
 	}
   }
 	
@@ -189,8 +193,10 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		System.out.println(call1.getResult());
 		System.out.println(call2.getResult());
 		
-		// delete annotation test set
-		deleteAnnotations(annotations);
+		// delete all used test annotations
+        for (Annotation anno : annotations) {
+          removeAnnotation(anno.getIdentifier());
+        }
 	}
 	
 	
@@ -206,13 +212,6 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		
 		public ResponseEntity<String> getResult() {
 			return result;
-		}
-	}
-	
-	private void deleteAnnotations(List<Annotation> annotations) {
-		// delete test annotations
-		for(Annotation anno: annotations)  {
-			this.deleteAnnotation(anno);
 		}
 	}
 	

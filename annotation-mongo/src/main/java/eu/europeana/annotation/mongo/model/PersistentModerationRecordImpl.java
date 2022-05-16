@@ -25,7 +25,6 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 	
 	private long identifier;
 	
-//	private AnnotationId annotationId;
 	private List<Vote> endorseList;
 	private List<Vote> reportList;
 	private Summary summary;

@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 
@@ -36,13 +35,11 @@ public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest {
       List<String> result = getApiAuxilaryMethodsClient().getDeleted(null,
           DateUtils.convertDateToStr(startDate), DateUtils.convertDateToStr(stopDate), 0, 100);
 
-      String baseUri = ClientConfiguration.getInstance().getAnnotationIdBaseUri();
-      assertTrue(result.contains(baseUri + "/" + anno_tag.getIdentifier()));
-      assertTrue(result.contains(baseUri + "/" + anno_subtitle.getIdentifier()));
+      assertTrue(result.contains(String.valueOf(anno_tag.getIdentifier())));
+      assertTrue(result.contains(String.valueOf(anno_subtitle.getIdentifier())));
     } finally {
-      // TODO: move to afterTest method
-      deleteAnnotation(anno_tag);
-      deleteAnnotation(anno_subtitle);
+      removeAnnotation(anno_tag.getIdentifier());
+      removeAnnotation(anno_subtitle.getIdentifier());
     }
 
   }

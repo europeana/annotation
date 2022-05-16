@@ -14,10 +14,15 @@ public class AnnotationViewResourceListItem implements AnnotationView {
 	 * @param id the id to set
 	 */
 	@Override
-	public String getIdentifierAsString() {
+	public String getIdentifierAsUriString() {
 		return this.id;
 	}
-
+	
+    @Override
+    public long getIdentifierAsNumber() {
+        return 0;
+    }
+    
 	/**
 	 * Getter for timestampUpdated 
 	 * @param id the id to set

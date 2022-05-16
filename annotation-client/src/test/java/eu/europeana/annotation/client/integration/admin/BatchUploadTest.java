@@ -69,6 +69,15 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 			testAnnotations.add(testAnnotation);
 		}
 	}
+	
+	@AfterEach
+	public void removeTestAnnotations() {
+	  if(testAnnotations!=null) {
+          for (Annotation anno : testAnnotations) {
+            removeAnnotation(anno.getIdentifier());
+          }
+	  }
+	}
 
 	/**
 	 * Testing successful batch upload of annotations.
@@ -94,6 +103,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// have been updated correctly
 		ResponseEntity<String> response;
 		Annotation storedAnnotation;
+		
 		for (int i = 0; i < testAnnotations.size(); i++) {
 			response =  getAnnotation(testAnnotations.get(i));
 			storedAnnotation = getApiProtocolClient().parseResponseBody(response);
@@ -101,6 +111,12 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 			assertTrue(value.startsWith("tag"));
 			// assuming equal order of test annotations and updated annotations
 			assertEquals(testAnnotations.get(i).getIdentifier(), storedAnnotation.getIdentifier());
+		}
+		
+		//removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
+		long startingId = testAnnotations.get(0).getIdentifier();
+		for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
+		  removeAnnotation(i);
 		}
 	}
 	
@@ -154,32 +170,20 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// get response body properties
 		JSONObject jsonObj = new JSONObject(response.getBody());
 		JSONObject opRepJsonObj = jsonObj.getJSONObject(RESP_OPERATION_REPORT_FIELD);
-		assertEquals(2, opRepJsonObj.get(RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD));
+		assertEquals(5, opRepJsonObj.get(RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD));
 		assertEquals(3, opRepJsonObj.get(RESP_OPERATION_REPORT_FAILURECOUNT_FIELD));
 		JSONObject errors = opRepJsonObj.getJSONObject(RESP_OPERATION_REPORT_ERRORS_FIELD);
 
 		// positions 2, 6 and 8 do not exist
-		assertFalse(errors.has("1"));
-		assertTrue(((String)errors.get("2")).startsWith("Annotation does not exist"));
-		assertFalse(errors.has("3"));
-		assertFalse(errors.has("4"));
-		assertFalse(errors.has("5"));
-		assertTrue(((String)errors.get("6")).startsWith("Annotation does not exist"));
-		assertFalse(errors.has("7"));
-		assertTrue(((String)errors.get("8")).startsWith("Annotation does not exist"));
-	}
-
-	/**
-	 * Delete test annotations after test execution.
-	 * 
-	 * @throws JsonParseException
-	 * @throws IOException
-	 */
-	@AfterEach
-	public void deleteTestAnnotations() throws JsonParseException, IOException {
-		for (Annotation anno : testAnnotations) {
-			deleteAnnotation(anno);
-		}
+		assertTrue(((String)errors.get("-1")).startsWith("Annotation does not exist"));
+		assertTrue(((String)errors.get("-2")).startsWith("Annotation does not exist"));
+		assertTrue(((String)errors.get("-3")).startsWith("Annotation does not exist"));
+		
+	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+8; i++) {
+          removeAnnotation(i);
+        }
 	}
 
 	/**
@@ -210,12 +214,15 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		assertEquals(2, opRepJsonObj.get(RESP_OPERATION_REPORT_FAILURECOUNT_FIELD));
 		JSONObject errors = opRepJsonObj.getJSONObject(RESP_OPERATION_REPORT_ERRORS_FIELD);
 
-		// positions 1,2,4 validate successfully; 3 and 5 have errors
-		assertFalse(errors.has("1"));
-		assertFalse(errors.has("2"));
-		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("3"));
-		assertFalse(errors.has("4"));
-		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("5"));
+		// keys 1 and 2 have errors
+		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("1"));
+		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("2"));
+	
+	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
+          removeAnnotation(i);
+        }
 	}
 
 	/**

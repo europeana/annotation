@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -17,13 +17,9 @@ import eu.europeana.annotation.client.WebAnnotationProtocolApi;
 import eu.europeana.annotation.client.WebAnnotationProtocolApiImpl;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 
 public class BaseWebAnnotationDataSetTest {
-  
-    @Resource
-    protected AnnotationConfiguration configuration;
 	
 	protected Logger log = LogManager.getLogger(getClass());
 
@@ -56,7 +52,7 @@ public class BaseWebAnnotationDataSetTest {
 
 		Annotation[] testAnnotations = new Annotation[numTestAnno];
 		for (int i = 0; i < numTestAnno; i++) {
-			Annotation annotation = createTestAnnotation();
+			Annotation annotation = createTestAnnotation(i);
 			assertNotNull(annotation);
 			testAnnotations[i] = annotation;
 		}
@@ -70,8 +66,8 @@ public class BaseWebAnnotationDataSetTest {
 	 *         code.
 	 * @throws JsonParseException
 	 */
-	protected Annotation createTestAnnotation() throws JsonParseException {
-		ResponseEntity<String> response = storeTestAnnotation();
+	protected Annotation createTestAnnotation(int annoNumber) throws JsonParseException {
+		ResponseEntity<String> response = storeTestAnnotation(annoNumber);
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
 
 		return annotation;
@@ -82,10 +78,11 @@ public class BaseWebAnnotationDataSetTest {
 	 * 
 	 * @return Stored response
 	 */
-	protected ResponseEntity<String> storeTestAnnotation() {
+	protected ResponseEntity<String> storeTestAnnotation(int annoNumber) {
+	    String adaptedRequestBody = StringUtils.replace(defaultRequestBody, "%test_body_to_replace%", "test_body_"+annoNumber);
 		ResponseEntity<String> storedResponse = apiClient.createAnnotation(
 				true,
-				defaultRequestBody, null, null);
+				adaptedRequestBody, null, null);
 		return storedResponse;
 	}
 

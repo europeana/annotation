@@ -5,16 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
 import eu.europeana.annotation.definitions.exception.AnnotationPageValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -31,8 +27,6 @@ import eu.europeana.annotation.utils.QueryUtils;
  * @author Sven Schlarb @ait
  */
 public class AnnotationPageParser extends JsonLdParser {
-
-    protected final Logger logger = LogManager.getLogger(this.getClass());
 
     /**
      * Maps URIs to namespace prefixes.
@@ -83,7 +77,6 @@ public class AnnotationPageParser extends JsonLdParser {
 	AnnotationPage ap = new AnnotationPageImpl();
 
 	try {
-	    logger.debug(jo.toString(4));
 	    if (jo.has(JsonLdCommon.CONTEXT)) {
 
 		Object context = jo.get(JsonLdCommon.CONTEXT);
@@ -233,6 +226,7 @@ public class AnnotationPageParser extends JsonLdParser {
 	if (!avItemList.isEmpty()) {
 	    ResultSet<AnnotationViewResourceListItem> items = new ResultSet<AnnotationViewResourceListItem>();
 	    items.setResultSize(avItemList.size());
+	    items.setResults(avItemList);
 	    annoPage.setItems(items);
 	}
 	// if standard profile set annotations list

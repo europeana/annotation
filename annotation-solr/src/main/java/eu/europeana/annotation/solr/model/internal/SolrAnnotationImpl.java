@@ -1,12 +1,9 @@
 package eu.europeana.annotation.solr.model.internal;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
 import org.apache.solr.client.solrj.beans.Field;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -21,9 +18,6 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
  *
  */
 public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnotation, SolrAnnotationConstants {
-
-    @Resource
-    AnnotationConfiguration configuration;
   
 	private String annoUri;
 	private long annoId;
@@ -35,7 +29,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private String creatorName;
 	
 	private Integer moderationScore = 0;
-	private String motivationKey;
 	
 	private List<String> targetUris;
 	private List<String> targetRecordIds;
@@ -48,6 +41,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	private List<String> bodyUris;
 	
 	private String scenario;
+	private Date modified;
 	
 	/**
 	 * public default constructor
@@ -59,13 +53,13 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	/**
 	 * Constructor using web annotation and moderation summary
 	 */
-	public SolrAnnotationImpl(Annotation annotation, Summary summary){
+	public SolrAnnotationImpl(Annotation annotation, Summary summary, String annoBaseUri){
 		
 		this.setInternalType(annotation.getInternalType());
 		this.setMotivation(annotation.getMotivation());
 
 		this.setIdentifier(annotation.getIdentifier());
-		this.setAnnoUri(String.valueOf(annotation.getIdentifier()));
+		this.setAnnoUri(annoBaseUri + "/" + annotation.getIdentifier());
 		this.setAnnoId(annotation.getIdentifier());
 		
 		if(annotation.getGenerator() != null){
@@ -76,13 +70,15 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		
 		this.setGenerated(annotation.getGenerated());
 		
-		this.setCreator(annotation.getCreator());
-		this.setCreatorName(annotation.getCreator().getName());
-		this.setCreatorUri(annotation.getCreator().getHttpUrl());
+		if(annotation.getCreator()!=null) {
+    		this.setCreator(annotation.getCreator());
+    		this.setCreatorName(annotation.getCreator().getName());
+    		this.setCreatorUri(annotation.getCreator().getHttpUrl());
+		}
 		
 		this.setCreated(annotation.getCreated());
-		//modified is alias to lastUpdate
-		this.setLastUpdate(annotation.getLastUpdate());
+		
+		this.setModified(annotation.getLastUpdate());
 		
 		if (summary != null)
 			this.setModerationScore(summary.getScore());
@@ -163,14 +159,9 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	}
 
 	@Override
-	public String getMotivationKey() {
-		return motivationKey;
-	}
-
-	@Override
 	@Field(MOTIVATION)
-	public void setMotivationKey(String motivationKey) {
-		this.motivationKey = motivationKey;
+	public void setMotivation(String motivation) {
+		super.setMotivation(motivation);
 	}
 
 	@Override
@@ -281,13 +272,13 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 
 	@Override
 	public Date getModified() {
-		return getLastUpdate();
+		return modified;
 	}
 
 	@Override
 	@Field(MODIFIED)
 	public void setModified(Date modified) {
-		setLastUpdate(modified);
+		this.modified=modified;
 	}
 
 	@Override
@@ -333,5 +324,10 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public void setScenario(String scenario) {
 		this.scenario = scenario;
 	}
+
+	@Override
+    public long getIdentifierAsNumber() {
+      return annoId;
+    }
 
 }

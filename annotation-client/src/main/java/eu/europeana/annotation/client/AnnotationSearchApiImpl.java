@@ -15,8 +15,6 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationSearchApiImpl extends BaseAnnotationApi implements AnnotationSearchApi {
-	
-	protected final Logger logger = LogManager.getLogger(this.getClass());
 
 	public AnnotationSearchApiImpl(ClientConfiguration configuration,
 			AnnotationApiConnection apiConnection) {

@@ -35,6 +35,10 @@ public interface AnnotationConfiguration {
     public static final String ANNO_USER_DATA_ENDPOINT = "annotation.user.data.endpoint";
     public static final String ANNO_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
     public static final String ANNO_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
+    public static final String MONGO_DATABASE_NAME = "mongodb.annotation.databasename";
+    public static final String MONGO_COLLECTION_NAME = "annotation";
+    public static final String ANNO_REMOVE_AUTHORIZATION = "annotation.remove.authorization";
+    public static final String SOLR_URLS = "solr.annotation.url";
     
     public String getComponentName();
 
@@ -106,4 +110,10 @@ public interface AnnotationConfiguration {
     String getAnnoUserDataEndpoint();
     String getAnnoClientApiEndpoint();
     String getAnnoItemDataEndpoint();
+    
+    String getMongoDatabaseName();
+    
+    boolean getAnnoRemoveAuthorization();
+    
+    String getSolrUrls();
 }

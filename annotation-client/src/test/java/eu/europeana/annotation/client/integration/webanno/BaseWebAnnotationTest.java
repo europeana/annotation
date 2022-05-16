@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -21,7 +20,6 @@ import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.utils.BaseUtils;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -44,7 +42,7 @@ public class BaseWebAnnotationTest {
 	public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 
 	protected String get_TAG_STANDARD_TEST_VALUE_TARGET() {
-	  return configuration.getAnnoItemDataEndpoint() + "/09102/_UEDIN_214";
+	  return ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214";
 	}
 	//	public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
@@ -54,33 +52,33 @@ public class BaseWebAnnotationTest {
 	public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
 	public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";
 	
-	public static final String VALUE_TESTSET = "generator_uri= \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
-	public static final String VALUE_ID = "anno_id=";
+	public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
+	public static final String VALUE_ID = "anno_id:";
 		
-	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SOURCE = "target_uri=\"http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg\"";
+	public static final String VALUE_SEARCH_DESCRIBING_TARGET_SOURCE = "target_uri:\"http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg\"";
 	
 	public static final String VALUE_TAG_BODY_URI = "http://www.geonames.org/2988507";
-	public static final String VALUE_SEARCH_TAG_BODY_URI = "body_uri=\"" +VALUE_TAG_BODY_URI+ "\"";
+	public static final String VALUE_SEARCH_TAG_BODY_URI = "body_uri:\"" +VALUE_TAG_BODY_URI+ "\"";
 	
-	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value=\"the textual description of the item\"";
-	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value=\"textual description\"";
+	public static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"the textual description of the item\"";
+	public static final String VALUE_SEARCH_DESCRIBING_BODY_VALUE = "body_value:\"textual description\"";
 	
 	public static final String VALUE_TAG_BODY_VALUE = "trombone";
-	public static final String VALUE_SEARCH_TAG_BODY_VALUE = "body_value=\""+VALUE_TAG_BODY_VALUE+"\"";
+	public static final String VALUE_SEARCH_TAG_BODY_VALUE = "body_value:\""+VALUE_TAG_BODY_VALUE+"\"";
 	
 	public static final String VALUE_BODY_LINK_RELATION = "isSimilarTo";
-	public static final String VALUE_SEARCH_BODY_LINK_RELATION = "link_relation=\"" +VALUE_BODY_LINK_RELATION+ "\"";
+	public static final String VALUE_SEARCH_BODY_LINK_RELATION = "link_relation:\"" +VALUE_BODY_LINK_RELATION+ "\"";
 	
 	public static final String VALUE_BODY_LINK_RESOURCE_URI = "https://www.wikidata.org/wiki/Q762";
-	public static final String VALUE_SEARCH_BODY_LINK_RESOURCE_URI = "link_resource_uri=\""+VALUE_BODY_LINK_RESOURCE_URI+"\"";
+	public static final String VALUE_SEARCH_BODY_LINK_RESOURCE_URI = "link_resource_uri:\""+VALUE_BODY_LINK_RESOURCE_URI+"\"";
 	
 	
 	public static final String VALUE_BODY_SPECIFIC_RESOURCE = "http://www.geonames.org/2988507"; // source
-	public static final String VALUE_SEARCH_BODY_SPECIFIC_RESOURCE = "body_uri=\""+VALUE_BODY_SPECIFIC_RESOURCE+"\""; // source
+	public static final String VALUE_SEARCH_BODY_SPECIFIC_RESOURCE = "body_uri:\""+VALUE_BODY_SPECIFIC_RESOURCE+"\""; // source
 	
 	public static final String VALUE_BODY_FULL_TEXT_RESOURCE = "... complete transcribed text in HTML ...";
-	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value=\"transcribed text in HTML\"";
-	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it=(con il grande finale)";
+	public static final String VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE = "body_value:\"transcribed text in HTML\"";
+	public static final String VALUE_SEARCH_BODY_VALUE_IT = "body_value.it:(con il grande finale)";
 
 	public static final String TAG_BODY_TEXT = "/tag/bodyText.json";
 	public static final String TAG_MINIMAL_WRONG = "/tag/wrong/minimal_wrong.json";
@@ -108,8 +106,9 @@ public class BaseWebAnnotationTest {
 	public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
 	public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
 	public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
-	
-	
+	public static final String DESCRIBING_WITHOUT_BODY_LANGUAGE = "/describing/web_resource_without_body_language.json";
+	public static final String TAGGING_BODY_ADDRESS_NO_TYPE = "/tag/wrong/body_address_no_type.json";
+	public static final String TAGGING_BODY_ADDRESS_NO_STREET_ADDRESS = "/tag/wrong/body_address_no_street_address.json";
 	
 	String START = "{";
 	String END = "}";
@@ -129,7 +128,7 @@ public class BaseWebAnnotationTest {
 
 	protected String get_TAG_JSON_BY_TYPE_JSONLD() {
 	  String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyValue\": \"church\","
-          + "\"target\": \"" + configuration.getAnnoItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
+          + "\"target\": \"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
 	  return START + TAG_CORE + END;
 	}
 	
@@ -137,28 +136,25 @@ public class BaseWebAnnotationTest {
 	   String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
 	       "\"motivation\": \"oa:tagging\"," +
 	       "\"bodyValue\": \"" + BODY_VALUE_TO_TRIM + "\"," +
-	       "\"target\": \"" + configuration.getAnnoItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
+	       "\"target\": \"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
 	  return START + TAG_CORE_VALIDATION + END;
 	}
 
 	protected String get_LINK_CORE() {
 	   String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
-	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/123/xyz.html\","
-	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+	       + "\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/123/xyz.html\","
+	       + "\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
 	  return LINK_CORE;
 	}
 
 	protected String get_LINK_JSON_BY_TYPE_JSONLD() {
 	   String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
-	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/123/xyz.html\","
-	       + "\"" + configuration.getAnnoItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+	       + "\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/123/xyz.html\","
+	       + "\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
 	  return START + LINK_CORE + END;
 	}
 
 //	public String LINK_JSON = START + LINK_CORE + "\"motivation\": \"oa:linking\"," + END;
-
-	@Resource
-	protected AnnotationConfiguration configuration;
 	
 	private static WebAnnotationProtocolApi apiProtocolClient;
 	private static WebAnnotationAuxilaryMethodsApi apiAuxilaryMethodsClient;
@@ -343,7 +339,8 @@ public class BaseWebAnnotationTest {
 				for (int i = 0; i < methods.length; i++) {
 					currentMethod = methods[i];
 					if(currentMethod.getName().startsWith("get") && !isTechnicalMethod(currentMethod.getName())
-							&& !isCreator(currentMethod.getName()) && !isGenerator(currentMethod.getName())){
+							&& !isCreator(currentMethod.getName()) && !isGenerator(currentMethod.getName()) 
+							&& !isIdentifier(currentMethod.getName())){
 						inputProp = currentMethod.invoke(inputAnno, (Object[]) null);
 						
 						//compare non null fields only
@@ -371,6 +368,10 @@ public class BaseWebAnnotationTest {
 	private boolean isCreator(String name) {
 		return "getCreator".equals(name);
 	}
+	
+    private boolean isIdentifier(String name) {
+       return "getIdentifier".equals(name);
+    }
 
 	protected Annotation createTag(String requestBody) throws JsonParseException {
 	    ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
@@ -418,12 +419,18 @@ public class BaseWebAnnotationTest {
 		deleteAnnotation(annotation.getIdentifier());
 	}
 	
-  protected void deleteAnnotation(long identifier) {
+    protected void deleteAnnotation(long identifier) {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		ResponseEntity<String> re = webannoAdminApi.deleteAnnotation(identifier);
-		assertEquals(HttpStatus.GONE, re.getStatusCode());
+		assertEquals(HttpStatus.NO_CONTENT, re.getStatusCode());
 		log.trace("Annotation deleted: /" + identifier);
 	}
+  
+    protected String removeAnnotation(long identifier) {
+      WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
+      ResponseEntity<String> re = webannoAdminApi.removeAnnotation(identifier);
+      return re.getBody();
+    }
 	
 	
 	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
@@ -460,4 +467,5 @@ public class BaseWebAnnotationTest {
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getIdentifier());
 	}
+	
 }

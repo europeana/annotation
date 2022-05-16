@@ -15,13 +15,10 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
-import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
-import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
@@ -35,12 +32,6 @@ import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
   
-    @Resource
-    protected AnnotationLdSerializer annotationLdSerializer;
-
-    @Resource
-    protected AnnotationPageSerializer annotationPageSerializer;
-    
 	@Resource
 	AnnotationConfiguration configuration;
 
@@ -59,24 +50,12 @@ public class BaseRest extends BaseRestController {
 	//TODO move to base class
 	Logger logger = LogManager.getLogger(getClass());
 
-	public Logger getLogger() {
-		return logger;
-	}
-
 	public AnnotationSearchService getAnnotationSearchService() {
 		return annotationSearchService;
 	}
 
 	public void setAnnotationSearchService(AnnotationSearchService annotationSearchService) {
 		this.annotationSearchService = annotationSearchService;
-	}
-
-	protected AnnotationIdHelper annotationIdHelper;
-
-	public AnnotationIdHelper getAnnotationIdHelper() {
-		if (annotationIdHelper == null)
-			annotationIdHelper = new AnnotationIdHelper();
-		return annotationIdHelper;
 	}
 
 	TypeUtils typeUtils = new TypeUtils();

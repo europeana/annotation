@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -186,9 +187,9 @@ public interface AnnotationService {
 
 	public List<? extends Annotation> getExisting(List<Long> annotationIdentifiers);
 
-	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, List<? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, List<? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 
-	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException;
+	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 
 	/**
 	 * This method extends the body for semantic tags for dereference profile
@@ -232,5 +233,7 @@ public interface AnnotationService {
 	 * @return
 	 */
 	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
+
+    public List<? extends Annotation> getAllAnnotations();
 
 }

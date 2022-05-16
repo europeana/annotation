@@ -2,20 +2,10 @@ package eu.europeana.annotation.web.service.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 
 public class ApiResponseBuilder {
-
-	Logger logger = LogManager.getLogger(getClass());
-	
-	public Logger getLogger() {
-		return logger;
-	}
 
 	public AnnotationOperationResponse buildErrorResponse(String errorMessage,
 			String action, String apiKey) {

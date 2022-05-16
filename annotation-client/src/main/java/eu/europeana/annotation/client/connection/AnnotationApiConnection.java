@@ -1,5 +1,6 @@
 package eu.europeana.annotation.client.connection;
 
+import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -489,6 +490,22 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	return deleteURL(url, authorizationHeaderName, getAuthorizationHeaderValue(user));
 
 	
+    }
+    
+    public ResponseEntity<String> removeAnnotation(long identifier) throws IOException {
+
+    String url = getAnnotationServiceUri();
+    String urlRemovedLastAnnotationPart = url.substring(0, url.lastIndexOf("/"));
+    urlRemovedLastAnnotationPart += "/admin/annotation/delete";
+    urlRemovedLastAnnotationPart += WebAnnotationFields.PAR_CHAR + WebAnnotationFields.IDENTIFIER + EQUALS + identifier;
+
+    /**
+     * Execute Europeana API request
+     */ 
+    ResponseEntity<String> response = removeURL(urlRemovedLastAnnotationPart, authorizationHeaderName, adminUserAuthorizationValue);
+    assertTrue(response.getBody().contains("\"success\":true"));
+    return response;
+    
     }
 
     /**
@@ -1030,7 +1047,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
 //		url += AND + WebAnnotationFields.USER_TOKEN +"=admin";
 
 	logger.trace("(Re)index outdated annotations request URL: " + url);
-	ResponseEntity<String> res = getURLWithHeader(url, authorizationHeaderName, adminUserAuthorizationValue);
+	ResponseEntity<String> res = putURL(url, null, authorizationHeaderName, adminUserAuthorizationValue);
 //		ResponseEntity<String> res = getHttpConnection().getURL(url);
 	logger.trace("(Re)index outdated annotations HTTP status: " + res.getStatusCode().toString());
 

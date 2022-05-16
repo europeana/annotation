@@ -86,11 +86,5 @@
     <beans:bean id="i18nService" class="eu.europeana.api.commons.config.i18n.I18nServiceImpl">
     	<beans:property name="messageSource" ref="annotation_i18n_messageSource"/>
     </beans:bean>
-    
-    <beans:bean id="annotationLdSerializer" class="eu.europeana.annotation.utils.serialize.AnnotationLdSerializer">
-    </beans:bean>
-    
-    <beans:bean id="annotationPageSerializer" class="eu.europeana.annotation.utils.serialize.AnnotationPageSerializer">
-    </beans:bean>    
    
 </beans:beans>

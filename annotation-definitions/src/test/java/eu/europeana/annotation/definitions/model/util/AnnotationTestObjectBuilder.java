@@ -136,11 +136,11 @@ public class AnnotationTestObjectBuilder {
 		return annotation;
 	}
 
-	public Annotation createBaseObjectTagInstance() {
-	    return createBaseObjectTagInstanceWithSameAs(null);
+	public Annotation createBaseObjectTagInstance(long identifier) {
+	    return createBaseObjectTagInstanceWithSameAs(null, identifier);
 	}
 		
-	public Annotation createBaseObjectTagInstanceWithSameAs(String sameAs) {
+	public Annotation createBaseObjectTagInstanceWithSameAs(String sameAs, long identifier) {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
@@ -149,6 +149,8 @@ public class AnnotationTestObjectBuilder {
 			annotation.setSameAs(sameAs);
 		}
 
+		annotation.setIdentifier(identifier);
+		
 		annotation.setEquivalentTo("http://historypin.com/annotation/1234");
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
@@ -228,11 +230,12 @@ public class AnnotationTestObjectBuilder {
 		return agent;
 	}
 	 
-	public Annotation createEmptyBaseObjectTagInstance() {
+	public Annotation createEmptyBaseObjectTagInstance(long identifier) {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
 		
+		annotation.setIdentifier(identifier);
 		annotation.setType(null);
         annotation.setCreated(null);
         annotation.setGenerated(null);

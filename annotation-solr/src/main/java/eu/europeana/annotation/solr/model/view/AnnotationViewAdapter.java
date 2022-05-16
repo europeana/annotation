@@ -8,8 +8,8 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 public class AnnotationViewAdapter extends SolrAnnotationImpl implements AnnotationView {
 
     @Override
-    public String getIdentifierAsString() {
-      return String.valueOf(getAnnoId());
+    public String getIdentifierAsUriString() {
+      return getAnnoUri();
     }
   
 	@Override

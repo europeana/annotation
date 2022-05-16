@@ -10,7 +10,9 @@ public interface IdBean {
 //	 */
 //	Date getCreatedTimestamp();
 	
-    String getIdentifierAsString();
+    String getIdentifierAsUriString();
+    
+    long getIdentifierAsNumber();
 	
     /**
 	 * The date the record was updated

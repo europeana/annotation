@@ -1,5 +1,6 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -94,9 +95,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		if (isNew && object.getId() != null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NOT_NULL_OBJECT_ID);
 
-		if (object.getIdentifier() == 0)
+		if (!(object.getIdentifier() > 0))
 			throw new AnnotationValidationException(
-					"Annotation identifier must not be 0.");
+					"Annotation identifier must be >0.");
 
 		// check target
 		validateTarget(object);
@@ -271,7 +272,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 		PersistentAnnotation res = null;
 
-		if (persistentAnnotation != null && persistentAnnotation.getIdentifier() != 0) {
+		if (persistentAnnotation != null && persistentAnnotation.getIdentifier() > 0) {
 			// generate new and replace existing timestamp for the Annotation
 			Date now = new Date();
 			// validate mandatory fields
@@ -284,12 +285,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		}
 
 		return res;
-	}
-
-	protected Query<PersistentAnnotation> buildFindByIdQuery(PersistentAnnotation persistentAnnotation) {
-		Query<PersistentAnnotation> findByIdQuery = super.getDao().createQuery();
-		findByIdQuery.field(PersistentAnnotation.FIELD_ID).equal(persistentAnnotation.getId());
-		return findByIdQuery;
 	}
 
 	/**
@@ -356,8 +351,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
 				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing.getTime()).set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
-		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(PersistentAnnotation.FIELD_ID)
-				.equal(annotation.getId());
+		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(PersistentAnnotation.FIELD_IDENTIFIER)
+				.equal(annotation.getIdentifier());
 		getAnnotationDao().update(updateQuery, ops);
 
 		return annotation;
@@ -379,9 +374,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 *            as long value in string format
 	 * @param endTimestamp
 	 *            as long value in string format
-	 * @return evaluated ID list
+	 * @return evaluated identifier list
 	 */
-	public List<String> filterByLastUpdateTimestamp(
+	public List<Long> filterByLastUpdateTimestamp(
 			// public List<AnnotationId> filterByTimestamp(
 			// public List<? extends Annotation> filterByTimestamp(
 			String startTimestamp, String endTimestamp) {
@@ -396,11 +391,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			Date end = new Date(Long.parseLong(endTimestamp));
 			query.field(WebAnnotationFields.LAST_UPDATE).lessThan(end);
 		}
-		//Actually this is a list of Objects
-		List<String> res = getAnnotationDao().findIds(query);
-		//convert the list
-		List<String> response = new ArrayList<String>(res.size());
-		for (Object id : res){ response.add(id.toString()); }
+		List<PersistentAnnotation> resAnnos = getAnnotationDao().find(query).asList();
+		List<Long> response = new ArrayList<Long>(resAnnos.size());
+		for (PersistentAnnotation anno : resAnnos){ response.add(anno.getIdentifier()); }
 		
 		return response;
 	}
@@ -488,8 +481,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			annotation.setStatus(newAnnotation.getStatus());
 			UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
 					.set(WebAnnotationFields.STATUS, annotation.getStatus());
-			Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(PersistentAnnotation.FIELD_ID)
-					.equal(annotation.getId());
+			Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(PersistentAnnotation.FIELD_IDENTIFIER)
+					.equal(annotation.getIdentifier());
 			getAnnotationDao().update(updateQuery, ops);
 			res = annotation;
 		}
@@ -532,9 +525,15 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		
 		return getAnnotationDao().find(searchQuery).asList();		
 	}
+	
+	@Override
+	public List<? extends Annotation> getAllAnnotations() {
+	    Query<PersistentAnnotation> searchQuery = getAnnotationDao().createQuery();
+	    return getAnnotationDao().find(searchQuery).asList();       
+	}
 
 	@Override
-	public List<String> filterByLastUpdateGreaterThanLastIndexTimestamp() {
+	public List<Long> filterByLastUpdateGreaterThanLastIndexTimestamp() {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 				
 		// Morphia query
@@ -542,12 +541,9 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			  + "(this." +WebAnnotationFields.LAST_UPDATE + "> this." + WebAnnotationFields.LAST_INDEXED + " || "
 			  + " this." + WebAnnotationFields.LAST_INDEXED + " == null)");
 		
-		//Actually this is a list of Objects
-		List<String> res = getAnnotationDao().findIds(query);		
-		
-		//convert the list
-		List<String> response = new ArrayList<String>(res.size());
-		for (Object id : res){ response.add(id.toString()); }
+	    List<PersistentAnnotation> resAnnos = getAnnotationDao().find(query).asList();
+	    List<Long> response = new ArrayList<Long>(resAnnos.size());
+	    for (PersistentAnnotation anno : resAnnos){ response.add(anno.getIdentifier()); }
 		
 		return response;
 	}
@@ -556,11 +552,13 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
 	 * @param annos List of annotations
 	 * @throws AnnotationValidationException
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws AnnotationMongoException
 	 */
 	@Override
 	public void update(List<? extends Annotation> annos)
-			throws AnnotationValidationException, BulkOperationException {
+			throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException {
 		store(annos, BulkOperationMode.UPDATE);
 	}
 
@@ -569,10 +567,12 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @param annos List of annotations
 	 * @throws AnnotationValidationException
 	 * @throws BulkOperationException
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	@Override
 	public void create(List<? extends Annotation> annos)
-			throws AnnotationValidationException, BulkOperationException {
+			throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException {
 		
 		List<? extends Annotation> persistentAnnos = copyIntoPersistentAnnotation(annos);
 		store(persistentAnnos, BulkOperationMode.INSERT);
@@ -598,9 +598,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @param bulkOpMode Update mode: Create/Update/Delete
 	 * @throws AnnotationValidationException
 	 * @throws BulkOperationException
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	@Override
-	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException {
+	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException {
 		try {
 			getAnnotationDao().applyBulkOperation(annos, bulkOpMode);
 		} catch(BulkOperationException ex) {
@@ -614,8 +616,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @param annos List of annotations
 	 * @param update Update mode: true if existing annotations should be updated
 	 * @throws BulkOperationException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
-	private void rollback(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
+	private void rollback(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException, IOException, InterruptedException {
 		logger.info("Rollback of annotation inserts due to failed bulk operation");
 		try {
 			
@@ -637,9 +641,11 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	/**
 	 * Create a backup copy of existing annotations
 	 * existingAnnos Existing annotations
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	@Override
-	public void createBackupCopy(List<? extends Annotation> existingAnnos) {
+	public void createBackupCopy(List<? extends Annotation> existingAnnos) throws IOException, InterruptedException {
 		getAnnotationDao().copyAnnotations(existingAnnos, 
 				AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME, 
 				AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME);

@@ -13,7 +13,7 @@ public class AnnotationIdHelper {
      * @param httpUri
      * @return resourceId
      */
-    public String extractResourceIdFromHttpUri(String httpUri) {
+    public static String extractResourceIdFromHttpUri(String httpUri) {
 	//extract resource id only from europeana resources
 	//TODO: make it configurable
 	if(!httpUri.contains("europeana.eu/"))
@@ -22,14 +22,14 @@ public class AnnotationIdHelper {
 	return buildResourceId(resourceParts);
     }
 
-    String buildResourceId(String[] parts) {
+    static String buildResourceId(String[] parts) {
 	if (parts == null || parts.length < 2)
 	    return null;
 
 	return WebAnnotationFields.SLASH + parts[0] + WebAnnotationFields.SLASH + parts[1];
     }
 
-    String[] extractResourceIdPartsFromHttpUri(String httpUri) {
+    static String[] extractResourceIdPartsFromHttpUri(String httpUri) {
 	String res[] = new String[2];
 	if (StringUtils.isNotEmpty(httpUri)) {
 	    String[] arrValue = httpUri.split(WebAnnotationFields.SLASH);
@@ -59,7 +59,7 @@ public class AnnotationIdHelper {
      * @param newAnnotation
      * @return resourceId string
      */
-    public String extractResourceId(Annotation newAnnotation) {
+    public static String extractResourceId(Annotation newAnnotation) {
 	String resourceId = "";
 	if (((BaseTarget) newAnnotation.getTarget()).getSourceResource() != null) {
 	    resourceId = extractResourceIdFromHttpUri(
@@ -77,7 +77,7 @@ public class AnnotationIdHelper {
      * @return collection
      */
     @Deprecated
-    public String extractCollectionFromResourceId(String resourceId) {
+    public static String extractCollectionFromResourceId(String resourceId) {
 	String res = "";
 	int COLLECTION_CHUNK_POS = 1;
 	if (StringUtils.isNotEmpty(resourceId)) {
@@ -94,7 +94,7 @@ public class AnnotationIdHelper {
      * @return object
      */
     @Deprecated
-    public String extractObjectFromResourceId(String resourceId) {
+    public static String extractObjectFromResourceId(String resourceId) {
 	String res = "";
 	int OBJECT_CHUNK_POS = 2;
 	if (StringUtils.isNotEmpty(resourceId)) {
@@ -110,9 +110,20 @@ public class AnnotationIdHelper {
      * @param uriStr URI string
      * @return ID part
      */
-    public String getIdPartFromUri(String uriStr) {
+    public static String getIdPartFromUri(String uriStr) {
 	return uriStr.substring(uriStr.lastIndexOf('/') + 1, uriStr.length());
     }
 
+    public static String buildCreatorUri(String userEndpointBaseUrl, String userId) {
+      return userEndpointBaseUrl + "/" + userId;
+    }
+
+    public static String buildGeneratorUri(String clientEndpointBaseUrl, String apikeyId) {
+      return clientEndpointBaseUrl + "/" + apikeyId;
+    }
+    
+    public static String buildAnnotationUri(String annoBaseUrl, long annoIdentifier) {
+      return annoBaseUrl + "/" + annoIdentifier;
+    }
     
 }

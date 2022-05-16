@@ -3,17 +3,16 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationDataSetTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -52,8 +51,9 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	 */
 	@AfterEach
 	public void deleteAnnotationDataSet() {
-		//TODO delete all annotations for this generator, including old annotations
-		deleteAnnotations(annotations);
+	  for(Annotation anno: annotations) {
+	    apiClient.removeAnnotation(anno.getIdentifier());
+	  }
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		String valueTestSet = "generator_uri: " + "\"" + configuration.getAnnoClientApiEndpoint() + "/" + "annotations" +"\"";
+		String valueTestSet = "generator_uri: " + "\"" + ClientConfiguration.getInstance().getPropAnnotationClientApiEndpoint() + "/" + "annotations" +"\"";
 		AnnotationPage annPg = annSearchApi.searchAnnotations(valueTestSet, SearchProfiles.MINIMAL, null);
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
@@ -96,7 +96,9 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 
 		// second page
 		String npUri = annPg.getNextPageUri();
-		String nextPageJson = annSearchApi.getApiConnection().getHttpConnection().getURLContent(npUri);
+		//adapt the base url which is configured in the annotation.properties to use the one from the annotation-client.properties 
+		String annoNpUriNew = StringUtils.replace(npUri, StringUtils.substringBefore(npUri,"/search?"), ClientConfiguration.getInstance().getServiceUri());
+		String nextPageJson = annSearchApi.getApiConnection().getHttpConnection().getURLContent(annoNpUriNew);
 		AnnotationPageParser annoPageParser = new AnnotationPageParser();
 		AnnotationPage secondAnnoPg = annoPageParser.parseAnnotationPage(nextPageJson);
 		String currentPageUri = secondAnnoPg.getCurrentPageUri();

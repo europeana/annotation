@@ -2,19 +2,15 @@ package eu.europeana.annotation.client.integration.json;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;

@@ -41,11 +41,11 @@ public interface AdminService {
 
 	
 	/**
-	 * This method deletes the list of annotations identified by the provided uris
+	 * This method deletes the list of annotations.
 	 * @param uriList
 	 * @return
 	 */
-	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList);
+	public BatchProcessingStatus deleteAnnotationSet(List<Long> uriList);
 	
 	/**
 	 * This method deletes annotation by the identifier values.
@@ -57,14 +57,15 @@ public interface AdminService {
 
 	
 	/**
-	 * This methods reindexes the set of annotations identified by their uris or objectIds
-	 * @param uriList
+	 * This methods reindexes the set of annotations identified by their identifiers
+	 * 
+	 * @param identifiers
+	 * @param action
 	 * @return
-	 * @throws ApiWriteLockException 
-	 * @throws IndexingJobLockedException 
-	 * @throws HttpException 
+	 * @throws HttpException
+	 * @throws ApiWriteLockException
 	 */
-	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList, boolean isObjectId, String action) throws HttpException, ApiWriteLockException;
+	public BatchProcessingStatus reindexAnnotationSet(List<Long> identifiers, String action) throws HttpException, ApiWriteLockException;
 
 	/**
 	 * this method is used to reindex all annotations available in the database 
@@ -90,5 +91,7 @@ public interface AdminService {
 	 * @return
 	 */
 	public BatchProcessingStatus updateRecordId(String oldId, String newId);
+	
+    public boolean getRemoveAnnotationAuthorization();
 	
 }

@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -112,9 +110,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    }
 
 	    // ** serialize page
-	    annotationPageSerializer.setProtocolPage(annotationPage);
-	    String jsonLd = annotationPageSerializer.serialize(searchProfile);
-
+        AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage, getConfiguration().getAnnotationBaseUrl());
+        String jsonLd = serializer.serialize(searchProfile);
+        
 	    // ** build response
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT + ", " + HttpHeaders.PREFER);

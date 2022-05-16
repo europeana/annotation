@@ -11,8 +11,9 @@ public class ClientConfiguration {
     protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
     protected static final String PROP_ANNOTATION_SERVICE_BASE_URI = "annotation.service.uri";
     protected static final String PROP_ANNOTATION_ID_BASE_URI = "annotation.id.baseUrl";
-    
-    
+    protected static final String PROP_ANNOTATION_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
+    protected static final String PROP_ANNOTATION_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
+   
     protected static final String PROP_AUTHORIZATION_HEADER_NAME = "annotation.header.name";
     protected static final String PROP_REGULAR_AUTHORIZATION_HEADER_VALUE = "annotation.regular.authorization.value";
     protected static final String PROP_ADMIN_ANNOTATION_HEADER_VALUE = "annotation.admin.authorization.value";
@@ -155,5 +156,13 @@ public class ClientConfiguration {
     
     public String getOauthRequestParams(String user) {
 	return getProperties().getProperty(PROP_OAUTH_REQUEST_PARAMS_PREFIX + user).trim();	
+    }
+
+    public String getPropAnnotationItemDataEndpoint() {
+      return getProperties().getProperty(PROP_ANNOTATION_ITEM_DATA_ENDPOINT).trim();
+    }
+
+    public String getPropAnnotationClientApiEndpoint() {
+      return getProperties().getProperty(PROP_ANNOTATION_CLIENT_API_ENDPOINT).trim();
     }
 }

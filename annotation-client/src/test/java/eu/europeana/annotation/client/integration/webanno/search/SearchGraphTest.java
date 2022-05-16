@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.graph.Graph;
@@ -38,13 +39,13 @@ public class SearchGraphTest extends BaseSearchTest {
 		validateGraph(retrievedAnno);
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_BODY_LINK_RELATION);
 		validateGraph(retrievedAnno);
-		String VALUE_TARGET_LINK_SEMANTIC_URI = configuration.getAnnoItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
-		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri=\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
+		String VALUE_TARGET_LINK_SEMANTIC_URI = ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
+		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
 		validateGraph(retrievedAnno);
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class SearchGraphTest extends BaseSearchTest {
 		assertNotNull(graphBody.getNode());
 		assertEquals(VALUE_BODY_LINK_RESOURCE_URI, graphBody.getNode().getHttpUri());
 		assertEquals(VALUE_BODY_LINK_RELATION, graphBody.getRelationName());
-		String VALUE_TARGET_LINK_SEMANTIC_URI = configuration.getAnnoItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
+		String VALUE_TARGET_LINK_SEMANTIC_URI = ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
 		assertEquals(VALUE_TARGET_LINK_SEMANTIC_URI, graphBody.getResourceUri());
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getHttpUri());

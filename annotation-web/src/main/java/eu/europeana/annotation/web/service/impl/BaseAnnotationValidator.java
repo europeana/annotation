@@ -577,8 +577,8 @@ public abstract class BaseAnnotationValidator {
     
     private void validateBodyExists(Body body) throws PropertyValidationException {
         // the body must either have a value or an httpUri which is set from the id field from the body json input
-    	if (body == null
-    	    || (body.getHttpUri() == null && body.getValue() == null)) {
+    	// if (body == null || (body.getHttpUri() == null && body.getValue() == null)) {
+    	if (body == null) {
     	    throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
     		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
     	}

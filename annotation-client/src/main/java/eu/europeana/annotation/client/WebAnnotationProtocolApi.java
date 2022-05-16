@@ -78,6 +78,9 @@ public interface WebAnnotationProtocolApi {
 	public ResponseEntity<String> deleteAnnotation(
 			long identifier);
 	
+	public ResponseEntity<String> removeAnnotation(
+           long identifier);
+	
 	/**
 	 * This method retrieves annotation by the given provider and identifier.
 	 * @param wskey

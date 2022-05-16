@@ -30,10 +30,12 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 
 	assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
 	assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
+	
+	removeAnnotation(storedAnno.getIdentifier());
     }
 
     @Test
-    public void createTranscriptionWithoutRights() throws IOException {
+    public void createTranscriptionWithoutRights() throws IOException, JsonParseException {
 
 	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS);
 	assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
@@ -42,7 +44,7 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
     }
     
     @Test
-    public void createTranscriptionWithoutLanguage() throws IOException {
+    public void createTranscriptionWithoutLanguage() throws IOException, JsonParseException {
 
 	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_LANG);
 	assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
@@ -51,7 +53,7 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
     }
     
     @Test
-    public void createTranscriptionWithoutValue() throws IOException {
+    public void createTranscriptionWithoutValue() throws IOException, JsonParseException {
 
 	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_VALUE);
 	assertEquals(HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());

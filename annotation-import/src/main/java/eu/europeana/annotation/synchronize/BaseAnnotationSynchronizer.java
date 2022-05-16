@@ -11,13 +11,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.WebAnnotationAuxilaryMethodsApiImpl;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.fulltext.api.FulltextAPI;
 import eu.europeana.metadata.api.MetadataAPI;
 
@@ -45,7 +42,6 @@ public class BaseAnnotationSynchronizer {
     protected boolean incrementalImport = false;
     protected long updateOperations = 0;
     protected long deteleOperations = 0;
-    AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
     protected Set<String> updatedFulltextRecords = new HashSet<String>();
     protected Set<String> deletedFulltextRecords = new HashSet<String>();
 
@@ -142,10 +138,6 @@ public class BaseAnnotationSynchronizer {
 
     protected static void logAndExit(String message) {
         logAndExit(message, null);
-    }
-
-    protected AnnotationIdHelper getAnnotationIdHelper() {
-        return annotationIdHelper;
     }
 
     public static Date parseDate(String dateString) {

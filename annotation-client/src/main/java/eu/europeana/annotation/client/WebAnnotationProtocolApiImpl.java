@@ -52,6 +52,19 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 
 	return res;
     }
+    
+    @Override
+    public ResponseEntity<String> removeAnnotation(long identifier) {
+    ResponseEntity<String> res;
+    try {
+        res = apiConnection.removeAnnotation(identifier);
+    } catch (IOException e) {
+        throw new TechnicalRuntimeException(
+            "Exception occured when invoking the AnnotationJsonApi removeAnnotation method", e);
+    }
+
+    return res;
+    }
 
     @Override
     public ResponseEntity<String> getAnnotation(String wskey, long identifier) {

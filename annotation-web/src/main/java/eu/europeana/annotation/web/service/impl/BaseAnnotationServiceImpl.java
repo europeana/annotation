@@ -39,7 +39,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
     @Resource
     PersistentModerationRecordService mongoModerationRecordPersistance;
 
-    Logger logger = LogManager.getLogger(getClass());
+    protected static Logger logger = LogManager.getLogger(BaseAnnotationServiceImpl.class);
 
 //	public AuthenticationService getAuthenticationService() {
 //		return authenticationService;
@@ -166,7 +166,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 
 	    return true;
 	} catch (Exception e) {
-	    throw new AnnotationIndexingException("cannot reindex annotation with ID: " + String.valueOf(res.getIdentifier()), e);
+	    throw new AnnotationIndexingException("Cannot reindex annotation with the identifier: " + res.getIdentifier(), e);
 	}
     }
 
@@ -182,7 +182,6 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 //			Annotation res = getAnnotationById(annoId);
 	    Annotation annotation = getMongoPersistence().find(annoIdentifier);
 	    success = reindexAnnotation(annotation, lastIndexing);
-	    System.out.println(annoIdentifier);
 	} catch (Exception e) {
 	    getLogger().error(e.getMessage(), e);
 	    return false;
@@ -215,7 +214,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	    reindexAnnotation(res, res.getLastUpdate());
 	} catch (AnnotationIndexingException e) {
 	    getLogger().warn(
-		    "The annotation could not be reindexed successfully: " + String.valueOf(persistentAnnotation.getIdentifier()), e);
+		    "The annotation with the identifier: " + persistentAnnotation.getIdentifier() + " could not be reindexed successfully.", e);
 	}
 	return res;
     }
@@ -230,6 +229,10 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 
     boolean isDereferenceProfile(SearchProfiles searchProfile) {
 	return SearchProfiles.DEREFERENCE.equals(searchProfile);
+    }
+    
+    public boolean getRemoveAnnotationAuthorization() {
+      return configuration.getAnnoRemoveAuthorization();
     }
 
 }

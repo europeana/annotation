@@ -12,12 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
@@ -31,6 +32,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
  * Unit test for the Web Annotation service
  * @deprecated adapt to use AnnotationLdParser and AnnotationLdDeserializerDeprecated
  */
+@Deprecated
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
 	})
@@ -38,9 +40,6 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	public static String TEST_RO_VALUE = "Vlad Tepes";
 	public static String TEST_EN_VALUE = "Vlad the Impaler";
-	
-    @Resource
-    AnnotationLdSerializer annotationLdSerializer;
 
 	@Resource 
 	AnnotationService webAnnotationService;
@@ -51,14 +50,18 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	@Resource 
 	AdminService adminService;
 	
+    @Resource
+    AnnotationConfiguration configuration;
+    
+    @Resource
+    PersistentAnnotationService mongoPersistance;
 	
-	protected AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
-	
-	@Test
+//	@Test
 	public void testStoreAnnotationInDbRetrieveAndSerialize() 
 			throws MalformedURLException, IOException, AnnotationServiceException, JsonParseException {
 		
-		Annotation testAnnotation = createTestAnnotation();		
+        long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
+		Annotation testAnnotation = createTestAnnotation(annoIdentifier);		
 
 		/**
 		 * Serialize an original Annotation test object.
@@ -94,14 +97,14 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Serialize Annotation object that was retrieved from a database.
 		 */
 //		(JsonLd) webAnnotation
-		annotationLdSerializer.setAnnotation(webAnnotation);
+		AnnotationLdSerializer serializer = new AnnotationLdSerializer(webAnnotation, configuration.getAnnotationBaseUrl());
         AnnotationLdParser parser = new AnnotationLdParser();
         
-        String actual = annotationLdSerializer.toString();
+        String actual = serializer.toString();
         System.out.println(actual);
 //        AnnotationLd.toConsole("", actual);
         
-        String actualIndent = annotationLdSerializer.toString(4);
+        String actualIndent = serializer.toString(4);
 //        AnnotationLd.toConsole("", actualIndent);
         
         /**
@@ -117,11 +120,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
         assertEquals(annotationFromAnnotationLd.getBody(), testAnnotation.getBody());
 	}
 		
-	@Test
+//	@Test
 	public void testCreateAnnotationWebanno() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		Annotation testAnnotation = createTestAnnotation();		
+        long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
+		Annotation testAnnotation = createTestAnnotation(annoIdentifier);		
 
 		/**
 		 * Store Annotation in database.
@@ -142,8 +146,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	 * Create a test annotation object.
 	 * @return Annotation
 	 */
-	Annotation createTestAnnotation() {
-		Annotation testAnnotation = createBaseObjectTagInstance();			
+	Annotation createTestAnnotation(long identifier) {
+		Annotation testAnnotation = createBaseObjectTagInstance(identifier);			
 		return testAnnotation;
 	}
 
@@ -151,11 +155,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		return ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration().getAnnotationBaseUrl();
 	}
 
-	@Test
+//	@Test
 	public void testDeleteAnnotation() 
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
-		Annotation testAnnotation = createTestAnnotation();		
+        long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
+		Annotation testAnnotation = createTestAnnotation(annoIdentifier);		
         
 		/**
 		 * Store Annotation in database.
@@ -178,11 +183,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		assertNull(anno);
 	}
 		
-	@Test
+//	@Test
 	public void testIndexAnnotation() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		Annotation testAnnotation = createTestAnnotation();		
+        long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
+		Annotation testAnnotation = createTestAnnotation(annoIdentifier);		
         
 		/**
 		 * Search Annotation.
@@ -210,11 +216,12 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		assertTrue(currentEntries == oldEntries);
 	}
 		
-	@Test
+//	@Test
 	public void testDisableAnnotation() 
 			throws MalformedURLException, IOException, AnnotationServiceException {
 		
-		Annotation testAnnotation = createTestAnnotation();		
+        long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
+		Annotation testAnnotation = createTestAnnotation(annoIdentifier);		
 
 		/**
 		 * Store Annotation in database.

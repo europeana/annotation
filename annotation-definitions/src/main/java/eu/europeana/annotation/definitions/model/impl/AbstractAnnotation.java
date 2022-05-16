@@ -55,61 +55,51 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	     * equality check for all relevant fields.
 	     */
 	    if (this.getIdentifier() != that.getIdentifier()) {
-	    	System.out.println("Annotation objects have different identifiers.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getType() != null) && (that.getType() != null) &&
 	    		(!this.getType().equals(that.getType()))) {
-	    	System.out.println("Annotation objects have different 'type' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getCreated() != null) && (that.getCreated() != null) &&
 	    		(!this.getCreated().equals(that.getCreated()))) {
-	    	System.out.println("Annotation objects have different 'annotatedAt' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getCreator() != null) && (that.getCreator() != null) &&
 	    		(!this.getCreator().equals(that.getCreator()))) {
-	    	System.out.println("Annotation objects have different 'creator' objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getBody() != null) && (that.getBody() != null) &&
 	    		(!this.getBody().equals(that.getBody()))) {
-	    	System.out.println("Annotation objects have different Body objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getTarget() != null) && (that.getTarget() != null) &&
 	    		(!this.getTarget().equals(that.getTarget()))) {
-	    	System.out.println("Annotation objects have different Target objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getMotivation() != null) && (that.getMotivation() != null) &&
 	    		(!this.getMotivation().equals(that.getMotivation()))) {
-	    	System.out.println("Annotation objects have different 'motivation' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getGenerated() != null) && (that.getGenerated() != null) &&
 	    		(!this.getGenerated().equals(that.getGenerated()))) {
-	    	System.out.println("Annotation objects have different 'serializedAt' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getGenerator() != null) && (that.getGenerator() != null) &&
 	    		(!this.getGenerator().equals(that.getGenerator()))) {
-	    	System.out.println("Annotation objects have different 'serializedBy' objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getStyledBy() != null) && (that.getStyledBy() != null) &&
 	    		(!this.getStyledBy().equals(that.getStyledBy()))) {
-	    	System.out.println("Annotation objects have different 'styledBy' objects.");
 	    	res = false;
 	    }
 	    
@@ -131,55 +121,46 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	     */
 	    if ((this.getType() != null) && (that.getType() != null) &&
 	    		(!this.getType().equals(that.getType()))) {
-	    	System.out.println("Annotation objects have different 'type' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getCreated() != null) && (that.getCreated() != null) &&
 	    		(!this.getCreated().equals(that.getCreated()))) {
-	    	System.out.println("Annotation objects have different 'annotatedAt' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getCreator() != null) && (that.getCreator() != null) &&
 	    		(!this.getCreator().equalsContent(that.getCreator()))) {
-	    	System.out.println("Annotation objects have different 'annotatedBy' objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getBody() != null) && (that.getBody() != null) &&
 	    		(!this.getBody().equalsContent(that.getBody()))) {
-	    	System.out.println("Annotation objects have different Body objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getTarget() != null) && (that.getTarget() != null) &&
 	    		(!this.getTarget().equalsContent(that.getTarget()))) {
-	    	System.out.println("Annotation objects have different Target objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getMotivation() != null) && (that.getMotivation() != null) &&
 	    		(!this.getMotivation().equals(that.getMotivation()))) {
-	    	System.out.println("Annotation objects have different 'motivation' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getGenerated() != null) && (that.getGenerated() != null) &&
 	    		(!this.getGenerated().equals(that.getGenerated()))) {
-	    	System.out.println("Annotation objects have different 'serializedAt' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getGenerator() != null) && (that.getGenerator() != null) &&
 	    		(!this.getGenerator().equalsContent(that.getGenerator()))) {
-	    	System.out.println("Annotation objects have different 'serializedBy' objects.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getStyledBy() != null) && (that.getStyledBy() != null) &&
 	    		(!this.getStyledBy().equalsContent(that.getStyledBy()))) {
-	    	System.out.println("Annotation objects have different 'styledBy' objects.");
 	    	res = false;
 	    }
 	    
@@ -360,7 +341,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 	public String toString() {
 		String res = "### Annotation ###\n";
 		if (identifier != 0) 
-			res = res + "\t" + "identifier:" + String.valueOf(identifier) + "\n";
+			res = res + "\t" + "identifier:" + identifier + "\n";
 		if (type != null) 
 			res = res + "\t" + "type:" + type + "\n";
 		if (StringUtils.isNotEmpty(canonical))
@@ -404,7 +385,11 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
       this.identifier = identifier;
     }	
     
-    public String getIdentifierAsString() {
+    public String getIdentifierAsUriString() {
       return null;
+    }
+    
+    public long getIdentifierAsNumber() {
+      return 0;
     }
 }

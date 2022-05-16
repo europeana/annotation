@@ -40,7 +40,7 @@ public class BaseJsonLdApiTest {
 		
 		System.out.println("Annotation URI: " + annotation.getIdentifier());
 		
-		assertTrue(annotation.getIdentifier() != 0);
+		assertTrue(annotation.getIdentifier() > 0);
 		assertEquals(annotationNr, annotation.getIdentifier());		
 	}
 	

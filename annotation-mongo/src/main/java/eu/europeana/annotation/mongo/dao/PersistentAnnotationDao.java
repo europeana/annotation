@@ -1,5 +1,6 @@
 package eu.europeana.annotation.mongo.dao;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import com.mongodb.BulkWriteResult;
@@ -31,7 +32,7 @@ public interface PersistentAnnotationDao<E extends PersistentAnnotation, T exten
 	
 	BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, List<Integer> exceptIndices, BulkOperationMode delete) throws BulkOperationException;
 
-	void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String backupCollection);
+	void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String backupCollection) throws IOException, InterruptedException;
 
 
 }

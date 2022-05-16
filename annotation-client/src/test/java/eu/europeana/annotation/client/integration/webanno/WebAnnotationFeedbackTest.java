@@ -41,6 +41,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 
@@ -69,6 +70,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 				, TEST_USER_TOKEN
 				);
 		validateModerationReportResponse(getResponse);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	protected void validateModerationReportResponse(ResponseEntity<String> response) 

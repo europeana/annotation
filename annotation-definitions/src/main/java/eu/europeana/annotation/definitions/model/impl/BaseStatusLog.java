@@ -30,24 +30,20 @@ public class BaseStatusLog implements StatusLog {
 	     */
 	    if ((this.getUser() != null) && (that.getUser() != null) &&
 	    		(!this.getUser().equals(that.getUser()))) {
-	    	System.out.println("StatusLog objects have different 'user' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getStatus() != null) && (that.getStatus() != null) &&
 	    		(!this.getStatus().equals(that.getStatus()))) {
-	    	System.out.println("StatusLog objects have different 'status' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getDate() > 0) && (that.getDate() > 0) &&
 	    		(this.getDate() != that.getDate())) {
-	    	System.out.println("StatusLog objects have different 'date' fields.");
 	    	res = false;
 	    }
 	    
 	    if (this.getIdentifier() != that.getIdentifier()) {
-	    	System.out.println("StatusLog objects have different 'AnnotationId' fields.");
 	    	res = false;
 	    }
 	    

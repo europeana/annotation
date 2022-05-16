@@ -241,7 +241,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setType((String) valueObject);
 			break;
 		case WebAnnotationFields.ID:
-			anno.setIdentifier(Long.parseLong((String)valueObject));
+		    String annoIdUri = (String)valueObject;
+		    long annoIdentifier = Long.parseLong(annoIdUri.substring(annoIdUri.lastIndexOf("/") + 1).trim());
+			anno.setIdentifier(annoIdentifier);
 			break;
 		case WebAnnotationFields.CREATED:
 			anno.setCreated(TypeUtils.convertStrToDate((String) valueObject));
@@ -1046,6 +1048,7 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
+			break;
 		case LINKFORCONTRIBUTING:
           return BodyInternalTypes.SPECIFIC_RESOURCE;
 		default:

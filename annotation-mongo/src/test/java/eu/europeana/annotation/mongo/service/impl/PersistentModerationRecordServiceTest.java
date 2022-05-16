@@ -14,6 +14,7 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.moderation.impl.BaseSummary;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
@@ -21,8 +22,7 @@ import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration({ "/annotation-mongo-context.xml",
-		"/annotation-mongo-test.xml" })
+@ContextConfiguration({"/annotation-mongo-test.xml"})
 public class PersistentModerationRecordServiceTest {
 
 	@Resource AnnotationConfiguration configuration;
@@ -40,7 +40,7 @@ public class PersistentModerationRecordServiceTest {
 	 */
 	@BeforeEach
 	public void setup() throws IOException {
-		moderationRecordDao.getCollection().drop();
+//		moderationRecordDao.getCollection().drop();
 	}
 
 	/**
@@ -54,13 +54,15 @@ public class PersistentModerationRecordServiceTest {
 	}
 	
 	@Test
-	public void createModerationRecord() throws AnnotationMongoException{
+	public void createModerationRecord() throws AnnotationMongoException, ModerationMongoException{
 		PersistentModerationRecord moderationRecord = buildTestModerationRecord();
 		PersistentModerationRecord savedModerationRecord = moderationRecordService.create(moderationRecord);
 		
 		assertEquals(savedModerationRecord.getSummary().getEndorseSum(), 5);
 		assertEquals(savedModerationRecord.getSummary().getReportSum(), 2);
-		assertEquals(savedModerationRecord.getSummary().getTotal(), 3);
+		assertEquals(savedModerationRecord.getSummary().getTotal(), 7);
+		
+		moderationRecordService.remove(savedModerationRecord.getIdentifier());
 		
 //		assertTrue(savedModerationRecord.getCreated().getTime() > 0);
 //		assertTrue(savedModerationRecord.getLastUpdated().getTime() > 0);			

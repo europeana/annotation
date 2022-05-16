@@ -85,7 +85,6 @@ public class BaseModerationRecord implements ModerationRecord {
 	     * equality check for all relevant fields.
 	     */
 	    if (this.getIdentifier() != that.getIdentifier()) {
-	    	System.out.println("Moderation objects have different 'identifier' fields.");
 	    	res = false;
 	    }
 	    
@@ -96,7 +95,7 @@ public class BaseModerationRecord implements ModerationRecord {
 	@Override
 	public String toString() {
 		String res = "\t### Moderation ###\n";
-		res = res + "\t\t" + "identifier:" + String.valueOf(identifier) + "\n";
+		res = res + "\t\t" + "identifier:" + identifier + "\n";
 		return res;
 	}
 	

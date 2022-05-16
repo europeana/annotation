@@ -1,5 +1,6 @@
 package eu.europeana.annotation.mongo.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -21,7 +22,9 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	public List<? extends Annotation> getAnnotationListByResourceId(String resourceId);
 
 	public List<? extends Annotation> getAnnotationList (List<Long> annotationIdentifiers);
-	
+
+	public List<? extends Annotation> getAllAnnotations ();
+
 	public PersistentAnnotation find(long annoIdentifier);
 	
 	/**
@@ -64,40 +67,46 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * This method filters annotations by start and end timestamps.
 	 * @param startTimestamp
 	 * @param endTimestamp
-	 * @return list of object ids
+	 * @return list of object identifiers
 	 */
-	public List<String> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
+	public List<Long> filterByLastUpdateTimestamp(String startTimestamp, String endTimestamp);
 	
 	public List<String> getDisabled(MotivationTypes motivation, Date startTimestamp, Date stopTimestamp, int page, int limit);
 
-	public abstract List<String> filterByLastUpdateGreaterThanLastIndexTimestamp();
+	public abstract List<Long> filterByLastUpdateGreaterThanLastIndexTimestamp();
 
 	/**
 	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
 	 * @param annos List of annotations
 	 * @throws AnnotationValidationException
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws AnnotationMongoException
 	 */
-	public void create(List<? extends Annotation> annos) throws AnnotationValidationException, BulkOperationException;
+	public void create(List<? extends Annotation> annos) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 	
 	/**
 	 * Store list of annotations (default mode: insert), i.e. all writes must be inserts.
 	 * @param existingAnnos List of existing annotations
 	 * @throws AnnotationValidationException
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws AnnotationMongoException
 	 */
-	public void update(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, BulkOperationException;
+	public void update(List<? extends Annotation> existingAnnos) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 
 	/**
 	 * Store list of annotations (insert/update). Bulk writes must be either inserts or updates for all annotations in the list.
 	 * @param annos List of annotations
 	 * @param update Update mode: true if existing annotations should be updated
 	 * @throws AnnotationValidationException
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws AnnotationMongoException
 	 */
-	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException;
+	public void store(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 
-	public void createBackupCopy(List<? extends Annotation> existingAnnos);
+	public void createBackupCopy(List<? extends Annotation> existingAnnos) throws IOException, InterruptedException;
 
 	@Deprecated
 	List<? extends Annotation> filterDisabled(String queryParams);

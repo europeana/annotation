@@ -21,10 +21,6 @@ public interface SolrAnnotation extends Annotation {
 
 	String getAnnoUri();
 
-	void setMotivationKey(String motivationKey);
-
-	String getMotivationKey();
-
 	void setTargetRecordIds(List<String> recordIds);
 
 	List<String> getTargetRecordIds();

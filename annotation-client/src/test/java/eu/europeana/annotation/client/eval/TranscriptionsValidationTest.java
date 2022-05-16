@@ -17,19 +17,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration({"/api2-common-context.xml"})
 public class TranscriptionsValidationTest {
-
-    @Resource
-    AnnotationConfiguration configuration;
   
     HttpClient httpClient = new HttpClient();
     File outputFile = new File("/tmp/transcriptionseval.csv");
 
-    @Test
+    //commented out until the input files are provided
+    //@Test
     public void validateTranscriptionsTest() throws Exception{
 	
 	//read file 
@@ -77,8 +74,8 @@ public class TranscriptionsValidationTest {
 //	    scope = scope.replace("http:", "https:");
 	}
 	
-	assertTrue(scope.startsWith(configuration.getAnnoItemDataEndpoint()) || scope.startsWith("https://www.europeana.eu/"));
-	assertFalse(source.startsWith(configuration.getAnnoItemDataEndpoint()));
+	assertTrue(scope.startsWith(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) || scope.startsWith("https://www.europeana.eu/"));
+	assertFalse(source.startsWith(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()));
 	
 	sourceHttpCode = getHttpCode(source, false);
 	scopeHttpCode = getHttpCode(scope, true);

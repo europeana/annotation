@@ -31,7 +31,7 @@ public interface SolrAnnotationService {
 	 * @throws IOException 
 	 * @throws SolrServerException 
 	 */
-	public void store(List<? extends Annotation> annos) throws AnnotationServiceException, SolrServerException, IOException ;
+	public void store(List<? extends Annotation> annos) throws AnnotationServiceException;
 	
 	/**
 	 * This method stores a SolrAnnotation object in SOLR.

@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.impl;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,9 +21,9 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -59,14 +60,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();
 
-    final AnnotationIdHelper annotationIdHelper = new AnnotationIdHelper();
-
     public AnnotationConfiguration getConfiguration() {
 	return configuration;
-    }
-
-    public AnnotationIdHelper getAnnotationIdHelper() {
-	return annotationIdHelper;
     }
 
     public PersistentWhitelistService getMongoWhitelistPersistence() {
@@ -88,6 +83,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     @Override
     public List<? extends Annotation> getAnnotationList(List<Long> identifiers) {
 	return getMongoPersistence().getAnnotationList(identifiers);
+    }
+    
+    @Override
+    public List<? extends Annotation> getAllAnnotations() {
+    return getMongoPersistence().getAllAnnotations();
     }
 
     public MetisDereferenciationClient getDereferenciationClient() {
@@ -192,9 +192,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     protected void validateAnnotationIdentifier(Annotation newAnnotation) {
-    if (newAnnotation.getIdentifier() == 0) {
-        throw new AnnotationValidationException("Annotaion.AnnotationId must not be null!");
-    }
+      if (!(newAnnotation.getIdentifier() > 0)) {
+          throw new AnnotationValidationException("Annotaion identifier must be >0!");
+      }
     }
     
     /**
@@ -204,8 +204,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      */
     protected void validateAnnotationIdForModerationRecord(ModerationRecord newModerationRecord) {
 
-	if (newModerationRecord.getIdentifier() == 0)
-	    throw new ModerationRecordValidationException("ModerationRecord.AnnotationId must not be null!");
+	if (!(newModerationRecord.getIdentifier() > 0))
+	    throw new ModerationRecordValidationException("ModerationRecord identifier must be >0!");
     }
 
     @Override
@@ -343,13 +343,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 		return persistentAnnotation;
     }
 
-    protected void removeFromIndex(Annotation annotation) {
+    protected boolean removeFromIndex(Annotation annotation) {
 	try {
 	    getSolrService().delete(annotation.getIdentifier());
 	} catch (Exception e) {
 	    getLogger().error(
-		    "Cannot remove annotation from solr index: " + String.valueOf(annotation.getIdentifier()), e);
+		    "Cannot remove annotation from solr index: " + annotation.getIdentifier(), e);
+	    return false;
 	}
+	return true;
     }
 
     @Override
@@ -446,7 +448,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     		if (missingIdentifiers.contains(anno.getIdentifier())) {
     		    batchReportable.incrementFailureCount();
     		    batchReportable.addError(String.valueOf(anno.getIdentifier()),
-    			    "Annotation does not exist: " + String.valueOf(anno.getIdentifier()));
+    			    "Annotation does not exist: " + anno.getIdentifier());
     		} else {
     		    batchReportable.incrementSuccessCount();
     		}
@@ -462,12 +464,14 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * @param updateAnnos              Update annotations
      * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting
      *                                 of annotations when returned as response
+     * @throws InterruptedException 
+     * @throws IOException 
      */
     @Override
     public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos,
 	    List<? extends Annotation> updateAnnos,
 	    LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap)
-	    throws AnnotationValidationException, BulkOperationException {
+	    throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException {
 	// the size of existing and update lists must match (this must be checked
 	// beforehand, so a runtime exception is sufficient here)
 	if (existingAnnos.size() != updateAnnos.size())
@@ -509,11 +513,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
      * @param updateAnnos              Update annotations
      * @param webAnnoStoredAnnoAnnoMap Map required to maintain the correct sorting
      *                                 of annotations when returned as response
+     * @throws InterruptedException 
+     * @throws IOException 
      */
     @Override
     public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations,
 	    AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap)
-	    throws AnnotationValidationException, BulkOperationException {
+	    throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException {
 
 	int count = annotations.size();
 

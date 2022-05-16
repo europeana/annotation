@@ -27,6 +27,8 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 
 		validateResponse(response);
 		
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 
@@ -60,6 +62,9 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 				false, requestBody, null, null);
 		
 		validateResponse(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 		
 
@@ -70,6 +75,9 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 				true, get_TAG_JSON_BY_TYPE_JSONLD(), WebAnnotationFields.TAG, null);
 		
 		validateResponse(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -99,6 +107,9 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 			true, get_TAG_JSON_VALIDATION(), WebAnnotationFields.TAG, null);
 		
 		validateResponseForTrimming(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -109,6 +120,9 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 				true, get_LINK_JSON_BY_TYPE_JSONLD(), WebAnnotationFields.LINK, null);
 		
 		validateResponse(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 		
 
@@ -128,6 +142,8 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 		//validateResponse(response, HttpStatus.OK);
 		Annotation storedAnno = parseAndVerifyTestAnnotation(response, HttpStatus.OK);
 		validateOutputAgainstInput(storedAnno, annotation);
+		
+		removeAnnotation(annotation.getIdentifier());
 	}
 	
 					
@@ -151,6 +167,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
 		assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(), updatedAnnotation.getTarget().getHttpUri());
 		
+		removeAnnotation(anno.getIdentifier());
 		//TODO: search annotation in solr and verify body and target values.
 	}
 	
@@ -168,6 +185,8 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
 			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+		
+		removeAnnotation(anno.getIdentifier());
 	}
 			
 				

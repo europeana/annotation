@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
 
-    protected final Logger logger = getLogger();
+    Logger logger = LogManager.getLogger(getClass());
 
     @Resource
     private AdminService adminService;
@@ -73,7 +74,10 @@ public class ManagementRest extends BaseRest {
 	    @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) long identifier,
 	    HttpServletRequest request) throws HttpException {
 
-	verifyWriteAccess(Operations.ADMIN_ALL, request);
+    //check the property for the authorization
+    if(!adminService.getRemoveAnnotationAuthorization()) {
+      verifyWriteAccess(Operations.ADMIN_ALL, request);
+    }
 
 	deleteAnnotationForGood(identifier);
 
@@ -93,7 +97,7 @@ public class ManagementRest extends BaseRest {
 
 	verifyWriteAccess(Operations.ADMIN_ALL, request);
 
-	List<String> identifiersList = BaseJsonParser.toStringList(identifiers, true);
+	List<Long> identifiersList = BaseJsonParser.toLongList(identifiers, true);
 
 	BatchProcessingStatus status = getAdminService().deleteAnnotationSet(identifiersList);
 
@@ -163,15 +167,15 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex a set of annotations. Authorization required.", nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationSet(
-	    @RequestBody String uris, HttpServletRequest request) throws UserAuthorizationException, HttpException {
+	    @RequestBody String identifiers, HttpServletRequest request) throws UserAuthorizationException, HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
-	List<String> uriList = BaseJsonParser.toStringList(uris, true);
+	List<Long> uriList = BaseJsonParser.toLongList(identifiers, true);
 
 	BatchProcessingStatus status;
 	try {
-	    status = getAdminService().reindexAnnotationSet(uriList, false, "/admin/annotation/reindexset");
+	    status = getAdminService().reindexAnnotationSet(uriList, "/admin/annotation/reindexset");
 	} catch (ApiWriteLockException e) {
 	    throw new InternalServerException("Cannot reindex annotation selection", e);
 	}

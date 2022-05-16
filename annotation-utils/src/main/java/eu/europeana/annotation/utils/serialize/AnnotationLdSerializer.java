@@ -1,13 +1,11 @@
 package eu.europeana.annotation.utils.serialize;
 
 import java.util.List;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -21,6 +19,7 @@ import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
@@ -30,19 +29,21 @@ import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationLdSerializer extends JsonLd {
 
-    @Resource
-    AnnotationConfiguration configuration;
+  String annoBaseDataEndpoint;
+  
 	/**
 	 * @param annotation
 	 */
-	public AnnotationLdSerializer(Annotation annotation) {
+	public AnnotationLdSerializer(Annotation annotation, String annoBaseDataEndpoint) {
 		super();
 		setPropOrderComparator(new AnnotationsJsonComparator());
+		this.annoBaseDataEndpoint = annoBaseDataEndpoint;
 		setAnnotation(annotation);
 	}
 
-	public AnnotationLdSerializer() {
+	public AnnotationLdSerializer(String annoBaseDataEndpoint) {
 		super();
+		this.annoBaseDataEndpoint = annoBaseDataEndpoint;
 		setPropOrderComparator(new AnnotationsJsonComparator());
 	}
 
@@ -69,7 +70,7 @@ public class AnnotationLdSerializer extends JsonLd {
 		else
 			jsonLdResource.putProperty(WebAnnotationFields.TYPE, WebAnnotationFields.ANNOTATION_TYPE);
 
-		jsonLdResource.putProperty(WebAnnotationFields.ID, configuration.getAnnotationBaseUrl() + "/" + String.valueOf(annotation.getIdentifier()));
+		jsonLdResource.putProperty(WebAnnotationFields.ID, AnnotationIdHelper.buildAnnotationUri(annoBaseDataEndpoint, annotation.getIdentifier()));
 
 		if (annotation.getCreated() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.CREATED,
