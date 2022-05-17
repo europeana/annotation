@@ -3,13 +3,7 @@ package eu.europeana.annotation.definitions.model.moderation;
 import java.util.Date;
 import java.util.List;
 
-import eu.europeana.annotation.definitions.model.AnnotationId;
-
 public interface ModerationRecord {
-
-	public AnnotationId getAnnotationId();
-
-	public void setAnnotationId(AnnotationId id);
 
 	public List<Vote> getEndorseList();
 
@@ -37,5 +31,7 @@ public interface ModerationRecord {
 
 	boolean equalsContent(Object other);
 	
+    public long getIdentifier();
 
+    public void setIdentifier(long identifier);
 }

@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -19,11 +19,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -43,8 +39,6 @@ public class MetisDereferenciationClient {
     private AnnotationConfiguration configuration;
     Transformer transformer;
     private HttpConnection httpConnection;
-    
-    Logger logger = LogManager.getLogger(getClass().getName());
 
     public HttpConnection getHttpConnection() {
 	if(httpConnection == null) {
@@ -75,7 +69,6 @@ public class MetisDereferenciationClient {
 	    Templates templates = factory.newTemplates(xslSource);
 	    transformer = templates.newTransformer();
 	} catch (TransformerConfigurationException e) {
-//	    logger.error("Error ", e);
 	    throw new AnnotationDereferenciationException(
 		    "Cannot instantiate XSLT Transformer",
 		    e);
@@ -120,7 +113,6 @@ public class MetisDereferenciationClient {
 	try {
 	    queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");		
 	    xmlResponse = getHttpConnection().getURLContent(queryUri);
-//	    System.out.println(xmlResponse);
 	    jsonLdStr = convertToJsonLd(uri, xmlResponse, language).toString();
 	    res.put(uri, jsonLdStr);
 	    
@@ -183,7 +175,7 @@ public class MetisDereferenciationClient {
 	    if (language != null) {
 		getTransformer().setParameter(PARAM_LANGS, language);
 	    }
-	    InputStream inputStringStream = new ByteArrayInputStream(xmlStr.getBytes());
+	    InputStream inputStringStream = new ByteArrayInputStream(xmlStr.getBytes(StandardCharsets.UTF_8));
 	    Source text = new StreamSource(inputStringStream);
 	    getTransformer().transform(text, new StreamResult(result));
 	    

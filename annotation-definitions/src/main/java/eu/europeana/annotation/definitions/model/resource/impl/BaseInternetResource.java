@@ -93,25 +93,21 @@ public class BaseInternetResource extends AbstractResource implements InternetRe
 	     */
 	    if ((this.getContentType() != null) && (that.getContentType() != null) &&
 	    		(!this.getContentType().equals(that.getContentType()))) {
-	    	System.out.println("Style objects have different 'contentType' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getHttpUri() != null) && (that.getHttpUri() != null) &&
 	    		(!this.getHttpUri().equals(that.getHttpUri()))) {
-	    	System.out.println("Style objects have different 'httpUri' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getLanguage() != null) && (that.getLanguage() != null) &&
 	    		(!this.getLanguage().equals(that.getLanguage()))) {
-	    	System.out.println("Style objects have different 'language' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getValue() != null) && (that.getValue() != null) &&
 	    		(!this.getValue().equals(that.getValue()))) {
-	    	System.out.println("Style objects have different 'value' fields.");
 	    	res = false;
 	    }
 	    

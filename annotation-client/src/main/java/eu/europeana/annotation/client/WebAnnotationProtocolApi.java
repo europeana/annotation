@@ -38,7 +38,7 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity that contains response body, headers and status code.
 	 */	
 	public ResponseEntity<String> createAnnotationReport(
-			String wskey, String identifier, String userToken);
+			String wskey, long identifier, String userToken);
 	
 	/**
 	 * This method retrieves moderation report summary
@@ -49,7 +49,7 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity that contains response body, headers and status code.
 	 */	
 	public ResponseEntity<String> getModerationReport(
-			String wskey, String identifier, String userToken);
+			String wskey, long identifier, String userToken);
 	
 	/**
 	 * This method creates annotation describing it in body JSON string and
@@ -71,12 +71,15 @@ public interface WebAnnotationProtocolApi {
 	/**
 	 * This method deletes annotation by the given identifier
 	 * @param wskey
-	 * @param identifier - part of annotation id 
+	 * @param identifier
 	 * @param userToken
 	 * @return response entity containing headers and status code.
 	 */
 	public ResponseEntity<String> deleteAnnotation(
-			String identifier);
+			long identifier);
+	
+	public ResponseEntity<String> removeAnnotation(
+           long identifier);
 	
 	/**
 	 * This method retrieves annotation by the given provider and identifier.
@@ -85,7 +88,7 @@ public interface WebAnnotationProtocolApi {
 	* @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> getAnnotation(
-			String wskey, String identifier);
+			String wskey, long identifier);
 	
 	/**
 	 * This method retrieves annotation by the given provider, identifier and search profile.
@@ -95,7 +98,7 @@ public interface WebAnnotationProtocolApi {
 	* @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> getAnnotation(
-			String wskey, String identifier, SearchProfiles searchProfile);
+			String wskey, long identifier, SearchProfiles searchProfile);
 	
 	/**
 	 * This method retrieves annotation by the given provider, identifier and search profile using JWT token
@@ -105,7 +108,7 @@ public interface WebAnnotationProtocolApi {
 	* @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> getAnnotation(
-			String identifier, SearchProfiles searchProfile);
+			long identifier, SearchProfiles searchProfile);
 	
 	/**
 	 * This method updates annotation by the given update string in JSON format
@@ -117,7 +120,7 @@ public interface WebAnnotationProtocolApi {
 	 * @return response entity containing body, headers and status code.
 	 */
 	public ResponseEntity<String> updateAnnotation(
-			String identifier, String requestBody, String user);
+			long identifier, String requestBody, String user);
 
 
 	/**

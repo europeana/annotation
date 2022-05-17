@@ -32,5 +32,7 @@ public class SubtitlingTest extends BaseWebAnnotationTest {
 	validateOutputAgainstInput(storedAnno, inputAnno);
 	
 	Assertions.assertTrue(true);
+	
+	removeAnnotation(storedAnno.getIdentifier());
     }
 }

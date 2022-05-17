@@ -32,6 +32,8 @@ public class AgentTest extends BaseTaggingTest {
 		//but ignore generated timestamp which is always set by the server
 		inputAnno.setGenerated(storedAnno.getGenerated());
 		validateOutputAgainstInput(storedAnno, inputAnno);
+		
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 //	@Test

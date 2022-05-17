@@ -107,6 +107,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PARAM_INCLUDE_ERROR_STACK = "includeErrorStack";
 	public static final String REQ_PARAM_PROVIDER = PATH_PARAM_PROVIDER;
 	public static final String REQ_PARAM_IDENTIFIER = PATH_PARAM_IDENTIFIER;
+	public static final String IDENTIFIER = "identifier";
 	
 	
 	/**
@@ -184,7 +185,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String PROVIDER = "provider";
 	public static final String USER = "user";
 	public static final String USER_TOKEN = "userToken";
-	public static final String IDENTIFIER = "identifier";
 	public static final String RESOURCE_ID = "resourceId";
 	public static final String JSON_REST = ".json";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
@@ -234,11 +234,6 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String IN_MAPPING = "InMapping";
 
 	/**
-	 * Mongo
-	 */
-	public static final String MONGO_ID = "_id";
-
-	/**
 	 * Default values for the Rest API services
 	 */
 	public static final String DEFAULT_PROVIDER = "webanno";
@@ -256,9 +251,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String ITEMS_COUNT = "itemsCount";
 	public static final String URI = "uri";
 	public static final String WHITELIST = "whitelist";
-	public static final String DEFAULT_GENERATOR_URL = "http://data.europeana.eu/apikey/";
 
-	
 	/**
 	 * These namespace prefixes are employed for evaluation of the internal type
 	 * of the objects in Annotation.

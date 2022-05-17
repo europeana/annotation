@@ -1,19 +1,13 @@
 package eu.europeana.annotation.client.admin;
 
 import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.BaseAnnotationApi;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 
 public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebAnnotationAdminApi {
-	
-	protected final Logger logger = LogManager.getLogger(this.getClass());
 
 	public WebAnnotationAdminApiImpl(ClientConfiguration configuration,
 			AnnotationApiConnection apiConnection) {
@@ -25,13 +19,22 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 	}
 
 	@Override
-	public ResponseEntity<String> deleteAnnotation(String identifier) {
+	public ResponseEntity<String> deleteAnnotation(long identifier) {
 		try {
 			return apiConnection.deleteAnnotation(identifier, null);
 		} catch (IOException e) {
 			throw new TechnicalRuntimeException("Exception occured when invoking the AnnotationSearchApi", e);
 		}
 	}
+	
+    @Override
+    public ResponseEntity<String> removeAnnotation(long identifier) {
+        try {
+            return apiConnection.removeAnnotation(identifier);
+        } catch (IOException e) {
+            throw new TechnicalRuntimeException("Exception occured when invoking the remove annotation api.", e);
+        }
+    }
 
 	@Override
 	public ResponseEntity<String> reindexOutdated() {

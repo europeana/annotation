@@ -1,13 +1,11 @@
 package eu.europeana.annotation.synchronize.test;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.synchronize.AnnotationSynchronizer;
 import eu.europeana.annotation.synchronize.BaseAnnotationSynchronizer;
 
 public class ImporterTest{
 
-  @Test
+  //@Test
   public void testUpdateInEntityAPI() throws Exception{
     
     AnnotationSynchronizer annoSync = new AnnotationSynchronizer();

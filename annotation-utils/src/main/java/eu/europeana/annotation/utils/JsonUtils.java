@@ -8,20 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.module.SimpleModule;
-
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-//import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
 import eu.europeana.annotation.definitions.model.resource.state.State;
@@ -90,8 +85,7 @@ public class JsonUtils extends BaseJsonParser{
 			module.addDeserializer(Map.class, new MapDeserializer());
 			module.addDeserializer(List.class, new ListDeserializer());
 			
-			//module.addDeserializer(Style.class, new StyleDeserializer());  
-			module.addAbstractTypeMapping(AnnotationId.class, BaseAnnotationId.class);
+			//module.addDeserializer(Style.class, new StyleDeserializer());
 			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
 			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
 			module.addAbstractTypeMapping(State.class, BaseState.class);

@@ -2,8 +2,6 @@ package eu.europeana.annotation.web.service;
 
 import java.util.Date;
 import java.util.List;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
@@ -20,10 +18,10 @@ public interface AdminService {
 	 * This method finds annotation object in database by annotation ID and
 	 * reindexes it in Solr.
 	 * 
-	 * @param annoId
+	 * @param annoIdentifier
 	 * @return success of reindexing operation
 	 */
-	public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing);
+	public boolean reindexAnnotationById(long annoIdentifier, Date lastIndexing);
 
 	/**
 	 * This method performs Solr reindexing for all annotation objects stored in
@@ -43,30 +41,31 @@ public interface AdminService {
 
 	
 	/**
-	 * This method deletes the list of annotations identified by the provided uris
+	 * This method deletes the list of annotations.
 	 * @param uriList
 	 * @return
 	 */
-	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList);
+	public BatchProcessingStatus deleteAnnotationSet(List<Long> uriList);
 	
 	/**
-	 * This method deletes annotation by annotationId values.
-	 * @param annoId
+	 * This method deletes annotation by the identifier values.
+	 * @param annoIdentifier
 	 * @throws InternalServerException 
 	 * @throws AnnotationServiceException 
 	 */
-	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException;
+	public void deleteAnnotation(long annoIdentifier) throws InternalServerException, AnnotationServiceException;
 
 	
 	/**
-	 * This methods reindexes the set of annotations identified by their uris or objectIds
-	 * @param uriList
+	 * This methods reindexes the set of annotations identified by their identifiers
+	 * 
+	 * @param identifiers
+	 * @param action
 	 * @return
-	 * @throws ApiWriteLockException 
-	 * @throws IndexingJobLockedException 
-	 * @throws HttpException 
+	 * @throws HttpException
+	 * @throws ApiWriteLockException
 	 */
-	public BatchProcessingStatus reindexAnnotationSet(List<String> uriList, boolean isObjectId, String action) throws HttpException, ApiWriteLockException;
+	public BatchProcessingStatus reindexAnnotationSet(List<Long> identifiers, String action) throws HttpException, ApiWriteLockException;
 
 	/**
 	 * this method is used to reindex all annotations available in the database 
@@ -92,5 +91,7 @@ public interface AdminService {
 	 * @return
 	 */
 	public BatchProcessingStatus updateRecordId(String oldId, String newId);
+	
+    public boolean getRemoveAnnotationAuthorization();
 	
 }

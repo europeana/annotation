@@ -77,19 +77,16 @@ public class BaseVote implements Vote {
 	     */
 	    if ((this.getType() != null) && (that.getType() != null) &&
 	    		(!this.getType().equals(that.getType()))) {
-	    	System.out.println("Vote objects have different 'type' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getUserName() != null) && (that.getUserName() != null) &&
 	    		(!this.getUserName().equals(that.getUserName()))) {
-	    	System.out.println("Vote objects have different 'userName' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getUserId() != null) && (that.getUserId() != null) &&
 	    		(!this.getUserId().equals(that.getUserId()))) {
-	    	System.out.println("Vote objects have different 'userId' fields.");
 	    	res = false;
 	    }
 	    

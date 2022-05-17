@@ -28,6 +28,7 @@ public class TaggingTest extends BaseTaggingTest {
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -42,6 +43,7 @@ public class TaggingTest extends BaseTaggingTest {
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 
@@ -57,9 +59,9 @@ public class TaggingTest extends BaseTaggingTest {
 		//but ignore generated timestamp which is always set by the server
 		inputAnno.setGenerated(storedAnno.getGenerated());
 		validateOutputAgainstInput(storedAnno, inputAnno);
+		removeAnnotation(storedAnno.getIdentifier());
 
 	}
-	
 	
 	@Test
 	public void createGeoTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -73,7 +75,7 @@ public class TaggingTest extends BaseTaggingTest {
 		assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -126,19 +128,22 @@ public class TaggingTest extends BaseTaggingTest {
 	@Test
 	public void createCanonicalTag() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException {
 			
-		createAndValidateTag(TAG_CANONICAL);
+	  Annotation storedAnno = createAndValidateTag(TAG_CANONICAL);
+	  removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void createViaTagString() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
 		
-		createAndValidateTag(TAG_VIA_STRING);
+	    Annotation storedAnno = createAndValidateTag(TAG_VIA_STRING);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void createViaTagArray() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
 
-		createAndValidateTag(TAG_VIA_ARRAY);
+	    Annotation storedAnno = createAndValidateTag(TAG_VIA_ARRAY);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 
 	

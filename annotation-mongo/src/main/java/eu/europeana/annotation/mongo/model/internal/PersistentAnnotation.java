@@ -16,11 +16,8 @@ import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
  */
 public interface PersistentAnnotation extends Annotation, NoSqlEntity {
 
-	public final static String FIELD_BASEURL = "annotationId.baseUrl";
-	public final static String FIELD_PROVIDER = "annotationId.provider";
-	public final static String FIELD_IDENTIFIER = "annotationId.identifier";
-	public final static String FIELD_HTTPURL = "annotationId.httpUrl";
-	public final static String FIELD_ANNOTATION_ID = "annotationId";
+    public final static String FIELD_ID = "_id";
+	public final static String FIELD_IDENTIFIER = "identifier";
     public final static String FIELD_DISABLED = "disabled";
 	public final static String FIELD_VALUE = "value";
 	public final static String FIELD_VALUES = "values";

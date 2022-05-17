@@ -21,6 +21,8 @@ public class EdmRelationLinkingTest extends BaseLinkingTest {
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
+		
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -34,5 +36,7 @@ public class EdmRelationLinkingTest extends BaseLinkingTest {
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
+		
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 }

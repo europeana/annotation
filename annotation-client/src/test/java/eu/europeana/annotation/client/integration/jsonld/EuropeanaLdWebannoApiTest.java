@@ -2,12 +2,8 @@ package eu.europeana.annotation.client.integration.jsonld;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
@@ -20,7 +16,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 @Deprecated
 public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	
-	@Test
+	//@Test
+    @Deprecated
 	public void createSimpleTagWebannoAnnotation() throws JsonParseException, IOException {
 		
 		String requestBody = getJsonStringInput(SIMPLE_TAG_ANNOTATION);

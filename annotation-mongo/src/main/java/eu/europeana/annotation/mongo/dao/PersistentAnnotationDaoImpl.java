@@ -1,11 +1,12 @@
 package eu.europeana.annotation.mongo.dao;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mongodb.morphia.Datastore;
@@ -13,24 +14,19 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteError;
 import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
-import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdImpl;
+import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdentifierImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.utils.AnnotationListUtils;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
 
@@ -55,30 +51,28 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	}
 
 	@SuppressWarnings("deprecation")
-	public AnnotationId generateNextAnnotationId() {
+	public long generateNextAnnotationIdentifier() {
 
-		GeneratedAnnotationIdImpl nextAnnotationId = null;
+		GeneratedAnnotationIdentifierImpl nextAnnotationIdentifier = null;
 
 		synchronized (this) {
-			Query<GeneratedAnnotationIdImpl> q = getDatastore().createQuery(GeneratedAnnotationIdImpl.class);
+			Query<GeneratedAnnotationIdentifierImpl> q = getDatastore().createQuery(GeneratedAnnotationIdentifierImpl.class);
 			q.filter("_id", WebAnnotationFields.DEFAULT_PROVIDER);
 			
-			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
-					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
-					.inc(GeneratedAnnotationIdImpl.SEQUENCE_COLUMN_NAME);
+			UpdateOperations<GeneratedAnnotationIdentifierImpl> uOps = getDatastore()
+					.createUpdateOperations(GeneratedAnnotationIdentifierImpl.class)
+					.inc(GeneratedAnnotationIdentifierImpl.SEQUENCE_COLUMN_NAME);
 			// search annotationId and get incremented annotation number 
-			nextAnnotationId = getDatastore().findAndModify(q, uOps);
+			nextAnnotationIdentifier = getDatastore().findAndModify(q, uOps);
 			
-			if (nextAnnotationId == null) {
+			if (nextAnnotationIdentifier == null) {
 				// if first annotationId
-				nextAnnotationId = new GeneratedAnnotationIdImpl(WebAnnotationFields.DEFAULT_PROVIDER, getConfiguration().getAnnotationBaseUrl(), 1L);
-				ds.save(nextAnnotationId);
-			}else{
-				nextAnnotationId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
+			  nextAnnotationIdentifier = new GeneratedAnnotationIdentifierImpl(WebAnnotationFields.DEFAULT_PROVIDER, 1L);
+				ds.save(nextAnnotationIdentifier);
 			}
 		}
 
-		return nextAnnotationId;
+		return nextAnnotationIdentifier.getAnnotationNr();
 	}
 	
 
@@ -87,40 +81,34 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 * @param provider The name of the provider
 	 * @param sequenceLength The length of the id sequence to be created
 	 */
-	public List<AnnotationId> generateNextAnnotationIds(Integer sequenceLength) {
-//		public List<AnnotationId> generateNextAnnotationIds(String provider, Integer sequenceLength) {
-		
-		List<AnnotationId> nextAnnotationIds = new ArrayList<AnnotationId>(sequenceLength);
+	public List<Long> generateNextAnnotationIdentifiers(Integer sequenceLength) {
+	
+		List<Long> nextAnnotationIds = new ArrayList<Long>(sequenceLength);
 
-		GeneratedAnnotationIdImpl annoId = null;
+		GeneratedAnnotationIdentifierImpl annoId = null;
 
 		synchronized (this) {
 //			synchronized (provider) {
 			
-			Query<GeneratedAnnotationIdImpl> q = getDatastore().createQuery(GeneratedAnnotationIdImpl.class);
+			Query<GeneratedAnnotationIdentifierImpl> q = getDatastore().createQuery(GeneratedAnnotationIdentifierImpl.class);
 //			q.filter("_id", provider);
 			
-			UpdateOperations<GeneratedAnnotationIdImpl> uOps = getDatastore()
-					.createUpdateOperations(GeneratedAnnotationIdImpl.class)
-					.inc(GeneratedAnnotationIdImpl.SEQUENCE_COLUMN_NAME, sequenceLength);
+			UpdateOperations<GeneratedAnnotationIdentifierImpl> uOps = getDatastore()
+					.createUpdateOperations(GeneratedAnnotationIdentifierImpl.class)
+					.inc(GeneratedAnnotationIdentifierImpl.SEQUENCE_COLUMN_NAME, sequenceLength);
 			
 			// search annotationId and if it exists increment annotation number by the given sequence 
 			annoId = getDatastore().findAndModify(q, uOps);
 			
 			// no annotation id in collection for the given provider, therefore a new object is created
 			if (annoId == null) {
-//			annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+sequenceLength.toString());
-				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), ""+sequenceLength.toString());
+				annoId = new GeneratedAnnotationIdentifierImpl(WebAnnotationFields.DEFAULT_PROVIDER, sequenceLength.longValue());
 				getDatastore().save(annoId);
 			}
 			// generating a sequence of annotation ids 
-			Long firstNrOfSequence = annoId.getAnnotationNr() - sequenceLength;
+			Long firstNrOfSequence = annoId.getAnnotationNr() - sequenceLength + 1;
 			for(int i = 0; i < sequenceLength; i++) {
-				Long newAnnoIdNr = (firstNrOfSequence + i + 1);
-//				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), provider, ""+newAnnoIdNr.toString());
-				annoId = new GeneratedAnnotationIdImpl( getConfiguration().getAnnotationBaseUrl(), ""+newAnnoIdNr.toString());
-				annoId.setBaseUrl(getConfiguration().getAnnotationBaseUrl());
-				nextAnnotationIds.add(annoId);
+				nextAnnotationIds.add(firstNrOfSequence + i);
 			}
 		}
 		return nextAnnotationIds;
@@ -199,11 +187,11 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 */
 	public Long getLastAnnotationNr() {
 //		public Long getLastAnnotationNr(String provider) {
-		List<GeneratedAnnotationIdImpl> res = getDatastore().createQuery(GeneratedAnnotationIdImpl.class)
+		List<GeneratedAnnotationIdentifierImpl> res = getDatastore().createQuery(GeneratedAnnotationIdentifierImpl.class)
 //                .filter("_id", provider)                
                 .asList();
 		if(res.size() == 1) {
-			GeneratedAnnotationIdImpl genAnnoId = res.get(0);
+			GeneratedAnnotationIdentifierImpl genAnnoId = res.get(0);
 			return genAnnoId.getAnnotationNr();
 		} else
 			return 0L;
@@ -214,19 +202,37 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 * @param existingAnnos Annotations to be copied
 	 * @param sourceCollection Source collection
 	 * @param targetCollection Target collection
+	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({"deprecation", "unchecked"})
 	@Override
-	public void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String targetCollection) {
-		List<DBObject> ops = new ArrayList<DBObject>();
-		@SuppressWarnings("unchecked")
-		Query<PersistentAnnotation> query = (Query<PersistentAnnotation>) createQuery();
-		List<String> httpUrls = AnnotationListUtils.getHttpUrls(existingAnnos);
-		query.filter(PersistentAnnotation.FIELD_HTTPURL + " in", httpUrls);
-		ops.add(new BasicDBObject("$match", query.getQueryObject()));
-		ops.add(new BasicDBObject("$out", targetCollection));
-		DBCollection source = getDatastore().getDB().getCollection(sourceCollection);
-		source.aggregate(ops);
+	public void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String targetCollection) throws IOException, InterruptedException {
+//		List<DBObject> ops = new ArrayList<DBObject>();
+//		@SuppressWarnings("unchecked")
+//		Query<PersistentAnnotation> query = (Query<PersistentAnnotation>) createQuery();
+//		List<Long> annoIdentifiers = existingAnnos.stream().map(Annotation::getIdentifier).collect(Collectors.toList());
+//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER + " in", annoIdentifiers);
+//		ops.add(new BasicDBObject("$match", query.getQueryObject()));
+//		ops.add(new BasicDBObject("$out", targetCollection));
+//		DBCollection source = getDatastore().getDB().getCollection(sourceCollection);
+//		source.aggregate(ops);
+	  
+      List<String> command = Arrays.asList(
+          "mongodump",
+          "--db", configuration.getMongoDatabaseName(), //NOT NECESSARY IF YOU DUMP ALL DBs               
+          "--collection", AnnotationConfiguration.MONGO_COLLECTION_NAME // NOT NECESSARY IF YOU DUMP ALL Collections in the db
+      );
+
+      //the parameter is the working directory
+      ProcessBuilder pb = new ProcessBuilder(command).directory(new File("/tmp/"));                                                   
+
+      Process process = pb.start();
+
+      //WAITING FOR A RETURN FROM THE PROCESS WE STARTED
+      int exitCode = process.waitFor();
+      int check=0;
+
 	}
 
 }

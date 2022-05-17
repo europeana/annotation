@@ -43,6 +43,8 @@ public class DescribingWebResourceTest extends BaseDescribingTest {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
+		
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 }

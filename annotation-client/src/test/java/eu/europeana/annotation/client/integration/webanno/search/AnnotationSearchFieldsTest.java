@@ -3,13 +3,11 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
@@ -18,7 +16,6 @@ import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
 import eu.europeana.annotation.definitions.model.entity.impl.EdmPlace;
 import eu.europeana.annotation.definitions.model.graph.Graph;
-import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -30,11 +27,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 
 	static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	static final String VALUE_ID = "anno_id:";
-	static final String VALUE_TARGET = "target_uri:\"http://data.europeana.eu/item/09102/_UEDIN_214\"";
-	static final String VALUE_TARGET_TAG = "target_uri:\"http://data.europeana.eu/item/000002/_UEDIN_214\"";
-	static final String VALUE_TARGET_LINK = "target_uri:\"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584\"";
-	static final String VALUE_TARGET_LINK_SEMANTIC = "target_uri:\"http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6\"";
-	static final String VALUE_DESCRIBING_TARGET_SCOPE = "target_uri:\"http://data.europeana.eu/item/07931/diglit_uah_m1\"";
 	static final String VALUE_BODY_URI = "body_uri:\"http://www.geonames.org/2988507\"";
 	static final String VALUE_DESCRIBING_BODY_VALUE = "body_value:\"... this is the textual description of the item ...\"";
 	static final String VALUE_BODY_VALUE = "body_value:\"trombone\"";
@@ -59,7 +51,8 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
+		String VALUE_TARGET = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET);
 		//assertNo
 		
@@ -73,10 +66,10 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(placeBody.getLongitude().equals("-102.348800"));
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/09102/_UEDIN_214"));
+		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	@Test
@@ -94,8 +87,9 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
 		retrievedAnno = searchLastCreated(VALUE_BODY_VALUE);
+		String VALUE_TARGET_TAG = "target_uri:\""+ ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/000002/_UEDIN_214\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET_TAG);
 		
 		// validate fields
@@ -106,10 +100,10 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(tagBody.getValue().equals("trombone"));
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/000002/_UEDIN_214"));
+		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/000002/_UEDIN_214"));
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -123,8 +117,9 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(BodyInternalTypes.isTextualBody(createdAnno.getBody().getInternalType()));
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
 		retrievedAnno = searchLastCreated(VALUE_DESCRIBING_BODY_VALUE);
+		String VALUE_DESCRIBING_TARGET_SCOPE = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1\"";
 		retrievedAnno = searchLastCreated(VALUE_DESCRIBING_TARGET_SCOPE);
 		
 		// validate fields
@@ -137,10 +132,10 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertNotNull(target.getSource());
 		assertTrue(target.getSource().equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
 		assertNotNull(target.getScope());
-		assertTrue(target.getScope().equals("http://data.europeana.eu/item/07931/diglit_uah_m1"));
+		assertTrue(target.getScope().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1"));
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -152,17 +147,18 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Annotation createddAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createddAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createddAnno.getIdentifier()+"\"");
+		String VALUE_TARGET_LINK = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2020601/https___1914_1918_europeana_eu_contributions_19584\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET_LINK);
 		
 		// validate fields
 		assertTrue(retrievedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getValues());
-		assertTrue(target.getValues().contains("http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584"));
+		assertTrue(target.getValues().contains(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2020601/https___1914_1918_europeana_eu_contributions_19584"));
 
 		// remove tag
-		deleteAnnotation(createddAnno);
+		removeAnnotation(createddAnno.getIdentifier());
 	}
 	
 	@Test
@@ -174,17 +170,18 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Annotation createdAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
+		String VALUE_TARGET_LINK_SEMANTIC = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET_LINK_SEMANTIC);
 		
 		// validate fields
 		assertTrue(retrievedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
+		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -196,9 +193,10 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Annotation createdAnno = createLink(requestBody);
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
 		retrievedAnno = searchLastCreated(VALUE_BODY_LINK_RESOURCE_URI);
 		retrievedAnno = searchLastCreated(VALUE_BODY_LINK_RELATION);
+		String VALUE_TARGET_LINK_SEMANTIC = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET_LINK_SEMANTIC);
 		
 		// validate fields
@@ -208,13 +206,13 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertNotNull(graphBody.getNode());
 		assertTrue(graphBody.getNode().getHttpUri().equals("https://www.wikidata.org/wiki/Q762"));
 		assertTrue(graphBody.getRelationName().equals("isSimilarTo"));
-		assertTrue(graphBody.getResourceUri().equals("http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
+		assertTrue(graphBody.getResourceUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
+		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -232,8 +230,9 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		validateOutputAgainstInput(createdAnno, inputAnno);
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getAnnotationId().getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
 		retrievedAnno = searchLastCreated(VALUE_BODY_SPECIFIC_RESOURCE);
+		String VALUE_TARGET = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET);
 		
 		// validate fields
@@ -246,10 +245,10 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(tagBody.getLanguage().equals("en"));
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
-		assertTrue(target.getHttpUri().equals("http://data.europeana.eu/item/09102/_UEDIN_214"));
+		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 
 		// remove tag
-		deleteAnnotation(createdAnno);
+		removeAnnotation(createdAnno.getIdentifier());
 	}
 	
 

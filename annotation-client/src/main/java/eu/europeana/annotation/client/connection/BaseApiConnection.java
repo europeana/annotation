@@ -149,7 +149,6 @@ public class BaseApiConnection {
 	ResponseEntity<String> postURL(String url, String jsonPost) throws IOException {
 		logger.trace("Call to Annotation API (POST) with body: " + url + 
 				". Returns body, headers and status code.");
-		//System.out.println("post: " + url);
 		return getHttpConnection().postURL(url, jsonPost);
 	}
 	
@@ -218,6 +217,12 @@ public class BaseApiConnection {
 		logger.trace("Call to Annotation API (DELETE): " + url + 
 				". Returns headers and status code.");
 		return getHttpConnection().deleteURL(url, headerName, headerValue);
+	}
+	
+	ResponseEntity<String> removeURL(String url, String headerName, String headerValue) throws IOException {
+	    logger.trace("Call to Annotation API (remove): " + url + 
+	            ". Returns headers and status code.");
+	    return getHttpConnection().deleteURL(url, headerName, headerValue);
 	}
 	
 

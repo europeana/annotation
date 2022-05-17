@@ -1,22 +1,19 @@
 package eu.europeana.annotation.definitions.model.utils;
 
 import org.apache.commons.lang3.StringUtils;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationIdHelper {
-
+  
     /**
      * This method extracts resourceId from passed httpUri. 
      * 
      * @param httpUri
      * @return resourceId
      */
-    public String extractResourceIdFromHttpUri(String httpUri) {
+    public static String extractResourceIdFromHttpUri(String httpUri) {
 	//extract resource id only from europeana resources
 	//TODO: make it configurable
 	if(!httpUri.contains("europeana.eu/"))
@@ -25,14 +22,14 @@ public class AnnotationIdHelper {
 	return buildResourceId(resourceParts);
     }
 
-    String buildResourceId(String[] parts) {
+    static String buildResourceId(String[] parts) {
 	if (parts == null || parts.length < 2)
 	    return null;
 
 	return WebAnnotationFields.SLASH + parts[0] + WebAnnotationFields.SLASH + parts[1];
     }
 
-    String[] extractResourceIdPartsFromHttpUri(String httpUri) {
+    static String[] extractResourceIdPartsFromHttpUri(String httpUri) {
 	String res[] = new String[2];
 	if (StringUtils.isNotEmpty(httpUri)) {
 	    String[] arrValue = httpUri.split(WebAnnotationFields.SLASH);
@@ -62,7 +59,7 @@ public class AnnotationIdHelper {
      * @param newAnnotation
      * @return resourceId string
      */
-    public String extractResourceId(Annotation newAnnotation) {
+    public static String extractResourceId(Annotation newAnnotation) {
 	String resourceId = "";
 	if (((BaseTarget) newAnnotation.getTarget()).getSourceResource() != null) {
 	    resourceId = extractResourceIdFromHttpUri(
@@ -80,7 +77,7 @@ public class AnnotationIdHelper {
      * @return collection
      */
     @Deprecated
-    public String extractCollectionFromResourceId(String resourceId) {
+    public static String extractCollectionFromResourceId(String resourceId) {
 	String res = "";
 	int COLLECTION_CHUNK_POS = 1;
 	if (StringUtils.isNotEmpty(resourceId)) {
@@ -97,7 +94,7 @@ public class AnnotationIdHelper {
      * @return object
      */
     @Deprecated
-    public String extractObjectFromResourceId(String resourceId) {
+    public static String extractObjectFromResourceId(String resourceId) {
 	String res = "";
 	int OBJECT_CHUNK_POS = 2;
 	if (StringUtils.isNotEmpty(resourceId)) {
@@ -107,52 +104,26 @@ public class AnnotationIdHelper {
 	return res;
     }
 
-
-
-    /**
-     * This method initializes AnnotationId object by passed identifier when
-     * identifier is an URL and contains provider. e.g. identifier
-     * 'http://data.europeana.eu/annotation/1'
-     * 
-     * @param uri
-     * @return AnnotationId object
-     */
-    public AnnotationId parseAnnotationId(String uri) {
-
-	if(uri == null)
-	    return null;
-	
-	AnnotationId annotationId = new BaseAnnotationId();
-	String id = StringUtils.substringAfterLast(uri, WebAnnotationFields.SLASH);
-	annotationId.setIdentifier(id);
-
-	String baseUrl = StringUtils.substringBeforeLast(uri, WebAnnotationFields.SLASH);
-	annotationId.setBaseUrl(baseUrl);
-
-	//force generation of httpUrl
-	annotationId.getHttpUrl();
-	return annotationId;
-    }
-
     /**
      * Get ID part form URI string
      * 
      * @param uriStr URI string
      * @return ID part
      */
-    public String getIdPartFromUri(String uriStr) {
+    public static String getIdPartFromUri(String uriStr) {
 	return uriStr.substring(uriStr.lastIndexOf('/') + 1, uriStr.length());
     }
 
-    /**
-     * Create annotation ID based on via URL
-     * 
-     * @param baseUrl Base URL for annotation id
-     * @param via     via URL
-     * @return new annotation ID
-     */
-    public BaseAnnotationId getAnnotationIdBasedOnVia(String baseUrl, String via) {
-	return new BaseAnnotationId(baseUrl, getIdPartFromUri(via));
+    public static String buildCreatorUri(String userEndpointBaseUrl, String userId) {
+      return userEndpointBaseUrl + "/" + userId;
     }
 
+    public static String buildGeneratorUri(String clientEndpointBaseUrl, String apikeyId) {
+      return clientEndpointBaseUrl + "/" + apikeyId;
+    }
+    
+    public static String buildAnnotationUri(String annoBaseUrl, long annoIdentifier) {
+      return annoBaseUrl + "/" + annoIdentifier;
+    }
+    
 }

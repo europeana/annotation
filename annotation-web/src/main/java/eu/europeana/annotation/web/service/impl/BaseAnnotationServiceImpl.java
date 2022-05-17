@@ -1,16 +1,12 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.Date;
-
 import javax.annotation.Resource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
@@ -43,7 +39,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
     @Resource
     PersistentModerationRecordService mongoModerationRecordPersistance;
 
-    Logger logger = LogManager.getLogger(getClass());
+    protected static Logger logger = LogManager.getLogger(BaseAnnotationServiceImpl.class);
 
 //	public AuthenticationService getAuthenticationService() {
 //		return authenticationService;
@@ -85,12 +81,12 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	this.solrService = solrService;
     }
     
-    public Annotation getAnnotationById(AnnotationId annoId, String userId, boolean enabled)
+    public Annotation getAnnotationById(long annoIdentifier, String userId, boolean enabled)
 	    throws AnnotationNotFoundException, UserAuthorizationException {
-	Annotation annotation = getMongoPersistence().find(annoId);
+	Annotation annotation = getMongoPersistence().find(annoIdentifier);
 	if (annotation == null)
 	    throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND,
-		    new String[] { annoId.toHttpUrl() });
+		    new String[] { String.valueOf(annoIdentifier) });
 
 	try {
 	    // check privacy
@@ -164,13 +160,13 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 
 	try {
 	    Summary summary = getMongoModerationRecordPersistence()
-		    .getModerationSummaryByAnnotationId(res.getAnnotationId());
+		    .getModerationSummaryByAnnotationId(res.getIdentifier());
 	    getSolrService().update(res, summary);
 	    updateLastIndexingTime(res, lastIndexing);
 
 	    return true;
 	} catch (Exception e) {
-	    throw new AnnotationIndexingException("cannot reindex annotation with ID: " + res.getAnnotationId(), e);
+	    throw new AnnotationIndexingException("Cannot reindex annotation with the identifier: " + res.getIdentifier(), e);
 	}
     }
 
@@ -180,13 +176,12 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
      * @param res
      * @return reindexing success status
      */
-    public boolean reindexAnnotationById(AnnotationId annoId, Date lastIndexing) {
+    public boolean reindexAnnotationById(long annoIdentifier, Date lastIndexing) {
 	boolean success = false;
 	try {
 //			Annotation res = getAnnotationById(annoId);
-	    Annotation annotation = getMongoPersistence().find(annoId);
+	    Annotation annotation = getMongoPersistence().find(annoIdentifier);
 	    success = reindexAnnotation(annotation, lastIndexing);
-	    System.out.println(annoId);
 	} catch (Exception e) {
 	    getLogger().error(e.getMessage(), e);
 	    return false;
@@ -219,7 +214,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	    reindexAnnotation(res, res.getLastUpdate());
 	} catch (AnnotationIndexingException e) {
 	    getLogger().warn(
-		    "The annotation could not be reindexed successfully: " + persistentAnnotation.getAnnotationId(), e);
+		    "The annotation with the identifier: " + persistentAnnotation.getIdentifier() + " could not be reindexed successfully.", e);
 	}
 	return res;
     }
@@ -234,6 +229,10 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 
     boolean isDereferenceProfile(SearchProfiles searchProfile) {
 	return SearchProfiles.DEREFERENCE.equals(searchProfile);
+    }
+    
+    public boolean getRemoveAnnotationAuthorization() {
+      return configuration.getAnnoRemoveAuthorization();
     }
 
 }

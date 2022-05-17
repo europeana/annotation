@@ -2,17 +2,14 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
@@ -57,7 +54,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 			@RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
 			@RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
 			) throws HttpException {
 
@@ -70,7 +67,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.UPDATE_SAMPLES_JSONLD, value = "Update annotation", nickname = "updateAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> updateAnnotation(
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			@RequestBody String annotation,
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
@@ -86,7 +83,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Delete annotation", nickname = "deleteAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> deleteAnnotation(
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
@@ -101,7 +98,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Enable annotation", nickname = "enableAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> enableAnnotation(
-			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) String identifier,
+			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
 			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 

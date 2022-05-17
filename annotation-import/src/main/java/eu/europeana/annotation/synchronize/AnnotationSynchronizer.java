@@ -265,7 +265,7 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 			FulltextContent fulltextContent = new FulltextContent(transcription, language);
 			fulltextDocs.add(new FulltextDocument(europeana_id, Arrays.asList(fulltextContent), updated));   
 		} else {
-		    LOGGER.info("No textual transcription available, the annotation is not added to fulltext: {0}", annotation.getAnnotationId());
+		    LOGGER.info("No textual transcription available, the annotation is not added to fulltext: {0}", annotation.getIdentifier());
 		}
 	    } 
 	}

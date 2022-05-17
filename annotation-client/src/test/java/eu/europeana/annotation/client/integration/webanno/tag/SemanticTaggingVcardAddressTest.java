@@ -42,6 +42,7 @@ public class SemanticTaggingVcardAddressTest extends BaseTaggingTest {
 				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardPostOfficeBox());
 		assertNotNull(
 				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardStreetAddress());
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 }

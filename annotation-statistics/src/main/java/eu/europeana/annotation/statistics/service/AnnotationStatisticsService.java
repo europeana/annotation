@@ -23,11 +23,7 @@ public class AnnotationStatisticsService {
 	@Resource
 	SolrAnnotationService solrService;
 	
-    private final Logger logger = LogManager.getLogger(getClass());
-
-    public Logger getLogger() {
-      return logger;
-    }
+	Logger logger = LogManager.getLogger(getClass());
 
     public void getAnnotationsStatistics(AnnotationMetric annoMetric) throws AnnotationServiceException {
     	//getting the annotations statistics for the scenarios
@@ -86,7 +82,7 @@ public class AnnotationStatisticsService {
               break;
 
             default:
-              getLogger().debug("Scenario not supported in statistics service: {}", facetJsonBucket.getVal());
+              logger.debug("Scenario not supported in statistics service: {}", facetJsonBucket.getVal());
               break;
           }  
     	}

@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
@@ -33,7 +31,7 @@ public interface SolrAnnotationService {
 	 * @throws IOException 
 	 * @throws SolrServerException 
 	 */
-	public void store(List<? extends Annotation> annos) throws AnnotationServiceException, SolrServerException, IOException ;
+	public void store(List<? extends Annotation> annos) throws AnnotationServiceException;
 	
 	/**
 	 * This method stores a SolrAnnotation object in SOLR.
@@ -55,11 +53,7 @@ public interface SolrAnnotationService {
 	 */
 	public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException;
 
-	/**
-	 * This method removes a SolrAnnotation object from SOLR.
-	 * @param solrAnnotation
-	 */
-	public void delete(AnnotationId annoId) throws AnnotationServiceException;
+	public void delete(long annoIdentifier) throws AnnotationServiceException;
 	
 	/**
 	 * This method removes a SolrAnnotation object from SOLR.

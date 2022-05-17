@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -34,9 +34,9 @@ public class SolrAnnotationUtils {
     private final Logger logger = LogManager.getLogger(getClass());
 
     public Logger getLogger() {
-	return logger;
+      return logger;
     }
-
+    
     protected SolrQuery toSolrQuery(Query searchQuery) {
 
 	SolrQuery solrQuery = new SolrQuery();
@@ -67,8 +67,8 @@ public class SolrAnnotationUtils {
 	return solrQuery;
     }
 
-    public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, Summary summary) {
-	SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary);
+    public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, Summary summary, String annoBaseUri) {
+	SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary, annoBaseUri);
 	processSolrBeanProperties(solrAnnotationImpl);
 	return solrAnnotationImpl;
     }
@@ -97,8 +97,6 @@ public class SolrAnnotationUtils {
     }
 
     protected void processSolrBeanProperties(SolrAnnotation solrAnnotation) {
-
-	solrAnnotation.setMotivationKey(solrAnnotation.getMotivationType().getJsonValue());
 
 	processBody(solrAnnotation);
 
@@ -283,6 +281,14 @@ public class SolrAnnotationUtils {
 	if (recordId != null && !recordIds.contains(recordId)) {
 	    recordIds.add(recordId);
 	}
+    }
+    
+    public String hideSolrServerBaseUrl (String text,  String baseUrls) {
+      String[] allBaseUrls = StringUtils.split(baseUrls, ",");
+      for(String singleBaseUrl : allBaseUrls) {
+        text = StringUtils.replace(text, singleBaseUrl, "*");
+      }
+      return text;
     }
 
 }
