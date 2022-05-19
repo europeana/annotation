@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +29,8 @@ import eu.europeana.annotation.web.service.AnnotationService;
 @ContextConfiguration({"/annotation-mongo-test.xml"})
 public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 
+    Logger log = LogManager.getLogger(getClass());
+  
 	@Resource 
 	AnnotationService webAnnotationService;
 	
@@ -71,7 +75,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 		
 		Annotation anno = testCreateAnnotationWebanno(identifier);
 		
-		System.out.println("Identifier in "+ environment + " environment: " + String.valueOf(anno.getIdentifier()));
+		log.debug("Identifier in "+ environment + " environment: " + anno.getIdentifier());
 		adminService.deleteAnnotation(anno.getIdentifier());
 	}
 	
@@ -89,8 +93,8 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
 		}
 		
-//		System.out.println("testAnnotation: " + testAnnotation.toString());
-//		System.out.println("webAnnotation: " + webAnnotation.toString());
+//		log.debug("testAnnotation: " + testAnnotation.toString());
+//		log.debug("webAnnotation: " + webAnnotation.toString());
 		
 		return webAnnotation;
 	}

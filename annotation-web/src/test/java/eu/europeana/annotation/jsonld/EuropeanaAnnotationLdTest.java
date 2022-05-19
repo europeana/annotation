@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.annotation.Resource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.junit.jupiter.api.AfterEach;
@@ -33,6 +35,8 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 @ContextConfiguration({"/annotation-mongo-test.xml"})
 public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
   
+    Logger log = LogManager.getLogger(getClass());
+    
     @Resource
     AnnotationConfiguration configuration;
     
@@ -235,7 +239,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 //        
 //        String EuropeanaAnnotationLdStr = EuropeanaAnnotationLd.toString();        
 //        String EuropeanaAnnotationLdIndentStr = EuropeanaAnnotationLd.toString(4);        
-//        System.out.println("### EuropeanaAnnotationLdStr ###");
+//        log.debug("### EuropeanaAnnotationLdStr ###");
 //        EuropeanaAnnotationLd.toConsole("jsonLdStr      ", jsonLdStr);
 //        EuropeanaAnnotationLd.toConsole("EuropeanaAnnotationLdStr", EuropeanaAnnotationLdStr);
 //        EuropeanaAnnotationLd.toConsole("", EuropeanaAnnotationLdIndentStr);
@@ -344,8 +348,8 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 //        assertEquals(originalAgentType, TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType()));
         assertEquals(originalAgentType, originalAnnotation.getGenerator().getType());
 ////        originalAnnotation.getSerializedBy().addType("new type");
-//        System.out.println("Agent type: " + TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType()));
-        System.out.println("Agent type: " + originalAnnotation.getGenerator().getType());
+//        log.debug("Agent type: " + TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType()));
+        log.debug("Agent type: " + originalAnnotation.getGenerator().getType());
 //        assertFalse(originalAgentType.equals(TypeUtils.getTypeListAsStr(originalAnnotation.getSerializedBy().getAgentType())));
         assertTrue(originalAgentType.equals(originalAnnotation.getGenerator().getType()));
     }
@@ -405,8 +409,8 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 //         * 5. EuropeanaAnnotationLd object -> Annotation object.
 //         */
 //        //Annotation annotationFromEuropeanaAnnotationLd = parsedEuropeanaAnnotationLd.getAnnotation();
-//        System.out.println("originalAnnotation: " + originalAnnotation.toString());
-//        System.out.println("annotationFromEuropeanaAnnotationLd: " + parsedEuropeanaAnnotationLd);
+//        log.debug("originalAnnotation: " + originalAnnotation.toString());
+//        log.debug("annotationFromEuropeanaAnnotationLd: " + parsedEuropeanaAnnotationLd);
 //        
 //        assertEquals(originalAnnotation.getMotivation(), parsedEuropeanaAnnotationLd.getMotivation());
 //        assertEquals(originalAnnotation.getAnnotationId(), parsedEuropeanaAnnotationLd.getAnnotationId());
@@ -452,7 +456,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 //        String convertedAnnotationIndent = convertedEuropeanaAnnotationLd.toString(4);
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
-//        System.out.println(originalAnnotation.toString());
+//        log.debug(originalAnnotation.toString());
         assertEquals(originalAnnotation.getTarget().getSelector(), annotationFromEuropeanaAnnotationLd.getTarget().getSelector());
         // Original object does not have EuropeanaUri
 //        originalAnnotation.getTarget().setEuropeanaId(annotationFromEuropeanaAnnotationLd.getTarget().getEuropeanaId());

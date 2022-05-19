@@ -13,7 +13,7 @@
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 		},
 		{
-			"id": "1",
+			"id": "http://data.europeana.eu/annotation/base/1",
 			"bodyValue": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 			"motivation": "tagging",
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
@@ -24,7 +24,7 @@
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 		},
 		{
-			"id": "2",
+			"id": "http://data.europeana.eu/annotation/base/2",
 			"bodyValue": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 			"motivation": "tagging",
 			"target": "http://data.europeana.eu/item/09102/_UEDIN_214"

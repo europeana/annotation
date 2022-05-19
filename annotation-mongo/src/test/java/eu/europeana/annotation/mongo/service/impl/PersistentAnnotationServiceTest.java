@@ -49,8 +49,6 @@ import eu.europeana.api.commons.nosql.dao.NosqlDao;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
 public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
-
-	
 	
 	public PersistentAnnotationServiceTest() {
 		super(null);
@@ -240,7 +238,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				annotation_db_annotationService.remove(storedObject.getIdentifier());
 				
 				//check deletion
-				Annotation anno = annotation_db_annotationService.find(storedObject.getIdentifier());
+				Annotation anno = annotation_db_annotationService.getByIdentifier(storedObject.getIdentifier());
 				assertNull(anno);				
 	}
 	
@@ -419,8 +417,6 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	// assertTrue(results.size() > 0);
 	// for (Annotation annotation : results) {
 	// assertEquals(TEST_EUROPEANA_ID, annotation.getResourceId());
-	// System.out.println("annotationType/annotationNumber: " +
-	// annotation.getType() + "/" + annotation.getAnnotationNr());
 	// }
 	// }
 	//

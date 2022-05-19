@@ -60,7 +60,7 @@ public class BaseStatusLog implements StatusLog {
 		if (date > 0) 
 			res = res + "\t" + "date:" + date + "\n";
 		if (identifier != 0) 
-			res = res + "\t" + "identifier:" + String.valueOf(identifier) + "\n";
+			res = res + "\t" + "identifier:" + identifier + "\n";
 		return res;
 	}
 

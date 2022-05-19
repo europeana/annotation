@@ -38,8 +38,6 @@ public class BaseJsonLdApiTest {
 	protected void validateAnnotation(String provider, long annotationNr, Annotation annotation)
 			throws JsonParseException {
 		
-		System.out.println("Annotation URI: " + annotation.getIdentifier());
-		
 		assertTrue(annotation.getIdentifier() > 0);
 		assertEquals(annotationNr, annotation.getIdentifier());		
 	}

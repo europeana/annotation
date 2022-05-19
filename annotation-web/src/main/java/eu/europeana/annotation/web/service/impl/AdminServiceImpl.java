@@ -55,10 +55,10 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 			if (StringUtils.startsWith(e.getMessage(), AnnotationMongoException.NO_RECORD_FOUND)) {
 				// consider annotation deleted in mongo and try to remove the
 				// related items
-				getLogger().warn("The annotation with the given Id doesn't exist anymore: " + String.valueOf(annoIdentifier));
+				getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoIdentifier);
 			} else {
 				// do not remove anything if the master object cannt be deleted
-				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + String.valueOf(annoIdentifier), e);
+				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + annoIdentifier, e);
 			}
 		} catch (Throwable th) {
 			throw new InternalServerException(th);
@@ -69,7 +69,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 			getMongoModerationRecordPersistence().remove(annoIdentifier);
 		} catch (Throwable th) {
 			// expected ModerationMongoException
-			getLogger().warn("Cannot remove moderation record for annotation id: " + String.valueOf(annoIdentifier));
+			getLogger().warn("Cannot remove moderation record for annotation id: " + annoIdentifier);
 		}
 
 		// delete from solr .. and throw AnnotationServiceException if operation
@@ -125,7 +125,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 						if (count % 1000 == 0)
 							getLogger().info("Processing object: {}", count);
 
-						annotation = getMongoPersistence().find(id);
+						annotation = getMongoPersistence().getByIdentifier(id);
 
 						if (annotation == null)
 							throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{String.valueOf(id)});

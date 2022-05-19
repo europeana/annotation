@@ -255,7 +255,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		JsonParser parser = new JsonParser();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		JsonElement el = parser.parse(jsonStr);
-		System.out.println(gson.toJson(el));
+		log.debug(gson.toJson(el));
 	}
 
 }

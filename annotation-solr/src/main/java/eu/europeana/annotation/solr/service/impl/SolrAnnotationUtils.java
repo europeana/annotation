@@ -283,12 +283,12 @@ public class SolrAnnotationUtils {
 	}
     }
     
-    public String hideSolrServerBaseUrl (String text,  String baseUrls) {
-      String[] allBaseUrls = StringUtils.split(baseUrls, ",");
-      for(String singleBaseUrl : allBaseUrls) {
-        text = StringUtils.replace(text, singleBaseUrl, "*");
-      }
-      return text;
+    public String hideSolrServerBaseUrl (String text) {
+      /* this regex is supposed to find the server addresses starting with the http, i.e. 
+       * it matches a word staring with the http, followed by any character 0..* times, 
+       * ending with 1..* white space chars
+       */
+      return text.replaceAll("http[^\\s]*\\s+","*");
     }
 
 }

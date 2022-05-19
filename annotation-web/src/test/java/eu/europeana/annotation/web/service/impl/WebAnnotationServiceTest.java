@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +42,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	public static String TEST_RO_VALUE = "Vlad Tepes";
 	public static String TEST_EN_VALUE = "Vlad the Impaler";
-
+	
+	Logger log = LogManager.getLogger(getClass());
+	
 	@Resource 
 	AnnotationService webAnnotationService;
 	
@@ -86,8 +90,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
 		}
 		
-		System.out.println("testAnnotation: " + testAnnotation.toString());
-		System.out.println("webAnnotation: " + webAnnotation.toString());
+		log.debug("testAnnotation: " + testAnnotation.toString());
+		log.debug("webAnnotation: " + webAnnotation.toString());
 		
 		assertTrue(webAnnotation.getIdentifier() != 0);
 		assertEquals(testAnnotation.getBody(), webAnnotation.getBody());
@@ -101,7 +105,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
         AnnotationLdParser parser = new AnnotationLdParser();
         
         String actual = serializer.toString();
-        System.out.println(actual);
+        log.debug(actual);
 //        AnnotationLd.toConsole("", actual);
         
         String actualIndent = serializer.toString(4);
@@ -136,8 +140,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 			webAnnotation.setType(AnnotationTypes.OBJECT_TAG.name());
 		}
 		
-		System.out.println("testAnnotation: " + testAnnotation.toString());
-		System.out.println("webAnnotation: " + webAnnotation.toString());
+		log.debug("testAnnotation: " + testAnnotation.toString());
+		log.debug("webAnnotation: " + webAnnotation.toString());
 		
 		assertTrue(webAnnotation.getIdentifier() != 0);
 	}

@@ -174,7 +174,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
 	if (getConfiguration().isIndexingEnabled()) {
 	    try {
-		Annotation annotation = getMongoPersistance().find(res.getIdentifier());
+		Annotation annotation = getMongoPersistance().getByIdentifier(res.getIdentifier());
 		reindexAnnotation(annotation, lastindexing);
 	    } catch (Exception e) {
 		getLogger().warn(
@@ -306,7 +306,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     @Override
     public Annotation disableAnnotation(long annoIdentifier) {
 	    // disable annotation
-	    Annotation res = getMongoPersistence().find(annoIdentifier);
+	    Annotation res = getMongoPersistence().getByIdentifier(annoIdentifier);
 	    return disableAnnotation(res);
     }
 
@@ -317,7 +317,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     if (annotation instanceof PersistentAnnotation)
 	persistentAnnotation = (PersistentAnnotation) annotation;
     else
-	persistentAnnotation = getMongoPersistence().find(annotation.getIdentifier());
+	persistentAnnotation = getMongoPersistence().getByIdentifier(annotation.getIdentifier());
 
     persistentAnnotation.setDisabled(new Date());
     persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
@@ -331,7 +331,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     @Override
     public Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException {
 		PersistentAnnotation persistentAnnotation;
-		persistentAnnotation = getMongoPersistence().find(annoIdentifier);
+		persistentAnnotation = getMongoPersistence().getByIdentifier(annoIdentifier);
 	    persistentAnnotation.setDisabled(null);
 	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 	
@@ -373,7 +373,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     public boolean existsInDb(long annoIdentifier) {
 	boolean res = false;
 	try {
-	    Annotation dbRes = getMongoPersistence().find(annoIdentifier);
+	    Annotation dbRes = getMongoPersistence().getByIdentifier(annoIdentifier);
 	    if (dbRes != null)
 		res = true;
 	} catch (Exception e) {

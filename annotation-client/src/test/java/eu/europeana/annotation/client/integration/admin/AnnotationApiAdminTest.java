@@ -178,9 +178,9 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		{
 		long now = System.currentTimeMillis();
 		
-		System.out.println(now);
+		log.debug(now);
 		while(System.currentTimeMillis() < (now + 200));
-		System.out.println(System.currentTimeMillis());
+		log.debug(System.currentTimeMillis());
 		}
 		
 		th2.start();
@@ -190,8 +190,8 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		
 		assertTrue(call1.getResult().getStatusCode() != call2.getResult().getStatusCode());
 		assertTrue(call1.getResult().getStatusCode() == HttpStatus.OK || call2.getResult().getStatusCode() == HttpStatus.OK);
-		System.out.println(call1.getResult());
-		System.out.println(call2.getResult());
+		log.debug(call1.getResult());
+		log.debug(call2.getResult());
 		
 		// delete all used test annotations
         for (Annotation anno : annotations) {

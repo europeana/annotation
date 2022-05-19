@@ -46,7 +46,7 @@ public class PersistentModerationRecordImpl implements PersistentModerationRecor
 		String res = "\t### PersistentModerationRecord ###\n";
 		
 		if (getIdentifier() != 0) 
-			res = res + "\t\t" + "Identifier:" + String.valueOf(identifier) + "\n";
+			res = res + "\t\t" + "Identifier:" + identifier + "\n";
 		return res;
 	}
 	

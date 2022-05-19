@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
@@ -18,6 +20,8 @@ import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
  */
 public class MetisDereferenciationClientTest {
 
+    Logger log = LogManager.getLogger(getClass());
+  
     private MetisDereferenciationClient dereferenciationClient;
     private static final String METIS_DEREFERENCE_SERVICE_URI = "http://metis-dereference-rest-acceptance.eanadev.org/dereference?uri=";
     private static final String URI_WKD_VERMEER = "http://www.wikidata.org/entity/Q41264";
@@ -35,7 +39,7 @@ public class MetisDereferenciationClientTest {
 	assertNotNull(dereferenced);
 	assertTrue(dereferenced.size() == 1);
 	assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_WKD_VERMEER)));
-	System.out.println(dereferenced.get(URI_WKD_VERMEER));
+	log.debug(dereferenced.get(URI_WKD_VERMEER));
     }
 
     @Test
@@ -45,7 +49,7 @@ public class MetisDereferenciationClientTest {
 	assertNotNull(dereferenced);
 	assertTrue(dereferenced.size() == 1);
 	assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_WKD_DA_VINCI)));
-	System.out.println(dereferenced.get(URI_WKD_DA_VINCI));
+	log.debug(dereferenced.get(URI_WKD_DA_VINCI));
     }
     @Test
     public void testDereferenceMany() throws IOException {
@@ -68,11 +72,11 @@ public class MetisDereferenciationClientTest {
 	assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_VIAF_VERMEER)));
 	assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_WKD_DA_VINCI)));
 	
-	System.out.println(dereferenced.get(URI_WKD_VERMEER));
-	System.out.println(dereferenced.get(URI_WKT_PARK));
-	System.out.println(dereferenced.get(URI_GETTY_COLD));
-	System.out.println(dereferenced.get(URI_VIAF_VERMEER));
-	System.out.println(dereferenced.get(URI_WKD_DA_VINCI));
+	log.debug(dereferenced.get(URI_WKD_VERMEER));
+	log.debug(dereferenced.get(URI_WKT_PARK));
+	log.debug(dereferenced.get(URI_GETTY_COLD));
+	log.debug(dereferenced.get(URI_VIAF_VERMEER));
+	log.debug(dereferenced.get(URI_WKD_DA_VINCI));
 	
     }
 
