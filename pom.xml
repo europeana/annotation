@@ -69,7 +69,7 @@
 <!-- 		<version.maven-surfire-plugin>2.19.1</version.maven-surfire-plugin> -->
 		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>		
 		
-		<tests.skip>true</tests.skip>
+		<tests.skip>false</tests.skip>
 		
 	</properties>
 	<modules>
