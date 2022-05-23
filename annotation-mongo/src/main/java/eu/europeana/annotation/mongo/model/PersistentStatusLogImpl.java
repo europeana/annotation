@@ -31,7 +31,7 @@ public class PersistentStatusLogImpl implements PersistentStatusLog, PersistentO
 		return "PersistentStatusLog [" + "user:" + getUser() 
 				+ "Id:" + getId() 
 				+ ", status:" + getStatus()
-				+ ", identifier:" + String.valueOf(identifier) 
+				+ ", identifier:" + identifier 
 				+ ", date: " + getDate() + "]";
 	}
 

@@ -83,7 +83,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
     
     public Annotation getAnnotationById(long annoIdentifier, String userId, boolean enabled)
 	    throws AnnotationNotFoundException, UserAuthorizationException {
-	Annotation annotation = getMongoPersistence().find(annoIdentifier);
+	Annotation annotation = getMongoPersistence().getByIdentifier(annoIdentifier);
 	if (annotation == null)
 	    throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND,
 		    new String[] { String.valueOf(annoIdentifier) });
@@ -180,7 +180,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	boolean success = false;
 	try {
 //			Annotation res = getAnnotationById(annoId);
-	    Annotation annotation = getMongoPersistence().find(annoIdentifier);
+	    Annotation annotation = getMongoPersistence().getByIdentifier(annoIdentifier);
 	    success = reindexAnnotation(annotation, lastIndexing);
 	} catch (Exception e) {
 	    getLogger().error(e.getMessage(), e);

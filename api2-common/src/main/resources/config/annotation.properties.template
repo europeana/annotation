@@ -1,10 +1,8 @@
 ##common settings
 #boolean value indicating if the indexing of annotations in solr should be performed. required valid solr configurations
 annotation.indexing.enabled=true
-
 #string value indicating if the application runs in "production", "test", "development" environment 
 annotation.environment=development
-
 #Socks proxy configuration. If provided it will be used for all http connections (see also solr.annotation.url, mongodb.annotation.connectionUrl) 
 # Url Format: socks://username:password@socks_proxy_server:port 
 socks.proxy.url=
@@ -76,3 +74,17 @@ annotation.licenses=http://creativecommons.org/publicdomain/zero/,http://creativ
 
 # Annotation API version
 annotation.apiVersion=
+#placeholder to store generation timestamp
+annotation.properties.timestamp=-1
+#annotation subtitles formats
+annotation.subtitles.formats=text/vtt,application/ttml+xml,video/quicktime
+annotation.subtitles.formats.xml=/subtitles-formats.xml
+
+annotation.api.endpoint=https://api.europeana.eu/annotation
+annotation.data.endpoint=http://data.europeana.eu/annotation
+annotation.user.data.endpoint=http://data.europeana.eu/user
+annotation.client.api.endpoint=https://api.europeana.eu/apikey
+annotation.item.data.endpoint=http://data.europeana.eu/item
+
+#when running the annotation-client tests this can be set to true to avoid the authorization for the deletion
+annotation.remove.authorization=false

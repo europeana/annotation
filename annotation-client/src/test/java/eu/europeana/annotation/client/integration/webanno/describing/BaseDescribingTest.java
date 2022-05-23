@@ -33,7 +33,7 @@ public class BaseDescribingTest extends BaseWebAnnotationTest {
 	protected Annotation createAndValidateDescribing(String inputFile) throws IOException, JsonParseException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		System.out.println("Input File: " + inputFile);
+		log.debug("Input File: " + inputFile);
 
 		String requestBody = getJsonStringInput(inputFile);
 

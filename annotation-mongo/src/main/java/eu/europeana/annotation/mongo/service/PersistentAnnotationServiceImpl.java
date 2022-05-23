@@ -247,7 +247,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	@Override
-	public PersistentAnnotation find(long annoIdentifier) {
+	public PersistentAnnotation getByIdentifier(long annoIdentifier) {
 	  return getDao().findOne( PersistentAnnotation.FIELD_IDENTIFIER, annoIdentifier);
 	}
 
@@ -475,7 +475,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 		Annotation res = null;
 
-		PersistentAnnotation annotation = find(newAnnotation.getIdentifier());
+		PersistentAnnotation annotation = getByIdentifier(newAnnotation.getIdentifier());
 
 		if (annotation != null) {
 			annotation.setStatus(newAnnotation.getStatus());
@@ -650,5 +650,5 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				AnnotationMongoConfiguration.ANNOTATION_MAIN_COLLECTION_NAME, 
 				AnnotationMongoConfiguration.ANNOTATION_BACKUP_COLLECTION_NAME);
 	}
-	
+      	
 }

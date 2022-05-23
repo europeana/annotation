@@ -13,9 +13,9 @@ public class BatchUploadStatus extends BatchProcessingStatus {
 	@Override
 	public String toString() {
 		if(failureCount > 0)
-			return step + " failed (" + String.valueOf(failureCount) + " errors).";
+			return step + " failed (" + failureCount + " errors).";
 		else
-			return step + " succeeded (" + String.valueOf(successCount) + " successes).";
+			return step + " succeeded (" + successCount + " successes).";
 	}
 
 	public Integer getTotalNumberOfAnnotations() {

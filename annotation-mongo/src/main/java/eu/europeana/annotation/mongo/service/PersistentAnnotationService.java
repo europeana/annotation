@@ -25,7 +25,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public List<? extends Annotation> getAllAnnotations ();
 
-	public PersistentAnnotation find(long annoIdentifier);
+	public PersistentAnnotation getByIdentifier(long annoIdentifier);
 	
 	/**
 	 * 
