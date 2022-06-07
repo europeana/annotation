@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -321,7 +322,7 @@ public class ManagementRest extends BaseRest {
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/unlock");
 
-	PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+	PersistentApiWriteLockImpl activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 	if (activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
 	    getApiWriteLockService().unlock(activeLock);
 	    PersistentApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");

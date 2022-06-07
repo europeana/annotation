@@ -2,7 +2,6 @@ package eu.europeana.annotation.mongo.dao;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +13,8 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteError;
 import com.mongodb.BulkWriteException;
@@ -25,13 +26,13 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdentifierImpl;
-import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
-
-public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
-		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {
+@Component
+public class PersistentAnnotationDaoImpl
+		extends NosqlDaoImpl<PersistentAnnotationImpl, String> implements PersistentAnnotationDao {
 
 	@Resource
 	private AnnotationConfiguration configuration;
@@ -46,8 +47,9 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 		this.configuration = configuration;
 	}
 
-	public PersistentAnnotationDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(datastore, clazz);
+	@Autowired
+	public PersistentAnnotationDaoImpl(Datastore datastore) {
+		super(datastore, PersistentAnnotationImpl.class);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -133,7 +135,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	 */
 	public BulkWriteResult applyBulkOperation(List<? extends Annotation> annos, BulkOperationMode bulkOpMode) throws BulkOperationException {
 		@SuppressWarnings("unchecked")
-		Class<PersistentAnnotation> entityClass = (Class<PersistentAnnotation>) this.getEntityClass();
+		Class<PersistentAnnotationImpl> entityClass = (Class<PersistentAnnotationImpl>) this.getEntityClass();
 		BulkWriteOperation bulkWrite = getDatastore().getCollection(entityClass).initializeOrderedBulkOperation();
 		Morphia morphia = new Morphia();  
 		DBObject dbObject;

@@ -3,6 +3,14 @@ package eu.europeana.annotation.config;
 import java.util.Set;
 
 public interface AnnotationConfiguration {
+  
+  public static final String BEAN_ANNOTATION_BUILD_INFO = "buildInfo";
+  public static final String BEAN_ANNOTATION_DATA_STORE = "annotationDatastore";
+  public static final String BEAN_PERSISTENT_ANNOTATION_DAO = "persistentAnnotationDao";
+  public static final String BEAN_PERSISTENT_API_WRITE_LOCK_DAO = "persistentApiWriteLockDao";
+  public static final String BEAN_PERSISTENT_MODERATION_RECORD_DAO = "persistentModerationRecordDao";
+  public static final String BEAN_PERSISTENT_STATUS_LOG_DAO = "persistentStatusLogDao";
+  public static final String BEAN_PERSISTENT_WHITELIST_DAO = "persistentWhitelistDao";
 
     public static final String ANNOTATION_INDEXING_ENABLED = "annotation.indexing.enabled";
     public static final String ANNOTATION_ENVIRONMENT = "annotation.environment";

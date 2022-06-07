@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.annotation.Resource;
-
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
@@ -18,6 +17,7 @@ import eu.europeana.annotation.utils.parse.WhiteListParser;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.service.WhitelistService;
 
+@Service
 public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements WhitelistService {
 
 	@Resource

@@ -35,7 +35,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
@@ -67,8 +67,14 @@ public class BaseJsonldRest extends BaseRest {
 
 		// validate annotation and check that no generator and creator exists in input
 	    // set generator and creator
-	    String userId = authentication.getPrincipal().toString();
-	    String apikeyId = authentication.getDetails().toString();
+	    // this is for the testing purposes when we omit authentication (i.e. authentication=null)
+	    String userId = "test_user";
+        String apikeyId = "test_apikey";
+	    if(authentication!=null) {
+	      userId = authentication.getPrincipal().toString();
+	      apikeyId = authentication.getDetails().toString();
+	    }
+
 	    String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), apikeyId);
 	    String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
 
@@ -454,7 +460,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // 6. apply updates - merge current and updated annotation
 	    // 7. and call database update method
 	    Annotation updatedAnnotation = getAnnotationService()
-		    .updateAnnotation((PersistentAnnotation) storedAnnotation, updateWebAnnotation);
+		    .updateAnnotation((PersistentAnnotationImpl) storedAnnotation, updateWebAnnotation);
 
 	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
 

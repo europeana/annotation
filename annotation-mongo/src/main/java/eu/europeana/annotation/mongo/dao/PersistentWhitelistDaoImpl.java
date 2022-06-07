@@ -1,17 +1,18 @@
 package eu.europeana.annotation.mongo.dao;
 
-import java.io.Serializable;
-
 import org.mongodb.morphia.Datastore;
-
-import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import eu.europeana.annotation.mongo.model.PersistentWhitelistImpl;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
-public class PersistentWhitelistDaoImpl <E extends PersistentWhitelistEntry, T extends Serializable>
-extends NosqlDaoImpl<E, T> implements PersistentWhitelistDao<PersistentWhitelistEntry, String>{
+@Component
+public class PersistentWhitelistDaoImpl 
+extends NosqlDaoImpl<PersistentWhitelistImpl, String> implements PersistentWhitelistDao{
 
-	public PersistentWhitelistDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(datastore, clazz);
+    @Autowired
+	public PersistentWhitelistDaoImpl(Datastore datastore) {
+		super(datastore, PersistentWhitelistImpl.class);
 	}
 
 }

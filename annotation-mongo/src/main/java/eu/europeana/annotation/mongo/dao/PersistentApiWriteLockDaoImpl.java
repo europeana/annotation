@@ -1,17 +1,17 @@
 package eu.europeana.annotation.mongo.dao;
 
-import java.io.Serializable;
-
 import org.mongodb.morphia.Datastore;
-
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
-public class PersistentApiWriteLockDaoImpl <E extends PersistentApiWriteLock, T extends Serializable>
-extends NosqlDaoImpl<E, T> implements PersistentApiWriteLockDao<PersistentApiWriteLock, String>{
+@Component
+public class PersistentApiWriteLockDaoImpl extends NosqlDaoImpl<PersistentApiWriteLockImpl, String> implements PersistentApiWriteLockDao{
 
-	public PersistentApiWriteLockDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(datastore, clazz);
+    @Autowired
+	public PersistentApiWriteLockDaoImpl(Datastore datastore) {
+		super(datastore, PersistentApiWriteLockImpl.class);
 	}
 
 }

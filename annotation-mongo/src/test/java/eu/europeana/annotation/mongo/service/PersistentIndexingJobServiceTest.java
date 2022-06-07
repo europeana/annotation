@@ -4,21 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.Date;
-
 import javax.annotation.Resource;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 
 
@@ -60,13 +57,13 @@ public class PersistentIndexingJobServiceTest {
 	public void getJobById() throws AnnotationMongoException, ApiWriteLockException{
 		
 		// create job
-		PersistentApiWriteLock newJob = indexingJobService.lock("testaction");
+		PersistentApiWriteLockImpl newJob = indexingJobService.lock("testaction");
 		
 		// id of the job
 		String id = newJob.getId().toString();
 		
 		// get indexing job just created by its id
-		PersistentApiWriteLock newJobRetrieved = getIndexingJobService().getLockById(id);
+		PersistentApiWriteLockImpl newJobRetrieved = getIndexingJobService().getLockById(id);
 		
 		// check if the retrieved object exists and if the id is correct
 		assertNotNull(newJobRetrieved);
@@ -83,11 +80,11 @@ public class PersistentIndexingJobServiceTest {
 	public void jobLockedAndInStatusRunning() throws AnnotationMongoException, ApiWriteLockException{
 		
 		// lock job indicating the action 
-		PersistentApiWriteLock newJob = indexingJobService.lock("testaction");
+		PersistentApiWriteLockImpl newJob = indexingJobService.lock("testaction");
 		assertNotNull(newJob);
 
 		// get last indexing job and check if start date is correct and end date does not exist
-		PersistentApiWriteLock newRunningJob = getIndexingJobService().getLastActiveLock();
+		PersistentApiWriteLockImpl newRunningJob = getIndexingJobService().getLastActiveLock();
 		assertTrue(newRunningJob.getStarted() instanceof Date);
 		assertNull(newRunningJob.getEnded());
 		

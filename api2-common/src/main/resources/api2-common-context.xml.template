@@ -11,6 +11,9 @@
      <util:properties id="annotationProperties" 
 		location="classpath:config/annotation.properties" />
 		
+     <util:properties id="annotationPropertiesUpdate" 
+		location="classpath:config/annotation-update.properties" />	
+		
     <!--  configuration bean -->
 	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">
 		<beans:property name="annotationProperties" ref="annotationProperties"/> 	

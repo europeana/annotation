@@ -7,6 +7,7 @@ import com.mongodb.BulkWriteResult;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
@@ -17,7 +18,7 @@ import eu.europeana.api.commons.nosql.dao.NosqlDao;
  * @param <E>
  * @param <T>
  */
-public interface PersistentAnnotationDao<E extends PersistentAnnotation, T extends Serializable > extends NosqlDao<E, T> {
+public interface PersistentAnnotationDao extends NosqlDao<PersistentAnnotationImpl, String> {
 
 	/**
 	 * @return AnnotationId object with the generated ID based on database sequence

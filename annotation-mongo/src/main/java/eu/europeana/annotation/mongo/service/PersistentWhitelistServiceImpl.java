@@ -6,21 +6,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Configuration;
-
+import org.springframework.stereotype.Service;
 import com.mongodb.WriteResult;
-
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
+import eu.europeana.annotation.mongo.dao.PersistentWhitelistDaoImpl;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidWhitelistException;
@@ -28,42 +27,47 @@ import eu.europeana.annotation.mongo.model.PersistentWhitelistImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
-@Configuration
+@Service
 @EnableCaching
 public class PersistentWhitelistServiceImpl extends
-		AbstractNoSqlServiceImpl<PersistentWhitelistEntry, String> implements
+		AbstractNoSqlServiceImpl<PersistentWhitelistImpl, String> implements
 		PersistentWhitelistService {
 
+  @Autowired
+  public PersistentWhitelistServiceImpl(PersistentWhitelistDaoImpl writeLockDaoImpl) {
+    this.setDao(writeLockDaoImpl);
+  }
+  
 	@Override
-	public PersistentWhitelistEntry find(PersistentWhitelistEntry whitelist) {
-		Query<PersistentWhitelistEntry> query = createQuery(whitelist);
+	public PersistentWhitelistImpl find(PersistentWhitelistImpl whitelist) {
+		Query<PersistentWhitelistImpl> query = createQuery(whitelist);
 
 		return getDao().findOne(query);
 	}
 	
 	@Override
-	public List<PersistentWhitelistEntry> findAll(PersistentWhitelistEntry whitelist)
+	public List<PersistentWhitelistImpl> findAll(PersistentWhitelistImpl whitelist)
 			throws AnnotationMongoException {
 		
-		Query<PersistentWhitelistEntry> query = createQuery(whitelist);
+		Query<PersistentWhitelistImpl> query = createQuery(whitelist);
 		return getDao().find(query).asList();
 
 	}
 	
 	@Override
-	public PersistentWhitelistEntry findByID(String id) {
+	public PersistentWhitelistImpl findByID(String id) {
 		return  getDao().findOne("_id", new ObjectId(id));
 	}
 
-	protected Query<PersistentWhitelistEntry> createQuery(PersistentWhitelistEntry whitelist) {
-		Query<PersistentWhitelistEntry> query = getDao().createQuery();
+	protected Query<PersistentWhitelistImpl> createQuery(PersistentWhitelistImpl whitelist) {
+		Query<PersistentWhitelistImpl> query = getDao().createQuery();
 		return query;
 	}
 
 	@Override
 	public void remove(String id) {
 		try{
-			PersistentWhitelistEntry whitelist = findByID(id);
+			PersistentWhitelistImpl whitelist = findByID(id);
 			getDao().delete(whitelist);
 		}catch(Exception e){
 			throw new AnnotationMongoRuntimeException(e);
@@ -71,7 +75,7 @@ public class PersistentWhitelistServiceImpl extends
 	}
 
 	public int removeByUrlWithoutCache(String url) {		
-		Query<PersistentWhitelistEntry> query = getDao().createQuery();
+		Query<PersistentWhitelistImpl> query = getDao().createQuery();
 		query.filter(PersistentWhitelistEntry.FIELD_HTTP_URL, url);
 		WriteResult writeResult = getDao().deleteByQuery(query);
 		return writeResult.getN();
@@ -82,7 +86,7 @@ public class PersistentWhitelistServiceImpl extends
 		/**
 		 * store current cache state in temporary list
 		 */
-		List<? extends PersistentWhitelistEntry> tmpList = getAll();
+		List<? extends PersistentWhitelistImpl> tmpList = getAll();
 		int initWhitelistSize = tmpList.size();
 		
 		/**
@@ -94,7 +98,7 @@ public class PersistentWhitelistServiceImpl extends
 		 * mark entry to remove from temporary list
 		 */
 		WhitelistEntry entry = null;
-		Iterator<? extends PersistentWhitelistEntry> itr = tmpList.iterator();
+		Iterator<? extends PersistentWhitelistImpl> itr = tmpList.iterator();
 		while (itr.hasNext()) {
 			WhitelistEntry whitelistObj = itr.next();
 			if (whitelistObj.getHttpUrl().equals(url)) {
@@ -111,7 +115,7 @@ public class PersistentWhitelistServiceImpl extends
 		/**
 		 * store temporary list
 		 */
-		Iterator<? extends PersistentWhitelistEntry> itrStore = tmpList.iterator();
+		Iterator<? extends PersistentWhitelistImpl> itrStore = tmpList.iterator();
 		while (itrStore.hasNext()) {
 			WhitelistEntry whitelistObj = itrStore.next();
 			store(whitelistObj);
@@ -127,7 +131,7 @@ public class PersistentWhitelistServiceImpl extends
 	@Override
 	public int removeAll() {
 		int totalNumDeletedWhitelistEntries = 0;
-		Iterator<PersistentWhitelistEntry> itr = findAll().iterator();
+		Iterator<PersistentWhitelistImpl> itr = findAll().iterator();
 		while (itr.hasNext()) {
 			WhitelistEntry whitelistObj = itr.next();
 			int numDeletedWhitelistEntries = removeByUrlWithoutCache(whitelistObj.getHttpUrl());
@@ -137,8 +141,8 @@ public class PersistentWhitelistServiceImpl extends
 	}
 	
 	@Override
-	public void remove(PersistentWhitelistEntry queryWhitelist) throws AnnotationMongoException {
-		Query<PersistentWhitelistEntry> createQuery = createQuery(queryWhitelist);
+	public void remove(PersistentWhitelistImpl queryWhitelist) throws AnnotationMongoException {
+		Query<PersistentWhitelistImpl> createQuery = createQuery(queryWhitelist);
 		WriteResult res = getDao().deleteByQuery(createQuery);
 		validateDeleteResult(res);
 	}
@@ -152,28 +156,28 @@ public class PersistentWhitelistServiceImpl extends
 	
 	
 	@Override
-	public PersistentWhitelistEntry create(PersistentWhitelistEntry whitelist)
+	public PersistentWhitelistImpl create(PersistentWhitelistImpl whitelist)
 			throws AnnotationMongoException {
 
 		return store(whitelist);
 	}
 
-	void validateWhitelist(PersistentWhitelistEntry whitelist) throws InvalidWhitelistException {
+	void validateWhitelist(PersistentWhitelistImpl whitelist) throws InvalidWhitelistException {
 	}
 
 	@Override
 	public WhitelistEntry store(WhitelistEntry object) {
 		WhitelistEntry res = null;
-		if(object instanceof PersistentWhitelistEntry)
-			res = this.store((PersistentWhitelistEntry) object);
+		if(object instanceof PersistentWhitelistImpl)
+			res = this.store((PersistentWhitelistImpl) object);
 		else{
-			PersistentWhitelistEntry persistentObject = copyIntoPersistentWhitelist(object);
+			PersistentWhitelistImpl persistentObject = copyIntoPersistentWhitelist(object);
 			return this.store(persistentObject); 
 		}
 		return res;
 	}
 
-	public PersistentWhitelistEntry copyIntoPersistentWhitelist(WhitelistEntry whitelist) {
+	public PersistentWhitelistImpl copyIntoPersistentWhitelist(WhitelistEntry whitelist) {
 
 		PersistentWhitelistImpl persistentWhitelist = new PersistentWhitelistImpl();
 		persistentWhitelist.setHttpUrl(whitelist.getHttpUrl());
@@ -191,7 +195,7 @@ public class PersistentWhitelistServiceImpl extends
 
 		WhitelistEntry res = null;
 
-		PersistentWhitelistEntry persistentWhitelist = (PersistentWhitelistEntry) object;
+		PersistentWhitelistImpl persistentWhitelist = (PersistentWhitelistImpl) object;
 
 		if (persistentWhitelist != null 
 				&& persistentWhitelist.getId() != null 
@@ -208,24 +212,24 @@ public class PersistentWhitelistServiceImpl extends
 	}
 
 	@Override
-	public PersistentWhitelistEntry findByUrl(String url) {
-		Query<PersistentWhitelistEntry> query = getDao().createQuery();
+	public PersistentWhitelistImpl findByUrl(String url) {
+		Query<PersistentWhitelistImpl> query = getDao().createQuery();
 		query.filter(PersistentWhitelistEntry.FIELD_HTTP_URL, url);
-		QueryResults<? extends PersistentWhitelistEntry> results = getDao()
+		QueryResults<? extends PersistentWhitelistImpl> results = getDao()
 				.find(query);
-		List<? extends PersistentWhitelistEntry> whitelistList = results.asList();
+		List<? extends PersistentWhitelistImpl> whitelistList = results.asList();
 		if (whitelistList.size() == 0)
 			return null;
 		return whitelistList.get(whitelistList.size() - 1);
 	}
 
 	@Override
-	public PersistentWhitelistEntry findByName(String name) {
-		Query<PersistentWhitelistEntry> query = getDao().createQuery();
+	public PersistentWhitelistImpl findByName(String name) {
+		Query<PersistentWhitelistImpl> query = getDao().createQuery();
 		query.filter(PersistentWhitelistEntry.FIELD_NAME, name);
-		QueryResults<? extends PersistentWhitelistEntry> results = getDao()
+		QueryResults<? extends PersistentWhitelistImpl> results = getDao()
 				.find(query);
-		List<? extends PersistentWhitelistEntry> whitelistList = results.asList();
+		List<? extends PersistentWhitelistImpl> whitelistList = results.asList();
 		if (whitelistList.size() == 0)
 			return null;
 		return whitelistList.get(whitelistList.size() - 1);
@@ -242,7 +246,7 @@ public class PersistentWhitelistServiceImpl extends
 		/**
 		 *  retrieve whitelist objects
 		 */
-		Iterator<? extends PersistentWhitelistEntry> itr = getAll().iterator();
+		Iterator<? extends PersistentWhitelistImpl> itr = getAll().iterator();
 		while (itr.hasNext()) {
 			WhitelistEntry whitelistObj = itr.next();
 			String domainName;
@@ -259,7 +263,7 @@ public class PersistentWhitelistServiceImpl extends
 
 	@CachePut("whitelist")
 	@Override
-	public List<? extends PersistentWhitelistEntry> getAll() {
-		return (List<? extends PersistentWhitelistEntry>) findAll();
+	public List<? extends PersistentWhitelistImpl> getAll() {
+		return (List<? extends PersistentWhitelistImpl>) findAll();
 	}
 }

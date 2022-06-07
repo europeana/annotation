@@ -6,12 +6,14 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.mongodb.WriteResult;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
+import eu.europeana.annotation.mongo.dao.PersistentModerationRecordDaoImpl;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -19,41 +21,46 @@ import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
-@Component
-public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceImpl<PersistentModerationRecord, String>
+@Service
+public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceImpl<PersistentModerationRecordImpl, String>
 		implements PersistentModerationRecordService {
 
+  @Autowired
+  public PersistentModerationRecordServiceImpl(PersistentModerationRecordDaoImpl writeLockDaoImpl) {
+    this.setDao(writeLockDaoImpl);
+  }
+  
 	@Override
-	public PersistentModerationRecord find(PersistentModerationRecord moderationRecord) {
-		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
+	public PersistentModerationRecordImpl find(PersistentModerationRecordImpl moderationRecord) {
+		Query<PersistentModerationRecordImpl> query = createQuery(moderationRecord);
 		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, moderationRecord.getIdentifier());
 		return getDao().findOne(query);
 	}
 
-	public PersistentModerationRecord find(long annoIdentifier) {
-		Query<PersistentModerationRecord> query = getDao().createQuery();
+	public PersistentModerationRecordImpl find(long annoIdentifier) {
+		Query<PersistentModerationRecordImpl> query = getDao().createQuery();
 		query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoIdentifier);
 		return getDao().findOne(query);
 	}
 
 	@Override
-	public List<PersistentModerationRecord> findAll(PersistentModerationRecord moderationRecord)
+	public List<PersistentModerationRecordImpl> findAll(PersistentModerationRecordImpl moderationRecord)
 			throws AnnotationMongoException {
 
-		Query<PersistentModerationRecord> query = createQuery(moderationRecord);
+		Query<PersistentModerationRecordImpl> query = createQuery(moderationRecord);
 		return getDao().find(query).asList();
 
 	}
 
 	@Override
-	public PersistentModerationRecord findByID(String id) {
+	public PersistentModerationRecordImpl findByID(String id) {
 		return getDao().findOne("_id", new ObjectId(id));
 	}
 
 	@Override
 	public List<? extends ModerationRecord> getFilteredModerationRecordList(String status, String startOn,
 			String limit) {
-		Query<PersistentModerationRecord> query = getDao().createQuery();
+		Query<PersistentModerationRecordImpl> query = getDao().createQuery();
 		try {
 			if (StringUtils.isNotEmpty(startOn))
 				query.offset(Integer.parseInt(startOn));
@@ -70,15 +77,15 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		return results.asList();
 	}
 
-	protected Query<PersistentModerationRecord> createQuery(PersistentModerationRecord moderationRecord) {
-		Query<PersistentModerationRecord> query = getDao().createQuery();
+	protected Query<PersistentModerationRecordImpl> createQuery(PersistentModerationRecordImpl moderationRecord) {
+		Query<PersistentModerationRecordImpl> query = getDao().createQuery();
 		return query;
 	}
 
 	@Override
 	public void remove(String id) {
 		try {
-			PersistentModerationRecord moderationRecord = findByID(id);
+			PersistentModerationRecordImpl moderationRecord = findByID(id);
 			getDao().delete(moderationRecord);
 			// make one of the following to work
 			// getDao().deleteById(id);
@@ -89,7 +96,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 	}
 
 	@Override
-	public void remove(PersistentModerationRecord queryModerationRecord) throws ModerationMongoException {
+	public void remove(PersistentModerationRecordImpl queryModerationRecord) throws ModerationMongoException {
 //		Query<PersistentModerationRecord> createQuery = createQuery(queryModerationRecord);
 //		WriteResult res = getDao().deleteByQuery(createQuery);
 //		validateDeleteResult(res);
@@ -103,7 +110,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 	}
 
 	@Override
-	public PersistentModerationRecord create(PersistentModerationRecord moderationRecord)
+	public PersistentModerationRecordImpl create(PersistentModerationRecordImpl moderationRecord)
 			throws AnnotationMongoException {
 
 		return store(moderationRecord);
@@ -115,13 +122,13 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		if (object instanceof PersistentModerationRecord)
 			res = this.store((PersistentModerationRecord) object);
 		else {
-			PersistentModerationRecord persistentObject = copyIntoPersistentModerationRecord(object);
+			PersistentModerationRecordImpl persistentObject = copyIntoPersistentModerationRecord(object);
 			return this.store(persistentObject);
 		}
 		return res;
 	}
 
-	public PersistentModerationRecord copyIntoPersistentModerationRecord(ModerationRecord moderationRecord) {
+	public PersistentModerationRecordImpl copyIntoPersistentModerationRecord(ModerationRecord moderationRecord) {
 
 		PersistentModerationRecordImpl persistentModerationRecord = new PersistentModerationRecordImpl();
 		persistentModerationRecord.setIdentifier(moderationRecord.getIdentifier());
@@ -138,7 +145,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 
 		ModerationRecord res = null;
 
-		PersistentModerationRecord persistentModerationRecord = (PersistentModerationRecord) object;
+		PersistentModerationRecordImpl persistentModerationRecord = (PersistentModerationRecordImpl) object;
 
 		if (persistentModerationRecord != null && persistentModerationRecord.getId() != null) {
 			remove(persistentModerationRecord.getId().toString());
@@ -163,9 +170,9 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 	public void remove(long annoIdentifier) throws ModerationMongoException {
 
 		try {
-			Query<PersistentModerationRecord> query = createQuery(null);
+			Query<PersistentModerationRecordImpl> query = createQuery(null);
 			query.filter(PersistentModerationRecord.FIELD_IDENTIFIER, annoIdentifier);
-			Key<PersistentModerationRecord> key = getDao().find(query).getKey();
+			Key<PersistentModerationRecordImpl> key = getDao().find(query).getKey();
 			if(key != null && key.getId() != null )
 				remove(key.getId().toString());
 		} catch (Throwable th) {

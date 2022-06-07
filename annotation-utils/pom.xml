@@ -101,6 +101,17 @@
 			<artifactId>javax.annotation-api</artifactId>
 			<version>${version.javax.annotation}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		
 						
 	</dependencies>
 </project>

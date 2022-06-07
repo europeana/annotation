@@ -1,23 +1,22 @@
 package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
-
 import eu.europeana.annotation.definitions.exception.StatusLogValidationException;
 import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
-import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
+import eu.europeana.annotation.mongo.model.PersistentStatusLogImpl;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
-public interface PersistentStatusLogService  extends AbstractNoSqlService<PersistentStatusLog, String> {
+public interface PersistentStatusLogService  extends AbstractNoSqlService<PersistentStatusLogImpl, String> {
 
 	//find() methods 
-	public PersistentStatusLog find(PersistentStatusLog statusLog) throws AnnotationMongoException;
-	public List<PersistentStatusLog> findAll(PersistentStatusLog statusLog) throws AnnotationMongoException;
+	public PersistentStatusLogImpl find(PersistentStatusLogImpl statusLog) throws AnnotationMongoException;
+	public List<PersistentStatusLogImpl> findAll(PersistentStatusLogImpl statusLog) throws AnnotationMongoException;
 	
 	//delete methods
 	public void remove(String id) throws AnnotationMongoRuntimeException;
-	public void remove(PersistentStatusLog queryStatusLog) throws AnnotationMongoException;
+	public void remove(PersistentStatusLogImpl queryStatusLog) throws AnnotationMongoException;
 	
 	//store() methods
 	/**
@@ -27,11 +26,11 @@ public interface PersistentStatusLogService  extends AbstractNoSqlService<Persis
 	 * @return
 	 * @throws AnnotationMongoException
 	 */
-	public PersistentStatusLog update(PersistentStatusLog statusLog, String agent) throws AnnotationMongoException;
-	public PersistentStatusLog create(PersistentStatusLog statusLog) throws AnnotationMongoException;
+	public PersistentStatusLogImpl update(PersistentStatusLogImpl statusLog, String agent) throws AnnotationMongoException;
+	public PersistentStatusLogImpl create(PersistentStatusLogImpl statusLog) throws AnnotationMongoException;
 	
 	public abstract StatusLog store(StatusLog object) throws StatusLogValidationException;
-	public PersistentStatusLog findByStatus(String status);
+	public PersistentStatusLogImpl findByStatus(String status);
 	public List<? extends StatusLog> getFilteredStatusLogList(
 			String status, String startOn, String limit);
 	

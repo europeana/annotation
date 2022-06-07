@@ -67,7 +67,10 @@
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
 <!-- 		<version.maven-surfire-plugin>2.19.1</version.maven-surfire-plugin> -->
-		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>		
+		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>	
+		<version.testcontainers>1.16.0</version.testcontainers>	
+		<version.javax.servlet>2.5</version.javax.servlet>
+		<version.swagger>3.0.0</version.swagger>
 		
 		<tests.skip>false</tests.skip>
 		
@@ -84,6 +87,7 @@
 		<module>annotation-import</module>
 		<module>annotation-fulltext</module>
     	<module>annotation-statistics</module>
+    <module>annotation-tests</module>
   </modules>
 	<build>
 		<!--  configure source and output locations -->

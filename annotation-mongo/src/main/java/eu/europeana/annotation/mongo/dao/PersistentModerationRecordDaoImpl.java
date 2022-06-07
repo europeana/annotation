@@ -1,17 +1,18 @@
 package eu.europeana.annotation.mongo.dao;
 
-import java.io.Serializable;
-
 import org.mongodb.morphia.Datastore;
-
-import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
-public class PersistentModerationRecordDaoImpl <E extends PersistentModerationRecord, T extends Serializable>
-extends NosqlDaoImpl<E, T> implements PersistentModerationRecordDao<PersistentModerationRecord, String>{
+@Component
+public class PersistentModerationRecordDaoImpl
+extends NosqlDaoImpl<PersistentModerationRecordImpl, String> implements PersistentModerationRecordDao{
 
-	public PersistentModerationRecordDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(datastore, clazz);
+    @Autowired
+	public PersistentModerationRecordDaoImpl(Datastore datastore) {
+		super(datastore, PersistentModerationRecordImpl.class);
 	}
 
 }

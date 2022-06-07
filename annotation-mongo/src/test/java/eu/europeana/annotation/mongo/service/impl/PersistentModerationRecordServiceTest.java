@@ -55,8 +55,8 @@ public class PersistentModerationRecordServiceTest {
 	
 	@Test
 	public void createModerationRecord() throws AnnotationMongoException, ModerationMongoException{
-		PersistentModerationRecord moderationRecord = buildTestModerationRecord();
-		PersistentModerationRecord savedModerationRecord = moderationRecordService.create(moderationRecord);
+		PersistentModerationRecordImpl moderationRecord = buildTestModerationRecord();
+		PersistentModerationRecordImpl savedModerationRecord = moderationRecordService.create(moderationRecord);
 		
 		assertEquals(savedModerationRecord.getSummary().getEndorseSum(), 5);
 		assertEquals(savedModerationRecord.getSummary().getReportSum(), 2);
@@ -68,8 +68,8 @@ public class PersistentModerationRecordServiceTest {
 //		assertTrue(savedModerationRecord.getLastUpdated().getTime() > 0);			
 	}
 
-	private PersistentModerationRecord buildTestModerationRecord() {
-		PersistentModerationRecord moderationRecord = new PersistentModerationRecordImpl();
+	private PersistentModerationRecordImpl buildTestModerationRecord() {
+		PersistentModerationRecordImpl moderationRecord = new PersistentModerationRecordImpl();
 //		moderationRecord.setAnnotationId(id);("testcase");
 //		moderationRecord.setCreated(created);
 //		moderationRecord.setEndorseList(endorseList);

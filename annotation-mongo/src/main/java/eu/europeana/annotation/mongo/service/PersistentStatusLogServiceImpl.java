@@ -5,11 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.mongodb.WriteResult;
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.StatusLogValidationException;
 import eu.europeana.annotation.definitions.model.StatusLog;
+import eu.europeana.annotation.mongo.dao.PersistentStatusLogDaoImpl;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.InvalidStatusLogException;
@@ -17,29 +19,34 @@ import eu.europeana.annotation.mongo.model.PersistentStatusLogImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
-@Component
+@Service
 public class PersistentStatusLogServiceImpl extends
-		AbstractNoSqlServiceImpl<PersistentStatusLog, String> implements
+		AbstractNoSqlServiceImpl<PersistentStatusLogImpl, String> implements
 		PersistentStatusLogService {
 
+  @Autowired
+  public PersistentStatusLogServiceImpl(PersistentStatusLogDaoImpl writeLockDaoImpl) {
+    this.setDao(writeLockDaoImpl);
+  }
+  
 	@Override
-	public PersistentStatusLog find(PersistentStatusLog statusLog) {
-		Query<PersistentStatusLog> query = createQuery(statusLog);
+	public PersistentStatusLogImpl find(PersistentStatusLogImpl statusLog) {
+		Query<PersistentStatusLogImpl> query = createQuery(statusLog);
 
 		return getDao().findOne(query);
 	}
 	
 	@Override
-	public List<PersistentStatusLog> findAll(PersistentStatusLog statusLog)
+	public List<PersistentStatusLogImpl> findAll(PersistentStatusLogImpl statusLog)
 			throws AnnotationMongoException {
 		
-		Query<PersistentStatusLog> query = createQuery(statusLog);
+		Query<PersistentStatusLogImpl> query = createQuery(statusLog);
 		return getDao().find(query).asList();
 
 	}
 	
 	@Override
-	public PersistentStatusLog findByID(String id) {
+	public PersistentStatusLogImpl findByID(String id) {
 		return  getDao().findOne("_id", new ObjectId(id));
 	}
 
@@ -47,7 +54,7 @@ public class PersistentStatusLogServiceImpl extends
 	public List<? extends StatusLog> getFilteredStatusLogList(
 			String status, String startOn, String limit
 			) {
-		Query<PersistentStatusLog> query = getDao().createQuery();
+		Query<PersistentStatusLogImpl> query = getDao().createQuery();
 		if (StringUtils.isNotEmpty(status))
 			query.filter(PersistentStatusLog.FIELD_STATUS, status);
 		try {
@@ -67,8 +74,8 @@ public class PersistentStatusLogServiceImpl extends
 		return results.asList();
 	}
 	
-	protected Query<PersistentStatusLog> createQuery(PersistentStatusLog statusLog) {
-		Query<PersistentStatusLog> query = getDao().createQuery();
+	protected Query<PersistentStatusLogImpl> createQuery(PersistentStatusLogImpl statusLog) {
+		Query<PersistentStatusLogImpl> query = getDao().createQuery();
 //		if(statusLog.getStatusLogType() != null)
 //			query.filter(PersistentStatusLog.FIELD_CONCEPT_TYPE, statusLog.getStatusLogType());
 		
@@ -78,7 +85,7 @@ public class PersistentStatusLogServiceImpl extends
 	@Override
 	public void remove(String id) {
 		try{
-			PersistentStatusLog statusLog = findByID(id);
+			PersistentStatusLogImpl statusLog = findByID(id);
 			getDao().delete(statusLog);
 			//make one of the following to work
 			//getDao().deleteById(id);
@@ -89,8 +96,8 @@ public class PersistentStatusLogServiceImpl extends
 	}
 	
 	@Override
-	public void remove(PersistentStatusLog queryStatusLog) throws AnnotationMongoException {
-		Query<PersistentStatusLog> createQuery = createQuery(queryStatusLog);
+	public void remove(PersistentStatusLogImpl queryStatusLog) throws AnnotationMongoException {
+		Query<PersistentStatusLogImpl> createQuery = createQuery(queryStatusLog);
 		WriteResult res = getDao().deleteByQuery(createQuery);
 		validateDeleteResult(res);
 	}
@@ -103,7 +110,7 @@ public class PersistentStatusLogServiceImpl extends
 	}
 
 	@Override
-	public PersistentStatusLog update(PersistentStatusLog statusLog, String agent) throws InvalidStatusLogException {
+	public PersistentStatusLogImpl update(PersistentStatusLogImpl statusLog, String agent) throws InvalidStatusLogException {
 		if (statusLog.getId() == null)
 			throw new InvalidStatusLogException(InvalidStatusLogException.MESSAGE_NULL_ATTRIBUTE + "id");
 		
@@ -123,7 +130,7 @@ public class PersistentStatusLogServiceImpl extends
 	
 	
 	@Override
-	public PersistentStatusLog create(PersistentStatusLog statusLog)
+	public PersistentStatusLogImpl create(PersistentStatusLogImpl statusLog)
 			throws AnnotationMongoException {
 		
 //		if (statusLog.getLastUpdatedBy() == null)
@@ -157,7 +164,7 @@ public class PersistentStatusLogServiceImpl extends
 		return res;
 	}
 
-	public PersistentStatusLog copyIntoPersistentStatusLog(StatusLog statusLog) {
+	public PersistentStatusLogImpl copyIntoPersistentStatusLog(StatusLog statusLog) {
 
 		PersistentStatusLogImpl persistentStatusLog = new PersistentStatusLogImpl();
 		persistentStatusLog.setUser(statusLog.getUser());
@@ -172,7 +179,7 @@ public class PersistentStatusLogServiceImpl extends
 
 		StatusLog res = null;
 
-		PersistentStatusLog persistentStatusLog = (PersistentStatusLog) object;
+		PersistentStatusLogImpl persistentStatusLog = (PersistentStatusLogImpl) object;
 
 		if (persistentStatusLog != null 
 				&& persistentStatusLog.getId() != null 
@@ -189,14 +196,14 @@ public class PersistentStatusLogServiceImpl extends
 	}
 
 	@Override
-	public PersistentStatusLog findByStatus(String status) {
-		Query<PersistentStatusLog> query = getDao().createQuery();
+	public PersistentStatusLogImpl findByStatus(String status) {
+		Query<PersistentStatusLogImpl> query = getDao().createQuery();
 		query.filter(PersistentStatusLog.FIELD_STATUS, status);
 
 //		return getDao().findOne(query);
-		QueryResults<? extends PersistentStatusLog> results = getDao()
+		QueryResults<? extends PersistentStatusLogImpl> results = getDao()
 				.find(query);
-		List<? extends PersistentStatusLog> statusLogList = results.asList();
+		List<? extends PersistentStatusLogImpl> statusLogList = results.asList();
 		return statusLogList.get(statusLogList.size() - 1);
 	}
 	

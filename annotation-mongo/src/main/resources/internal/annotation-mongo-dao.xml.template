@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+	">
+
+	<!-- MONGO DB -->
+ 	<!--  abstract annotation dao, reusing the corelib abstract implementation -->
+<!-- 	<bean id="corelib_db_nosql_annotation_dao" abstract="true" class="eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl"> -->
+<!-- 		<constructor-arg ref="annotation_db_morphia_datastore_annotation" name="datastore"/> -->
+<!-- 	</bean> -->
+
+	<!-- annotation dao bean (concrete instance) -->
+<!-- 	<bean id="annotation_db_annotationDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentAnnotationDaoImpl"> -->
+<!-- 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentAnnotationImpl" /> -->
+<!-- 	</bean> -->
+
+	<!-- statusLog dao bean (concrete instance) -->
+<!-- 	<bean id="annotation_db_statusLogDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentStatusLogDaoImpl"> -->
+<!-- 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentStatusLogImpl" /> -->
+<!-- 	</bean> -->
+	
+	<!-- statusLog dao bean (concrete instance) -->
+<!-- 	<bean id="annotation_db_moderationRecordDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentModerationRecordDaoImpl"> -->
+<!-- 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl" /> -->
+<!-- 	</bean> -->
+	
+	<!-- annotation dao bean (concrete instance) -->
+<!-- 	<bean id="annotation_db_whitelistDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentWhitelistDaoImpl"> -->
+<!-- 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentWhitelistImpl" /> -->
+<!-- 	</bean> -->
+	
+<!-- 	<bean id="annotation_db_lockDao" parent="corelib_db_nosql_annotation_dao" class="eu.europeana.annotation.mongo.dao.PersistentApiWriteLockDaoImpl"> -->
+<!-- 		<constructor-arg type="java.lang.Class" value="eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl" /> -->
+<!-- 	</bean> -->
+	
+</beans>

@@ -114,7 +114,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
-			<version>2.5</version>
+			<version>${version.javax.servlet}</version>
 		</dependency>
 
         <dependency>
@@ -195,7 +195,30 @@
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-web</artifactId>
 			<version>${version.commonsApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.springfox</groupId>
+					<artifactId>springfox-swagger2</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${version.swagger}</version>
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<artifactId>slf4j-api</artifactId> -->
+<!-- 					<groupId>org.slf4j</groupId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${version.swagger}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-error</artifactId>
@@ -232,6 +255,29 @@
 		</testResources>
 
 		<!-- plugins -->
+				<pluginManagement>
+		<plugins>
+		 <plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<!-- warSourceDirectory>WebContent</warSourceDirectory-->
+					<warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+						<resource>
+						<directory>${basedir}/lib</directory>
+						<targetPath>WEB-INF/lib</targetPath>
+						<filtering>false</filtering>
+						<includes>
+							<include>**/*.jar</include>
+						</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

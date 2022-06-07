@@ -1,0 +1,18 @@
+{
+	"@context": "http://www.europeana.eu/annotation/context.jsonld",
+	"type": "Annotation",
+	"motivation": "tagging",
+	"creator": {
+		"id": "https://www.historypin.org/en/person/55376/",
+		"type": "Person",
+		"name": "John Smith"
+	},
+	"created": "2015-02-27T12:00:43Z",
+	"generated": "2015-02-28T13:00:34Z",
+	"body": {
+		"value": "trombone",
+		"language": "it"
+	},
+	"target": "http://data.europeana.eu/item/123/xyz",
+	"equivalentTo": "https://www.historypin.org/en/item/456"
+}

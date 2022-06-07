@@ -1,19 +1,19 @@
 package eu.europeana.annotation.mongo.service;
 
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
-public interface PersistentApiWriteLockService extends AbstractNoSqlService<PersistentApiWriteLock, String> {
+public interface PersistentApiWriteLockService extends AbstractNoSqlService<PersistentApiWriteLockImpl, String> {
 
-	public PersistentApiWriteLock lock(String action) throws ApiWriteLockException;
+	public PersistentApiWriteLockImpl lock(String action) throws ApiWriteLockException;
 	
-	public void unlock(PersistentApiWriteLock pij) throws ApiWriteLockException;
+	public void unlock(PersistentApiWriteLockImpl pij) throws ApiWriteLockException;
 	
-	public PersistentApiWriteLock getLastActiveLock(String name) throws ApiWriteLockException;
+	public PersistentApiWriteLockImpl getLastActiveLock(String name) throws ApiWriteLockException;
 	
-	public PersistentApiWriteLock getLockById(String id) throws ApiWriteLockException;
+	public PersistentApiWriteLockImpl getLockById(String id) throws ApiWriteLockException;
 
-	public PersistentApiWriteLock getLastActiveLock() throws ApiWriteLockException;
+	public PersistentApiWriteLockImpl getLastActiveLock() throws ApiWriteLockException;
 	
 }

@@ -10,10 +10,11 @@ import eu.europeana.annotation.mongo.batch.BulkOperationMode;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
-public interface PersistentAnnotationService extends AbstractNoSqlService<PersistentAnnotation, String>{
+public interface PersistentAnnotationService extends AbstractNoSqlService<PersistentAnnotationImpl, String>{
 
 	public abstract Annotation store(Annotation object) throws AnnotationValidationException;
 
@@ -25,7 +26,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 
 	public List<? extends Annotation> getAllAnnotations ();
 
-	public PersistentAnnotation getByIdentifier(long annoIdentifier);
+	public PersistentAnnotationImpl getByIdentifier(long annoIdentifier);
 	
 	/**
 	 * 
@@ -38,7 +39,7 @@ public interface PersistentAnnotationService extends AbstractNoSqlService<Persis
 	 * This method performs update for the passed annotation object
 	 * @param annotation
 	 */
-	public PersistentAnnotation update(PersistentAnnotation annotation) throws AnnotationValidationException;
+	public PersistentAnnotationImpl update(PersistentAnnotationImpl annotation) throws AnnotationValidationException;
 
 	
 	/**

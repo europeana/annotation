@@ -5,14 +5,16 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 import com.google.common.base.Strings;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
+import eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
@@ -24,6 +26,7 @@ import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 
+@Service
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
 	@Resource(name = "annotation_db_apilockService")
@@ -110,7 +113,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		if (apiWriteLockService.getLastActiveLock("reindex") != null)
 			throw new IndexingJobLockedException(action);
 		
-		PersistentApiWriteLock pij = null;
+		PersistentApiWriteLockImpl pij = null;
 		try {
 			pij = apiWriteLockService.lock(action);
 
@@ -230,8 +233,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 				// update mongo
 				try {
-					PersistentAnnotation storedAnno = (PersistentAnnotation) updateAndReindex(
-							(PersistentAnnotation) anno);
+					PersistentAnnotationImpl storedAnno = (PersistentAnnotationImpl) updateAndReindex(
+							(PersistentAnnotationImpl) anno);
 
 					// if not re-indexed or not indexed at all
 					if (isIndexInSync(storedAnno))

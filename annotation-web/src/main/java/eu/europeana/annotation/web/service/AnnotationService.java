@@ -2,7 +2,6 @@ package eu.europeana.annotation.web.service;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -15,7 +14,7 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
-import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
@@ -88,7 +87,7 @@ public interface AnnotationService {
 	 * @throws AnnotationServiceException 
 	 * @throws HttpException 
 	 */
-	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException;
+	public Annotation updateAnnotation(PersistentAnnotationImpl persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException;
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 

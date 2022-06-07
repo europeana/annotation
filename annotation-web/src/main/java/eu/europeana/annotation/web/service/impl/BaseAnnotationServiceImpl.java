@@ -11,6 +11,7 @@ import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationStates;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
@@ -206,7 +207,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 	return mongoPersistance;
     }
 
-    protected Annotation updateAndReindex(PersistentAnnotation persistentAnnotation) {
+    protected Annotation updateAndReindex(PersistentAnnotationImpl persistentAnnotation) {
 	Annotation res = getMongoPersistence().update(persistentAnnotation);
 
 	// reindex annotation

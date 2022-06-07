@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -23,9 +24,9 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
@@ -44,6 +45,7 @@ import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
+@Service
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
     @Resource
@@ -209,7 +211,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     @Override
-    public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException {
+    public Annotation updateAnnotation(PersistentAnnotationImpl persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException {
 		mergeAnnotationProperties(persistentAnnotation, webAnnotation);
 		//check that the updated annotation is unique
 	    List<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation, true);
@@ -312,10 +314,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
     @Override
     public Annotation disableAnnotation(Annotation annotation) {
-	PersistentAnnotation persistentAnnotation;
+	PersistentAnnotationImpl persistentAnnotation;
 
-    if (annotation instanceof PersistentAnnotation)
-	persistentAnnotation = (PersistentAnnotation) annotation;
+    if (annotation instanceof PersistentAnnotationImpl)
+	persistentAnnotation = (PersistentAnnotationImpl) annotation;
     else
 	persistentAnnotation = getMongoPersistence().getByIdentifier(annotation.getIdentifier());
 
@@ -330,7 +332,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     
     @Override
     public Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException {
-		PersistentAnnotation persistentAnnotation;
+		PersistentAnnotationImpl persistentAnnotation;
 		persistentAnnotation = getMongoPersistence().getByIdentifier(annoIdentifier);
 	    persistentAnnotation.setDisabled(null);
 	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);

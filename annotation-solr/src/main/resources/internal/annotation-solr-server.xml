@@ -16,7 +16,7 @@
 		factory-bean="annotation_solr_client_clientbuilderBean"
 		factory-method="withBaseSolrUrls">
 		<constructor-arg
-			value="#{annotationProperties['solr.annotation.url'].split(',')}" />
+			value="#{annotationPropertiesUpdate['solr.annotation.url'].split(',')}" />
 	</bean>
 
 	<bean id="annotation_solr_client"

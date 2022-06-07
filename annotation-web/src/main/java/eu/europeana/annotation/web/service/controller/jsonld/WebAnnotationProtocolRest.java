@@ -42,7 +42,11 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request)
 					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-		Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
+	    //check the property for the authorization
+	    Authentication authentication = null; 
+	    if(!getConfiguration().getAnnoRemoveAuthorization()) {
+	      authentication = verifyWriteAccess(Operations.CREATE, request);
+	    }
 		
 		return storeAnnotation(null, indexOnCreate, annotation, authentication);
 	}

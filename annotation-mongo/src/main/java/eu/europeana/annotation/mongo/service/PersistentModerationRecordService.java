@@ -7,22 +7,23 @@ import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoRuntimeException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
+import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 
-public interface PersistentModerationRecordService  extends AbstractNoSqlService<PersistentModerationRecord, String> {
+public interface PersistentModerationRecordService  extends AbstractNoSqlService<PersistentModerationRecordImpl, String> {
 
 	//find() methods 
-	public PersistentModerationRecord find(PersistentModerationRecord moderationRecord) throws AnnotationMongoException;
-	public PersistentModerationRecord find(long annoIdentifier) throws ModerationMongoException;
-	public List<PersistentModerationRecord> findAll(PersistentModerationRecord moderationRecord) throws AnnotationMongoException;
+	public PersistentModerationRecord find(PersistentModerationRecordImpl moderationRecord) throws AnnotationMongoException;
+	public PersistentModerationRecordImpl find(long annoIdentifier) throws ModerationMongoException;
+	public List<PersistentModerationRecordImpl> findAll(PersistentModerationRecordImpl moderationRecord) throws AnnotationMongoException;
 	
 	//delete methods
 	public void remove(String id) throws AnnotationMongoRuntimeException;
-	public void remove(PersistentModerationRecord queryModerationRecord) throws ModerationMongoException;
+	public void remove(PersistentModerationRecordImpl queryModerationRecord) throws ModerationMongoException;
 	
 	//store() methods
-	public PersistentModerationRecord create(PersistentModerationRecord moderationRecord) throws AnnotationMongoException;
+	public PersistentModerationRecordImpl create(PersistentModerationRecordImpl moderationRecord) throws AnnotationMongoException;
 	
 	public abstract ModerationRecord store(ModerationRecord object) throws ModerationRecordValidationException;
 	public List<? extends ModerationRecord> getFilteredModerationRecordList(
