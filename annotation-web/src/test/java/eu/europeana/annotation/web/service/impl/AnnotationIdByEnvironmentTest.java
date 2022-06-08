@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.config.AnnotationConfigurationImpl;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
@@ -70,7 +70,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	protected void createTestAnnoInEnvironment(String environment, long identifier)
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
-		AnnotationConfigurationImpl config = (AnnotationConfigurationImpl) ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration();
+		AnnotationConfiguration config = (AnnotationConfiguration) ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration();
 		config.getAnnotationProperties().put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, environment);
 		
 		Annotation anno = testCreateAnnotationWebanno(identifier);

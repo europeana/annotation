@@ -1,127 +1,166 @@
 package eu.europeana.annotation.config;
 
+import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
-public interface AnnotationConfiguration {
-  
-  public static final String BEAN_ANNOTATION_BUILD_INFO = "buildInfo";
-  public static final String BEAN_ANNOTATION_DATA_STORE = "annotationDatastore";
-  public static final String BEAN_PERSISTENT_ANNOTATION_DAO = "persistentAnnotationDao";
-  public static final String BEAN_PERSISTENT_API_WRITE_LOCK_DAO = "persistentApiWriteLockDao";
-  public static final String BEAN_PERSISTENT_MODERATION_RECORD_DAO = "persistentModerationRecordDao";
-  public static final String BEAN_PERSISTENT_STATUS_LOG_DAO = "persistentStatusLogDao";
-  public static final String BEAN_PERSISTENT_WHITELIST_DAO = "persistentWhitelistDao";
-
-    public static final String ANNOTATION_INDEXING_ENABLED = "annotation.indexing.enabled";
-    public static final String ANNOTATION_ENVIRONMENT = "annotation.environment";
-    public static final String ANNOTATION_SUBTITLES_FORMATS = "annotation.subtitles.formats";
-    public static final String ANNOTATION_SUBTITLES_FORMATS_XML = "annotation.subtitles.formats.xml";
-    public static final String BEAN_SUBTITLES_FORMATS = "subtitlesFormats";
-
-    public static final String VALUE_ENVIRONMENT_PRODUCTION = "production";
-    public static final String VALUE_ENVIRONMENT_TEST = "test";
-    public static final String VALUE_ENVIRONMENT_DEVELOPMENT = "development";
-
-    public static final String AUTHORIZATION_API_NAME = "authorization.api.name";
-    public static final String KEY_APIKEY_JWTTOKEN_SIGNATUREKEY = "europeana.apikey.jwttoken.siganturekey";
-    public static final String DEFAULT_WHITELIST_RESOURCE_PATH = "annotation.whitelist.default";
-
-    public static final String METIS_BASE_URL = "metis.baseUrl";
-    public static final String KEY_METIS_CONNECTION_RETRIES = "metis.connection.retries";
-    public static final String KEY_METIS_CONNECTION_TIMEOUT = "metis.connection.timeout";
-
-    public static final String TRANSCRIPTIONS_LICENSES = "annotation.licenses";
-
-    public static final String PREFIX_MAX_PAGE_SIZE = "annotation.search.maxpagesize.";
-
-    public static final String API_VERSION = "annotation.apiVersion";
+@PropertySources({ @PropertySource("classpath:config/annotation.properties"),
+    @PropertySource(value = "classpath:config/annotation.user.properties", ignoreResourceNotFound = true) })
+public class AnnotationConfiguration {
     
-    public static final String SOLR_STATS_FACETS = "solr.stats.facets";
+    private static final Logger logger = LogManager.getLogger(AnnotationConfiguration.class);
+
+    @Value("${annotation.indexing.enabled}")
+    private boolean indexingEnabled;
+
+    @Value("${annotation.environment}")
+    private String environment;
+
+    @Value("${annotation.data.endpoint}")
+    private String annoBaseUrl;
     
-    public static final String ANNO_API_ENDPOINT = "annotation.api.endpoint";
-    public static final String ANNO_DATA_ENDPOINT = "annotation.data.endpoint";
-    public static final String ANNO_USER_DATA_ENDPOINT = "annotation.user.data.endpoint";
-    public static final String ANNO_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
-    public static final String ANNO_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
-    public static final String MONGO_DATABASE_NAME = "mongodb.annotation.databasename";
-    public static final String MONGO_COLLECTION_NAME = "annotation";
-    public static final String ANNO_REMOVE_AUTHORIZATION = "annotation.remove.authorization";
-    public static final String SOLR_URLS = "solr.annotation.url";
     
-    public String getComponentName();
+    
+    
 
-    /**
-     * uses annotation.indexing.enabled property
-     */
-    public boolean isIndexingEnabled();
+    public String getComponentName() {
+	return "annotation";
+    }
 
-    /**
-     * checks annotation.environment=production property
-     */
-    public boolean isProductionEnvironment();
+    public boolean isIndexingEnabled() {
+	return indexingEnabled;
+    }
 
-    /**
-     * uses annotation.environment property
-     */
-    public String getEnvironment();
+    public boolean isProductionEnvironment() {
+	return AnnotationConstants.VALUE_ENVIRONMENT_PRODUCTION.equals(environment);
+    }
 
-    /**
-     * uses annotation.environment.{$environment}.baseUrl property
-     */
-    public String getAnnotationBaseUrl();
+    public String getEnvironment() {
+	return environment;
+    }
 
-    /**
-     * uses annotation.whitelist.default property
-     */
-    public String getDefaultWhitelistResourcePath();
+    public String getAnnotationBaseUrl() {
+    return annoBaseUrl;
+    }
+    
+    public String getDefaultWhitelistResourcePath() {
+	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
+    }
 
-    public int getMaxPageSize(String profile);
+    public int getMaxPageSize(String profile) {
+	String key = PREFIX_MAX_PAGE_SIZE + profile;
+	return Integer.parseInt(getAnnotationProperties().getProperty(key));
+    }
 
-    public String getJwtTokenSignatureKey();
+    public String getJwtTokenSignatureKey() {
+	return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
+    }
 
-    public String getAuthorizationApiName();
+    @Override
+    public String getAuthorizationApiName() {
+	return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
+    }
 
-    /**
-     * uses metis.baseUrl property
-     */
-    public String getMetisBaseUrl();
+    @Override
+    public String getTranscriptionsLicenses() {
+	return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
+    }
 
-    public String getTranscriptionsLicenses();
-
-    public static final String VALIDATION_API = "api";
-    public static final String VALIDATION_ADMIN_API_KEY = "adminapikey";
-    public static final String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
-
-    public static final String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
-
-    public static final String ETAG_FORMAT = "application/json";
-
-    /**
-     * This method retrieves a set of supported transcriptions licenses.
+    @Override
+    public int getStatsFacets() {
+      return toInt(getAnnotationProperties().getProperty(SOLR_STATS_FACETS));
+    }
+    
+    
+    @Override
+    /*
+     * (non-Javadoc)
      * 
-     * @return a set of transcriptions licenses
+     * @see
+     * eu.europeana.annotation.config.AnnotationConfiguration#getAcceptedLicenceses(
+     * )
      */
-    public Set<String> getAcceptedLicenceses();
+    public Set<String> getAcceptedLicenceses() {
 
-    /**
-     * uses annotation.apiVersion property
-     */
-    public String getAnnotationApiVersion();
+	if (acceptedLicences == null) {
+	    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
+	    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
+	}
 
-    int getMetisConnectionTimeout();
+	return acceptedLicences;
+    }
 
-    int getMetisConnectionRetries();
+    @Override
+    public String getMetisBaseUrl() {
+	return getAnnotationProperties().getProperty(METIS_BASE_URL);
+    }
 
-    int getStatsFacets();
+    @Override
+    public int getMetisConnectionRetries() {
+	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_RETRIES);
+	return toInt(value);
+    }
+
+    @Override
+    public int getMetisConnectionTimeout() {
+	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_TIMEOUT);
+	return toInt(value);
+    }
+
+    int toInt(String value) {
+	try {
+	    return Integer.valueOf(value);
+	} catch (NumberFormatException e) {
+	    return -1;
+	}
+    }
+
+    @Override
+    public String getAnnotationApiVersion() {
+	return getAnnotationProperties().getProperty(API_VERSION);
+    }
+
+    @Override
+    public String getAnnoApiEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_API_ENDPOINT);
+    }
     
-    String getAnnoApiEndpoint();
-    String getAnnoUserDataEndpoint();
-    String getAnnoClientApiEndpoint();
-    String getAnnoItemDataEndpoint();
+    @Override
+    public String getAnnoUserDataEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_USER_DATA_ENDPOINT);
+    }
     
-    String getMongoDatabaseName();
-    
-    boolean getAnnoRemoveAuthorization();
-    
-    String getSolrUrls();
+    @Override
+    public String getAnnoClientApiEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_CLIENT_API_ENDPOINT);
+    }
+
+    @Override
+    public String getAnnoItemDataEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_ITEM_DATA_ENDPOINT);
+    }
+
+    @Override
+    public String getMongoDatabaseName() {
+      return getAnnotationProperties().getProperty(MONGO_DATABASE_NAME);
+    }
+
+    @Override
+    public boolean getAnnoRemoveAuthorization() {
+      String value = getAnnotationProperties().getProperty(ANNO_REMOVE_AUTHORIZATION);
+      return Boolean.valueOf(value);
+    }
+
+    @Override
+    public String getSolrUrls() {
+      return getAnnotationProperties().getProperty(SOLR_URLS);
+    }
 }
