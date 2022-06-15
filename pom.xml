@@ -84,9 +84,11 @@
 		<module>annotation-import</module>
 		<module>annotation-fulltext</module>
     	<module>annotation-statistics</module>
+    <module>annotation-tests</module>
   </modules>
 	<build>
-		<!--  configure source and output locations -->
+		<!--  configure source
+	<module></module> output locations -->
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
 		<finalName>${artifactId}-${version}</finalName>
