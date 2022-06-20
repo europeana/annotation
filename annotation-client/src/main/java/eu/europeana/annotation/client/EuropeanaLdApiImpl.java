@@ -15,7 +15,7 @@ public class EuropeanaLdApiImpl extends BaseAnnotationApi implements EuropeanaLd
 		super(configuration, apiConnection);
 	}
 	
-	public EuropeanaLdApiImpl(){
+	public EuropeanaLdApiImpl() throws Exception{
 		super();
 	}
 

@@ -2,9 +2,6 @@ package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -20,13 +17,13 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 public class SearchLinksTest extends BaseSearchTest {
 
 	@Test
-	public void searchLink() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchLink() throws Exception {
 		
 		String requestBody = getJsonStringInput(LINK_STANDARD);
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
-		
+		createdAnnotations.add(createdAnno.getIdentifier());
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
 		validateLink(retrievedAnno);
@@ -34,9 +31,6 @@ public class SearchLinksTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK = "target_uri:\""+ VALUE_TARGET_LINK_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK);
 		validateLink(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**
@@ -53,12 +47,13 @@ public class SearchLinksTest extends BaseSearchTest {
 	}
 	
 	@Test
-	public void searchSemanticLink() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchSemanticLink() throws Exception {
 		
 		String requestBody = getJsonStringInput(LINK_SEMANTIC);
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -67,9 +62,6 @@ public class SearchLinksTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
 		validateSemanticLink(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**

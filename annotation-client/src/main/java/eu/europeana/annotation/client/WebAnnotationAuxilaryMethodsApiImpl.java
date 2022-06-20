@@ -15,7 +15,7 @@ public class WebAnnotationAuxilaryMethodsApiImpl extends BaseAnnotationApi imple
 	super(configuration, apiConnection);
     }
 
-    public WebAnnotationAuxilaryMethodsApiImpl() {
+    public WebAnnotationAuxilaryMethodsApiImpl() throws Exception {
 	super();
     }
     

@@ -2,16 +2,13 @@ package eu.europeana.annotation.client.integration.webanno.tag;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 
@@ -23,12 +20,12 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_BODY_TEXT);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -38,12 +35,12 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_MINIMAL);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 
@@ -53,13 +50,13 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_STANDARD);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		Annotation inputAnno = parseTag(requestBody);
 		//validate the reflection of input in output!
 		//but ignore generated timestamp which is always set by the server
 		inputAnno.setGenerated(storedAnno.getGenerated());
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotation(storedAnno.getIdentifier());
 
 	}
 	
@@ -71,11 +68,11 @@ public class TaggingTest extends BaseTaggingTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -129,21 +126,21 @@ public class TaggingTest extends BaseTaggingTest {
 	public void createCanonicalTag() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException {
 			
 	  Annotation storedAnno = createAndValidateTag(TAG_CANONICAL);
-	  removeAnnotation(storedAnno.getIdentifier());
+	  createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void createViaTagString() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
 		
 	    Annotation storedAnno = createAndValidateTag(TAG_VIA_STRING);
-		removeAnnotation(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void createViaTagArray() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JsonParseException, JSONException {
 
 	    Annotation storedAnno = createAndValidateTag(TAG_VIA_ARRAY);
-	    removeAnnotation(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 
 	

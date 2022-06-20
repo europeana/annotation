@@ -51,6 +51,10 @@ public class ModerationReportTest extends BaseTaggingTest {
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
 	 */
+	 /*
+     * This test should not be executed until there is an explicit endpoint to delete the created
+     * report. The test is however enabled in the integration tests.
+     */
 //	@Test
 	public void createTagMinimalWithModerationReportAndRemoval() throws IOException, JsonParseException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {

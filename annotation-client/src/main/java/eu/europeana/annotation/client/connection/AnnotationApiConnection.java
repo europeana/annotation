@@ -2,21 +2,16 @@ package eu.europeana.annotation.client.connection;
 
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLdParser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.config.ClientConfiguration;
-import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
@@ -26,6 +21,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.oauth.EuropeanaOauthClient;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
 
@@ -44,25 +40,28 @@ public class AnnotationApiConnection extends BaseApiConnection {
     
     public static String USER_REGULAR = "regular";
     public static String USER_ADMIN = "admin";
+    
+    public static List<Long> createdAnnotations = new ArrayList<Long>();
 
     /**
      * Create a new connection to the Annotation Service (REST API).
      * 
      * @param apiKey API Key required to access the API
+     * @throws Exception 
      */
-    public AnnotationApiConnection(String annotationServiceUri, String apiKey) {
+    public AnnotationApiConnection(String annotationServiceUri, String apiKey) throws Exception {
 	super(annotationServiceUri, apiKey);
 	initConfigurations();
     }
 
-    public AnnotationApiConnection() {
+    public AnnotationApiConnection() throws Exception {
 	this(ClientConfiguration.getInstance().getServiceUri(), ClientConfiguration.getInstance().getApiKey());
 	initConfigurations();
     }
 
-    private void initConfigurations() {
-	regularUserAuthorizationValue = "Bearer " + getOauthToken(USER_REGULAR);
-	adminUserAuthorizationValue = "Bearer " + getOauthToken(USER_ADMIN);
+    private void initConfigurations() throws Exception {
+	regularUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_REGULAR, ClientConfiguration.getInstance().getOauthServiceUri(), ClientConfiguration.getInstance().getOauthRequestParams(USER_REGULAR));
+	adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN, ClientConfiguration.getInstance().getOauthServiceUri(), ClientConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
     }
     
     private String getAuthorizationHeaderValue (String user) {
@@ -1114,39 +1113,4 @@ public class AnnotationApiConnection extends BaseApiConnection {
 	return getJSONResult(url);
     }
 
-    @SuppressWarnings("deprecation")
-    public String getOauthToken(String user) {
-	try {
-//	    String accessToken = "access_token";
-	    String oauthUri = ClientConfiguration.getInstance().getOauthServiceUri();
-	    String oauthParams = ClientConfiguration.getInstance().getOauthRequestParams(user);
-	    
-	    PostMethod post = new PostMethod(oauthUri);
-		if (StringUtils.isNotBlank(oauthParams)) {
-		    post.setRequestBody(oauthParams);
-		    post.setRequestHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
-		}
-		
-		HttpClient client = new HttpClient();
-		try {
-		    client.executeMethod(post);
-		    if (post.getResponseBody() != null && post.getResponseBody().length > 0) {
-			    byte[] byteResponse = post.getResponseBody();
-			    String jsonResponse = new String(byteResponse, StandardCharsets.UTF_8);
-			    JSONObject jo = new JSONObject(jsonResponse);
-			    return jo.getString("access_token");
-		    }else {
-			
-		    }
-		} catch (JSONException e) {
-		    throw new TechnicalRuntimeException("Cannot retrieve authentication token!", e);
-		} finally {
-		    post.releaseConnection();
-		}
-	    } catch (IOException e) {
-	    throw new TechnicalRuntimeException("Cannot retrieve authentication token!", e);
-	}
-	
-	return null;
-    }
 }

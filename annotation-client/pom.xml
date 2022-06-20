@@ -32,7 +32,6 @@
 			<artifactId>annotation-definitions</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>api2-common</artifactId>
@@ -65,11 +64,11 @@
 	        <scope>test</scope>
 	    </dependency>
 	    		
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>${version.httpClient}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>commons-httpclient</groupId> -->
+<!-- 			<artifactId>commons-httpclient</artifactId> -->
+<!-- 			<version>${version.httpClient}</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -106,6 +105,13 @@
 			<version>${version.spring}</version>
 			<scope>test</scope>
 		</dependency>
+	    <dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-definitions</artifactId>
+	        <type>test-jar</type>
+		    <version>${version.annotationApi}</version>
+	        <scope>test</scope>
+	    </dependency>		
 
 	</dependencies>
 	<build>

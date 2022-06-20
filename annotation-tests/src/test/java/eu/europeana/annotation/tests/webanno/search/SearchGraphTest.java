@@ -2,6 +2,7 @@ package eu.europeana.annotation.tests.webanno.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -29,6 +30,7 @@ public class SearchGraphTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -41,17 +43,15 @@ public class SearchGraphTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
 		validateGraph(retrievedAnno);
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 
 	/**
 	 * Validate graph fields after search.
 	 * 
 	 * @param storedAnno
+	 * @throws IOException 
 	 */
-	private void validateGraph(Annotation storedAnno) {
+	private void validateGraph(Annotation storedAnno) throws IOException {
 		assertEquals(MotivationTypes.LINKING.name().toLowerCase(), storedAnno.getMotivation());
 		assertEquals(BodyInternalTypes.GRAPH.name(), storedAnno.getBody().getInternalType());
 		Graph graphBody = ((GraphBody) storedAnno.getBody()).getGraph();

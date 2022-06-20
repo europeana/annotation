@@ -2,7 +2,7 @@
  * HttpConnector.java - europeana4j
  * (C) 2011 Digibis S.L.
  */
-package eu.europeana.annotation.client.http;
+package eu.europeana.annotation.utils;
 
 import java.io.IOException;
 

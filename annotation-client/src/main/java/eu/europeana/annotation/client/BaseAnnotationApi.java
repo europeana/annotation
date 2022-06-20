@@ -14,7 +14,7 @@ public abstract class BaseAnnotationApi {
 		this.apiConnection = apiConnection;
 	}
 
-	public BaseAnnotationApi() {
+	public BaseAnnotationApi() throws Exception {
 		this.configuration = ClientConfiguration.getInstance();
 		this.apiConnection = new AnnotationApiConnection(
 				getConfiguration().getServiceUri(), getConfiguration().getApiKey());

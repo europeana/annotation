@@ -20,9 +20,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
+import eu.europeana.annotation.utils.config.AnnotationConfiguration;
 
 /**
  * This class supports requests to Metis API and XSLT conversion of response.

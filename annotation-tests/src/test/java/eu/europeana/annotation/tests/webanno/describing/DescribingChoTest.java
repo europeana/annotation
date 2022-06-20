@@ -10,7 +10,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
 /**
  * This is a test for an annotation object with motivation "describing"
@@ -19,7 +19,7 @@ import eu.europeana.annotation.tests.BaseAnnotationTest;
  * @author GrafR
  *
  */
-public class DescribingChoTest extends BaseAnnotationTest {
+public class DescribingChoTest extends AbstractIntegrationTest {
 
     public static final String DESCRIBING_CHO = "/describing/cho.json";
 
@@ -35,11 +35,10 @@ public class DescribingChoTest extends BaseAnnotationTest {
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+		createdAnnotations.add(storedAnno.getIdentifier());
 								
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
-		
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 	
 }

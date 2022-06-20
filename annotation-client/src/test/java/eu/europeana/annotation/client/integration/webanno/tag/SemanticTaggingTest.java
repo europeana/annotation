@@ -3,15 +3,12 @@ package eu.europeana.annotation.client.integration.webanno.tag;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
@@ -28,7 +25,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_MINIMAL);
 		log.info(anno.getBody().getInternalType());
-		removeAnnotation(anno.getIdentifier());
+		createdAnnotations.add(anno.getIdentifier());
 	}
 
 	@Test
@@ -37,7 +34,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_STANDARD);
 		log.info(anno.getBody().getInternalType());
-		removeAnnotation(anno.getIdentifier());
+		createdAnnotations.add(anno.getIdentifier());
 	}
 
 	@Test
@@ -46,7 +43,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_MINIMAL);
 		log.info(anno.getBody().getInternalType());
-		removeAnnotation(anno.getIdentifier());
+		createdAnnotations.add(anno.getIdentifier());
 	}
 
 	@Test
@@ -55,7 +52,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 
 		Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_STANDARD);
 		log.info(anno.getBody().getInternalType());
-		removeAnnotation(anno.getIdentifier());
+		createdAnnotations.add(anno.getIdentifier());
 	}
 
 	@Test
@@ -67,7 +64,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.SEMANTIC_TAG.name());
-		removeAnnotation(storedAnno.getIdentifier());
+		createdAnnotations.add(storedAnno.getIdentifier());
 	}
 
 	@Test
@@ -84,7 +81,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(agentBody.getPlaceOfBirth());
 		assertNotNull(agentBody.getPlaceOfDeath());
 		assertNotNull(agentBody.getPrefLabel());
-		removeAnnotation(storedAnno.getIdentifier());
+		createdAnnotations.add(storedAnno.getIdentifier());
 	}
 
 	@Test
@@ -100,7 +97,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		assertTrue(agentBody.getPrefLabel().size() == 43);
 		assertNotNull(agentBody.getDateOfBirth());
 		assertNotNull(agentBody.getDateOfDeath());
-		removeAnnotation(storedAnno.getIdentifier());
+		createdAnnotations.add(storedAnno.getIdentifier());
 	}
 
 }

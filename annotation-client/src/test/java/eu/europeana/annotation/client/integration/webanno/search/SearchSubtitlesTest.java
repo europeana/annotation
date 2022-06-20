@@ -3,9 +3,6 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -27,7 +24,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 
 	
 	@Test
-	public void searchSubtitles() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchSubtitles() throws Exception {
 		
 	    
 		String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
@@ -36,6 +33,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		
 		// create indexed subtitle
 		Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isFullTextResourceTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -47,9 +45,6 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		Annotation retrievedAnnotation = (Annotation)annoPage.getAnnotations().get(0);
 		assertEquals(storedAnno.getIdentifier(), retrievedAnnotation.getIdentifier());
 		validateSubtitle(retrievedAnnotation);
-
-		// remove annotation
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 	/**

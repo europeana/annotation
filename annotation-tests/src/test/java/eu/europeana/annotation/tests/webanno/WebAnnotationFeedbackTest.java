@@ -8,14 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
 
 /**
  * This class aims at testing of the annotation moderation methods.
  * @author GrafR
  */
-public class WebAnnotationFeedbackTest extends BaseAnnotationTest { 
+public class WebAnnotationFeedbackTest extends AbstractIntegrationTest { 
 
 	protected Logger log = LogManager.getLogger(getClass());
 
@@ -28,13 +28,15 @@ public class WebAnnotationFeedbackTest extends BaseAnnotationTest {
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true, null);
 		AnnotationTestUtils.validateResponse(response);
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
 				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN);
+		createdModerationRecords.add(Long.valueOf(reportResponse.getBody()));
 		assertEquals(reportResponse.getStatusCode(), HttpStatus.CREATED);
-		removeAnnotationManually(storedAnno.getIdentifier());
+		
 	}
 
 
@@ -45,12 +47,14 @@ public class WebAnnotationFeedbackTest extends BaseAnnotationTest {
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true, null);
 		AnnotationTestUtils.validateResponse(response);
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
 				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN
 				);
+		createdModerationRecords.add(Long.valueOf(reportResponse.getBody()));
 		assertEquals(reportResponse.getStatusCode(), HttpStatus.CREATED);
 
 		/**
@@ -62,9 +66,5 @@ public class WebAnnotationFeedbackTest extends BaseAnnotationTest {
 				, TEST_USER_TOKEN
 				);
 		AnnotationTestUtils.validateModerationReportResponse(getResponse);
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
-	
-	
-
 }

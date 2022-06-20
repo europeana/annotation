@@ -17,7 +17,7 @@ public class WebAnnotationProtocolApiImpl extends BaseAnnotationApi implements W
 	super(configuration, apiConnection);
     }
 
-    public WebAnnotationProtocolApiImpl() {
+    public WebAnnotationProtocolApiImpl() throws Exception {
 	super();
     }
 

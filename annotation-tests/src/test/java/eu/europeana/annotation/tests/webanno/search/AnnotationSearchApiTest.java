@@ -15,7 +15,7 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.utils.QueryUtils;
 
@@ -25,7 +25,7 @@ import eu.europeana.annotation.utils.QueryUtils;
  * @author Sergiu Gordea @ait
  * @author Sven Schlarb @ait
  */
-public class AnnotationSearchApiTest extends BaseAnnotationTest {
+public class AnnotationSearchApiTest extends AbstractIntegrationTest {
 
 	static final String VALUE_ALL = "*:*";	
 	static final int TOTAL_IN_PAGE = 10;
@@ -37,13 +37,10 @@ public class AnnotationSearchApiTest extends BaseAnnotationTest {
 	private void createAnnotationDataSet() throws Exception {
 	    String defaultRequestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD_TESTSET);
 		annotations = createMultipleTestAnnotations(defaultRequestBody, TOTAL_IN_COLLECTION);
+		for(Annotation anno : annotations) {
+		  createdAnnotations.add(anno.getIdentifier());
+		}
 		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
-	}
-
-	private void removeAnnotationDataSet() throws Exception {
-	  for(Annotation anno: annotations) {
-	    removeAnnotationManually(anno.getIdentifier());
-	  }
 	}
 
 	/**
@@ -104,8 +101,6 @@ public class AnnotationSearchApiTest extends BaseAnnotationTest {
 	  int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
 	  AnnotationPage lastPage = searchAnnotationsAddQueryField(valueTestSet, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null, SearchProfiles.STANDARD, null);
 	  assertEquals(lastPage.getCurrentPage(), lastPageNum);
-	  
-	  removeAnnotationDataSet();
 	}
 
 	
@@ -129,8 +124,6 @@ public class AnnotationSearchApiTest extends BaseAnnotationTest {
 		List<? extends Annotation> annos = annPg.getAnnotations(); 
 		
 		assertTrue(0 < annos.size());
-		
-		removeAnnotationDataSet();
 	}
 	
 	
@@ -142,6 +135,5 @@ public class AnnotationSearchApiTest extends BaseAnnotationTest {
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertEquals(annPg.getCurrentPage(), 0);
-		removeAnnotationDataSet();
 	}
 }

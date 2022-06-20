@@ -4,9 +4,9 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
-public class BaseTaggingTest extends BaseAnnotationTest {
+public class BaseTaggingTest extends AbstractIntegrationTest {
 
 	protected Annotation createAndValidateTag(String inputFile) throws Exception {
 		return createTag(inputFile, true, true);

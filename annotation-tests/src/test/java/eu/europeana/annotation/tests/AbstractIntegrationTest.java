@@ -5,10 +5,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,21 +32,24 @@ import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
+import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.tests.constants.AnnotationTestsConstants;
-import eu.europeana.annotation.tests.exception.TechnicalRuntimeException;
-import eu.europeana.annotation.tests.oauth.EuropeanaOauthClient;
+import eu.europeana.annotation.utils.oauth.EuropeanaOauthClient;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = { "classpath:annotation-web-context.xml" })
 @WebAppConfiguration
-public class BaseAnnotationTest extends AnnotationTestsConstants {
+public class AbstractIntegrationTest extends AnnotationTestsConstants {
   
     static String regularUserAuthorizationValue = null;
     static String adminUserAuthorizationValue = null;
+    protected static List<Long> createdAnnotations = new ArrayList<Long>();
+    protected static List<Long> createdModerationRecords = new ArrayList<Long>();
   
     protected MockMvc mockMvc;
     
@@ -57,15 +62,31 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
     @Autowired
     PersistentAnnotationService mongoPersistance;
     
+    @Autowired
+    PersistentModerationRecordService mongoPersistenceModeration;
+    
     @BeforeEach
     protected void initTest() {
       mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
     
     @BeforeAll
-    protected static void initAppConextAndOauthTokens() {
-      regularUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_REGULAR);
-      adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN);
+    protected static void initAppConextAndOauthTokens() throws Exception {
+      regularUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_REGULAR, AnnotationTestsConfiguration.getInstance().getOauthServiceUri(), AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_REGULAR));
+      adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN, AnnotationTestsConfiguration.getInstance().getOauthServiceUri(), AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
+    }
+    
+    @AfterEach
+    private void removeCreatedAnnotations () throws AnnotationMongoException, AnnotationServiceException, ModerationMongoException {
+      for (long identifier : createdAnnotations) {
+        removeAnnotationManually(identifier);
+      }
+      createdAnnotations.clear();
+      
+      for (long identifier : createdModerationRecords) {
+        mongoPersistenceModeration.remove(identifier);
+      }
+      createdModerationRecords.clear();
     }
     
     protected String getAuthorizationHeaderValue (String user) {
@@ -203,7 +224,7 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
 		log.trace("Annotation deleted: /" + identifier);
 	}
     
-    protected List<String> getDeleted (String motivation, String from, String to, int page, int limit) {
+    protected List<String> getDeleted (String motivation, String from, String to, int page, int limit) throws Exception {
       String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
       if (url.endsWith(WebAnnotationFields.SLASH))
           url = url.substring(0, url.length()-1);
@@ -234,17 +255,9 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
       }
       url += "&" + WebAnnotationFields.PARAM_WSKEY + "=" + AnnotationTestsConfiguration.getInstance().getApiKey();
       
-      List<String> res = null;      
-      try {
-          ResultActions mockMvcResult = mockMvc.perform(get(url));          
-          ObjectMapper objectMapper = new ObjectMapper();
-          res = objectMapper.readValue(mockMvcResult.andReturn().getResponse().getContentAsString(), new TypeReference<List<String>>(){});    
-      } catch (Exception e) {
-          throw new TechnicalRuntimeException(
-              "Exception occured when invoking the AnnotationJsonLdApi for getAnnotationLd method", e);
-      }
-      
-      return res;
+      ResultActions mockMvcResult = mockMvc.perform(get(url));          
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.readValue(mockMvcResult.andReturn().getResponse().getContentAsString(), new TypeReference<List<String>>(){});    
 
     }
     
@@ -255,7 +268,7 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
         String adaptedRequestBody = StringUtils.replace(defaultRequestBody, "%test_body_to_replace%", "test_body_" + i);
         ResponseEntity<String> response = storeTestAnnotationByType(
                 true, adaptedRequestBody, null, null);
-        Annotation annotation = AnnotationTestUtils.parseAndVerifyTestAnnotation(response);          
+        Annotation annotation = AnnotationTestUtils.parseAndVerifyTestAnnotation(response); 
         assertNotNull(annotation);
         testAnnotations[i] = annotation;
       }
@@ -367,7 +380,7 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
         .content(tag)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_REGULAR)));
-
+    
     return AnnotationTestUtils.buildResponseEntity(mockMvcResult);
     }
     
@@ -387,7 +400,7 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
     return mockMvcResult.andReturn().getResponse().getContentAsString();
     }
     
-    protected String createAnnotationLd(String motivation, Long annotationNr,
+    protected Annotation createAnnotationLd(String motivation, Long annotationNr,
         String europeanaLdStr, String apikey) throws Exception {
 
     String url = AnnotationTestsConfiguration.getInstance().getServiceUri(); 
@@ -409,7 +422,8 @@ public class BaseAnnotationTest extends AnnotationTestsConstants {
         .content(europeanaLdStr)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_REGULAR)));
-    return mockMvcResult.andReturn().getResponse().getContentAsString();
+    
+    return AnnotationTestUtils.parseAnnotation(mockMvcResult.andReturn().getResponse().getContentAsString(), null);
     }
 
 }

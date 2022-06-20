@@ -18,7 +18,7 @@ public class WhitelistJsonApiImpl extends BaseAnnotationApi implements Whitelist
 		super(configuration, apiConnection);
 	}
 	
-	public WhitelistJsonApiImpl(){
+	public WhitelistJsonApiImpl() throws Exception{
 		super();
 	}
 

@@ -1,12 +1,12 @@
 package eu.europeana.annotation.tests.config;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import eu.europeana.annotation.tests.exception.TechnicalRuntimeException;
 
 public class AnnotationTestsConfiguration {
 
-    protected static final String ANNOTATION_CLIENT_PROPERTIES_FILE = "/annotation-client.properties";
+    protected static final String ANNOTATION_CLIENT_PROPERTIES_FILE = "/annotation-tests.properties";
     protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
     protected static final String PROP_ANNOTATION_SERVICE_BASE_URI = "annotation.service.uri";
     protected static final String PROP_ANNOTATION_ID_BASE_URI = "annotation.id.baseUrl";
@@ -34,8 +34,9 @@ public class AnnotationTestsConfiguration {
      * Accessor method for the singleton
      * 
      * @return
+     * @throws IOException 
      */
-    public static synchronized AnnotationTestsConfiguration getInstance() {
+    public static synchronized AnnotationTestsConfiguration getInstance() throws IOException {
       if(singleton==null) {
     	singleton = new AnnotationTestsConfiguration();
     	singleton.loadProperties();
@@ -45,22 +46,12 @@ public class AnnotationTestsConfiguration {
 
     /**
      * Laizy loading of configuration properties
+     * @throws IOException 
      */
-    public synchronized void loadProperties() {
-	try {
+    public synchronized void loadProperties() throws IOException {
 	    properties = new Properties();
 	    InputStream resourceAsStream = getClass().getResourceAsStream(ANNOTATION_CLIENT_PROPERTIES_FILE);
-	    if (resourceAsStream != null)
 		getProperties().load(resourceAsStream);
-	    else
-		throw new TechnicalRuntimeException(
-			"No properties file found in classpath! " + ANNOTATION_CLIENT_PROPERTIES_FILE);
-
-	} catch (Exception e) {
-	    throw new TechnicalRuntimeException("Cannot read configuration file: " + ANNOTATION_CLIENT_PROPERTIES_FILE,
-		    e);
-	}
-
     }
 
     /**

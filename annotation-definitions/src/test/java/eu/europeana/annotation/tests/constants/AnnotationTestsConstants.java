@@ -2,7 +2,6 @@ package eu.europeana.annotation.tests.constants;
 
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
-import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 
 public class AnnotationTestsConstants {
   
@@ -20,8 +19,8 @@ public class AnnotationTestsConstants {
   public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
   public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 
-  public String get_TAG_STANDARD_TEST_VALUE_TARGET() {
-    return AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214";
+  public String get_TAG_STANDARD_TEST_VALUE_TARGET(String itemDataEndpoint) {
+    return itemDataEndpoint + "/09102/_UEDIN_214";
   }
   //  public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
   public static final String TAG_ANNOTATION = "/tag/annotation.json";
@@ -105,31 +104,31 @@ public class AnnotationTestsConstants {
   public static final String BODY_VALUE_TO_TRIM = " überhaupt ";
   public static final String BODY_VALUE_AFTER_TRIMMING = "überhaupt";
 
-  public String get_TAG_JSON_BY_TYPE_JSONLD() {
+  public String get_TAG_JSON_BY_TYPE_JSONLD(String itemDataEndpoint) {
     String TAG_CORE = TYPE + ANNOTATED_SERIALIZED + "\"bodyValue\": \"church\","
-        + "\"target\": \"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
+        + "\"target\": \"" + itemDataEndpoint + "/123/xyz\"," + EQUIVALENT_TO;
     return START + TAG_CORE + END;
   }
   
-  public String get_TAG_JSON_VALIDATION() {
+  public String get_TAG_JSON_VALIDATION(String itemDataEndpoint) {
      String TAG_CORE_VALIDATION = TYPE + ANNOTATED_SERIALIZED + 
          "\"motivation\": \"oa:tagging\"," +
          "\"bodyValue\": \"" + BODY_VALUE_TO_TRIM + "\"," +
-         "\"target\": \"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/123/xyz\"," + EQUIVALENT_TO;
+         "\"target\": \"" + itemDataEndpoint + "/123/xyz\"," + EQUIVALENT_TO;
     return START + TAG_CORE_VALIDATION + END;
   }
 
-  public String get_LINK_CORE() {
+  public String get_LINK_CORE(String itemDataEndpoint) {
      String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
-         + "\"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/123/xyz.html\","
-         + "\"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+         + "\"" + itemDataEndpoint +  "/123/xyz.html\","
+         + "\"" + itemDataEndpoint +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
     return LINK_CORE;
   }
 
-  public String get_LINK_JSON_BY_TYPE_JSONLD() {
+  public String get_LINK_JSON_BY_TYPE_JSONLD(String itemDataEndpoint) {
      String LINK_CORE = TYPE + ANNOTATED_SERIALIZED + "\"target\": ["
-         + "\"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/123/xyz.html\","
-         + "\"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
+         + "\"" + itemDataEndpoint +  "/123/xyz.html\","
+         + "\"" + itemDataEndpoint +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
     return START + LINK_CORE + END;
   }
   

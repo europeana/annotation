@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
-public class SubtitlingTest extends BaseAnnotationTest {
+public class SubtitlingTest extends AbstractIntegrationTest {
 
     protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
 	MotivationTypes motivationType = MotivationTypes.SUBTITLING;
@@ -23,12 +23,11 @@ public class SubtitlingTest extends BaseAnnotationTest {
 	Annotation inputAnno = parseSubtitle(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
+	createdAnnotations.add(storedAnno.getIdentifier());
 
 	// validate the reflection of input in output!
 	AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
 	
 	Assertions.assertTrue(true);
-	
-	removeAnnotationManually(storedAnno.getIdentifier());
     }
 }

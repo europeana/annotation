@@ -10,11 +10,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import eu.europeana.annotation.client.http.HttpConnection;
 import eu.europeana.annotation.client.model.json.AnnotationDeserializer;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
+import eu.europeana.annotation.utils.HttpConnection;
 
 public class BaseApiConnection {
 

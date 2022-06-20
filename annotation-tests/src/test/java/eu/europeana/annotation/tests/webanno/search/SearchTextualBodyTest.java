@@ -3,6 +3,7 @@ package eu.europeana.annotation.tests.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
@@ -29,6 +30,7 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 	// create indexed tag
 	//TODO: change to create annotation
 	Annotation createdAnno = createTag(requestBody);
+	createdAnnotations.add(createdAnno.getIdentifier());
 
 //	 "scope": "http://data.europeana.eu/item/07931/diglit_uah_m1",
 //	    "source": 
@@ -48,17 +50,15 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 	validateDescriptionBody(retrievedAnno);
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_DESCRIBING_TARGET_SOURCE);
 	validateDescriptionBody(retrievedAnno);
-	
-	// remove tag
-	removeAnnotationManually(createdAnno.getIdentifier());
     }
 
     /**
      * Validate tag text fields after search.
      * 
      * @param storedAnno
+     * @throws IOException 
      */
-    private void validateDescriptionBody(Annotation storedAnno) {
+    private void validateDescriptionBody(Annotation storedAnno) throws IOException {
 	assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
 	assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
 	TextBody textBody = ((TextBody) storedAnno.getBody());
@@ -82,6 +82,7 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 	// create indexed tag
 	//TODO: change to create annotation
 	Annotation createdAnno = createTag(requestBody);
+	createdAnnotations.add(createdAnno.getIdentifier());
 
 	assertTrue(BodyInternalTypes.isFullTextResourceTagBody(createdAnno.getBody().getInternalType()));
 	// validate the reflection of input in output!
@@ -96,17 +97,15 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 	String VALUE_SEARCH_TARGET_URI = "target_uri:\"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1\"";
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_URI);
 	validateTranscriptionBody(retrievedAnno);
-
-	// remove tag
-	removeAnnotationManually(createdAnno.getIdentifier());
     }
 
     /**
      * Validate full text resource tag fields after search.
      * 
      * @param storedAnno
+     * @throws IOException 
      */
-    private void validateTranscriptionBody(Annotation storedAnno) {
+    private void validateTranscriptionBody(Annotation storedAnno) throws IOException {
 	assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TRANSCRIBING.name().toLowerCase()));
 	assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.FULL_TEXT_RESOURCE.name());
 	FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());

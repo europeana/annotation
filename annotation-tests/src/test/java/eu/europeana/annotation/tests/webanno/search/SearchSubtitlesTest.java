@@ -3,6 +3,7 @@ package eu.europeana.annotation.tests.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
@@ -34,6 +35,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		
 		// create indexed subtitle
 		Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isFullTextResourceTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -45,17 +47,15 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		Annotation retrievedAnnotation = (Annotation)annoPage.getAnnotations().get(0);
 		assertEquals(storedAnno.getIdentifier(), retrievedAnnotation.getIdentifier());
 		validateSubtitle(retrievedAnnotation);
-
-		// remove annotation
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 
 	/**
 	 * Validate full text resource tag fields after search.
 	 * 
 	 * @param storedAnno
+	 * @throws IOException 
 	 */
-	private void validateSubtitle(Annotation storedAnno) {
+	private void validateSubtitle(Annotation storedAnno) throws IOException {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.SUBTITLING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.FULL_TEXT_RESOURCE.name());
 		FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());

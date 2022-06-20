@@ -10,7 +10,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
 /**
  * This is a test for an annotation object with motivation "describing"
@@ -19,7 +19,7 @@ import eu.europeana.annotation.tests.BaseAnnotationTest;
  * @author GrafR
  *
  */
-public class DescribingWebResourceTest extends BaseAnnotationTest {
+public class DescribingWebResourceTest extends AbstractIntegrationTest {
   
     public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
 
@@ -37,12 +37,11 @@ public class DescribingWebResourceTest extends BaseAnnotationTest {
 		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 		
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+		createdAnnotations.add(storedAnno.getIdentifier());
 				
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
 		assertTrue(storedAnno.getTarget().getSource() != null);
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
-		
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 	
 }

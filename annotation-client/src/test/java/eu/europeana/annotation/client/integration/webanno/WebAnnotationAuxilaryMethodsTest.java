@@ -16,31 +16,27 @@ public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest {
   public void getDeletedAnnotations() throws JsonParseException, IOException {
     // store 2 annotations
     Annotation anno_tag = createTestAnnotation(TAG_STANDARD, null);
+    createdAnnotations.add(anno_tag.getIdentifier());
     Annotation anno_subtitle = createTestAnnotation(SUBTITLE_MINIMAL, null);
+    createdAnnotations.add(anno_subtitle.getIdentifier());
 
-    try {
+    // delete both annotations
+    getApiProtocolClient().deleteAnnotation(anno_tag.getIdentifier());
+    getApiProtocolClient().deleteAnnotation(anno_subtitle.getIdentifier());
 
-      // delete both annotations
-      getApiProtocolClient().deleteAnnotation(anno_tag.getIdentifier());
-      getApiProtocolClient().deleteAnnotation(anno_subtitle.getIdentifier());
+    Date now = new Date();
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(now);
+    calendar.add(Calendar.DATE, -1);
+    Date startDate = calendar.getTime();
+    calendar.add(Calendar.DATE, 2);
+    Date stopDate = calendar.getTime();
 
-      Date now = new Date();
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTime(now);
-      calendar.add(Calendar.DATE, -1);
-      Date startDate = calendar.getTime();
-      calendar.add(Calendar.DATE, 2);
-      Date stopDate = calendar.getTime();
+    List<String> result = getApiAuxilaryMethodsClient().getDeleted(null,
+        DateUtils.convertDateToStr(startDate), DateUtils.convertDateToStr(stopDate), 0, 100);
 
-      List<String> result = getApiAuxilaryMethodsClient().getDeleted(null,
-          DateUtils.convertDateToStr(startDate), DateUtils.convertDateToStr(stopDate), 0, 100);
-
-      assertTrue(result.contains(String.valueOf(anno_tag.getIdentifier())));
-      assertTrue(result.contains(String.valueOf(anno_subtitle.getIdentifier())));
-    } finally {
-      removeAnnotation(anno_tag.getIdentifier());
-      removeAnnotation(anno_subtitle.getIdentifier());
-    }
+    assertTrue(result.contains(String.valueOf(anno_tag.getIdentifier())));
+    assertTrue(result.contains(String.valueOf(anno_subtitle.getIdentifier())));
 
   }
 

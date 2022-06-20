@@ -13,10 +13,10 @@ public class EdmTranscribingTest extends BaseTranscribingTest {
 	Annotation inputAnno = parseTranscription(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
-
+	createdAnnotations.add(storedAnno.getIdentifier());
+	
 	// validate the reflection of input in output!
 	AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-	removeAnnotationManually(storedAnno.getIdentifier());
     }
 
 }

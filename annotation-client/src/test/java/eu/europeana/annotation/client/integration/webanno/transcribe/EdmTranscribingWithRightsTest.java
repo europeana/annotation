@@ -2,15 +2,12 @@ package eu.europeana.annotation.client.integration.webanno.transcribe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 
@@ -24,14 +21,13 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 	Annotation inputAnno = parseTranscription(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS, null);
-
+	createdAnnotations.add(storedAnno.getIdentifier());
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
 
 	assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
 	assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
 	
-	removeAnnotation(storedAnno.getIdentifier());
     }
 
     @Test

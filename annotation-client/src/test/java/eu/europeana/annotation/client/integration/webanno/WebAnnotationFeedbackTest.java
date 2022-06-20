@@ -29,23 +29,30 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 	public static String TEST_REPORT_SUMMARY_FIELD = "reportSum";
 
 	
-	@Test
+	/*
+	 * This test is commented out because there is no explicit endpoint to delete the created
+	 * report. The test is however enabled in the integration tests.
+	 */
+	//@Test
 	public void createAnnotationReport() throws JsonParseException, IOException {
 		
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		validateResponse(response);
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        createdAnnotations.add(storedAnno.getIdentifier());
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
 				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 
-
-	@Test
+    /*
+    * This test should not be executed until there is an explicit endpoint to delete the created
+    * report. The test is however enabled in the integration tests.
+    */
+	//@Test
 	public void getModerationSummary() 
 			throws JsonParseException, IllegalAccessException, IllegalArgumentException, 
 				   InvocationTargetException, JSONException, IOException {
@@ -53,6 +60,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 		validateResponse(response);
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        createdAnnotations.add(storedAnno.getIdentifier());
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
@@ -70,7 +78,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 				, TEST_USER_TOKEN
 				);
 		validateModerationReportResponse(getResponse);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	protected void validateModerationReportResponse(ResponseEntity<String> response) 

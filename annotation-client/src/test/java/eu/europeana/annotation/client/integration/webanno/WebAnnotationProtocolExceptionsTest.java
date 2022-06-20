@@ -7,6 +7,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.connection.AnnotationApiConnection;
 import eu.europeana.annotation.definitions.model.Annotation;
 
@@ -18,15 +19,15 @@ import eu.europeana.annotation.definitions.model.Annotation;
 public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 
     private String get_LINK_JSON_WITHOUT_BLANK() {
-      return START + get_LINK_CORE() + "\"motivation\":\"oa:linking\"," +  END;
+      return START + get_LINK_CORE(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motivation\":\"oa:linking\"," +  END;
     }
 	
     private String get_CORRUPTED_JSON() {
-      return START + get_LINK_CORE() + "\"motivation\",=\"oa:linking\"," + END;
+      return START + get_LINK_CORE(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motivation\",=\"oa:linking\"," + END;
     }
 	
     private String get_LINK_JSON_WITH_WRONG_MOTIVATION() {
-      return START + get_LINK_CORE() + "\"motiv\":\"oa:wrong\"," + END;
+      return START + get_LINK_CORE(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motiv\":\"oa:wrong\"," + END;
     }
 
     @Deprecated
@@ -67,9 +68,9 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
 				true, get_LINK_JSON_WITHOUT_BLANK(), null, null);
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        createdAnnotations.add(storedAnno.getIdentifier());
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 
@@ -107,7 +108,7 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 	public void createWebannoAnnotationByWrongAnnoTypeJsonld() {
 		
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
-				false, get_TAG_JSON_BY_TYPE_JSONLD(), INVALID_ANNO_TYPE, null);
+				false, get_TAG_JSON_BY_TYPE_JSONLD(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), INVALID_ANNO_TYPE, null);
 		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
@@ -163,13 +164,13 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		 */
 	    
         String CORRUPTED_UPDATE_JSON = 
-            START + CORRUPTED_UPDATE_BODY + "," + "\"target\":" + "\"" + get_TAG_STANDARD_TEST_VALUE_TARGET() + "\"," + END;
+            START + CORRUPTED_UPDATE_BODY + "," + "\"target\":" + "\"" + get_TAG_STANDARD_TEST_VALUE_TARGET(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"," + END;
 	  
 		Annotation anno = createTestAnnotation(TAG_STANDARD, null);
+        createdAnnotations.add(anno.getIdentifier());
 		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				anno.getIdentifier(), CORRUPTED_UPDATE_JSON, null);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		removeAnnotation(anno.getIdentifier());
 	}
 	
 		
@@ -182,13 +183,14 @@ public class WebAnnotationProtocolExceptionsTest extends BaseWebAnnotationTest {
 		 * store annotation and retrieve its id
 		 */
 		Annotation anno = createTestAnnotation(TAG_STANDARD, AnnotationApiConnection.USER_ADMIN);
-		
+        createdAnnotations.add(anno.getIdentifier());
+
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		
 		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
 				anno.getIdentifier(), requestBody, AnnotationApiConnection.USER_REGULAR);
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-		removeAnnotation(anno.getIdentifier());
+		
 	}
 	
 		

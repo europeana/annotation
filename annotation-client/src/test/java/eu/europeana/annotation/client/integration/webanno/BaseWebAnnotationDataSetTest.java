@@ -19,7 +19,7 @@ import eu.europeana.annotation.client.admin.WebAnnotationAdminApi;
 import eu.europeana.annotation.client.admin.WebAnnotationAdminApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 
-public class BaseWebAnnotationDataSetTest {
+public class BaseWebAnnotationDataSetTest extends BaseWebAnnotationTest {
 	
 	protected Logger log = LogManager.getLogger(getClass());
 
@@ -31,11 +31,10 @@ public class BaseWebAnnotationDataSetTest {
 
 	/**
 	 * Initialize objects
-	 * 
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@BeforeEach
-	public void initObjects() throws IOException {
+	public void initObjectsDataSet() throws Exception {
 		apiClient = new WebAnnotationProtocolApiImpl();
 		defaultRequestBody = this.getJsonStringInput(TAG_STANDARD_TESTSET);
 	}
@@ -133,8 +132,9 @@ public class BaseWebAnnotationDataSetTest {
 	 * Delete annotations
 	 * 
 	 * @param annotations
+	 * @throws Exception 
 	 */
-	protected void deleteAnnotations(Annotation[] annotations) {
+	protected void deleteAnnotations(Annotation[] annotations) throws Exception {
 		WebAnnotationAdminApi webannoAdminApi = new WebAnnotationAdminApiImpl();
 		if(annotations == null) {
 			return;

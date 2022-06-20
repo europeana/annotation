@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -45,30 +44,14 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 	    // create new annotations first. (3 with different VIAF IDS)
     	Annotation testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
 		testAnnotations[0] = testAnnotation;
+		createdAnnotations.add(testAnnotation.getIdentifier());
 		testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
 		testAnnotations[1] = testAnnotation;
+		createdAnnotations.add(testAnnotation.getIdentifier());
 		testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);		
 		testAnnotations[2] = testAnnotation;
+		createdAnnotations.add(testAnnotation.getIdentifier());
     }
-	
-	/**
-	 * Remove annotations data set after each test execution
-	 */
-	@AfterEach
-	public void removeAnnotationDataSet() {
-		removeAnnotations(testAnnotations);
-	}
-    
-	/**
-	 * Remove annotations
-	 * 
-	 * @param annotations
-	 */
-	protected void removeAnnotations(Annotation[] annotations) {
-		for (Annotation annotation : annotations) {
-			removeAnnotation(annotation.getIdentifier());
-		}
-	}
 	
 	/**
 	 * This is an example dereferenciation test for PoC.

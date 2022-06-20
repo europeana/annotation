@@ -6,18 +6,15 @@ import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotation
 import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_FIELD;
 import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -28,13 +25,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 
 /**
  * Annotation API Batch Upload Test class
  * 
  * @author Sven Schlarb
+ */
+/*
+ * CAUTION: some of the tests below capture the created annotations not using their original id, but the 
+ * heuristics with the next id, in order to be able to remove the created annotations later on.
+ * This heuristics might delete the undesired annotations when executed in some environment where
+ * some other annotations can be created in between the test annotations. However if execute in the local
+ * environment, the tests are safe.
  */
 public class BatchUploadTest extends BaseWebAnnotationTest {
     
@@ -67,16 +70,8 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		for (int i = 0; i < TEST_NUM_ANNOTATIONS; i++) {
 			testAnnotation = createTestAnnotation(TAG_MINIMAL, false, null);
 			testAnnotations.add(testAnnotation);
+			createdAnnotations.add(testAnnotation.getIdentifier());
 		}
-	}
-	
-	@AfterEach
-	public void removeTestAnnotations() {
-	  if(testAnnotations!=null) {
-          for (Annotation anno : testAnnotations) {
-            removeAnnotation(anno.getIdentifier());
-          }
-	  }
 	}
 
 	/**
@@ -92,7 +87,14 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// batch upload request
 		ResponseEntity<String> uploadResponse = getApiProtocolClient().uploadAnnotations(
 			requestBody, true);
+		
+		//save the ids of the annotations created additionally to the initial test annotations in order to remove them properly in the @AfterEach remove
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
+          createdAnnotations.add(i);
+        }
 
+		
 		// response status must be 201 CREATED
 		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
 
@@ -113,11 +115,6 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 			assertEquals(testAnnotations.get(i).getIdentifier(), storedAnnotation.getIdentifier());
 		}
 		
-		//removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
-		long startingId = testAnnotations.get(0).getIdentifier();
-		for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
-		  removeAnnotation(i);
-		}
 	}
 	
 	
@@ -161,6 +158,11 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// batch upload request
 		ResponseEntity<String> response = getApiProtocolClient().uploadAnnotations(
 				requestBody, false);
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+8; i++) {
+          createdAnnotations.add(i);
+        }
+	
 
 		// response status must be 404 NOT FOUND
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -178,12 +180,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		assertTrue(((String)errors.get("-1")).startsWith("Annotation does not exist"));
 		assertTrue(((String)errors.get("-2")).startsWith("Annotation does not exist"));
 		assertTrue(((String)errors.get("-3")).startsWith("Annotation does not exist"));
-		
-	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
-        long startingId = testAnnotations.get(0).getIdentifier();
-        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+8; i++) {
-          removeAnnotation(i);
-        }
+
 	}
 
 	/**
@@ -203,6 +200,11 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// batch upload request
 		ResponseEntity<String> response = getApiProtocolClient().uploadAnnotations(
 				requestBody, false);
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
+          createdAnnotations.add(i);
+        }
+		
 
 		// response status must be 400 BAD_REQUEST
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -218,11 +220,6 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("1"));
 		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("2"));
 	
-	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
-        long startingId = testAnnotations.get(0).getIdentifier();
-        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
-          removeAnnotation(i);
-        }
 	}
 
 	/**

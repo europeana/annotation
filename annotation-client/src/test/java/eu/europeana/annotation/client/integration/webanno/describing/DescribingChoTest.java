@@ -37,11 +37,10 @@ public class DescribingChoTest extends BaseDescribingTest {
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+		createdAnnotations.add(storedAnno.getIdentifier());
 								
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 }

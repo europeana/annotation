@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.config.AnnotationConfigurationImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
+import eu.europeana.annotation.utils.config.AnnotationConfiguration;
+import eu.europeana.annotation.utils.config.AnnotationConfigurationImpl;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AnnotationService;
 

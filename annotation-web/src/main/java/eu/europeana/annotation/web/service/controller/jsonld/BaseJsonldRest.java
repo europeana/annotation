@@ -633,7 +633,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // "<http://www.w3.org/ns/ldp#Resource>; rel=\"type\"");
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 
-	    ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.CREATED);
+	    ResponseEntity<String> response = new ResponseEntity<String>(String.valueOf(identifier), headers, HttpStatus.CREATED);
 	    return response;
 
 	} catch (HttpException e) {

@@ -2,9 +2,6 @@ package eu.europeana.annotation.client.integration.webanno.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -25,12 +22,13 @@ public class SearchGraphTest extends BaseSearchTest {
 
 		
 	@Test
-	public void searchGraph() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchGraph() throws Exception {
 		
 		String requestBody = getJsonStringInput(LINK_SEMANTIC);
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -43,9 +41,6 @@ public class SearchGraphTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
 		validateGraph(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**

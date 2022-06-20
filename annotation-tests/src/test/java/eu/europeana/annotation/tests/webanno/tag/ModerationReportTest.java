@@ -51,10 +51,12 @@ public class ModerationReportTest extends BaseTaggingTest {
 
 //			Annotation storedAnno = createTag(requestBody, entry.getValue(), entry.getKey(), TEST_USER_TOKEN);
 			Annotation storedAnno = createTag(requestBody);
+			createdAnnotations.add(storedAnno.getIdentifier());
 			long identifier = storedAnno.getIdentifier();
 
 			ResponseEntity<String> reportResponse = storeTestAnnotationReport(entry.getKey(), identifier,
 					TEST_USER_TOKEN);
+			createdModerationRecords.add(Long.valueOf(reportResponse.getBody()));
 			validateReportResponse(reportResponse, HttpStatus.CREATED);
 
 			ResponseEntity<String> response = deleteAnnotation(

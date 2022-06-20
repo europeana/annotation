@@ -18,6 +18,7 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 	Annotation inputAnno = parseTranscription(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS, true, null);
+	createdAnnotations.add(storedAnno.getIdentifier());
 
 	// validate the reflection of input in output!
 	AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
@@ -25,7 +26,6 @@ public class EdmTranscribingWithRightsTest extends BaseTranscribingTest {
 	assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
 	assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
 	
-	removeAnnotationManually(storedAnno.getIdentifier());
     }
 
     @Test

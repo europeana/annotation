@@ -27,12 +27,11 @@ public class SubtitlingTest extends BaseWebAnnotationTest {
 	Annotation inputAnno = parseSubtitle(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
+	createdAnnotations.add(storedAnno.getIdentifier());
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
 	
 	Assertions.assertTrue(true);
-	
-	removeAnnotation(storedAnno.getIdentifier());
     }
 }

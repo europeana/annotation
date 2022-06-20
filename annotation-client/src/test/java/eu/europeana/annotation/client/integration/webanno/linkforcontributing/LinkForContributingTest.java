@@ -15,7 +15,7 @@ public class LinkForContributingTest extends BaseWebAnnotationTest {
         validateResponse(response); 
         
         Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-        removeAnnotation(storedAnno.getIdentifier());
+        createdAnnotations.add(storedAnno.getIdentifier());
     }
     
     @Test
@@ -24,7 +24,7 @@ public class LinkForContributingTest extends BaseWebAnnotationTest {
         validateResponse(response);     
         
         Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-        removeAnnotation(storedAnno.getIdentifier());
+        createdAnnotations.add(storedAnno.getIdentifier());
     }
 	
 }

@@ -12,14 +12,14 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
 /**
  * Annotation API Admin Test class
  * 
  * @author Sven Schlarb
  */
-public class AnnotationApiAdminTest extends BaseAnnotationTest {
+public class AnnotationApiAdminTest extends AbstractIntegrationTest {
 
 	public static final String TAG_INDEXING = "/tag/tag_indexing.json";
 	
@@ -38,14 +38,11 @@ public class AnnotationApiAdminTest extends BaseAnnotationTest {
 	  
 		// create
 		Annotation annotation = createTestAnnotation(TAG_STANDARD, true, null);
-
+		createdAnnotations.add(annotation.getIdentifier());
 		// read
 		assertNotNull(annotation);
 		assertNotNull(annotation.getIdentifier());
 		log.debug("Created annotation: " + annotation.getIdentifier());
-
-		// remove from mongo and solr
-		removeAnnotationManually(annotation.getIdentifier());
 	}
 
 	/**
@@ -84,10 +81,11 @@ public class AnnotationApiAdminTest extends BaseAnnotationTest {
 
 			List<Annotation> annotations = new ArrayList<Annotation>();
 			
-		try {
 			// create test annotations without indexing it
-			for (int i = 0; i < numAnnotations; i++)
+			for (int i = 0; i < numAnnotations; i++) {
 				annotations.add(createTestAnnotation(TAG_INDEXING, false, null));
+				createdAnnotations.add(annotations.get(i).getIdentifier());
+			}
 			assertNotNull(annotations);
 			assertEquals(numAnnotations, annotations.size());
 			
@@ -122,13 +120,7 @@ public class AnnotationApiAdminTest extends BaseAnnotationTest {
 			// search result
 			//normally it should be equal, but there might be annotations what were not indexed created by other users
 			assertTrue(annPgAfter.getTotalInCollection() >= outdatedAnnotationsBefore + numAnnotations);
-		} finally {
-			if(annotations!=null) {
-			  for (Annotation anno : annotations) {
-			    removeAnnotationManually(anno.getIdentifier());
-			  }
-			}
-	}
+		
   }
 	
 
@@ -143,7 +135,10 @@ public class AnnotationApiAdminTest extends BaseAnnotationTest {
 		List<Annotation> annotations = createAnnotationsTestSet(ANNOTATION_TESTSET_LOCK_SIZE, TAG_INDEXING_LOCK, false);
 		assertNotNull(annotations);
 		assertEquals(ANNOTATION_TESTSET_LOCK_SIZE, annotations.size());		
-		
+
+        for (Annotation anno : annotations) {
+          createdAnnotations.add(anno.getIdentifier());
+        }		
 			
 		ApiInvoker call1 = new ApiInvoker();
 		Thread th1 = new Thread(call1);
@@ -172,10 +167,6 @@ public class AnnotationApiAdminTest extends BaseAnnotationTest {
 		log.debug(call1.getResult());
 		log.debug(call2.getResult());
 		
-		// delete all used test annotations
-        for (Annotation anno : annotations) {
-          removeAnnotationManually(anno.getIdentifier());
-        }
 	}
 	
 	

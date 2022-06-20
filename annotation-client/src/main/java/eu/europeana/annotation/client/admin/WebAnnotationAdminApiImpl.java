@@ -14,7 +14,7 @@ public class WebAnnotationAdminApiImpl extends BaseAnnotationApi implements WebA
 		super(configuration, apiConnection);
 	}
 	
-	public WebAnnotationAdminApiImpl(){
+	public WebAnnotationAdminApiImpl() throws Exception{
 		super();
 	}
 

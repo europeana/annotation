@@ -26,7 +26,7 @@ public class WhitelistJsonApiTest extends BaseWebAnnotationTest {
     protected Logger log = LogManager.getLogger(getClass());
     
     @BeforeAll
-    public  static void initObjects() {
+    public  static void initObjects() throws Exception {
     	whitelistJsonApi = new WhitelistJsonApiImpl();
     }
 

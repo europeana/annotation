@@ -24,7 +24,7 @@ public class BaseJsonLdApiTest {
     protected AnnotationLdParser europeanaParser;
     
     @BeforeEach
-    public void initObjects() {
+    public void initObjects() throws Exception {
     	europeanaLdApi = new EuropeanaLdApiImpl();
 		europeanaParser = new AnnotationLdParser();
     }

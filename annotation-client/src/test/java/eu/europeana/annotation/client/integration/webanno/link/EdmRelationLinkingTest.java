@@ -2,10 +2,8 @@ package eu.europeana.annotation.client.integration.webanno.link;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 
 public class EdmRelationLinkingTest extends BaseLinkingTest {
@@ -18,11 +16,10 @@ public class EdmRelationLinkingTest extends BaseLinkingTest {
 		Annotation inputAnno = parseLink(requestBody);
 		
 		Annotation storedAnno = createLink(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -33,10 +30,9 @@ public class EdmRelationLinkingTest extends BaseLinkingTest {
 		Annotation inputAnno = parseLink(requestBody);
 		
 		Annotation storedAnno = createLink(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 }

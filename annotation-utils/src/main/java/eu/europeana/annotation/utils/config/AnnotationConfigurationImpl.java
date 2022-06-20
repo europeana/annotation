@@ -1,4 +1,4 @@
-package eu.europeana.annotation.config;
+package eu.europeana.annotation.utils.config;
 
 import java.util.HashSet;
 import java.util.Properties;

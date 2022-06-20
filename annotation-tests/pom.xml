@@ -58,7 +58,7 @@
 	</dependency>
     <dependency>
 		<groupId>eu.europeana.annotation</groupId>
-		<artifactId>annotation-client</artifactId>
+		<artifactId>annotation-definitions</artifactId>
         <type>test-jar</type>
 	    <version>${version.annotationApi}</version>
         <scope>test</scope>

@@ -27,7 +27,7 @@ public class BaseLinkingTest extends BaseWebAnnotationTest {
         validateResponse(response);  
         
         Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-        removeAnnotation(storedAnno.getIdentifier());
+        createdAnnotations.add(storedAnno.getIdentifier());
     }
 
 //	protected Annotation createLink(String requestBody) throws JsonParseException {

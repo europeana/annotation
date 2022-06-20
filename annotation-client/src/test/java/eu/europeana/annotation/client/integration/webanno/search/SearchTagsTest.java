@@ -3,9 +3,6 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -26,7 +23,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 public class SearchTagsTest extends BaseSearchTest {
 		
 	@Test
-	public void searchSemanticTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchSemanticTag() throws Exception {
 		
 		String requestBody = getJsonStringInput(SEMANTICTAG_SIMPLE_STANDARD);
 		
@@ -34,6 +31,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -48,9 +46,6 @@ public class SearchTagsTest extends BaseSearchTest {
 	    String VALUE_SEARCH_TARGET = "target_uri:\""+ VALUE_TARGET_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET);
 		validateSemanticTag(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**
@@ -72,7 +67,7 @@ public class SearchTagsTest extends BaseSearchTest {
 	}
 
 	@Test
-	public void searchGeoTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchGeoTag() throws Exception {
 		
 		String requestBody = getJsonStringInput(TAG_GEOTAG);
 		
@@ -80,6 +75,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isGeoTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -92,9 +88,6 @@ public class SearchTagsTest extends BaseSearchTest {
 	    String VALUE_SEARCH_TARGET = "target_uri:\""+ VALUE_TARGET_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET);
 		validateGeoTag(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**
@@ -116,7 +109,7 @@ public class SearchTagsTest extends BaseSearchTest {
 	}
 
 	@Test
-	public void searchTag() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchTag() throws Exception {
 		
 		String requestBody = getJsonStringInput(TAG_BODY_TEXT);
 		
@@ -124,6 +117,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -138,9 +132,6 @@ public class SearchTagsTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_TAG = "target_uri:\""+ VALUE_TARGET_TAG_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_TAG);
 		validateTag(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**
@@ -161,7 +152,7 @@ public class SearchTagsTest extends BaseSearchTest {
 	
 	
 	@Test
-	public void searchSemanticTagSpecific() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void searchSemanticTagSpecific() throws Exception {
 		
 		String requestBody = getJsonStringInput(SEMANTICTAG_SPECIFIC_STANDARD);
 		
@@ -169,6 +160,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -183,9 +175,6 @@ public class SearchTagsTest extends BaseSearchTest {
 	    String VALUE_SEARCH_TARGET = "target_uri:\""+ VALUE_TARGET_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET);
 		validateSemanticTagSpecific(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**

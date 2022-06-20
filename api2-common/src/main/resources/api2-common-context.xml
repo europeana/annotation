@@ -12,7 +12,7 @@
 		location="classpath:config/annotation.properties" />
 		
     <!--  configuration bean -->
-	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">
+	<beans:bean id="configuration" class="eu.europeana.annotation.utils.config.AnnotationConfigurationImpl">
 		<beans:property name="annotationProperties" ref="annotationProperties"/> 	
     </beans:bean>
    

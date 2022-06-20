@@ -19,6 +19,7 @@ public class SemanticTaggingVcardAddressTest extends BaseTaggingTest {
 	public void createSemanticTagWithVcardAddress() throws Exception {
 
 		Annotation storedAnno = createTag(SEMANTICTAG_VCARD_ADDRESS, false, true);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.VCARD_ADDRESS.name());
@@ -35,7 +36,6 @@ public class SemanticTaggingVcardAddressTest extends BaseTaggingTest {
 				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardPostOfficeBox());
 		assertNotNull(
 				((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardStreetAddress());
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 
 }

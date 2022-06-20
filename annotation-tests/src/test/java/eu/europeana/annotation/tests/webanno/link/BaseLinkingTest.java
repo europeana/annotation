@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
-public class BaseLinkingTest extends BaseAnnotationTest {
+public class BaseLinkingTest extends AbstractIntegrationTest {
 
 	public static final String LINK_MINIMAL = "/link/minimal.json";
 	public static final String LINK_STANDARD = "/link/standard.json";
@@ -19,7 +19,7 @@ public class BaseLinkingTest extends BaseAnnotationTest {
         AnnotationTestUtils.validateResponse(response);  
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        removeAnnotationManually(storedAnno.getIdentifier());
+        createdAnnotations.add(storedAnno.getIdentifier());
     }
 
 }

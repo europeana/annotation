@@ -2,6 +2,7 @@ package eu.europeana.annotation.tests.webanno.search;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.target.Target;
@@ -24,6 +25,7 @@ public class SearchLinksTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -32,17 +34,15 @@ public class SearchLinksTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK = "target_uri:\""+ VALUE_TARGET_LINK_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK);
 		validateLink(retrievedAnno);
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 
 	/**
 	 * Validate link fields after search.
 	 * 
 	 * @param storedAnno
+	 * @throws IOException 
 	 */
-	private void validateLink(Annotation storedAnno) {
+	private void validateLink(Annotation storedAnno) throws IOException {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getValues());
@@ -57,6 +57,7 @@ public class SearchLinksTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -65,17 +66,15 @@ public class SearchLinksTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
 		validateSemanticLink(retrievedAnno);
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 
 	/**
 	 * Validate semantic link fields after search.
 	 * 
 	 * @param storedAnno
+	 * @throws IOException 
 	 */
-	private void validateSemanticLink(Annotation storedAnno) {
+	private void validateSemanticLink(Annotation storedAnno) throws IOException {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
 		Target target = storedAnno.getTarget();
 		assertNotNull(target.getHttpUri());

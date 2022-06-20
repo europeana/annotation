@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 
 
@@ -16,7 +16,7 @@ import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
  * This class aims at testing of the annotation methods.
  * @author GrafR
  */
-public class WebAnnotationProtocolTest extends BaseAnnotationTest { 
+public class WebAnnotationProtocolTest extends AbstractIntegrationTest { 
 
 		
 	@Test
@@ -27,7 +27,7 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 		AnnotationTestUtils.validateResponse(response);
 		
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-		removeAnnotationManually(storedAnno.getIdentifier());
+		createdAnnotations.add(storedAnno.getIdentifier());
 	}
 		
 	@Test
@@ -41,7 +41,7 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 		AnnotationTestUtils.validateResponse(response);
 		
 	    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-	    removeAnnotationManually(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 		
 
@@ -49,12 +49,12 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 	public void createWebannoAnnotationTagByTypeJsonld() throws Exception {
 		
 		ResponseEntity<String> response = storeTestAnnotationByType(
-				true, get_TAG_JSON_BY_TYPE_JSONLD(), WebAnnotationFields.TAG, null);
+				true, get_TAG_JSON_BY_TYPE_JSONLD(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), WebAnnotationFields.TAG, null);
 		
 		AnnotationTestUtils.validateResponse(response);
 		
 	    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-	    removeAnnotationManually(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 	
@@ -81,12 +81,12 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 	public void createWebannoAnnotationTagForValidation() throws Exception {
 		
 		ResponseEntity<String> response = storeTestAnnotationByType(
-			true, get_TAG_JSON_VALIDATION(), WebAnnotationFields.TAG, null);
+			true, get_TAG_JSON_VALIDATION(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), WebAnnotationFields.TAG, null);
 		
 		AnnotationTestUtils.validateResponseForTrimming(response);
 		
 	    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-	    removeAnnotationManually(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 	
@@ -94,12 +94,12 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 	public void createWebannoAnnotationLinkByTypeJsonld() throws Exception {
 		
 		ResponseEntity<String> response = storeTestAnnotationByType(
-				true, get_LINK_JSON_BY_TYPE_JSONLD(), WebAnnotationFields.LINK, null);
+				true, get_LINK_JSON_BY_TYPE_JSONLD(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), WebAnnotationFields.LINK, null);
 		
 		AnnotationTestUtils.validateResponse(response);
 		
 	    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-	    removeAnnotationManually(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 		
 
@@ -119,7 +119,7 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 		Annotation storedAnno = AnnotationTestUtils.parseAndVerifyTestAnnotation(response, HttpStatus.OK);
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, annotation);
 		
-		removeAnnotationManually(annotation.getIdentifier());
+		createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 					
@@ -134,9 +134,9 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 		assertEquals( HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
-		assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(), updatedAnnotation.getTarget().getHttpUri());
+		assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), updatedAnnotation.getTarget().getHttpUri());
 		
-		removeAnnotationManually(anno.getIdentifier());
+		createdAnnotations.add(anno.getIdentifier());
 		//TODO: search annotation in solr and verify body and target values.
 	}
 	
@@ -155,7 +155,7 @@ public class WebAnnotationProtocolTest extends BaseAnnotationTest {
 			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 		
-		removeAnnotationManually(anno.getIdentifier());
+		createdAnnotations.add(anno.getIdentifier());
 	}
 			
 				

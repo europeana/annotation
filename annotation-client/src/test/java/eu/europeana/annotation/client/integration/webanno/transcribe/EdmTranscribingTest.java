@@ -2,10 +2,8 @@ package eu.europeana.annotation.client.integration.webanno.transcribe;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 
 public class EdmTranscribingTest extends BaseTranscribingTest {
@@ -18,10 +16,9 @@ public class EdmTranscribingTest extends BaseTranscribingTest {
 	Annotation inputAnno = parseTranscription(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_MINIMAL, null);
-
+	createdAnnotations.add(storedAnno.getIdentifier());
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
-	removeAnnotation(storedAnno.getIdentifier());
     }
 
 }

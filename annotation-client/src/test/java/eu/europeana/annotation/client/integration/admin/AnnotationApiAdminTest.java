@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import org.apache.logging.log4j.Level;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,17 +43,13 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 	 */
 	@Test
 	public void createAndDeleteAnnotation() throws JsonParseException, IOException {
-
 		// create
 		Annotation annotation = this.createTestAnnotation(TAG_STANDARD, null);
-
+		createdAnnotations.add(annotation.getIdentifier());
 		// read
 		assertNotNull(annotation);
 		assertNotNull(annotation.getIdentifier());
 		log.debug("Created annotation: " + annotation.getIdentifier());
-
-		// remove from mongo and solr
-		removeAnnotation(annotation.getIdentifier());
 	}
 
 	/**
@@ -61,12 +57,10 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 	 * created without indexing it. Then the index outdated admin function is
 	 * executed. And finally it is checked if the annotation was indexed
 	 * correctly by verifying if it is returned in the query result.
-	 * 
-	 * @throws JsonParseException
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@Test
-	public void indexOneOutdated() throws JsonParseException, IOException {
+	public void indexOneOutdated() throws Exception {
 		assertIndexOutdated(1);
 	}
 
@@ -75,12 +69,10 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 	 * created without indexing them. Then the index outdated admin function is
 	 * executed. And finally it is checked if the annotations were indexed
 	 * correctly by verifying if they are returned in the query result.
-	 * 
-	 * @throws JsonParseException
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@Test
-	public void indexTwoOutdated() throws JsonParseException, IOException {
+	public void indexTwoOutdated() throws Exception {
 		assertIndexOutdated(2);
 	}
 
@@ -90,18 +82,18 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 	 * without indexing them. Then the index outdated admin function is
 	 * executed. And finally it is checked if the annotations were indexed
 	 * correctly by verifying if they are returned in the query result.
-	 * 
-	 * @throws JsonParseException
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	private void assertIndexOutdated(int numAnnotations) throws JsonParseException, IOException {
+	private void assertIndexOutdated(int numAnnotations) throws Exception {
 
 			List<Annotation> annotations = new ArrayList<Annotation>();
-			
-		try {
+
 			// create test annotations without indexing it
-			for (int i = 0; i < numAnnotations; i++)
-				annotations.add(this.createTestAnnotation(TAG_INDEXING, false, null));
+			for (int i = 0; i < numAnnotations; i++) {
+			  Annotation anno = createTestAnnotation(TAG_INDEXING, false, null);
+			  annotations.add(anno);
+			  createdAnnotations.add(anno.getIdentifier());
+			}    
 			assertNotNull(annotations);
 			assertEquals(numAnnotations, annotations.size());
 			
@@ -139,14 +131,8 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 			// search result
 			//normally it should be equal, but there might be annotations what were not indexed created by other users
 			assertTrue(annPgAfter.getTotalInCollection() >= outdatedAnnotationsBefore + numAnnotations);
-		} finally {
-			if(annotations!=null) {
-			  for (Annotation anno : annotations) {
-			    removeAnnotation(anno.getIdentifier());
-			  }
-			}
-	}
-  }
+		
+    }
 	
 
 	/**
@@ -164,6 +150,9 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		List<Annotation> annotations = createAnnotationsTestSet(ANNOTATION_TESTSET_LOCK_SIZE, TAG_INDEXING_LOCK, false);
 		assertNotNull(annotations);
 		assertEquals(ANNOTATION_TESTSET_LOCK_SIZE, annotations.size());		
+        for (Annotation anno : annotations) {
+          createdAnnotations.add(anno.getIdentifier());
+        }
 		
 			
 		ApiInvoker call1 = new ApiInvoker();
@@ -193,10 +182,6 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		log.debug(call1.getResult());
 		log.debug(call2.getResult());
 		
-		// delete all used test annotations
-        for (Annotation anno : annotations) {
-          removeAnnotation(anno.getIdentifier());
-        }
 	}
 	
 	
@@ -206,7 +191,13 @@ public class AnnotationApiAdminTest extends BaseWebAnnotationTest {
 		
 		@Override
 		public void run() {
-			WebAnnotationAdminApiImpl adminApi = new WebAnnotationAdminApiImpl();
+			WebAnnotationAdminApiImpl adminApi = null;
+            try {
+              adminApi = new WebAnnotationAdminApiImpl();
+            } catch (Exception e) {
+              log.log(Level.ERROR, "Exception is thrown during the instantiation of the admin api", e);
+            }
+            
 			result = adminApi.reindexOutdated();
 		}
 		

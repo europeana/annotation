@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseJsonLdApiTest;
 
 //import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,9 @@ import eu.europeana.annotation.tests.BaseJsonLdApiTest;
  * @author Sergiu Gordea @ait
  */
 @Deprecated
-public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
+public class EuropeanaLdSearchApiTest extends AbstractIntegrationTest {
+  
+    public static final String SIMPLE_LINK_ANNOTATION = "/link/simple-annotation.json";
 	
     Logger log = LogManager.getLogger(getClass());
     
@@ -29,13 +31,13 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(SIMPLE_LINK_ANNOTATION);
 		
 		long annotationNr = System.currentTimeMillis();
-		String annotationStr = createAnnotationLd(
+		Annotation annotation = createAnnotationLd(
 				MotivationTypes.LINKING.name()
 				, annotationNr
 				, requestBody
 				, null
 				);
-		Annotation annotation = AnnotationTestUtils.parseAnnotation(annotationStr, null);
+		createdAnnotations.add(annotation.getIdentifier());
 		String resJson = "";
 //		List<Long> idList = new ArrayList<Long>();
 		Iterator<String> itr = annotation.getTarget().getValues().iterator();
@@ -58,7 +60,6 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		}
 		assertTrue(resJson.contains("\"" + WebAnnotationFields.IDENTIFIER + "\":" + annotationNr));
 //		assertTrue(idList.contains(annotationNr));
-		removeAnnotationManually(annotation.getIdentifier());
 	}
 	
 //	@Test
@@ -67,13 +68,13 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(SIMPLE_LINK_ANNOTATION);
 
 		long annotationNr = System.currentTimeMillis();
-		String annotationStr = createAnnotationLd(
+		Annotation annotation = createAnnotationLd(
 				MotivationTypes.LINKING.name()
 				, annotationNr
 				, requestBody
 				, null
 				);
-		Annotation annotation = AnnotationTestUtils.parseAnnotation(annotationStr, null);
+		createdAnnotations.add(annotation.getIdentifier());
 		Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();
 		while (itr.hasNext()) {
 			String resourceId = itr.next();
@@ -85,8 +86,6 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 			assertNotNull(annotationStrRes);
 			assertTrue(annotationStrRes.contains(resourceId));
 		}
-		removeAnnotationManually(annotation.getIdentifier());
 	}
-	
 	
 }

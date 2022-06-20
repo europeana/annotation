@@ -24,8 +24,9 @@ public class BaseSearchTest extends BaseTaggingTest{
 	
 	/**
 	 * Create annotations data set for search tests execution
+	 * @throws Exception 
 	 */
-	public AnnotationSearchApiImpl getAnnotationSearchApi() {
+	public AnnotationSearchApiImpl getAnnotationSearchApi() throws Exception {
 		// lazy initialization
 		if (annotationSearchApi == null)
 			annotationSearchApi = new AnnotationSearchApiImpl();
@@ -36,8 +37,9 @@ public class BaseSearchTest extends BaseTaggingTest{
 	 * Search annotations by textual body value for different body types
 	 * @param query
 	 * @param foundAnnotationsNumber
+	 * @throws Exception 
 	 */
-	protected Annotation searchLastCreated(String query) {
+	protected Annotation searchLastCreated(String query) throws Exception {
 	    AnnotationPage annPg = search(query, SearchProfiles.STANDARD, "1");
 	    assertNotNull(annPg);
 	    assert(annPg.getTotalInPage() > 0);
@@ -49,7 +51,7 @@ public class BaseSearchTest extends BaseTaggingTest{
 	    return anno; 
 	}
 	
-	protected AnnotationPage search(String bodyValue, SearchProfiles profile, String limit) {
+	protected AnnotationPage search(String bodyValue, SearchProfiles profile, String limit) throws Exception {
 		AnnotationPage annPg = getAnnotationSearchApi().searchAnnotations(bodyValue, null, 
 			WebAnnotationFields.CREATED,
 			"desc", "0", limit, profile, null);

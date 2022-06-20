@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -26,14 +25,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
 /**
  * Annotation API Batch Upload Test class
  * 
  * @author Sven Schlarb
  */
-public class BatchUploadTest extends BaseAnnotationTest {
+public class BatchUploadTest extends AbstractIntegrationTest {
     
 	// annotation page test resources
 	public static final String TAG_ANNO_PAGE = "/tag/batch/annotation_page.json";
@@ -64,18 +63,10 @@ public class BatchUploadTest extends BaseAnnotationTest {
 		for (int i = 0; i < TEST_NUM_ANNOTATIONS; i++) {
 			testAnnotation = createTestAnnotation(TAG_MINIMAL, false, null);
 			testAnnotations.add(testAnnotation);
+			createdAnnotations.add(testAnnotation.getIdentifier());
 		}
 	}
 	
-	@AfterEach
-	public void removeTestAnnotations() throws Exception {
-	  if(testAnnotations!=null) {
-          for (Annotation anno : testAnnotations) {
-            removeAnnotationManually(anno.getIdentifier());
-          }
-	  }
-	}
-
 	/**
 	 * Testing successful batch upload of annotations.
 	 * 
@@ -89,7 +80,7 @@ public class BatchUploadTest extends BaseAnnotationTest {
 		// batch upload request
 		ResponseEntity<String> uploadResponse = uploadAnnotations(
 			requestBody, true);
-
+		
 		// response status must be 201 CREATED
 		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
 
@@ -110,10 +101,9 @@ public class BatchUploadTest extends BaseAnnotationTest {
 			assertEquals(testAnnotations.get(i).getIdentifier(), storedAnnotation.getIdentifier());
 		}
 		
-		//removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
 		long startingId = testAnnotations.get(0).getIdentifier();
 		for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
-		  removeAnnotationManually(i);
+		  createdAnnotations.add(i);
 		}
 	}
 	
@@ -134,7 +124,6 @@ public class BatchUploadTest extends BaseAnnotationTest {
 		// batch upload request (using pundit provider, ID must be provided by via field)
 		ResponseEntity<String> uploadResponse = uploadAnnotations(
 				requestBody, true);
-
 		// response status must be 201 CREATED
 		assertEquals(HttpStatus.CREATED, uploadResponse.getStatusCode());
 		
@@ -175,10 +164,9 @@ public class BatchUploadTest extends BaseAnnotationTest {
 		assertTrue(((String)errors.get("-2")).startsWith("Annotation does not exist"));
 		assertTrue(((String)errors.get("-3")).startsWith("Annotation does not exist"));
 		
-	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
         long startingId = testAnnotations.get(0).getIdentifier();
         for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+8; i++) {
-          removeAnnotationManually(i);
+          createdAnnotations.add(i);
         }
 	}
 
@@ -214,10 +202,9 @@ public class BatchUploadTest extends BaseAnnotationTest {
 		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("1"));
 		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("2"));
 	
-	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
         long startingId = testAnnotations.get(0).getIdentifier();
         for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
-          removeAnnotationManually(i);
+          createdAnnotations.add(i);
         }
 	}
 

@@ -1,15 +1,12 @@
 package eu.europeana.annotation.client.integration.webanno.agent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.client.integration.webanno.tag.BaseTaggingTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 
@@ -23,7 +20,8 @@ public class AgentTest extends BaseTaggingTest {
 		
 		ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT);
 		validateResponse(response);
-		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);				
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);	
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		String requestBody = getJsonStringInput(FULL_AGENT);
 		Annotation inputAnno = parseTag(requestBody);
@@ -32,8 +30,6 @@ public class AgentTest extends BaseTaggingTest {
 		//but ignore generated timestamp which is always set by the server
 		inputAnno.setGenerated(storedAnno.getGenerated());
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 //	@Test

@@ -18,12 +18,12 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_BODY_TEXT);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -32,12 +32,12 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_MINIMAL);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 	
 
@@ -47,14 +47,13 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		Annotation inputAnno = parseTag(requestBody);
 		//validate the reflection of input in output!
 		//but ignore generated timestamp which is always set by the server
 		inputAnno.setGenerated(storedAnno.getGenerated());
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotationManually(storedAnno.getIdentifier());
-
 	}
 	
 	@Test
@@ -65,11 +64,11 @@ public class TaggingTest extends BaseTaggingTest {
 		Annotation inputAnno = parseTag(requestBody);
 		
 		Annotation storedAnno = createTag(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -119,21 +118,21 @@ public class TaggingTest extends BaseTaggingTest {
 	public void createCanonicalTag() throws Exception {
 			
 	  Annotation storedAnno = createAndValidateTag(TAG_CANONICAL);
-	  removeAnnotationManually(storedAnno.getIdentifier());
+	  createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void createViaTagString() throws Exception {
 		
 	    Annotation storedAnno = createAndValidateTag(TAG_VIA_STRING);
-		removeAnnotationManually(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void createViaTagArray() throws Exception {
 
 	    Annotation storedAnno = createAndValidateTag(TAG_VIA_ARRAY);
-	    removeAnnotationManually(storedAnno.getIdentifier());
+	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 
 	

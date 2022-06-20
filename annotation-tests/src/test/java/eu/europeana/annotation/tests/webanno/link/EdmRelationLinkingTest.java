@@ -12,9 +12,9 @@ public class EdmRelationLinkingTest extends BaseLinkingTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_EDM_IS_SIMMILAR_TO);
 		Annotation inputAnno = AnnotationTestUtils.parseAnnotation(requestBody, MotivationTypes.LINKING);
 		Annotation storedAnno = createLink(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		//validate the reflection of input in output!
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -22,8 +22,8 @@ public class EdmRelationLinkingTest extends BaseLinkingTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_EDM_IS_SIMMILAR_TO_MINIMAL);
 		Annotation inputAnno = AnnotationTestUtils.parseAnnotation(requestBody, MotivationTypes.LINKING);
 		Annotation storedAnno = createLink(requestBody);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		//validate the reflection of input in output!
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 }

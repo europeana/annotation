@@ -18,7 +18,8 @@ public class AgentTest extends BaseTaggingTest {
 		
 		ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT, true, null);
 		AnnotationTestUtils.validateResponse(response);
-		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);				
+		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+		createdAnnotations.add(storedAnno.getIdentifier());
 		
 		String requestBody = AnnotationTestUtils.getJsonStringInput(FULL_AGENT);
 		Annotation inputAnno = parseTag(requestBody);
@@ -27,8 +28,6 @@ public class AgentTest extends BaseTaggingTest {
 		//but ignore generated timestamp which is always set by the server
 		inputAnno.setGenerated(storedAnno.getGenerated());
 		AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-		
-		removeAnnotationManually(storedAnno.getIdentifier());
 	}
 
 //	@Test

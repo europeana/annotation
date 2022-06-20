@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.tests.AnnotationTestUtils;
-import eu.europeana.annotation.tests.BaseAnnotationTest;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
 
-public class CaptioningTest extends BaseAnnotationTest {
+public class CaptioningTest extends AbstractIntegrationTest {
 
     public static final String CAPTION_MINIMAL = "/caption/minimal.json";
 
@@ -23,11 +23,10 @@ public class CaptioningTest extends BaseAnnotationTest {
 	Annotation inputAnno = parseCaption(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, true, null);
+	createdAnnotations.add(storedAnno.getIdentifier());
 
 	// validate the reflection of input in output!
 	AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-	
-	removeAnnotationManually(storedAnno.getIdentifier());
     }
 
 }

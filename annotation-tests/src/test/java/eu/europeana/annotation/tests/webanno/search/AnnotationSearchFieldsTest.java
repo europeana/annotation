@@ -43,6 +43,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isGeoTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -65,9 +66,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 
 	@Test
@@ -79,6 +77,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -99,9 +98,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/000002/_UEDIN_214"));
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -111,6 +107,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isTextualBody(createdAnno.getBody().getInternalType()));
 		
@@ -131,9 +128,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(target.getSource().equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
 		assertNotNull(target.getScope());
 		assertTrue(target.getScope().equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1"));
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -142,10 +136,11 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_STANDARD);
 		
 		// create indexed tag
-		Annotation createddAnno = createLink(requestBody);
+		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
-		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createddAnno.getIdentifier()+"\"");
+		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
 		String VALUE_TARGET_LINK = "target_uri:\"" + AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2020601/https___1914_1918_europeana_eu_contributions_19584\"";
 		retrievedAnno = searchLastCreated(VALUE_TARGET_LINK);
 		
@@ -154,9 +149,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getValues());
 		assertTrue(target.getValues().contains(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2020601/https___1914_1918_europeana_eu_contributions_19584"));
-
-		// remove tag
-		removeAnnotationManually(createddAnno.getIdentifier());
 	}
 	
 	@Test
@@ -166,6 +158,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -177,9 +170,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -189,6 +179,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -208,9 +199,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 	
 	@Test
@@ -222,6 +210,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createTag(requestBody);
+		createdAnnotations.add(createdAnno.getIdentifier());
 		
 		assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -244,9 +233,6 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		Target target = retrievedAnno.getTarget();
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
-
-		// remove tag
-		removeAnnotationManually(createdAnno.getIdentifier());
 	}
 	
 

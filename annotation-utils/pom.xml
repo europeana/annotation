@@ -101,6 +101,16 @@
 			<artifactId>javax.annotation-api</artifactId>
 			<version>${version.javax.annotation}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${version.httpClient}</version>
+		</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+		<version>${version.spring}</version>
+	</dependency>				
 						
 	</dependencies>
 </project>
