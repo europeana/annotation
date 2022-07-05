@@ -1,0 +1,10 @@
+#generate long identifier based on existing field in annotation id
+db.getCollection('annotation').find({}).forEach( function(x) {
+	x.identifier= NumberLong(x.annotationId.identifier);
+	db.getCollection('annotation').save(x);     
+	}
+)
+
+#remove annotation id field
+db.getCollection('annotation').updateMany(
+{"annotationId":{$exists:true}}, {$unset: {"annotationId": null}})

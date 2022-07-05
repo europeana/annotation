@@ -155,7 +155,7 @@ public class ManagementRest extends BaseRest {
 	BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp,
 		endTimestamp, Actions.REINDEX_ANNOTATION_SELECTION);
 
-	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindexset");
+	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindexselection");
 	response.setStatus(status.toString());
 
 	String jsonStr = JsonWebUtils.toJson(response, null);
@@ -209,7 +209,7 @@ public class ManagementRest extends BaseRest {
 	}
 
 	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexset");
+	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexall");
 	response.setStatus(
 		"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
 	response.success = true;
@@ -278,7 +278,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8,
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+    @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> lockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
 
@@ -313,7 +313,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+    @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> unlockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
 	verifyWriteAccess(Operations.ADMIN_UNLOCK, request);
