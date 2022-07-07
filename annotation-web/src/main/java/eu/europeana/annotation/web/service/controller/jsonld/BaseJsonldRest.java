@@ -52,6 +52,7 @@ import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
@@ -68,10 +69,12 @@ public class BaseJsonldRest extends BaseRest {
 		// validate annotation and check that no generator and creator exists in input
 	    // set generator and creator
 	    String userId = authentication.getPrincipal().toString();
-	    String apikeyId = authentication.getDetails().toString();
+	    String apikeyId = ((EuropeanaApiCredentials) authentication.getCredentials()).getApiKey();
+
 	    String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), apikeyId);
 	    String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
 
+	    //overwrite creator and generator with values generated from the JWT token 
 	    webAnnotation.setGenerator(buildAgent(generatorId));
 	    webAnnotation.setCreator(buildAgent(creatorId));
 

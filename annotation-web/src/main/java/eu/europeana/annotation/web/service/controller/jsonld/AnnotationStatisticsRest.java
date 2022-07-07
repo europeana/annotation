@@ -41,7 +41,7 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
      * @throws InternalServerException 
      * @throws AnnotationServiceException 
      */
-    @GetMapping(value = "/annotation/statistics", produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+    @GetMapping(value = "/annotation/stats", produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8})
     @ApiOperation(value = "Generate annotations statisticss", nickname = "generateAnnotationStatistics", response = java.lang.Void.class)
     public ResponseEntity<String> generateAnnotationStatistics(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = true) String wsKey,
