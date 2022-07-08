@@ -72,9 +72,13 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 			getLogger().warn("Cannot remove moderation record for annotation id: " + annoIdentifier);
 		}
 
-		// delete from solr .. and throw AnnotationServiceException if operation
-		// is not successfull
-		getSolrService().delete(annoIdentifier);
+		// delete from solr
+	    try {
+	      getSolrService().delete(annoIdentifier);
+	    } catch (Exception e) {
+	      getLogger().info("The annotation was deleted correctly from the Mongo, but it was not deleted yet from Solr. ", e);
+	    }
+
 	}
 	
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,

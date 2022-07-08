@@ -1,13 +1,9 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -25,6 +21,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
+import eu.europeana.annotation.solr.service.impl.SolrAnnotationUtils;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
@@ -82,7 +79,12 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 		try {
 			return getSolrService().search(query);
 		} catch (AnnotationServiceException e) {
-			throw new HttpException("Solr Search Exception.", I18nConstants.SOLR_EXCEPTION, null, HttpStatus.INTERNAL_SERVER_ERROR, e);
+		  if(SolrAnnotationUtils.checkSolrQueryMalformed(e.getCause())) {
+		    throw new HttpException(null, I18nConstants.SOLR_MALFORMED_QUERY_EXCEPTION, null, HttpStatus.BAD_REQUEST, e);
+		  }
+		  else {
+		    throw new HttpException(null, I18nConstants.SOLR_EXCEPTION, null, HttpStatus.GATEWAY_TIMEOUT, e);
+		  }
 		}
 	}
 

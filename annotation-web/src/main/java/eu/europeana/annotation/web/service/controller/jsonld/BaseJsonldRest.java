@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -137,7 +139,13 @@ public class BaseJsonldRest extends BaseRest {
 	    // avoid wrapping HttpExceptions
 	    throw e;
 	} catch (Exception e) {
+      if((e.getCause() instanceof SolrServerException) ||
+          (e.getCause() instanceof RemoteSolrException)) {
+        throw new HttpException(null, I18nConstants.SOLR_EXCEPTION, null, HttpStatus.GATEWAY_TIMEOUT, e);
+      }
+      else {
 	    throw new InternalServerException(e);
+      }
 	}
 
     }
@@ -483,7 +491,12 @@ public class BaseJsonldRest extends BaseRest {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION,
 		    null, HttpStatus.BAD_REQUEST, e);
 	} catch (Exception e) {
+      if((e.getCause() instanceof SolrServerException) || (e.getCause() instanceof RemoteSolrException)) {
+        throw new HttpException(null, I18nConstants.SOLR_EXCEPTION, null, HttpStatus.GATEWAY_TIMEOUT, e);
+      }
+      else {
 	    throw new InternalServerException(e);
+      }
 	}
     }
 

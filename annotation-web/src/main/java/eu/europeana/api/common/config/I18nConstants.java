@@ -45,6 +45,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	static final String MESSAGE_MISSING_MANDATORY_FIELD = "error.message_missing_mandatory_field";
 	static final String INVALID_PROVIDER = "error.invalid_provider";
 	static final String SOLR_EXCEPTION = "error.solr_exception";
+	static final String SOLR_MALFORMED_QUERY_EXCEPTION = "error.solr_malformed_query_exception";
 	
 	static final String BATCH_UPLOAD_FAILED = "error.batch_upload_failed";
 	
