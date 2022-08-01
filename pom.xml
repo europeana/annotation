@@ -61,12 +61,12 @@
 		<version.servletJstl>1.2</version.servletJstl>
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.guava>18.0</version.guava>
+		<version.gson>2.8.9</version.gson>
 		<version.httpClient>3.1</version.httpClient>
 		<version.javax.annotation>1.3.2</version.javax.annotation>
 		<version.saxonHE>10.1</version.saxonHE>
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
-<!-- 		<version.maven-surfire-plugin>2.19.1</version.maven-surfire-plugin> -->
 		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>		
 		
 		<tests.skip>false</tests.skip>
