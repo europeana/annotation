@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +16,7 @@ import eu.europeana.annotation.statistics.model.AnnotationMetric;
 import eu.europeana.annotation.statistics.serializer.AnnotationStatisticsSerializer;
 import eu.europeana.annotation.statistics.service.AnnotationStatisticsService;
 import eu.europeana.annotation.web.exception.InternalServerException;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.annotation.web.service.SearchServiceUtils;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
@@ -49,24 +47,18 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
             HttpServletRequest request) throws HttpException {
         // authenticate
         verifyReadAccess(request);
-    	try {
-    	  return getAnnotationStatistics(request);
-		} catch (IOException | AnnotationServiceException e) {
-	      if((e.getCause() instanceof SolrServerException) ||
-	         (e.getCause() instanceof RemoteSolrException)) {
-	        throw new HttpException(null, I18nConstants.SOLR_EXCEPTION, null, HttpStatus.GATEWAY_TIMEOUT, e);
-	      }
-	      else {
-			throw new InternalServerException(e);
-	      }
-		}
+    	return getAnnotationStatistics(request);
     }
 
-    private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws IOException, AnnotationServiceException {
+    private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws HttpException {
         // create metric
         AnnotationMetric annoMetric = new AnnotationMetric();
         annoMetric.setCreated(new Date());
-        annotationStatisticsService.getAnnotationsStatistics(annoMetric);
+        try {
+          annotationStatisticsService.getAnnotationsStatistics(annoMetric);
+        } catch (AnnotationServiceException e) {
+          throw SearchServiceUtils.convertSearchException("verify statistics computation queries", e);
+        } 
         String json = serializeMetricView(annoMetric);
         return buildUsageStatsResponse(json);
     }
@@ -78,9 +70,13 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
         return new ResponseEntity<>(json, headers, HttpStatus.OK);
     }
 
-    private String serializeMetricView(AnnotationMetric annoMetric) throws IOException {
+    private String serializeMetricView(AnnotationMetric annoMetric) throws HttpException {
     	AnnotationStatisticsSerializer serializer = new AnnotationStatisticsSerializer();
-        return serializer.serialize(annoMetric);
+    	try {
+          return serializer.serialize(annoMetric);
+    	} catch (IOException e) {
+          throw new InternalServerException(e);
+        }
     }
 
 }

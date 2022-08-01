@@ -292,7 +292,7 @@ public class SolrAnnotationUtils {
       return text.replaceAll("http[^\\s]*\\s+","*");
     }
     
-    public static boolean checkSolrQueryMalformed(Throwable ex) {
+    public static boolean isMalformedQueryException(Throwable ex) {
       if(ex instanceof SolrException) {
         if (((SolrException)ex).code()==SolrException.ErrorCode.BAD_REQUEST.code) {
           return true;
