@@ -26,6 +26,8 @@ import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -233,7 +235,15 @@ public class BaseRest extends BaseRestController {
 	public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
 	        throws ApplicationAuthenticationException {
 	    
-	    Authentication auth = super.verifyWriteAccess(operation, request);
+	    //
+	    Authentication auth = null;
+	    boolean authorizationEnabled = true;
+	    if(authorizationEnabled) {
+	      auth = super.verifyWriteAccess(operation, request);
+	    }else {
+	      auth = new EuropeanaAuthenticationToken(null, "annotations", "annonymous-user", new EuropeanaApiCredentials("anonymous", "unknown-client"));
+	    }
+	    
 	    //prevent write when locked
 	    getAuthorizationService().checkWriteLockInEffect(operation);
 	    return auth;
