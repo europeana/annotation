@@ -48,7 +48,17 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	// annotationNr) {
 	public void deleteAnnotation(long annoIdentifier) throws InternalServerException, AnnotationServiceException {
 
-		// mongo is the master
+  	    // delete from solr first, as mongo deletions will not be recovered
+        getSolrService().delete(annoIdentifier);
+        // delete moderation record if exists
+        try {
+            getMongoModerationRecordPersistence().remove(annoIdentifier);
+        } catch (Throwable th) {
+            // expected ModerationMongoException
+            getLogger().warn("Cannot remove moderation record for annotation id: " + annoIdentifier);
+        }
+        
+	    // mongo is the master, finally delete the annotation
 		try {
 			getMongoPersistence().remove(annoIdentifier);
 		} catch (AnnotationMongoException e) {
@@ -58,23 +68,13 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 				getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoIdentifier);
 			} else {
 				// do not remove anything if the master object cannt be deleted
-				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + annoIdentifier, e);
+				throw new AnnotationServiceException("Cannot delete annotation from storage. " + annoIdentifier, e);
 			}
 		} catch (Throwable th) {
 			throw new InternalServerException(th);
 		}
 
-		// delete moderation record if possible
-		try {
-			getMongoModerationRecordPersistence().remove(annoIdentifier);
-		} catch (Throwable th) {
-			// expected ModerationMongoException
-			getLogger().warn("Cannot remove moderation record for annotation id: " + annoIdentifier);
-		}
 
-		// delete from solr .. and throw AnnotationServiceException if operation
-		// is not successfull
-		getSolrService().delete(annoIdentifier);
 	}
 	
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,

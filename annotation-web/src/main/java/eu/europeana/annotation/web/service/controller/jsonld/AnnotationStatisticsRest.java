@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,15 +11,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.statistics.model.AnnotationMetric;
 import eu.europeana.annotation.statistics.serializer.AnnotationStatisticsSerializer;
 import eu.europeana.annotation.statistics.service.AnnotationStatisticsService;
 import eu.europeana.annotation.web.exception.InternalServerException;
+import eu.europeana.annotation.web.service.SearchServiceUtils;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
-import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,28 +37,28 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
      * @param wsKey
      * @param request
      * @return
-     * @throws InternalServerException 
+     * @throws HttpException 
      * @throws AnnotationServiceException 
      */
     @GetMapping(value = "/annotation/stats", produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8})
     @ApiOperation(value = "Generate annotations statisticss", nickname = "generateAnnotationStatistics", response = java.lang.Void.class)
     public ResponseEntity<String> generateAnnotationStatistics(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = true) String wsKey,
-            HttpServletRequest request) throws ApplicationAuthenticationException, InternalServerException {
+            HttpServletRequest request) throws HttpException {
         // authenticate
         verifyReadAccess(request);
-    	try {
-			return getAnnotationStatistics(request);
-		} catch (IOException | AnnotationServiceException e) {
-			throw new InternalServerException(e);
-		}
+    	return getAnnotationStatistics(request);
     }
 
-    private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws IOException, AnnotationServiceException {
+    private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws HttpException {
         // create metric
         AnnotationMetric annoMetric = new AnnotationMetric();
         annoMetric.setCreated(new Date());
-        annotationStatisticsService.getAnnotationsStatistics(annoMetric);
+        try {
+          annotationStatisticsService.getAnnotationsStatistics(annoMetric);
+        } catch (AnnotationServiceException e) {
+          throw SearchServiceUtils.convertSearchException("verify statistics computation queries", e);
+        } 
         String json = serializeMetricView(annoMetric);
         return buildUsageStatsResponse(json);
     }
@@ -71,9 +70,13 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
         return new ResponseEntity<>(json, headers, HttpStatus.OK);
     }
 
-    private String serializeMetricView(AnnotationMetric annoMetric) throws IOException {
+    private String serializeMetricView(AnnotationMetric annoMetric) throws HttpException {
     	AnnotationStatisticsSerializer serializer = new AnnotationStatisticsSerializer();
-        return serializer.serialize(annoMetric);
+    	try {
+          return serializer.serialize(annoMetric);
+    	} catch (IOException e) {
+          throw new InternalServerException(e);
+        }
     }
 
 }

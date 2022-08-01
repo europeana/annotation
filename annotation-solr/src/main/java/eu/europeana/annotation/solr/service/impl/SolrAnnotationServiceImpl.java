@@ -129,6 +129,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
 
     @Override
+    @Deprecated
+    /**
+     * use {@link #search(Query)} instead
+     */
     public ResultSet<? extends AnnotationView> search(String term, String start, String limit)
 	    throws AnnotationServiceException {
 
@@ -221,6 +225,10 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     }
 
     @Override
+    @Deprecated
+    /**
+     * @deprecated use {@link #search(Query)} instead
+     */
     public ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException {
 
 	ResultSet<? extends AnnotationView> res = null;
@@ -315,31 +323,13 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	return res;
     }
 
-//    @Override
-//    public ResultSet<? extends AnnotationView> searchByMapKey(String searchKey, String searchValue)
-//	    throws AnnotationServiceException {
-//
-//	ResultSet<? extends AnnotationView> res = null;
-//
-//	// Construct a SolrQuery
-//	SolrQuery query = new SolrQuery();
-//	query.setQuery(searchKey + ":" + searchValue);
-//	// setFieldList(query, profile);
-//
-//	// Query the server
-//	try {
-//	    getLogger().trace("searchByMapKey search query: " + query.toString());
-//	    QueryResponse rsp = solrClient.query(query);
-//	    res = buildResultSet(rsp);
-//	} catch (SolrServerException | IOException e) {
-//	    throw new AnnotationServiceException("Unexpected exception occured when searching annotations for map key: "
-//		    + searchKey + " and value: " + searchValue, e);
-//	}
-//
-//	return res;
-//    }
+
 
     @Override
+    @Deprecated
+    /**
+     * @deprecated use {@link #search(Query)} instead
+     */
     public ResultSet<? extends AnnotationView> searchByField(String field, String searchValue)
 	    throws AnnotationServiceException {
 
