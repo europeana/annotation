@@ -22,7 +22,9 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+			<!-- 
 			<version>${version.jackson}</version>
+			 -->
 		</dependency>
 		
 		<dependency>
@@ -43,7 +45,9 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!-- 
 			<version>${version.org.junit.jupiter}</version>
+			 -->
 		</dependency>
 
 		<dependency>
@@ -55,7 +59,9 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
+			<!-- 
+			<version>${version.gson}</version>
+			 -->
 		</dependency>
 		
 		<dependency>
@@ -99,17 +105,14 @@
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
-			<version>${version.javax.annotation}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${version.spring}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
+			<!-- 
 			<version>${version.spring}</version>
+			 -->
 		</dependency>
 		
 						

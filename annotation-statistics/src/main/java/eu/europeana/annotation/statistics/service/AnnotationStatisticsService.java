@@ -18,7 +18,7 @@ import eu.europeana.annotation.statistics.model.AnnotationStatisticsClientsScena
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsScenarios;
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsUsersScenarios;
 
-public class AnnotationStatisticsService {
+public class AnnotationStatisticsService{
 
 	@Resource
 	SolrAnnotationService solrService;

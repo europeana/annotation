@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
 public class PersistentAnnotationDaoTest {
 
 	@Resource(name = "annotation_db_annotationDao")
-	PersistentAnnotationDao<PersistentAnnotation, Long> annotationDao;
+	PersistentAnnotationDao annotationDao;
 	
 	public final Integer SEQUENCE_LENGTH = 10;
 	

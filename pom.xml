@@ -19,21 +19,6 @@
 			<name>europeana-snapshots</name>
 			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
-		
-		
-		<!--  disable ibiblio.org mirror because of corrupted jars -->
-		<!--
-		<repository>
-			<id>ibiblio</id>
-			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		-->
 	</repositories>
 	
 	
@@ -43,35 +28,37 @@
 		<version.annotationApi>0.3.3-SNAPSHOT</version.annotationApi>
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		<version.java>11</version.java>
-		<version.org.junit.jupiter>5.1.0</version.org.junit.jupiter>
-		<version.junit-platform>1.2.0</version.junit-platform>		
- 		<version.spring>5.3.7</version.spring>
+		<!-- may overwrite the api commons version if needed -->
+		<version.org.junit.jupiter>5.6.2</version.org.junit.jupiter>
+		<version.junit-platform>1.2.0</version.junit-platform>
+		<!-- may overwrite the api commons version if needed -->		
+ 		<version.spring>5.3.13</version.spring>
 		<version.spring-boot>2.5.7</version.spring-boot>
 		<version.aspectj>1.8.8</version.aspectj>		
 		<version.log4j2>2.17.1</version.log4j2>
 		<version.commonsLang3>3.0</version.commonsLang3>
 		<version.annotationld>1.1.6</version.annotationld>	
 		<version.codehausJackson>1.9.9</version.codehausJackson>
-		<version.jackson>2.11.4</version.jackson>
+		<!-- may overwrite the api commons version if needed -->
+		<version.jackson>2.13.0</version.jackson>
 		<version.jackson-jsonld>0.1.1</version.jackson-jsonld>
-		<version.commonsApi>0.3.14-SNAPSHOT</version.commonsApi>
+		<version.commonsApi>0.3.15</version.commonsApi>
 		<version.apiKeyClient>1.1</version.apiKeyClient>
 		<version.apacheSolr>7.7.2</version.apacheSolr>
 		<version.woodstox>3.2.9</version.woodstox>
 		<version.servletJstl>1.2</version.servletJstl>
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.guava>18.0</version.guava>
+		<version.gson>2.8.9</version.gson>
 		<version.httpClient>3.1</version.httpClient>
 		<version.javax.annotation>1.3.2</version.javax.annotation>
 		<version.saxonHE>10.1</version.saxonHE>
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
-<!-- 		<version.maven-surfire-plugin>2.19.1</version.maven-surfire-plugin> -->
 		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>	
 		<version.testcontainers>1.16.0</version.testcontainers>	
 		<version.javax.servlet>2.5</version.javax.servlet>
 		<version.swagger>3.0.0</version.swagger>
-		
 		<tests.skip>false</tests.skip>
 		
 	</properties>
@@ -152,8 +139,6 @@
 			</plugin>
 			</plugins>
 		</pluginManagement>	
-
- 
           
 	</build>
 </project>

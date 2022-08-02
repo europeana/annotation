@@ -231,9 +231,5 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
     boolean isDereferenceProfile(SearchProfiles searchProfile) {
 	return SearchProfiles.DEREFERENCE.equals(searchProfile);
     }
-    
-    public boolean getRemoveAnnotationAuthorization() {
-      return configuration.getAnnoRemoveAuthorization();
-    }
 
 }

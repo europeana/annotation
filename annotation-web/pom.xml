@@ -101,14 +101,16 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
-			<version>1.9.9</version>
+			<version>${version.codehausJackson}</version>
 		</dependency>
 		
-<!-- 		<dependency> -->
-<!-- 			<groupId>javax.servlet</groupId> -->
-<!-- 			<artifactId>jstl</artifactId> -->
-<!-- 			<version>${version.servletJstl}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<!--
+			<version>${version.servletJstl}</version>
+			  -->
+ 		</dependency>
 
 <!-- 		<dependency> -->
 <!-- 			<groupId>javax.servlet</groupId> -->
@@ -150,12 +152,6 @@
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
 			<version>1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-<!-- 			<version>2.3.1</version> -->
 		</dependency>
 
 		<!-- test dependencies -->

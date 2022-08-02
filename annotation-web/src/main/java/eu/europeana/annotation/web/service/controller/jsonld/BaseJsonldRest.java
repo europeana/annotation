@@ -36,6 +36,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationsList;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
+import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
@@ -50,8 +51,10 @@ import eu.europeana.annotation.web.model.BatchOperationStep;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
+import eu.europeana.annotation.web.service.SearchServiceUtils;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
@@ -61,23 +64,22 @@ public class BaseJsonldRest extends BaseRest {
 
     protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation, boolean indexOnCreate,
 	    String annotation, Authentication authentication) throws HttpException {
-	try {
+	
+      Annotation webAnnotation = null;
+      try {
 	    // parse
-	    Annotation webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
+	    webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
 		// validate annotation and check that no generator and creator exists in input
 	    // set generator and creator
-	    // this is for the testing purposes when we omit authentication (i.e. authentication=null)
-	    String userId = "test_user";
-        String apikeyId = "test_apikey";
-	    if(authentication!=null) {
-	      userId = authentication.getPrincipal().toString();
-	      apikeyId = authentication.getDetails().toString();
-	    }
+	    String userId = authentication.getPrincipal().toString();
+	    String apikeyId = ((EuropeanaApiCredentials) authentication.getCredentials()).getApiKey();
+
 
 	    String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), apikeyId);
 	    String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
 
+	    //overwrite creator and generator with values generated from the JWT token 
 	    webAnnotation.setGenerator(buildAgent(generatorId));
 	    webAnnotation.setCreator(buildAgent(creatorId));
 
@@ -142,6 +144,9 @@ public class BaseJsonldRest extends BaseRest {
 	} catch (HttpException e) {
 	    // avoid wrapping HttpExceptions
 	    throw e;
+	} catch (AnnotationServiceException e) {
+	    String debugInfo = (webAnnotation != null) ?  webAnnotation.toString() : ""; 
+	    throw SearchServiceUtils.convertSearchException(debugInfo, e);
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
@@ -488,9 +493,11 @@ public class BaseJsonldRest extends BaseRest {
 	} catch (AnnotationInstantiationException e) {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION,
 		    null, HttpStatus.BAD_REQUEST, e);
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+	}  catch (AnnotationServiceException e) {
+      throw SearchServiceUtils.convertSearchException(annotation, e);
+    } catch (Exception e) {
+      throw new InternalServerException(e);
+    }
     }
 
     /**

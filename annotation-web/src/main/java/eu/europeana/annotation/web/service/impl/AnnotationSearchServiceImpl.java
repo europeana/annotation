@@ -22,9 +22,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
+import eu.europeana.annotation.solr.service.impl.SolrAnnotationUtils;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
+import eu.europeana.annotation.web.service.SearchServiceUtils;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.HttpException;
@@ -32,260 +34,263 @@ import eu.europeana.api.commons.web.exception.HttpException;
 @Service
 public class AnnotationSearchServiceImpl implements AnnotationSearchService {
 
-	@Resource
-	AnnotationConfiguration configuration;
+  @Resource
+  AnnotationConfiguration configuration;
 
-	@Resource
-	SolrAnnotationService solrService;
+  @Resource
+  SolrAnnotationService solrService;
 
-	@Resource
-	PersistentAnnotationService mongoPersistance;
+  @Resource
+  PersistentAnnotationService mongoPersistance;
 
-//	@Resource
-//	AuthenticationService authenticationService;
+  // @Resource
+  // AuthenticationService authenticationService;
 
-	Logger logger = LogManager.getLogger(getClass());
-	
-//	public AuthenticationService getAuthenticationService() {
-//		return authenticationService;
-//	}
-//
-//	public void setAuthenticationService(AuthenticationService authenticationService) {
-//		this.authenticationService = authenticationService;
-//	}
+  Logger logger = LogManager.getLogger(getClass());
 
-	@Override
-	public String getComponentName() {
-		return configuration.getComponentName();
-	}
+  // public AuthenticationService getAuthenticationService() {
+  // return authenticationService;
+  // }
+  //
+  // public void setAuthenticationService(AuthenticationService authenticationService) {
+  // this.authenticationService = authenticationService;
+  // }
 
-	protected AnnotationConfiguration getConfiguration() {
-		return configuration;
-	}
+  @Override
+  public String getComponentName() {
+    return configuration.getComponentName();
+  }
 
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
-	}
+  protected AnnotationConfiguration getConfiguration() {
+    return configuration;
+  }
 
-	public SolrAnnotationService getSolrService() {
-		return solrService;
-	}
+  public void setConfiguration(AnnotationConfiguration configuration) {
+    this.configuration = configuration;
+  }
 
-	public void setSolrService(SolrAnnotationService solrService) {
-		this.solrService = solrService;
-	}
+  public SolrAnnotationService getSolrService() {
+    return solrService;
+  }
 
-	protected ResultSet<? extends AnnotationView> searchItems(Query query) throws HttpException {
+  public void setSolrService(SolrAnnotationService solrService) {
+    this.solrService = solrService;
+  }
 
-		try {
-			return getSolrService().search(query);
-		} catch (AnnotationServiceException e) {
-			throw new HttpException("Solr Search Exception.", I18nConstants.SOLR_EXCEPTION, null, HttpStatus.INTERNAL_SERVER_ERROR, e);
-		}
-	}
+  protected ResultSet<? extends AnnotationView> searchItems(Query query) throws HttpException {
 
-	@Override
-	public AnnotationPage search(Query query, HttpServletRequest request) throws HttpException {
+    try {
+      return getSolrService().search(query);
+    } catch (AnnotationServiceException e) {
+      throw SearchServiceUtils.convertSearchException(query.toString(), e);
+    }
+  }
 
-		AnnotationPage protocol = new AnnotationPageImpl(query);
-		ResultSet<? extends AnnotationView> resultSet = searchItems(query);
-		// process resultset into protocol output
 
-		protocol.setItems(resultSet);
-		
-		//if mongo query is needed
-		if(isIncludeAnnotationsSearch(query) && resultSet.getResults().size() > 0){
-			List<Long> annotationIds = new ArrayList<Long>(resultSet.getResults().size());
-			//parse annotation urls to AnnotationId objects
-			for (AnnotationView annotationView : resultSet.getResults()) {
-				annotationIds.add(annotationView.getIdentifierAsNumber());		
-			}
-			
-			//fetch annotation objects
-			List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
-			protocol.setAnnotations(annotations);
-		}
-		
-		
-		
-		protocol.setTotalInPage(resultSet.getResults().size());
-		protocol.setTotalInCollection(resultSet.getResultSize());
+  @Override
+  public AnnotationPage search(Query query, HttpServletRequest request) throws HttpException {
 
-		String collectionUrl = buildCollectionUrl(query, request);
-		protocol.setCollectionUri(collectionUrl);
-		
-		int currentPage = query.getPageNr();
-		String currentPageUrl = buildPageUrl(collectionUrl, currentPage, query.getPageSize());
-		protocol.setCurrentPageUri(currentPageUrl);
+    AnnotationPage protocol = new AnnotationPageImpl(query);
+    ResultSet<? extends AnnotationView> resultSet = searchItems(query);
+    // process resultset into protocol output
 
-		if (currentPage > 0) {
-			String prevPage = buildPageUrl(collectionUrl, currentPage - 1, query.getPageSize());
-			protocol.setPrevPageUri(prevPage);	
-		}
-		
-		//if current page is not the last one
-		boolean isLastPage = protocol.getTotalInCollection() <= (currentPage + 1) * query.getPageSize(); 
-		if(!isLastPage){
-			String nextPage = buildPageUrl(collectionUrl, currentPage + 1, query.getPageSize());
-			protocol.setNextPageUri(nextPage);
-		}
-		
-		return protocol;
-	}
+    protocol.setItems(resultSet);
 
-	private boolean isIncludeAnnotationsSearch(Query query) {
-		return SearchProfiles.STANDARD.equals(query.getSearchProfile());
-	}
+    // if mongo query is needed
+    if (isIncludeAnnotationsSearch(query) && resultSet.getResults().size() > 0) {
+      List<Long> annotationIds = new ArrayList<Long>(resultSet.getResults().size());
+      // parse annotation urls to AnnotationId objects
+      for (AnnotationView annotationView : resultSet.getResults()) {
+        annotationIds.add(annotationView.getIdentifierAsNumber());
+      }
 
-	private String buildPageUrl(String collectionUrl, int page, int pageSize) {
-		StringBuilder builder = new StringBuilder(collectionUrl);
-		builder.append(WebFields.AND).append(WebAnnotationFields.PARAM_PAGE)
-			.append(WebFields.EQUALS).append(page);
+      // fetch annotation objects
+      List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
+      protocol.setAnnotations(annotations);
+    }
 
-		builder.append(WebFields.AND).append(WebAnnotationFields.PARAM_PAGE_SIZE)
-		.append(WebFields.EQUALS).append(pageSize);
 
-		return builder.toString();
-	}
 
-	private String buildCollectionUrl(Query query, HttpServletRequest request) {
+    protocol.setTotalInPage(resultSet.getResults().size());
+    protocol.setTotalInCollection(resultSet.getResultSize());
 
-		String queryString = request.getQueryString();
-		
-//		queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
-		
-		//remove out of scope parameters
-		queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
-		queryString = removeParam(WebAnnotationFields.PARAM_PAGE_SIZE, queryString);
-		
-		//avoid duplication of query parameters
-		queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
-		
-		//add mandatory parameters
-		queryString += ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString()); 
+    String collectionUrl = buildCollectionUrl(query, request);
+    protocol.setCollectionUri(collectionUrl);
 
-		String result = configuration.getAnnoApiEndpoint() + "/search?";
+    int currentPage = query.getPageNr();
+    String currentPageUrl = buildPageUrl(collectionUrl, currentPage, query.getPageSize());
+    protocol.setCurrentPageUri(currentPageUrl);
 
-//		  try {
-//		  result += URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString());
-//        } catch (UnsupportedEncodingException e) {
-//          logger.log(Level.ERROR, "The UnsupportedEncodingException during the URL encoding of the string.", e);
-//          result += queryString;
-//        }
-		result += queryString;
-		
-		return result;
-	}
+    if (currentPage > 0) {
+      String prevPage = buildPageUrl(collectionUrl, currentPage - 1, query.getPageSize());
+      protocol.setPrevPageUri(prevPage);
+    }
 
-	protected String removeParam(final String queryParam, String queryParams) {
-		String tmp;
-		//avoid name conflicts search "queryParam="
-		int startPos = queryParams.indexOf(queryParam+WebFields.EQUALS);
-		int startEndPos = queryParams.indexOf(WebFields.AND, startPos + 1);
+    // if current page is not the last one
+    boolean isLastPage = protocol.getTotalInCollection() <= (currentPage + 1) * query.getPageSize();
+    if (!isLastPage) {
+      String nextPage = buildPageUrl(collectionUrl, currentPage + 1, query.getPageSize());
+      protocol.setNextPageUri(nextPage);
+    }
 
-		if (startPos >= 0) {
-			//make sure to remove the "&" if not the first param
-			if(startPos>0)
-				startPos--;		 
-			tmp = queryParams.substring(0, startPos);
-			
-			if (startEndPos > 0)
-				tmp += queryParams.substring(startEndPos);
-		} else {
-			tmp = queryParams;
-		}
-		return tmp;
-	}
+    return protocol;
+  }
 
-	@Override
-	public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String sort, String sortOrder,
-			int pageNr, int pageSize, SearchProfiles profile) {
+  private boolean isIncludeAnnotationsSearch(Query query) {
+    return SearchProfiles.STANDARD.equals(query.getSearchProfile());
+  }
 
-		// TODO: check if needed
-		//String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
-		boolean isFacetsRequested = isFacetsRequest(facets);
+  private String buildPageUrl(String collectionUrl, int page, int pageSize) {
+    StringBuilder builder = new StringBuilder(collectionUrl);
+    builder.append(WebFields.AND).append(WebAnnotationFields.PARAM_PAGE).append(WebFields.EQUALS)
+        .append(page);
 
-		Query searchQuery = new QueryImpl();
-		searchQuery.setQuery(queryString);
-		if(pageNr < 0)
-			searchQuery.setPageNr(Query.DEFAULT_PAGE);
-		else
-			searchQuery.setPageNr(pageNr);
+    builder.append(WebFields.AND).append(WebAnnotationFields.PARAM_PAGE_SIZE)
+        .append(WebFields.EQUALS).append(pageSize);
 
-		
-		int rows = buildRealPageSize(pageSize, profile);
-		searchQuery.setPageSize(rows);
-		
-		if (isFacetsRequested)
-			searchQuery.setFacetFields(facets);
+    return builder.toString();
+  }
 
-		translateSearchFilters(filters);
-		searchQuery.setFilters(filters);
-		searchQuery.setSearchProfile(profile);
+  private String buildCollectionUrl(Query query, HttpServletRequest request) {
 
-		setSearchFields(searchQuery, profile);
-		if (!Strings.isNullOrEmpty(sort)) {
-			searchQuery.setSort(sort);
-			searchQuery.setSortOrder(sortOrder);
-		}
+    String queryString = request.getQueryString();
 
-		return searchQuery;
-	}
+    // queryString = removeParam(WebAnnotationFields.PARAM_WSKEY, queryString);
 
-	protected int buildRealPageSize(int pageSize, SearchProfiles profile) {
-		int rows = 0;
-		int maxPageSize = getConfiguration().getMaxPageSize(profile.toString());
-		if(pageSize < 0)
-			rows = Query.DEFAULT_PAGE_SIZE;
-		else if(pageSize > maxPageSize)
-			rows = maxPageSize;
-		else
-			rows = pageSize;
-		return rows;
-	}
+    // remove out of scope parameters
+    queryString = removeParam(WebAnnotationFields.PARAM_PAGE, queryString);
+    queryString = removeParam(WebAnnotationFields.PARAM_PAGE_SIZE, queryString);
 
-	private void setSearchFields(Query searchQuery, SearchProfiles profile) {
-		switch (profile) {
-		case FACET:
-			// only facets, do not return results but how? in page based
-			// searchQuery.setViewFields(new
-			// String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
-			// searchQuery.setRows(0);
-			break;
+    // avoid duplication of query parameters
+    queryString = removeParam(WebAnnotationFields.PARAM_PROFILE, queryString);
 
-		case MINIMAL:
-			searchQuery.setViewFields(new String[] { SolrAnnotationConstants.ANNO_URI });
-			break;
-	
-		case STANDARD:
-			break;
+    // add mandatory parameters
+    queryString +=
+        ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString());
 
-		default:
-			// TODO: consider throwing an exception
-			break;
-		}
+    String result = configuration.getAnnoApiEndpoint() + "/search?";
 
-	}
+    // try {
+    // result += URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString());
+    // } catch (UnsupportedEncodingException e) {
+    // logger.log(Level.ERROR, "The UnsupportedEncodingException during the URL encoding of the
+    // string.", e);
+    // result += queryString;
+    // }
+    result += queryString;
 
-	protected boolean isFacetsRequest(String[] facets) {
-		return facets != null && facets.length > 0;
-	}
+    return result;
+  }
 
-	protected void translateSearchFilters(String[] filters) {
-		if (filters != null) {
-			int count = 0;
-			int FILTER_MODEL_POS = 0;
-			int FILTER_VALUE_POS = 1;
-			for (String filter : filters) {
-				if (filter.contains(WebAnnotationFields.COLON)) {
-					String[] filterElem = filter.split(WebAnnotationFields.COLON);
-					if (QueryFilteringFields.contains(filterElem[FILTER_MODEL_POS])) {
-						filters[count] = QueryFilteringFields.getSolrFieldByModel(filterElem[FILTER_MODEL_POS])
-								+ WebAnnotationFields.COLON + filterElem[FILTER_VALUE_POS];
-					}
-				}
-				count++;
-			}
-		}
-	}
+  protected String removeParam(final String queryParam, String queryParams) {
+    String tmp;
+    // avoid name conflicts search "queryParam="
+    int startPos = queryParams.indexOf(queryParam + WebFields.EQUALS);
+    int startEndPos = queryParams.indexOf(WebFields.AND, startPos + 1);
+
+    if (startPos >= 0) {
+      // make sure to remove the "&" if not the first param
+      if (startPos > 0)
+        startPos--;
+      tmp = queryParams.substring(0, startPos);
+
+      if (startEndPos > 0)
+        tmp += queryParams.substring(startEndPos);
+    } else {
+      tmp = queryParams;
+    }
+    return tmp;
+  }
+
+  @Override
+  public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String sort,
+      String sortOrder, int pageNr, int pageSize, SearchProfiles profile) {
+
+    // TODO: check if needed
+    // String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
+    boolean isFacetsRequested = isFacetsRequest(facets);
+
+    Query searchQuery = new QueryImpl();
+    searchQuery.setQuery(queryString);
+    if (pageNr < 0)
+      searchQuery.setPageNr(Query.DEFAULT_PAGE);
+    else
+      searchQuery.setPageNr(pageNr);
+
+
+    int rows = buildRealPageSize(pageSize, profile);
+    searchQuery.setPageSize(rows);
+
+    if (isFacetsRequested)
+      searchQuery.setFacetFields(facets);
+
+    translateSearchFilters(filters);
+    searchQuery.setFilters(filters);
+    searchQuery.setSearchProfile(profile);
+
+    setSearchFields(searchQuery, profile);
+    if (!Strings.isNullOrEmpty(sort)) {
+      searchQuery.setSort(sort);
+      searchQuery.setSortOrder(sortOrder);
+    }
+
+    return searchQuery;
+  }
+
+  protected int buildRealPageSize(int pageSize, SearchProfiles profile) {
+    int rows = 0;
+    int maxPageSize = getConfiguration().getMaxPageSize(profile.toString());
+    if (pageSize < 0)
+      rows = Query.DEFAULT_PAGE_SIZE;
+    else if (pageSize > maxPageSize)
+      rows = maxPageSize;
+    else
+      rows = pageSize;
+    return rows;
+  }
+
+  private void setSearchFields(Query searchQuery, SearchProfiles profile) {
+    switch (profile) {
+      case FACET:
+        // only facets, do not return results but how? in page based
+        // searchQuery.setViewFields(new
+        // String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
+        // searchQuery.setRows(0);
+        break;
+
+      case MINIMAL:
+        searchQuery.setViewFields(new String[] {SolrAnnotationConstants.ANNO_URI});
+        break;
+
+      case STANDARD:
+        break;
+
+      default:
+        // TODO: consider throwing an exception
+        break;
+    }
+
+  }
+
+  protected boolean isFacetsRequest(String[] facets) {
+    return facets != null && facets.length > 0;
+  }
+
+  protected void translateSearchFilters(String[] filters) {
+    if (filters != null) {
+      int count = 0;
+      int FILTER_MODEL_POS = 0;
+      int FILTER_VALUE_POS = 1;
+      for (String filter : filters) {
+        if (filter.contains(WebAnnotationFields.COLON)) {
+          String[] filterElem = filter.split(WebAnnotationFields.COLON);
+          if (QueryFilteringFields.contains(filterElem[FILTER_MODEL_POS])) {
+            filters[count] = QueryFilteringFields.getSolrFieldByModel(filterElem[FILTER_MODEL_POS])
+                + WebAnnotationFields.COLON + filterElem[FILTER_VALUE_POS];
+          }
+        }
+        count++;
+      }
+    }
+  }
 }

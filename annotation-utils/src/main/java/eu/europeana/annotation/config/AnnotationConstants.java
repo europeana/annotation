@@ -35,7 +35,8 @@ public interface AnnotationConstants {
     public static final String ANNO_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
     public static final String MONGO_DATABASE_NAME = "mongodb.annotation.databasename";
     public static final String MONGO_COLLECTION_NAME = "annotation";
-    public static final String ANNO_REMOVE_AUTHORIZATION = "annotation.remove.authorization";
+//    public static final String ANNO_REMOVE_AUTHORIZATION = "annotation.remove.authorization";
+    public static final String ANNO_AUTHORIZATION_ENABLED = "annotation.authorization.enabled";
     public static final String SOLR_URLS = "solr.annotation.url";
     
     public static final String VALIDATION_API = "api";
@@ -45,5 +46,8 @@ public interface AnnotationConstants {
     public static final String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
 
     public static final String ETAG_FORMAT = "application/json";
+    
+    public static final String BEAN_ANNOTATION_DATA_STORE = "annotationDataStore";
+    public static final String BEAN_ANNOTATION_BUILD_INFO = "annotationBuildInfo";
 
 }

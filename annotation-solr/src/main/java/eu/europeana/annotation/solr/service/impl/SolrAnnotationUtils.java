@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -289,6 +290,15 @@ public class SolrAnnotationUtils {
        * ending with 1..* white space chars
        */
       return text.replaceAll("http[^\\s]*\\s+","*");
+    }
+    
+    public static boolean isMalformedQueryException(Throwable ex) {
+      if(ex instanceof SolrException) {
+        if (((SolrException)ex).code()==SolrException.ErrorCode.BAD_REQUEST.code) {
+          return true;
+        }
+      }
+      return false;
     }
 
 }

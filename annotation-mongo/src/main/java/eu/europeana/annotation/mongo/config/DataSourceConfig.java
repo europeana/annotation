@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.config.AnnotationConstants;
 import eu.europeana.corelib.db.wrapper.ApiMongoConnector;
 
 @Configuration
@@ -27,7 +27,7 @@ public class DataSourceConfig {
   @Value("${mongodb.annotation.truststorepass}")
   private String trustStorePass;
 
-  @Bean(AnnotationConfiguration.BEAN_ANNOTATION_DATA_STORE)
+  @Bean(AnnotationConstants.BEAN_ANNOTATION_DATA_STORE)
   public Datastore annotationDatastore() {
     logger.info("Configuring the annotation database.");
     ApiMongoConnector mongoConnector = new ApiMongoConnector();

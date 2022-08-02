@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.config.AnnotationConstants;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
@@ -44,7 +44,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	public void testStoreInDevelopmentEnvironment() 
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
-		String environment = AnnotationConfiguration.VALUE_ENVIRONMENT_DEVELOPMENT;
+		String environment = AnnotationConstants.VALUE_ENVIRONMENT_DEVELOPMENT;
         long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
 		createTestAnnoInEnvironment(environment, annoIdentifier);	
 	}
@@ -53,7 +53,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	public void testStoreInTestEnvironment() 
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
-		String environment = AnnotationConfiguration.VALUE_ENVIRONMENT_TEST;
+		String environment = AnnotationConstants.VALUE_ENVIRONMENT_TEST;
         long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
 		createTestAnnoInEnvironment(environment, annoIdentifier);
 	}
@@ -62,7 +62,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	public void testStoreInProductionEnvironment() 
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
-		String environment = AnnotationConfiguration.VALUE_ENVIRONMENT_PRODUCTION;
+		String environment = AnnotationConstants.VALUE_ENVIRONMENT_PRODUCTION;
         long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
 		createTestAnnoInEnvironment(environment, annoIdentifier);
 	}
@@ -71,7 +71,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
 		AnnotationConfiguration config = (AnnotationConfiguration) ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration();
-		config.getAnnotationProperties().put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, environment);
+		config.setEnvironment(AnnotationConstants.ANNOTATION_ENVIRONMENT);
 		
 		Annotation anno = testCreateAnnotationWebanno(identifier);
 		

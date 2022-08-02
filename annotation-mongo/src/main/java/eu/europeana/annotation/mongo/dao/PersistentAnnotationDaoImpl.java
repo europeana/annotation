@@ -22,6 +22,7 @@ import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;
 import eu.europeana.annotation.config.AnnotationConfiguration;
+import eu.europeana.annotation.config.AnnotationConstants;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
@@ -223,7 +224,7 @@ public class PersistentAnnotationDaoImpl
       List<String> command = Arrays.asList(
           "mongodump",
           "--db", configuration.getMongoDatabaseName(), //NOT NECESSARY IF YOU DUMP ALL DBs               
-          "--collection", AnnotationConfiguration.MONGO_COLLECTION_NAME // NOT NECESSARY IF YOU DUMP ALL Collections in the db
+          "--collection", AnnotationConstants.MONGO_COLLECTION_NAME // NOT NECESSARY IF YOU DUMP ALL Collections in the db
       );
 
       //the parameter is the working directory

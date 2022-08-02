@@ -86,5 +86,6 @@ annotation.user.data.endpoint=http://data.europeana.eu/user
 annotation.client.api.endpoint=https://api.europeana.eu/apikey
 annotation.item.data.endpoint=http://data.europeana.eu/item
 
-#when running the annotation-client tests this can be set to true to avoid the authorization for the deletion
-annotation.remove.authorization=false
+#when running the annotation-client tests this can be set to false to avoid the authorization for the deletion
+annotation.authorization.enabled=true
+

@@ -36,7 +36,6 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation", nickname = "createAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotation(
-//			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
 			HttpServletRequest request)
@@ -44,7 +43,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	    //check the property for the authorization
 	    Authentication authentication = null; 
-	    if(!getConfiguration().getAnnoRemoveAuthorization()) {
+	    if(getConfiguration().isAuthorizationEnabled()) {
 	      authentication = verifyWriteAccess(Operations.CREATE, request);
 	    }
 		

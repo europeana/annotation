@@ -338,7 +338,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 	    persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 	
 		if (getConfiguration().isIndexingEnabled()) {
-			getSolrService().store(persistentAnnotation);
+	        try {
+	          getSolrService().store(persistentAnnotation);
+	        } catch (Exception e) {
+	          getLogger().info("The annotation is correctly enabled in the Mongo, but it is not yet indexed in Solr. ", e);
+	        }
 		    // save the time of the last SOLR indexing
 		    updateLastIndexingTime(persistentAnnotation, persistentAnnotation.getLastUpdate());
 		}
