@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -18,12 +17,10 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONString;
-
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -233,7 +230,6 @@ public class AnnotationLdParser extends JsonLdParser {
 			throws JSONException, JsonParseException {
 
 		Object valueObject = jo.get(property);
-		AnnotationId annotationId;
 
 		// TODO: improve to use WAPropEnum instead of constants, and reduce
 		// redundancy related to @id vs. id
@@ -245,8 +241,9 @@ public class AnnotationLdParser extends JsonLdParser {
 			anno.setType((String) valueObject);
 			break;
 		case WebAnnotationFields.ID:
-			annotationId = parseId(valueObject, jo);
-			anno.setAnnotationId(annotationId);
+		    String annoIdUri = (String)valueObject;
+		    long annoIdentifier = Long.parseLong(annoIdUri.substring(annoIdUri.lastIndexOf("/") + 1).trim());
+			anno.setIdentifier(annoIdentifier);
 			break;
 		case WebAnnotationFields.CREATED:
 			anno.setCreated(TypeUtils.convertStrToDate((String) valueObject));
@@ -406,19 +403,6 @@ public class AnnotationLdParser extends JsonLdParser {
 		
 		return target;
 		
-	}
-
-	private AnnotationId parseId(Object valueObject, JSONObject jo) throws JsonParseException {
-		AnnotationId annoId = null;
-		if (valueObject instanceof String) {
-			annoId = getIdHelper().parseAnnotationId((String) valueObject);
-		} else if (valueObject instanceof JSONObject) {
-			// annoId = parseIdFromJson((JSONObject) valueObject);
-			throw new JsonParseException("Cannot parse ID value: " + valueObject);
-		} else {
-			throw new JsonParseException("Cannot parse ID value: " + valueObject);
-		}
-		return annoId;
 	}
 
 	private Agent parseAgent(AgentTypes type, String valueObject) {
@@ -1013,10 +997,10 @@ public class AnnotationLdParser extends JsonLdParser {
 		switch (motivation) {
 		case LINKING:
 			return BodyInternalTypes.LINK;
-
 		case TAGGING:
 			return guesBodyTagSubType(value);
-
+		case LINKFORCONTRIBUTING:
+          return BodyInternalTypes.SPECIFIC_RESOURCE;
 		default:
 			break;
 		}
@@ -1064,6 +1048,9 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.SEMANTIC_TAG;
 			else if (valueObject.has(WebAnnotationFields.VALUE))
 				return BodyInternalTypes.TAG;
+			break;
+		case LINKFORCONTRIBUTING:
+          return BodyInternalTypes.SPECIFIC_RESOURCE;
 		default:
 			break;
 

@@ -19,6 +19,7 @@ public class ParamValidationI18NException extends HttpException{
 
 	public static final String MESSAGE_IDENTIFIER_NOT_NULL = "Identifier must not be set when creating a new Annotation for the given provider!";
 	public static final String MESSAGE_ANNOTATION_ID_EXISTS = "An annotation with the given identifier already exists in database! Overwrite not allowed in this method!";
+	public static final String MESSAGE_ANNOTATION_IDENTIFIER_PROVIDED_UPON_CREATION = "The annotation identifier cannot be provided in the input upon the anntation creation!";
 	public static final String MESSAGE_INVALID_PARAMETER_VALUE = "Invalid request. Parameter value not supported or not allowed!{0}";
 	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
 	public static final String MESSAGE_URL_NOT_VALID = "Given URL is not valid!";

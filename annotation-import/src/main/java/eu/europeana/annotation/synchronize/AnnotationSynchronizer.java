@@ -26,16 +26,15 @@ import eu.europeana.fulltext.api.FulltextDocument;
 import eu.europeana.utils.SolrErrorHandling;
 
 /**
- * This class performs the synchronization of annotations. Namely, it enables
+ *  * This class performs the synchronization of annotations. Namely, it enables
  * updating the fulltext index taking into account the modifications of the
  * annotations and/or their metadata. As first command line argument, use one of
  * {@link #IMPORT_FULL} or {@link #IMPORT_DATE}. If type is {@link #IMPORT_DATE}
  * second argument needs to be a date provided in the {@link #SOLR_DATE_FORMAT} format (e.g.
  * "2019-11-22T10:44:30.620Z").
- * 
- * @author SrdjanStevanetic
- *
+ * @author StevaneticS *
  */
+@Deprecated
 public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 
     // a map of id->transcription for the active annotations
@@ -266,7 +265,7 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 			FulltextContent fulltextContent = new FulltextContent(transcription, language);
 			fulltextDocs.add(new FulltextDocument(europeana_id, Arrays.asList(fulltextContent), updated));   
 		} else {
-		    LOGGER.info("No textual transcription available, the annotation is not added to fulltext: {0}", annotation.getAnnotationId());
+		    LOGGER.info("No textual transcription available, the annotation is not added to fulltext: {0}", annotation.getIdentifier());
 		}
 	    } 
 	}
@@ -276,35 +275,43 @@ public class AnnotationSynchronizer extends BaseAnnotationSynchronizer {
 	    throws SolrServerException, IOException, JsonParseException, InterruptedException {
     	int page=0;
     	int limit=1000;
-    	List<AnnotationDeletion> deletedAnnos = annotationAuxilaryMethodsApi.getDeletedWithAdditionalInfo(null, DateUtils.convertDateToStr(startingDate), null, page, limit);
-    	if (deletedAnnos == null) {
-    	    LOGGER.debug("No disabled resources to process!");
-    	    return;
-    	}
-    	while(deletedAnnos!=null && deletedAnnos.size()>0) {
-			Date lastFulltextUpdate, deletionDate;
-			for (AnnotationDeletion annotationDeletion : deletedAnnos) {
-			    if (annotationDeletion.getResourceId() == null) {
-				LOGGER.info("annotation doesn't have a resource id {}", annotationDeletion.getAnnotaionId());
-				continue;
-			    }
-			    lastFulltextUpdate = fulltextAPI.getLastAnnotationUpdate(annotationDeletion.getResourceId());
-			    deletionDate = new Date(annotationDeletion.getTimestamp());
-    			//if (lastFulltextUpdate == null || lastFulltextUpdate.after(deletionDate))
-			    if (lastFulltextUpdate == null) {
-				//nothing to do, record doesn't exists in the fulltext or transcription was
-				//already updated by another annotation
-				LOGGER.info(
-					"Fulltext record {} doesn't exist for annotation {}  or the record was updated with a later timestamp than the curent one {}: {}",
-					annotationDeletion.getResourceId(), annotationDeletion.getAnnotaionId(), deletionDate,
-					lastFulltextUpdate);
-			    } else {
-				toDelete.add(annotationDeletion.getResourceId());
-			    }
-			}			
-			page+=1;
-			deletedAnnos = annotationAuxilaryMethodsApi.getDeletedWithAdditionalInfo(null, DateUtils.convertDateToStr(startingDate), null, page, limit);
-		}
+    	
+    	List<AnnotationDeletion> deletedAnnos = null;
+
+    	/*
+    	 * the code below is commented out since the endpoint for getting the deleted annotation does not exist any more,
+    	 * and probably the whole annotation-import module will be removed in the future
+    	 */
+//    	deletedAnnos = annotationAuxilaryMethodsApi.getDeletedWithAdditionalInfo(null, DateUtils.convertDateToStr(startingDate), null, page, limit);
+//    	
+//    	if (deletedAnnos == null) {
+//    	    LOGGER.debug("No disabled resources to process!");
+//    	    return;
+//    	}
+//    	while(deletedAnnos!=null && deletedAnnos.size()>0) {
+//			Date lastFulltextUpdate, deletionDate;
+//			for (AnnotationDeletion annotationDeletion : deletedAnnos) {
+//			    if (annotationDeletion.getResourceId() == null) {
+//				LOGGER.info("annotation doesn't have a resource id {}", annotationDeletion.getAnnotaionId());
+//				continue;
+//			    }
+//			    lastFulltextUpdate = fulltextAPI.getLastAnnotationUpdate(annotationDeletion.getResourceId());
+//			    deletionDate = new Date(annotationDeletion.getTimestamp());
+//    			//if (lastFulltextUpdate == null || lastFulltextUpdate.after(deletionDate))
+//			    if (lastFulltextUpdate == null) {
+//				//nothing to do, record doesn't exists in the fulltext or transcription was
+//				//already updated by another annotation
+//				LOGGER.info(
+//					"Fulltext record {} doesn't exist for annotation {}  or the record was updated with a later timestamp than the curent one {}: {}",
+//					annotationDeletion.getResourceId(), annotationDeletion.getAnnotaionId(), deletionDate,
+//					lastFulltextUpdate);
+//			    } else {
+//				toDelete.add(annotationDeletion.getResourceId());
+//			    }
+//			}			
+//			page+=1;
+//			deletedAnnos = annotationAuxilaryMethodsApi.getDeletedWithAdditionalInfo(null, DateUtils.convertDateToStr(startingDate), null, page, limit);
+//		}
     }
 
 }

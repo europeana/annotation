@@ -110,19 +110,16 @@ public class BaseWhitelistEntry implements WhitelistEntry {
 	     */
 	    if ((this.getHttpUrl() != null) && (that.getHttpUrl() != null) &&
 	    		(!this.getHttpUrl().toString().equals(that.getHttpUrl().toString()))) {
-	    	System.out.println("Concept objects have different 'HttpUrl' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getName() != null) && (that.getName() != null) &&
 	    		(!this.getName().toString().equals(that.getName().toString()))) {
-	    	System.out.println("Concept objects have different 'Name' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getStatus() != null) && (that.getStatus() != null) &&
 	    		(!this.getStatus().toString().equals(that.getStatus().toString()))) {
-	    	System.out.println("Concept objects have different 'Status' fields.");
 	    	res = false;
 	    }
 	    

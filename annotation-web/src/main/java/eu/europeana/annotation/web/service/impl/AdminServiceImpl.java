@@ -3,15 +3,10 @@ package eu.europeana.annotation.web.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Strings;
-
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
@@ -20,7 +15,6 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
-import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -35,15 +29,11 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	@Resource(name = "annotation_db_apilockService")
 	PersistentApiWriteLockService apiWriteLockService;
 	
-	public BatchProcessingStatus deleteAnnotationSet(List<String> uriList) {
-		AnnotationId annoId;
+	public BatchProcessingStatus deleteAnnotationSet(List<Long> identifiers) {
 		BatchProcessingStatus status = new BatchProcessingStatus();
-
-		for (String annoUri : uriList) {
-			//TODO: replace the static id helper
-		    	annoId = JsonUtils.getIdHelper().parseAnnotationId(annoUri);
+		for (Long identifier : identifiers) {
 			try {
-				deleteAnnotation(annoId);
+				deleteAnnotation(identifier);
 				status.incrementSuccessCount();
 			} catch (Throwable th) {
 				getLogger().info(th);
@@ -56,36 +46,35 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	@Override
 	// public void deleteAnnotation(String resourceId, String provider, Long
 	// annotationNr) {
-	public void deleteAnnotation(AnnotationId annoId) throws InternalServerException, AnnotationServiceException {
+	public void deleteAnnotation(long annoIdentifier) throws InternalServerException, AnnotationServiceException {
 
-		// mongo is the master
+  	    // delete from solr first, as mongo deletions will not be recovered
+        getSolrService().delete(annoIdentifier);
+        // delete moderation record if exists
+        try {
+            getMongoModerationRecordPersistence().remove(annoIdentifier);
+        } catch (Throwable th) {
+            // expected ModerationMongoException
+            getLogger().warn("Cannot remove moderation record for annotation id: " + annoIdentifier);
+        }
+        
+	    // mongo is the master, finally delete the annotation
 		try {
-			getMongoPersistence().remove(annoId);
+			getMongoPersistence().remove(annoIdentifier);
 		} catch (AnnotationMongoException e) {
 			if (StringUtils.startsWith(e.getMessage(), AnnotationMongoException.NO_RECORD_FOUND)) {
 				// consider annotation deleted in mongo and try to remove the
 				// related items
-				getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoId.toHttpUrl());
+				getLogger().warn("The annotation with the given Id doesn't exist anymore: " + annoIdentifier);
 			} else {
 				// do not remove anything if the master object cannt be deleted
-				throw new AnnotationServiceException("Cannot delete annotation from storragee. " + annoId.toHttpUrl(),
-						e);
+				throw new AnnotationServiceException("Cannot delete annotation from storage. " + annoIdentifier, e);
 			}
 		} catch (Throwable th) {
 			throw new InternalServerException(th);
 		}
 
-		// delete moderation record if possible
-		try {
-			getMongoModerationRecordPersistence().remove(annoId);
-		} catch (Throwable th) {
-			// expected ModerationMongoException
-			getLogger().warn("Cannot remove moderation record for annotation id: " + annoId.toHttpUrl());
-		}
 
-		// delete from solr .. and throw AnnotationServiceException if operation
-		// is not successfull
-		getSolrService().delete(annoId);
 	}
 	
 	public BatchProcessingStatus reindexAnnotationSelection(String startDate, String endDate, String startTimestamp,
@@ -106,16 +95,16 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 	protected BatchProcessingStatus reindexAnnotationSelection(String startTimestamp, String endTimestamp, String action)
 			throws HttpException {
-		List<String> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
+		List<Long> res = getMongoPersistence().filterByLastUpdateTimestamp(startTimestamp, endTimestamp);
 		try {
-			return reindexAnnotationSet(res, true, action);
+			return reindexAnnotationSet(res, action);
 		} catch (ApiWriteLockException e) {
 			throw new InternalServerException("Cannot reindex annotation selection", e);
 		}
 	}
 
   @Override
-  public BatchProcessingStatus reindexAnnotationSet(List<String> ids, boolean isObjectId, String action)
+  public BatchProcessingStatus reindexAnnotationSet(List<Long> identifiers, String action)
 			throws HttpException, ApiWriteLockException {
 
 		if (apiWriteLockService.getLastActiveLock("reindex") != null)
@@ -127,42 +116,37 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 			synchronized (this) {
 				BatchProcessingStatus status = new BatchProcessingStatus();
-				AnnotationId annoId = null;
 				Annotation annotation;
 				int count = 0;
 
-				for (String id : ids) {
+				for (Long id : identifiers) {
 					try {
 						count++;
 						if (count % 1000 == 0)
 							getLogger().info("Processing object: {}", count);
-						// check
-						if (isObjectId) {
-							annotation = getMongoPersistence().findByID(id);
-						} else {
-							annoId = JsonUtils.getIdHelper().parseAnnotationId(id);
-							annotation = getMongoPersistence().find(annoId);
-						}
+
+						annotation = getMongoPersistence().getByIdentifier(id);
+
 						if (annotation == null)
-							throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{id});
-						boolean success = reindexAnnotationById(annotation.getAnnotationId(), new Date());
+							throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{String.valueOf(id)});
+						boolean success = reindexAnnotationById(id, new Date());
 						if (success)
 							status.incrementSuccessCount();
 						else {
 							status.incrementFailureCount();
-							status.addError(id, "see error log");
+							status.addError(String.valueOf(id), "see error log");
 						}
 					} catch (IllegalArgumentException iae) {
 						String msg = "id: " + id + ". " + iae.getMessage();
 						getLogger().error(msg);
 						// throw new RuntimeException(iae);
 						status.incrementFailureCount();
-						status.addError(id, msg);
+						status.addError(String.valueOf(id), msg);
 					} catch (Throwable e) {
-						String msg = "Error when reindexing annotation: " + annoId + e.getMessage();
+						String msg = "Error when reindexing annotation: " + id + e.getMessage();
 						getLogger().error(msg);
 						status.incrementFailureCount();
-						status.addError(id, msg);
+						status.addError(String.valueOf(id), msg);
 						// throw new RuntimeException(e);
 					}
 				}
@@ -184,8 +168,8 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	@Override
 	public BatchProcessingStatus reindexOutdated() throws HttpException, ApiWriteLockException {
 
-		List<String> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
-		return reindexAnnotationSet(res, true, Actions.REINDEX_OUTDATED);
+		List<Long> res = getMongoPersistence().filterByLastUpdateGreaterThanLastIndexTimestamp();
+		return reindexAnnotationSet(res, Actions.REINDEX_OUTDATED);
 	}
 
 	@Override

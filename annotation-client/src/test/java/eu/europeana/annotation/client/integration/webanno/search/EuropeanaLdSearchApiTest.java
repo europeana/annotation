@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Iterator;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
@@ -23,6 +24,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 @Deprecated
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	
+    Logger log = LogManager.getLogger(getClass());
+    
 //	@Test
 	public void searchAnnotationsWithMultipleTargetsByEachTarget() throws JsonParseException, IOException {
 		
@@ -44,7 +47,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 					target
 					, null
 					);
-			System.out.println("historypin search annotation by target test: " + annotationStrRes);
+			log.debug("historypin search annotation by target test: " + annotationStrRes);
 			assertNotNull(annotationStrRes);
 			resJson = resJson + annotationStrRes;
 //			AnnotationSearchResults asr = europeanaLdApi.getAnnotationSearchResults(annotationStrRes);
@@ -78,7 +81,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 					null
 					, resourceId
 					);
-			System.out.println("historypin search annotation by target test: " + annotationStrRes);
+			log.debug("historypin search annotation by target test: " + annotationStrRes);
 			assertNotNull(annotationStrRes);
 			assertTrue(annotationStrRes.contains(resourceId));
 		}

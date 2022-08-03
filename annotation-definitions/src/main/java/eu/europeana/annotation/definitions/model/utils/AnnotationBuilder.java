@@ -6,7 +6,7 @@ import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 
 public class AnnotationBuilder {
 
-	public AbstractAnnotation copyIntoWebAnnotation(Annotation annotation) {
+	public static AbstractAnnotation copyIntoWebAnnotation(Annotation annotation) {
 
 		String internalType = annotation.getInternalType();
 		if (internalType == null)
@@ -14,14 +14,14 @@ public class AnnotationBuilder {
 		AbstractAnnotation to = (AbstractAnnotation) AnnotationObjectFactory.getInstance()
 				.createModelObjectInstance(internalType);
 		
-		copyAnnotationId(annotation, to);
 		copyAnnotationAttributes(annotation, to);
 
 		return to;
 	}
 
-	public void copyAnnotationAttributes(Annotation annotation,
+	public static void copyAnnotationAttributes(Annotation annotation,
 			Annotation to) {
+	    to.setIdentifier(annotation.getIdentifier());
 		to.setType(annotation.getType());
 		to.setInternalType(annotation.getInternalType());
 		to.setCreated(annotation.getCreated());
@@ -39,15 +39,6 @@ public class AnnotationBuilder {
 		to.setLastUpdate(annotation.getLastUpdate());
 		to.setCanonical(annotation.getCanonical());
 		to.setVia(annotation.getVia());
-	}
-
-	/**
-	 * Copy the annotationId atribute 
-	 * @param annotation
-	 * @param to
-	 */
-	public void copyAnnotationId(Annotation annotation, Annotation to) {
-		to.setAnnotationId(annotation.getAnnotationId());
 	}
 
 //	@SuppressWarnings("deprecation")

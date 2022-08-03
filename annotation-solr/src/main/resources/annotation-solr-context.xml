@@ -11,6 +11,9 @@
         http://www.springframework.org/schema/util/spring-util.xsd
     ">
     
+    <!-- utils (configuration, properties) -->
+    <import resource="api2-common-context.xml"/>
+    
    <!-- INTERNAL -->
 	<!-- import resource="corelib-definitions-context.xml" />
 	<import resource="internal/corelib-solr-datasource.xml" /-->

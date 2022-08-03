@@ -2,26 +2,35 @@ package eu.europeana.annotation.client.eval;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+import javax.annotation.Resource;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import eu.europeana.annotation.client.config.ClientConfiguration;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 
 public class TranscriptionsValidationTest {
-
+  
+    Logger log = LogManager.getLogger(getClass());
+    
     HttpClient httpClient = new HttpClient();
     File outputFile = new File("/tmp/transcriptionseval.csv");
 
-    @Test
+    //commented out until the input files are provided
+    //@Test
     public void validateTranscriptionsTest() throws Exception{
 	
 	//read file 
@@ -43,14 +52,13 @@ public class TranscriptionsValidationTest {
 	    writeToOutputFile(csvLine);
 	    count++;
 	    if(count % 100 == 0) {
-		System.out.println("Processed items: " + count);
+		log.debug("Processed items: " + count);
 	    }
 	}
     }
 
     private void writeToOutputFile(String csvLine) throws IOException {
 	// TODO Auto-generated method stub
-	System.out.println(csvLine);
 	FileUtils.writeStringToFile(outputFile, csvLine+"\n", StandardCharsets.UTF_8, true);
     }
 
@@ -69,8 +77,8 @@ public class TranscriptionsValidationTest {
 //	    scope = scope.replace("http:", "https:");
 	}
 	
-	assertTrue(scope.startsWith("http://data.europeana.eu/item") || scope.startsWith("https://www.europeana.eu/"));
-	assertFalse(source.startsWith("http://data.europeana.eu/item"));
+	assertTrue(scope.startsWith(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) || scope.startsWith("https://www.europeana.eu/"));
+	assertFalse(source.startsWith(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint()));
 	
 	sourceHttpCode = getHttpCode(source, false);
 	scopeHttpCode = getHttpCode(scope, true);
@@ -91,7 +99,7 @@ public class TranscriptionsValidationTest {
 	int code = httpClient.executeMethod(method);
 	
 //	String redirection = method.getResponseHeader("Location");
-//	System.out.println("redirection: " + redirection);
+//	log.debug("redirection: " + redirection);
 	return code;
     } 
 }

@@ -3,10 +3,8 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -15,7 +13,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
@@ -41,9 +38,10 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getIdentifier()
+				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 
@@ -58,7 +56,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getIdentifier()
+				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN
 				);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
@@ -68,10 +66,11 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		 */
 		ResponseEntity<String> getResponse = getApiProtocolClient().getModerationReport(
 				TEST_API_KEY
-				, storedAnno.getAnnotationId().getIdentifier()
+				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN
 				);
 		validateModerationReportResponse(getResponse);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	protected void validateModerationReportResponse(ResponseEntity<String> response) 
@@ -96,8 +95,7 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 		assertEquals(response.getStatusCode(), status);
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getAnnotationId());
-		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+		assertNotNull(storedAnno.getIdentifier());
 	}
 	
 	protected void validateReportResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {

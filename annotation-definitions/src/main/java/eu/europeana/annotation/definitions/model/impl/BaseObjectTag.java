@@ -10,5 +10,4 @@ public class BaseObjectTag extends AbstractAnnotation implements ObjectTag {
 		setMotivation(MotivationTypes.TAGGING.getOaType());
 	}
 	
-	
 }

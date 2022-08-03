@@ -1,5 +1,7 @@
 package eu.europeana.annotation.definitions.model.agent.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 
@@ -18,7 +20,7 @@ public abstract class BaseAgent implements Agent {
 	private String homepage;
 	private String inputString;
 	private String userGroup;
-	
+		
 	@Override
 	public String getHttpUrl() {
 		return httpUrl;
@@ -176,19 +178,16 @@ public abstract class BaseAgent implements Agent {
 	     */
 	    if ((this.getType() != null) && (that.getType() != null) &&
 	    		(!this.getType().equals(that.getType()))) {
-	    	System.out.println("Agent objects have different 'agentType' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getHomepage() != null) && (that.getHomepage() != null) &&
 	    		(!this.getHomepage().equals(that.getHomepage()))) {
-	    	System.out.println("Agent objects have different 'hompage' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getName() != null) && (that.getName() != null) &&
 	    		(!this.getName().equals(that.getName()))) {
-	    	System.out.println("Agent objects have different 'name' fields.");
 	    	res = false;
 	    }
 	    

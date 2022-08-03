@@ -6,8 +6,11 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 	">
 
-	<util:properties id="annotationProperties" 
-		location="test-config/annotation-test.properties" />
+	<!-- utils (configuration) -->
+	<import resource="annotation-mongo-context.xml"/>
+
+<!-- 	<util:properties id="annotationProperties"  -->
+<!-- 		location="test-config/annotation-test.properties" /> -->
 
 	<!-- INTERNAL DEFINITIONS -->
 	<!-- <import resource="internal/annotation-definitions-beans.xml" /> -->

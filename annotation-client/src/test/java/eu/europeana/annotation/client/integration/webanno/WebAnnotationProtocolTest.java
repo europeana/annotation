@@ -3,15 +3,12 @@ package eu.europeana.annotation.client.integration.webanno;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
@@ -30,6 +27,8 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 
 		validateResponse(response);
 		
+		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 
@@ -42,8 +41,7 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 		assertEquals(response.getStatusCode(), status);
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getAnnotationId());
-		assertTrue(storedAnno.getAnnotationId().toHttpUrl().startsWith("http://"));
+		assertNotNull(storedAnno.getIdentifier());
 	}
 	
 	protected void validateResponseForTrimming(ResponseEntity<String> response) throws JsonParseException {
@@ -64,6 +62,9 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 				false, requestBody, null, null);
 		
 		validateResponse(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 		
 
@@ -71,9 +72,12 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 	public void createWebannoAnnotationTagByTypeJsonld() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
-				true, TAG_JSON_BY_TYPE_JSONLD, WebAnnotationFields.TAG, null);
+				true, get_TAG_JSON_BY_TYPE_JSONLD(), WebAnnotationFields.TAG, null);
 		
 		validateResponse(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -100,9 +104,12 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 	public void createWebannoAnnotationTagForValidation() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
-			true, TAG_JSON_VALIDATION, WebAnnotationFields.TAG, null);
+			true, get_TAG_JSON_VALIDATION(), WebAnnotationFields.TAG, null);
 		
 		validateResponseForTrimming(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -110,9 +117,12 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 	public void createWebannoAnnotationLinkByTypeJsonld() throws JsonParseException {
 		
 		ResponseEntity<String> response = getApiProtocolClient().createAnnotation(
-				true, LINK_JSON_BY_TYPE_JSONLD, WebAnnotationFields.LINK, null);
+				true, get_LINK_JSON_BY_TYPE_JSONLD(), WebAnnotationFields.LINK, null);
 		
 		validateResponse(response);
+		
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    removeAnnotation(storedAnno.getIdentifier());
 	}
 		
 
@@ -126,12 +136,14 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 		 */
 		ResponseEntity<String> response = getApiProtocolClient().getAnnotation(
 				getApiKey()
-				, annotation.getAnnotationId().getIdentifier()
+				, annotation.getIdentifier()
 				);
 		
 		//validateResponse(response, HttpStatus.OK);
 		Annotation storedAnno = parseAndVerifyTestAnnotation(response, HttpStatus.OK);
 		validateOutputAgainstInput(storedAnno, annotation);
+		
+		removeAnnotation(annotation.getIdentifier());
 	}
 	
 					
@@ -147,14 +159,15 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 				
 //		update annotation by identifier URL
 		ResponseEntity<String> response = getApiProtocolClient().updateAnnotation(
-				anno.getAnnotationId().getIdentifier(), requestBody, null);
+				anno.getIdentifier(), requestBody, null);
 		Annotation updatedAnnotation = parseAndVerifyTestAnnotationUpdate(response);
 		
 		assertEquals( HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
-		assertEquals(TAG_STANDARD_TEST_VALUE_TARGET, updatedAnnotation.getTarget().getHttpUri());
+		assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(), updatedAnnotation.getTarget().getHttpUri());
 		
+		removeAnnotation(anno.getIdentifier());
 		//TODO: search annotation in solr and verify body and target values.
 	}
 	
@@ -166,13 +179,14 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 		Annotation anno = createTestAnnotation(TAG_STANDARD, null);
 		
 //		delete annotation by identifier URL
-		ResponseEntity<String> response = getApiProtocolClient().deleteAnnotation(
-				anno.getAnnotationId().getIdentifier());
+		ResponseEntity<String> response = getApiProtocolClient().deleteAnnotation(anno.getIdentifier());
 		
 		log.debug("Response body: " + response.getBody());
 		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
 			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+		
+		removeAnnotation(anno.getIdentifier());
 	}
 			
 				

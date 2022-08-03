@@ -41,9 +41,9 @@ public class BatchProcessingStatus implements BatchReportable {
 	
 	@Override
 	public String toString() {
-		return "success count: " + String.valueOf(successCount) 
-		+ ", failure count: " + String.valueOf(failureCount) 
-		+ ", indexingFailure count: " + String.valueOf(indexingFailureCount);	
+		return "success count: " + successCount 
+		+ ", failure count: " + failureCount 
+		+ ", indexingFailure count: " + indexingFailureCount;	
 	}
 
 	@Override

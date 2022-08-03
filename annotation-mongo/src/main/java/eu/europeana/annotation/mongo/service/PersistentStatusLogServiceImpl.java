@@ -1,15 +1,12 @@
 package eu.europeana.annotation.mongo.service;
 
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.springframework.stereotype.Component;
-
 import com.mongodb.WriteResult;
-
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.StatusLogValidationException;
 import eu.europeana.annotation.definitions.model.StatusLog;
@@ -166,7 +163,7 @@ public class PersistentStatusLogServiceImpl extends
 		persistentStatusLog.setUser(statusLog.getUser());
 		persistentStatusLog.setStatus(statusLog.getStatus());
 		persistentStatusLog.setDate(statusLog.getDate());
-		persistentStatusLog.setAnnotationId(statusLog.getAnnotationId());
+		persistentStatusLog.setIdentifier(statusLog.getIdentifier());
 		return persistentStatusLog;
 	}				
 	

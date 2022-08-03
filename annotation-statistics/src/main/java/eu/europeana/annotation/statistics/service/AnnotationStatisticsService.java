@@ -18,16 +18,12 @@ import eu.europeana.annotation.statistics.model.AnnotationStatisticsClientsScena
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsScenarios;
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsUsersScenarios;
 
-public class AnnotationStatisticsService {
+public class AnnotationStatisticsService{
 
 	@Resource
 	SolrAnnotationService solrService;
 	
-    private final Logger logger = LogManager.getLogger(getClass());
-
-    public Logger getLogger() {
-      return logger;
-    }
+	Logger logger = LogManager.getLogger(getClass());
 
     public void getAnnotationsStatistics(AnnotationMetric annoMetric) throws AnnotationServiceException {
     	//getting the annotations statistics for the scenarios
@@ -81,9 +77,12 @@ public class AnnotationStatisticsService {
             case AnnotationScenarioTypes.CAPTION:
               annoStats.setCaption(facetJsonBucket.getCount());
               break;
+            case AnnotationScenarioTypes.CONTRIBUTE_LINK:
+              annoStats.setContributeLink(facetJsonBucket.getCount());
+              break;
 
             default:
-              getLogger().debug("Scenario not supported in statistics service: {}", facetJsonBucket.getVal());
+              logger.debug("Scenario not supported in statistics service: {}", facetJsonBucket.getVal());
               break;
           }  
     	}
@@ -128,6 +127,9 @@ public class AnnotationStatisticsService {
           if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION)!=null) {
             clientsScenariosElem.setCaption(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION).longValue());
           }
+          if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK)!=null) {
+            clientsScenariosElem.setContributeLink(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
+          }
 
           clientsScenarios.add(clientsScenariosElem);
       }
@@ -159,6 +161,9 @@ public class AnnotationStatisticsService {
           }
           if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION)!=null) {
             usersScenariosElem.setCaption(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CAPTION).longValue());
+          }
+          if(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK)!=null) {
+            usersScenariosElem.setContributeLink(numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
           }
 
           usersScenarios.add(usersScenariosElem);

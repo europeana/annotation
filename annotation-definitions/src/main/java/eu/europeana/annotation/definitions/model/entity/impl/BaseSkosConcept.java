@@ -2,7 +2,8 @@ package eu.europeana.annotation.definitions.model.entity.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import eu.europeana.annotation.definitions.model.entity.Concept;
 import eu.europeana.annotation.definitions.model.entity.SkosConcept;
 
@@ -210,19 +211,16 @@ public abstract class BaseSkosConcept extends BaseConcept implements SkosConcept
 	     */
 	    if ((this.getSkos() != null) && (that.getSkos() != null) &&
 	    		(!this.getSkos().equals(that.getSkos()))) {
-	    	System.out.println("SKOS Concept objects have different 'skos' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getSkosType() != null) && (that.getSkosType() != null) &&
 	    		(!this.getSkosType().equals(that.getSkosType()))) {
-	    	System.out.println("SKOS Concept objects have different 'skos type' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getHttpUri() != null) && (that.getHttpUri() != null) &&
 	    		(!this.getHttpUri().equals(that.getHttpUri()))) {
-	    	System.out.println("SKOS Concept objects have different 'HTTP URI' fields.");
 	    	res = false;
 	    }
 	    

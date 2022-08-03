@@ -1,12 +1,8 @@
 package eu.europeana.annotation.web.service.authorization;
 
 import javax.annotation.Resource;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -20,8 +16,6 @@ import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public class AuthorizationServiceImpl extends BaseAuthorizationService implements AuthorizationService {
-
-    protected final Logger logger = LogManager.getLogger(getClass());
 
     @Resource
     AnnotationConfiguration configuration;

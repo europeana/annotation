@@ -3,21 +3,14 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-
+import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.body.TagBody;
-import eu.europeana.annotation.definitions.model.body.impl.EdmPlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
-import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
-import eu.europeana.annotation.definitions.model.entity.impl.EdmPlace;
-import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -29,8 +22,6 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
  *
  */
 public class SearchTextualBodyTest extends BaseSearchTest {
-
-    String VALUE_SEARCH_TARGET_URI = "target_uri:\"http://data.europeana.eu/item/07931/diglit_uah_m1\"";
 
     @Test
     public void searchDescriptionBody() throws IOException, JsonParseException, IllegalAccessException,
@@ -50,17 +41,19 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 
 	// search for indexed id and textual values
 	Annotation retrievedAnno = searchLastCreated(
-		VALUE_ID + "\"" + createdAnno.getAnnotationId().getIdentifier() + "\"");
+		VALUE_ID + "\"" + createdAnno.getIdentifier() + "\"");
 	validateDescriptionBody(retrievedAnno);
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_DESCRIBING_BODY_VALUE);
 	validateDescriptionBody(retrievedAnno);
+	String VALUE_DESCRIBING_TARGET_SCOPE_URI = ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1";
+	String VALUE_SEARCH_DESCRIBING_TARGET_SCOPE = "target_uri:\""+ VALUE_DESCRIBING_TARGET_SCOPE_URI +"\"";
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_DESCRIBING_TARGET_SCOPE);
 	validateDescriptionBody(retrievedAnno);
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_DESCRIBING_TARGET_SOURCE);
 	validateDescriptionBody(retrievedAnno);
 	
 	// remove tag
-	deleteAnnotation(createdAnno);
+	removeAnnotation(createdAnno.getIdentifier());
     }
 
     /**
@@ -79,7 +72,7 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 	assertTrue(target.getSource()
 		.equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
 	assertNotNull(target.getScope());
-	assertTrue(target.getScope().equals("http://data.europeana.eu/item/07931/diglit_uah_m1"));
+	assertTrue(target.getScope().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1"));
     }
 
     @Test
@@ -100,15 +93,16 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 
 	// search for indexed id and textual values
 	Annotation retrievedAnno = searchLastCreated(
-		VALUE_ID + "\"" + createdAnno.getAnnotationId().getIdentifier() + "\"");
+		VALUE_ID + "\"" + createdAnno.getIdentifier() + "\"");
 	validateTranscriptionBody(retrievedAnno);
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_BODY_FULL_TEXT_RESOURCE);
 	validateTranscriptionBody(retrievedAnno);
+	String VALUE_SEARCH_TARGET_URI = "target_uri:\"" + ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1\"";
 	retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_URI);
 	validateTranscriptionBody(retrievedAnno);
 
 	// remove tag
-	deleteAnnotation(createdAnno);
+	removeAnnotation(createdAnno.getIdentifier());
     }
 
     /**
@@ -127,7 +121,7 @@ public class SearchTextualBodyTest extends BaseSearchTest {
 	assertTrue(target.getSource()
 		.equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
 	assertNotNull(target.getScope());
-	assertTrue(target.getScope().equals("http://data.europeana.eu/item/07931/diglit_uah_m1"));
+	assertTrue(target.getScope().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/07931/diglit_uah_m1"));
     }
 
 }

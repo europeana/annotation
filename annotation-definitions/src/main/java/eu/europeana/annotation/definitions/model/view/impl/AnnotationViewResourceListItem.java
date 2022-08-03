@@ -1,7 +1,6 @@
 package eu.europeana.annotation.definitions.model.view.impl;
 
 import java.util.Date;
-
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 
 public class AnnotationViewResourceListItem implements AnnotationView {
@@ -15,10 +14,15 @@ public class AnnotationViewResourceListItem implements AnnotationView {
 	 * @param id the id to set
 	 */
 	@Override
-	public String getIdAsString() {
+	public String getIdentifierAsUriString() {
 		return this.id;
 	}
-
+	
+    @Override
+    public long getIdentifierAsNumber() {
+        return 0;
+    }
+    
 	/**
 	 * Getter for timestampUpdated 
 	 * @param id the id to set

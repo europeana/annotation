@@ -68,13 +68,11 @@ public abstract class BaseSelector implements Selector{
 	     */
 	    if ((this.getSelectorType() != null) && (that.getSelectorType() != null) &&
 	    		(!this.getSelectorType().equals(that.getSelectorType()))) {
-	    	System.out.println("Selector objects have different 'selectorType' fields.");
 	    	res = false;
 	    }
 	    
 	    if ((this.getDimensionMap() != null) && (that.getDimensionMap() != null) &&
 	    		(!this.getDimensionMap().equals(that.getDimensionMap()))) {
-	    	System.out.println("Selector objects have different 'dimensionMap' fields.");
 	    	res = false;
 	    }
 	    

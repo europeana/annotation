@@ -21,6 +21,7 @@ public class EdmTranscribingTest extends BaseTranscribingTest {
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
+	removeAnnotation(storedAnno.getIdentifier());
     }
 
 }

@@ -1,17 +1,13 @@
 package eu.europeana.annotation.client.integration.webanno;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
-import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 
 public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest {
@@ -25,8 +21,8 @@ public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest {
     try {
 
       // delete both annotations
-      getApiProtocolClient().deleteAnnotation(anno_tag.getAnnotationId().getIdentifier());
-      getApiProtocolClient().deleteAnnotation(anno_subtitle.getAnnotationId().getIdentifier());
+      getApiProtocolClient().deleteAnnotation(anno_tag.getIdentifier());
+      getApiProtocolClient().deleteAnnotation(anno_subtitle.getIdentifier());
 
       Date now = new Date();
       Calendar calendar = Calendar.getInstance();
@@ -39,13 +35,11 @@ public class WebAnnotationAuxilaryMethodsTest extends BaseWebAnnotationTest {
       List<String> result = getApiAuxilaryMethodsClient().getDeleted(null,
           DateUtils.convertDateToStr(startDate), DateUtils.convertDateToStr(stopDate), 0, 100);
 
-      String baseUri = ClientConfiguration.getInstance().getAnnotationIdBaseUri();
-      assertTrue(result.contains(baseUri + "/" + anno_tag.getAnnotationId().getIdentifier()));
-      assertTrue(result.contains(baseUri + "/" + anno_subtitle.getAnnotationId().getIdentifier()));
+      assertTrue(result.contains(String.valueOf(anno_tag.getIdentifier())));
+      assertTrue(result.contains(String.valueOf(anno_subtitle.getIdentifier())));
     } finally {
-      // TODO: move to afterTest method
-      deleteAnnotation(anno_tag);
-      deleteAnnotation(anno_subtitle);
+      removeAnnotation(anno_tag.getIdentifier());
+      removeAnnotation(anno_subtitle.getIdentifier());
     }
 
   }

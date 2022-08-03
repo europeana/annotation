@@ -29,6 +29,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>api2-common</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<!-- <version>${version.springCore}</version> -->
@@ -41,19 +47,6 @@
 			<artifactId>solr-solrj</artifactId>
 			<version>${version.apacheSolr}</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-core</artifactId>
-			<version>${version.apacheSolr}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jdk.tools</artifactId>
-					<groupId>jdk.tools</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		 -->
 
 		<!-- Other -->
 		<dependency>

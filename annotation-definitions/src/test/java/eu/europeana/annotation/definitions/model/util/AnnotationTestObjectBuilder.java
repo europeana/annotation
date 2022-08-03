@@ -2,9 +2,7 @@ package eu.europeana.annotation.definitions.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -37,7 +35,6 @@ public class AnnotationTestObjectBuilder {
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
 	public final static String TEST_COLLECTION   = "testCollection";
 	public final static String TEST_OBJECT       = "testObject";
-	public final static String ANNOTATION_BASEURL = "http://data.europeana.eu/annotation";
 	
 	public static Body buildSemanticTagBody(String text, String language) {
 		
@@ -139,11 +136,11 @@ public class AnnotationTestObjectBuilder {
 		return annotation;
 	}
 
-	public Annotation createBaseObjectTagInstance() {
-	    return createBaseObjectTagInstanceWithSameAs(null);
+	public Annotation createBaseObjectTagInstance(long identifier) {
+	    return createBaseObjectTagInstanceWithSameAs(null, identifier);
 	}
 		
-	public Annotation createBaseObjectTagInstanceWithSameAs(String sameAs) {
+	public Annotation createBaseObjectTagInstanceWithSameAs(String sameAs, long identifier) {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
@@ -152,6 +149,8 @@ public class AnnotationTestObjectBuilder {
 			annotation.setSameAs(sameAs);
 		}
 
+		annotation.setIdentifier(identifier);
+		
 		annotation.setEquivalentTo("http://historypin.com/annotation/1234");
 		
 		annotation.setType(AnnotationTypes.OBJECT_TAG.name());
@@ -231,11 +230,12 @@ public class AnnotationTestObjectBuilder {
 		return agent;
 	}
 	 
-	public Annotation createEmptyBaseObjectTagInstance() {
+	public Annotation createEmptyBaseObjectTagInstance(long identifier) {
 		
 		Annotation annotation = AnnotationObjectFactory.getInstance().createModelObjectInstance(
 				AnnotationTypes.OBJECT_TAG.name());
 		
+		annotation.setIdentifier(identifier);
 		annotation.setType(null);
         annotation.setCreated(null);
         annotation.setGenerated(null);

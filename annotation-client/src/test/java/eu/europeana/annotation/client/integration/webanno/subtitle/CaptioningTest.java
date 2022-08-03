@@ -30,6 +30,8 @@ public class CaptioningTest extends BaseWebAnnotationTest {
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);
+	
+	removeAnnotation(storedAnno.getIdentifier());
     }
 
 }

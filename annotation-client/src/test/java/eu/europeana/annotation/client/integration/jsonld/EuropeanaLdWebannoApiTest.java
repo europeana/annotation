@@ -2,12 +2,10 @@ package eu.europeana.annotation.client.integration.jsonld;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Test;
-
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
@@ -20,7 +18,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 @Deprecated
 public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 	
-	@Test
+    Logger log = LogManager.getLogger(getClass());
+    
+	//@Test
+    @Deprecated
 	public void createSimpleTagWebannoAnnotation() throws JsonParseException, IOException {
 		
 		String requestBody = getJsonStringInput(SIMPLE_TAG_ANNOTATION);
@@ -30,7 +31,7 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 				, null
 				, requestBody
 				);
-		System.out.println("webanno annotation test: " + annotationStr);
+		log.debug("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);
 //		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 //		validateAnnotation(WebAnnotationFields.PROVIDER_WEBANNO, -1, annotation);
@@ -53,7 +54,7 @@ public class EuropeanaLdWebannoApiTest extends BaseJsonLdApiTest {
 				, annotationNr
 				, requestBody
 				);
-		System.out.println("webanno annotation test: " + annotationStr);
+		log.debug("webanno annotation test: " + annotationStr);
 		assertNotNull(annotationStr);
 		assertTrue(annotationStr.contains(WebAnnotationFields.SUCCESS_FALSE));
 		assertTrue(annotationStr.contains(WebAnnotationFields.UNNECESSARY_ANNOTATION_NR));

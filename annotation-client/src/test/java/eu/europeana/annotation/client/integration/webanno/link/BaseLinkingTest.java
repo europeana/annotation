@@ -1,7 +1,9 @@
 package eu.europeana.annotation.client.integration.webanno.link;
 
+import java.io.IOException;
 import org.apache.stanbol.commons.exception.JsonParseException;
-
+import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -18,6 +20,15 @@ public class BaseLinkingTest extends BaseWebAnnotationTest {
 		MotivationTypes motivationType = MotivationTypes.LINKING;
 		return parseAnnotation(jsonString, motivationType);		
 	}
+	
+    @Test
+    public void createLinkAnnotation() throws JsonParseException, IOException {
+        ResponseEntity<String> response = storeTestAnnotation(LINK_STANDARD);
+        validateResponse(response);  
+        
+        Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        removeAnnotation(storedAnno.getIdentifier());
+    }
 
 //	protected Annotation createLink(String requestBody) throws JsonParseException {
 //		ResponseEntity<String> response = getApiClient().createAnnotation(

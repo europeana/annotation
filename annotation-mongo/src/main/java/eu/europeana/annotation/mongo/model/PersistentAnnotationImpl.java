@@ -1,8 +1,6 @@
 package eu.europeana.annotation.mongo.model;
 
 import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -10,8 +8,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
@@ -21,16 +18,14 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
-@Entity("annotation")
-
-@Indexes(@Index(PersistentAnnotation.FIELD_HTTPURL))
+@Entity(AnnotationConfiguration.MONGO_COLLECTION_NAME)
+@Indexes(@Index(PersistentAnnotation.FIELD_IDENTIFIER))
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id
 	private ObjectId id;
 	
-	@Embedded
-	private MongoAnnotationId annotationId;
+	private long identifier;
 	
 	private String type;
 	private String internalType;
@@ -71,21 +66,6 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 
 	public void setId(ObjectId id) {
 		this.id = id;
-	}
-
-	public AnnotationId getAnnotationId() {
-		return annotationId;
-	}
-
-	public void setAnnotationId(AnnotationId annotationId) {
-		if(annotationId instanceof MongoAnnotationId)
-			this.annotationId = (MongoAnnotationId) annotationId;
-		else{
-			MongoAnnotationId id = new MongoAnnotationId();
-			id.copyFrom(annotationId);
-			this.annotationId = id;
-		}
-			
 	}
 
 	public String getType() {
@@ -206,7 +186,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	}
 	
 	public String toString() {
-		return "PersistentAnnotation [AnnotationId:" + getAnnotationId() + ", created:" + getCreated() + 
+		return "PersistentAnnotation [identifier:" + identifier + ", created:" + getCreated() + 
 				", Id:" + getId() + ", last update: " + getLastIndexed() + ", disabled: " + isDisabled() + "]";
 	}
 
@@ -291,24 +271,12 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		return via;
 	}
 
-	@Override
-	public boolean hasHttpUrl() {
-		
-		
-		return (this.getAnnotationId() != null && StringUtils.isNotEmpty(this.getAnnotationId().getHttpUrl()));
-		
-		
-		
-	}
-	
+    public long getIdentifier() {
+      return identifier;
+    }
 
-	// TODO #152 remove!
-	@Override
-	public String getHttpUrl() {
-		if(this.hasHttpUrl())
-			return this.getAnnotationId().getHttpUrl();
-		else
-		 return null;
-	}
+    public void setIdentifier(long identifier) {
+      this.identifier = identifier;
+    }
 	
 }

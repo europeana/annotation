@@ -2,7 +2,7 @@ package eu.europeana.annotation.utils.parse;
 
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -19,11 +19,10 @@ public class BaseJsonParser {
     
     /**
      * Supports conversion of {["val1", "val2"]} or ["val1", "val2"] 
-     * This method converts JSON string to List<String>.
      * @param value The input string
-     * @return resulting List<String>
+     * @return
      */
-    public static List<String> toStringList(String json, boolean removeQuote) {
+    public static List<Long> toLongList(String json, boolean removeQuote) {
     		String list = json.trim();
     		String startCurly = "{";
     		String endCurly = "}";
@@ -48,7 +47,9 @@ public class BaseJsonParser {
  		list = list.replaceAll(",", " ");
  		
  		String[] values = StringUtils.split(list);
- 		
-        return Arrays.asList(values);
+ 		Long[] result = new Long[values.length];
+ 		for (int i = 0; i < values.length; i++)
+ 		  result[i] = Long.parseLong(values[i]);
+        return Arrays.asList(result);
     }
 }

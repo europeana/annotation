@@ -10,41 +10,37 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 	">
 	
-	<util:properties id="annotationProperties" location="classpath:test-config/annotation-test.properties" />
+<!-- 	<util:properties id="annotationProperties" location="classpath:test-config/annotation-test.properties" /> -->
+	
+	<import resource="annotation-solr-context.xml"/>
 	
 	<!-- internal -->
-	<import resource="internal/annotation-solr-server.xml" />
+<!-- 	<import resource="internal/annotation-solr-server.xml" /> -->
 	
 	
-	<bean id="annotation_solr_solrEmbedded" class="org.apache.solr.client.solrj.embedded.EmbeddedSolrServer" lazy-init="true">
-		<constructor-arg>
-			<bean class="org.apache.solr.core.CoreContainer">
-				<constructor-arg value="#{annotationProperties['solr.embedded.url']}"/>
-				<constructor-arg value="#{annotationProperties['solr.embedded.config']}"/>
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="tag"/>
-		<!-- 
-		<constructor-arg value="search"/>
-		 -->
-	</bean>
+<!-- 	<bean id="annotation_solr_solrEmbedded" class="org.apache.solr.client.solrj.embedded.EmbeddedSolrServer" lazy-init="true"> -->
+<!-- 		<constructor-arg> -->
+<!-- 			<bean class="org.apache.solr.core.CoreContainer"> -->
+<!-- 				<constructor-arg value="#{annotationProperties['solr.embedded.url']}"/> -->
+<!-- 				<constructor-arg value="#{annotationProperties['solr.embedded.config']}"/> -->
+<!-- 			</bean> -->
+<!-- 		</constructor-arg> -->
+<!-- 		<constructor-arg value="tag"/> -->
+<!-- 	</bean> -->
 
-	<bean id="annotation_solr_annotationEmbedded" class="org.apache.solr.client.solrj.embedded.EmbeddedSolrServer" lazy-init="true">
-		<constructor-arg>
-			<bean class="org.apache.solr.core.CoreContainer">
-				<constructor-arg value="#{annotationProperties['solr.embedded.url']}"/>
-				<constructor-arg value="#{annotationProperties['solr.embedded.config']}"/>
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="annotation"/>
-		<!-- 
-		<constructor-arg value="search"/>
-		 -->
-	</bean>
+<!-- 	<bean id="annotation_solr_annotationEmbedded" class="org.apache.solr.client.solrj.embedded.EmbeddedSolrServer" lazy-init="true"> -->
+<!-- 		<constructor-arg> -->
+<!-- 			<bean class="org.apache.solr.core.CoreContainer"> -->
+<!-- 				<constructor-arg value="#{annotationProperties['solr.embedded.url']}"/> -->
+<!-- 				<constructor-arg value="#{annotationProperties['solr.embedded.config']}"/> -->
+<!-- 			</bean> -->
+<!-- 		</constructor-arg> -->
+<!-- 		<constructor-arg value="annotation"/> -->
+<!-- 	</bean> -->
 	
 	
 	<!-- OVERRIDE FOR TESTING -->
-	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
-		p:solrServer-ref="annotation_solr_annotationEmbedded"
-	/>
+<!-- 	<bean name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl" -->
+<!-- 		p:solrServer-ref="annotation_solr_annotationEmbedded" -->
+<!-- 	/> -->
 </beans>	

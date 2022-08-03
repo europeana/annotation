@@ -2,10 +2,9 @@ package eu.europeana.annotation.web.service.controller.admin;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import eu.europeana.annotation.definitions.model.AnnotationId;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -47,7 +43,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
 
-    protected final Logger logger = getLogger();
+    Logger logger = LogManager.getLogger(getClass());
 
     @Resource
     private AdminService adminService;
@@ -75,10 +71,13 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAnnotationById(
-	    @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) String identifier,
+	    @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) long identifier,
 	    HttpServletRequest request) throws HttpException {
 
-	verifyWriteAccess(Operations.ADMIN_ALL, request);
+    //check the property for the authorization
+    if(!adminService.getRemoveAnnotationAuthorization()) {
+      verifyWriteAccess(Operations.ADMIN_ALL, request);
+    }
 
 	deleteAnnotationForGood(identifier);
 
@@ -94,13 +93,13 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> deleteAnnotationSet(
-	    @RequestBody String uris, HttpServletRequest request) throws HttpException {
+	    @RequestBody String identifiers, HttpServletRequest request) throws HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_ALL, request);
 
-	List<String> uriList = BaseJsonParser.toStringList(uris, true);
+	List<Long> identifiersList = BaseJsonParser.toLongList(identifiers, true);
 
-	BatchProcessingStatus status = getAdminService().deleteAnnotationSet(uriList);
+	BatchProcessingStatus status = getAdminService().deleteAnnotationSet(identifiersList);
 
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/annotation/deleteset");
@@ -114,19 +113,10 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    protected void deleteAnnotationForGood(String identifier) throws HttpException {
-
-	// 0. annotation id
-	AnnotationId annoId = buildAnnotationId(identifier, false);
-
-	deleteAnnotationForGood(annoId);
-    }
-
-    protected void deleteAnnotationForGood(AnnotationId annoId) throws InternalServerException,
+    protected void deleteAnnotationForGood(long identifier) throws InternalServerException,
 	    UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-
 	try {
-	    getAdminService().deleteAnnotation(annoId);
+	    getAdminService().deleteAnnotation(identifier);
 	} catch (AnnotationServiceException e) {
 	    throw new InternalServerException(e);
 	}
@@ -136,13 +126,12 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex by annotation id. Authorization required.", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationByAnnotationId(
-	    @RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) String identifier,
+	    @RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) long identifier,
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
-	BaseAnnotationId baseAnnotationId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
-	getAdminService().reindexAnnotationById(baseAnnotationId, new Date());
+	getAdminService().reindexAnnotationById(identifier, new Date());
 
 	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindex");
 
@@ -166,7 +155,7 @@ public class ManagementRest extends BaseRest {
 	BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp,
 		endTimestamp, Actions.REINDEX_ANNOTATION_SELECTION);
 
-	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindexset");
+	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindexselection");
 	response.setStatus(status.toString());
 
 	String jsonStr = JsonWebUtils.toJson(response, null);
@@ -178,15 +167,15 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Reindex a set of annotations. Authorization required.", nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
     public ResponseEntity<String> reindexAnnotationSet(
-	    @RequestBody String uris, HttpServletRequest request) throws UserAuthorizationException, HttpException {
+	    @RequestBody String identifiers, HttpServletRequest request) throws UserAuthorizationException, HttpException {
 
 	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
-	List<String> uriList = BaseJsonParser.toStringList(uris, true);
+	List<Long> uriList = BaseJsonParser.toLongList(identifiers, true);
 
 	BatchProcessingStatus status;
 	try {
-	    status = getAdminService().reindexAnnotationSet(uriList, false, "/admin/annotation/reindexset");
+	    status = getAdminService().reindexAnnotationSet(uriList, "/admin/annotation/reindexset");
 	} catch (ApiWriteLockException e) {
 	    throw new InternalServerException("Cannot reindex annotation selection", e);
 	}
@@ -220,7 +209,7 @@ public class ManagementRest extends BaseRest {
 	}
 
 	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexset");
+	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexall");
 	response.setStatus(
 		"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
 	response.success = true;
@@ -289,7 +278,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8,
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+    @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> lockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
 
@@ -324,7 +313,7 @@ public class ManagementRest extends BaseRest {
 
     @RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+    @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> unlockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
 	verifyWriteAccess(Operations.ADMIN_UNLOCK, request);

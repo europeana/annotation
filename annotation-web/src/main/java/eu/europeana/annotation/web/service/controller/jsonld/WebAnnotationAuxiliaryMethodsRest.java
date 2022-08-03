@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import eu.europeana.annotation.definitions.model.impl.AnnotationDeletion;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.web.exception.ParamValidationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
+import eu.europeana.api.commons.definitions.exception.DateParsingException;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
@@ -53,15 +53,17 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
     public ResponseEntity<String> createAnnotationByTypeJsonld(
 	    @RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 	    @RequestBody String annotation,
-	    @PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType, HttpServletRequest request)
-	    throws Exception {
+	    @PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType, HttpServletRequest request) throws HttpException
+	    {
 
 	Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 
 	MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 
-	if (motivation == null)
-	    throw new ParamValidationException(String.format("Invalid parameter annoType: %s", annoType));
+	if (motivation == null) {
+	  throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+          new String[] {"annoType", annoType}, HttpStatus.BAD_REQUEST); 
+	}
 
 	return storeAnnotation(motivation, indexOnCreate, annotation, authentication);
     }
@@ -77,8 +79,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	    @RequestParam(value = "to", required = false) String stopDateStr,
 	    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
 	    @RequestParam(value = "limit", required = false, defaultValue = "100") int limit,
-	    HttpServletRequest request)
-	    throws Exception {
+	    HttpServletRequest request) throws HttpException {
 
 	// SET DEFAULTS
 	verifyReadAccess(request);
@@ -86,16 +87,30 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	MotivationTypes motivationType = validateMotivation(motivation);
 	
 	//in case the start and stop dates are not provided, set them to defaults
-	Date startDate = startDateStr==null ? DateUtils.convertStrToDate("1970-01-01T00:00:00Z") : DateUtils.convertStrToDate(startDateStr);
-	if(startDate==null)
-		throw new ParamValidationException(String.format("Invalid from parameter format: %s", startDateStr));
-	Date stopDate = stopDateStr==null ? new Date() : DateUtils.convertStrToDate(stopDateStr);
-	if(stopDate==null)
-		throw new ParamValidationException(String.format("Invalid to parameter format: %s", stopDateStr));
+	Date startDate = null;
+    try {
+      startDate = startDateStr==null ? DateUtils.parseToDate("1970-01-01T00:00:00Z") : DateUtils.parseToDate(startDateStr);
+    } catch (DateParsingException e) {
+      throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+          new String[] {"from", startDateStr}, HttpStatus.BAD_REQUEST, e);
+    }
+    
+    Date stopDate = null;
+    try {
+      stopDate = stopDateStr==null ? new Date() : DateUtils.parseToDate(stopDateStr);
+    } catch (DateParsingException e) {
+      throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+          new String[] {"to", stopDateStr}, HttpStatus.BAD_REQUEST, e);
+    }
+
+    if(startDate.compareTo(stopDate)>=0) {
+      throw new HttpException("The start date (from) needs to be before the stop date (to).", I18nConstants.INVALID_PARAM_VALUE,
+          new String[] {"from / to ", " " + startDateStr + " / " + stopDateStr}, HttpStatus.BAD_REQUEST);
+	}
 
 	List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate, stopDate, page, limit);
 
-	String jsonStr = deletions==null ? null : JsonWebUtils.toJson(deletions, null);
+	String jsonStr = JsonWebUtils.toJson(deletions, null);
 	
     // build response entity with headers
     MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);
@@ -105,47 +120,13 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	return response;
     }
     
-    @RequestMapping(value = "/annotations/getDeletedWithAdditionalInfo", method = RequestMethod.GET, produces = {
-    	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-        @ApiOperation(value = "Get deleted Annotations where not only the id is returned but some additional information.", nickname = "getDeletedWithAdditionalInfo", response = java.lang.Void.class,
-        		notes = "The from and to parameters should have the format yyyy-mm-dd'T'hh:mm:ss'Z', e.g. 1970-01-01T00:00:00Z.")
-        public ResponseEntity<String> getDeletedWithAdditionalInfo(
-    	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-    	    @RequestParam(value = "motivation", required = false) String motivation,
-    	    @RequestParam(value = "from", required = false) String startDateStr,
-    	    @RequestParam(value = "to", required = false) String stopDateStr,
-    	    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-    	    @RequestParam(value = "limit", required = false, defaultValue = "100") int limit,
-    	    HttpServletRequest request)
-    	    throws Exception {
-
-    	// SET DEFAULTS
-    	verifyReadAccess(request);
-
-    	MotivationTypes motivationType = validateMotivation(motivation);
-    	
-    	//in case the start and stop dates are not provided, set them to defaults
-    	Date startDate = startDateStr==null ? DateUtils.convertStrToDate("1970-01-01T00:00:00Z") : DateUtils.convertStrToDate(startDateStr);
-    	if(startDate==null)
-    		throw new ParamValidationException(String.format("Invalid from parameter format: %s", startDateStr));
-    	Date stopDate = stopDateStr==null ? new Date() : DateUtils.convertStrToDate(stopDateStr);
-    	if(stopDate==null)
-    		throw new ParamValidationException(String.format("Invalid to parameter format: %s", stopDateStr));
-
-    	List<AnnotationDeletion> deletions = getAnnotationService().getDeletedAnnotationSetWithAdditionalInfo(motivationType, startDate, stopDate, page, limit);
-
-    	String jsonStr = deletions==null ? null : JsonWebUtils.toJson(deletions, null);
-    	
-    	ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, null, HttpStatus.OK);
-    	return response;
-    }
-
-    protected MotivationTypes validateMotivation(String motivation) throws ParamValidationException {
+    protected MotivationTypes validateMotivation(String motivation) throws HttpException {
 	MotivationTypes motivationType = null;
 	if (StringUtils.isNotBlank(motivation)) {
 	    motivationType = MotivationTypes.getType(motivation);
 	    if (motivationType==MotivationTypes.UNKNOWN)
-	    	throw new ParamValidationException(String.format("Invalid parameter motivation: %s", motivation));
+	      throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+	          new String[] {"motivation", motivation}, HttpStatus.BAD_REQUEST);
 	}
 	return motivationType;
     }

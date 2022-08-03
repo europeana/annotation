@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,15 +23,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
 
 /**
  * Annotation API Batch Upload Test class
@@ -39,7 +37,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationHttpUrls;
  * @author Sven Schlarb
  */
 public class BatchUploadTest extends BaseWebAnnotationTest {
-
+    
 	// annotation page test resources
 	public static final String TAG_ANNO_PAGE = "/tag/batch/annotation_page.json";
 	public static final String TAG_ANNO_PAGE_VIA = "/tag/batch/annotation_page_via.json";
@@ -51,8 +49,6 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 	// test annotations
 	private List<Annotation> testAnnotations;
 
-	// HTTP URLs of the test annotations
-	private List<String> testHttpUrls;
 
 	// number of test annotations created in database
 	public static final int TEST_NUM_ANNOTATIONS = 2;
@@ -65,15 +61,22 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 	@BeforeEach
 	public void createTestAnnotations() throws JsonParseException, IOException {
 		testAnnotations = new ArrayList<Annotation>();
-		testHttpUrls = new ArrayList<String>();
 		// create test annotations (representing the existing annotations to be
 		// updated)
 		Annotation testAnnotation = null;
 		for (int i = 0; i < TEST_NUM_ANNOTATIONS; i++) {
 			testAnnotation = createTestAnnotation(TAG_MINIMAL, false, null);
 			testAnnotations.add(testAnnotation);
-			testHttpUrls.add(testAnnotation.getAnnotationId().getIdentifier());
 		}
+	}
+	
+	@AfterEach
+	public void removeTestAnnotations() {
+	  if(testAnnotations!=null) {
+          for (Annotation anno : testAnnotations) {
+            removeAnnotation(anno.getIdentifier());
+          }
+	  }
 	}
 
 	/**
@@ -100,14 +103,20 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// have been updated correctly
 		ResponseEntity<String> response;
 		Annotation storedAnnotation;
+		
 		for (int i = 0; i < testAnnotations.size(); i++) {
 			response =  getAnnotation(testAnnotations.get(i));
 			storedAnnotation = getApiProtocolClient().parseResponseBody(response);
 			String value = storedAnnotation.getBody().getValue();
 			assertTrue(value.startsWith("tag"));
 			// assuming equal order of test annotations and updated annotations
-			assertEquals(testAnnotations.get(i).getAnnotationId().getHttpUrl(), 
-					storedAnnotation.getAnnotationId().getHttpUrl());
+			assertEquals(testAnnotations.get(i).getIdentifier(), storedAnnotation.getIdentifier());
+		}
+		
+		//removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
+		long startingId = testAnnotations.get(0).getIdentifier();
+		for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
+		  removeAnnotation(i);
 		}
 	}
 	
@@ -121,14 +130,6 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 	@Test
 	@Disabled
 	public void viaBatchUploadTest() throws Exception {
-		
-		//delete old entries in case they exist
-		try{
-			deleteAnnotation("batchvia456");
-		}catch(Exception e){
-			//do nothing, we just avoid duplicate key exception
-		}
-		
 		String requestBody = getJsonStringInput(TAG_ANNO_PAGE_VIA);
 		
 		assertNotNull(requestBody);
@@ -169,32 +170,20 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// get response body properties
 		JSONObject jsonObj = new JSONObject(response.getBody());
 		JSONObject opRepJsonObj = jsonObj.getJSONObject(RESP_OPERATION_REPORT_FIELD);
-		assertEquals(2, opRepJsonObj.get(RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD));
+		assertEquals(5, opRepJsonObj.get(RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD));
 		assertEquals(3, opRepJsonObj.get(RESP_OPERATION_REPORT_FAILURECOUNT_FIELD));
 		JSONObject errors = opRepJsonObj.getJSONObject(RESP_OPERATION_REPORT_ERRORS_FIELD);
 
 		// positions 2, 6 and 8 do not exist
-		assertFalse(errors.has("1"));
-		assertTrue(((String)errors.get("2")).startsWith("Annotation does not exist"));
-		assertFalse(errors.has("3"));
-		assertFalse(errors.has("4"));
-		assertFalse(errors.has("5"));
-		assertTrue(((String)errors.get("6")).startsWith("Annotation does not exist"));
-		assertFalse(errors.has("7"));
-		assertTrue(((String)errors.get("8")).startsWith("Annotation does not exist"));
-	}
-
-	/**
-	 * Delete test annotations after test execution.
-	 * 
-	 * @throws JsonParseException
-	 * @throws IOException
-	 */
-	@AfterEach
-	public void deleteTestAnnotations() throws JsonParseException, IOException {
-		for (Annotation anno : testAnnotations) {
-			deleteAnnotation(anno);
-		}
+		assertTrue(((String)errors.get("-1")).startsWith("Annotation does not exist"));
+		assertTrue(((String)errors.get("-2")).startsWith("Annotation does not exist"));
+		assertTrue(((String)errors.get("-3")).startsWith("Annotation does not exist"));
+		
+	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+8; i++) {
+          removeAnnotation(i);
+        }
 	}
 
 	/**
@@ -225,12 +214,15 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		assertEquals(2, opRepJsonObj.get(RESP_OPERATION_REPORT_FAILURECOUNT_FIELD));
 		JSONObject errors = opRepJsonObj.getJSONObject(RESP_OPERATION_REPORT_ERRORS_FIELD);
 
-		// positions 1,2,4 validate successfully; 3 and 5 have errors
-		assertFalse(errors.has("1"));
-		assertFalse(errors.has("2"));
-		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("3"));
-		assertFalse(errors.has("4"));
-		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("5"));
+		// keys 1 and 2 have errors
+		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("1"));
+		assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170", errors.get("2"));
+	
+	    //removing only the annotations created additionally to the initial test annotations, since the test annotations are removed in the @AfterEach test method
+        long startingId = testAnnotations.get(0).getIdentifier();
+        for(long i=startingId + TEST_NUM_ANNOTATIONS; i<startingId+5; i++) {
+          removeAnnotation(i);
+        }
 	}
 
 	/**
@@ -246,13 +238,11 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 	 * @throws IOException
 	 */
 	private String replaceIdentifiers(String template, String varPrefix) throws IOException {
-		AnnotationHttpUrls annoList = new AnnotationHttpUrls(testAnnotations);
-
-		String[] httpUrls = new String[annoList.size()];
-		httpUrls = annoList.getHttpUrls().toArray(httpUrls);
-
-		String[] replacementVars = new String[annoList.size()];
-		for (int i = 0; i < annoList.size(); i++)
+		List<String> httpUrlsList = testAnnotations.stream().map(x -> String.valueOf(x.getIdentifier())).collect(Collectors.toList());
+		String[] httpUrls = new String[httpUrlsList.size()];
+		httpUrls = httpUrlsList.toArray(httpUrls);
+		String[] replacementVars = new String[httpUrlsList.size()];
+		for (int i = 0; i < httpUrlsList.size(); i++)
 			replacementVars[i] = "%" + varPrefix + (i + 1) + "%";
 		return StringUtils.replaceEach(template, replacementVars, httpUrls);
 	}
@@ -265,7 +255,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		JsonParser parser = new JsonParser();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		JsonElement el = parser.parse(jsonStr);
-		System.out.println(gson.toJson(el));
+		log.debug(gson.toJson(el));
 	}
 
 }

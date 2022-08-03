@@ -1,19 +1,11 @@
 package eu.europeana.annotation.config;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 
 //@Configuration
@@ -54,8 +46,7 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
     @Override
     public String getAnnotationBaseUrl() {
-	String key = ANNOTATION_ENVIRONMENT + "." + getEnvironment() + "." + SUFFIX_BASEURL;
-	return getAnnotationProperties().getProperty(key);
+    return getAnnotationProperties().getProperty(ANNO_DATA_ENDPOINT);
     }
     
     public String getDefaultWhitelistResourcePath() {
@@ -135,5 +126,39 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 	return getAnnotationProperties().getProperty(API_VERSION);
     }
 
+    @Override
+    public String getAnnoApiEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_API_ENDPOINT);
+    }
+    
+    @Override
+    public String getAnnoUserDataEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_USER_DATA_ENDPOINT);
+    }
+    
+    @Override
+    public String getAnnoClientApiEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_CLIENT_API_ENDPOINT);
+    }
 
+    @Override
+    public String getAnnoItemDataEndpoint() {
+    return getAnnotationProperties().getProperty(ANNO_ITEM_DATA_ENDPOINT);
+    }
+
+    @Override
+    public String getMongoDatabaseName() {
+      return getAnnotationProperties().getProperty(MONGO_DATABASE_NAME);
+    }
+
+    @Override
+    public boolean getAnnoRemoveAuthorization() {
+      String value = getAnnotationProperties().getProperty(ANNO_REMOVE_AUTHORIZATION);
+      return Boolean.valueOf(value);
+    }
+
+    @Override
+    public String getSolrUrls() {
+      return getAnnotationProperties().getProperty(SOLR_URLS);
+    }
 }

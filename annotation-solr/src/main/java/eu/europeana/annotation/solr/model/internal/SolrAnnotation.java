@@ -2,7 +2,7 @@ package eu.europeana.annotation.solr.model.internal;
 
 import java.util.Date;
 import java.util.List;
-
+import java.util.Map;
 import eu.europeana.annotation.definitions.model.Annotation;
 
 
@@ -20,10 +20,6 @@ public interface SolrAnnotation extends Annotation {
 	String getBodyValue();
 
 	String getAnnoUri();
-
-	void setMotivationKey(String motivationKey);
-
-	String getMotivationKey();
 
 	void setTargetRecordIds(List<String> recordIds);
 
@@ -53,9 +49,9 @@ public interface SolrAnnotation extends Annotation {
 
 	String getCreatorUri();
 
-	void setAnnoId(String annoId);
+	void setAnnoId(long annoId);
 
-	String getAnnoId();
+	long getAnnoId();
 
 	void setModified(Date modified);
 
@@ -73,14 +69,7 @@ public interface SolrAnnotation extends Annotation {
 
 	List<String> getBodyUris();
 
-	/**
-	 * This method adds a new language/label association to the multilingual
-	 * map.
-	 * 
-	 * @param language
-	 * @param label
-	 */
-	void addMultilingualValue(String language, String label);
+	void setBodyMultilingualValue(Map<String, String> multilingualText);
 	
 	void setScenario(String scenario);
 

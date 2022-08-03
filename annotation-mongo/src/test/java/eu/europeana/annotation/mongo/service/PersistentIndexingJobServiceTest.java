@@ -23,9 +23,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration({ "/annotation-mongo-context.xml"
-	,"/annotation-mongo-test.xml" 
-	})
+@ContextConfiguration({"/annotation-mongo-test.xml"})
 public class PersistentIndexingJobServiceTest {
 	
 	@Resource(name = "annotation_db_apilockService")

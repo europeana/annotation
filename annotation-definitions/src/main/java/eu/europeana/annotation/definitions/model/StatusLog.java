@@ -16,8 +16,8 @@ public interface StatusLog {
 
 	public abstract long getDate();
 
-	public void setAnnotationId(AnnotationId annotationId);
-	
-	public AnnotationId getAnnotationId();
+    public long getIdentifier();
+
+    public void setIdentifier(long identifier);
 	
 }

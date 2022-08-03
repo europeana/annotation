@@ -2,14 +2,16 @@ package eu.europeana.annotation.solr.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
-
+import org.apache.solr.common.SolrException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -33,9 +35,9 @@ public class SolrAnnotationUtils {
     private final Logger logger = LogManager.getLogger(getClass());
 
     public Logger getLogger() {
-	return logger;
+      return logger;
     }
-
+    
     protected SolrQuery toSolrQuery(Query searchQuery) {
 
 	SolrQuery solrQuery = new SolrQuery();
@@ -66,8 +68,8 @@ public class SolrAnnotationUtils {
 	return solrQuery;
     }
 
-    public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, Summary summary) {
-	SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary);
+    public SolrAnnotation copyIntoSolrAnnotation(Annotation annotation, Summary summary, String annoBaseUri) {
+	SolrAnnotation solrAnnotationImpl = new SolrAnnotationImpl(annotation, summary, annoBaseUri);
 	processSolrBeanProperties(solrAnnotationImpl);
 	return solrAnnotationImpl;
     }
@@ -96,8 +98,6 @@ public class SolrAnnotationUtils {
     }
 
     protected void processSolrBeanProperties(SolrAnnotation solrAnnotation) {
-
-	solrAnnotation.setMotivationKey(solrAnnotation.getMotivationType().getJsonValue());
 
 	processBody(solrAnnotation);
 
@@ -135,13 +135,14 @@ public class SolrAnnotationUtils {
 	    break;
 	case TAG:
 	    solrAnnotation.setBodyValue(textValue);
+	    setBodyMultilingualValue(solrAnnotation);
 	    break;
 
 	case FULL_TEXT_RESOURCE:
 	case SPECIFIC_RESOURCE:
 	    solrAnnotation.setBodyValue(textValue);
 	    solrAnnotation.setBodyUris(extractUriValues(body));
-	    solrAnnotation.addMultilingualValue(body.getLanguage(), textValue);
+	    setBodyMultilingualValue(solrAnnotation);
 	    break;
 	case AGENT:
 	case VCARD_ADDRESS:
@@ -150,6 +151,26 @@ public class SolrAnnotationUtils {
 	    break;
 
 	}
+    }
+    
+    protected void setBodyMultilingualValue(SolrAnnotation solrAnnotation) {
+      String bodyMultiLingualText = extractMultilingualValue(solrAnnotation.getBody());
+      Map<String, String> bodyMultilingualValue = new HashMap<String, String>();
+      if(solrAnnotation.getBody().getLanguage()!=null) {
+        bodyMultilingualValue.put(SolrAnnotationConstants.BODY_VALUE_PREFIX + solrAnnotation.getBody().getLanguage(), bodyMultiLingualText);
+      }
+      else {
+        bodyMultilingualValue.put(SolrAnnotationConstants.BODY_VALUE_PREFIX, bodyMultiLingualText);
+      }
+      solrAnnotation.setBodyMultilingualValue(bodyMultilingualValue);
+    }
+    
+    /*
+     * This method is used in the duplication check, that is why it is separated here, 
+     * so that in case of changing what goes into the multilingual values, only this function needs to be changed
+     */
+    protected String extractMultilingualValue(Body body) {
+      return extractTextValues(body);
     }
 
     protected void processGraphBody(SolrAnnotation solrAnnotation, GraphBody gb) {
@@ -163,12 +184,24 @@ public class SolrAnnotationUtils {
     }
 
     protected String extractTextValues(Body body) {
-	String value = "";
-	if (body.getValue() != null)
-	    value += body.getValue();
-	else if (body.getValues() != null)
-	    value += Arrays.toString(body.getValues().toArray());
-	return value;
+	if (body.getValue() != null && !UriUtils.isUrl(body.getValue())) {
+	    return body.getValue();
+	}
+	else if (body.getValues() != null) {
+	  List<String> notUrlValues = new ArrayList<String>();
+	  for(String elem : body.getValues()) {
+	    if(!UriUtils.isUrl(elem)) {
+	      notUrlValues.add(elem);
+	    }
+	  }
+	  if(notUrlValues.size()>0) {
+	    return Arrays.toString(notUrlValues.toArray());
+	  }
+	  else {
+	    return null;
+	  }
+	}
+	else return null;
     }
 
     protected void processTargetUris(SolrAnnotation solrAnnotation) {
@@ -178,13 +211,11 @@ public class SolrAnnotationUtils {
 	List<String> targetUris = extractUriValues(internetResource);
 	solrAnnotation.setTargetUris(targetUris);
 
-	// Extract URIs for target_record_id
-	List<String> recordIds = extractRecordIds(targetUris);
-	// specific resource - scope
-	if (internetResource.getScope() != null)
-	    addRecordIdToList(internetResource.getScope(), recordIds);
-
-	solrAnnotation.setTargetRecordIds(recordIds);
+	if(targetUris!=null) {
+    	// Extract URIs for target_record_id
+    	List<String> recordIds = extractRecordIds(targetUris);
+    	solrAnnotation.setTargetRecordIds(recordIds);
+	}
     }
 
     protected List<String> extractUriValues(SpecificResource specificResource) {
@@ -251,6 +282,23 @@ public class SolrAnnotationUtils {
 	if (recordId != null && !recordIds.contains(recordId)) {
 	    recordIds.add(recordId);
 	}
+    }
+    
+    public String hideSolrServerBaseUrl (String text) {
+      /* this regex is supposed to find the server addresses starting with the http, i.e. 
+       * it matches a word staring with the http, followed by any character 0..* times, 
+       * ending with 1..* white space chars
+       */
+      return text.replaceAll("http[^\\s]*\\s+","*");
+    }
+    
+    public static boolean isMalformedQueryException(Throwable ex) {
+      if(ex instanceof SolrException) {
+        if (((SolrException)ex).code()==SolrException.ErrorCode.BAD_REQUEST.code) {
+          return true;
+        }
+      }
+      return false;
     }
 
 }

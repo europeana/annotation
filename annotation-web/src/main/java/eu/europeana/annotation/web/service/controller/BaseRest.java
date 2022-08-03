@@ -2,10 +2,8 @@ package eu.europeana.annotation.web.service.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -13,18 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.AnnotationId;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
-import eu.europeana.annotation.definitions.model.impl.BaseAnnotationId;
 import eu.europeana.annotation.definitions.model.utils.AnnotationBuilder;
-import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
-import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.AnnotationSearchResults;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
@@ -32,12 +26,14 @@ import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
 import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 import eu.europeana.api.commons.web.controller.BaseRestController;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
-
+  
 	@Resource
 	AnnotationConfiguration configuration;
 
@@ -50,12 +46,11 @@ public class BaseRest extends BaseRestController {
 	@Resource
 	AnnotationSearchService annotationSearchService;
 	
+	@Resource
+	protected PersistentAnnotationService mongoPersistance;
+	
 	//TODO move to base class
 	Logger logger = LogManager.getLogger(getClass());
-
-	public Logger getLogger() {
-		return logger;
-	}
 
 	public AnnotationSearchService getAnnotationSearchService() {
 		return annotationSearchService;
@@ -63,16 +58,6 @@ public class BaseRest extends BaseRestController {
 
 	public void setAnnotationSearchService(AnnotationSearchService annotationSearchService) {
 		this.annotationSearchService = annotationSearchService;
-	}
-
-
-	protected AnnotationBuilder annotationBuilder = new AnnotationBuilder();
-	protected AnnotationIdHelper annotationIdHelper;
-
-	public AnnotationIdHelper getAnnotationIdHelper() {
-		if (annotationIdHelper == null)
-			annotationIdHelper = new AnnotationIdHelper();
-		return annotationIdHelper;
 	}
 
 	TypeUtils typeUtils = new TypeUtils();
@@ -101,10 +86,6 @@ public class BaseRest extends BaseRestController {
 		this.configuration = configuration;
 	}
 
-	protected AnnotationBuilder getAnnotationBuilder() {
-		return annotationBuilder;
-	}
-
 	public String toResourceId(String collection, String object) {
 		return "/" + collection + "/" + object;
 	}
@@ -117,7 +98,7 @@ public class BaseRest extends BaseRestController {
 
 		AbstractAnnotation webAnnotation;
 		for (Annotation annotation : annotations) {
-			webAnnotation = getAnnotationBuilder().copyIntoWebAnnotation(annotation);
+			webAnnotation = AnnotationBuilder.copyIntoWebAnnotation(annotation);
 			response.items.add(webAnnotation);
 		}
 		response.itemsCount = response.items.size();
@@ -160,22 +141,6 @@ public class BaseRest extends BaseRestController {
 
 		return response;
 	}
-
-	protected AnnotationId buildAnnotationId(String identifier) throws ParamValidationI18NException {
-
-		return buildAnnotationId(identifier, true);
-	}
-
-	protected AnnotationId buildAnnotationId(String identifier, boolean validation) throws ParamValidationI18NException {
-
-		AnnotationId annoId = new BaseAnnotationId(getConfiguration().getAnnotationBaseUrl(), identifier);
-
-		if(validation)
-			annotationService.validateAnnotationId(annoId);
-
-		return annoId;
-	}
-
 	
 	protected ResponseEntity <String> buildResponse(String jsonStr) {
 		
@@ -270,7 +235,15 @@ public class BaseRest extends BaseRestController {
 	public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
 	        throws ApplicationAuthenticationException {
 	    
-	    Authentication auth = super.verifyWriteAccess(operation, request);
+	    //
+	    Authentication auth = null;
+	    boolean authorizationEnabled = true;
+	    if(authorizationEnabled) {
+	      auth = super.verifyWriteAccess(operation, request);
+	    }else {
+	      auth = new EuropeanaAuthenticationToken(null, "annotations", "annonymous-user", new EuropeanaApiCredentials("anonymous", "unknown-client"));
+	    }
+	    
 	    //prevent write when locked
 	    getAuthorizationService().checkWriteLockInEffect(operation);
 	    return auth;

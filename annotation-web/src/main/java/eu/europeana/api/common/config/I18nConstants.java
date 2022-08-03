@@ -26,6 +26,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	static final String UNSUPPORTED_TOKEN_TYPE = "error.annotation_unsupported_token_type";
 	static final String INVALID_HEADER_FORMAT = "error.annotation_invalid_format";
 	static final String INVALID_PROPERTY_VALUE = "error.annotation_invalid_property_value";
+	static final String ANNOTATION_INVALID_TARGET_BASE_URL = "error.annotation_target_base_url";
 	
 	
 	static final String MESSAGE_IDENTIFIER_NOT_NULL = "error.message_identifier_not_null";
@@ -44,6 +45,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	static final String MESSAGE_MISSING_MANDATORY_FIELD = "error.message_missing_mandatory_field";
 	static final String INVALID_PROVIDER = "error.invalid_provider";
 	static final String SOLR_EXCEPTION = "error.solr_exception";
+	static final String SOLR_MALFORMED_QUERY_EXCEPTION = "error.solr_malformed_query_exception";
 	
 	static final String BATCH_UPLOAD_FAILED = "error.batch_upload_failed";
 	

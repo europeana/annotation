@@ -19,6 +19,7 @@ import eu.europeana.annotation.definitions.model.graph.Graph;
 import eu.europeana.annotation.definitions.model.resource.ResourceDescription;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.style.Style;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.AgentTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
@@ -28,17 +29,21 @@ import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationLdSerializer extends JsonLd {
 
+  String annoBaseDataEndpoint;
+  
 	/**
 	 * @param annotation
 	 */
-	public AnnotationLdSerializer(Annotation annotation) {
+	public AnnotationLdSerializer(Annotation annotation, String annoBaseDataEndpoint) {
 		super();
 		setPropOrderComparator(new AnnotationsJsonComparator());
+		this.annoBaseDataEndpoint = annoBaseDataEndpoint;
 		setAnnotation(annotation);
 	}
 
-	public AnnotationLdSerializer() {
+	public AnnotationLdSerializer(String annoBaseDataEndpoint) {
 		super();
+		this.annoBaseDataEndpoint = annoBaseDataEndpoint;
 		setPropOrderComparator(new AnnotationsJsonComparator());
 	}
 
@@ -65,8 +70,7 @@ public class AnnotationLdSerializer extends JsonLd {
 		else
 			jsonLdResource.putProperty(WebAnnotationFields.TYPE, WebAnnotationFields.ANNOTATION_TYPE);
 
-		if (annotation.getAnnotationId() != null)
-			jsonLdResource.putProperty(WebAnnotationFields.ID, annotation.getAnnotationId().toHttpUrl());
+		jsonLdResource.putProperty(WebAnnotationFields.ID, AnnotationIdHelper.buildAnnotationUri(annoBaseDataEndpoint, annotation.getIdentifier()));
 
 		if (annotation.getCreated() != null)
 			jsonLdResource.putProperty(WebAnnotationFields.CREATED,
@@ -79,12 +83,22 @@ public class AnnotationLdSerializer extends JsonLd {
 		if (!StringUtils.isBlank(annotation.getMotivation()))
 			jsonLdResource.putProperty(WebAnnotationFields.MOTIVATION, annotation.getMotivation());
 
-		putBody(annotation, jsonLdResource);
-		putTarget(annotation, jsonLdResource);
+		if(annotation.getBody()!=null) {
+		  putBody(annotation, jsonLdResource);
+		}
+		if(annotation.getTarget()!=null) {
+		  putTarget(annotation, jsonLdResource);
+		}
 
-//		putGenerator(annotation, jsonLdResource);
-		putCreator(annotation, jsonLdResource);
-		putStyledBy(annotation, jsonLdResource);
+		if(annotation.getGenerator()!=null) {
+		  putGenerator(annotation, jsonLdResource);
+		}
+		if(annotation.getCreator()!=null) {
+		  putCreator(annotation, jsonLdResource);
+		}
+		if(annotation.getStyledBy()!=null) {
+		  putStyledBy(annotation, jsonLdResource);
+		}
 
 		putExtensions(annotation, jsonLdResource);
 		
@@ -142,30 +156,29 @@ public class AnnotationLdSerializer extends JsonLd {
 
 	protected void putBody(Annotation annotation, JsonLdResource jsonLdResource) {
 		//if (!annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
-		if (annotation.getBody()!= null) {
-			// tag or comment, not linking
-			if (isJsonObjectInput(annotation.getBody().getInputString())) {
-				// annotation.getBody().setInputString(null);
-				JsonLdProperty bodyProperty = addBodyProperty(annotation);
-				if (bodyProperty != null)
-					jsonLdResource.putProperty(bodyProperty);
-			} else {
-				if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0) {
-					putListProperty(WebAnnotationFields.BODY, annotation.getBody().getValues(), jsonLdResource, true);
-				} else{
-				    	//TODO: check if this is still correct
-				    	//if no values in the body, 
-				    	//linking  have not
-				    	if(annotation.getTarget().getInputString() != null) {
-						putStringProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString(), jsonLdResource);
-//						jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
-				    	} else {
-						putStringProperty(WebAnnotationFields.BODY, annotation.getBody().getHttpUri(), jsonLdResource);
-//						jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getHttpUri());
-				    	}
-				}
+		// tag or comment, not linking
+		if (isJsonObjectInput(annotation.getBody().getInputString())) {
+			// annotation.getBody().setInputString(null);
+			JsonLdProperty bodyProperty = addBodyProperty(annotation);
+			if (bodyProperty != null)
+				jsonLdResource.putProperty(bodyProperty);
+		} else {
+			if (annotation.getBody().getValues() != null && annotation.getBody().getValues().size() > 0) {
+				putListProperty(WebAnnotationFields.BODY, annotation.getBody().getValues(), jsonLdResource, true);
+			} else{
+			    	//TODO: check if this is still correct
+			    	//if no values in the body, 
+			    	//linking  have not
+			    	if(annotation.getTarget().getInputString() != null) {
+					putStringProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString(), jsonLdResource);
+//					jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getInputString());
+			    	} else {
+					putStringProperty(WebAnnotationFields.BODY, annotation.getBody().getHttpUri(), jsonLdResource);
+//					jsonLdResource.putProperty(WebAnnotationFields.BODY, annotation.getBody().getHttpUri());
+			    	}
 			}
 		}
+
 	}
 
 	protected void putStyledBy(Annotation annotation, JsonLdResource jsonLdResource) {
@@ -175,26 +188,17 @@ public class AnnotationLdSerializer extends JsonLd {
 	}
 
 	protected void putCreator(Annotation annotation, JsonLdResource jsonLdResource) {
-		if (annotation.getCreator().getInputString() == null
-				|| isJsonObjectInput(annotation.getCreator().getInputString())) {
-			JsonLdProperty annotatedByProperty = addCreator(annotation);
-			if (annotatedByProperty != null)
-				jsonLdResource.putProperty(annotatedByProperty);
-		} else {
-			putStringProperty(WebAnnotationFields.CREATOR, annotation.getCreator().getInputString(), jsonLdResource);
-		}
+			JsonLdProperty creator = addCreator(annotation);
+			if (creator != null) {
+				jsonLdResource.putProperty(creator);
+			}
 	}
 
 	protected void putGenerator(Annotation annotation, JsonLdResource jsonLdResource) {
-		if (annotation.getGenerator().getInputString() == null
-				|| isJsonObjectInput(annotation.getGenerator().getInputString())) {
-			JsonLdProperty serializedByProperty = addGeneratorProperty(annotation);
-			if (serializedByProperty != null)
-				jsonLdResource.putProperty(serializedByProperty);
-		} else {
-			// input string is a single value
-			putStringProperty(WebAnnotationFields.GENERATOR, annotation.getGenerator().getInputString(), jsonLdResource);
-		}
+			JsonLdProperty generator = addGeneratorProperty(annotation);
+			if (generator != null) {
+				jsonLdResource.putProperty(generator);
+			}
 	}
 
 //	TODO: review the implementation of this method against last standard specification 
@@ -481,8 +485,9 @@ public class AnnotationLdSerializer extends JsonLd {
 		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
 		Agent agent = annotation.getCreator();
 		addAgentByProperty(propertyValue, agent);
-		if (propertyValue.getValues().size() == 0)
+		if (propertyValue.getValues().size() == 0) {
 			return null;
+		}
 		creator.addValue(propertyValue);
 		return creator;
 	}
