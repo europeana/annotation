@@ -83,12 +83,22 @@ public class AnnotationLdSerializer extends JsonLd {
 		if (!StringUtils.isBlank(annotation.getMotivation()))
 			jsonLdResource.putProperty(WebAnnotationFields.MOTIVATION, annotation.getMotivation());
 
-		if(annotation.getBody()!=null) putBody(annotation, jsonLdResource);
-		if(annotation.getTarget()!=null) putTarget(annotation, jsonLdResource);
+		if(annotation.getBody()!=null) {
+		  putBody(annotation, jsonLdResource);
+		}
+		if(annotation.getTarget()!=null) {
+		  putTarget(annotation, jsonLdResource);
+		}
 
-//		putGenerator(annotation, jsonLdResource);
-		if(annotation.getCreator()!=null)  putCreator(annotation, jsonLdResource);
-		if(annotation.getStyledBy()!=null) putStyledBy(annotation, jsonLdResource);
+		if(annotation.getGenerator()!=null) {
+		  putGenerator(annotation, jsonLdResource);
+		}
+		if(annotation.getCreator()!=null) {
+		  putCreator(annotation, jsonLdResource);
+		}
+		if(annotation.getStyledBy()!=null) {
+		  putStyledBy(annotation, jsonLdResource);
+		}
 
 		putExtensions(annotation, jsonLdResource);
 		
@@ -178,26 +188,17 @@ public class AnnotationLdSerializer extends JsonLd {
 	}
 
 	protected void putCreator(Annotation annotation, JsonLdResource jsonLdResource) {
-		if (annotation.getCreator().getInputString() == null
-				|| isJsonObjectInput(annotation.getCreator().getInputString())) {
-			JsonLdProperty annotatedByProperty = addCreator(annotation);
-			if (annotatedByProperty != null)
-				jsonLdResource.putProperty(annotatedByProperty);
-		} else {
-			putStringProperty(WebAnnotationFields.CREATOR, annotation.getCreator().getInputString(), jsonLdResource);
-		}
+			JsonLdProperty creator = addCreator(annotation);
+			if (creator != null) {
+				jsonLdResource.putProperty(creator);
+			}
 	}
 
 	protected void putGenerator(Annotation annotation, JsonLdResource jsonLdResource) {
-		if (annotation.getGenerator().getInputString() == null
-				|| isJsonObjectInput(annotation.getGenerator().getInputString())) {
-			JsonLdProperty serializedByProperty = addGeneratorProperty(annotation);
-			if (serializedByProperty != null)
-				jsonLdResource.putProperty(serializedByProperty);
-		} else {
-			// input string is a single value
-			putStringProperty(WebAnnotationFields.GENERATOR, annotation.getGenerator().getInputString(), jsonLdResource);
-		}
+			JsonLdProperty generator = addGeneratorProperty(annotation);
+			if (generator != null) {
+				jsonLdResource.putProperty(generator);
+			}
 	}
 
 //	TODO: review the implementation of this method against last standard specification 
@@ -484,8 +485,9 @@ public class AnnotationLdSerializer extends JsonLd {
 		JsonLdPropertyValue propertyValue = new JsonLdPropertyValue();
 		Agent agent = annotation.getCreator();
 		addAgentByProperty(propertyValue, agent);
-		if (propertyValue.getValues().size() == 0)
+		if (propertyValue.getValues().size() == 0) {
 			return null;
+		}
 		creator.addValue(propertyValue);
 		return creator;
 	}

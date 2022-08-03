@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -75,14 +73,14 @@ public class BaseJsonldRest extends BaseRest {
 		// validate annotation and check that no generator and creator exists in input
 	    // set generator and creator
 	    String userId = authentication.getPrincipal().toString();
-	    String apikeyId = ((EuropeanaApiCredentials) authentication.getCredentials()).getApiKey();
+	    String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
 
-	    String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), apikeyId);
+	    String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), clientId);
 	    String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
 
 	    //overwrite creator and generator with values generated from the JWT token 
-	    webAnnotation.setGenerator(buildAgent(generatorId));
-	    webAnnotation.setCreator(buildAgent(creatorId));
+	    webAnnotation.setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE));
+	    webAnnotation.setCreator(buildAgent(creatorId, AgentTypes.PERSON));
 
 	    // 2. validate
 	    // annotation id cannot be provided in the input of the create method
@@ -229,15 +227,15 @@ public class BaseJsonldRest extends BaseRest {
 	    uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
 	    // default values
 	    if (annosWithoutId.size() > 0) {
-		String apikeyId = authentication.getDetails().toString();
-		String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), apikeyId);
-		String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
-
-//				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
-		AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder().setGenerator(buildAgent(generatorId))
-			.setUser(buildAgent(creatorId)).build();
-		getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults,
-			webAnnoStoredAnnoAnnoMap);
+    	    String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
+    		String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), clientId);
+    		String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
+    
+    //				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
+    		AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder().setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE))
+    			.setUser(buildAgent(creatorId, AgentTypes.PERSON)).build();
+    		getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults,
+    			webAnnoStoredAnnoAnnoMap);
 	    }
 
 	    // create result annotation page
@@ -282,8 +280,8 @@ public class BaseJsonldRest extends BaseRest {
      * @param id agent id
      * @return agent as an Agent object
      */
-    protected Agent buildAgent(String id) {
-	Agent agent = AgentObjectFactory.getInstance().createObjectInstance(AgentTypes.PERSON);
+    protected Agent buildAgent(String id, AgentTypes type) {
+	Agent agent = AgentObjectFactory.getInstance().createObjectInstance(type);
 	agent.setHttpUrl(id);
 //		agent.setName(id);		
 	return agent;
@@ -623,7 +621,7 @@ public class BaseJsonldRest extends BaseRest {
 	    	
 	    // build vote
 	    Date reportDate = new Date();
-	    Vote vote = buildVote(buildAgent(userId), reportDate);
+	    Vote vote = buildVote(buildAgent(userId, AgentTypes.PERSON), reportDate);
 
 	    // 3. Check if the user has already reported this annotation
 	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(identifier);
