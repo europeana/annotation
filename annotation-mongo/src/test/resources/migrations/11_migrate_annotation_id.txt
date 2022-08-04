@@ -1,5 +1,6 @@
 #generate long identifier based on existing field in annotation id
-db.getCollection('annotation').find({}).forEach( function(x) {
+#when running in robot, the connection timeout needs to be extended to allow complete execution
+db.getCollection('annotation').find({"identifier":{$exists:false}}).forEach( function(x) {
 	x.identifier= NumberLong(x.annotationId.identifier);
 	db.getCollection('annotation').save(x);     
 	}

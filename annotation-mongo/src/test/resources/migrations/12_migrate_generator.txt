@@ -1,0 +1,6 @@
+#check if generator is missing
+db.getCollection('annotation').find({"generator":{$exists:false}})
+
+#distinct values to be updated
+db.getCollection('annotation').distinct("creator.httpUrl")
+

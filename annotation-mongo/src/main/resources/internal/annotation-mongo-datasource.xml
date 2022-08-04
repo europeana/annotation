@@ -15,12 +15,13 @@
 	
 
 	<bean id="annotation_db_morphia_datastore_annotation" factory-bean="annotation_db_mongoConnector" factory-method="createDatastore">
-		<constructor-arg value="#{annotationProperties['mongodb.annotation.connectionUrl']}" type="java.lang.String" />
-		<!--  not used anymore, dbname taken from connection URL 
-		<constructor-arg value="#{annotationProperties['mongodb.annotation.dbname']}" type="java.lang.String" />
-		-->
-		<constructor-arg value="#{annotationProperties['mongodb.annotation.truststore']}" type="java.lang.String" />
-		<constructor-arg value="#{annotationProperties['mongodb.annotation.truststorepass']}" type="java.lang.String" />
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.connectionUrl']}" type="java.lang.String"/>
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.truststore']}" type="java.lang.String"/>
+		<constructor-arg value="#{annotationProperties['mongodb.annotation.truststorepass']}" type="java.lang.String"/>
+		<!--  maxIdle time, use default value or the value from URI -->
+		<constructor-arg value="0" type="int"/>
+		<!--  model main package -->
+		<constructor-arg value="eu.europeana.annotation.mongo.model" type="java.lang.String"/>
 	
 	</bean>
 	

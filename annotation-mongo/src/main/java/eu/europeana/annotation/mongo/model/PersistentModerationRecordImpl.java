@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
@@ -17,7 +18,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
 @Entity("moderationRecord")
-@Indexes(@Index(PersistentAnnotation.FIELD_IDENTIFIER))
+@Indexes(@Index(fields=@Field(PersistentAnnotation.FIELD_IDENTIFIER)))
 public class PersistentModerationRecordImpl implements PersistentModerationRecord, PersistentObject {
 
 	@Id

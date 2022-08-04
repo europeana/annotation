@@ -4,6 +4,7 @@ import java.util.Date;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
@@ -19,7 +20,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 
 @Entity(AnnotationConfiguration.MONGO_COLLECTION_NAME)
-@Indexes(@Index(PersistentAnnotation.FIELD_IDENTIFIER))
+@Indexes(@Index(fields=@Field(PersistentAnnotation.FIELD_IDENTIFIER)))
 public class PersistentAnnotationImpl implements PersistentAnnotation, PersistentObject {
 
 	@Id
