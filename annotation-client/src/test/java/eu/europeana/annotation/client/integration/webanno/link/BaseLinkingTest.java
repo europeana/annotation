@@ -24,9 +24,7 @@ public class BaseLinkingTest extends BaseWebAnnotationTest {
     @Test
     public void createLinkAnnotation() throws JsonParseException, IOException {
         ResponseEntity<String> response = storeTestAnnotation(LINK_STANDARD);
-        validateResponse(response);  
-        
-        Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        Annotation storedAnno = validateResponse(response);  
         removeAnnotation(storedAnno.getIdentifier());
     }
 

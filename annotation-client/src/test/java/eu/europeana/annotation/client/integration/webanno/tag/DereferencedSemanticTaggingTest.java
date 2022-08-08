@@ -61,9 +61,11 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
     
 	/**
 	 * Remove annotations
+	 * @deprecated switch to use of removeCreatedAnnotations
 	 * 
 	 * @param annotations
 	 */
+	@Deprecated 
 	protected void removeAnnotations(Annotation[] annotations) {
 		for (Annotation annotation : annotations) {
 			removeAnnotation(annotation.getIdentifier());

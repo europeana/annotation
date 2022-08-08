@@ -32,17 +32,18 @@ public class WebAnnotationProtocolTest extends BaseWebAnnotationTest {
 	}
 
 
-	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
-		validateResponse(response, HttpStatus.CREATED);
-	}
-	
-	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), status);
-		
-		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getIdentifier());
-	}
+//	protected Annotation validateResponse(ResponseEntity<String> response) throws JsonParseException {
+//		return validateResponse(response, HttpStatus.CREATED);
+//	}
+//	
+//	protected Annotation validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+//		assertNotNull(response.getBody());
+//		assertEquals(response.getStatusCode(), status);
+//		
+//		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+//		assertNotNull(storedAnno.getIdentifier());
+//		return storedAnno;
+//	}
 	
 	protected void validateResponseForTrimming(ResponseEntity<String> response) throws JsonParseException {
 		assertNotNull(response.getBody());

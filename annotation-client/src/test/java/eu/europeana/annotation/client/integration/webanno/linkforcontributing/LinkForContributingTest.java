@@ -9,22 +9,34 @@ import eu.europeana.annotation.definitions.model.Annotation;
 
 public class LinkForContributingTest extends BaseWebAnnotationTest {
 
+    
+  
     @Test
     public void createLinkForContributingBodyObject() throws JsonParseException, IOException {        
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT);
         validateResponse(response); 
         
         Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-        removeAnnotation(storedAnno.getIdentifier());
+        addCreatedAnnotation(storedAnno);
+//        removeAnnotation(storedAnno.getIdentifier());
     }
     
     @Test
     public void createLinkForContributingBodyString() throws JsonParseException, IOException {        
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_STRING);
-        validateResponse(response);     
+        Annotation storedAnno = validateResponse(response);     
         
-        Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-        removeAnnotation(storedAnno.getIdentifier());
+        addCreatedAnnotation(storedAnno);
+//        removeAnnotation(storedAnno.getIdentifier());
     }
-	
+
+    @Test
+    public void createLinkForContributingTargetSpecific() throws JsonParseException, IOException {        
+        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC);
+        Annotation storedAnno = validateResponse(response);     
+        
+        addCreatedAnnotation(storedAnno);
+//        removeAnnotation(storedAnno.getIdentifier());
+    }
+    
 }

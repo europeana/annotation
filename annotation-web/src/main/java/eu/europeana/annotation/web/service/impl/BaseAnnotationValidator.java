@@ -130,7 +130,7 @@ public abstract class BaseAnnotationValidator {
 
     private void validateSpecificResource(SpecificResource resource, String fieldName, boolean isScopeMandatory) throws ParamValidationI18NException {
       // source must be an URL
-      if (!UriUtils.isUrl(resource.getSource())) {
+      if (resource.getSource() == null || !UriUtils.isUrl(resource.getSource())) {
           throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
       	    I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
       	    new String[] { fieldName + ".source", resource.getSource() });
@@ -151,7 +151,7 @@ public abstract class BaseAnnotationValidator {
         }
       }else {
         //scope exists
-        if(isScopeMandatory && StringUtils.isEmpty(resource.getScope())) {
+        if(isScopeMandatory) {
             throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
                 I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {fieldName + ".scope"});
           }
@@ -567,19 +567,26 @@ public abstract class BaseAnnotationValidator {
       if(bodyUrl==null) {
         bodyUrl = webAnnotation.getBody().getHttpUri();
       }
-      if (!UriUtils.urlStartsWithHttps(bodyUrl)) {
+      
+      if (bodyUrl == null || !UriUtils.urlStartsWithHttps(bodyUrl)) {
         throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
-            new String[] { "body.id or body.value must use https protocol: ", bodyUrl });
+            new String[] { "body.id or body.value is mandatory and must use https protocol: ", bodyUrl });
       }
       
       if (webAnnotation.getTarget() == null) { 
         throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
             I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target" });
-      }else {
-        validateSpecificResource(webAnnotation.getTarget(), "target", true);
-        //validate base URLs
+      }
+      
+      //validate base URLs
+      if(webAnnotation.getTarget().getHttpUri() != null) {
+        //httpUri is the same as value;
         validateTargetBaseUrl(webAnnotation.getTarget());
-      }       
+      } else {
+        validateSpecificResource(webAnnotation.getTarget(), "target", false);
+        validateTargetBaseUrl(webAnnotation.getTarget());
+      } 
+      
     }
     
     private void validateSubtitleBody (Body body) throws PropertyValidationException {

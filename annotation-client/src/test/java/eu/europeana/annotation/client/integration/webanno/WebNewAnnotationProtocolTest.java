@@ -31,17 +31,17 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 	}
 
 
-	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
-		validateResponse(response, HttpStatus.CREATED);
-	}
-	
-	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
-		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), status);
-		
-		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-		assertNotNull(storedAnno.getIdentifier());
-	}
+//	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
+//		validateResponse(response, HttpStatus.CREATED);
+//	}
+//	
+//	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+//		assertNotNull(response.getBody());
+//		assertEquals(response.getStatusCode(), status);
+//		
+//		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+//		assertNotNull(storedAnno.getIdentifier());
+//	}
 	
 	@Test
 	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
