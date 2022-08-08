@@ -16,6 +16,7 @@ import eu.europeana.annotation.definitions.model.body.PlaceBody;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.entity.Place;
+import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
@@ -93,44 +94,68 @@ public abstract class BaseAnnotationValidator {
 	// dateOfDeath, placeOfBirth, placeOfDeath" });
     }
 
-    void validateGeoTag(Body body) throws ParamValidationI18NException, PropertyValidationException {
-	if (!(body instanceof PlaceBody))
-	    throw new ParamValidationI18NException(I18nConstants.INVALID_PROPERTY_VALUE,
-		    I18nConstants.INVALID_PROPERTY_VALUE,
-		    new String[] { "tag.body.type", ResourceTypes.PLACE.toString() });
+    void validateGeoTag(Body body)
+        throws ParamValidationI18NException, PropertyValidationException {
+      if (!(body instanceof PlaceBody))
+        throw new ParamValidationI18NException(I18nConstants.INVALID_PROPERTY_VALUE,
+            I18nConstants.INVALID_PROPERTY_VALUE,
+            new String[] {"tag.body.type", ResourceTypes.PLACE.toString()});
 
-	Place place = ((PlaceBody) body).getPlace();
+      Place place = ((PlaceBody) body).getPlace();
 
-	if (StringUtils.isEmpty(place.getLatitude()))
-	    throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.latitude" });
+      if (StringUtils.isEmpty(place.getLatitude())) {
+        throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"tag.body.latitude"});
+      }
 
-	if (StringUtils.isEmpty(place.getLongitude()))
-	    throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.longitude" });
+      if (StringUtils.isEmpty(place.getLongitude())) {
+        throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"tag.body.longitude"});
+      }
 
     }
 
-    void validateTagWithSpecificResource(Body body) throws ParamValidationI18NException, PropertyValidationException {
-	// check mandatory fields
-	if (StringUtils.isBlank(body.getInternalType().toString()))
-	    throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.type" });
-	if (StringUtils.isBlank(body.getSource()))
-	    throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.source" });
+    void validateTagWithSpecificResource(Body body)
+        throws ParamValidationI18NException, PropertyValidationException {
+      // check mandatory fields
+      if (StringUtils.isBlank(body.getInternalType().toString()))
+        throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"body.type"});
+      if (StringUtils.isBlank(body.getSource()))
+        throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"body.source"});
 
-	// source must be an URL
-	if (!UriUtils.isUrl(body.getSource()))
-	    throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-		    I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-		    new String[] { "tag.format", body.getSource() });
+      validateSpecificResource(body, "body", false);
+    }
 
-	// id is not a mandatory field but if exists it must be an URL
-	if (body.getHttpUri() != null && !UriUtils.isUrl(body.getHttpUri()))
-	    throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_ID_FORMAT,
-		    I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
-		    new String[] { "tag.body.httpUri", body.getHttpUri() });
+    private void validateSpecificResource(SpecificResource resource, String fieldName, boolean isScopeMandatory) throws ParamValidationI18NException {
+      // source must be an URL
+      if (!UriUtils.isUrl(resource.getSource())) {
+          throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+      	    I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+      	    new String[] { fieldName + ".source", resource.getSource() });
+      }
+
+      // id is not a mandatory field but if exists it must be an URL
+      if (resource.getHttpUri() != null && !UriUtils.isUrl(resource.getHttpUri())) {
+          throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_ID_FORMAT,
+      	    I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
+      	    new String[] { fieldName + ".httpUri", resource.getHttpUri() });
+      }
+      
+      if(resource.getScope() != null) {
+        if (!UriUtils.isUrl(resource.getScope())) {
+          throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+            I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+            new String[] { fieldName + ".scope", resource.getScope() });
+        }
+      }else {
+        //scope exists
+        if(isScopeMandatory && StringUtils.isEmpty(resource.getScope())) {
+            throw new ParamValidationI18NException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+                I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {fieldName + ".scope"});
+          }
+        }
     }
 
     /**
@@ -544,14 +569,17 @@ public abstract class BaseAnnotationValidator {
       }
       if (!UriUtils.urlStartsWithHttps(bodyUrl)) {
         throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
-            new String[] { "body.id or body.value: ", bodyUrl });
+            new String[] { "body.id or body.value must use https protocol: ", bodyUrl });
       }
       
-      if (webAnnotation.getTarget() == null || webAnnotation.getTarget().getValue().isBlank()) 
+      if (webAnnotation.getTarget() == null) { 
         throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
             I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target" });
-      if(webAnnotation.getTarget()!=null)
+      }else {
+        validateSpecificResource(webAnnotation.getTarget(), "target", true);
+        //validate base URLs
         validateTargetBaseUrl(webAnnotation.getTarget());
+      }       
     }
     
     private void validateSubtitleBody (Body body) throws PropertyValidationException {
