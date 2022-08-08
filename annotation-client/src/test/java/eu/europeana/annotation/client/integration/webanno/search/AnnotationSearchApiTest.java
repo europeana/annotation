@@ -84,8 +84,8 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		String valueTestSet = "generator_uri: " + "\"" + ClientConfiguration.getInstance().getPropAnnotationClientApiEndpoint() + "/" + "annotations" +"\"";
-		AnnotationPage annPg = annSearchApi.searchAnnotations(valueTestSet, SearchProfiles.MINIMAL, null);
+//		String valueTestSet = "generator_uri: " + "\"" + ClientConfiguration.getInstance().getPropAnnotationClientApiEndpoint() + "/" + "annotations" +"\"";
+		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_ALL, SearchProfiles.MINIMAL, null);
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
@@ -113,7 +113,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		
 		// last page
 		int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
-		AnnotationPage lastPage = annSearchApi.searchAnnotations(valueTestSet, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
+		AnnotationPage lastPage = annSearchApi.searchAnnotations(VALUE_ALL, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
 		assertEquals(lastPage.getCurrentPage(), lastPageNum);
 		
 	}
