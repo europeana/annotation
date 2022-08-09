@@ -69,7 +69,7 @@
 		<version.subtitle-converter>1</version.subtitle-converter>
 		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>		
 		
-		<tests.skip>false</tests.skip>
+		<skipTests>true</skipTests>
 		
 	</properties>
 	<modules>
@@ -131,7 +131,7 @@
 			    <version>${version.maven-surfire-plugin}</version>
 				<configuration>
 <!-- 	    		<testFailureIgnore>false</testFailureIgnore> -->
-					<skipTests>${tests.skip}</skipTests>
+					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
 			</plugins>
