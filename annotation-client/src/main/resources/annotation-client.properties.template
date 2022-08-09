@@ -2,6 +2,7 @@
 # for testing within the development environment a local URI can be used e.g. localhost:8080/annotation-web/annotations  
 annotation.service.uri = http://localhost:8080/annotation
 annotation.id.baseUrl = http://localhost:8080/annotation
+annotation.item.data.endpoint = http://data.europeana.eu/item
 
 # the user key used to access Europeana API. For more information see http://pro.europeana.eu/api 
 annotation.api.key=

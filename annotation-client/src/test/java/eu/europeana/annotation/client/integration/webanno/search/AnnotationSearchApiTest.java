@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import eu.europeana.annotation.client.AnnotationSearchApiImpl;
@@ -33,8 +32,6 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	static final int TOTAL_IN_PAGE = 10;
 	static final int TOTAL_IN_COLLECTION = 21;
 
-	private Annotation[] annotations;
-
 	/**
 	 * Create annotations data set before each test execution
 	 * 
@@ -42,18 +39,8 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	 */
 	@BeforeEach
 	public void createAnnotationDataSet() throws JsonParseException, IOException {
-		annotations = createMultipleTestAnnotations(TOTAL_IN_COLLECTION);
-		assertEquals(TOTAL_IN_COLLECTION, annotations.length);
-	}
-
-	/**
-	 * Delete annotations data set after each test execution
-	 */
-	@AfterEach
-	public void deleteAnnotationDataSet() {
-	  for(Annotation anno: annotations) {
-	    apiClient.removeAnnotation(anno.getIdentifier());
-	  }
+	  createMultipleTestAnnotations(TOTAL_IN_COLLECTION);      
+	  assertEquals(TOTAL_IN_COLLECTION, getCreatedAnnotations().size());  
 	}
 
 	/**
@@ -84,8 +71,8 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		AnnotationSearchApiImpl annSearchApi = new AnnotationSearchApiImpl();
 		
 		// first page
-		String valueTestSet = "generator_uri: " + "\"" + ClientConfiguration.getInstance().getPropAnnotationClientApiEndpoint() + "/" + "annotations" +"\"";
-		AnnotationPage annPg = annSearchApi.searchAnnotations(valueTestSet, SearchProfiles.MINIMAL, null);
+//		String valueTestSet = "generator_uri: " + "\"" + ClientConfiguration.getInstance().getPropAnnotationClientApiEndpoint() + "/" + "annotations" +"\"";
+		AnnotationPage annPg = annSearchApi.searchAnnotations(VALUE_ALL, SearchProfiles.MINIMAL, null);
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
@@ -113,7 +100,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		
 		// last page
 		int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
-		AnnotationPage lastPage = annSearchApi.searchAnnotations(valueTestSet, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
+		AnnotationPage lastPage = annSearchApi.searchAnnotations(VALUE_ALL, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
 		assertEquals(lastPage.getCurrentPage(), lastPageNum);
 		
 	}

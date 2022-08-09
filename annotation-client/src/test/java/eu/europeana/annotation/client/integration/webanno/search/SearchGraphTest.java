@@ -31,6 +31,7 @@ public class SearchGraphTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		addCreatedAnnotation(createdAnno);
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -43,9 +44,6 @@ public class SearchGraphTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK_SEMANTIC = "target_uri:\""+ VALUE_TARGET_LINK_SEMANTIC_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK_SEMANTIC);
 		validateGraph(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**

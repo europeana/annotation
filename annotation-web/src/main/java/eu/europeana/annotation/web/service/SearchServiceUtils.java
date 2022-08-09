@@ -1,7 +1,6 @@
 package eu.europeana.annotation.web.service;
 
 import org.springframework.http.HttpStatus;
-import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.impl.SolrAnnotationUtils;
 import eu.europeana.api.common.config.I18nConstants;
@@ -13,7 +12,7 @@ public abstract class SearchServiceUtils {
     if (SolrAnnotationUtils.isMalformedQueryException(e.getCause())) {
       return new HttpException(I18nConstants.SOLR_MALFORMED_QUERY_EXCEPTION,
           I18nConstants.SOLR_MALFORMED_QUERY_EXCEPTION, new String[] {debugInfo},
-          HttpStatus.BAD_REQUEST, e);
+          HttpStatus.BAD_REQUEST, null);
     } else {
       return new HttpException(I18nConstants.SOLR_EXCEPTION, I18nConstants.SOLR_EXCEPTION,
           new String[] {debugInfo}, HttpStatus.GATEWAY_TIMEOUT, e);

@@ -14,6 +14,9 @@ public class UriUtils {
 	 * @return True if valid URL, false otherwise
 	 */
 	public static boolean isUrl(String value) {
+	    if(StringUtils.isEmpty(value)) {
+	      return false;
+	    }
 		try {
 		    //only http URLs are supported in targets so do quickcheck first
 			if(!value.startsWith("http")) {

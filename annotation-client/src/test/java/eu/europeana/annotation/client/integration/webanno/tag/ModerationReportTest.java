@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -20,6 +21,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 /**
  * This class implements api key testing scenarios.
  */
+@Disabled
 public class ModerationReportTest extends BaseTaggingTest {
 
 	public final String API_KEY_CONFIG_FOLDER = "/config";

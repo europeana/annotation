@@ -18,13 +18,14 @@ public class AgentTest extends BaseTaggingTest {
 	public static final String FULL_AGENT = "/tag/full_agent.json";
 	public static final String WRONG_AGENT_ID_NOT_URL = "/tag/wrong/agent_wrong_id_not_url.json";
 
+	
 	@Test
 	public void createAnnotationAgentDetails() throws IOException, JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT);
-		validateResponse(response);
-		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);				
-		
+		Annotation storedAnno = validateResponse(response);
+		addCreatedAnnotation(storedAnno);
+		 
 		String requestBody = getJsonStringInput(FULL_AGENT);
 		Annotation inputAnno = parseTag(requestBody);
 		
@@ -35,6 +36,8 @@ public class AgentTest extends BaseTaggingTest {
 		
 		removeAnnotation(storedAnno.getIdentifier());
 	}
+	
+	
 
 //	@Test
 	public void agentIDNotUrlMustThrowException() throws IOException {

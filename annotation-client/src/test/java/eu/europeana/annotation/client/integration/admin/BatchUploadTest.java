@@ -33,9 +33,11 @@ import eu.europeana.annotation.definitions.model.Annotation;
 
 /**
  * Annotation API Batch Upload Test class
+ * Temporary the batch upload is not used
  * 
  * @author Sven Schlarb
  */
+@Disabled
 public class BatchUploadTest extends BaseWebAnnotationTest {
     
 	// annotation page test resources

@@ -44,32 +44,16 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 	public void createTestAnnotations() throws Exception {
 	    // create new annotations first. (3 with different VIAF IDS)
     	Annotation testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
+    	addCreatedAnnotation(testAnnotation);
 		testAnnotations[0] = testAnnotation;
 		testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
+		addCreatedAnnotation(testAnnotation);
 		testAnnotations[1] = testAnnotation;
-		testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);		
+		testAnnotation = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);
+		addCreatedAnnotation(testAnnotation);
 		testAnnotations[2] = testAnnotation;
     }
-	
-	/**
-	 * Remove annotations data set after each test execution
-	 */
-	@AfterEach
-	public void removeAnnotationDataSet() {
-		removeAnnotations(testAnnotations);
-	}
     
-	/**
-	 * Remove annotations
-	 * 
-	 * @param annotations
-	 */
-	protected void removeAnnotations(Annotation[] annotations) {
-		for (Annotation annotation : annotations) {
-			removeAnnotation(annotation.getIdentifier());
-		}
-	}
-	
 	/**
 	 * This is an example dereferenciation test for PoC.
 	 * @throws IOException
