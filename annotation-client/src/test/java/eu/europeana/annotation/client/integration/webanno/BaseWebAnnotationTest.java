@@ -438,18 +438,6 @@ public class BaseWebAnnotationTest {
       ResponseEntity<String> re = webannoAdminApi.removeAnnotation(identifier);
       return re.getBody();
     }
-	
-	
-	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
-		
-		Annotation[] testAnnotations = new Annotation[numTestAnno];
-		for( int i = 0; i < numTestAnno; i++) {
-			Annotation annotation = this.createTestAnnotation(TAG_STANDARD, null);
-			assertNotNull(annotation);
-			testAnnotations[i] = annotation;
-		}
-		return testAnnotations;
-	}
 		
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
 		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getIdentifier());

@@ -24,30 +24,18 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
 
-		validateResponse(response);
-		
-	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-	    removeAnnotation(storedAnno.getIdentifier());
+		Annotation storedAnno = validateResponse(response);
+		addCreatedAnnotation(storedAnno);
+	    
 	}
 
-
-//	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
-//		validateResponse(response, HttpStatus.CREATED);
-//	}
-//	
-//	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
-//		assertNotNull(response.getBody());
-//		assertEquals(response.getStatusCode(), status);
-//		
-//		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-//		assertNotNull(storedAnno.getIdentifier());
-//	}
 	
 	@Test
 	public void getAnnotation() throws JsonParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		
 		ResponseEntity<String> createResponse = storeTestAnnotation(TAG_STANDARD); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
+		addCreatedAnnotation(annotation);
 		/**
 		 * get annotation by provider and identifier
 		 */
@@ -59,8 +47,6 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		//validateResponse(response, HttpStatus.OK);
 		Annotation storedAnno = parseAndVerifyTestAnnotation(response, HttpStatus.OK);
 		validateOutputAgainstInput(storedAnno, annotation);
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}	
 					
 	@Test
@@ -68,8 +54,8 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 						
 //		store annotation
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
-		
 		Annotation annotation = parseAndVerifyTestAnnotation(response);
+		addCreatedAnnotation(annotation);
 		
 //		updated annotation value
 		String requestBody = getJsonStringInput(TAG_STANDARD_TEST_VALUE);
@@ -84,8 +70,6 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		assertNotNull(response.getBody());
 		assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
 		assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(), updatedAnnotation.getTarget().getHttpUri());
-		
-		removeAnnotation(annotation.getIdentifier());
 	}			
 				
 	@Test
@@ -94,6 +78,7 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 //		store annotation and retrieve its identifier URL
 		ResponseEntity<String> createResponse = storeTestAnnotation(TAG_STANDARD); 
 		Annotation annotation = parseAndVerifyTestAnnotation(createResponse);
+		addCreatedAnnotation(annotation);
 		
 //		delete annotation by identifier URL
 		ResponseEntity<String> response = getApiProtocolClient().deleteAnnotation(
@@ -103,8 +88,6 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		if(!HttpStatus.NO_CONTENT.equals(response.getStatusCode()))
 			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-		
-		removeAnnotation(annotation.getIdentifier());
 	}
 	
 	/*
@@ -114,23 +97,21 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 	@Test
 	public void checkAnnotationDuplicatesCreateTranscriptions() throws JsonParseException, IOException {
 		ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL);
-	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);	       
+	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    addCreatedAnnotation(storedAnno);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		response = storeTestAnnotation(TRANSCRIPTION_MINIMAL);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
 	public void checkAnnotationDuplicatesCreateCaptions() throws JsonParseException, IOException {
 		ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL);
 	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    addCreatedAnnotation(storedAnno);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		response = storeTestAnnotation(CAPTION_MINIMAL);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -138,10 +119,9 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    addCreatedAnnotation(storedAnno);
 		response = storeTestAnnotation(SUBTITLE_MINIMAL);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -149,10 +129,10 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = storeTestAnnotation(TAG_MINIMAL);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    addCreatedAnnotation(storedAnno);
+	    
 		response = storeTestAnnotation(TAG_MINIMAL);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -160,10 +140,10 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	    Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+	    addCreatedAnnotation(storedAnno);
+	    
 		response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	@Test
@@ -171,9 +151,10 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+        addCreatedAnnotation(storedAnno);
+        
         response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());        
-        removeAnnotation(storedAnno.getIdentifier());
     }
 	
 	/*
@@ -199,18 +180,19 @@ public class WebNewAnnotationProtocolTest extends BaseWebAnnotationTest {
 		ResponseEntity<String> response1 = storeTestAnnotation(TRANSCRIPTION_MINIMAL);
 		assertEquals(HttpStatus.CREATED, response1.getStatusCode());
 		Annotation annotation1 = parseAndVerifyTestAnnotation(response1);
+		addCreatedAnnotation(annotation1);
+		
 		ResponseEntity<String> response2 = storeTestAnnotation(TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE);
 		assertEquals(HttpStatus.CREATED, response2.getStatusCode());
 		Annotation annotation2 = parseAndVerifyTestAnnotation(response2);
+		addCreatedAnnotation(annotation2);
+		
 		//updated annotation value
 		String requestBody = getJsonStringInput(TRANSCRIPTION_MINIMAL);
 		//update annotation by identifier URL
 		ResponseEntity<String> updateResponse = getApiProtocolClient().updateAnnotation(
 				annotation2.getIdentifier(), requestBody, null);
 		assertEquals(HttpStatus.BAD_REQUEST, updateResponse.getStatusCode());
-		
-		removeAnnotation(annotation1.getIdentifier());
-		removeAnnotation(annotation2.getIdentifier());
 	}
 				
 }

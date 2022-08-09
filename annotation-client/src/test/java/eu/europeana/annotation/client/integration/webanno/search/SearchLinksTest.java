@@ -26,6 +26,7 @@ public class SearchLinksTest extends BaseSearchTest {
 		
 		// create indexed tag
 		Annotation createdAnno = createLink(requestBody);
+		addCreatedAnnotation(createdAnno);
 		
 		// search for indexed id and textual values
 		Annotation retrievedAnno = searchLastCreated(VALUE_ID+"\""+createdAnno.getIdentifier()+"\"");
@@ -34,9 +35,6 @@ public class SearchLinksTest extends BaseSearchTest {
 		String VALUE_SEARCH_TARGET_LINK = "target_uri:\""+ VALUE_TARGET_LINK_URI +"\"";
 		retrievedAnno = searchLastCreated(VALUE_SEARCH_TARGET_LINK);
 		validateLink(retrievedAnno);
-
-		// remove tag
-		removeAnnotation(createdAnno.getIdentifier());
 	}
 
 	/**

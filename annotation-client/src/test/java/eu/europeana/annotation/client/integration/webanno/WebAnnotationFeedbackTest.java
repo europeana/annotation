@@ -33,15 +33,15 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 	public void createAnnotationReport() throws JsonParseException, IOException {
 		
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
-		validateResponse(response);
-		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+		Annotation storedAnno = validateResponse(response);
+		addCreatedAnnotation(storedAnno);
+//		 getApiProtocolClient().parseResponseBody(response);
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
 				, storedAnno.getIdentifier()
 				, TEST_USER_TOKEN);
 		validateReportResponse(reportResponse, HttpStatus.CREATED);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 
@@ -51,8 +51,8 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 				   InvocationTargetException, JSONException, IOException {
 		
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD);
-		validateResponse(response);
-		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
+		Annotation storedAnno = validateResponse(response);
+		addCreatedAnnotation(storedAnno);
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
@@ -70,7 +70,6 @@ public class WebAnnotationFeedbackTest extends BaseWebAnnotationTest {
 				, TEST_USER_TOKEN
 				);
 		validateModerationReportResponse(getResponse);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	protected void validateModerationReportResponse(ResponseEntity<String> response) 

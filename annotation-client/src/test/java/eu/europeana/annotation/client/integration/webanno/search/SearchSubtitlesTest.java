@@ -36,6 +36,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		
 		// create indexed subtitle
 		Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
+		addCreatedAnnotation(storedAnno);
 		
 		assertTrue(BodyInternalTypes.isFullTextResourceTagBody(storedAnno.getBody().getInternalType()));
 		//validate the reflection of input in output!
@@ -47,9 +48,6 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		Annotation retrievedAnnotation = (Annotation)annoPage.getAnnotations().get(0);
 		assertEquals(storedAnno.getIdentifier(), retrievedAnnotation.getIdentifier());
 		validateSubtitle(retrievedAnnotation);
-
-		// remove annotation
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 
 	/**

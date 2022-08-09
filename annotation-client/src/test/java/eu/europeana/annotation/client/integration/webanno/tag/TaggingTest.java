@@ -23,12 +23,12 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_BODY_TEXT);
 		
 		Annotation storedAnno = createTag(requestBody);
+		addCreatedAnnotation(storedAnno);
 		
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 	
@@ -38,12 +38,12 @@ public class TaggingTest extends BaseTaggingTest {
 		String requestBody = getJsonStringInput(TAG_MINIMAL);
 		
 		Annotation storedAnno = createTag(requestBody);
+		addCreatedAnnotation(storedAnno);
 		
 		Annotation inputAnno = parseTag(requestBody);
 		
 		//validate the reflection of input in output!
 		validateOutputAgainstInput(storedAnno, inputAnno);
-		removeAnnotation(storedAnno.getIdentifier());
 	}
 	
 
