@@ -27,6 +27,7 @@ public class SubtitlingTest extends BaseWebAnnotationTest {
 	Annotation inputAnno = parseSubtitle(requestBody);
 
 	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
+	addCreatedAnnotation(storedAnno);
 
 	// validate the reflection of input in output!
 	validateOutputAgainstInput(storedAnno, inputAnno);

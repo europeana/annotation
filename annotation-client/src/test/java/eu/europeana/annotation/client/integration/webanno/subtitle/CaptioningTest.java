@@ -12,26 +12,26 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class CaptioningTest extends BaseWebAnnotationTest {
 
-    public static final String CAPTION_MINIMAL = "/caption/minimal.json";
+  public static final String CAPTION_MINIMAL = "/caption/minimal.json";
 
-    protected Annotation parseCaption(String jsonString) throws JsonParseException {
-	MotivationTypes motivationType = MotivationTypes.CAPTIONING;
-	return parseAnnotation(jsonString, motivationType);
-    }
+  protected Annotation parseCaption(String jsonString) throws JsonParseException {
+    MotivationTypes motivationType = MotivationTypes.CAPTIONING;
+    return parseAnnotation(jsonString, motivationType);
+  }
 
-    @Test
-    public void createMinimalCaption() throws IOException, JsonParseException, IllegalAccessException,
-	    IllegalArgumentException, InvocationTargetException {
+  @Test
+  public void createMinimalCaption() throws IOException, JsonParseException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
 
-	String requestBody = getJsonStringInput(CAPTION_MINIMAL);
-	Annotation inputAnno = parseCaption(requestBody);
+    String requestBody = getJsonStringInput(CAPTION_MINIMAL);
+    Annotation inputAnno = parseCaption(requestBody);
 
-	Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, null);
+    Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, null);
+    addCreatedAnnotation(storedAnno);
 
-	// validate the reflection of input in output!
-	validateOutputAgainstInput(storedAnno, inputAnno);
-	
-	removeAnnotation(storedAnno.getIdentifier());
-    }
+    // validate the reflection of input in output!
+    validateOutputAgainstInput(storedAnno, inputAnno);
+
+  }
 
 }

@@ -10,6 +10,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
@@ -17,7 +18,7 @@ import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 
 
 //TODO: enabled when whitelistEntry API is enabled
-//@Ignore 
+//@Disabled
 public class WhitelistJsonApiTest extends BaseWebAnnotationTest {
 
 	private static String TEST_HTTP_URI = "http://test.data.europeana.eu";
@@ -25,7 +26,7 @@ public class WhitelistJsonApiTest extends BaseWebAnnotationTest {
     private static WhitelistJsonApiImpl whitelistJsonApi;
     protected Logger log = LogManager.getLogger(getClass());
     
-    @BeforeAll
+//    @BeforeAll
     public  static void initObjects() {
     	whitelistJsonApi = new WhitelistJsonApiImpl();
     }

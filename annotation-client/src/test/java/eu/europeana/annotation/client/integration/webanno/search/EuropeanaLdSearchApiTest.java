@@ -8,7 +8,7 @@ import java.util.Iterator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-
+import org.junit.jupiter.api.Disabled;
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -22,6 +22,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
  * @author Sergiu Gordea @ait
  */
 @Deprecated
+@Disabled
 public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 	
     Logger log = LogManager.getLogger(getClass());

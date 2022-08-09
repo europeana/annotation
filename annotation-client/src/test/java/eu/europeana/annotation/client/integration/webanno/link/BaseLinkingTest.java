@@ -20,31 +20,5 @@ public class BaseLinkingTest extends BaseWebAnnotationTest {
 		MotivationTypes motivationType = MotivationTypes.LINKING;
 		return parseAnnotation(jsonString, motivationType);		
 	}
-	
-    @Test
-    public void createLinkAnnotation() throws JsonParseException, IOException {
-        ResponseEntity<String> response = storeTestAnnotation(LINK_STANDARD);
-        validateResponse(response);  
-        
-        Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
-        removeAnnotation(storedAnno.getIdentifier());
-    }
-
-//	protected Annotation createLink(String requestBody) throws JsonParseException {
-//		ResponseEntity<String> response = getApiClient().createAnnotation(
-//				getApiKey(), WebAnnotationFields.PROVIDER_WEBANNO, null, true, requestBody, 
-//				TEST_USER_TOKEN, 
-//				null //WebAnnotationFields.LINK
-//				);
-//				
-//				
-//		assertNotNull(response.getBody());
-//		assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-//		
-//		Annotation storedAnno = getApiClient().parseResponseBody(response);
-//		assertNotNull(storedAnno.getCreator());
-//		assertNotNull(storedAnno.getGenerator());
-//		return storedAnno;
-//	}
 
 }

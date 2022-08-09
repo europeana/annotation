@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,8 @@ import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 public class BaseWebAnnotationTest {
     
 	protected Logger log = LogManager.getLogger(getClass());
+	
+	private static List<Annotation> createdAnnotations = new ArrayList<Annotation>();
 
 	String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 
@@ -51,6 +57,7 @@ public class BaseWebAnnotationTest {
 	public static final String CAPTION_MINIMAL = "/caption/minimal.json";
 	public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
 	public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";
+	public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC = "/linkforcontributing/link_for_contributing_target_specific.json";
 	
 	public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
 	public static final String VALUE_ID = "anno_id:";
@@ -431,18 +438,6 @@ public class BaseWebAnnotationTest {
       ResponseEntity<String> re = webannoAdminApi.removeAnnotation(identifier);
       return re.getBody();
     }
-	
-	
-	protected Annotation[] createMultipleTestAnnotations(Integer numTestAnno) throws JsonParseException, IOException {
-		
-		Annotation[] testAnnotations = new Annotation[numTestAnno];
-		for( int i = 0; i < numTestAnno; i++) {
-			Annotation annotation = this.createTestAnnotation(TAG_STANDARD, null);
-			assertNotNull(annotation);
-			testAnnotations[i] = annotation;
-		}
-		return testAnnotations;
-	}
 		
 	protected ResponseEntity<String> getAnnotation(Annotation anno) {
 		return getApiProtocolClient().getAnnotation(getApiKey(), anno.getIdentifier());
@@ -456,16 +451,32 @@ public class BaseWebAnnotationTest {
 		return getApiProtocolClient().getAnnotation(anno.getIdentifier(), searchProfile);
 	}
 	
-	protected void validateResponse(ResponseEntity<String> response) throws JsonParseException {
-		validateResponse(response, HttpStatus.CREATED);
+	protected Annotation validateResponse(ResponseEntity<String> response) throws JsonParseException {
+		return validateResponse(response, HttpStatus.CREATED);
 	}
 	
-	protected void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+	protected Annotation validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
 		assertNotNull(response.getBody());
-		assertEquals(response.getStatusCode(), status);
+		assertEquals(status, response.getStatusCode());
 		
 		Annotation storedAnno = getApiProtocolClient().parseResponseBody(response);
 		assertNotNull(storedAnno.getIdentifier());
+		return storedAnno;
 	}
-	
+
+  public List<Annotation> getCreatedAnnotations() {
+    return createdAnnotations;
+  }
+
+  public void addCreatedAnnotation(Annotation createdAnnotation) {
+    createdAnnotations.add(createdAnnotation);
+  }
+
+  @AfterEach
+  public void removeCreatedAnnotations() {
+    for (Annotation annotation : createdAnnotations) {
+       removeAnnotation(annotation.getIdentifier());
+    }
+    createdAnnotations.clear();
+  }
 }
