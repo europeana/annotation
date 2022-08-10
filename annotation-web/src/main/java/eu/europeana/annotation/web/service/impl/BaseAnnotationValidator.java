@@ -615,7 +615,8 @@ public abstract class BaseAnnotationValidator {
     	try {
     		subtitleHandler.parseSubtitle(body.getValue(), body.getContentType());
     	}
-    	catch (FileFormatException | IOException e) {
+    	catch (Throwable e) {
+//    	   FileFormatException | IOException are known exceptions but also runtime exceptions might be thrown  
     	    throw new PropertyValidationException(I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE,
     		    I18nConstants.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
     	} 	
