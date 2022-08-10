@@ -19,6 +19,7 @@ db.getCollection('annotation').updateMany(
 
 ###### ACCEPTANCE environment
 #migration of creator required for http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24
+#"modifiedCount" : 32781.0
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a" } }
@@ -27,6 +28,9 @@ db.getCollection('annotation').updateMany(
 
 
 #http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb
+#    "matchedCount" : 21.0,
+#    "modifiedCount" : 14.0 
+#test user
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb" },
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/837e4b22-b3eb-4868-9d39-b23be16c111f" } }
@@ -34,6 +38,8 @@ db.getCollection('annotation').updateMany(
 
 #588eec26-0cb9-4a09-90b5-74365e1e7b43
 # helinek should use transcribathon dev
+#    "matchedCount" : 4080.0,
+#    "modifiedCount" : 4080.0
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/588eec26-0cb9-4a09-90b5-74365e1e7b43" },
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/d87ddc3d-711e-4871-b3d8-64b1e1b97476" } }
@@ -41,13 +47,16 @@ db.getCollection('annotation').updateMany(
 
 #61b120d6-8b53-471f-8216-250f5c184424
 #remove to use dev account
+#19
 db.getCollection('annotation').find({ "creator.httpUrl": "http://data.europeana.eu/user/61b120d6-8b53-471f-8216-250f5c184424" })
-#db.getCollection('annotation').updateMany(   
-#     { "creator.httpUrl": "http://data.europeana.eu/user/61b120d6-8b53-471f-8216-250f5c184424" },
-#     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/test_generator_identifier " } }
-#)
+<query>creator_uri:"http://data.europeana.eu/user/61b120d6-8b53-471f-8216-250f5c184424"</query>
+db.getCollection('annotation').remove(
+{ "creator.httpUrl": "http://data.europeana.eu/user/61b120d6-8b53-471f-8216-250f5c184424" }
+)
 
 #aa20f5f8-7521-4913-aaba-3e99bcf176d9
+#    "matchedCount" : 111.0,
+#    "modifiedCount" : 111.0
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/aa20f5f8-7521-4913-aaba-3e99bcf176d9" },
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/242d31d1-9b5c-44ca-90ee-69cc5e4a6688" } }
@@ -60,6 +69,8 @@ db.getCollection('annotation').updateMany(
 )
 
 #fa78696a-e665-4dd2-a7e8-c7a7c0aad81a
+#    "matchedCount" : 25.0,
+#    "modifiedCount" : 25.0
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/fa78696a-e665-4dd2-a7e8-c7a7c0aad81a" },
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/f66fe60d-4829-4f90-affb-b0360dbca477" } }
