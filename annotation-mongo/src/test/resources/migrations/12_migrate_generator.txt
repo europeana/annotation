@@ -6,15 +6,10 @@ db.getCollection('annotation').distinct("creator.httpUrl")
 
 ###### PRODUCTION environment
 #migration of creator required for http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24
-#db.getCollection('annotation').updateMany(   
-#     { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
-#     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/test_generator_identifier " } }
-#)
-
-#db.getCollection('annotation').updateMany(   
-#     { "creator.httpUrl": "http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb" },
-#     { $set: { "creator.httpUrl": "http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb_updated" } }
-#)
+db.getCollection('annotation').updateMany(   
+     { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
+     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a" } }
+)
 
 #http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8
 db.getCollection('annotation').updateMany(   
@@ -24,15 +19,11 @@ db.getCollection('annotation').updateMany(
 
 ###### ACCEPTANCE environment
 #migration of creator required for http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24
-#db.getCollection('annotation').updateMany(   
-#     { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
-#     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/test_generator_identifier " } }
-#)
+db.getCollection('annotation').updateMany(   
+     { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
+     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a" } }
+)
 
-#db.getCollection('annotation').updateMany(   
-#     { "creator.httpUrl": "http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb" },
-#     { $set: { "creator.httpUrl": "http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb_updated" } }
-#)
 
 
 #http://data.europeana.eu/user/44036c47-a40e-421b-9019-10146c970acb
@@ -45,11 +36,12 @@ db.getCollection('annotation').updateMany(
 # helinek should use transcribathon dev
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/588eec26-0cb9-4a09-90b5-74365e1e7b43" },
-     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/588eec26-0cb9-4a09-90b5-74365e1e7b43" } }
+     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/d87ddc3d-711e-4871-b3d8-64b1e1b97476" } }
 )
 
 #61b120d6-8b53-471f-8216-250f5c184424
 #remove to use dev account
+db.getCollection('annotation').find({ "creator.httpUrl": "http://data.europeana.eu/user/61b120d6-8b53-471f-8216-250f5c184424" })
 #db.getCollection('annotation').updateMany(   
 #     { "creator.httpUrl": "http://data.europeana.eu/user/61b120d6-8b53-471f-8216-250f5c184424" },
 #     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/test_generator_identifier " } }
