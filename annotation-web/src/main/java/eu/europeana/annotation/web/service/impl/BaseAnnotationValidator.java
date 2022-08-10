@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import com.dotsub.converter.exception.FileFormatException;
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
@@ -578,15 +577,27 @@ public abstract class BaseAnnotationValidator {
             I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target" });
       }
       
-      //validate base URLs
-      if(webAnnotation.getTarget().getHttpUri() != null) {
-        //httpUri is the same as value;
-        validateTargetBaseUrl(webAnnotation.getTarget());
-      } else {
-        validateSpecificResource(webAnnotation.getTarget(), "target", false);
-        validateTargetBaseUrl(webAnnotation.getTarget());
-      } 
+      //target.id/httpUri is mandatory 
+      if(StringUtils.isBlank(webAnnotation.getTarget().getHttpUri())) {
+        throw new PropertyValidationException(I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target/target.id" });
+      }
       
+      //specific resources not allowed 
+      String scope = webAnnotation.getTarget().getScope();
+      if(scope != null) {
+          throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+              new String[] { "target.scope is not allowed for this annotation type: ", scope });
+      }
+      
+      String source = webAnnotation.getTarget().getSource();
+      if(source != null) {
+        throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+            new String[] { "target.source is not allowed for this annotation type: ", source });
+      }
+      
+      //validate base URLs
+      validateTargetBaseUrl(webAnnotation.getTarget());
     }
     
     private void validateSubtitleBody (Body body) throws PropertyValidationException {

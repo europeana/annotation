@@ -5,5 +5,7 @@
   "body": {
        "id": "https://europeana.transcribathon.eu/documents/story/?story=151095"
   },
-  "target": "http://data.europeana.eu/item/151095/SomeResource_1000093324568"
+  "target": {
+  	"id": "http://data.europeana.eu/item/151095/SomeResource_1000093324568"
+  }
 }	

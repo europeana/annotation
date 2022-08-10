@@ -77,7 +77,7 @@ annotation.apiVersion=
 #placeholder to store generation timestamp
 annotation.properties.timestamp=-1
 #annotation subtitles formats
-annotation.subtitles.formats=text/vtt,application/ttml+xml,video/quicktime
+annotation.subtitles.formats=application/x-subrip,text/vtt,application/ttml+xml
 annotation.subtitles.formats.xml=/subtitles-formats.xml
 
 annotation.api.endpoint=https://api.europeana.eu/annotation
