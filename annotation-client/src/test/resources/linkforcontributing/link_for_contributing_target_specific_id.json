@@ -1,0 +1,11 @@
+{
+  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "type": "Annotation",
+  "motivation": "linkForContributing",
+  "body": "https://europeana.transcribathon.eu/documents/story/?story=151095",
+  "target": {
+  	"id": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7",
+  	"scope": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7",
+  	"source": "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"
+   }
+}	
