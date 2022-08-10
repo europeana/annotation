@@ -54,7 +54,8 @@ public class BaseWebAnnotationTest {
 	public static final String TAG_ANNOTATION = "/tag/annotation.json";
 	public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
 	public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
-	public static final String CAPTION_MINIMAL = "/caption/minimal.json";
+	public static final String SUBTITLE_SRT = "/subtitle/subtitle_srt.json";
+    public static final String CAPTION_MINIMAL = "/caption/minimal.json";
 	public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
 	public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";
 	public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC = "/linkforcontributing/link_for_contributing_target_specific.json";

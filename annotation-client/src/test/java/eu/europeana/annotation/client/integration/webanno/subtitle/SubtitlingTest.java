@@ -13,27 +13,42 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 
 public class SubtitlingTest extends BaseWebAnnotationTest {
 
-    protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
-	MotivationTypes motivationType = MotivationTypes.SUBTITLING;
-	return parseAnnotation(jsonString, motivationType);
-    }
-    
-    @Test
-    public void createMinimalSubtitle() throws IOException, JsonParseException, IllegalAccessException,
-	    IllegalArgumentException, InvocationTargetException {
+  protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
+    MotivationTypes motivationType = MotivationTypes.SUBTITLING;
+    return parseAnnotation(jsonString, motivationType);
+  }
 
-	String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
+  @Test
+  public void createMinimalSubtitle() throws IOException, JsonParseException,
+      IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	Annotation inputAnno = parseSubtitle(requestBody);
+    String requestBody = getJsonStringInput(SUBTITLE_MINIMAL);
 
-	Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
-	addCreatedAnnotation(storedAnno);
+    Annotation inputAnno = parseSubtitle(requestBody);
 
-	// validate the reflection of input in output!
-	validateOutputAgainstInput(storedAnno, inputAnno);
-	
-	Assertions.assertTrue(true);
-	
-	removeAnnotation(storedAnno.getIdentifier());
-    }
+    Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, null);
+    addCreatedAnnotation(storedAnno);
+
+    // validate the reflection of input in output!
+    validateOutputAgainstInput(storedAnno, inputAnno);
+
+    Assertions.assertTrue(true);
+
+  }
+
+  @Test
+  public void createSubtitleSrt() throws IOException, JsonParseException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
+
+    String requestBody = getJsonStringInput(SUBTITLE_SRT);
+    Annotation inputAnno = parseSubtitle(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(SUBTITLE_SRT, null);
+    addCreatedAnnotation(storedAnno);
+
+    // validate the reflection of input in output!
+    validateOutputAgainstInput(storedAnno, inputAnno);
+
+    Assertions.assertTrue(true);
+  }
 }
