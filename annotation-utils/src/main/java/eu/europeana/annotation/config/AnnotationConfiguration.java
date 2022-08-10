@@ -6,9 +6,6 @@ public interface AnnotationConfiguration {
 
     public static final String ANNOTATION_INDEXING_ENABLED = "annotation.indexing.enabled";
     public static final String ANNOTATION_ENVIRONMENT = "annotation.environment";
-    public static final String ANNOTATION_SUBTITLES_FORMATS = "annotation.subtitles.formats";
-    public static final String ANNOTATION_SUBTITLES_FORMATS_XML = "annotation.subtitles.formats.xml";
-    public static final String BEAN_SUBTITLES_FORMATS = "subtitlesFormats";
 
     public static final String VALUE_ENVIRONMENT_PRODUCTION = "production";
     public static final String VALUE_ENVIRONMENT_TEST = "test";

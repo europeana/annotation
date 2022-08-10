@@ -71,15 +71,6 @@ metis.connection.timeout=30000
 # valid licenses list
 annotation.licenses=http://creativecommons.org/publicdomain/zero/,http://creativecommons.org/publicdomain/mark/,http://creativecommons.org/licenses/by/,http://rightsstatements.org/vocab/NoC-NC/,http://creativecommons.org/licenses/by-sa/,http://creativecommons.org/licenses/by-nd/,http://creativecommons.org/licenses/by-nc-sa/,http://creativecommons.org/licenses/by-nd-nc/
 
-
-# Annotation API version
-annotation.apiVersion=
-#placeholder to store generation timestamp
-annotation.properties.timestamp=-1
-#annotation subtitles formats
-annotation.subtitles.formats=application/x-subrip,text/vtt,application/ttml+xml
-annotation.subtitles.formats.xml=/subtitles-formats.xml
-
 annotation.api.endpoint=https://api.europeana.eu/annotation
 annotation.data.endpoint=http://data.europeana.eu/annotation
 annotation.user.data.endpoint=http://data.europeana.eu/user
@@ -88,3 +79,6 @@ annotation.item.data.endpoint=http://data.europeana.eu/item
 
 #when running the annotation-client tests this can be set to true to avoid the authorization for the deletion
 annotation.remove.authorization=false
+
+# Annotation API version
+annotation.apiVersion=
