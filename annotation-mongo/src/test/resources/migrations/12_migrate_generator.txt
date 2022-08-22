@@ -8,13 +8,25 @@ db.getCollection('annotation').distinct("creator.httpUrl")
 #migration of creator required for http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
-     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a" } }
+     { $set: { 
+     		"generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a",
+     		"generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     		"generator.agentType" : "Software",
+        	"generator.internalType" : "SOFTWARE"
+     		} 
+     }
 )
 
 #http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8" },
-     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/8d18a824-8d98-4251-af2c-56514732ce5a" } }
+     { $set: { 
+     	"generator.httpUrl": "https://api.europeana.eu/apikey/8d18a824-8d98-4251-af2c-56514732ce5a",
+     	 "generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     	 "generator.agentType" : "Software",
+         "generator.internalType" : "SOFTWARE"
+     	} 
+     }
 )
 
 ###### ACCEPTANCE environment
@@ -76,6 +88,15 @@ db.getCollection('annotation').updateMany(
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/f66fe60d-4829-4f90-affb-b0360dbca477" } }
 )
 
+db.getCollection('annotation').updateMany(   
+     { },
+     { $set: { 
+     	 "generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     	 "generator.agentType" : "Software",
+         "generator.internalType" : "SOFTWARE"
+     	} 
+     }
+)
 
 
 
