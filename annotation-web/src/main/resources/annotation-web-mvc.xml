@@ -45,7 +45,7 @@
 		class="springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper">
 	</bean>
 
-	<mvc:default-servlet-handler/>
+	<mvc:default-servlet-handler default-servlet-name="annotationServlet"/>
 
 	<mvc:cors>
 		<mvc:mapping path="/api-docs" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
