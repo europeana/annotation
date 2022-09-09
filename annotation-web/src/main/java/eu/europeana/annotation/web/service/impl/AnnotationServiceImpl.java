@@ -23,7 +23,6 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
-import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -46,10 +45,10 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
-    @Resource
+    @Resource(name="annotation_db_whitelistService")
     PersistentWhitelistService mongoWhitelistPersistence;
 
-    @Resource
+    @Resource(name="mongoStatusLogPersistence")
     PersistentStatusLogService mongoStatusLogPersistence;
 
     @Resource

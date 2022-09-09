@@ -27,7 +27,7 @@ public class PersistentModerationRecordServiceTest {
 
 	@Resource AnnotationConfiguration configuration;
 
-	@Resource
+	@Resource(name="annotation_db_moderationRecordService")
 	private PersistentModerationRecordService moderationRecordService;
 
 	@Resource(name = "annotation_db_moderationRecordDao")

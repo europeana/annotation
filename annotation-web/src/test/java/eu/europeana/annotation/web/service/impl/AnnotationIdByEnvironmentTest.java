@@ -34,7 +34,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 	@Resource 
 	AnnotationService webAnnotationService;
 	
-    @Resource 
+    @Resource(name="adminService") 
     AdminServiceImpl adminService;
     
     @Resource
@@ -71,7 +71,7 @@ public class AnnotationIdByEnvironmentTest extends AnnotationTestObjectBuilder{
 			throws MalformedURLException, IOException, AnnotationServiceException, InternalServerException {
 		
 		AnnotationConfigurationImpl config = (AnnotationConfigurationImpl) ((BaseAnnotationServiceImpl)webAnnotationService).getConfiguration();
-		config.getAnnotationProperties().put(AnnotationConfiguration.ANNOTATION_ENVIRONMENT, environment);
+		config.setEnvironment(environment);
 		
 		Annotation anno = testCreateAnnotationWebanno(identifier);
 		

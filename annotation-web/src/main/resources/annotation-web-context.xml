@@ -17,6 +17,7 @@
         ">
     
     <!-- USING OTHER MODULES -->
+    <beans:import resource="api2-common-context.xml"/>
 	<beans:import resource="annotation-definitions-context.xml"/>
 <!-- will be already imported by annotation-mongo	
 	<beans:import resource="api2-common-context.xml"/>
@@ -35,7 +36,7 @@
     </beans:bean>
     
 	<beans:bean name="commons_oauth2_europeanaClientDetailsService" class="eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService">
-		<beans:property name="apiKeyServiceUrl" value="#{annotationProperties['europeana.apikey.serviceurl']}"/>
+		<beans:property name="apiKeyServiceUrl" value="${europeana.apikey.serviceurl}"/>
 	</beans:bean>     
     
     <!--  java api bean -->
@@ -76,7 +77,7 @@
         <aop:aspect ref="profiler">
             <!-- Catch all method in the service package through AOP. -->
             <aop:pointcut id="serviceMethod"
-                expression="#{annotationProperties['profiler.expression']}" />
+                expression="${profiler.expression}" />
             <!-- For these methods use the profile named method in the profiler class we defined below. -->
             <aop:around pointcut-ref="serviceMethod" method="profile" />
         </aop:aspect>

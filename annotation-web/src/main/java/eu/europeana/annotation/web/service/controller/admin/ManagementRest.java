@@ -45,7 +45,7 @@ public class ManagementRest extends BaseRest {
 
     Logger logger = LogManager.getLogger(getClass());
 
-    @Resource
+    @Resource(name="adminService")
     private AdminService adminService;
 
     public AdminService getAdminService() {

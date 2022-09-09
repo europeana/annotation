@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Annotation Statistics", description=" ")
 public class AnnotationStatisticsRest extends BaseJsonldRest {
 
-	@Resource
+	@Resource(name="annotationStatisticsService")
 	AnnotationStatisticsService annotationStatisticsService;
     /**
      * Method to generate the statistics for the annotations.

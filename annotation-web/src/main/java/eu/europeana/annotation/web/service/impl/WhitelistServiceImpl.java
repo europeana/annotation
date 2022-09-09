@@ -20,7 +20,7 @@ import eu.europeana.annotation.web.service.WhitelistService;
 
 public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements WhitelistService {
 
-	@Resource
+	@Resource(name="annotation_db_whitelistService")
 	PersistentWhitelistService mongoWhitelistPersistence;
 
 	public PersistentWhitelistService getMongoWhitelistPersistence() {

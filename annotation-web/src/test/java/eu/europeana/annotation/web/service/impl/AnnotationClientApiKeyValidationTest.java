@@ -34,7 +34,7 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 	})
 public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBuilder{
 
-	@Resource
+	@Resource(name="adminService")
 	private AdminService adminService;
 
 	public AdminService getAdminService() {

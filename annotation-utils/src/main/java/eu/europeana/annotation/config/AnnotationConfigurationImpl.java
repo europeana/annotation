@@ -1,84 +1,63 @@
 package eu.europeana.annotation.config;
 
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 
 
 //@Configuration
 //@ComponentScan("eu.europeana.annotation")
 public class AnnotationConfigurationImpl implements AnnotationConfiguration {
-
-    private Properties annotationProperties;
+    
     private Set<String> acceptedLicences;
-
-    @Override
+    private boolean indexingEnabled;
+    private String environment;
+    private String annotationBaseUrl;
+    private String defaultWhitelistResourcePath;
+    private int maxpagesizeMinimal;
+    private int maxpagesizeStandard;
+    private String jwtTokenSignatureKey;
+    private String authorizationApiName;
+    private String transcriptionsLicenses;
+    private int statsFacets;
+    private String metisBaseUrl;
+    private int metisConnectionRetries;
+    private int metisConnectionTimeout;
+    private String annotationApiVersion;
+    private String annoApiEndpoint;
+    private String annoUserDataEndpoint;
+    private String annoClientApiEndpoint;
+    private String annoItemDataEndpoint;
+    private String mongoDatabaseName;
+    private boolean annoRemoveAuthorization;
+    private String solrUrls;    
+    
     public String getComponentName() {
 	return "annotation";
     }
 
-    @Override
     public boolean isIndexingEnabled() {
-	String value = getAnnotationProperties().getProperty(ANNOTATION_INDEXING_ENABLED);
-	return Boolean.valueOf(value);
+      return indexingEnabled;
     }
 
-    public Properties getAnnotationProperties() {
-	return annotationProperties;
-    }
-
-    public void setAnnotationProperties(Properties annotationProperties) {
-	this.annotationProperties = annotationProperties;
-    }
-
-    @Override
     public boolean isProductionEnvironment() {
 	return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
     }
 
-    @Override
-    public String getEnvironment() {
-	return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
-    }
-
-    @Override
-    public String getAnnotationBaseUrl() {
-    return getAnnotationProperties().getProperty(ANNO_DATA_ENDPOINT);
-    }
-    
-    public String getDefaultWhitelistResourcePath() {
-	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
-    }
-
     public int getMaxPageSize(String profile) {
-	String key = PREFIX_MAX_PAGE_SIZE + profile;
-	return Integer.parseInt(getAnnotationProperties().getProperty(key));
-    }
-
-    public String getJwtTokenSignatureKey() {
-	return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
-    }
-
-    @Override
-    public String getAuthorizationApiName() {
-	return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
-    }
-
-    @Override
-    public String getTranscriptionsLicenses() {
-	return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
-    }
-
-    @Override
-    public int getStatsFacets() {
-      return toInt(getAnnotationProperties().getProperty(SOLR_STATS_FACETS));
+      switch(SearchProfiles.getByStr(profile)) {
+        case MINIMAL:
+          return maxpagesizeMinimal;
+        case STANDARD:
+          return maxpagesizeStandard;
+        default:
+          return maxpagesizeStandard;
+      }
     }
     
-    
-    @Override
     /*
      * (non-Javadoc)
      * 
@@ -87,78 +66,175 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
      * )
      */
     public Set<String> getAcceptedLicenceses() {
-
-	if (acceptedLicences == null) {
+      if (acceptedLicences == null) {
 	    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
 	    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
-	}
-
-	return acceptedLicences;
+      }
+      return acceptedLicences;
     }
 
-    @Override
+    public String getEnvironment() {
+      return environment;
+    }
+
+    public String getAnnotationBaseUrl() {
+      return annotationBaseUrl;
+    }
+
+    public String getDefaultWhitelistResourcePath() {
+      return defaultWhitelistResourcePath;
+    }
+
+    public int getMaxpagesizeMinimal() {
+      return maxpagesizeMinimal;
+    }
+
+    public int getMaxpagesizeStandard() {
+      return maxpagesizeStandard;
+    }
+
+    public String getJwtTokenSignatureKey() {
+      return jwtTokenSignatureKey;
+    }
+
+    public String getAuthorizationApiName() {
+      return authorizationApiName;
+    }
+
+    public String getTranscriptionsLicenses() {
+      return transcriptionsLicenses;
+    }
+
+    public int getStatsFacets() {
+      return statsFacets;
+    }
+
     public String getMetisBaseUrl() {
-	return getAnnotationProperties().getProperty(METIS_BASE_URL);
+      return metisBaseUrl;
     }
 
-    @Override
     public int getMetisConnectionRetries() {
-	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_RETRIES);
-	return toInt(value);
+      return metisConnectionRetries;
     }
 
-    @Override
     public int getMetisConnectionTimeout() {
-	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_TIMEOUT);
-	return toInt(value);
+      return metisConnectionTimeout;
     }
 
-    int toInt(String value) {
-	try {
-	    return Integer.valueOf(value);
-	} catch (NumberFormatException e) {
-	    return -1;
-	}
-    }
-
-    @Override
     public String getAnnotationApiVersion() {
-	return getAnnotationProperties().getProperty(API_VERSION);
+      return annotationApiVersion;
     }
 
-    @Override
     public String getAnnoApiEndpoint() {
-    return getAnnotationProperties().getProperty(ANNO_API_ENDPOINT);
+      return annoApiEndpoint;
     }
-    
-    @Override
+
     public String getAnnoUserDataEndpoint() {
-    return getAnnotationProperties().getProperty(ANNO_USER_DATA_ENDPOINT);
+      return annoUserDataEndpoint;
     }
-    
-    @Override
+
     public String getAnnoClientApiEndpoint() {
-    return getAnnotationProperties().getProperty(ANNO_CLIENT_API_ENDPOINT);
+      return annoClientApiEndpoint;
     }
 
-    @Override
     public String getAnnoItemDataEndpoint() {
-    return getAnnotationProperties().getProperty(ANNO_ITEM_DATA_ENDPOINT);
+      return annoItemDataEndpoint;
     }
 
-    @Override
     public String getMongoDatabaseName() {
-      return getAnnotationProperties().getProperty(MONGO_DATABASE_NAME);
+      return mongoDatabaseName;
     }
 
-    @Override
     public boolean getAnnoRemoveAuthorization() {
-      String value = getAnnotationProperties().getProperty(ANNO_REMOVE_AUTHORIZATION);
-      return Boolean.valueOf(value);
+      return annoRemoveAuthorization;
     }
 
-    @Override
     public String getSolrUrls() {
-      return getAnnotationProperties().getProperty(SOLR_URLS);
+      return solrUrls;
     }
+
+    public void setEnvironment(String environment) {
+      this.environment = environment;
+    }
+
+    public void setIndexingEnabled(boolean indexingEnabled) {
+      this.indexingEnabled = indexingEnabled;
+    }
+
+    public void setAnnotationBaseUrl(String annotationBaseUrl) {
+      this.annotationBaseUrl = annotationBaseUrl;
+    }
+
+    public void setDefaultWhitelistResourcePath(String defaultWhitelistResourcePath) {
+      this.defaultWhitelistResourcePath = defaultWhitelistResourcePath;
+    }
+
+    public void setMaxpagesizeMinimal(int maxpagesizeMinimal) {
+      this.maxpagesizeMinimal = maxpagesizeMinimal;
+    }
+
+    public void setMaxpagesizeStandard(int maxpagesizeStandard) {
+      this.maxpagesizeStandard = maxpagesizeStandard;
+    }
+
+    public void setJwtTokenSignatureKey(String jwtTokenSignatureKey) {
+      this.jwtTokenSignatureKey = jwtTokenSignatureKey;
+    }
+
+    public void setAuthorizationApiName(String authorizationApiName) {
+      this.authorizationApiName = authorizationApiName;
+    }
+
+    public void setTranscriptionsLicenses(String transcriptionsLicenses) {
+      this.transcriptionsLicenses = transcriptionsLicenses;
+    }
+
+    public void setStatsFacets(int statsFacets) {
+      this.statsFacets = statsFacets;
+    }
+
+    public void setMetisBaseUrl(String metisBaseUrl) {
+      this.metisBaseUrl = metisBaseUrl;
+    }
+
+    public void setMetisConnectionRetries(int metisConnectionRetries) {
+      this.metisConnectionRetries = metisConnectionRetries;
+    }
+
+    public void setMetisConnectionTimeout(int metisConnectionTimeout) {
+      this.metisConnectionTimeout = metisConnectionTimeout;
+    }
+
+    public void setAnnotationApiVersion(String annotationApiVersion) {
+      this.annotationApiVersion = annotationApiVersion;
+    }
+
+    public void setAnnoApiEndpoint(String annoApiEndpoint) {
+      this.annoApiEndpoint = annoApiEndpoint;
+    }
+
+    public void setAnnoUserDataEndpoint(String annoUserDataEndpoint) {
+      this.annoUserDataEndpoint = annoUserDataEndpoint;
+    }
+
+    public void setAnnoClientApiEndpoint(String annoClientApiEndpoint) {
+      this.annoClientApiEndpoint = annoClientApiEndpoint;
+    }
+
+    public void setAnnoItemDataEndpoint(String annoItemDataEndpoint) {
+      this.annoItemDataEndpoint = annoItemDataEndpoint;
+    }
+
+    public void setMongoDatabaseName(String mongoDatabaseName) {
+      this.mongoDatabaseName = mongoDatabaseName;
+    }
+
+    public void setAnnoRemoveAuthorization(boolean annoRemoveAuthorization) {
+      this.annoRemoveAuthorization = annoRemoveAuthorization;
+    }
+
+    public void setSolrUrls(String solrUrls) {
+      this.solrUrls = solrUrls;
+    }
+
 }

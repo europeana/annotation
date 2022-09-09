@@ -53,7 +53,7 @@ public class SolrAnnotationServiceTest {
         return Integer.parseInt(str);
     }
 	   
-	@Resource 
+	@Resource(name="solrAnnotationService") 
 	SolrAnnotationService solrAnnotationService;
     
 	/**

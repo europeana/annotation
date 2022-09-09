@@ -44,7 +44,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/" + WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {
 
-    @Resource
+    @Resource(name="whitelistService")
     private WhitelistService whitelistService;
 
     public WhitelistService getWhitelistService() {

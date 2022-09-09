@@ -29,7 +29,7 @@ import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationValidator {
 	
-	@Resource
+	@Resource(name="subtitleHandler")
 	private SubtitleHandler subtitleHandler;
 
     protected abstract AnnotationConfiguration getConfiguration();

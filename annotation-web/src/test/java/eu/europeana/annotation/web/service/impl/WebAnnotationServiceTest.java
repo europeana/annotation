@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -48,10 +47,10 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	@Resource 
 	AnnotationService webAnnotationService;
 	
-	@Resource
-	SolrAnnotationService solrService;
+	@Resource(name="solrAnnotationService")
+	SolrAnnotationService solrAnnotationService;
 	
-	@Resource 
+	@Resource(name="adminService") 
 	AdminService adminService;
 	
     @Resource
@@ -180,7 +179,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Search Annotation.
 		 */
-		AnnotationView anno = solrService.searchById(((PersistentAnnotation) storedAnnotation).getId().toString());
+		AnnotationView anno = solrAnnotationService.searchById(((PersistentAnnotation) storedAnnotation).getId().toString());
 //		List<? extends Annotation> resList = webAnnotationService. search Annotations(
 //				, "0", "10");
 //		assertTrue(resList == null || resList.size() == 0);
@@ -197,7 +196,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Search Annotation.
 		 */
-		 long oldEntries = solrService.search(
+		 long oldEntries = solrAnnotationService.search(
 				testAnnotation.getBody().getValue(), "0", "1").getResultSize();
 
 		/**
@@ -215,7 +214,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		/**
 		 * Search Annotation.
 		 */
-		long currentEntries = solrService.search(
+		long currentEntries = solrAnnotationService.search(
 			testAnnotation.getBody().getValue(), "0", "1").getResultSize();
 		assertTrue(currentEntries == oldEntries);
 	}

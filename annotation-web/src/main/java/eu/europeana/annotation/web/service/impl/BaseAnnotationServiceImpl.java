@@ -30,13 +30,13 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 //	@Resource
 //	AuthenticationService authenticationService;
 
-    @Resource
-    SolrAnnotationService solrService;
+    @Resource(name="solrAnnotationService")
+    SolrAnnotationService solrAnnotationService;
 
     @Resource
     PersistentAnnotationService mongoPersistance;
 
-    @Resource
+    @Resource(name="annotation_db_moderationRecordService")
     PersistentModerationRecordService mongoModerationRecordPersistance;
 
     protected static Logger logger = LogManager.getLogger(BaseAnnotationServiceImpl.class);
@@ -74,11 +74,11 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
     }
 
     public SolrAnnotationService getSolrService() {
-	return solrService;
+	return solrAnnotationService;
     }
 
-    public void setSolrService(SolrAnnotationService solrService) {
-	this.solrService = solrService;
+    public void setSolrService(SolrAnnotationService solrAnnotationService) {
+	this.solrAnnotationService = solrAnnotationService;
     }
     
     public Annotation getAnnotationById(long annoIdentifier, String userId, boolean enabled)
