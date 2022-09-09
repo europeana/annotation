@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>${version.log4j2}</version>
+<!-- 			<version>${version.log4j2}</version> -->
 		</dependency>
 
 		<dependency>
@@ -49,13 +49,13 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
-			<version>${version.org.junit.jupiter}</version>
+<!-- 			<version>${version.org.junit.jupiter}</version> -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			<version>${version.junit-platform}</version>
+<!-- 			<version>${version.junit-platform}</version> -->
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

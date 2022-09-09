@@ -23,10 +23,10 @@ import eu.europeana.annotation.config.SocksProxyConfig;
         SecurityAutoConfiguration.class,
         ManagementWebSecurityAutoConfiguration.class,
         // DataSources are manually configured (for EM and batch DBs)
-        DataSourceAutoConfiguration.class
+        DataSourceAutoConfiguration.class,
+        WebMvcAutoConfiguration.class
       }    
 )
-@EnableAutoConfiguration(exclude = {WebMvcAutoConfiguration.class })
 @ImportResource("classpath:annotation-web-mvc.xml")
 public class AnnotationApp extends SpringBootServletInitializer {
 

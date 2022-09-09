@@ -38,14 +38,14 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<!-- <version>${version.springCore}</version> -->
-			<version>${version.spring}</version>
+<!-- 			<version>${version.spring}</version> -->
 		</dependency>
 
 		<!-- Other -->
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
-			<version>${version.apacheSolr}</version>
+<!-- 			<version>${version.apacheSolr}</version> -->
 		</dependency>
 
 		<!-- Other -->
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>${version.log4j2}</version>
+<!-- 			<version>${version.log4j2}</version> -->
 		</dependency>
 
 		<!-- TEST Dependencies -->
@@ -67,18 +67,18 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<!-- <version>${version.springCore}</version> -->
-			<version>${version.spring}</version>
+<!-- 			<version>${version.spring}</version> -->
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
-			<version>${version.org.junit.jupiter}</version>
+<!-- 			<version>${version.org.junit.jupiter}</version> -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-test-framework</artifactId>
-			<version>${version.apacheSolr}</version>
+<!-- 			<version>${version.apacheSolr}</version> -->
 			<scope>test</scope>
 	    </dependency>
 
