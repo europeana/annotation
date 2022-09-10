@@ -1,4 +1,4 @@
-package eu.europeana.api.common.config.swagger;
+package eu.europeana.annotation.web.common.config;
 
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Predicates.or;
@@ -10,7 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-
+import eu.europeana.api.common.config.swagger.SwaggerIgnore;
+import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;

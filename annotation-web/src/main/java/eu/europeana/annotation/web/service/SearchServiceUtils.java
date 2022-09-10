@@ -3,7 +3,7 @@ package eu.europeana.annotation.web.service;
 import org.springframework.http.HttpStatus;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.impl.SolrAnnotationUtils;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.annotation.web.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public abstract class SearchServiceUtils {

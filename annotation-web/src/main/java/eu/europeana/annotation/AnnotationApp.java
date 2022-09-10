@@ -23,8 +23,8 @@ import eu.europeana.annotation.config.SocksProxyConfig;
         SecurityAutoConfiguration.class,
         ManagementWebSecurityAutoConfiguration.class,
         // DataSources are manually configured (for EM and batch DBs)
-        DataSourceAutoConfiguration.class,
-        WebMvcAutoConfiguration.class
+        DataSourceAutoConfiguration.class
+//        WebMvcAutoConfiguration.class
       }    
 )
 @ImportResource("classpath:annotation-web-mvc.xml")

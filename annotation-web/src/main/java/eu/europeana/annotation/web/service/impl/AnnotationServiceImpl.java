@@ -31,6 +31,7 @@ import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.common.config.I18nConstants;
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
@@ -39,7 +40,6 @@ import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 

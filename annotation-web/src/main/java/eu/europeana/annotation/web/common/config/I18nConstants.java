@@ -1,4 +1,4 @@
-package eu.europeana.api.common.config;
+package eu.europeana.annotation.web.common.config;
 
 public interface I18nConstants extends eu.europeana.api.commons.definitions.config.i18n.I18nConstants{
 	//TODO: add extends api-commons.I18nConstants

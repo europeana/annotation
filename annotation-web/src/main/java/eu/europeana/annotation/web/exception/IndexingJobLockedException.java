@@ -1,8 +1,7 @@
 package eu.europeana.annotation.web.exception;
 
 import org.springframework.http.HttpStatus;
-
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.annotation.web.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class IndexingJobLockedException extends HttpException {

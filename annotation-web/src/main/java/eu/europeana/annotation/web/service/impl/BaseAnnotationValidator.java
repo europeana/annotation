@@ -22,10 +22,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.web.common.config.I18nConstants;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
-import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationValidator {
 	

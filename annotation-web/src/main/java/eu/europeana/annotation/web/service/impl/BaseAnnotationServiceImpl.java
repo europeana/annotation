@@ -17,10 +17,10 @@ import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.web.common.config.I18nConstants;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
-import eu.europeana.api.common.config.I18nConstants;
 
 public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 

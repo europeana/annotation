@@ -1,10 +1,9 @@
 package eu.europeana.annotation.web.exception.response;
 
 import org.springframework.http.HttpStatus;
-
+import eu.europeana.annotation.web.common.config.I18nConstants;
 import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
-import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class BatchUploadException extends HttpException{
