@@ -15,7 +15,7 @@ import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Configuration
 @EnableCaching
-@Component
+//@Component
 public class PersistentApiWriteLockServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentApiWriteLock, String> implements	
 		PersistentApiWriteLockService {

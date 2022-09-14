@@ -54,8 +54,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		super(null);
 	}
 
-	@Resource(name = "mongoPersistance") 
-	PersistentAnnotationServiceImpl mongoPersistance;
+	@Resource(name = "annotation_db_annotationService") 
+	PersistentAnnotationServiceImpl annotation_db_annotationService;
 
 	@Resource AnnotationConfiguration configuration;
 

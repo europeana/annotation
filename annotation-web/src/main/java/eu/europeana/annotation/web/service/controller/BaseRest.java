@@ -46,7 +46,7 @@ public class BaseRest extends BaseRestController {
 	@Resource(name="annotationSearchService")
 	AnnotationSearchService annotationSearchService;
 	
-	@Resource(name="mongoPersistance")
+	@Resource(name="annotation_db_annotationService")
 	protected PersistentAnnotationService mongoPersistance;
 	
 	//TODO move to base class

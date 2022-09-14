@@ -10,18 +10,23 @@
 
   <artifactId>annotation-statistics</artifactId>
   <name>Europeana Annotation - statistics </name>
+  <description>Module for generating statistics on existing annotations</description>
   <url>http://www.europeanalabs.eu</url>
 
   <dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<!--
 			<version>${version.jackson}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
+			<!--
 			<version>${version.javax.annotation}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
@@ -37,12 +42,16 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!--
 			<version>${version.org.junit.jupiter}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 			<scope>test</scope>
 		</dependency>
 

@@ -17,13 +17,13 @@
         ">
     
     <!-- USING OTHER MODULES -->
-    <beans:import resource="api2-common-context.xml"/>
-	<beans:import resource="annotation-definitions-context.xml"/>
+    <beans:import resource="classpath:api2-common-context.xml"/>
+	<beans:import resource="classpath:annotation-definitions-context.xml"/>
 <!-- will be already imported by annotation-mongo	
 	<beans:import resource="api2-common-context.xml"/>
  -->	
-	<beans:import resource="annotation-mongo-context.xml"/>
-	<beans:import resource="annotation-solr-context.xml"/>
+	<beans:import resource="classpath:annotation-mongo-context.xml"/>
+	<beans:import resource="classpath:annotation-solr-context.xml"/>
 	
     
    	<!--  ApiKeyService -->
@@ -36,7 +36,7 @@
     </beans:bean>
     
 	<beans:bean name="commons_oauth2_europeanaClientDetailsService" class="eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService">
-		<beans:property name="apiKeyServiceUrl" value="${europeana.apikey.serviceurl}"/>
+		<beans:property name="apiKeyServiceUrl" value="#{annotationProperties['europeana.apikey.serviceurl']}"/>
 	</beans:bean>     
     
     <!--  java api bean -->
@@ -63,7 +63,10 @@
     </beans:bean>
     
     <!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
-    <context:component-scan base-package="eu.europeana.annotation.web.service" />
+    <!-- 
+    <context:component-scan base-package="eu.europeana.annotation.web" />
+     -->
+     
     <!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
     <context:annotation-config />
  
@@ -77,13 +80,19 @@
         <aop:aspect ref="profiler">
             <!-- Catch all method in the service package through AOP. -->
             <aop:pointcut id="serviceMethod"
-                expression="${profiler.expression}" />
+                expression="#{annotationProperties['profiler.expression']}" />
             <!-- For these methods use the profile named method in the profiler class we defined below. -->
             <aop:around pointcut-ref="serviceMethod" method="profile" />
         </aop:aspect>
     </aop:config>
     
     <!-- configurable error messages -->
+       <!-- configurable error messages bean -->
+   <beans:bean id="annotation_i18n_messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basename" value="classpath:messages"/>	
+		<beans:property name="defaultEncoding" value="utf-8"/>	 	
+    </beans:bean>   
+
     <beans:bean id="i18nService" class="eu.europeana.api.commons.config.i18n.I18nServiceImpl">
     	<beans:property name="messageSource" ref="annotation_i18n_messageSource"/>
     </beans:bean>

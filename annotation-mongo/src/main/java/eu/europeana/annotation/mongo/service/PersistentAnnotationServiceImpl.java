@@ -40,7 +40,7 @@ import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorIm
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 
-@Component
+//@Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 

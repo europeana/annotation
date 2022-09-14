@@ -12,6 +12,7 @@
 
 	<artifactId>annotation-definitions</artifactId>
 	<name>Europeana Annotation - Definitions</name>
+	<description>Shared Data model for all modules</description>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
@@ -27,6 +28,11 @@
 	    <dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
 		<dependency>

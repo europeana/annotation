@@ -26,6 +26,12 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
@@ -55,13 +61,17 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!--
 			<version>${version.org.junit.jupiter}</version>
+			-->
 		</dependency>
 	    <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform launcher -->
 	    <dependency>
 	        <groupId>org.junit.platform</groupId>
 	        <artifactId>junit-platform-launcher</artifactId>
+	        <!--
 	        <version>${version.junit-platform}</version>
+	        -->
 	        <scope>test</scope>
 	    </dependency>
 	    		
@@ -87,7 +97,9 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 		
 		<dependency>
@@ -99,7 +111,9 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 			<scope>test</scope>
 		</dependency>
 

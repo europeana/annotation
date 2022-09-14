@@ -48,13 +48,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     @Resource(name="annotation_db_whitelistService")
     PersistentWhitelistService mongoWhitelistPersistence;
 
-    @Resource(name="mongoStatusLogPersistence")
+    @Resource(name="annotation_db_statusLogService")
     PersistentStatusLogService mongoStatusLogPersistence;
 
     @Resource
     private AnnotationConfiguration configuration;
 
-    @Resource
+    @Resource(name="i18nService")
     I18nService i18nService;
 
     private MetisDereferenciationClient dereferenciationClient = new MetisDereferenciationClient();

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.google.common.base.Strings;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -35,7 +35,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   @Resource(name="solrAnnotationService")
   SolrAnnotationService solrAnnotationService;
 
-  @Resource(name="mongoPersistance")
+  @Resource(name="annotation_db_annotationService")
   PersistentAnnotationService mongoPersistance;
 
   // @Resource
@@ -224,7 +224,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     searchQuery.setSearchProfile(profile);
 
     setSearchFields(searchQuery, profile);
-    if (!Strings.isNullOrEmpty(sort)) {
+    if (!StringUtils.isBlank(sort)) {
       searchQuery.setSort(sort);
       searchQuery.setSortOrder(sortOrder);
     }

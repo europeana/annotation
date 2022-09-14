@@ -12,20 +12,24 @@
 	">
 	
 	<!-- utils (configuration) -->
-<!-- 	<import resource="api2-common-context.xml"/> -->
+	<!-- 
+	<import resource="classpath:api2-common-context.xml"/>
+	 -->
 		
 	<!-- INTERNAL DEFINITIONS -->
-	<import resource="internal/annotation-mongo-datasource.xml"/>
-	<import resource="internal/annotation-mongo-beans.xml"/>
-	<import resource="internal/annotation-mongo-dao.xml"/>
+	<import resource="classpath:internal/annotation-mongo-datasource.xml"/>
+	<import resource="classpath:internal/annotation-mongo-beans.xml"/>
+	<import resource="classpath:internal/annotation-mongo-dao.xml"/>
 	
+	<!--
 	<context:annotation-config/>
+	-->
 	
-	<bean name="mongoPersistance" class="eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl"
+	<bean name="annotation_db_annotationService" class="eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl"
 		p:dao-ref="annotation_db_annotationDao">
 	</bean>
 		
-	<bean name="mongoStatusLogPersistence" class="eu.europeana.annotation.mongo.service.PersistentStatusLogServiceImpl"
+	<bean name="annotation_db_statusLogService" class="eu.europeana.annotation.mongo.service.PersistentStatusLogServiceImpl"
 		p:dao-ref="annotation_db_statusLogDao"/>
 		
 	<bean name="annotation_db_moderationRecordService" class="eu.europeana.annotation.mongo.service.PersistentModerationRecordServiceImpl"

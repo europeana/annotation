@@ -16,14 +16,14 @@
 		factory-bean="annotation_solr_client_clientbuilderBean"
 		factory-method="withBaseSolrUrls">
 		<constructor-arg
-			value="#{'${solr.annotation.url}'.split(',')}" />
+			value="#{annotationProperties['solr.annotation.url'].split(',')}" />
 	</bean>
 
 	<bean id="annotation_solr_client"
 		class="org.apache.solr.client.solrj.SolrClient"
 		factory-bean="annotation_solr_client_clientBuilder" factory-method="build">
 		<property name="connectionTimeout"
-			value="${solr.annotation.timeout}" />
+			value="#{annotationProperties['solr.annotation.timeout']}" />
 	</bean>
 	
 </beans>

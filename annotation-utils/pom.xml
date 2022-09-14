@@ -29,6 +29,17 @@
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
 			<version>${version.annotationld}</version>
+
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 
@@ -43,7 +54,9 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!--
 			<version>${version.org.junit.jupiter}</version>
+			-->
 		</dependency>
 
 		<dependency>
@@ -99,7 +112,9 @@
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
+			<!--
 			<version>${version.javax.annotation}</version>
+			-->
 		</dependency>
 						
 	</dependencies>

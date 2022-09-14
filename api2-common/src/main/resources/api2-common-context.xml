@@ -8,10 +8,11 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
         ">
-
+<!--  
 	<context:property-placeholder location="classpath:config/annotation.properties" />
-	
+-->	
     <!--  configuration bean -->
+<!--
 	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">
 		<beans:property name="indexingEnabled" value="${annotation.indexing.enabled}"/>
 		<beans:property name="environment" value="${annotation.environment}"/>
@@ -36,10 +37,14 @@
 		<beans:property name="solrUrls" value="${solr.annotation.url}"/>
     </beans:bean>
    
-   <!-- configurable error messages bean -->
-   <beans:bean id="annotation_i18n_messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<beans:property name="basename" value="classpath:messages"/>	
-		<beans:property name="defaultEncoding" value="utf-8"/>	 	
+-->
+     
+     <util:properties id="annotationProperties" 
+		location="classpath:config/annotation.properties" />
+		
+    <!--  configuration bean -->
+	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">
+		<beans:property name="annotationProperties" ref="annotationProperties"/> 	
     </beans:bean>
    
 </beans:beans>

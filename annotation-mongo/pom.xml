@@ -7,6 +7,8 @@
 
 	<artifactId>annotation-mongo</artifactId>
 	<name>Europeana Annotation - Mongo based persistance </name>
+	<description>Mongo persistence layer</description>
+	
 	<url>http://www.europeanalabs.eu</url>
 
 	<parent>
@@ -39,26 +41,34 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!--
 			<version>${version.org.junit.jupiter}</version>
+			-->
 		</dependency>
 		
 		<!-- overwrite -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<!-- <version>${version.springCore}</version> -->
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 
 		<!-- TESTING PURPOSES -->
@@ -68,7 +78,9 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<!-- <version>${version.springCore}</version> -->
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 
 		<dependency>

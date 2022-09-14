@@ -17,7 +17,7 @@ import eu.europeana.annotation.mongo.model.PersistentStatusLogImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
-@Component
+//@Component
 public class PersistentStatusLogServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentStatusLog, String> implements
 		PersistentStatusLogService {

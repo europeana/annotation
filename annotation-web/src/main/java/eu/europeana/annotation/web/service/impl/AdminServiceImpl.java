@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import com.google.common.base.Strings;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -82,11 +81,11 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 		// int successCount = 0;
 		// int failureCount = 0;
-		if (!Strings.isNullOrEmpty(startDate)) {
+		if (!StringUtils.isBlank(startDate)) {
 			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
 		}
 
-		if (!Strings.isNullOrEmpty(endDate)) {
+		if (!StringUtils.isBlank(endDate)) {
 			endTimestamp = TypeUtils.getUnixDateStringFromDate(endDate);
 		}
 

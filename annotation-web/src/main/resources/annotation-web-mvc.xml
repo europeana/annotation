@@ -16,6 +16,7 @@
         http://www.springframework.org/schema/mvc 
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+<!-- 
 	<mvc:annotation-driven>
 		<mvc:message-converters register-defaults="true">
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
@@ -38,15 +39,9 @@
 	</mvc:annotation-driven>
 
 	<context:annotation-config />
+	-->
 
-	<bean class="eu.europeana.api.common.config.swagger.SwaggerConfig">
-	</bean>
-	<bean
-		class="springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper">
-	</bean>
-
-	<mvc:default-servlet-handler/>
-
+<!--  		
 	<mvc:cors>
 		<mvc:mapping path="/api-docs" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
 		<mvc:mapping path="/api-docs/**" allowed-origins="*" exposed-headers="Access-Control-Allow-Origin"/>
@@ -56,26 +51,46 @@
 		<mvc:mapping path="/annotation/**" allowed-origins="*" allowed-methods="GET, POST, PUT, DELETE, HEAD, OPTIONS" 
 			exposed-headers="Allow, Vary, Link, ETag" max-age="600" allow-credentials="false"/>
 	</mvc:cors>
+	-->
+	<!-- 
+	<bean class="eu.europeana.api.common.config.swagger.SwaggerConfig">
+	</bean>
+	<bean
+		class="springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper">
+	</bean>
+	 -->
+	
+	<import resource="classpath:annotation-web-context.xml" />
 
-	<import resource="./annotation-web-context.xml" />
-
+<!-- 
 	<context:component-scan
-		base-package="eu.europeana.annotation.web.service.controller">
+		base-package="eu.europeana.annotation">
 	</context:component-scan>
+ -->	
+
 
 	<!--Basic application beans. -->
+	<!-- 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+	 -->
 
 	<!-- the json view -->
+	<!-- 
 	<bean id="annotation_mvc_views_jaxbAnnotationBinder" class="com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector" />
 	<bean id="annotation_mvc_views_jsonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 	
 	<bean id="annotation_mvc_views_json"
 		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"
 		p:objectMapper="#{annotation_mvc_views_jsonObjectMapper.setAnnotationIntrospector(annotation_mvc_views_jaxbAnnotationBinder)}" />
+ -->		
+
+<!-- 
+	<mvc:default-servlet-handler default-servlet-name="default"/>
+	 -->
+	
 
 </beans>

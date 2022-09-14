@@ -10,6 +10,8 @@
 	
 	<artifactId>api2-common</artifactId>
 	<name>api2-common</name>
+	<description>Shared configurations for the annotation API</description>
+  
 	<packaging>jar</packaging>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -22,12 +24,16 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+			<!--
 			<version>${version.commonsLang3}</version>
+			-->
 		</dependency>
 		<!--dependency>
 			<groupId>xml-apis</groupId>

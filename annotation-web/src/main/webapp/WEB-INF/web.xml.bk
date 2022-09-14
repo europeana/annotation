@@ -9,21 +9,22 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:/annotation-web-context.xml</param-value>
 	</context-param>
-
 	<listener>
 		<listener-class>eu.europeana.annotation.web.context.ApplicationLoaderListener
 		</listener-class>
 	</listener>
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener
-		</listener-class>
-	</listener>
 
+<!-- 
 	<servlet>
 		<servlet-name>annotationServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet
@@ -32,11 +33,13 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:/annotation-web-mvc.xml</param-value>
 		</init-param>
+		 <load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>annotationServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+ -->	
 
 	<session-config>
 		<session-timeout>30</session-timeout>

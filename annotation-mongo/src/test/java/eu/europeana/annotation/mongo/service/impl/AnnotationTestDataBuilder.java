@@ -30,7 +30,7 @@ import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 
 public class AnnotationTestDataBuilder {
   
-    @Resource(name="mongoPersistance")
+    @Resource
     protected PersistentAnnotationService mongoPersistance;
 
 	public final static String TEST_EUROPEANA_ID = "/testCollection/testObject";
