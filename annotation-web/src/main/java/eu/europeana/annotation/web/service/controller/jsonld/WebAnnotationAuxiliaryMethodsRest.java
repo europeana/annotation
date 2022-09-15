@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.api.common.config.I18nConstants;
-import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.exception.DateParsingException;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
@@ -31,8 +30,7 @@ import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Controller
-@SwaggerSelect
+@RestController
 @Api(tags = "Web Annotation Auxiliary Methods", description = " ")
 public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 

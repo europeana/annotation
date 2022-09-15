@@ -8,11 +8,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -30,7 +30,6 @@ import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
-import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -38,14 +37,13 @@ import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Controller
-@SwaggerSelect
+@RestController
 @Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
 
     Logger logger = LogManager.getLogger(getClass());
 
-    @Resource
+    @Resource(name="adminService")
     private AdminService adminService;
 
     public AdminService getAdminService() {

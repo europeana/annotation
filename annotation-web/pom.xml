@@ -1,10 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>annotation-web</artifactId>
 	<name>Europeana Annotation - WEB API </name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<description>The implementation of the &quot;annotation&quot; service</description>
 
 	<parent>
@@ -14,39 +14,71 @@
 		<version>${version.annotationApi}</version>
 	</parent>
 
-	<repositories>
-		<!-- jetty repos -->
-		<repository>
-			<id>repo1.maven.org</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-
-		<repository>
-			<id>jcenter-release</id>
-			<name>jcenter</name>
-			<url>http://oss.jfrog.org/artifactory/oss-release-local/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
-	
+
 		<!-- fixes for JDK 11 -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>${version.jaxb}</version>
+			<!-- 			<version>${version.jaxb}</version> -->
+		</dependency>
+
+		<!-- NOTE: must be in sync with log4j-core version -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>			
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${version.log4j2}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- spring dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<!-- use log4j2 instead -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-actuator-autoconfigure</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
-			<version>${version.jackson}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${version.guava}</version>
+			<!-- 			<version>${version.jackson}</version> -->
 		</dependency>
 
 		<!-- annotation projects -->
@@ -69,6 +101,12 @@
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
 			<version>${version.annotationApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.jena</groupId>
+					<artifactId>jena-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
@@ -79,19 +117,50 @@
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-dereferenciation</artifactId>
 			<version>${version.annotationApi}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-statistics</artifactId>
 			<version>${version.annotationApi}</version>
 		</dependency>
+		
+				<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-oauth</artifactId>
+			<version>${version.commonsApi}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-web</artifactId>
+			<version>${version.commonsApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-rdf-jena</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.jena</groupId>
+					<artifactId>jena-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.springfox</groupId>
+					<artifactId>springfox-swagger2</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-error</artifactId>
+			<version>${version.commonsApi}</version>
+		</dependency>
+		
 		<!-- aspectj /profiling -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>${version.aspectj}</version>
+			<!-- 			<version>${version.aspectj}</version> -->
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
@@ -103,61 +172,26 @@
 			<artifactId>jackson-xc</artifactId>
 			<version>1.9.9</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>${version.servletJstl}</version>
+			<!-- 			<version>${version.servletJstl}</version> -->
 		</dependency>
-
+		
+		<!-- Swagger dependency -->		
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-			<version>2.5</version>
-		</dependency>
-
-        <dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-			<version>${version.org.junit.jupiter}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>${version.spring}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<!-- <version>${version.springCore}</version> -->
-			<version>${version.spring}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<!-- <version>${version.spring.tx}</version> -->
-			<version>${version.spring}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-oxm</artifactId>
-			<version>${version.spring}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot</artifactId>
-			<version>${version.spring.boot}</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${version.swagger}</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
@@ -166,6 +200,15 @@
 
 
 		<!-- test dependencies -->
+		<!-- TEST dependencies -->
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+			<!-- 			<version>${version.org.junit.jupiter}</version> -->
+		</dependency>
+		
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
@@ -177,39 +220,31 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${version.spring}</version>
+			<!-- 			<version>${version.spring}</version> -->
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-oauth</artifactId>
-			<version>${version.commonsApi}</version>			
-		</dependency>
-		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-web</artifactId>
-			<version>${version.commonsApi}</version>
-		</dependency>
-		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-error</artifactId>
-			<version>${version.commonsApi}</version>		
-		</dependency>			
- <!--  -->
+
+		<!--  -->
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
- 
+
+		
+
+
 	</dependencies>
 
 	<build>
 		<!-- configure source and output locations -->
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
+		<!--
 		<finalName>${artifactId}-${version}</finalName>
+		-->
+		<finalName>${project.artifactId}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
@@ -227,6 +262,25 @@
 		</testResources>
 
 		<!-- plugins -->
+		<plugins>
+      		<plugin>
+        		<groupId>org.springframework.boot</groupId>
+        		<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+          		<execution>
+		            <goals>
+		              <goal>repackage</goal>
+		            </goals>
+		            <configuration>
+		              <classifier>executable</classifier>
+		            </configuration>
+		        </execution>
+        		</executions>
+      		</plugin>
+    	</plugins>
+		
+		
+		
 	</build>
 
 </project>

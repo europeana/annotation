@@ -19,7 +19,7 @@ import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
-@Component
+//@Component
 public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceImpl<PersistentModerationRecord, String>
 		implements PersistentModerationRecordService {
 

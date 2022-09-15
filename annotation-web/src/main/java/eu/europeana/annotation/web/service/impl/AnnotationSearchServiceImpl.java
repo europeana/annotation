@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
-import com.google.common.base.Strings;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -21,12 +20,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.solr.service.impl.SolrAnnotationUtils;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.SearchServiceUtils;
-import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.HttpException;
 
@@ -35,10 +32,10 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   @Resource
   AnnotationConfiguration configuration;
 
-  @Resource
-  SolrAnnotationService solrService;
+  @Resource(name="solrAnnotationService")
+  SolrAnnotationService solrAnnotationService;
 
-  @Resource
+  @Resource(name="annotation_db_annotationService")
   PersistentAnnotationService mongoPersistance;
 
   // @Resource
@@ -68,11 +65,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   }
 
   public SolrAnnotationService getSolrService() {
-    return solrService;
+    return solrAnnotationService;
   }
 
   public void setSolrService(SolrAnnotationService solrService) {
-    this.solrService = solrService;
+    this.solrAnnotationService = solrService;
   }
 
   protected ResultSet<? extends AnnotationView> searchItems(Query query) throws HttpException {
@@ -227,7 +224,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     searchQuery.setSearchProfile(profile);
 
     setSearchFields(searchQuery, profile);
-    if (!Strings.isNullOrEmpty(sort)) {
+    if (!StringUtils.isBlank(sort)) {
       searchQuery.setSort(sort);
       searchQuery.setSortOrder(sortOrder);
     }

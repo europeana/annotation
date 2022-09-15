@@ -14,6 +14,8 @@
 	<artifactId>annotation-import</artifactId>
 	<packaging>jar</packaging>
 	<name>annotation-import</name>
+	<description>Tools for transfering annotations</description>
+	
 
 	<dependencies>
 		<dependency>
@@ -29,15 +31,22 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-error</artifactId>
-			<version>${version.commonsApi}</version>		
+			<version>${version.commonsApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
+			
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
-			<version>5.1.0</version>
+			<version>${version.org.junit.jupiter}</version>
 		</dependency>
+		
 
 	</dependencies>
 

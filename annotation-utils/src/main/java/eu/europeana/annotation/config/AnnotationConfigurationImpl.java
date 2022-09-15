@@ -17,31 +17,31 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
     @Override
     public String getComponentName() {
-	return "annotation";
+    return "annotation";
     }
 
     @Override
     public boolean isIndexingEnabled() {
-	String value = getAnnotationProperties().getProperty(ANNOTATION_INDEXING_ENABLED);
-	return Boolean.valueOf(value);
+    String value = getAnnotationProperties().getProperty(ANNOTATION_INDEXING_ENABLED);
+    return Boolean.valueOf(value);
     }
 
     public Properties getAnnotationProperties() {
-	return annotationProperties;
+    return annotationProperties;
     }
 
     public void setAnnotationProperties(Properties annotationProperties) {
-	this.annotationProperties = annotationProperties;
+    this.annotationProperties = annotationProperties;
     }
 
     @Override
     public boolean isProductionEnvironment() {
-	return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
+    return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
     }
 
     @Override
     public String getEnvironment() {
-	return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
+    return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
     }
 
     @Override
@@ -50,26 +50,26 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     }
     
     public String getDefaultWhitelistResourcePath() {
-	return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
+    return getAnnotationProperties().getProperty(DEFAULT_WHITELIST_RESOURCE_PATH);
     }
 
     public int getMaxPageSize(String profile) {
-	String key = PREFIX_MAX_PAGE_SIZE + profile;
-	return Integer.parseInt(getAnnotationProperties().getProperty(key));
+    String key = PREFIX_MAX_PAGE_SIZE + profile;
+    return Integer.parseInt(getAnnotationProperties().getProperty(key));
     }
 
     public String getJwtTokenSignatureKey() {
-	return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
+    return getAnnotationProperties().getProperty(KEY_APIKEY_JWTTOKEN_SIGNATUREKEY);
     }
 
     @Override
     public String getAuthorizationApiName() {
-	return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
+    return getAnnotationProperties().getProperty(AUTHORIZATION_API_NAME);
     }
 
     @Override
     public String getTranscriptionsLicenses() {
-	return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
+    return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
     }
 
     @Override
@@ -88,42 +88,42 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
      */
     public Set<String> getAcceptedLicenceses() {
 
-	if (acceptedLicences == null) {
-	    String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
-	    acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
-	}
+    if (acceptedLicences == null) {
+        String[] licences = StringUtils.split(getTranscriptionsLicenses(), ",");
+        acceptedLicences = Stream.of(licences).collect(Collectors.toCollection(HashSet::new));
+    }
 
-	return acceptedLicences;
+    return acceptedLicences;
     }
 
     @Override
     public String getMetisBaseUrl() {
-	return getAnnotationProperties().getProperty(METIS_BASE_URL);
+    return getAnnotationProperties().getProperty(METIS_BASE_URL);
     }
 
     @Override
     public int getMetisConnectionRetries() {
-	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_RETRIES);
-	return toInt(value);
+    String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_RETRIES);
+    return toInt(value);
     }
 
     @Override
     public int getMetisConnectionTimeout() {
-	String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_TIMEOUT);
-	return toInt(value);
+    String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_TIMEOUT);
+    return toInt(value);
     }
 
     int toInt(String value) {
-	try {
-	    return Integer.valueOf(value);
-	} catch (NumberFormatException e) {
-	    return -1;
-	}
+    try {
+        return Integer.valueOf(value);
+    } catch (NumberFormatException e) {
+        return -1;
+    }
     }
 
     @Override
     public String getAnnotationApiVersion() {
-	return getAnnotationProperties().getProperty(API_VERSION);
+    return getAnnotationProperties().getProperty(API_VERSION);
     }
 
     @Override
