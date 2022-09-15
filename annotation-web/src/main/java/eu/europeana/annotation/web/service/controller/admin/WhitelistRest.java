@@ -34,7 +34,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@SwaggerSelect
 @Api(tags = "Whitelist JSON Rest Service", description = " ", hidden = true)
 @RequestMapping(value = "/" + WebAnnotationFields.WHITELIST)
 public class WhitelistRest extends BaseRest {

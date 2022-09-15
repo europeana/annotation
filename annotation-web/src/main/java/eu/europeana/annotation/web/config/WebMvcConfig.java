@@ -5,25 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.plugin.core.OrderAwarePluginRegistry;
-import org.springframework.plugin.core.PluginRegistry;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
-import springfox.documentation.swagger2.web.SwaggerTransformationFilter;
-import springfox.documentation.swagger2.web.WebMvcSwaggerTransformationFilter;
 
 /**
  * Setup CORS for all requests and setup default Content-type
@@ -32,10 +24,6 @@ import springfox.documentation.swagger2.web.WebMvcSwaggerTransformationFilter;
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
   
-//  public WebMvcConfig() {
-//    System.out.println("WebMvcConfig");
-//  }
-
     List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
     Map<String, MediaType> mediaTypesMaping = new HashMap<String, MediaType>(); 
     
@@ -129,21 +117,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
     
 //    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//      registry.
-//          addResourceHandler("/swagger-ui/**")
-//          .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-//          .resourceChain(false);
-//      registry.
-//      addResourceHandler("/")
-//      .addResourceLocations("classpath:static/index.html")
-//      .resourceChain(false);
-//    }
-//
-//    @Override
-//    public void addViewControllers(ViewControllerRegistry registry) {
-//      registry.addViewController("/swagger-ui/")
-//          .setViewName("/swagger-ui/index.html");
-//    }
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+      registry.
+      addResourceHandler("/")
+      .addResourceLocations("classpath:public/index.html")
+      .resourceChain(false);
+    }
     
 }

@@ -18,7 +18,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@SwaggerSelect
 @Api(tags = "Provide Feedback on Annotations", description=" ")
 public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 

@@ -35,7 +35,6 @@ import io.swagger.annotations.ApiOperation;
  */
 
 @RestController
-//@SwaggerSelect
 @Api(tags = "Web Annotation Search", description = " ")
 public class WebAnnotationSearchRest extends BaseRest {
 

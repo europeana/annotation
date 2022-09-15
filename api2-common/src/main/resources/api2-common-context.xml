@@ -8,36 +8,6 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
         ">
-<!--  
-	<context:property-placeholder location="classpath:config/annotation.properties" />
--->	
-    <!--  configuration bean -->
-<!--
-	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">
-		<beans:property name="indexingEnabled" value="${annotation.indexing.enabled}"/>
-		<beans:property name="environment" value="${annotation.environment}"/>
-		<beans:property name="annotationBaseUrl" value="${annotation.data.endpoint}"/>
-		<beans:property name="defaultWhitelistResourcePath" value="${annotation.whitelist.default}"/>
-		<beans:property name="maxpagesizeMinimal" value="${annotation.search.maxpagesize.minimal}"/>
-		<beans:property name="maxpagesizeStandard" value="${annotation.search.maxpagesize.standard}"/>
-		<beans:property name="jwtTokenSignatureKey" value="${europeana.apikey.jwttoken.siganturekey}"/>
-		<beans:property name="authorizationApiName" value="${authorization.api.name}"/>
-		<beans:property name="transcriptionsLicenses" value="${annotation.licenses}"/>
-		<beans:property name="statsFacets" value="${solr.stats.facets}"/>
-		<beans:property name="metisBaseUrl" value="${metis.baseUrl}"/>
-		<beans:property name="metisConnectionRetries" value="${metis.connection.retries}"/>
-		<beans:property name="metisConnectionTimeout" value="${metis.connection.timeout}"/>
-		<beans:property name="annotationApiVersion" value="${annotation.apiVersion}"/>
-		<beans:property name="annoApiEndpoint" value="${annotation.api.endpoint}"/>
-		<beans:property name="annoUserDataEndpoint" value="${annotation.user.data.endpoint}"/>
-		<beans:property name="annoClientApiEndpoint" value="${annotation.client.api.endpoint}"/>
-		<beans:property name="annoItemDataEndpoint" value="${annotation.item.data.endpoint}"/>
-		<beans:property name="mongoDatabaseName" value="${mongodb.annotation.databasename}"/>
-		<beans:property name="annoRemoveAuthorization" value="${annotation.remove.authorization}"/>
-		<beans:property name="solrUrls" value="${solr.annotation.url}"/>
-    </beans:bean>
-   
--->
      
      <util:properties id="annotationProperties" 
 		location="classpath:config/annotation.properties" />

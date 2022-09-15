@@ -31,7 +31,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@SwaggerSelect
 @Api(tags = "Web Annotation Auxiliary Methods", description = " ")
 public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 

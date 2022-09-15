@@ -1,6 +1,7 @@
 package eu.europeana.annotation;
 
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -18,7 +19,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportResource;
 import eu.europeana.annotation.config.SocksProxyActivator;
 import eu.europeana.annotation.config.SocksProxyConfig;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Main application. Allows deploying as a war and logs instance data when deployed in Cloud Foundry
@@ -37,6 +37,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ImportResource("classpath:annotation-web-mvc.xml")
 public class AnnotationApp extends SpringBootServletInitializer {
 
+  private static final Logger logger = LogManager.getLogger(AnnotationApp.class);
   /**
    * Main entry point of this application
    *
@@ -44,7 +45,7 @@ public class AnnotationApp extends SpringBootServletInitializer {
    */
   public static void main(String[] args) {
     // When deploying to Cloud Foundry, this will log the instance index number, IP and GUID
-    Logger logger = LogManager.getLogger(AnnotationApp.class);
+    
     logger.info("CF_INSTANCE_INDEX  = {}, CF_INSTANCE_GUID = {}, CF_INSTANCE_IP  = {}",
         System.getenv("CF_INSTANCE_INDEX"), System.getenv("CF_INSTANCE_GUID"),
         System.getenv("CF_INSTANCE_IP"));
@@ -63,9 +64,7 @@ public class AnnotationApp extends SpringBootServletInitializer {
     String[] beanNames = ctx.getBeanDefinitionNames();
 
     Arrays.sort(beanNames);
-
-    for (String beanName : beanNames) {
-      System.out.println(beanName);
-    }
+    logger.debug("Instantiated beans:");
+    logger.debug(StringUtils.join(beanNames, "\n"));
   }
 }

@@ -38,7 +38,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@SwaggerSelect
 @Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
 

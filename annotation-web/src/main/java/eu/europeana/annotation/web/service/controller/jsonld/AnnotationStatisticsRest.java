@@ -24,7 +24,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@SwaggerSelect
 @Api(tags = "Annotation Statistics", description=" ")
 public class AnnotationStatisticsRest extends BaseJsonldRest {
 

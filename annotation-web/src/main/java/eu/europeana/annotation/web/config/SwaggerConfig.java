@@ -20,15 +20,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * at <hostname/v3/api-docs. Swagger UI is available at <hostname>/swagger-ui/
  */
 @Configuration
-//@ComponentScan("springfoxdemo.java.swagger")
 @EnableSwagger2
 public class SwaggerConfig {
 
   @Autowired
   private final BuildProperties buildInfo;
   private final GitProperties gitProperties;
-//  @Autowired
-//  private CachingModelProvider cachedModels;
 
   /**
    * Initialize Swagger with API build information
