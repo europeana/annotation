@@ -34,7 +34,7 @@ import eu.europeana.annotation.config.SocksProxyConfig;
     ManagementWebSecurityAutoConfiguration.class,
     // DataSources are manually configured (for EM and batch DBs)
     DataSourceAutoConfiguration.class})
-@ImportResource("classpath:annotation-web-mvc.xml")
+@ImportResource("classpath:annotation-web-context.xml")
 public class AnnotationApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LogManager.getLogger(AnnotationApp.class);
