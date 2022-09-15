@@ -28,7 +28,6 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(tags = "Web Annotation Protocol", description=" ")
-@RequestMapping("/")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 
@@ -92,7 +91,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return deleteAnnotation(identifier, authentication, request);
 	}
 	
-	@RequestMapping(value = {"/annotation/{identifier}"}, method = RequestMethod.POST,
+	@RequestMapping(value = {"/{identifier}"}, method = RequestMethod.POST,
 			consumes = { MediaType.TEXT_PLAIN },
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Enable annotation", nickname = "enableAnnotation", response = java.lang.Void.class)

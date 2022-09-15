@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -21,7 +22,6 @@ import eu.europeana.api.commons.web.http.HttpHeaders;
  * Setup CORS for all requests and setup default Content-type
  */
 @Configuration
-@EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
   
     List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
@@ -114,14 +114,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
             supportedMediaTypes.add(MediaType.TEXT_HTML);
         }
         return supportedMediaTypes;
-    }
-    
-//    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-      registry.
-      addResourceHandler("/")
-      .addResourceLocations("classpath:public/index.html")
-      .resourceChain(false);
     }
     
 }
