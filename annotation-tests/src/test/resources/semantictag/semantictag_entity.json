@@ -1,0 +1,15 @@
+{
+  "motivation": "tagging",
+  "body": {
+    "@context": "http://www.europeana.eu/schemas/context/entity.jsonld",
+    "type": "Agent",
+    "prefLabel": {
+      "en": "John Smith"
+    },
+    "placeOfBirth": { "en": "London" },
+    "placeOfDeath": { "en": "Paris" },
+    "dateOfBirth": [ "1452-04-15" ],
+    "dateOfDeath": [ "1519-05-02" ]
+  },
+  "target": "http://data.europeana.eu/item/2020601/contributions_20841"
+}

@@ -59,6 +59,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.VARY, HttpHeaders.LINK, HttpHeaders.ETAG, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
         .maxAge(600L); // in seconds
+
     }
 
     /*

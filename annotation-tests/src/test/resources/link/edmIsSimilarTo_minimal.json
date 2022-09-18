@@ -1,0 +1,11 @@
+{
+	"motivation": "linking",
+	"body": {
+		"@graph": {
+			"@context": "http://www.europeana.eu/schemas/context/edm.jsonld",
+			"id": "http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6",
+			"isSimilarTo": "https://www.wikidata.org/wiki/Q762"
+		}
+	},
+	"target": "http://data.europeana.eu/item/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"
+}

@@ -1,0 +1,12 @@
+{
+  "motivation": "describing",
+  "body": {
+    "type": "TextualBody",
+    "value": "... this is the textual description of the item ..."
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/07931/diglit_uah_m1",
+    "source": 
+    "http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"
+  }
+}

@@ -1,0 +1,17 @@
+{
+	"@context": "http://www.w3.org/ns/anno.jsonld",
+	"type": "Annotation",
+	"creator": {
+		"id": "https://www.historypin.org/en/person/55376/",
+		"type": "Person",
+		"name": "John Smith"
+	},
+	"created": "2015-02-27T12:00:43Z",
+	"generated": "2015-02-28T13:00:34Z",
+	"generator": "http://www.historypin.org",
+	"motivation": "tagging",
+	"body": {
+		"value": "church"
+	},
+	"target": "http://data.europeana.eu/item/123/xyz"
+}

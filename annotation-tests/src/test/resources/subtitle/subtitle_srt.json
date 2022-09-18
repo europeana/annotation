@@ -1,0 +1,15 @@
+{
+  "motivation": "subtitling",
+  "body": {
+    "type": "FullTextResource",
+    "language": "it",
+    "value": "1\n00:05:00,400 --> 00:05:15,300\nThis is an example of\na subtitle.\n\n2\n00:05:16,400 --> 00:05:25,300\nThis is an example of\na subtitle - 2nd subtitle. ",
+    "format": "application/x-subrip",
+    "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7_test",
+    "source": 
+    "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"
+  }
+}

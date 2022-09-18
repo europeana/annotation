@@ -1,0 +1,9 @@
+{
+	"@context": "http://www.w3.org/ns/anno.jsonld",
+	"type": "Annotation",
+	"motivation": "linking",
+	"target": [
+		"http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+		"http://data.europeana.eu/item/2059207/data_sounds_T471_4"
+	]
+}
