@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
+import org.springframework.core.io.ClassPathResource;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -64,11 +65,12 @@ public class MetisDereferenciationClient {
     protected void init() {
 	try {
 	    TransformerFactory factory = TransformerFactory.newInstance();
-	    InputStream xslFileAsStream = getClass().getResourceAsStream(XSLT_TRANSFORMATION_FILE);
+	    InputStream xslFileAsStream = new ClassPathResource(
+	        XSLT_TRANSFORMATION_FILE).getInputStream();
 	    StreamSource xslSource = new StreamSource(xslFileAsStream);
 	    Templates templates = factory.newTemplates(xslSource);
 	    transformer = templates.newTransformer();
-	} catch (TransformerConfigurationException e) {
+	} catch (TransformerConfigurationException | IOException e) {
 	    throw new AnnotationDereferenciationException(
 		    "Cannot instantiate XSLT Transformer",
 		    e);
