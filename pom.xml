@@ -80,7 +80,9 @@
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
 		<module>annotation-client</module>
+		<!--
 		<module>annotation-import</module>
+		-->
 		<module>annotation-fulltext</module>
 		<module>annotation-statistics</module>
 	</modules>
