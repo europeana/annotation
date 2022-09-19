@@ -7,6 +7,8 @@
 	<version>${version.annotationApi}</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
+	<description>Annotation API parent pom</description>
+
 
 	<repositories>
 		<repository>
