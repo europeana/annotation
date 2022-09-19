@@ -91,7 +91,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		return deleteAnnotation(identifier, authentication, request);
 	}
 	
-	@RequestMapping(value = {"/{identifier}"}, method = RequestMethod.POST,
+	@RequestMapping(value = {"/annotation/{identifier}"}, method = RequestMethod.POST,
 			consumes = { MediaType.TEXT_PLAIN },
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(value = "Enable annotation", nickname = "enableAnnotation", response = java.lang.Void.class)
