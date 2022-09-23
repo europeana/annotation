@@ -1,7 +1,6 @@
 package eu.europeana.annotation.tests.webanno;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,17 +20,13 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class WebAnnotationProtocolExceptionsTest extends AbstractIntegrationTest {
-
-    private String get_LINK_JSON_WITHOUT_BLANK() throws IOException {
-      return START + get_LINK_CORE(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motivation\":\"oa:linking\"," +  END;
-    }
 	
     private String get_CORRUPTED_JSON() throws IOException {
-      return START + get_LINK_CORE(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motivation\",=\"oa:linking\"," + END;
+      return START + get_LINK_CORE(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motivation\",=\"oa:linking\"" + END;
     }
 	
     private String get_LINK_JSON_WITH_WRONG_MOTIVATION() throws IOException {
-      return START + get_LINK_CORE(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motiv\":\"oa:wrong\"," + END;
+      return START + get_LINK_CORE(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motiv\":\"oa:wrong\"" + END;
     }
 
     @Deprecated
@@ -61,19 +56,6 @@ public class WebAnnotationProtocolExceptionsTest extends AbstractIntegrationTest
 		
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
-	
-
-	@Test
-	public void createWebannoAnnotationLinkWithoutBlanksInMotivation() throws Exception {
-		
-		ResponseEntity<String> response = storeTestAnnotationByType(
-				true, get_LINK_JSON_WITHOUT_BLANK(), null, null);
-		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-		createdAnnotations.add(storedAnno.getIdentifier());
-		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.CREATED, response.getStatusCode());
-	}
-	
 
 	@Test
 	public void createWebannoAnnotationLinkWithWrongMotivation() throws Exception {
@@ -81,8 +63,7 @@ public class WebAnnotationProtocolExceptionsTest extends AbstractIntegrationTest
 				false, get_LINK_JSON_WITH_WRONG_MOTIVATION(), null, null
 				);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-	}
-	
+	}	
 
 	@Test
 	public void getWebAnnotationWithWrongIdentifier() throws Exception {
@@ -147,7 +128,7 @@ public class WebAnnotationProtocolExceptionsTest extends AbstractIntegrationTest
         String CORRUPTED_UPDATE_JSON = 
             START + CORRUPTED_UPDATE_BODY + "," + "\"target\":" + "\"" +
             get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + 
-            "\"," + END;
+            "\"" + END;
 		Annotation anno = createTestAnnotation(TAG_STANDARD, false, null);
 		createdAnnotations.add(anno.getIdentifier());
 		ResponseEntity<String> response = updateAnnotation(

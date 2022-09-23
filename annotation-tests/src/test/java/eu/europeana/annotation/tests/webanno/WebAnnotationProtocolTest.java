@@ -21,8 +21,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class WebAnnotationProtocolTest extends AbstractIntegrationTest { 
-
-		
+	
 	@Test
 	public void createWebannoAnnotationTag() throws Exception {
 		
@@ -48,6 +47,15 @@ public class WebAnnotationProtocolTest extends AbstractIntegrationTest {
 	    createdAnnotations.add(storedAnno.getIdentifier());
 	}
 		
+	@Test
+	public void createWebannoAnnotationLinkWithoutBlanksInMotivation() throws Exception {
+        ResponseEntity<String> response = storeTestAnnotationByType(
+                true, get_LINK_JSON_WITHOUT_BLANK(), null, null);
+        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+        createdAnnotations.add(storedAnno.getIdentifier());
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
 
 	@Test
 	public void createWebannoAnnotationTagByTypeJsonld() throws Exception {

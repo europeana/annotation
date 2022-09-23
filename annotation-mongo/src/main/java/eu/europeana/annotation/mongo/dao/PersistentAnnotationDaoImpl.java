@@ -29,11 +29,10 @@ import eu.europeana.annotation.mongo.model.internal.GeneratedAnnotationIdentifie
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 
-
 public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T extends Serializable>
 		extends NosqlDaoImpl<E, T> implements PersistentAnnotationDao<E, T> {
 
-	@Resource
+    @Resource
 	private AnnotationConfiguration configuration;
 	
 	protected final Logger logger = LogManager.getLogger(this.getClass());
@@ -47,7 +46,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	}
 
 	public PersistentAnnotationDaoImpl(Class<E> clazz, Datastore datastore) {
-		super(datastore, clazz);
+	    super(datastore, clazz);
 	}
 
 	@SuppressWarnings("deprecation")

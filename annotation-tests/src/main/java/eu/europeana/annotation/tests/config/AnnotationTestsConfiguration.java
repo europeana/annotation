@@ -20,6 +20,11 @@ public class AnnotationTestsConfiguration {
     protected static final String PROP_OAUTH_SERVICE_URI = "oauth.service.uri";
     protected static final String PROP_OAUTH_REQUEST_PARAMS_PREFIX = "oauth.token.request.params.";
     
+    public static final String BASE_SERVICE_URL = "/annotation/";
+    public static final String BASE_SERVICE_URL_WITH_S = "/annotations/";
+    public static final String BASE_SERVICE_URL_ADMIN = "/admin/annotation/";
+    public static final String BASE_SERVICE_URL_WHITELIST = "/whitelist/";
+    
     private static Properties properties = null;
 
     private static AnnotationTestsConfiguration singleton;
@@ -82,18 +87,6 @@ public class AnnotationTestsConfiguration {
     public String getApiKey() {
 	return getProperties().getProperty(PROP_ANNOTATION_API_KEY).trim();
     }
-
-    /**
-     * This method provides access to the search uri value defined in the
-     * configuration file
-     * 
-     * @see PROP_EUROPEANA_SEARCH_URI
-     * 
-     * @return
-     */
-    public String getServiceUri() {
-	return getProperties().getProperty(PROP_ANNOTATION_SERVICE_BASE_URI).trim();
-    }
     
     /**
      * This method provides access to the annotation id base uri value defined in the
@@ -107,21 +100,6 @@ public class AnnotationTestsConfiguration {
     return getProperties().getProperty(PROP_ANNOTATION_ID_BASE_URI).trim();
     }
     
-   
-    
-    /**
-     * This method provides access to the header name defined in the configuration
-     * file
-     * 
-     * @see PROP_EUROPEANA_SEARCH_URI
-     * 
-     * @return
-     */
-    @Deprecated
-    public String getHeaderName() {
-	return getProperties().getProperty(PROP_AUTHORIZATION_HEADER_NAME).trim();
-    }
-
     /**
      * This method provides access to the header value defined in the configuration
      * file
@@ -158,7 +136,4 @@ public class AnnotationTestsConfiguration {
       return getProperties().getProperty(PROP_ANNOTATION_CLIENT_API_ENDPOINT).trim();
     }
     
-    public String getWhitelistServiceUrl(String action) {
-    return getServiceUri().replace("annotation", "whitelist") + "/" + action;
-    }
 }

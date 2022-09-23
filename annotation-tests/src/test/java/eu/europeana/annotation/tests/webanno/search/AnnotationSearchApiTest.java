@@ -85,8 +85,8 @@ public class AnnotationSearchApiTest extends AbstractIntegrationTest {
 
 	  // second page
 	  String npUri = annPg.getNextPageUri();
-	  //adapt the base url which is configured in the annotation.properties to use the one from the annotation-client.properties 
-	  String annoNpUriNew = StringUtils.replace(npUri, StringUtils.substringBefore(npUri,"/search?"), AnnotationTestsConfiguration.getInstance().getServiceUri());
+	  //adapt the base url 
+	  String annoNpUriNew = StringUtils.replace(npUri, StringUtils.substringBefore(npUri,"search?"), AnnotationTestsConfiguration.BASE_SERVICE_URL);
 	  //here we need to decode the value returned 
 	  annoNpUriNew = URLDecoder.decode(annoNpUriNew, StandardCharsets.UTF_8.toString());
 	  String nextPageJson = mockMvc.perform(get(annoNpUriNew)).andReturn().getResponse().getContentAsString();

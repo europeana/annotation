@@ -37,6 +37,10 @@ public interface AnnotationConfiguration {
     public static final String ANNO_REMOVE_AUTHORIZATION = "annotation.remove.authorization";
     public static final String SOLR_URLS = "solr.annotation.url";
     
+    public static final String BEAN_ANNO_SOLR_CLIENT = "annoSolrClient";
+    public static final String BEAN_SOLR_ANNO_SERVICE = "solrAnnotationService";
+    public static final String BEAN_ANNO_MONGO_STORE = "annotation_db_morphia_datastore_annotation";
+    
     public String getComponentName();
 
     /**

@@ -1,11 +1,9 @@
 package eu.europeana.annotation.web.service.impl;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import com.dotsub.converter.exception.FileFormatException;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -465,7 +463,6 @@ public abstract class BaseAnnotationValidator {
 	    validateTagWithValue(body);
 	}
     }
-
     
     protected void validateLinking(Annotation webAnnotation) throws ParamValidationI18NException, PropertyValidationException {
       // validate target URLs against whitelist

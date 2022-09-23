@@ -14,8 +14,11 @@ import javax.annotation.Resource;
 import org.junit.jupiter.api.Test;
 //import org.easymock.EasyMock;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
@@ -53,7 +56,8 @@ public class SolrAnnotationServiceTest {
         return Integer.parseInt(str);
     }
 	   
-	@Resource 
+    @Autowired
+    @Qualifier(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE) 
 	SolrAnnotationService solrAnnotationService;
     
 	/**

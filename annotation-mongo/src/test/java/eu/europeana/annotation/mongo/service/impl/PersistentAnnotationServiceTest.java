@@ -43,7 +43,7 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 @ExtendWith(SpringExtension.class)
@@ -54,8 +54,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		super(null);
 	}
 
-	@Resource(name = "annotation_db_annotationService") 
-	PersistentAnnotationServiceImpl annotation_db_annotationService;
+	@Resource(name = "annotation_db_annotationService")
+	PersistentAnnotationService persistentAnnoService;
 
 	@Resource AnnotationConfiguration configuration;
 

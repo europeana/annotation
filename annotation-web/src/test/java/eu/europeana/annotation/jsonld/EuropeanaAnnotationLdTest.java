@@ -12,7 +12,6 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;

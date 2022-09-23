@@ -7,13 +7,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,13 +23,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.containers.output.ToStringConsumer;
+import org.testcontainers.containers.output.WaitingConsumer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europeana.annotation.AnnotationBasePackageMapper;
@@ -44,6 +47,9 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
+import eu.europeana.annotation.tests.utils.MongoContainer;
+import eu.europeana.annotation.tests.utils.SolrContainer;
+import eu.europeana.annotation.web.service.WhitelistService;
 
 //@ExtendWith(SpringExtension.class)
 //@ContextConfiguration(locations = { "classpath:annotation-web-context.xml" })
@@ -52,6 +58,7 @@ import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
 @ComponentScan(basePackageClasses = AnnotationBasePackageMapper.class)
 @AutoConfigureMockMvc
 @DirtiesContext
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AbstractIntegrationTest extends AnnotationTestsConstants{
   
     static String regularUserAuthorizationValue = null;
@@ -73,15 +80,41 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     @Autowired
     PersistentModerationRecordService mongoPersistenceModeration;
     
+    @Autowired
+    protected WhitelistService whitelistService;
+    
+    private static final MongoContainer MONGO_CONTAINER;
+    private static final SolrContainer SOLR_CONTAINER;
+
+    static {
+      MONGO_CONTAINER =
+          new MongoContainer("annotation_test")
+              .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
+
+      MONGO_CONTAINER.start();
+
+      SOLR_CONTAINER =
+          new SolrContainer("anno-up")
+              .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
+
+      SOLR_CONTAINER.start();
+    }
+    
     @BeforeEach
     protected void initTest() {
       mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
     
     @BeforeAll
-    protected static void initAppConextAndOauthTokens() throws Exception {
+    protected void initAppConextAndOauthTokens() throws Exception {
       regularUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_REGULAR, AnnotationTestsConfiguration.getInstance().getOauthServiceUri(), AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_REGULAR));
       adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN, AnnotationTestsConfiguration.getInstance().getOauthServiceUri(), AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
+      whitelistService.loadWhitelistFromResources();
+    }
+    
+    @AfterAll
+    protected void deleteWhitelists() throws Exception {
+      whitelistService.deleteWholeWhitelist();
     }
     
     @AfterEach
@@ -95,6 +128,21 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
         mongoPersistenceModeration.remove(identifier);
       }
       createdModerationRecords.clear();
+    }
+    
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry registry) {
+      Supplier<Object> hostSupplier= ()-> MONGO_CONTAINER.getHost();
+      registry.add("mongodb.annotation.host", hostSupplier);
+      Supplier<Object> portSupplier= ()-> MONGO_CONTAINER.getMappedPort(27017);
+      registry.add("mongodb.annotation.port", portSupplier);
+      Supplier<Object> dbnameSupplier= ()-> MONGO_CONTAINER.getAnnotationDb();
+      registry.add("mongodb.annotation.databasename", dbnameSupplier);
+      Supplier<Object> adminUserSupplier= ()-> MONGO_CONTAINER.getAdminUsername();
+      registry.add("mongodb.annotation.username", adminUserSupplier);
+      Supplier<Object> adminPassSupplier= ()-> MONGO_CONTAINER.getAdminPassword();
+      registry.add("mongodb.annotation.password", adminPassSupplier);
+      registry.add("solr.annotation.url", SOLR_CONTAINER::getConnectionUrl);
     }
     
     protected String getAuthorizationHeaderValue (String user) {
@@ -114,10 +162,9 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 	  if(inputFile!=null) {
 	    anno = AnnotationTestUtils.getJsonStringInput(inputFile);
 	  }
-	  String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-      if (!url.endsWith(WebAnnotationFields.SLASH))
-        url += WebAnnotationFields.SLASH;
 	      
+	  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
+	  
 	  ResultActions mockMvcResult = null;
 	  if(anno!=null) {
 	    mockMvcResult= mockMvc.perform(
@@ -142,10 +189,8 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 			String apiKey
 			, long identifier
 			, String userToken) throws Exception {
-	  
-	    String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-	    if (!url.endsWith(WebAnnotationFields.SLASH))
-	        url += WebAnnotationFields.SLASH;
+  
+	    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
 	    url += identifier + WebAnnotationFields.SLASH;
 	    url += WebAnnotationFields.PATH_FIELD_REPORT;
 	    url += WebAnnotationFields.PAR_CHAR;
@@ -163,9 +208,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 			, long identifier
 			, String userToken) throws Exception {
 
-	    String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-	    if (!url.endsWith(WebAnnotationFields.SLASH))
-	        url += WebAnnotationFields.SLASH;
+	    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
 	    url += identifier + WebAnnotationFields.SLASH;
 	    url += WebAnnotationFields.PATH_FIELD_MODERATION_SUMMARY;
 	    url += WebAnnotationFields.PAR_CHAR;
@@ -187,9 +230,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 
     protected ResponseEntity<String> storeTestAnnotationByType(boolean indexOnCreate, String body, String annoType, String user) throws Exception {
 
-      String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-      if (!url.endsWith(WebAnnotationFields.SLASH))
-          url += WebAnnotationFields.SLASH;
+      String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
       if (annoType != null)
           url += annoType + ".jsonld";
       
@@ -216,9 +257,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 	}
 	
 	protected ResponseEntity<String> deleteAnnotation (long identifier) throws Exception {
-	  String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-      if (!url.endsWith(WebAnnotationFields.SLASH))
-        url += WebAnnotationFields.SLASH;
+	  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
 	  url += identifier;
       ResultActions mockMvcResult = mockMvc.perform(
           delete(url)
@@ -233,10 +272,8 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 	}
     
     protected List<String> getDeleted (String motivation, String from, String to, int page, int limit) throws Exception {
-      String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-      if (url.endsWith(WebAnnotationFields.SLASH))
-          url = url.substring(0, url.length()-1);
-      url += "s" + WebAnnotationFields.SLASH + "deleted";
+      String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WITH_S;
+      url += "deleted";
       boolean hasAtLeastOneParam = false;
       if(from!=null) {
           if(!hasAtLeastOneParam) {
@@ -288,9 +325,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     }
 
 	protected ResponseEntity<String> getAnnotation(String apiKey, long identifier, boolean isTypeJsonld, SearchProfiles searchProfile) throws Exception {
-	    String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-        if (!url.endsWith(WebAnnotationFields.SLASH))
-          url += WebAnnotationFields.SLASH;	    
+	    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
 	    url += identifier;
 	    if (isTypeJsonld) {
 	        url += WebAnnotationFields.JSONLD_REST;
@@ -309,10 +344,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 	}
 	
 	protected ResponseEntity<String> updateAnnotation(long identifier, String requestBody, String user) throws Exception {
-	  String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-      if (!url.endsWith(WebAnnotationFields.SLASH))
-        url += WebAnnotationFields.SLASH;
-	  
+	  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
 	  url += identifier;
 	  
       ResultActions mockMvcResult = mockMvc.perform(
@@ -347,20 +379,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 
     protected ResponseEntity<String> reindexOutdated() throws Exception {
 
-    String action = "reindexoutdated";
-    String baseServiceUrl = AnnotationTestsConfiguration.getInstance().getServiceUri();
-    String adminAnnotationServiceUri = null;
-    if (baseServiceUrl.endsWith(WebAnnotationFields.SLASH)) {
-      adminAnnotationServiceUri = StringUtils.removeEnd(baseServiceUrl.substring(0, baseServiceUrl.length()-1), "annotation");
-    }
-    else {
-      adminAnnotationServiceUri = StringUtils.removeEnd(baseServiceUrl, "annotation");
-    }
-    
-    adminAnnotationServiceUri += "admin/annotation";
-    log.trace("Admin annotation service URI: " + adminAnnotationServiceUri);
-
-    String url = adminAnnotationServiceUri + WebAnnotationFields.SLASH + action;
+    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_ADMIN + "reindexoutdated";
     log.trace("(Re)index outdated annotations request URL: " + url);
     
     ResultActions mockMvcResult = mockMvc.perform(
@@ -371,15 +390,8 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     }
 	
     protected ResponseEntity<String> uploadAnnotations(String tag, Boolean indexOnCreate) throws Exception {
-    String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-    if(url.endsWith(WebAnnotationFields.SLASH))
-      url = url.substring(0, url.length()-1);
-    url += "s" + WebAnnotationFields.SLASH;    
-//    url += "?";
-//    url += WebAnnotationFields.INDEX_ON_CREATE + "=" + indexOnCreate;
-
+    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WITH_S;
     log.debug("Upload annotations request URL: " + url);
-
     /**
      * Execute Europeana API request
      */
@@ -393,10 +405,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     }
     
     protected String searchAnnotationLd(String target, String resourceId) throws Exception {
-    String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-    if (!url.endsWith(WebAnnotationFields.SLASH))
-      url += WebAnnotationFields.SLASH;
-    
+    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
     url += WebAnnotationFields.SEARCH_JSON_LD_REST + WebAnnotationFields.PAR_CHAR;
     url += WebAnnotationFields.PARAM_WSKEY + "=" + "ws" + "&";
     if (StringUtils.isNotEmpty(target))
@@ -411,9 +420,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     protected Annotation createAnnotationLd(String motivation, Long annotationNr,
         String europeanaLdStr, String apikey) throws Exception {
 
-    String url = AnnotationTestsConfiguration.getInstance().getServiceUri(); 
-    if (!url.endsWith(WebAnnotationFields.SLASH))
-      url += WebAnnotationFields.SLASH;    
+    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
     url += WebAnnotationFields.PAR_CHAR;
     String resApiKey = AnnotationTestsConfiguration.getInstance().getApiKey();
     if (apikey != null) {
@@ -433,5 +440,43 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     
     return AnnotationTestUtils.parseAnnotation(mockMvcResult.andReturn().getResponse().getContentAsString(), null);
     }
+    
+//    /**
+//     * Sample HTTP request http://localhost:8080/whitelist/load?apiKey=apidemo
+//     * 
+//     * @return WhitelistOperationResponse
+//     * @throws Exception 
+//     */
+//    protected WhitelistOperationResponse loadWhitelist() throws Exception {
+//      String action = "load";
+//      String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WHITELIST + action;
+//      ResultActions mockMvcResult = mockMvc.perform(
+//          get(url)
+//          .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_ADMIN)));
+//      String jsonResponse = mockMvcResult.andReturn().getResponse().getContentAsString();
+//  
+//      WhitelistOperationResponse aor = new WhitelistOperationResponse(AnnotationTestsConfiguration.getInstance().getApiKey(), action);
+//      List<WhitelistEntry> resList = new ArrayList<WhitelistEntry>();
+//      JSONObject mainObject = new JSONObject(jsonResponse);
+//      JSONArray whitelistEntries = mainObject.getJSONArray("items");
+//      for (int i = 0; i < whitelistEntries.length(); i++) {
+//        JSONObject entry = (JSONObject) whitelistEntries.get(i);
+//        WhitelistEntry whitelistEntry = WhiteListParser.toWhitelistEntry(entry.toString());
+//        resList.add(whitelistEntry);
+//      }
+//      aor.setWhitelist(resList);
+//      return aor;
+//    }
+//    
+//    protected WhitelistOperationResponse deleteAllWhitelists () throws Exception {
+//      String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WHITELIST + "deleteall";
+//      ResultActions mockMvcResult = mockMvc.perform(
+//          delete(url)
+//          .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_ADMIN)));
+//      String jsonResponse = mockMvcResult.andReturn().getResponse().getContentAsString();
+//      
+//      ObjectMapper mapper = new ObjectMapper();
+//      return mapper.readValue(jsonResponse, WhitelistOperationResponse.class);
+//    }
 
 }

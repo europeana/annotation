@@ -1,7 +1,9 @@
 package eu.europeana.annotation.tests;
 
+import java.io.IOException;
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
+import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 
 public class AnnotationTestsConstants {
   
@@ -130,6 +132,10 @@ public class AnnotationTestsConstants {
          + "\"" + itemDataEndpoint +  "/123/xyz.html\","
          + "\"" + itemDataEndpoint +  "/333/xyz.html\"" + "]," + EQUIVALENT_TO;
     return START + LINK_CORE + END;
+  }
+  
+  public String get_LINK_JSON_WITHOUT_BLANK() throws IOException {
+    return START + get_LINK_CORE(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + "\"motivation\":\"oa:linking\"" +  END;
   }
   
 }

@@ -188,10 +188,11 @@ public class AnnotationTestUtils {
 
   public static String buildUrl(String query, String qf, String sort, String sortOrder, String page, String pageSize,
       String profile, String language) throws IOException {
-  String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-  if (!url.endsWith(WebAnnotationFields.SLASH))
-    url += WebAnnotationFields.SLASH;
-  
+//  String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
+//  if (!url.endsWith(WebAnnotationFields.SLASH))
+//    url += WebAnnotationFields.SLASH;
+    
+  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
   url += "search?wskey=" + AnnotationTestsConfiguration.getInstance().getApiKey();
 
   if (StringUtils.isNotEmpty(query)) {

@@ -65,7 +65,8 @@
 		<version.subtitle-converter>1</version.subtitle-converter>
 		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
-        
+		<version.testcontainers>1.16.0</version.testcontainers>
+        <version.morphia>2.1.4</version.morphia>
 		<skipTests>true</skipTests>
 
 	</properties>

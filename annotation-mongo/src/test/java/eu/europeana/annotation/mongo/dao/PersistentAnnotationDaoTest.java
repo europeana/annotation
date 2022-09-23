@@ -17,7 +17,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 @ContextConfiguration({"/annotation-mongo-test.xml"})
 public class PersistentAnnotationDaoTest {
 
-	@Resource(name = "annotation_db_annotationDao")
+    @Resource(name = "annotation_db_annotationDao")
 	PersistentAnnotationDao<PersistentAnnotation, Long> annotationDao;
 	
 	public final Integer SEQUENCE_LENGTH = 10;

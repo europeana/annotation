@@ -18,7 +18,9 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
@@ -37,10 +39,13 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 //@Component
+@Service(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
-    @Resource
+    @Autowired
+    @Qualifier(AnnotationConfiguration.BEAN_ANNO_SOLR_CLIENT)
     SolrClient solrClient;
+    
     @Resource
     AnnotationConfiguration configuration;
 

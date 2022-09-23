@@ -4,6 +4,8 @@ import java.util.Date;
 import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -30,7 +32,8 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator{
 //	@Resource
 //	AuthenticationService authenticationService;
 
-    @Resource(name="solrAnnotationService")
+    @Autowired
+    @Qualifier(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
     SolrAnnotationService solrAnnotationService;
 
     @Resource

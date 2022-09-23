@@ -16,7 +16,6 @@ import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
-import org.springframework.stereotype.Component;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -40,7 +39,6 @@ import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorIm
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 
-//@Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 
@@ -53,8 +51,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 
 	@Resource
 	private AnnotationConfiguration configuration;
-
-	/**
+	
+    /**
 	 * This method shouldn't be public but protected. Anyway, it is forced to be
 	 * public by the supper implementation
 	 * 

@@ -128,7 +128,7 @@ public class WhitelistRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    @RequestMapping(value = "/load", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/load", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> loadDefaultWhitelist(
@@ -150,7 +150,7 @@ public class WhitelistRest extends BaseRest {
     }
 
     @DELETE
-    @RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/deleteall", method = RequestMethod.DELETE)
     @ResponseBody
     @ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAllWhitelistEntries(
