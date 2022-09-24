@@ -1,4 +1,4 @@
-package eu.europeana.annotation.tests.webanno;
+package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +19,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class WebAnnotationFeedbackTest extends AbstractIntegrationTest { 
+public class AnnotationFeedbackIT extends AbstractIntegrationTest { 
 
 	protected Logger log = LogManager.getLogger(getClass());
 

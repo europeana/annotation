@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,6 +38,7 @@ import eu.europeana.annotation.AnnotationBasePackageMapper;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
@@ -50,10 +52,6 @@ import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
 import eu.europeana.annotation.tests.utils.MongoContainer;
 import eu.europeana.annotation.tests.utils.SolrContainer;
 import eu.europeana.annotation.web.service.WhitelistService;
-
-//@ExtendWith(SpringExtension.class)
-//@ContextConfiguration(locations = { "classpath:annotation-web-context.xml" })
-//@WebAppConfiguration
 
 @ComponentScan(basePackageClasses = AnnotationBasePackageMapper.class)
 @AutoConfigureMockMvc
@@ -249,6 +247,24 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
 	    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
 	    return storedAnno;
 	}
+	
+    protected Annotation createTag(String inputFile, boolean validate, boolean indexOnCreate) throws Exception {
+      
+      log.debug("Input File: " + inputFile);
+
+      String requestBody = AnnotationTestUtils.getJsonStringInput(inputFile);
+
+      Annotation storedAnno = createTestAnnotation(inputFile, indexOnCreate, null);
+
+      Annotation inputAnno = parseTag(requestBody);
+
+      // validate the reflection of input in output!
+      if (validate) {
+        AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+      }
+
+      return storedAnno;
+    }
 
 	protected Annotation createLink(String requestBody) throws Exception {
 	    ResponseEntity<String> response = storeTestAnnotationByType(true, requestBody,  WebAnnotationFields.LINK, null);
@@ -373,9 +389,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     ResultActions mockMvcResult = mockMvc.perform(get(url));          
     return AnnotationTestUtils.getAnnotationPage(mockMvcResult.andReturn().getResponse().getContentAsString());
     
-    }
-
-    
+    }   
 
     protected ResponseEntity<String> reindexOutdated() throws Exception {
 
@@ -440,6 +454,12 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants{
     
     return AnnotationTestUtils.parseAnnotation(mockMvcResult.andReturn().getResponse().getContentAsString(), null);
     }
+
+    protected Annotation parseTag(String jsonString) throws JsonParseException {
+        MotivationTypes motivationType = MotivationTypes.TAGGING;
+        return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
+    }
+
     
 //    /**
 //     * Sample HTTP request http://localhost:8080/whitelist/load?apiKey=apidemo

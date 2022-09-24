@@ -188,47 +188,43 @@ public class AnnotationTestUtils {
 
   public static String buildUrl(String query, String qf, String sort, String sortOrder, String page, String pageSize,
       String profile, String language) throws IOException {
-//  String url = AnnotationTestsConfiguration.getInstance().getServiceUri();
-//  if (!url.endsWith(WebAnnotationFields.SLASH))
-//    url += WebAnnotationFields.SLASH;
-    
-  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
-  url += "search?wskey=" + AnnotationTestsConfiguration.getInstance().getApiKey();
-
-  if (StringUtils.isNotEmpty(query)) {
-      url += "&profile=" + profile;
-  }
-
-  if (StringUtils.isNotEmpty(query)) {
-//      url += "&query=" + encodeUrl(query);
-    url += "&query=" + query;
-  }
-  if (StringUtils.isNotEmpty(qf)) {
-//      url += "&qf=" + encodeUrl(qf);
-    url += "&qf=" + qf;
-  }
-  if (StringUtils.isNotEmpty(sort)) {
-      url += "&sort=" + sort;
-  }
-  if (StringUtils.isNotEmpty(sortOrder)) {
-      url += "&sortOrder=" + sortOrder;
-  }
-  if (StringUtils.isNotEmpty(page)) {
-      url += "&page=" + page;
-  } else {
-      url += "&page=0";
-  }
-
-  if (StringUtils.isNotEmpty(pageSize)) {
-      url += "&pageSize=" + pageSize;
-  } else {
-      url += "&pageSize=10";
-  }
-
-  if (StringUtils.isNotEmpty(language)) {
-      url += "&language=" + language;
-  }
-  return url;
+    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
+    url += "search?wskey=" + AnnotationTestsConfiguration.getInstance().getApiKey();
+  
+    if (StringUtils.isNotEmpty(query)) {
+        url += "&profile=" + profile;
+    }
+  
+    if (StringUtils.isNotEmpty(query)) {
+  //      url += "&query=" + encodeUrl(query);
+      url += "&query=" + query;
+    }
+    if (StringUtils.isNotEmpty(qf)) {
+  //      url += "&qf=" + encodeUrl(qf);
+      url += "&qf=" + qf;
+    }
+    if (StringUtils.isNotEmpty(sort)) {
+        url += "&sort=" + sort;
+    }
+    if (StringUtils.isNotEmpty(sortOrder)) {
+        url += "&sortOrder=" + sortOrder;
+    }
+    if (StringUtils.isNotEmpty(page)) {
+        url += "&page=" + page;
+    } else {
+        url += "&page=0";
+    }
+  
+    if (StringUtils.isNotEmpty(pageSize)) {
+        url += "&pageSize=" + pageSize;
+    } else {
+        url += "&pageSize=10";
+    }
+  
+    if (StringUtils.isNotEmpty(language)) {
+        url += "&language=" + language;
+    }
+    return url;
   }
 
   public static AnnotationPage getAnnotationPage(String json) throws JsonParseException {

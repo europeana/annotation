@@ -1,4 +1,4 @@
-package eu.europeana.annotation.tests.admin;
+package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,7 +23,7 @@ import eu.europeana.annotation.tests.AbstractIntegrationTest;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationApiAdminTest extends AbstractIntegrationTest {
+public class AnnotationAdminIT extends AbstractIntegrationTest {
 
 	public static final String TAG_INDEXING = "/tag/tag_indexing.json";
 	
@@ -31,22 +31,6 @@ public class AnnotationApiAdminTest extends AbstractIntegrationTest {
 	public static final String TAG_INDEXING_LOCK = "/tag/tag_indexing_lock.json";
 	public static final int ANNOTATION_TESTSET_LOCK_SIZE = 20;
 	public static final int CONCURRENT_REQUESTS = 2;
-
-	/**
-	 * Test creating and deleting an annotation.
-	 * @throws Exception 
-	 */
-	@Test
-	public void createAndDeleteAnnotation() throws Exception {
-	  
-		// create
-		Annotation annotation = createTestAnnotation(TAG_STANDARD, true, null);
-		createdAnnotations.add(annotation.getIdentifier());
-		// read
-		assertNotNull(annotation);
-		assertNotNull(annotation.getIdentifier());
-		log.debug("Created annotation: " + annotation.getIdentifier());
-	}
 
 	/**
 	 * Test the "index outdated" admin function. First, one annotation is
