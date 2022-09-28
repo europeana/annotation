@@ -150,7 +150,7 @@ public class WhitelistRest extends BaseRest {
     }
 
     @DELETE
-    @RequestMapping(value = "/deleteall", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteall", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAllWhitelistEntries(

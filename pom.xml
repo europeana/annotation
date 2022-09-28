@@ -67,6 +67,7 @@
 		<git-commit-id.version>5.0.0</git-commit-id.version>
 		<version.testcontainers>1.16.0</version.testcontainers>
         <version.morphia>2.1.4</version.morphia>
+        <version.mongo-java-driver>3.12.11</version.mongo-java-driver>
 		<skipTests>true</skipTests>
 
 	</properties>
