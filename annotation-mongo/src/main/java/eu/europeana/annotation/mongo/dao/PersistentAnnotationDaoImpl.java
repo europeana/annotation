@@ -1,11 +1,10 @@
 package eu.europeana.annotation.mongo.dao;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +18,7 @@ import com.mongodb.BulkWriteError;
 import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
+import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -207,30 +207,14 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
 	@SuppressWarnings({"deprecation", "unchecked"})
 	@Override
 	public void copyAnnotations(List<? extends Annotation> existingAnnos, String sourceCollection, String targetCollection) throws IOException, InterruptedException {
-//		List<DBObject> ops = new ArrayList<DBObject>();
-//		@SuppressWarnings("unchecked")
-//		Query<PersistentAnnotation> query = (Query<PersistentAnnotation>) createQuery();
-//		List<Long> annoIdentifiers = existingAnnos.stream().map(Annotation::getIdentifier).collect(Collectors.toList());
-//		query.filter(PersistentAnnotation.FIELD_IDENTIFIER + " in", annoIdentifiers);
-//		ops.add(new BasicDBObject("$match", query.getQueryObject()));
-//		ops.add(new BasicDBObject("$out", targetCollection));
-//		DBCollection source = getDatastore().getDB().getCollection(sourceCollection);
-//		source.aggregate(ops);
-	  
-      List<String> command = Arrays.asList(
-          "mongodump",
-          "--db", configuration.getMongoDatabaseName(), //NOT NECESSARY IF YOU DUMP ALL DBs               
-          "--collection", AnnotationConfiguration.MONGO_COLLECTION_NAME // NOT NECESSARY IF YOU DUMP ALL Collections in the db
-      );
-
-      //the parameter is the working directory
-      ProcessBuilder pb = new ProcessBuilder(command).directory(new File("/tmp/"));                                                   
-
-      Process process = pb.start();
-
-      //WAITING FOR A RETURN FROM THE PROCESS WE STARTED
-      int exitCode = process.waitFor();
-      int check=0;
+		List<DBObject> ops = new ArrayList<DBObject>();
+		Query<PersistentAnnotation> query = (Query<PersistentAnnotation>) createQuery();
+		List<Long> annoIdentifiers = existingAnnos.stream().map(Annotation::getIdentifier).collect(Collectors.toList());
+		query.filter(PersistentAnnotation.FIELD_IDENTIFIER + " in", annoIdentifiers);
+		ops.add(new BasicDBObject("$match", query.getQueryObject()));
+		ops.add(new BasicDBObject("$out", targetCollection));
+		DBCollection source = getDatastore().getDB().getCollection(sourceCollection);
+		source.aggregate(ops);
 
 	}
 
