@@ -111,7 +111,7 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
   @Override
   public String getAnnoClientApiEndpoint() {
-    return getAnnotationProperties().getProperty(ANNO_CLIENT_API_ENDPOINT);
+    return getAnnotationProperties().getProperty(ANNO_CLIENT_DATA_ENDPOINT);
   }
 
   @Override

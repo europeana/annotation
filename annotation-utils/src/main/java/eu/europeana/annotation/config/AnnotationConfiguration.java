@@ -19,7 +19,7 @@ public interface AnnotationConfiguration {
     public static final String ANNO_API_ENDPOINT = "annotation.api.endpoint";
     public static final String ANNO_DATA_ENDPOINT = "annotation.data.endpoint";
     public static final String ANNO_USER_DATA_ENDPOINT = "annotation.user.data.endpoint";
-    public static final String ANNO_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
+    public static final String ANNO_CLIENT_DATA_ENDPOINT = "annotation.client.data.endpoint";
     public static final String ANNO_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
     public static final String MONGO_DATABASE_NAME = "mongodb.annotation.databasename";
     public static final String MONGO_COLLECTION_NAME = "annotation";
