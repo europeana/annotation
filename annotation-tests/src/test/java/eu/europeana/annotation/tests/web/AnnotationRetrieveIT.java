@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,6 +62,7 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
   }
   
   @Test
+  @Disabled("This test is successfull only when the authorization is enabled")
   public void getWebAnnotationWithWrongWskey() throws Exception {
       ResponseEntity<String> response = getAnnotation(
               UNKNOWN_WSKEY, 

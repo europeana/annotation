@@ -92,6 +92,4 @@ public interface AdminService {
 	 */
 	public BatchProcessingStatus updateRecordId(String oldId, String newId);
 	
-    public boolean getRemoveAnnotationAuthorization();
-	
 }

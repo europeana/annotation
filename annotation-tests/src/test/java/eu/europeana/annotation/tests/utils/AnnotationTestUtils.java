@@ -28,6 +28,7 @@ import eu.europeana.annotation.tests.AnnotationTestsConstants;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationTestUtils {
 
@@ -58,28 +59,31 @@ public class AnnotationTestUtils {
   
   }
 
-  public static Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException {
+  public static Annotation parseResponseBody(ResponseEntity<String> response) throws JsonParseException, HttpException {
   AnnotationLdParser europeanaParser = new AnnotationLdParser();
+  if(response.getStatusCode().isError()) {
+    throw new HttpException("Remote call error: " + response.getBody(), null, response.getStatusCode());
+  }
   String jsonLdStr = response.getBody();
   return europeanaParser.parseAnnotation(null, jsonLdStr);
   }
  
-  public static Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response) throws JsonParseException {
+  public static Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response) throws JsonParseException, HttpException {
     return parseAndVerifyTestAnnotation(response, HttpStatus.CREATED);
   }
 
-  public static Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+  public static Annotation parseAndVerifyTestAnnotation(ResponseEntity<String> response, HttpStatus status) throws JsonParseException, HttpException {
       assertEquals(status.value(), response.getStatusCode().value());
       Annotation annotation = parseResponseBody(response);
       assertNotNull(annotation.getCreator());
       return annotation;
   }
   
-  public static Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response) throws JsonParseException {
+  public static Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response) throws JsonParseException, HttpException {
       return parseAndVerifyTestAnnotation(response, HttpStatus.OK);
   }
   
-  public static Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+  public static Annotation parseAndVerifyTestAnnotationUpdate(ResponseEntity<String> response, HttpStatus status) throws JsonParseException, HttpException {
       assertEquals(""+status.value(), ""+response.getStatusCode().value());
       Annotation annotation = parseResponseBody(response);
       return annotation;
@@ -134,11 +138,11 @@ public class AnnotationTestUtils {
      return "getIdentifier".equals(name);
   }  
   
-  public static void validateResponse(ResponseEntity<String> response) throws JsonParseException {
+  public static void validateResponse(ResponseEntity<String> response) throws JsonParseException, HttpException {
     validateResponse(response, HttpStatus.CREATED);
   }
 
-  public static void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException {
+  public static void validateResponse(ResponseEntity<String> response, HttpStatus status) throws JsonParseException, HttpException {
       assertNotNull(response.getBody());
       assertEquals(response.getStatusCode(), status);     
       Annotation storedAnno = parseResponseBody(response);
@@ -157,7 +161,7 @@ public class AnnotationTestUtils {
     assertTrue(summary == 1);
   }
   
-  public static void validateResponseForTrimming(ResponseEntity<String> response) throws JsonParseException {
+  public static void validateResponseForTrimming(ResponseEntity<String> response) throws JsonParseException, HttpException {
     assertNotNull(response.getBody());
     assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     

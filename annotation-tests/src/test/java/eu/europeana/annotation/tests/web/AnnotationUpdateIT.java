@@ -2,7 +2,7 @@ package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.io.IOException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,6 +51,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
 	}
 		
 	@Test
+	@Disabled("This test is successfull only when the authorization is enabled")
 	public void updateWebAnnotationWithWrongUserToken() throws Exception { 
 		Annotation anno = createTestAnnotation(TAG_STANDARD, false, USER_ADMIN);
 		createdAnnotations.add(anno.getIdentifier());

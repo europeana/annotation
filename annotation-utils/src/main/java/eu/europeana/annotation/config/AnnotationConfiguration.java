@@ -5,6 +5,7 @@ import java.util.Set;
 public interface AnnotationConfiguration {
 
     public static final String ANNOTATION_INDEXING_ENABLED = "annotation.indexing.enabled";
+    public static final String ANNOTATION_AUTH_DISABLED = "annotation.auth.disabled";
     public static final String ANNOTATION_ENVIRONMENT = "annotation.environment";
 
     public static final String VALUE_ENVIRONMENT_PRODUCTION = "production";
@@ -114,7 +115,7 @@ public interface AnnotationConfiguration {
     
     String getMongoDatabaseName();
     
-    boolean getAnnoRemoveAuthorization();
-    
     String getSolrUrls();
+
+    boolean isAuthEnabled();
 }
