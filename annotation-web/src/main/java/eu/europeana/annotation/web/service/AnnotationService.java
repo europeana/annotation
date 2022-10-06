@@ -30,8 +30,6 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AnnotationService {
 
-	public String getComponentName();
-	
 	/**
 	 * This method retrieves all not disabled annotations.
 	 * @param identifiers

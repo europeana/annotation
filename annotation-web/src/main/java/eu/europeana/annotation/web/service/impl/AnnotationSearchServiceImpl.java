@@ -40,19 +40,6 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
 
   Logger logger = LogManager.getLogger(getClass());
 
-  // public AuthenticationService getAuthenticationService() {
-  // return authenticationService;
-  // }
-  //
-  // public void setAuthenticationService(AuthenticationService authenticationService) {
-  // this.authenticationService = authenticationService;
-  // }
-
-  @Override
-  public String getComponentName() {
-    return configuration.getComponentName();
-  }
-
   protected AnnotationConfiguration getConfiguration() {
     return configuration;
   }

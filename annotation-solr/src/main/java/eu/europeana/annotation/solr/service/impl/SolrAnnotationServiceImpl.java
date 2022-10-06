@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.PivotField;
@@ -20,6 +19,8 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -38,16 +39,25 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
-//@Component
 @Service(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
+@PropertySource(
+    value = {"classpath:config/annotation.properties", "classpath:config/annotation.user.properties"},
+    ignoreResourceNotFound = true)
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
     @Autowired
     @Qualifier(AnnotationConfiguration.BEAN_ANNO_SOLR_CLIENT)
     SolrClient solrClient;
     
-    @Resource
-    AnnotationConfiguration configuration;
+    @Value("${solr.stats.facets:10}")
+    private int solrStatsFacets;
+    
+    @Value("$annotation.data.endpoint:}")
+    private String annotationDataEndpoint;
+
+    
+//    @Resource
+//    AnnotationConfiguration configuration;
 
     public void setSolrClient(SolrClient solrServer) {
 	this.solrClient = solrServer;
@@ -92,7 +102,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    if (anno instanceof SolrAnnotation)
 		indexedAnno = (SolrAnnotation) anno;
 	    else {
-		indexedAnno = copyIntoSolrAnnotation(anno, null, configuration.getAnnotationBaseUrl());
+		indexedAnno = copyIntoSolrAnnotation(anno, null, annotationDataEndpoint);
 	    }
 	    
 	    UpdateResponse rsp = solrClient.addBean(indexedAnno);
@@ -142,8 +152,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    throws AnnotationServiceException {
 
 	ResultSet<? extends AnnotationView> res = null;
-
-	String msg = term + "' and start: '" + start + "' and rows: '" + limit + "'.";
 
 	/**
 	 * Construct a SolrQuery
@@ -389,9 +397,11 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         String nestedFacetsFields = mainFacetField + ',' + SolrAnnotationConstants.SCENARIO;
         query.addFacetPivotField(nestedFacetsFields);
         query.setFacet(true);
-        if(getConfiguration().getStatsFacets() > 0) {
-          query.setFacetLimit(getConfiguration().getStatsFacets());
+        if(solrStatsFacets > 0) {
+          query.setFacetLimit(solrStatsFacets);
         }  
+        
+        
         query.setRows(0);       
         // Query the server
         try {
@@ -431,14 +441,14 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	      indexedAnnotation = (SolrAnnotation) anno;
 	    }
 	    else {
-	      indexedAnnotation = copyIntoSolrAnnotation(anno, summary, configuration.getAnnotationBaseUrl());
+	      indexedAnnotation = copyIntoSolrAnnotation(anno, summary, annotationDataEndpoint);
 	    }
 	    return store(indexedAnnotation);
 	}
     }
 
     public void delete(long annotationIdentifier) throws AnnotationServiceException {
-	String annoUri = AnnotationIdHelper.buildAnnotationUri(configuration.getAnnotationBaseUrl(), annotationIdentifier);
+	String annoUri = AnnotationIdHelper.buildAnnotationUri(annotationDataEndpoint, annotationIdentifier);
 	delete(annoUri);
     }
 
@@ -670,9 +680,4 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       return query;
   }
-
-  public AnnotationConfiguration getConfiguration() {
-    return configuration;
-  }
-
 }

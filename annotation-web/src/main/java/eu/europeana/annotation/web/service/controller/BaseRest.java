@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -49,6 +50,10 @@ public class BaseRest extends BaseRestController {
   @Resource(name = "annotation_db_annotationService")
   protected PersistentAnnotationService mongoPersistance;
 
+  @Resource 
+  protected BuildProperties buildInfo;
+  
+  
   // TODO move to base class
   Logger logger = LogManager.getLogger(getClass());
 

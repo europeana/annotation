@@ -504,6 +504,10 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
   }
 
+  public AnnotationConfiguration getConfiguration() {
+    return configuration;
+  }
+
 
   // /**
   // * Sample HTTP request http://localhost:8080/whitelist/load?apiKey=apidemo

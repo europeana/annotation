@@ -20,6 +20,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>api2-common</artifactId>
+			<version>${version.annotationApi}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>${version.jackson}</version>

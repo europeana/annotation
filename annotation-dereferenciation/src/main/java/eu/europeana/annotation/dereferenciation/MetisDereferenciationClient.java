@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -35,17 +34,16 @@ public class MetisDereferenciationClient {
     static final String XSLT_TRANSFORMATION_FILE = "/deref2json.xsl";
     static final String PARAM_URI = "uri";
     static final String PARAM_LANGS = "langs";
-    @Resource
-    private AnnotationConfiguration configuration;
     Transformer transformer;
     private HttpConnection httpConnection;
+    private final AnnotationConfiguration configuration;
 
     public HttpConnection getHttpConnection() {
 	if(httpConnection == null) {
-	    if(getConfiguration() != null) {
+	    if(configuration != null) {
 		httpConnection = new HttpConnection(
-			getConfiguration().getMetisConnectionRetries(), 
-			getConfiguration().getMetisConnectionTimeout());
+		    configuration.getMetisConnectionRetries(), 
+		    configuration.getMetisConnectionTimeout());
 	    }else {
 		httpConnection = new HttpConnection();
 	    }
@@ -57,8 +55,9 @@ public class MetisDereferenciationClient {
 	this.httpConnection = httpConnection;
     }
 
-    public MetisDereferenciationClient() {
-	init();
+    public MetisDereferenciationClient(AnnotationConfiguration configuration) {
+      this.configuration = configuration;
+      init();
     }
 
     protected void init() {
@@ -189,9 +188,5 @@ public class MetisDereferenciationClient {
 		    e);
 	}
 	return result;
-    }
-
-    AnnotationConfiguration getConfiguration() {
-        return configuration;
     }
 }

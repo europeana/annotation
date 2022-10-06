@@ -1,5 +1,7 @@
 package eu.europeana.annotation.config;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -8,17 +10,10 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 
-// @Configuration
-// @ComponentScan("eu.europeana.annotation")
 public class AnnotationConfigurationImpl implements AnnotationConfiguration {
 
   private Properties annotationProperties;
   private Set<String> acceptedLicences;
-
-  @Override
-  public String getComponentName() {
-    return "annotation";
-  }
 
   @Override
   public boolean isIndexingEnabled() {
@@ -34,16 +29,7 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
     this.annotationProperties = annotationProperties;
   }
 
-  @Override
-  public boolean isProductionEnvironment() {
-    return VALUE_ENVIRONMENT_PRODUCTION.equals(getEnvironment());
-  }
-
-  @Override
-  public String getEnvironment() {
-    return getAnnotationProperties().getProperty(ANNOTATION_ENVIRONMENT);
-  }
-
+ 
   @Override
   public String getAnnotationBaseUrl() {
     return getAnnotationProperties().getProperty(ANNO_DATA_ENDPOINT);
@@ -71,12 +57,6 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
   public String getTranscriptionsLicenses() {
     return getAnnotationProperties().getProperty(TRANSCRIPTIONS_LICENSES);
   }
-
-  @Override
-  public int getStatsFacets() {
-    return toInt(getAnnotationProperties().getProperty(SOLR_STATS_FACETS));
-  }
-
 
   @Override
   /*
@@ -120,11 +100,6 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
   }
 
   @Override
-  public String getAnnotationApiVersion() {
-    return getAnnotationProperties().getProperty(API_VERSION);
-  }
-
-  @Override
   public String getAnnoApiEndpoint() {
     return getAnnotationProperties().getProperty(ANNO_API_ENDPOINT);
   }
@@ -162,5 +137,20 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
   @Override
   public boolean isAuthEnabled() {
     return !isAuthDisabled();
+  }
+  
+  /**
+   * utility method to be used in unit tests
+   * @throws IOException 
+   */
+  public void loadProperties() throws IOException{
+    Properties props = new Properties();
+    InputStream annoPropsStream = getClass().getResourceAsStream("/config/annotation.properties");
+    props.load(annoPropsStream);
+    InputStream userPropsStream = getClass().getResourceAsStream("/config/annotation.user.properties");
+    if(userPropsStream != null) {
+      props.load(userPropsStream); 
+    }
+    setAnnotationProperties(props);
   }
 }
