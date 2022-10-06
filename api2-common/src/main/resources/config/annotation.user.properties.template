@@ -1,0 +1,40 @@
+### annotation database ###
+# mongoDB settings
+mongodb.annotation.connectionUrl=mongodb://127.0.0.1:27017/annotation_test
+
+# solr connection settings
+# core search (default) 
+#localhost
+solr.annotation.url=http://localhost:9090/solr/anno-up
+
+#URL to connect to solr through zookeeper
+solr.annotation.zookeeper.url=
+#collection to use when using zookeeper connection
+solr.annotation.collection=
+
+#URL of the APIKEY service
+europeana.apikey.serviceurl=<API KEY API URL>
+
+#the signature key used to verify JWT tokens
+###### PRODUCTION KEYCLOAK
+europeana.apikey.jwttoken.siganturekey=-----BEGIN PUBLIC KEY-----<PUBLIC KEY>-----END PUBLIC KEY-----
+
+#Socks proxy configuration. If provided it will be used for all http connections (e.g. solr.entity.url) 
+# Url Format: socks://username:password@socks_proxy_server:1080 
+socks.proxy.url=
+
+# Metis API
+metis.baseUrl=<METIS DEREF URL>
+
+annotation.api.endpoint=http://localhost:8080/annotation
+annotation.data.endpoint=http://localhost:8080/annotation
+annotation.user.data.endpoint=http://data.europeana.eu/user
+annotation.client.data.endpoint=http://data.europeana.eu/software
+annotation.item.data.endpoint=http://data.europeana.eu/item
+
+
+# Profiling configurations (enabling/disabling through profiler.expression property)
+# enable profiling for all service method invocations
+# profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..)) 
+
+                                                                 
