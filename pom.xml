@@ -4,7 +4,7 @@
 
 	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-api</artifactId>
-	<version>${version.annotationApi}</version>
+	<version>${revision}</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
 
@@ -32,7 +32,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.annotationApi>0.3.4-SNAPSHOT</version.annotationApi>
+		<revision>0.3.4-SNAPSHOT</revision>
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		<version.java>11</version.java>
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
@@ -68,6 +68,8 @@
 		<version.testcontainers>1.16.0</version.testcontainers>
         <version.morphia>2.1.4</version.morphia>
         <version.mongo-java-driver>3.12.11</version.mongo-java-driver>
+        <version.surefire>3.0.0-M7</version.surefire>
+        <version.failsafe>3.0.0-M7</version.failsafe>
 		<skipTests>true</skipTests>
 
 	</properties>
@@ -80,7 +82,6 @@
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
 		<module>annotation-client</module>
-		<module>annotation-import</module>
 		<module>annotation-fulltext</module>
 		<module>annotation-statistics</module>
 	</modules>
@@ -101,17 +102,23 @@
 
 	<build>
 		<!--  configure source and output locations -->
+		<!--
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
+		-->
 		<!--
 		<finalName>${artifactId}-${version}</finalName>
 		-->
+		<!--
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
+		-->
 		<!-- 
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
 		 -->
+		<!-- 
 		<testSourceDirectory>src/test/java</testSourceDirectory>
+		-->
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -123,8 +130,117 @@
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>
+		
+		<!--  plugins to run on build time  -->
+		<plugins>
+            <plugin>
+              <groupId>io.github.git-commit-id</groupId>
+              <artifactId>git-commit-id-maven-plugin</artifactId>
+              <!--
+              <version>${git-commit-id.version}</version>
+              -->
+              <executions>
+                <execution>
+                  <id>get-the-git-infos</id>
+                  <goals>
+                    <goal>revision</goal>
+                  </goals>
+                  <phase>initialize</phase>
+                </execution>
+              </executions>
+              <configuration>
+                <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                <includeOnlyProperties>
+                  <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+                  <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+                </includeOnlyProperties>
+                <commitIdGenerationMode>full</commitIdGenerationMode>
+              </configuration>
+            </plugin>
+                <plugin>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-maven-plugin</artifactId>
+                  <!--
+                  <version>${version.spring.boot}</version>
+                  -->
+                  <executions>
+                    <execution>
+                      <goals>
+                        <goal>build-info</goal>
+                      </goals>
+                      <configuration>
+                        <additionalProperties>
+                          <project.description>${project.description}</project.description>
+                          <!-- For some reason BuildProperties.getName() doesn't return the correct value,
+                           so we set the name under a different property                      -->
+                          <project.name>${project.name}</project.name>
+                        </additionalProperties>
+                      </configuration>
+                    </execution>
+                  </executions>
+                </plugin>
+            <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <version>${version.failsafe}</version>
+                  <executions>
+                      <execution>
+                          <goals>
+                              <goal>integration-test</goal>
+                              <goal>verify</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                <configuration>
+                  <!-- Fixes Integration test not finding beans. May be removed with 3.0.0-M6 is available
+                    See: https://stackoverflow.com/a/65806777/14530159 -->
+                  <useModulePath>false</useModulePath>
+                </configuration>
+              </plugin>
+              <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>build-helper-maven-plugin</artifactId>
+                  <version>3.0.0</version>
+                  <executions>
+                      <execution>
+                          <id>add-integration-test-source</id>
+                        <!-- Normally this would be attached to the generate-test-source phase,
+                          however we attach to generate-sources so that the git-code-format plugin can pick
+                          up integration test source files (see plugin config above) -->
+                        <phase>generate-sources</phase>
+                          <goals>
+                              <goal>add-test-source</goal>
+                          </goals>
+                          <configuration>
+                              <!-- Configures the source directory of our integration tests -->
+                              <sources>
+                                  <source>src/integration-test/java</source>
+                              </sources>
+                          </configuration>
+                      </execution>
+                      <execution>
+                          <id>add-integration-test-resources</id>
+                          <phase>generate-test-resources</phase>
+                          <goals>
+                              <goal>add-test-resource</goal>
+                          </goals>
+                          <configuration>
+                              <!-- Configures the resource directory of our integration tests -->
+                              <resources>
+                                  <resource>
+                                      <filtering>true</filtering>
+                                      <directory>src/integration-test/resources</directory>
+                                  </resource>
+                              </resources>
+                          </configuration>
+                      </execution>
+                  </executions>
+              </plugin>
+          </plugins>
 
-		<!--  plugins -->
+
+		<!--  plugin managmeent -->
 		<pluginManagement>
 			<plugins>
 				<!--
@@ -159,52 +275,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
-		<!-- plugins to run on build time -->
-		<plugins>
-			<plugin>
-				<groupId>io.github.git-commit-id</groupId>
-				<artifactId>git-commit-id-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>get-the-git-infos</id>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-						<phase>initialize</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
-					<includeOnlyProperties>
-						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
-						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
-					</includeOnlyProperties>
-					<commitIdGenerationMode>full</commitIdGenerationMode>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>build-info</goal>
-						</goals>
-						<configuration>
-							<additionalProperties>
-								<project.description>${project.description}</project.description>
-								<!-- For some reason BuildProperties.getName() doesn't return the correct value,
-                           so we set the name under a different property                      -->
-								<project.name>${project.name}</project.name>
-							</additionalProperties>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-
-
 	</build>
 </project>

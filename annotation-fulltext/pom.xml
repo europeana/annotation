@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>annotation-api</artifactId>
-    <groupId>eu.europeana.annotation</groupId>
-    <relativePath>../pom.xml</relativePath>
-    <version>${version.annotationApi}</version>
-  </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>annotation-api</artifactId>
+		<groupId>eu.europeana.annotation</groupId>
+		<relativePath>../pom.xml</relativePath>
+		<version>${revision}</version>
+	</parent>
 
-  <artifactId>annotation-fulltext</artifactId>
-  <name>annotation-fulltext</name>
-  <description>A simple annotation-fulltext.</description>
-  <url>http://www.europeanalabs.eu</url>
+	<artifactId>annotation-fulltext</artifactId>
+	<name>annotation-fulltext</name>
+	<description>A simple annotation-fulltext.</description>
+	<url>http://www.europeanalabs.eu</url>
 	<dependencies>
-  	<dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 			<!--
 			<version>${version.org.junit.jupiter}</version>
 			-->
-	</dependency>
-	<dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.dotsub.converter</groupId>
-    		<artifactId>subtitle-converter</artifactId>
+			<artifactId>subtitle-converter</artifactId>
 			<version>${version.subtitle-converter}</version>
-	</dependency>
+		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 
 </project>

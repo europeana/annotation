@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>annotation-dereferenciation</artifactId>
@@ -12,7 +10,7 @@
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<version>${revision}</version>
 	</parent>
 
 	<properties>
@@ -30,7 +28,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -59,49 +57,14 @@
 			-->
 		</dependency>
 
+		<!--
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			<!--
-			<version>${version.junit-platform}</version>
-			-->
+			
 			<scope>test</scope>
 		</dependency>
+		-->
 	</dependencies>
 
-	<build>
-		<!-- configure source and output locations -->
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>*.properties</include>
-					<include>log4j.xml</include>
-				</includes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${version.java}</source>
-					<target>${version.java}</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

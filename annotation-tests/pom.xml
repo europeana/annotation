@@ -5,7 +5,7 @@
     <artifactId>annotation-api</artifactId>
     <groupId>eu.europeana.annotation</groupId>
 	<relativePath>../pom.xml</relativePath>
-    <version>${version.annotationApi}</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>annotation-tests</artifactId>
   <name>Annotation Tests</name>
@@ -20,7 +20,7 @@
 	<dependency>
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-web</artifactId>
-		<version>${version.annotationApi}</version>
+		<version>${project.version}</version>
 	</dependency>
 	<dependency>
 		<groupId>org.springframework</groupId>
@@ -30,7 +30,7 @@
     <dependency>
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-definitions</artifactId>
-	    <version>${version.annotationApi}</version>
+	    <version>${project.version}</version>
     </dependency>	
 	<dependency>
 		<groupId>org.springframework.boot</groupId>

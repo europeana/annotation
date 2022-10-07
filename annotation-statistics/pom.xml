@@ -5,7 +5,7 @@
     <artifactId>annotation-api</artifactId>
     <groupId>eu.europeana.annotation</groupId>
     <relativePath>../pom.xml</relativePath>
-    <version>${version.annotationApi}</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>annotation-statistics</artifactId>
@@ -31,12 +31,12 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
 			<groupId>org.junit.jupiter</groupId>
