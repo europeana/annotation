@@ -72,6 +72,12 @@
 		<version.mongo-java-driver>3.12.11</version.mongo-java-driver>
 		<version.surefire>3.0.0-M7</version.surefire>
 		<version.failsafe>3.0.0-M7</version.failsafe>
+		<!-- sonar plugins -->
+		<jacoco-plugin.version>0.8.7</jacoco-plugin.version>
+        <pmd-plugin.version>3.15.0</pmd-plugin.version>
+        <spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
+        <sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
+		
 		<skipTests>true</skipTests>
 
 	</properties>
