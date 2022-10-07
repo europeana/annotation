@@ -13,10 +13,6 @@
 		<version>${revision}</version>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<dependencies>
 		<!-- <dependency> <groupId>eu.europeana.annotation</groupId> <artifactId>annotation-definitions</artifactId> 
 			<version>${version.annotationApi}</version> </dependency> -->

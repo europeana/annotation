@@ -74,10 +74,19 @@
 		<version.failsafe>3.0.0-M7</version.failsafe>
 		<!-- sonar plugins -->
 		<jacoco-plugin.version>0.8.7</jacoco-plugin.version>
-        <pmd-plugin.version>3.15.0</pmd-plugin.version>
-        <spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
-        <sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
-		
+		<pmd-plugin.version>3.15.0</pmd-plugin.version>
+		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
+		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
+		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
+		<sonar.java.spotbugs.reportPaths>${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
+		<sonar.organization>europeana</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<!-- Exclude POJOs code duplication analysis -->
+		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
+		<sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+
 		<skipTests>true</skipTests>
 
 	</properties>
@@ -281,6 +290,17 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${version.maven-surfire-plugin}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco-plugin.version}</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>
