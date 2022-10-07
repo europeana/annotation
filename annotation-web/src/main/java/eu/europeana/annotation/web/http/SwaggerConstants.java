@@ -7,7 +7,7 @@ public interface SwaggerConstants {
 	/**
 	 * Implementation Notes
 	 */
-	public static final String SAMPLES_JSONLD = "Please find JSON samples for annotation in <a href=\"../jsp/template/jsonld.jsp\" target=\"_blank\">templates</a>.";
+	public static final String SAMPLES_JSONLD = "Please find JSON samples for annotation in <a href=\"/annotation_templates.html\" target=\"_blank\">templates</a>.";
 	public static final String UPDATE_SAMPLES_JSONLD = SAMPLES_JSONLD +
 			" Please create your JSON update request using selected fields you are going to update. E.g. 'body' and 'target' example:   { \"body\": \"Buccin Trombone\",\"target\": \"http://data.europeana.eu/item/09102/_UEDIN_214\" }";
 	public static final String SAMPLES_JSONLD_WITH_TYPE = "Please find JSON-LD samples for annotation in <a href=\"../jsp/template/jsonld.jsp?withType=yes\" target=\"_blank\">templates</a>. " +

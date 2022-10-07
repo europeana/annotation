@@ -1,14 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 
-<%@include file="header.html"%>
-<% 
-String pageDescription="JSONLD templates for creation of annotation objects";
-String withType = request.getParameter("withType");
-//String motivation = request.getParameter("motivation");
-boolean hasType = withType != null;		
-%>	
-<%@include file="description.jspf"%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Europeana Annotation - Templates</title>
+<link href="../../../css/css1.css" rel="stylesheet" type="text/css" />
+<link href="../../../css/main.css" rel="stylesheet" type="text/css" />
+<link href="../../../css/main_002.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="../../templates.css" type="text/css">
+</head>
+<body>
 
+	<div id="wrapper" class="max-width">
+		<header id="banner"><!-- role="banner" ? -->
+			<h2 id="top">Europeana Annotations - Templates (JSON-LD)</h2>
+		</header>
+		<div id="mainblock">
+			<div id="content">
+<!-- END header -->
+				<div class="left">
+							JSONLD templates for creation of annotation objects
+				</div>
+<!-- END service description -->
 <p>
 The following properties are optional in all annotations:
 <b>context, type, creator, created, generated, generator, format.</b> 
@@ -29,6 +42,8 @@ The following properties are optional in all annotations:
 						<li><a href="#linkForContributing_bodyAsString">Create Link For Contributing - Body As String</a></li>
 					</ul>
 
+<!-- BEGIN Annotation Templates -->
+
 <h3 id="tag_bodyValue">Create (Object) Tag</h3>
 The json-ld serialization available in the following box is a valid input to be used for the creation of simple <b>tags</b> using the bodyValue.
 The response will be however, expanded to the TextualBody representation. see also <a href="#tag_TextualBody">Create (Object) Tag - TextualBody</a>
@@ -39,7 +54,7 @@ The response will be however, expanded to the TextualBody representation. see al
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "Annotation",
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+	"motivation": "tagging",	
     "bodyValue": "church",
     "target": "http://data.europeana.eu/item/123/xyz",
     "creator": {
@@ -60,12 +75,13 @@ The json-ld serialization available in the following box is a valid input to be 
 NOTE: body value is verifies to be correct according to the specified format. For the time being the application accepts only the following subtitling formats:"video/quicktime" "text/vtt", "application/ttml+xml"
 &nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
 <br>
-(motivation:subtitling OR motivation:subtitling)
+(motivation:subtitling OR motivation:captioning)
 <textarea rows="18" cols="120" name="jsonldtag">
 {
     "motivation": "subtitling",
     "body": {
     "type": "FullTextResource",
+    "motivation": "subtitling/captioning",	
     "language": "it",
     "value": " WEBVTT\nNOTE Paragraph\n00:00:00.988 --> 00:00:03.572\nDolo le ultime novità\ndella moda per signora\n...\n00:00:30.359 --> 00:00:33.608\ncon il grande finale:\nCarnevale con il popolo eschimese.\n\n00:00:34.199 --> 00:00:35.780\n <special char/> musica) <special char/> ",
     "format": "text/vtt",
@@ -89,7 +105,7 @@ The json-ld serialization available in the following box is a valid input to be 
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "Annotation",
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+	"motivation": "tagging",	
     "body": {
 		"value": "biserica",
 		"language": "ro"
@@ -116,7 +132,7 @@ The json-ld serialization available in the following box is a valid input to be 
  {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "Annotation",
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+	"motivation": "tagging",	
     "body": {
    		"@context": "http://www.europeana.eu/schemas/context/entity.jsonld",   
    		"type": "Place",
@@ -136,7 +152,7 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="7" cols="40" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",  
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+	"motivation": "tagging",	
     "body": "http://www.geonames.org/2988507",
     "target": "http://data.europeana.eu/item/09102/_UEDIN_214"
 }
@@ -151,7 +167,7 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="10" cols="120" name="jsonldtag">
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",  
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+	"motivation": "tagging",	
     "body": {
         "id": "http://www.geonames.org/2988507",
         "format": "application/rdf+xml"
@@ -175,7 +191,7 @@ The json-ld serialization available in the following box is a valid input to be 
 {
     "@context": "http://www.w3.org/ns/anno.jsonld",
     "type": "Annotation",
-<% if(!hasType){ %>    "motivation": "tagging",<% }//endif%>	
+	"motivation": "tagging",	
     "body": {
         "type": "SpecificResource",
         "source": "http://www.geonames.org/2988507",
@@ -195,7 +211,8 @@ The json-ld serialization available in the following box is a valid input to be 
 <textarea rows="15" cols="120" name="jsonldobjectlink">
 {
   "@context": "http://www.w3.org/ns/anno.jsonld",
-  <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
+  "type": "Annotation",
+  "motivation": "linking",
   "target": [ "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
               "http://data.europeana.eu/item/2059207/data_sounds_T471_4" ] 
   
@@ -210,20 +227,21 @@ The json-ld serialization available in the following box is a valid input to be 
 (motivation:linking)  
 <textarea rows="15" cols="120" name="jsonldobjectlinkspeciicrelation">
 {
-  "@context": "http://www.w3.org/ns/anno.jsonld",
-  <% if(!hasType){ %>    "motivation": "linking",<% }//endif %>
-  "body": {
-    "@graph": {
-      "@context" : "http://www.europeana.eu/schemas/context/edm.jsonld",
-      "id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
-      "isSimilarTo": {
-        "id": "http://thesession.org/tunes/52",
-        "format": "text/html",
-        "title": "The Kid On The Mountain (slip jig) on The Session"
-      }
-    }
-  },
-  "target": "http://data.europeana.eu/item/2059207/data_sounds_T471_5"
+	"@context": "http://www.w3.org/ns/anno.jsonld",
+	"type": "Annotation",
+	"motivation": "linking",
+	"body": {
+		"@graph": {
+		"@context" : "http://www.europeana.eu/schemas/context/edm.jsonld",
+		"id": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+		"isSimilarTo": {
+			"id": "http://thesession.org/tunes/52",
+			"format": "text/html",
+			"title": "The Kid On The Mountain (slip jig) on The Session"
+      		}
+		}
+	},		
+  	"target": "http://data.europeana.eu/item/2059207/data_sounds_T471_5"
 }
 </textarea>
 
@@ -235,8 +253,10 @@ The json-ld serialization available in the following box is a valid input to be 
 (motivation:transcribing)  
 <textarea rows="15" cols="120" name="jsonldobjecttranscription">
 {
-  <% if(!hasType){ %>    "motivation": "transcribing",<% }//endif %>
-  "body": {
+	"@context": "http://www.w3.org/ns/anno.jsonld",
+	"type": "Annotation",
+	"motivation": "transcribing",
+	"body": {
     "id": "https://transcribathon.com/en/documents/id-20841/item-235882/",
     "language": "de",
     "format": "text/html",
@@ -259,13 +279,15 @@ The json-ld serialization available in the following box is a valid input to be 
 (motivation:tagging)  
 <textarea rows="15" cols="120" name="jsonldobjecttaggingwebresource">
 {
-  <% if(!hasType){ %>    "motivation": "tagging",<% }//endif %>
-  "bodyValue": "MyTag",
-  "target": {
-    "type": "SpecificResource",
-    "scope": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
-    "source": "http://comhaltasarchive.ie/tracks/12535"
-  }
+	"@context": "http://www.w3.org/ns/anno.jsonld",
+	"type": "Annotation",
+	"motivation": "tagging",
+	"bodyValue": "MyTag",
+	"target": {
+    	"type": "SpecificResource",
+    	"scope": "http://data.europeana.eu/item/2059207/data_sounds_T471_5",
+    	"source": "http://comhaltasarchive.ie/tracks/12535"
+  	}
 }
 </textarea>
 
@@ -309,5 +331,25 @@ NOTE: The body should contain the URI starting with the https.
 
 </textarea>
 <br>		
+<!--  END of annotation templates -->
+</div>
+			<!-- end of content -->
+		</div>
+		<!-- end of mainblock -->
 
-<%@include file="footer.html"%>
+		<hr />
+		<!--Europeana Group Block-->
+		<footer id="footer">
+			<div class="middle f-left">
+				<a href="http://www.pro.europeana.eu/web/guest/projects"
+					class="f-left">Europeana Network projects</a>
+			</div>
+			<span class="f-right">co-funded by the European Union<img
+				alt="european union flag" src="../../../img/eu-flag.gif"></span>
+		</footer>
+
+
+	</div>
+	<!-- end of wrapper -->
+</body>
+</html>
