@@ -227,9 +227,62 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @SuppressWarnings("deprecation")
   private void mergeAnnotationProperties(PersistentAnnotation annotation,
       Annotation webAnnotation) {
-    if (webAnnotation.getType() != null)
+    if (webAnnotation.getType() != null) {
       annotation.setType(webAnnotation.getType());
+    }
 
+    if (webAnnotation.getGenerated() != null) {
+      annotation.setGenerated(webAnnotation.getGenerated());
+    }
+    
+    if (webAnnotation.getBody() != null) {
+      annotation.setBody(webAnnotation.getBody());
+    }
+    
+    if (webAnnotation.getTarget() != null) {
+      annotation.setTarget(webAnnotation.getTarget());
+    }
+    
+    if (annotation.isDisabled() != webAnnotation.isDisabled()) {
+      annotation.setDisabled(webAnnotation.getDisabled());
+    }
+    
+    if (webAnnotation.getEquivalentTo() != null) {
+      annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
+    }
+    if (webAnnotation.getInternalType() != null) {
+      annotation.setInternalType(webAnnotation.getInternalType());
+    }
+    
+    if (webAnnotation.getStatus() != null) {
+      annotation.setStatus(webAnnotation.getStatus());
+    }
+    
+    if (webAnnotation.getStyledBy() != null) {
+      annotation.setStyledBy(webAnnotation.getStyledBy());
+    }
+    
+    mergeReferenceFields(annotation, webAnnotation);   
+    mergeOrSetLastUpdate(annotation, webAnnotation);
+  }
+
+  private void mergeReferenceFields(PersistentAnnotation annotation, Annotation webAnnotation) {
+    if (webAnnotation.getSameAs() != null) {
+      annotation.setSameAs(webAnnotation.getSameAs());
+    } 
+    
+    if (webAnnotation.getCanonical() != null) {
+      // TODO: #404 must never be overwritten
+      if (StringUtils.isEmpty(annotation.getCanonical())) {
+        annotation.setCanonical(webAnnotation.getCanonical());
+      }
+    }
+    if (webAnnotation.getVia() != null) {
+      annotation.setVia(webAnnotation.getVia());
+    }
+  }
+
+  private void mergeOrSetLastUpdate(PersistentAnnotation annotation, Annotation webAnnotation) {
     // So my decision for the moment would be to only keep the "id" and "created" immutable.
     //
     // With regards to the logic when each of the fields is missing:
@@ -254,49 +307,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       Date timeStamp = new java.util.Date();
       annotation.setLastUpdate(timeStamp);
     }
-
-    // creator and generator are mandatory, and set during the creation
-    // if (updatedWebAnnotation.getCreator() != null)
-    // annotation.setCreator(updatedWebAnnotation.getCreator());
-    //
-    // if (updatedWebAnnotation.getGenerator() != null)
-    // annotation.setGenerator(updatedWebAnnotation.getGenerator());
-
-    // created must not be updated
-    // if (webAnnotation.getCreated() != null)
-    // annotation.setCreated(webAnnotation.getCreated());
-    // if (updatedWebAnnotation.getCreator() != null)
-    // annotation.setCreator(updatedWebAnnotation.getCreator());
-    if (webAnnotation.getGenerated() != null)
-      annotation.setGenerated(webAnnotation.getGenerated());
-    // if (updatedWebAnnotation.getGenerator() != null)
-    // annotation.setGenerator(updatedWebAnnotation.getGenerator());
-    if (webAnnotation.getBody() != null)
-      annotation.setBody(webAnnotation.getBody());
-    if (webAnnotation.getTarget() != null)
-      annotation.setTarget(webAnnotation.getTarget());
-    if (annotation.isDisabled() != webAnnotation.isDisabled())
-      annotation.setDisabled(webAnnotation.getDisabled());
-    if (webAnnotation.getEquivalentTo() != null)
-      annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
-    if (webAnnotation.getInternalType() != null)
-      annotation.setInternalType(webAnnotation.getInternalType());
-    // if (updatedWebAnnotation.getLastUpdate() != null)
-    // annotation.setLastUpdate(updatedWebAnnotation.getLastUpdate());
-    if (webAnnotation.getSameAs() != null)
-      annotation.setSameAs(webAnnotation.getSameAs());
-    if (webAnnotation.getStatus() != null)
-      annotation.setStatus(webAnnotation.getStatus());
-    if (webAnnotation.getStyledBy() != null)
-      annotation.setStyledBy(webAnnotation.getStyledBy());
-    if (webAnnotation.getCanonical() != null) {
-      // TODO: #404 must never be overwritten
-      if (StringUtils.isEmpty(annotation.getCanonical())) {
-        annotation.setCanonical(webAnnotation.getCanonical());
-      }
-    }
-    if (webAnnotation.getVia() != null)
-      annotation.setVia(webAnnotation.getVia());
   }
 
   @Override
