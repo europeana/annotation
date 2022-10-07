@@ -17,8 +17,7 @@ import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFact
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportResource;
-import eu.europeana.annotation.config.SocksProxyActivator;
-import eu.europeana.annotation.config.SocksProxyConfig;
+import eu.europeana.annotation.web.config.SocksProxyActivator;
 
 /**
  * Main application. Allows deploying as a war and logs instance data when deployed in Cloud Foundry
@@ -51,7 +50,7 @@ public class AnnotationApp extends SpringBootServletInitializer {
         System.getenv("CF_INSTANCE_IP"));
 
     // Activate socks proxy (if your application requires it)
-    SocksProxyActivator.activate(new SocksProxyConfig("config/annotation.properties"));
+    SocksProxyActivator.activate("config/annotation.properties");
 
     ApplicationContext ctx = SpringApplication.run(AnnotationApp.class, args);
 
@@ -66,5 +65,5 @@ public class AnnotationApp extends SpringBootServletInitializer {
     Arrays.sort(beanNames);
     logger.debug("Instantiated beans:");
     logger.debug(StringUtils.join(beanNames, "\n"));
-  }
+  }    
 }
