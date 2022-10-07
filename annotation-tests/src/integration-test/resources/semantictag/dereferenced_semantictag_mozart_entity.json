@@ -1,0 +1,6 @@
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",  
+    "motivation": "tagging",	
+    "body": "http://data.europeana.eu/agent/base/146951",
+    "target": "http://data.europeana.eu/agent/base/146951"
+}

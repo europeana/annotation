@@ -73,7 +73,7 @@ public class ManagementRest extends BaseRest {
 	    HttpServletRequest request) throws HttpException {
 
     //check the property for the authorization
-    if(!adminService.getRemoveAnnotationAuthorization()) {
+    if(getConfiguration().isAuthEnabled()) {
       verifyWriteAccess(Operations.ADMIN_ALL, request);
     }
 

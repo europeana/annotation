@@ -9,6 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
@@ -20,7 +23,8 @@ import eu.europeana.annotation.statistics.model.AnnotationStatisticsUsersScenari
 
 public class AnnotationStatisticsService{
 
-	@Resource
+    @Autowired
+    @Qualifier(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
 	SolrAnnotationService solrService;
 	
 	Logger logger = LogManager.getLogger(getClass());

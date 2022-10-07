@@ -6,7 +6,6 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
-import org.springframework.stereotype.Component;
 import com.mongodb.WriteResult;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
@@ -19,7 +18,6 @@ import eu.europeana.annotation.mongo.model.PersistentModerationRecordImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentModerationRecord;
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
-//@Component
 public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceImpl<PersistentModerationRecord, String>
 		implements PersistentModerationRecordService {
 

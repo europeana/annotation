@@ -38,23 +38,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   @Resource(name="annotation_db_annotationService")
   PersistentAnnotationService mongoPersistance;
 
-  // @Resource
-  // AuthenticationService authenticationService;
-
   Logger logger = LogManager.getLogger(getClass());
-
-  // public AuthenticationService getAuthenticationService() {
-  // return authenticationService;
-  // }
-  //
-  // public void setAuthenticationService(AuthenticationService authenticationService) {
-  // this.authenticationService = authenticationService;
-  // }
-
-  @Override
-  public String getComponentName() {
-    return configuration.getComponentName();
-  }
 
   protected AnnotationConfiguration getConfiguration() {
     return configuration;

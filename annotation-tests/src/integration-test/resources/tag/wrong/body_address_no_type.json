@@ -1,0 +1,13 @@
+{
+  "motivation": "tagging",
+  "body": {
+    "@context": "http://www.europeana.eu/schemas/context/entity.jsonld",
+    "streetAddress": "Prins Willem-Alexanderhof 5, 2595BE Den Haag, Netherlands",
+    "postalCode": "2595BE",
+    "postOfficeBox": "90407",
+    "locality": "The Hague",
+    "region": "South Holland",
+    "countryName": "The Netherlands"
+  },
+  "target": "http://data.europeana.eu/item/2020601/contributions_20841"
+}

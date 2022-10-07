@@ -11,7 +11,7 @@
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<version>${revision}</version>
 	</parent>
 
 	<dependencies>
@@ -85,22 +85,22 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>api2-common</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-mongo</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.jena</groupId>
@@ -111,17 +111,17 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-fulltext</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-dereferenciation</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-statistics</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 				<dependency>
@@ -212,7 +212,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 			<!-- <type>test-jar</type> -->
@@ -229,38 +229,25 @@
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<version>${version.httpClient}</version>
+		</dependency>
+<!--         <dependency> -->
+<!--             <groupId>dev.morphia.morphia</groupId> -->
+<!--             <artifactId>morphia-core</artifactId> -->
+<!--             <version>${version.morphia}</version> -->
+<!--         </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+		<dependency>
+		    <groupId>org.mongodb</groupId>
+		    <artifactId>mongo-java-driver</artifactId>
+		    <version>${version.mongo-java-driver}</version>
 		</dependency>
 
 		
 
-
 	</dependencies>
 
 	<build>
-		<!-- configure source and output locations -->
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
-		<!--
-		<finalName>${artifactId}-${version}</finalName>
-		-->
-		<finalName>${project.artifactId}</finalName>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
-
 		<!-- plugins -->
 		<plugins>
       		<plugin>
@@ -278,9 +265,6 @@
         		</executions>
       		</plugin>
     	</plugins>
-		
-		
-		
 	</build>
 
 </project>

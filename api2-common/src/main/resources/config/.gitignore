@@ -1,4 +1,5 @@
-/annotation.properties
-/swagger.properties
-/annotation.properties_compose
-/annotation.properties_local
+**/annotation.user.properties
+**/*.bk
+**/swagger.properties
+**/annotation.properties_compose
+**/annotation.properties_local

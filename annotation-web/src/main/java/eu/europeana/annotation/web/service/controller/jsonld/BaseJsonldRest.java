@@ -118,8 +118,8 @@ public class BaseJsonldRest extends BaseRest {
 	    // build response entity with headers
 	    // TODO: clarify serialization ETag: "_87e52ce126126"
 	    // TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
-	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTag = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+//	    String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTag = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
@@ -315,8 +315,8 @@ public class BaseJsonldRest extends BaseRest {
         JsonLd annotationLd = new AnnotationLdSerializer(annotation, getConfiguration().getAnnotationBaseUrl());
         String jsonLd = annotationLd.toString(4);
 
-	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTag = generateETag(annotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+//	    String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTag = generateETag(annotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
@@ -455,8 +455,8 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(null, annotation);
 
 	    // validate annotation
-	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+//	    String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 
 	    checkIfMatchHeader(eTagOrigin, request);
 	    getAnnotationService().validateWebAnnotation(updateWebAnnotation);
@@ -466,7 +466,7 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation updatedAnnotation = getAnnotationService()
 		    .updateAnnotation((PersistentAnnotation) storedAnnotation, updateWebAnnotation);
 
-	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 
 	    // serialize to jsonld
         JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation, getConfiguration().getAnnotationBaseUrl());
@@ -525,8 +525,8 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, true);
 
 	    // validate annotation
-	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+	    //String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 
 	    checkIfMatchHeader(eTagOrigin, request);
 
@@ -569,8 +569,8 @@ public class BaseJsonldRest extends BaseRest {
 	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, false);
 
 	    // validate annotation
-	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, apiVersion);
+	    //String apiVersion = getConfiguration().getAnnotationApiVersion();
+	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 	    checkIfMatchHeader(eTagOrigin, request);
 
 	    getAnnotationService().enableAnnotation(storedAnno.getIdentifier());

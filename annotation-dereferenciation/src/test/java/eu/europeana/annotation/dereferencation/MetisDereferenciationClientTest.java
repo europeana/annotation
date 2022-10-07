@@ -3,17 +3,15 @@ package eu.europeana.annotation.dereferencation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
-
+import eu.europeana.annotation.config.AnnotationConfigurationImpl;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 /*
  * TODO: for these tests to work, please copy the given deref2json.xsl file to the test/resources folder
@@ -80,9 +78,11 @@ public class MetisDereferenciationClientTest {
 	
     }
 
-    public MetisDereferenciationClient getDereferenciationClient() {
+    public MetisDereferenciationClient getDereferenciationClient() throws IOException {
 	if (dereferenciationClient == null) {
-	    dereferenciationClient = new MetisDereferenciationClient();
+	    AnnotationConfigurationImpl configuration = new AnnotationConfigurationImpl();
+	    configuration.loadProperties();
+	    dereferenciationClient = new MetisDereferenciationClient(configuration);
 	}
 	return dereferenciationClient;
     }

@@ -4,7 +4,7 @@
 
 	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-api</artifactId>
-	<version>${version.annotationApi}</version>
+	<version>${revision}</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
 	<description>Annotation API parent pom</description>
@@ -34,7 +34,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.annotationApi>0.3.4-SNAPSHOT</version.annotationApi>
+		<revision>0.3.4-SNAPSHOT</revision>
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		<version.java>11</version.java>
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
@@ -67,7 +67,25 @@
 		<version.subtitle-converter>1</version.subtitle-converter>
 		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
-        
+		<version.testcontainers>1.16.0</version.testcontainers>
+		<version.morphia>2.1.4</version.morphia>
+		<version.mongo-java-driver>3.12.11</version.mongo-java-driver>
+		<version.surefire>3.0.0-M7</version.surefire>
+		<version.failsafe>3.0.0-M7</version.failsafe>
+		<!-- sonar plugins -->
+		<jacoco-plugin.version>0.8.7</jacoco-plugin.version>
+		<pmd-plugin.version>3.15.0</pmd-plugin.version>
+		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
+		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
+		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
+		<sonar.java.spotbugs.reportPaths>${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
+		<sonar.organization>europeana</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<!-- Exclude POJOs code duplication analysis -->
+		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
+		<sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+
 		<skipTests>true</skipTests>
 
 	</properties>
@@ -80,9 +98,6 @@
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
 		<module>annotation-client</module>
-		<!--
-		<module>annotation-import</module>
-		-->
 		<module>annotation-fulltext</module>
 		<module>annotation-statistics</module>
 	</modules>
@@ -103,17 +118,23 @@
 
 	<build>
 		<!--  configure source and output locations -->
+		<!--
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
+		-->
 		<!--
 		<finalName>${artifactId}-${version}</finalName>
 		-->
+		<!--
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
+		-->
 		<!-- 
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
 		 -->
+		<!-- 
 		<testSourceDirectory>src/test/java</testSourceDirectory>
+		-->
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -126,47 +147,14 @@
 			</testResource>
 		</testResources>
 
-		<!--  plugins -->
-		<pluginManagement>
-			<plugins>
-				<!--
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-				</plugin>
-				 -->
-				<plugin>
-					<groupId>io.github.git-commit-id</groupId>
-					<artifactId>git-commit-id-maven-plugin</artifactId>
-					<version>${git-commit-id.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${version.spring.boot}</version>
-				</plugin>	
-				<plugin>
-					<inherited>true</inherited>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>${version.java}</source>
-						<target>${version.java}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>${version.maven-surfire-plugin}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-		<!-- plugins to run on build time -->
+		<!--  plugins to run on build time  -->
 		<plugins>
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>
+				<!--
+              <version>${git-commit-id.version}</version>
+              -->
 				<executions>
 					<execution>
 						<id>get-the-git-infos</id>
@@ -189,6 +177,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!--
+                  <version>${version.spring.boot}</version>
+                  -->
 				<executions>
 					<execution>
 						<goals>
@@ -205,8 +196,201 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${version.failsafe}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Fixes Integration test not finding beans. May be removed with 3.0.0-M6 is available
+                    See: https://stackoverflow.com/a/65806777/14530159 -->
+					<useModulePath>false</useModulePath>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>add-integration-test-source</id>
+						<!-- Normally this would be attached to the generate-test-source phase,
+                          however we attach to generate-sources so that the git-code-format plugin can pick
+                          up integration test source files (see plugin config above) -->
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<!-- Configures the source directory of our integration tests -->
+							<sources>
+								<source>src/integration-test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-integration-test-resources</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>add-test-resource</goal>
+						</goals>
+						<configuration>
+							<!-- Configures the resource directory of our integration tests -->
+							<resources>
+								<resource>
+									<filtering>true</filtering>
+									<directory>src/integration-test/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 
+		<!--  plugin managmeent -->
+		<pluginManagement>
+			<plugins>
+				<!--
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+				</plugin>
+				 -->
+				<plugin>
+					<groupId>io.github.git-commit-id</groupId>
+					<artifactId>git-commit-id-maven-plugin</artifactId>
+					<version>${git-commit-id.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${version.spring.boot}</version>
+				</plugin>
+				<plugin>
+					<inherited>true</inherited>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>${version.java}</source>
+						<target>${version.java}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${version.maven-surfire-plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco-plugin.version}</version>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
 	</build>
+
+	<!-- profiles (for computing code coverage on github) -->
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<!-- Plugin has an indirect dependency on an old version os asm. This is disabled, so we
+              can use the asm version specified above. See: https://issueexplorer.com/issue/pmd/pmd/3504#21570220 -->
+						<dependencies>
+							<dependency>
+								<groupId>org.eclipse.sisu</groupId>
+								<artifactId>org.eclipse.sisu.plexus</artifactId>
+								<version>0.0.0.M2a</version>
+								<exclusions>
+									<exclusion>
+										<groupId>asm</groupId>
+										<artifactId>asm</artifactId>
+									</exclusion>
+								</exclusions>
+							</dependency>
+						</dependencies>
+						<version>${pmd-plugin.version}</version>
+						<configuration>
+							<rulesets>
+								<ruleset>https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-pmd-ruleset.xml</ruleset>
+							</rulesets>
+							<printFailingErrors>true</printFailingErrors>
+						</configuration>
+						<executions>
+							<execution>
+								<id>aggregate</id>
+								<goals>
+									<goal>pmd</goal>
+								</goals>
+								<phase>verify</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.github.spotbugs</groupId>
+						<artifactId>spotbugs-maven-plugin</artifactId>
+						<version>${spotbugs-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>spotbugs</id>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<includeFilterFile>https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-findbugs-ruleset.xml</includeFilterFile>
+							<!--We just want the reports; build should still pass -->
+							<failOnError>false</failOnError>
+							<!-- Import additional rules from plugins -->
+							<plugins>
+								<plugin>
+									<groupId>com.h3xstream.findsecbugs</groupId>
+									<artifactId>findsecbugs-plugin</artifactId>
+									<version>1.11.0</version>
+								</plugin>
+								<plugin>
+									<groupId>com.mebigfatguy.fb-contrib</groupId>
+									<artifactId>fb-contrib</artifactId>
+									<version>7.4.3.sb</version>
+								</plugin>
+							</plugins>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

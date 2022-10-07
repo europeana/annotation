@@ -68,4 +68,5 @@ public class WhiteListParser extends BaseJsonParser{
 		
 		return whitelist;
 	}
+	
 }

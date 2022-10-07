@@ -9,8 +9,15 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
         ">
      
-     <util:properties id="annotationProperties" 
-		location="classpath:config/annotation.properties" />
+     <beans:bean id="annotationProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    	<beans:property name="locations">
+    		<beans:list>
+            	<beans:value>classpath:config/annotation.properties</beans:value>
+            </beans:list>	
+    	</beans:property>
+	</beans:bean>
+     	
+	<context:property-placeholder properties-ref="annotationProperties" ignore-resource-not-found="true" location="classpath:config/annotation.user.properties" />
 		
     <!--  configuration bean -->
 	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">

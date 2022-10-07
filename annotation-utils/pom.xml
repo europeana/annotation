@@ -9,20 +9,28 @@
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-api</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<version>${revision}</version>
 	</parent>
 	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>api2-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+			<!--
 			<version>${version.jackson}</version>
+			-->
 		</dependency>
 		
 		<dependency>
@@ -68,7 +76,9 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
+			<!--
 			<version>${version.gson}</version>
+			-->
 		</dependency>
 		
 		<dependency>

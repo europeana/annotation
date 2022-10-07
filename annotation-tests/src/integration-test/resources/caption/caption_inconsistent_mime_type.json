@@ -1,0 +1,14 @@
+{
+"type": "Annotation",
+"motivation": "captioning",
+"body": {
+"type": "FullTextResource",
+"format": "application/x-subrip",
+"language": "en",
+"value": "WEBVTT 00:00:00.988 --> 00:00:03.572 Dolo the latest in women's fashion"
+},
+"target": {
+"scope": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD",
+"source": "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD"
+}
+}

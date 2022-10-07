@@ -12,7 +12,11 @@ import eu.europeana.api.commons.web.model.ApiResponse;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class WhitelistOperationResponse extends ApiResponse {
 	
-	WhitelistEntry whitelistEntry;
+	public WhitelistOperationResponse() {
+      super();
+    }
+
+    WhitelistEntry whitelistEntry;
 	List<? extends WhitelistEntry> whitelist = new ArrayList<WhitelistEntry>();
 
 	public static String ERROR_NO_OBJECT_FOUND = "No Object Found!";
@@ -35,5 +39,9 @@ public class WhitelistOperationResponse extends ApiResponse {
 	public void setWhitelist(List<? extends WhitelistEntry> whitelist) {
 		this.whitelist = whitelist;
 	}
+
+    public List<? extends WhitelistEntry> getWhitelist() {
+      return whitelist;
+    }
 
 }

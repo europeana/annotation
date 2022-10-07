@@ -128,7 +128,7 @@ public class WhitelistRest extends BaseRest {
 	return buildResponse(jsonStr);
     }
 
-    @RequestMapping(value = "/load", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/load", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> loadDefaultWhitelist(

@@ -9,8 +9,6 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AnnotationSearchService {
 
-	public String getComponentName();
-
 	/**
 	 * This method retrieves all not disabled annotations for given target.
 	 * 

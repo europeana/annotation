@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,220 +34,237 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseRest extends BaseRestController {
+
+  @Resource
+  AnnotationConfiguration configuration;
+
+  @Resource(name = "annotationService")
+  private AnnotationService annotationService;
+
+  @Resource(name = "annotation_authorizationService")
+  AuthorizationService authorizationService;
+
+  @Resource(name = "annotationSearchService")
+  AnnotationSearchService annotationSearchService;
+
+  @Resource(name = "annotation_db_annotationService")
+  protected PersistentAnnotationService mongoPersistance;
+
+  @Resource 
+  protected BuildProperties buildInfo;
   
-	@Resource
-	AnnotationConfiguration configuration;
+  
+  // TODO move to base class
+  Logger logger = LogManager.getLogger(getClass());
 
-	@Resource(name="annotationService")
-	private AnnotationService annotationService;
+  public AnnotationSearchService getAnnotationSearchService() {
+    return annotationSearchService;
+  }
 
-	@Resource(name="annotation_authorizationService")
-	AuthorizationService authorizationService;
+  public void setAnnotationSearchService(AnnotationSearchService annotationSearchService) {
+    this.annotationSearchService = annotationSearchService;
+  }
 
-	@Resource(name="annotationSearchService")
-	AnnotationSearchService annotationSearchService;
-	
-	@Resource(name="annotation_db_annotationService")
-	protected PersistentAnnotationService mongoPersistance;
-	
-	//TODO move to base class
-	Logger logger = LogManager.getLogger(getClass());
+  TypeUtils typeUtils = new TypeUtils();
 
-	public AnnotationSearchService getAnnotationSearchService() {
-		return annotationSearchService;
-	}
+  public BaseRest() {
+    super();
+  }
 
-	public void setAnnotationSearchService(AnnotationSearchService annotationSearchService) {
-		this.annotationSearchService = annotationSearchService;
-	}
+  protected TypeUtils getTypeUtils() {
+    return typeUtils;
+  }
 
-	TypeUtils typeUtils = new TypeUtils();
+  protected AnnotationConfiguration getConfiguration() {
+    return configuration;
+  }
 
-	public BaseRest() {
-		super();
-	}
+  protected AnnotationService getAnnotationService() {
+    return annotationService;
+  }
 
-	protected TypeUtils getTypeUtils() {
-		return typeUtils;
-	}
+  public void setAnnotationService(AnnotationService annotationService) {
+    this.annotationService = annotationService;
+  }
 
-	protected AnnotationConfiguration getConfiguration() {
-		return configuration;
-	}
+  public void setConfiguration(AnnotationConfiguration configuration) {
+    this.configuration = configuration;
+  }
 
-	protected AnnotationService getAnnotationService() {
-		return annotationService;
-	}
+  public String toResourceId(String collection, String object) {
+    return "/" + collection + "/" + object;
+  }
 
-	public void setAnnotationService(AnnotationService annotationService) {
-		this.annotationService = annotationService;
-	}
+  public AnnotationSearchResults<AbstractAnnotation> buildSearchResponse(
+      List<? extends Annotation> annotations, String apiKey, String action) {
+    AnnotationSearchResults<AbstractAnnotation> response =
+        new AnnotationSearchResults<AbstractAnnotation>(apiKey, action);
+    response.items = new ArrayList<AbstractAnnotation>(annotations.size());
 
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
-	}
+    AbstractAnnotation webAnnotation;
+    for (Annotation annotation : annotations) {
+      webAnnotation = AnnotationBuilder.copyIntoWebAnnotation(annotation);
+      response.items.add(webAnnotation);
+    }
+    response.itemsCount = response.items.size();
+    response.totalResults = annotations.size();
+    return response;
+  }
 
-	public String toResourceId(String collection, String object) {
-		return "/" + collection + "/" + object;
-	}
+  public WhitelistEntry serializeWhitelist(WhitelistEntry entry) {
+    ((PersistentWhitelistEntry) entry).setId(null);
+    return entry;
+  }
 
-	public AnnotationSearchResults<AbstractAnnotation> buildSearchResponse(List<? extends Annotation> annotations,
-			String apiKey, String action) {
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(apiKey,
-				action);
-		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
+  public WhitelsitSearchResults<WhitelistEntry> buildSearchWhitelistResponse(
+      List<? extends WhitelistEntry> entries, String apiKey, String action) {
+    WhitelsitSearchResults<WhitelistEntry> response =
+        new WhitelsitSearchResults<WhitelistEntry>(apiKey, action);
+    List<WhitelistEntry> webWhitelist = new ArrayList<WhitelistEntry>();
+    for (WhitelistEntry entry : entries) {
+      entry.setCreationDate(null);
+      entry.setLastUpdate(null);
+      entry.setEnableFrom(null);
+      entry.setDisableTo(null);
+      ((PersistentWhitelistEntry) entry).setId(null);
+      webWhitelist.add(entry);
+    }
+    response.items = webWhitelist;
+    response.itemsCount = response.items.size();
+    response.totalResults = entries.size();
+    return response;
+  }
 
-		AbstractAnnotation webAnnotation;
-		for (Annotation annotation : annotations) {
-			webAnnotation = AnnotationBuilder.copyIntoWebAnnotation(annotation);
-			response.items.add(webAnnotation);
-		}
-		response.itemsCount = response.items.size();
-		response.totalResults = annotations.size();
-		return response;
-	}
+  public AnnotationSearchResults<AbstractAnnotation> buildSearchErrorResponse(String apiKey,
+      String action, Throwable th) {
 
-	public WhitelistEntry serializeWhitelist(WhitelistEntry entry) {
-		((PersistentWhitelistEntry) entry).setId(null);
-		return entry;
-	}
-	
-	public WhitelsitSearchResults<WhitelistEntry> buildSearchWhitelistResponse(List<? extends WhitelistEntry> entries,
-			String apiKey, String action) {
-		WhitelsitSearchResults<WhitelistEntry> response = new WhitelsitSearchResults<WhitelistEntry>(apiKey,
-				action);
-		List<WhitelistEntry> webWhitelist = new ArrayList<WhitelistEntry>();
-		for (WhitelistEntry entry : entries) {
-			entry.setCreationDate(null);
-			entry.setLastUpdate(null);
-			entry.setEnableFrom(null);
-			entry.setDisableTo(null);
-			((PersistentWhitelistEntry) entry).setId(null);
-			webWhitelist.add(entry);
-		}
-		response.items = webWhitelist;
-		response.itemsCount = response.items.size();
-		response.totalResults = entries.size();
-		return response;
-	}
+    AnnotationSearchResults<AbstractAnnotation> response =
+        new AnnotationSearchResults<AbstractAnnotation>(apiKey, action);
+    response.success = false;
+    response.error = th.getMessage();
+    // response.requestNumber = 0L;
 
-	public AnnotationSearchResults<AbstractAnnotation> buildSearchErrorResponse(String apiKey, String action,
-			Throwable th) {
+    return response;
+  }
 
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(apiKey,
-				action);
-		response.success = false;
-		response.error = th.getMessage();
-		// response.requestNumber = 0L;
+  protected ResponseEntity<String> buildResponse(String jsonStr) {
 
-		return response;
-	}
-	
-	protected ResponseEntity <String> buildResponse(String jsonStr) {
-		
-		HttpStatus httpStatus = HttpStatus.OK;
-		ResponseEntity<String> response = buildResponse(jsonStr, httpStatus);
-		
-		return response;		
-	}
-	
+    HttpStatus httpStatus = HttpStatus.OK;
+    ResponseEntity<String> response = buildResponse(jsonStr, httpStatus);
 
-	protected ResponseEntity<String> buildResponse(String jsonStr, HttpStatus httpStatus) {
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-		headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
-		headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+    return response;
+  }
 
-		ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, httpStatus);
-		return response;
-	}
 
-	public AuthorizationService getAuthorizationService() {
-		return authorizationService;
-	}
+  protected ResponseEntity<String> buildResponse(String jsonStr, HttpStatus httpStatus) {
+    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+    headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
+    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
 
-	public void setAuthorizationService(AuthorizationService authorizationService) {
-		this.authorizationService = authorizationService;
-	}
+    ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, httpStatus);
+    return response;
+  }
 
-	/**
-	 * This method performs decoding of base64 string
-	 * 
-	 * @param base64Str
-	 * @return decoded string
-	 * @throws ApplicationAuthenticationException
-	 */
-	public String decodeBase64(String base64Str) throws ApplicationAuthenticationException {
-		String res = null;
-		try {
-//			byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
-			byte[] decodedBase64Str = org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes());
-			res = new String(decodedBase64Str);
-		} catch (Exception e) {
-			throw new ApplicationAuthenticationException(
-					I18nConstants.BASE64_DECODING_FAIL, I18nConstants.BASE64_DECODING_FAIL, null);			
-		}
-		return res;
-	}
+  public AuthorizationService getAuthorizationService() {
+    return authorizationService;
+  }
 
-	/**
-	 * This method takes user token from a HTTP header if it exists or from the
-	 * passed request parameter.
-	 * 
-	 * @param paramUserToken
-	 *            The HTTP request parameter
-	 * @param request
-	 *            The HTTP request with headers
-	 * @return user token
-	 * @throws ApplicationAuthenticationException
-	 */
-	public String getUserToken(String paramUserToken, HttpServletRequest request)
-			throws ApplicationAuthenticationException {
-		int USER_TOKEN_TYPE_POS = 0;
-		int BASE64_ENCODED_STRING_POS = 1;
-		String userToken = null;
-		String userTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-		if (userTokenHeader != null) {
-			String[] headerElems = userTokenHeader.split(" ");
-			if(headerElems.length < 2 )
-				throw new ApplicationAuthenticationException(
-						I18nConstants.INVALID_HEADER_FORMAT, I18nConstants.INVALID_HEADER_FORMAT, null);
+  public void setAuthorizationService(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
+  }
 
-			String userTokenType = headerElems[USER_TOKEN_TYPE_POS];
-			if (!AnnotationHttpHeaders.BEARER.equals(userTokenType))
-				throw new ApplicationAuthenticationException(
-						I18nConstants.UNSUPPORTED_TOKEN_TYPE, I18nConstants.UNSUPPORTED_TOKEN_TYPE,
-						new String[] {userTokenType});
+  /**
+   * This method performs decoding of base64 string
+   * 
+   * @param base64Str
+   * @return decoded string
+   * @throws ApplicationAuthenticationException
+   */
+  public String decodeBase64(String base64Str) throws ApplicationAuthenticationException {
+    String res = null;
+    try {
+      // byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
+      byte[] decodedBase64Str =
+          org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes());
+      res = new String(decodedBase64Str);
+    } catch (Exception e) {
+      throw new ApplicationAuthenticationException(I18nConstants.BASE64_DECODING_FAIL,
+          I18nConstants.BASE64_DECODING_FAIL, null);
+    }
+    return res;
+  }
 
-			String encodedUserToken = headerElems[BASE64_ENCODED_STRING_POS];
-			
-			userToken = decodeBase64(encodedUserToken);
-			logger.debug("Decoded user token: {}", userToken);
+  /**
+   * This method takes user token from a HTTP header if it exists or from the passed request
+   * parameter.
+   * 
+   * @param paramUserToken The HTTP request parameter
+   * @param request The HTTP request with headers
+   * @return user token
+   * @throws ApplicationAuthenticationException
+   */
+  public String getUserToken(String paramUserToken, HttpServletRequest request)
+      throws ApplicationAuthenticationException {
+    int USER_TOKEN_TYPE_POS = 0;
+    int BASE64_ENCODED_STRING_POS = 1;
+    String userToken = null;
+    String userTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (userTokenHeader != null) {
+      String[] headerElems = userTokenHeader.split(" ");
+      if (headerElems.length < 2)
+        throw new ApplicationAuthenticationException(I18nConstants.INVALID_HEADER_FORMAT,
+            I18nConstants.INVALID_HEADER_FORMAT, null);
 
-		} else {
-			//@deprecated to be removed in the next versions
-			//fallback to URL param 
-			userToken = paramUserToken;
-		}
-		return userToken;
-	}
-	
-	@Override
-	public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
-	        throws ApplicationAuthenticationException {
-	    
-	    //
-	    Authentication auth = null;
-	    boolean authorizationEnabled = true;
-	    if(authorizationEnabled) {
-	      auth = super.verifyWriteAccess(operation, request);
-	    }else {
-	      auth = new EuropeanaAuthenticationToken(null, "annotations", "annonymous-user", new EuropeanaApiCredentials("anonymous", "unknown-client"));
-	    }
-	    
-	    //prevent write when locked
-	    getAuthorizationService().checkWriteLockInEffect(operation);
-	    return auth;
-	}
-	        
+      String userTokenType = headerElems[USER_TOKEN_TYPE_POS];
+      if (!AnnotationHttpHeaders.BEARER.equals(userTokenType))
+        throw new ApplicationAuthenticationException(I18nConstants.UNSUPPORTED_TOKEN_TYPE,
+            I18nConstants.UNSUPPORTED_TOKEN_TYPE, new String[] {userTokenType});
+
+      String encodedUserToken = headerElems[BASE64_ENCODED_STRING_POS];
+
+      userToken = decodeBase64(encodedUserToken);
+      logger.debug("Decoded user token: {}", userToken);
+
+    } else {
+      // @deprecated to be removed in the next versions
+      // fallback to URL param
+      userToken = paramUserToken;
+    }
+    return userToken;
+  }
+
+  @Override
+  public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
+      throws ApplicationAuthenticationException {
+
+    Authentication auth = null;
+    //verify if auth is enabled
+    if (getConfiguration().isAuthEnabled()) {
+      auth = super.verifyWriteAccess(operation, request);
+    } else {
+      auth = createAnnonymousUser();
+    }
+
+    // prevent write when locked
+    getAuthorizationService().checkWriteLockInEffect(operation);
+    return auth;
+  }
+
+  private Authentication createAnnonymousUser() {
+    Authentication auth;
+    auth = new EuropeanaAuthenticationToken(null, "annotations", "annonymous-user",
+        new EuropeanaApiCredentials("anonymous", "unknown-client"));
+    return auth;
+  }
+  
+  @Override
+  public Authentication verifyReadAccess(HttpServletRequest request) throws ApplicationAuthenticationException {
+    //verify if auth is enabled
+    if(getConfiguration().isAuthEnabled()) {
+      return getAuthorizationService().authorizeReadAccess(request);
+    } else {
+      return createAnnonymousUser();
+    }
+  }
 }

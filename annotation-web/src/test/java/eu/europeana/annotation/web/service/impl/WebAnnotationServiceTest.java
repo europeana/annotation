@@ -11,6 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import eu.europeana.annotation.config.AnnotationConfiguration;
@@ -47,7 +49,8 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	@Resource 
 	AnnotationService webAnnotationService;
 	
-	@Resource(name="solrAnnotationService")
+    @Autowired
+    @Qualifier(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
 	SolrAnnotationService solrAnnotationService;
 	
 	@Resource(name="adminService") 

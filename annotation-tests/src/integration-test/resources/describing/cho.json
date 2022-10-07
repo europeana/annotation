@@ -1,0 +1,9 @@
+{
+  "motivation": "describing",
+  "body": {
+    "type": "TextualBody",
+    "value": "... this is the textual description of the item ...",
+    "language": "en"
+  },
+  "target": "http://data.europeana.eu/item/07931/diglit_uah_m1"
+}

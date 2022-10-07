@@ -24,8 +24,8 @@
 	<!-- SERVICES -->
 	<!-- OVERRIDE FOR TESTING -->
 	
-	<bean id="solrAnnotationService" name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl"
-		p:solrClient-ref="annotation_solr_client"
-	/>
+<!-- 	<bean id="solrAnnotationService" name="annotation_solr_annotationService" class="eu.europeana.annotation.solr.service.impl.SolrAnnotationServiceImpl" -->
+<!-- 		p:solrClient-ref="annotation_solr_client" -->
+<!-- 	/> -->
 	
 </beans>
