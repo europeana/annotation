@@ -1,16 +1,13 @@
 package eu.europeana.annotation.dereferenciation;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -109,12 +106,13 @@ public class MetisDereferenciationClient {
      */
     public synchronized Map<String, String> dereferenceOne(String baseUrl, String uri, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
-	String queryUri, xmlResponse, jsonLdStr;
+	String queryUri, jsonLdStr;
+	InputStream streamResponse;
 	    
 	try {
 	    queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");		
-	    xmlResponse = getHttpConnection().getURLContent(queryUri);
-	    jsonLdStr = convertToJsonLd(uri, xmlResponse, language).toString();
+	    streamResponse = getHttpConnection().getURLContent(queryUri);
+	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);
 	    
 	} catch (IOException ex) {
@@ -140,13 +138,16 @@ public class MetisDereferenciationClient {
      */
     public synchronized Map<String, String> dereferenceMany(String baseUrl, List<String> uris, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
-	String xmlResponse, jsonLdStr;
+	String jsonLdStr;
+	InputStream streamResponse;
 	try {
         	@SuppressWarnings({ "rawtypes", "unchecked" })
-		String urisJson = JsonSerializer.toString((List)uris);
-	        xmlResponse = getHttpConnection().postRequest(baseUrl, urisJson);
+        	String urisJson = JsonSerializer.toString((List)uris);
+        	streamResponse = getHttpConnection().postRequest(baseUrl, urisJson);
+//        	String text = new String(streamResponse.readAllBytes(), StandardCharsets.UTF_8);
+//        	System.out.println(text);
 	        for (Object uri : uris) {
-	            jsonLdStr = convertToJsonLd((String)uri, xmlResponse, language).toString();
+	            jsonLdStr = convertToJsonLd((String)uri, streamResponse, language).toString();
         	    res.put((String)uri, jsonLdStr);
          	}
 	}catch(IOException ex) {
@@ -161,12 +162,12 @@ public class MetisDereferenciationClient {
     /**
      * An XSLT converts dereference output to JSON-LD.
      * 
-     * @param xmlStr
+     * @param response
      * @param language e.g.
      *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
      * @return dereferenced output in JSON-LD format
      */
-    public synchronized StringWriter convertToJsonLd(String uri, String xmlStr, String language) {
+    public synchronized StringWriter convertToJsonLd(String uri, InputStream response, String language) {
 
 	StringWriter result = new StringWriter();
 	try {
@@ -176,8 +177,7 @@ public class MetisDereferenciationClient {
 	    if (language != null) {
 		getTransformer().setParameter(PARAM_LANGS, language);
 	    }
-	    InputStream inputStringStream = new ByteArrayInputStream(xmlStr.getBytes(StandardCharsets.UTF_8));
-	    Source text = new StreamSource(inputStringStream);
+	    StreamSource text = new StreamSource(response);
 	    getTransformer().transform(text, new StreamResult(result));
 	    
 	} catch (TransformerConfigurationException e) {
