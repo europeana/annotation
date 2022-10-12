@@ -13,11 +13,13 @@
     	<beans:property name="locations">
     		<beans:list>
             	<beans:value>classpath:config/annotation.properties</beans:value>
+            	<beans:value>classpath:config/annotation.user.properties</beans:value>
             </beans:list>	
     	</beans:property>
+    	<beans:property name="ignoreResourceNotFound" value="true"/>
 	</beans:bean>
      	
-	<context:property-placeholder properties-ref="annotationProperties" ignore-resource-not-found="true" location="classpath:config/annotation.user.properties" />
+<!-- 	<context:property-placeholder properties-ref="annotationProperties" ignore-resource-not-found="true" location="classpath:config/annotation.user.properties" /> -->
 		
     <!--  configuration bean -->
 	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">

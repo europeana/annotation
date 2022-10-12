@@ -22,12 +22,13 @@ public interface SwaggerConstants {
 			+ "body_value.&lt;lang&gt;, body_uri, target_uri, target_record_id, link_resource_uri, link_relation";	
 	public static final String SEARCH_PROFILES_LIST = "facet, standard.";
 	public static final String SEARCH_SORT_FIELD_LIST = "motivation, anno_uri, anno_id, generator_uri, generator_name, generated, creator_uri, creator_name, created, modified, moderation_score,  body_value, body_value.&lt;lang&gt;, body_uri, link_resource_uri, link_relation";
-	
+	public static final String SEARCH_FACET_FIELD_LIST = "motivation, generator_uri, generator_name, creator_uri, creator_name, moderation_score, body_value, body_uri, target_uri, target_record_id, link_resource_uri, link_relation";
 	
 	public static final String SEARCH_HELP_NOTE = "The following fields are available for search: "+ SEARCH_SOLR_FIELDS 
 			+". Default is text (i.e. no field specified in search query), urls and ids are keywords and need to be submitted in quotes (e.g. target_record_ids:\"/123/xyz\"). "
 			+ "The following profiles are available for search: "+ SEARCH_PROFILES_LIST 
-			+ " Sorting is available for fields: " + SEARCH_SORT_FIELD_LIST;
+			+ " Sorting is available for fields: " + SEARCH_SORT_FIELD_LIST
+			+ " Facets are available for the fields: " + SEARCH_FACET_FIELD_LIST;
 	
 	public static final String DATE_FORMAT_HELP_NOTE = "Valid date format is: " + ModelConst.DATE_FORMAT;
 

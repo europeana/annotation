@@ -44,7 +44,11 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    RequestMethod.GET, produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 }
 //			,consumes = "application/ld+json"
     )
-    @ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, value = "Search annotations", nickname = "search", response = java.lang.Void.class)
+    @ApiOperation(notes = SwaggerConstants.SEARCH_HELP_NOTE, 
+    value = "Search annotations for the given text query. By default the search will return all annotation fields. "
+        + "The facet param refers to a list of fields the facets is calculated upon. "
+        + "The filters and lang params are used to reduce the amount of data included in the response. ",
+    nickname = "search", response = java.lang.Void.class)
     public ResponseEntity<String> search(
 	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 	    @RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,
