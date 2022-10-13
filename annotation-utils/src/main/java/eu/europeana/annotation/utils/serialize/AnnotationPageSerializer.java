@@ -149,7 +149,7 @@ public class AnnotationPageSerializer extends JsonLd {
     protected void serializeItems(JsonLdResource jsonLdResource, SearchProfiles profile) {
 
 	switch (profile) {
-	case FACET:
+	case FACETS:
 	    // do not serialize items
 	    break;
 

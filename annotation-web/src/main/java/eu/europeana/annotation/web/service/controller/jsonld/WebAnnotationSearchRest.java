@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -16,8 +17,10 @@ import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 import eu.europeana.annotation.solr.vocabulary.search.SortFields;
 import eu.europeana.annotation.solr.vocabulary.search.SortOrder;
+import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
@@ -26,6 +29,7 @@ import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.exception.ParamValidationException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -90,6 +94,11 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
 		querySearchProfile = SearchProfiles.STANDARD;
 	    }
+	    
+	    //process facets profile
+	    if(!StringUtils.contains(profile, SearchProfiles.FACETS.toString())) {
+	      facets=null;
+	    }
 
 	    String sortFieldStr = null;
 	    if (sortField != null)
@@ -138,30 +147,47 @@ public class WebAnnotationSearchRest extends BaseRest {
 	}
     }
 
-    private SearchProfiles getProfile(String profile, HttpServletRequest request) throws ParamValidationI18NException, ParamValidationI18NException {
+    private void validateProfiles(List<String> profiles) throws HttpException {
+      // For now maximum two profile-combinations are possible
+      // profile=facets OR profile=facets,minimal OR profile=standard,facets
+      if(profiles.size() > 2) {
+          throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+                  new String[]{"Maximum 2 profiles from these are allowed ", StringUtils.join(profiles, ",")});
+      }
+      // For now - if multiple profile then one of them has to be facets
+      if (profiles.size() == 2 && !profiles.contains(SearchProfiles.FACETS.toString())) {
+          throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+                  new String[]{"These profiles are not supported together ", StringUtils.join(profiles, ",")});
+      }
+      //check the profile names
+      for(String profile : profiles) {
+        if(!SearchProfiles.contains(profile)) {
+          throw new ParamValidationI18NException(I18nConstants.INVALID_PARAM_VALUE,
+              I18nConstants.INVALID_PARAM_VALUE,
+              new String[] { WebAnnotationFields.PARAM_PROFILE, profile });
+        }
+      }
+  }
 
-	// if the profile parameter is given, the header preference is ignored
-	if (profile != null) {
-	    if (!SearchProfiles.contains(profile)) {
-	        throw new ParamValidationI18NException(I18nConstants.INVALID_PARAM_VALUE,
-				I18nConstants.INVALID_PARAM_VALUE,
-				new String[] { WebAnnotationFields.PARAM_PROFILE, profile });
-	    }
-	    
-	    return SearchProfiles.getByStr(profile);
-	}
+    private SearchProfiles getProfile(String profile, HttpServletRequest request) throws HttpException {
+      List<String> allProfiles = GeneralUtils.splitStringIntoList(profile, WebAnnotationModelFields.COMMA);
+      validateProfiles(allProfiles);      
+      allProfiles.remove(SearchProfiles.FACETS.toString());
+      if(allProfiles.size()>0) {
+        return SearchProfiles.getByStr(allProfiles.get(0));
+      }
 
-	String preferHeader = request.getHeader(HttpHeaders.PREFER);
-	if (preferHeader != null) {
-	    preferHeader = preferHeader.replaceAll("\\s+", "");
-	    if (preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
-		return SearchProfiles.MINIMAL;
-	    } else if (preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
-		return SearchProfiles.STANDARD;
-	    }
-	}
+      String preferHeader = request.getHeader(HttpHeaders.PREFER);
+      if (preferHeader != null) {
+        preferHeader = preferHeader.replaceAll("\\s+", "");
+    	if (preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDIRIS)) {
+    	  return SearchProfiles.MINIMAL;
+    	} else if (preferHeader.equals(AnnotationHttpHeaders.VALUE_PREFER_CONTAINEDDESCRIPTIONS)) {
+    	  return SearchProfiles.STANDARD;
+    	}
+      }
 
-	logger.trace("STANDARD Profile set by default");
-	return SearchProfiles.STANDARD;
+      logger.trace("STANDARD Profile set by default");
+      return SearchProfiles.STANDARD;
     }
 }

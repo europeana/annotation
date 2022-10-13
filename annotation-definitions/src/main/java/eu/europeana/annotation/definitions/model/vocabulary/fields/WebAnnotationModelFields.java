@@ -92,5 +92,7 @@ public interface WebAnnotationModelFields {
 	public static final String LOCALITY = "locality";
 	public static final String REGION = "region";
 	public static final String COUNTRY_NAME = "countryName";
+	
+	public static final String COMMA = ",";
 
 }
