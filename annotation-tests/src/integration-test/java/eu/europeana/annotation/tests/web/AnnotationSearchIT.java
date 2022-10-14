@@ -1,5 +1,6 @@
 package eu.europeana.annotation.tests.web;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.web.servlet.ResultActions;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
@@ -98,7 +101,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     // first page
     String query = "*:*";
     AnnotationPage annPg =
-        searchAnnotationsAddQueryField(query, null, null, null, null, SearchProfiles.MINIMAL, null);
+        searchAnnotationsAddQueryField(query, null, null, null, null, SearchProfiles.MINIMAL.toString(), null);
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there might be old annotations of failing tests in the database
     assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
@@ -130,7 +133,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     // last page
     int lastPageNum = (int) Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
     AnnotationPage lastPage = searchAnnotationsAddQueryField(query, Integer.toString(lastPageNum),
-        Integer.toString(TOTAL_IN_PAGE), null, null, SearchProfiles.STANDARD, null);
+        Integer.toString(TOTAL_IN_PAGE), null, null, SearchProfiles.STANDARD.toString(), null);
     assertEquals(lastPage.getCurrentPage(), lastPageNum);
   }
 
@@ -149,7 +152,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     // annSearchApi.searchAnnotations("*:*&fq=modified:[2019-11-24T16:10:49.624Z TO
     // 2019-11-27T16:10:49.624Z]", SearchProfiles.STANDARD, null);
     AnnotationPage annPg = searchAnnotationsAddQueryField(VALUE_ALL, null, null, null, null,
-        SearchProfiles.STANDARD, null);
+        SearchProfiles.STANDARD.toString(), null);
     // to search for disabled(deleted) annotations, the parameter "disabled" must be provided
     // AnnotationPage annPg = annSearchApi.searchAnnotations("disabled=true&lastUpdate=25-11-2019",
     // SearchProfiles.STANDARD);
@@ -167,10 +170,36 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     createAnnotationDataSet();
     // first page
     AnnotationPage annPg =
-        searchAnnotationsAddQueryField("*", null, null, null, null, SearchProfiles.MINIMAL, null);
+        searchAnnotationsAddQueryField("*", null, null, null, null, SearchProfiles.MINIMAL.toString(), null);
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there might be old annotations of failing tests in the database
     assertEquals(annPg.getCurrentPage(), 0);
+  }
+
+  @Test
+  public void searchWithFacetsBadRequests() throws Exception {
+    String url = AnnotationTestUtils.buildUrl("*:*", null, null, null, null, null, null, "minimal, facets, standard", null);
+    ResultActions mockMvcResult = mockMvc.perform(get(url));
+    assertEquals(HttpStatus.BAD_REQUEST, HttpStatus.valueOf(mockMvcResult.andReturn().getResponse().getStatus()));
+
+    url = AnnotationTestUtils.buildUrl("*:*", null, null, null, null, null, null, "minimal, standard", null);
+    mockMvcResult = mockMvc.perform(get(url));
+    assertEquals(HttpStatus.BAD_REQUEST, HttpStatus.valueOf(mockMvcResult.andReturn().getResponse().getStatus()));
+  }
+  
+  @Test
+  public void searchWithFacets() throws Exception {
+    createAnnotationDataSet();
+
+    String[] facets = {"motivation", "generator_uri"};
+    AnnotationPage annPg = searchAnnotations("*:*", null, facets, null, null, null, null, "minimal", null);
+    assertNotNull(annPg, "AnnotationPage must not be null");
+    assertNull(annPg.getFacets());
+
+    annPg = searchAnnotations("*:*", null, facets, null, null, null, null, "minimal, facets", null);
+    assertNotNull(annPg, "AnnotationPage must not be null");
+    assertTrue(annPg.getFacets().get("motivation").size()>0);
+    assertTrue(annPg.getFacets().get("generator_uri").size()>0);
   }
 
   // @Test
@@ -421,7 +450,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
    * @throws Exception
    */
   protected Annotation searchLastCreated(String query) throws Exception {
-    AnnotationPage annPg = search(query, SearchProfiles.STANDARD, "1");
+    AnnotationPage annPg = search(query, SearchProfiles.STANDARD.toString(), "1");
     assertNotNull(annPg);
     assert (annPg.getTotalInPage() > 0);
     assert (annPg.getTotalInCollection() > 0);
@@ -432,9 +461,9 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     return anno;
   }
 
-  protected AnnotationPage search(String bodyValue, SearchProfiles profile, String limit)
+  protected AnnotationPage search(String bodyValue, String profile, String limit)
       throws Exception {
-    AnnotationPage annPg = searchAnnotations(bodyValue, null, WebAnnotationFields.CREATED, "desc",
+    AnnotationPage annPg = searchAnnotations(bodyValue, null, null, WebAnnotationFields.CREATED, "desc",
         "0", limit, profile, null);
 
     assertNotNull(annPg, "AnnotationPage must not be null");
@@ -631,7 +660,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // search for indexed id and textual values
     // TODO: restore after updating schema
-    AnnotationPage annoPage = search(VALUE_SEARCH_BODY_VALUE_IT, SearchProfiles.STANDARD, "1");
+    AnnotationPage annoPage = search(VALUE_SEARCH_BODY_VALUE_IT, SearchProfiles.STANDARD.toString(), "1");
     Annotation retrievedAnnotation = (Annotation) annoPage.getAnnotations().get(0);
     assertEquals(storedAnno.getIdentifier(), retrievedAnnotation.getIdentifier());
     validateSubtitle(retrievedAnnotation);
@@ -986,7 +1015,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // first page
     AnnotationPage annPg = searchAnnotationsAddQueryField(SEARCH_VALUE_TEST, null, null, null, null,
-        SearchProfiles.DEREFERENCE, TEST_LANGUAGE);
+        SearchProfiles.DEREFERENCE.toString(), TEST_LANGUAGE);
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there must be annotations in database after initial insert in this test class
     assertTrue(0 <= annPg.getTotalInCollection());
@@ -1019,7 +1048,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // first page
     AnnotationPage annPg = searchAnnotationsAddQueryField(SEARCH_VALUE_TEST, null, null, null, null,
-        SearchProfiles.DEREFERENCE, TEST_LANGUAGE_MULTI);
+        SearchProfiles.DEREFERENCE.toString(), TEST_LANGUAGE_MULTI);
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there must be annotations in database after initial insert in this test class
     assertTrue(0 <= annPg.getTotalInCollection());

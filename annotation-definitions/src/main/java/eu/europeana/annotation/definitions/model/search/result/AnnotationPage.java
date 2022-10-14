@@ -1,7 +1,7 @@
 package eu.europeana.annotation.definitions.model.search.result;
 
 import java.util.List;
-
+import java.util.Map;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
@@ -47,5 +47,9 @@ public interface AnnotationPage {
 	void setAnnotations(List<? extends Annotation> annotations);
 
 	List<? extends Annotation> getAnnotations();
+	
+    Map<String, Map<String, Integer>> getFacets();
+    
+    void setFacets(Map<String, Map<String, Integer>> facets);
 
 }

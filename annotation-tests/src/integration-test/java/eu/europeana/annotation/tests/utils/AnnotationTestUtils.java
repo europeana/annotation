@@ -190,7 +190,7 @@ public class AnnotationTestUtils {
     return query;
   }
 
-  public static String buildUrl(String query, String qf, String sort, String sortOrder, String page, String pageSize,
+  public static String buildUrl(String query, String[] qf, String[] facets, String sort, String sortOrder, String page, String pageSize,
       String profile, String language) throws IOException {
     String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
     url += "search?wskey=" + AnnotationTestsConfiguration.getInstance().getApiKey();
@@ -203,10 +203,18 @@ public class AnnotationTestUtils {
   //      url += "&query=" + encodeUrl(query);
       url += "&query=" + query;
     }
-    if (StringUtils.isNotEmpty(qf)) {
+    if (qf!=null) {
   //      url += "&qf=" + encodeUrl(qf);
-      url += "&qf=" + qf;
+      for(String qfElem : qf) {
+        url += "&qf=" + qfElem;
+      }
     }
+    if (facets!=null) {
+      for(String facet : facets) {
+        url += "&facet=" + facet;
+      }
+    }
+
     if (StringUtils.isNotEmpty(sort)) {
         url += "&sort=" + sort;
     }

@@ -81,7 +81,7 @@ public class AnnotationAdminIT extends AbstractIntegrationTest {
 			// search for the annotation just created using the generator_id
 			// value defined by VALUE_INDEXING_TESTSET
 			AnnotationPage annPgBefore = searchAnnotationsAddQueryField(QUERY_BY_CREATOR, null, null, null, null,
-					SearchProfiles.MINIMAL, null);
+					SearchProfiles.MINIMAL.toString(), null);
 			assertNotNull(annPgBefore, "AnnotationPage must not be null");
 			// annotations were not indexed, therefore it must not show up in
 			// the search result
@@ -101,7 +101,7 @@ public class AnnotationAdminIT extends AbstractIntegrationTest {
 			// value defined by VALUE_INDEXING_TESTSET
 			AnnotationPage annPgAfter = searchAnnotationsAddQueryField(QUERY_BY_CREATOR,
 					Integer.toString(Query.DEFAULT_PAGE), Integer.toString(Query.DEFAULT_PAGE_SIZE), null, null,
-					SearchProfiles.MINIMAL, null);
+					SearchProfiles.MINIMAL.toString(), null);
 			assertNotNull(annPgAfter, "AnnotationPage must not be null");
 			// Now that the annotation was indexed, it must show up in the
 			// search result

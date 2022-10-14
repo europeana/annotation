@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -13,10 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -417,21 +414,20 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   }
 
   protected AnnotationPage searchAnnotationsAddQueryField(String query, String page,
-      String pageSize, String field, String language, SearchProfiles searchProfile,
+      String pageSize, String field, String language, String searchProfile,
       String paramLanguage) throws Exception {
 
     if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) {
       query = AnnotationTestUtils.addFieldToQuery(query, field, language);
     }
-    return searchAnnotations(query, null, null, null, page, pageSize, searchProfile, paramLanguage);
+    return searchAnnotations(query, null, null, null, null, page, pageSize, searchProfile, paramLanguage);
   }
 
-  protected AnnotationPage searchAnnotations(String query, String qf, String sort, String sortOrder,
-      String page, String pageSize, SearchProfiles searchProfile, String language)
+  protected AnnotationPage searchAnnotations(String query, String[] qf, String[] facets, String sort, String sortOrder,
+      String page, String pageSize, String searchProfile, String language)
       throws Exception {
 
-    String url = AnnotationTestUtils.buildUrl(query, qf, sort, sortOrder, page, pageSize,
-        searchProfile.toString(), language);
+    String url = AnnotationTestUtils.buildUrl(query, qf, facets, sort, sortOrder, page, pageSize, searchProfile, language);
     ResultActions mockMvcResult = mockMvc.perform(get(url));
     return AnnotationTestUtils
         .getAnnotationPage(mockMvcResult.andReturn().getResponse().getContentAsString());

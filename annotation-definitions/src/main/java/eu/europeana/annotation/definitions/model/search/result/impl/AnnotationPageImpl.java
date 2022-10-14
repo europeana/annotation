@@ -1,7 +1,7 @@
 package eu.europeana.annotation.definitions.model.search.result.impl;
 
 import java.util.List;
-
+import java.util.Map;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -26,6 +26,8 @@ public class AnnotationPageImpl implements AnnotationPage{
 	private String nextPageUri;
 	private String prevPageUri;
 	
+	//facets
+	Map<String,Map<String,Integer>> facets;
 	
 	public AnnotationPageImpl (){
 	}
@@ -121,5 +123,13 @@ public class AnnotationPageImpl implements AnnotationPage{
 	public void setTotalInCollection(long totalInCollection) {
 		this.totalInCollection = totalInCollection;
 	}
+
+    public Map<String, Map<String, Integer>> getFacets() {
+      return facets;
+    }
+  
+    public void setFacets(Map<String, Map<String, Integer>> facets) {
+      this.facets = facets;
+    }
 	
 }
