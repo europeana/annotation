@@ -249,8 +249,8 @@ public class AnnotationPageParser extends JsonLdParser {
      * @throws JSONException
      * @throws JsonParseException
      */
-    private void parseFacets(AnnotationPage annoPage, Object facetsJson) throws JSONException, JsonParseException {
-      Map<String,Map<String,Integer>> facets = new HashMap<>();
+    private void parseFacets(AnnotationPage annoPage, Object facetsJson) throws JSONException {
+      Map<String,Map<String,Integer>> facets = new HashMap<String,Map<String,Integer>>();
       if(facetsJson instanceof JSONArray) {
         JSONArray facetsArr = (JSONArray) facetsJson;
         for (int i = 0, size = facetsArr.length(); i < size; i++) {  
