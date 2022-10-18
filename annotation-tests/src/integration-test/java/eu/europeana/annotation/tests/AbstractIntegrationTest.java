@@ -92,7 +92,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   private static final SolrContainer SOLR_CONTAINER;
 
   static {
-    MONGO_CONTAINER = new MongoContainer("annotation_test")
+    MONGO_CONTAINER = new MongoContainer("admin")
         .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
 
     MONGO_CONTAINER.start();
@@ -102,18 +102,6 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
     SOLR_CONTAINER.start();
   }
-
-  // @BeforeEach
-  // protected void initTest() throws Exception {
-  // if(configuration.isAuthEnabled() && regularUserAuthorizationValue == null) {
-  // regularUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_REGULAR,
-  // AnnotationTestsConfiguration.getInstance().getOauthServiceUri(),
-  // AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_REGULAR));
-  // adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN,
-  // AnnotationTestsConfiguration.getInstance().getOauthServiceUri(),
-  // AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
-  // }
-  // }
 
   @BeforeAll
   protected void initAppConextAndOauthTokens() throws Exception {
@@ -167,16 +155,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
   @DynamicPropertySource
   static void setProperties(DynamicPropertyRegistry registry) {
-    Supplier<Object> hostSupplier = () -> MONGO_CONTAINER.getHost();
-    registry.add("mongodb.annotation.host", hostSupplier);
-    Supplier<Object> portSupplier = () -> MONGO_CONTAINER.getMappedPort(27017);
-    registry.add("mongodb.annotation.port", portSupplier);
-    Supplier<Object> dbnameSupplier = () -> MONGO_CONTAINER.getAnnotationDb();
-    registry.add("mongodb.annotation.databasename", dbnameSupplier);
-    Supplier<Object> adminUserSupplier = () -> MONGO_CONTAINER.getAdminUsername();
-    registry.add("mongodb.annotation.username", adminUserSupplier);
-    Supplier<Object> adminPassSupplier = () -> MONGO_CONTAINER.getAdminPassword();
-    registry.add("mongodb.annotation.password", adminPassSupplier);
+    registry.add("mongodb.annotation.connectionUrl", MONGO_CONTAINER::getConnectionUrl);
     registry.add("solr.annotation.url", SOLR_CONTAINER::getConnectionUrl);
   }
 
