@@ -43,7 +43,7 @@ public class MongoConfig {
   @Bean("annotationMongoConnector")
   protected ApiMongoConnector getMongoConnector() {
     if(mongoConnector == null) {
-      return new ApiMongoConnector();
+      mongoConnector = new ApiMongoConnector();
     }
     return mongoConnector;
   }
