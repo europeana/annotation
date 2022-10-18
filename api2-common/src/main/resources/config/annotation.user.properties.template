@@ -2,6 +2,10 @@
 # mongoDB settings
 mongodb.annotation.connectionUrl=mongodb://127.0.0.1:27017/annotation_test
 
+mongodb.annotation.truststore=
+mongodb.annotation.truststorepass=
+
+
 # solr connection settings
 # core search (default) 
 #localhost
