@@ -488,43 +488,4 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   }
 
 
-  // /**
-  // * Sample HTTP request http://localhost:8080/whitelist/load?apiKey=apidemo
-  // *
-  // * @return WhitelistOperationResponse
-  // * @throws Exception
-  // */
-  // protected WhitelistOperationResponse loadWhitelist() throws Exception {
-  // String action = "load";
-  // String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WHITELIST + action;
-  // ResultActions mockMvcResult = mockMvc.perform(
-  // get(url)
-  // .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_ADMIN)));
-  // String jsonResponse = mockMvcResult.andReturn().getResponse().getContentAsString();
-  //
-  // WhitelistOperationResponse aor = new
-  // WhitelistOperationResponse(AnnotationTestsConfiguration.getInstance().getApiKey(), action);
-  // List<WhitelistEntry> resList = new ArrayList<WhitelistEntry>();
-  // JSONObject mainObject = new JSONObject(jsonResponse);
-  // JSONArray whitelistEntries = mainObject.getJSONArray("items");
-  // for (int i = 0; i < whitelistEntries.length(); i++) {
-  // JSONObject entry = (JSONObject) whitelistEntries.get(i);
-  // WhitelistEntry whitelistEntry = WhiteListParser.toWhitelistEntry(entry.toString());
-  // resList.add(whitelistEntry);
-  // }
-  // aor.setWhitelist(resList);
-  // return aor;
-  // }
-  //
-  // protected WhitelistOperationResponse deleteAllWhitelists () throws Exception {
-  // String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WHITELIST + "deleteall";
-  // ResultActions mockMvcResult = mockMvc.perform(
-  // delete(url)
-  // .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_ADMIN)));
-  // String jsonResponse = mockMvcResult.andReturn().getResponse().getContentAsString();
-  //
-  // ObjectMapper mapper = new ObjectMapper();
-  // return mapper.readValue(jsonResponse, WhitelistOperationResponse.class);
-  // }
-
 }

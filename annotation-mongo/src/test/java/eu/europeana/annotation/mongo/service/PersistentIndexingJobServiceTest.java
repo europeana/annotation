@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,6 +21,7 @@ import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
+@Disabled("needs configuration file")
 public class PersistentIndexingJobServiceTest {
 	
     @Resource(name = "annotation_db_apilockService")

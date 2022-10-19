@@ -84,11 +84,11 @@
 		<!-- Exclude POJOs code duplication analysis -->
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
 		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
-		<!--
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
-		-->
 
+<!--
 		<skipTests>true</skipTests>
+	-->	
 
 	</properties>
 	<modules>
@@ -99,9 +99,12 @@
 		<module>annotation-mongo</module>
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
+		<!--
 		<module>annotation-client</module>
+		-->
 		<module>annotation-fulltext</module>
 		<module>annotation-statistics</module>
+		<module>annotation-tests</module>
 	</modules>
 
 	<dependencyManagement>
