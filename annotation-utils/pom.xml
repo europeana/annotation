@@ -12,6 +12,9 @@
 		<version>${revision}</version>
 	</parent>
 	
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>

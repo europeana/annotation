@@ -11,6 +11,10 @@
   <name>Annotation Tests</name>
   <description>Annotation tests.</description>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
   <dependencies>
     <dependency>
 		<groupId>org.junit.jupiter</groupId>
