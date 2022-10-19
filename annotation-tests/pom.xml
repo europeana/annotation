@@ -11,6 +11,10 @@
   <name>Annotation Tests</name>
   <description>Annotation tests.</description>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
   <dependencies>
     <dependency>
 		<groupId>org.junit.jupiter</groupId>
@@ -45,6 +49,27 @@
     </dependency>
 	   
   </dependencies>
-  <build>
-  </build>
+   <profiles>
+    <profile>
+      <id>coverage</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>report</id>
+                <goals>
+                  <goal>report-aggregate</goal>
+                </goals>
+                <phase>verify</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

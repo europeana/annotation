@@ -13,6 +13,10 @@
   <description>Module for generating statistics on existing annotations</description>
   <url>http://www.europeanalabs.eu</url>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
   <dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
