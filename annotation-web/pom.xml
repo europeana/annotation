@@ -198,7 +198,7 @@
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
-			<version>1.5.1</version>
+			<version>${version.codehaus.jettison}</version>
 		</dependency>
 
 

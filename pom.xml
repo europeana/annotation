@@ -70,6 +70,7 @@
 		<version.testcontainers>1.16.0</version.testcontainers>
 		<version.morphia>2.1.4</version.morphia>
 		<version.mongo-java-driver>3.12.11</version.mongo-java-driver>
+		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
 		<version.surefire>3.0.0-M7</version.surefire>
 		<version.failsafe>3.0.0-M7</version.failsafe>
 		<!-- sonar plugins -->
