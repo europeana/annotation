@@ -86,10 +86,6 @@
 		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 
-<!--
-		<skipTests>true</skipTests>
-	-->	
-
 	</properties>
 	<modules>
 		<module>api2-common</module>
@@ -99,9 +95,7 @@
 		<module>annotation-mongo</module>
 		<module>annotation-solr</module>
 		<module>annotation-web</module>
-		<!--
 		<module>annotation-client</module>
-		-->
 		<module>annotation-fulltext</module>
 		<module>annotation-statistics</module>
 		<module>annotation-tests</module>
