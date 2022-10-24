@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,6 +40,7 @@ import eu.europeana.annotation.web.service.AnnotationService;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml", "/annotation-mongo-test.xml"//, "/annotation-solr-test.xml" 
 	})
+@Disabled("needs configuration file")
 public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 
 	public static String TEST_RO_VALUE = "Vlad Tepes";

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +33,7 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({ "/annotation-web-context.xml"
 	})
+@Disabled("needs configuration file")
 public class AnnotationClientApiKeyValidationTest extends AnnotationTestObjectBuilder{
 
 	@Resource(name="adminService")

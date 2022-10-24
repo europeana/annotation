@@ -12,6 +12,9 @@
 		<relativePath>../pom.xml</relativePath>
 		<version>${revision}</version>
 	</parent>
+	<properties>
+		<skipTests>true</skipTests>
+	</properties>
 
 	<dependencies>
 

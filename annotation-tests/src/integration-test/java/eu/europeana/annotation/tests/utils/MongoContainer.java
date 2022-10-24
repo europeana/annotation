@@ -10,8 +10,11 @@ public class MongoContainer extends GenericContainer<MongoContainer> {
   private final String annotationDb;
   private final String adminUsername = "admin_user";
   private final String adminPassword = "admin_password";
-  private final boolean useFixedPorts = false;
 
+  
+  private final boolean useFixedPorts = false;
+  int defaultMongoPort = 27017;
+  
   /**
    * Creates a new Mongo container instance
    *
@@ -31,14 +34,14 @@ public class MongoContainer extends GenericContainer<MongoContainer> {
     super(dockerImageName);
 
     if (useFixedPorts) {
-      this.addFixedExposedPort(27018, 27017);
+      this.addFixedExposedPort(27018, defaultMongoPort);
     } else {
-      this.withExposedPorts(27017);
+      this.withExposedPorts(defaultMongoPort);
     }
 
-    this.withEnv("MONGO_INITDB_ROOT_USERNAME", adminUsername)
-        .withEnv("MONGO_INITDB_ROOT_PASSWORD", adminPassword)
-        .withEnv("ANNOTATION_DB", annotationDb);
+    this.withEnv("MONGO_INITDB_ROOT_USERNAME", adminUsername);
+    this.withEnv("MONGO_INITDB_ROOT_PASSWORD", adminPassword);
+    this.withEnv("ANNOTATION_DB", annotationDb);
 
     this.waitingFor(Wait.forLogMessage("(?i).*waiting for connections.*", 1));
     this.annotationDb = annotationDb;
@@ -48,14 +51,12 @@ public class MongoContainer extends GenericContainer<MongoContainer> {
     if (!this.isRunning()) {
       throw new IllegalStateException("MongoDBContainer should be started first");
     } else {
-//      return String.format(
-//          "mongodb://%s:%s@%s:%d",
-//          adminUsername, adminPassword, this.getContainerIpAddress(), this.getMappedPort(27017));
-//    }
-      return String.format(
-          "mongodb://%s:%s@%s:%d/%s",
-          adminUsername, adminPassword, this.getHost(), this.getMappedPort(27017), this.getAnnotationDb());
+      String connectionUrl = String.format(
+        "mongodb://%s:%s@%s:%d/%s?ssl=false",
+        adminUsername, adminPassword, this.getHost(), this.getMappedPort(defaultMongoPort), this.getAnnotationDb());
+        return connectionUrl;  
       }
+      
   }
 
   public String getAnnotationDb() {
