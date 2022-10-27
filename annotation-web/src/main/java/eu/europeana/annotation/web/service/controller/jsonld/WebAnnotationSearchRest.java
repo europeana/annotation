@@ -123,12 +123,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 	    return response;
 
-	} catch (RuntimeException e) {
-	    // not found ..
-	    throw new InternalServerException(e);
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}

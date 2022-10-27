@@ -131,25 +131,19 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (JsonParseException e) {
+	} catch (JsonParseException | AnnotationAttributeInstantiationException e) {
 	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationValidationException e) { // TODO: transform to
-						    // checked annotation type
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationAttributeInstantiationException e) {
+	} catch (AnnotationValidationException e) {
+		  // TODO: transform to checked annotation type
 	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (AnnotationInstantiationException e) {
 	    throw new HttpException(null, I18nConstants.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e);
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    throw e;
 	} catch (AnnotationServiceException e) {
 	    String debugInfo = (webAnnotation != null) ?  webAnnotation.toString() : ""; 
 	    throw SearchServiceUtils.convertSearchException(debugInfo, e);
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
-
     }
 
     /**
@@ -265,13 +259,9 @@ public class BaseJsonldRest extends BaseRest {
 	} catch (AnnotationInstantiationException e) {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_INVALID_BODY,
 		    null, HttpStatus.BAD_REQUEST, e);
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
-
     }
 
     /**
@@ -328,12 +318,6 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (RuntimeException e) {
-	    // not found ..
-	    throw new InternalServerException(e);
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
@@ -366,12 +350,6 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (RuntimeException e) {
-	    // not found ..
-	    throw new InternalServerException(e);
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
@@ -483,13 +461,9 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (JsonParseException e) {
+	} catch (JsonParseException | AnnotationValidationException e) {
 	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationValidationException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (HttpException e) {
-	    throw e;
-	} catch (AnnotationInstantiationException e) {
+	}  catch (AnnotationInstantiationException e) {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION,
 		    null, HttpStatus.BAD_REQUEST, e);
 	}  catch (AnnotationServiceException e) {
@@ -541,11 +515,6 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    // TODO: change this when OAUTH is implemented and the user information is
-	    // available in service
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
@@ -585,11 +554,6 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    // TODO: change this when OAUTH is implemented and the user information is
-	    // available in service
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
@@ -648,9 +612,6 @@ public class BaseJsonldRest extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.CREATED);
 	    return response;
 
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    throw e;
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
