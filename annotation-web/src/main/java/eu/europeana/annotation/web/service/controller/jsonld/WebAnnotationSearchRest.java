@@ -69,9 +69,6 @@ public class WebAnnotationSearchRest extends BaseRest {
     private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets,
 	    SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile,
 	    HttpServletRequest request, String language) throws HttpException {
-
-	try {
-
 	    // ** Process input params
 	    queryString = queryString.trim();
 	    if (StringUtils.isBlank(queryString))
@@ -122,10 +119,6 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
-
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
 
     private SearchProfiles getProfile(String profile, HttpServletRequest request) throws ParamValidationI18NException, ParamValidationI18NException {

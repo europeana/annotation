@@ -341,7 +341,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   }
 
   @Override
-  public Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException {
+  public Annotation enableAnnotation(long annoIdentifier) {
     PersistentAnnotation persistentAnnotation;
     persistentAnnotation = getMongoPersistence().getByIdentifier(annoIdentifier);
     persistentAnnotation.setDisabled(null);

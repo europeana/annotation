@@ -1,11 +1,15 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import eu.europeana.annotation.mongo.exception.BulkOperationException;
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -141,8 +145,6 @@ public class BaseJsonldRest extends BaseRest {
 	} catch (AnnotationServiceException e) {
 	    String debugInfo = (webAnnotation != null) ?  webAnnotation.toString() : ""; 
 	    throw SearchServiceUtils.convertSearchException(debugInfo, e);
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
 	}
     }
 
@@ -259,10 +261,12 @@ public class BaseJsonldRest extends BaseRest {
 	} catch (AnnotationInstantiationException e) {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_INVALID_BODY,
 		    null, HttpStatus.BAD_REQUEST, e);
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
+	} catch (JsonParseException e) {
+		throw new RequestBodyValidationException(annotationPageIn, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+	} catch (IOException | BulkOperationException | InterruptedException e) {
+		throw  new InternalServerException(e);
 	}
-    }
+	}
 
     /**
      * This method builds agent object
@@ -291,8 +295,6 @@ public class BaseJsonldRest extends BaseRest {
     protected ResponseEntity<String> getAnnotationById(long identifier, String profileStr, String language)
 	    throws HttpException {
 
-	try {
-
 	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
 	    // annotation id doesn’t exists )
 	    // 4.or 410 (if the user is not allowed to access the annotation);
@@ -317,16 +319,9 @@ public class BaseJsonldRest extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
-
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
 
-    protected ResponseEntity<String> getModerationReportSummary(String wsKey, long identifier) throws HttpException {
-
-	try {
-
+    protected ResponseEntity<String> getModerationReportSummary(String wsKey, long identifier) throws HttpException, ModerationMongoException {
 	    // 2. Check client access (a valid “wskey” must be provided)
 //			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
@@ -349,10 +344,6 @@ public class BaseJsonldRest extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonString, headers, HttpStatus.OK);
 
 	    return response;
-
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
 
     /**
@@ -375,9 +366,7 @@ public class BaseJsonldRest extends BaseRest {
 	if(isOwner || hasAdminRights(authentication)) {
 	    //approve owner or admin
 	    return annotation;
-	}else {
-	    //not authorized
-		//not authorized
+	} else {
 	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
 		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."},
 		    HttpStatus.FORBIDDEN);
@@ -468,8 +457,6 @@ public class BaseJsonldRest extends BaseRest {
 		    null, HttpStatus.BAD_REQUEST, e);
 	}  catch (AnnotationServiceException e) {
       throw SearchServiceUtils.convertSearchException(annotation, e);
-    } catch (Exception e) {
-      throw new InternalServerException(e);
     }
     }
 
@@ -486,8 +473,6 @@ public class BaseJsonldRest extends BaseRest {
      */
     protected ResponseEntity<String> deleteAnnotation(long identifier, Authentication authentication, HttpServletRequest request)
 	    throws HttpException {
-
-	try {
 //	    String userId = authentication.getPrincipal().toString();
 
 	    // 5. authorize user
@@ -515,9 +500,6 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
     
     /**
@@ -530,9 +512,7 @@ public class BaseJsonldRest extends BaseRest {
      * @throws HttpException
      */
     protected ResponseEntity<String> enableAnnotation(long identifier, Authentication authentication, HttpServletRequest request)
-	    throws HttpException {
-
-	try {
+			throws HttpException {
 	    // Retrieve an annotation based on its id.
 	    // Verify if user is allowed to perform the action.
 	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, false);
@@ -553,10 +533,6 @@ public class BaseJsonldRest extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
-
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
 
     /**
@@ -568,9 +544,7 @@ public class BaseJsonldRest extends BaseRest {
      * @throws HttpException
      */
     protected ResponseEntity<String> storeAnnotationReport(long identifier, Authentication authentication)
-	    throws HttpException {
-	try {
-	
+			throws HttpException, ModerationMongoException {
 	    // 1. authorize user
 	    // already performed in verify write access
 //			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
@@ -611,10 +585,6 @@ public class BaseJsonldRest extends BaseRest {
 
 	    ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.CREATED);
 	    return response;
-
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
 
     // TODO :consider moving to persistent moderation record service

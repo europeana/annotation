@@ -101,9 +101,8 @@ public interface AnnotationService {
 	 * and creating the solr annotation.
 	 * @param annoIdentifier
 	 * @return enabled Annotation
-	 * @throws AnnotationServiceException 
 	 */
-	public Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException;
+	public Annotation enableAnnotation(long annoIdentifier);
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 

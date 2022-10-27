@@ -1,6 +1,8 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import javax.servlet.http.HttpServletRequest;
+
+import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +29,7 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 	public ResponseEntity<String> reportAnnotation(
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request)
-					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			throws HttpException, ModerationMongoException {
 
 		Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 		
@@ -42,7 +44,7 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
-			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			) throws HttpException, ModerationMongoException {
 
 		verifyReadAccess(request);
 		return getModerationReportSummary(wskey, identifier);		
