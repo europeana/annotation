@@ -17,7 +17,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.utils.QueryUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 
 /**
@@ -54,7 +54,7 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 	 */
 	private void assertNextPageNumber(AnnotationPage annPg, Integer expPgNum) throws MalformedURLException {
 		String nextPageUri = annPg.getNextPageUri();
-		Integer nextPgNum = QueryUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PAGE);
+		Integer nextPgNum = GeneralUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PAGE);
 		log.debug(nextPageUri);
 		log.debug(nextPgNum);
 		assertEquals(expPgNum, nextPgNum);

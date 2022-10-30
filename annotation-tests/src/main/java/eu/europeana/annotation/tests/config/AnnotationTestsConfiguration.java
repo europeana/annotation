@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 public class AnnotationTestsConfiguration {
 
   private static final String DEFAULT_DATA_EUROPEANA_ITEM_URI = "http://data.europeana.eu/item";
-  protected static final String ANNOTATION_TESTS_PROPERTIES_FILE = "/annotation-tests.properties";
+  protected static final String ANNOTATION_TESTS_PROPERTIES_FILE = "/annotation-tests.user.properties";
   protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
   protected static final String PROP_ANNOTATION_ITEM_DATA_ENDPOINT =
       "annotation.item.data.endpoint";

@@ -18,7 +18,7 @@ import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -217,7 +217,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
   }
 
   boolean hasBodyUrl(Annotation annotation) {
-    return UriUtils.isUrl(annotation.getBody().getValue());
+    return GeneralUtils.isUrl(annotation.getBody().getValue());
   }
 
   boolean isDereferenceProfile(SearchProfiles searchProfile) {

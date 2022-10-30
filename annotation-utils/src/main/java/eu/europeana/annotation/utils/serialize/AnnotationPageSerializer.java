@@ -147,27 +147,17 @@ public class AnnotationPageSerializer extends JsonLd {
     }
 
     protected void serializeItems(JsonLdResource jsonLdResource, SearchProfiles profile) {
-
-	switch (profile) {
-	case FACETS:
-	    // do not serialize items
-	    break;
-
-	case DEREFERENCE:
-	case STANDARD:
-	    putStandardItemsProperty(jsonLdResource);
-
-	    break;
-
-	case MINIMAL:
-	    putMinimalItemsProperty(jsonLdResource);
-
-	    break;
-
-	default:
-	    throw new SearchRuntimeException("Unsupported search profile: " + profile);
-	}
-
+    	switch (profile) {
+    	  case DEREFERENCE:
+    	  case STANDARD:
+    	    putStandardItemsProperty(jsonLdResource);
+    	    break;
+    	  case MINIMAL:
+    	    putMinimalItemsProperty(jsonLdResource);
+    	    break;
+    	  default:
+    	    throw new SearchRuntimeException("Unsupported search profile: " + profile);
+    	}
     }
 
     protected void putMinimalItemsProperty(JsonLdResource jsonLdResource) {

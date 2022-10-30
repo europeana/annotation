@@ -19,7 +19,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
-import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -127,21 +127,21 @@ public abstract class BaseAnnotationValidator {
 
     private void validateSpecificResource(SpecificResource resource, String fieldName, boolean isScopeMandatory) throws ParamValidationI18NException {
       // source must be an URL
-      if (resource.getSource() == null || !UriUtils.isUrl(resource.getSource())) {
+      if (resource.getSource() == null || !GeneralUtils.isUrl(resource.getSource())) {
           throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
       	    I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
       	    new String[] { fieldName + ".source", resource.getSource() });
       }
 
       // id is not a mandatory field but if exists it must be an URL
-      if (resource.getHttpUri() != null && !UriUtils.isUrl(resource.getHttpUri())) {
+      if (resource.getHttpUri() != null && !GeneralUtils.isUrl(resource.getHttpUri())) {
           throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_ID_FORMAT,
       	    I18nConstants.MESSAGE_INVALID_TAG_ID_FORMAT,
       	    new String[] { fieldName + ".httpUri", resource.getHttpUri() });
       }
       
       if(resource.getScope() != null) {
-        if (!UriUtils.isUrl(resource.getScope())) {
+        if (!GeneralUtils.isUrl(resource.getScope())) {
           throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
             I18nConstants.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
             new String[] { fieldName + ".scope", resource.getScope() });
@@ -318,7 +318,7 @@ public abstract class BaseAnnotationValidator {
 
 	int MAX_TAG_LENGTH = 64;
 
-	if (UriUtils.isUrl(value))
+	if (GeneralUtils.isUrl(value))
 	    throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_SIMPLE_TAG,
 		    I18nConstants.MESSAGE_INVALID_SIMPLE_TAG, new String[] { value });
 	else if (value.length() > MAX_TAG_LENGTH)
@@ -361,7 +361,7 @@ public abstract class BaseAnnotationValidator {
       if (webAnnotation.getVia() != null) {
         if (webAnnotation.getVia() instanceof String[]) {
           for (String via : webAnnotation.getVia()) {
-            if (!(UriUtils.isUrl(via)))
+            if (!(GeneralUtils.isUrl(via)))
               throw new ParamValidationI18NException("This is not a valid URL:",
                   I18nConstants.ANNOTATION_VALIDATION, new String[] {WebAnnotationFields.VIA, via});
           }
@@ -564,7 +564,7 @@ public abstract class BaseAnnotationValidator {
         bodyUrl = webAnnotation.getBody().getHttpUri();
       }
       
-      if (bodyUrl == null || !UriUtils.urlStartsWithHttps(bodyUrl)) {
+      if (bodyUrl == null || !GeneralUtils.urlStartsWithHttps(bodyUrl)) {
         throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
             new String[] { "body.id or body.value is mandatory and must use https protocol: ", bodyUrl });
       }

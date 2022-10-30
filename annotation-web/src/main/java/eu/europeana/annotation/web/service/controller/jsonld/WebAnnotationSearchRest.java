@@ -117,12 +117,12 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    AnnotationPage annotationPage = getAnnotationSearchService().search(searchQuery, request);
 
 	    if(annotationPage.getAnnotations() != null && SearchProfiles.DEREFERENCE.equals(searchProfile)) {
-		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), searchProfile, language);
+		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), SearchProfiles.DEREFERENCE, language);
 	    }
 
 	    // ** serialize page
         AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = serializer.serialize(searchProfile);
+        String jsonLd = serializer.serialize(querySearchProfile);
         
 	    // ** build response
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -148,14 +148,14 @@ public class WebAnnotationSearchRest extends BaseRest {
     }
 
     private void validateProfiles(List<String> profiles) throws HttpException {
-      // For now maximum two profile-combinations are possible
-      // profile=facets OR profile=facets,minimal OR profile=standard,facets
-      if(profiles.size() > 2) {
-          throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
-                  new String[]{"Maximum 2 profiles from these are allowed ", StringUtils.join(profiles, ",")});
-      }
-      // For now - if multiple profile then one of them has to be facets
-      if (profiles.size() == 2 && !profiles.contains(SearchProfiles.FACETS.toString())) {
+      /*
+       *  Examples of profile combinations that are possible: profile=facets OR profile=facets,minimal OR profile=standard,facets
+       *  OR profile=minimal,facets,debug. 
+       */
+      if ((profiles.contains(SearchProfiles.MINIMAL.toString()) && profiles.contains(SearchProfiles.STANDARD.toString())) ||
+          (profiles.contains(SearchProfiles.MINIMAL.toString()) && profiles.contains(SearchProfiles.DEREFERENCE.toString())) ||
+          (profiles.contains(SearchProfiles.STANDARD.toString()) && profiles.contains(SearchProfiles.DEREFERENCE.toString()))
+          ) {
           throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
                   new String[]{"These profiles are not supported together ", StringUtils.join(profiles, ",")});
       }
@@ -173,6 +173,7 @@ public class WebAnnotationSearchRest extends BaseRest {
       List<String> allProfiles = GeneralUtils.splitStringIntoList(profile, WebAnnotationModelFields.COMMA);
       validateProfiles(allProfiles);      
       allProfiles.remove(SearchProfiles.FACETS.toString());
+      allProfiles.remove(SearchProfiles.DEBUG.toString());
       if(allProfiles.size()>0) {
         return SearchProfiles.getByStr(allProfiles.get(0));
       }

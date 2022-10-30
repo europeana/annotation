@@ -27,7 +27,7 @@ import eu.europeana.annotation.solr.model.internal.SolrAnnotationImpl;
 import eu.europeana.annotation.solr.model.view.AnnotationViewAdapter;
 import eu.europeana.annotation.solr.model.view.FacetFieldAdapter;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
-import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 
 public class SolrAnnotationUtils {
 
@@ -183,13 +183,13 @@ public class SolrAnnotationUtils {
     }
 
     protected String extractTextValues(Body body) {
-	if (body.getValue() != null && !UriUtils.isUrl(body.getValue())) {
+	if (body.getValue() != null && !GeneralUtils.isUrl(body.getValue())) {
 	    return body.getValue();
 	}
 	else if (body.getValues() != null) {
 	  List<String> notUrlValues = new ArrayList<String>();
 	  for(String elem : body.getValues()) {
-	    if(!UriUtils.isUrl(elem)) {
+	    if(!GeneralUtils.isUrl(elem)) {
 	      notUrlValues.add(elem);
 	    }
 	  }
@@ -253,7 +253,7 @@ public class SolrAnnotationUtils {
     }
 
     private void appendUrlValue(List<String> resourceUrls, String value) {
-	if(UriUtils.isUrl(value) && !resourceUrls.contains(value)) {
+	if(GeneralUtils.isUrl(value) && !resourceUrls.contains(value)) {
 	    resourceUrls.add(value);
 	}
     }

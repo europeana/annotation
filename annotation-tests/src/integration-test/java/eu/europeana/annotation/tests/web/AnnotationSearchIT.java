@@ -35,7 +35,7 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
-import eu.europeana.annotation.utils.QueryUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 
 /**
  * Annotation search API test class
@@ -84,7 +84,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
   private void assertNextPageNumber(AnnotationPage annPg, Integer expPgNum)
       throws MalformedURLException {
     String nextPageUri = annPg.getNextPageUri();
-    Integer nextPgNum = QueryUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PAGE);
+    Integer nextPgNum = GeneralUtils.getQueryParamNumValue(nextPageUri, WebAnnotationFields.PAGE);
     log.debug(nextPageUri);
     log.debug(nextPgNum);
     assertEquals(expPgNum, nextPgNum);
@@ -166,14 +166,20 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSearchAnyAnnotationMinimalProfile() throws Exception {
+  public void testProfileInSearch() throws Exception {
     createAnnotationDataSet();
-    // first page
+    //minimal profile
     AnnotationPage annPg =
         searchAnnotationsAddQueryField("*", null, null, null, null, SearchProfiles.MINIMAL.toString(), null);
     assertNotNull(annPg, "AnnotationPage must not be null");
-    // there might be old annotations of failing tests in the database
-    assertEquals(annPg.getCurrentPage(), 0);
+    assertNull(annPg.getAnnotations());
+    assertNotNull(annPg.getItems());
+    //debug profile
+    annPg = searchAnnotationsAddQueryField("*", null, null, null, null, SearchProfiles.DEBUG.toString(), null);
+    assertNotNull(annPg, "AnnotationPage must not be null");
+    //in case of standard profile (computed in case of debug), the whole annotations are returned
+    assertNotNull(annPg.getAnnotations());
+    assertNull(annPg.getItems());
   }
 
   @Test
@@ -182,7 +188,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     ResultActions mockMvcResult = mockMvc.perform(get(url));
     assertEquals(HttpStatus.BAD_REQUEST, HttpStatus.valueOf(mockMvcResult.andReturn().getResponse().getStatus()));
 
-    url = AnnotationTestUtils.buildUrl("*:*", null, null, null, null, null, null, "minimal, standard", null);
+    url = AnnotationTestUtils.buildUrl("*:*", null, null, null, null, null, null, "minimal, dereference", null);
     mockMvcResult = mockMvc.perform(get(url));
     assertEquals(HttpStatus.BAD_REQUEST, HttpStatus.valueOf(mockMvcResult.andReturn().getResponse().getStatus()));
   }
@@ -195,11 +201,19 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     AnnotationPage annPg = searchAnnotations("*:*", null, facets, null, null, null, null, "minimal", null);
     assertNotNull(annPg, "AnnotationPage must not be null");
     assertNull(annPg.getFacets());
+    assertNotNull(annPg.getItems());
 
     annPg = searchAnnotations("*:*", null, facets, null, null, null, null, "minimal, facets", null);
     assertNotNull(annPg, "AnnotationPage must not be null");
     assertTrue(annPg.getFacets().get("motivation").size()>0);
     assertTrue(annPg.getFacets().get("generator_uri").size()>0);
+    assertNotNull(annPg.getItems());
+    
+    annPg = searchAnnotations("*:*", null, facets, null, null, null, null, "minimal, facets, debug", null);
+    assertNotNull(annPg, "AnnotationPage must not be null");
+    assertTrue(annPg.getFacets().get("motivation").size()>0);
+    assertTrue(annPg.getFacets().get("generator_uri").size()>0);
+    assertNotNull(annPg.getItems());
   }
 
   // @Test

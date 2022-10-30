@@ -19,7 +19,7 @@ import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPa
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.view.impl.AnnotationViewResourceListItem;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.utils.QueryUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 
 /**
  * Annotation page parser
@@ -148,7 +148,7 @@ public class AnnotationPageParser extends JsonLdParser {
 	    String currentPageUri = valueObject.toString();
 	    ap.setCurrentPageUri(currentPageUri);
 	    // AnnotationPage.CurrentPage (int)
-	    String currentPageVal = QueryUtils.getQueryParamValue(valueObject.toString(), WebAnnotationFields.PAGE);
+	    String currentPageVal = GeneralUtils.getQueryParamValue(valueObject.toString(), WebAnnotationFields.PAGE);
 	    int currentPageNum = Integer.parseInt(currentPageVal);
 	    ap.setCurrentPage(currentPageNum);
 
