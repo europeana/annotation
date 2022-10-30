@@ -34,8 +34,7 @@ public class GeneralUtils {
           throw new IllegalStateException("Not a parameter/value pair!");
         String name = paramValuePair[0];
         if (name.equalsIgnoreCase(paramName)) {
-          String value = param.split("=")[1];
-          return value;
+          return param.split("=")[1];
         }
       }
       return null;
@@ -43,8 +42,7 @@ public class GeneralUtils {
 	
   public static Integer getQueryParamNumValue(String queryUrl, String paramName) throws MalformedURLException {
       String paramVal = getQueryParamValue(queryUrl, paramName);
-      Integer numParamVal = Integer.parseInt(paramVal);
-      return numParamVal;
+      return Integer.valueOf(paramVal);
   }
   
   /**
