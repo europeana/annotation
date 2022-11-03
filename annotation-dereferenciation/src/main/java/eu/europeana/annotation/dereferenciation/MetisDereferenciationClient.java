@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.util.UriComponentsBuilder;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -89,7 +91,7 @@ public class MetisDereferenciationClient {
      * @throws UnsupportedEncodingException
      */
     String encodeUrl(String url) throws UnsupportedEncodingException {
-	return URLEncoder.encode(url, "UTF-8");
+	return URLEncoder.encode(url, StandardCharsets.UTF_8);
     }
 
     /**
@@ -111,7 +113,10 @@ public class MetisDereferenciationClient {
 	InputStream streamResponse;
 	    
 	try {
-	    queryUri = baseUrl + "?uri=" + URLEncoder.encode(uri, "UTF-8");		
+	    queryUri = UriComponentsBuilder.fromUriString(baseUrl)
+	        .queryParam("uri", uri)
+	        .build()
+	        .toString();
 	    streamResponse = getHttpConnection().getURLContent(queryUri);
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);

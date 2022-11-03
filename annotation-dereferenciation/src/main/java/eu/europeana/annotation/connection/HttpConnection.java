@@ -25,7 +25,6 @@ public class HttpConnection {
     public static final int DEFAULT_TIMEOUT_CONNECTION = 40000;
     private static final int STATUS_OK_START = 200;
     private static final int STATUS_OK_END = 299;
-    private static final String ENCODING = "UTF-8";
     private HttpClient httpClient = null;
     private int connectionRetries, connectionTimeout;
     
