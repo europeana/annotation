@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,7 @@ public class MetisDereferenciationClient {
 	InputStream streamResponse;
 	    
 	try {
-	    queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");		
+	    queryUri = baseUrl + "?uri=" + URLEncoder.encode(uri, "UTF-8");		
 	    streamResponse = getHttpConnection().getURLContent(queryUri);
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);
@@ -141,15 +142,22 @@ public class MetisDereferenciationClient {
 	String jsonLdStr;
 	InputStream streamResponse;
 	try {
-        	@SuppressWarnings({ "rawtypes", "unchecked" })
-        	String urisJson = JsonSerializer.toString((List)uris);
-        	streamResponse = getHttpConnection().postRequest(baseUrl, urisJson);
-//        	String text = new String(streamResponse.readAllBytes(), StandardCharsets.UTF_8);
-//        	System.out.println(text);
-	        for (Object uri : uris) {
-	            jsonLdStr = convertToJsonLd((String)uri, streamResponse, language).toString();
-        	    res.put((String)uri, jsonLdStr);
-         	}
+      	@SuppressWarnings({ "rawtypes", "unchecked" })
+      	String urisJson = JsonSerializer.toString((List)uris);
+      	streamResponse = getHttpConnection().postRequest(baseUrl, urisJson);
+      	String[] urisArray = new String[uris.size()];
+        urisArray = uris.toArray(urisArray);
+        jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
+        //we need to separate the individual jsons manually
+        List<Integer> startingPositions = findSubstringIndexes(jsonLdStr, "{ \"@context\":");
+        for (int i = 0; i < startingPositions.size(); i++) {
+          if(i==startingPositions.size()-1) {
+            res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length()));
+          }
+          else {
+            res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i+1)));
+          }
+        }          
 	}catch(IOException ex) {
 	    throw new AnnotationDereferenciationException(ex);
 	}catch(RuntimeException ex) {
@@ -157,7 +165,25 @@ public class MetisDereferenciationClient {
 	}
 	return res;
     }
-
+    
+    /*
+     * TODO: move this function to utils
+     */
+    private List<Integer> findSubstringIndexes(String input, String substring) {
+      List<Integer> indexes = new ArrayList<Integer>();
+      int substringLength = substring.length();
+      int index = input.indexOf(substring, 0);
+      if(index!=-1) {
+        indexes.add(index);
+        while(index != -1){
+          index = input.indexOf(substring, index + substringLength);
+          if (index != -1) {
+              indexes.add(index);
+          }
+        }
+      }      
+      return indexes;
+    }
   
     /**
      * An XSLT converts dereference output to JSON-LD.
@@ -167,19 +193,18 @@ public class MetisDereferenciationClient {
      *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
      * @return dereferenced output in JSON-LD format
      */
-    public synchronized StringWriter convertToJsonLd(String uri, InputStream response, String language) {
+    public synchronized StringWriter convertToJsonLd(Object uris, InputStream response, String language) {
 
 	StringWriter result = new StringWriter();
 	try {
 	    //reuse transformer but update params
 	    getTransformer().clearParameters();
-	    getTransformer().setParameter(PARAM_URI, uri);
+	    getTransformer().setParameter(PARAM_URI, uris);
 	    if (language != null) {
 		getTransformer().setParameter(PARAM_LANGS, language);
 	    }
 	    StreamSource text = new StreamSource(response);
 	    getTransformer().transform(text, new StreamResult(result));
-	    
 	} catch (TransformerConfigurationException e) {
 	    throw new AnnotationDereferenciationException(
 		    "Unexpected exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",

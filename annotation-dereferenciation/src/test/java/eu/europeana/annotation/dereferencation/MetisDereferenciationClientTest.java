@@ -21,7 +21,7 @@ public class MetisDereferenciationClientTest {
     Logger log = LogManager.getLogger(getClass());
   
     private MetisDereferenciationClient dereferenciationClient;
-    private static final String METIS_DEREFERENCE_SERVICE_URI = "http://metis-dereference-rest-acceptance.eanadev.org/dereference?uri=";
+    private static final String METIS_DEREFERENCE_SERVICE_URI = "https://metis-dereference-rest-acceptance.eanadev.org/dereference";
     private static final String URI_WKD_VERMEER = "http://www.wikidata.org/entity/Q41264";
     private static final String URI_VIAF_VERMEER = "http://viaf.org/viaf/51961439";
 //    private static final String URI_WKD_US = "http://www.wikidata.org/entity/Q30";
