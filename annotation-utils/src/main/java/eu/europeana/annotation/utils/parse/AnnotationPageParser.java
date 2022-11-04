@@ -19,7 +19,7 @@ import eu.europeana.annotation.definitions.model.search.result.impl.AnnotationPa
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.view.impl.AnnotationViewResourceListItem;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.utils.QueryUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 
 /**
  * Annotation page parser
@@ -148,7 +148,7 @@ public class AnnotationPageParser extends JsonLdParser {
 	    String currentPageUri = valueObject.toString();
 	    ap.setCurrentPageUri(currentPageUri);
 	    // AnnotationPage.CurrentPage (int)
-	    String currentPageVal = QueryUtils.getQueryParamValue(valueObject.toString(), WebAnnotationFields.PAGE);
+	    String currentPageVal = GeneralUtils.getQueryParamValue(valueObject.toString(), WebAnnotationFields.PAGE);
 	    int currentPageNum = Integer.parseInt(currentPageVal);
 	    ap.setCurrentPage(currentPageNum);
 
@@ -162,6 +162,12 @@ public class AnnotationPageParser extends JsonLdParser {
 	    JSONArray itemsJsonArr = (JSONArray) items;
 	    parseItems(ap, itemsJsonArr);
 	    break;
+
+	// AnnotationPage.facets
+    case WebAnnotationFields.SEARCH_RESP_FACETS:
+        Object facets = jo.get(WebAnnotationFields.SEARCH_RESP_FACETS);
+        parseFacets(ap, facets);
+        break;
 
 	case WebAnnotationFields.PART_OF:
 	    JSONObject partOfObj = jo.getJSONObject(WebAnnotationFields.PART_OF);
@@ -233,6 +239,51 @@ public class AnnotationPageParser extends JsonLdParser {
 	if (!annoList.isEmpty()) {
 	    annoPage.setAnnotations(annoList);
 	}
+    }
+
+    /**
+     * Parsing facets.
+     * 
+     * @param annoPage
+     * @param facetsJson
+     * @throws JSONException
+     * @throws JsonParseException
+     */
+    private void parseFacets(AnnotationPage annoPage, Object facetsJson) throws JSONException {
+      Map<String,Map<String,Integer>> facets = new HashMap<String,Map<String,Integer>>();
+      if(facetsJson instanceof JSONArray) {
+        JSONArray facetsArr = (JSONArray) facetsJson;
+        for (int i = 0, size = facetsArr.length(); i < size; i++) {  
+            parseFacetObj((JSONObject) facetsArr.get(i),facets);
+        }
+      }
+      else {
+        parseFacetObj((JSONObject) facetsJson,facets);        
+      }
+      annoPage.setFacets(facets);
+    }
+    
+    private void parseFacetObj(JSONObject facetObj, Map<String,Map<String,Integer>> facets) throws JSONException {
+      String field = facetObj.getString(WebAnnotationFields.SEARCH_RESP_FACETS_FIELD);
+      Map<String,Integer> values = new HashMap<String,Integer>();
+      Object valuesJson = facetObj.get(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
+      if(valuesJson instanceof JSONArray) {
+        JSONArray valuesArr = (JSONArray) valuesJson;
+        for (int j = 0, sizeValues = valuesArr.length(); j < sizeValues; j++) {
+          JSONObject valueObj = (JSONObject) valuesArr.get(j); 
+          String label = valueObj.getString(WebAnnotationFields.SEARCH_RESP_FACETS_LABEL);
+          int count = valueObj.getInt(WebAnnotationFields.SEARCH_RESP_FACETS_COUNT);
+          values.put(label, count);
+        }
+      }
+      else {
+        JSONObject valueObj = (JSONObject) valuesJson;
+        String label = valueObj.getString(WebAnnotationFields.SEARCH_RESP_FACETS_LABEL);
+        int count = valueObj.getInt(WebAnnotationFields.SEARCH_RESP_FACETS_COUNT);
+        values.put(label, count);    
+      }           
+      facets.put(field, values);
+
     }
 
 }

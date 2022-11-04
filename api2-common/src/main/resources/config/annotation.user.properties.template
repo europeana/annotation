@@ -1,6 +1,11 @@
 ### annotation database ###
 # mongoDB settings
 mongodb.annotation.connectionUrl=mongodb://127.0.0.1:27017/annotation_test
+mongodb.annotation.host=localhost
+mongodb.annotation.port=27017
+mongodb.annotation.databasename=annotation_test
+mongodb.annotation.username=
+mongodb.annotation.password=
 
 mongodb.annotation.truststore=
 mongodb.annotation.truststorepass=

@@ -52,7 +52,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     @Value("${solr.stats.facets:10}")
     private int solrStatsFacets;
     
-    @Value("$annotation.data.endpoint:}")
+    @Value("${annotation.data.endpoint:}")
     private String annotationDataEndpoint;
 
     

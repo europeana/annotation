@@ -112,7 +112,7 @@ public class MetisDereferenciationClient {
 	String queryUri, xmlResponse, jsonLdStr;
 	    
 	try {
-	    queryUri = baseUrl + URLEncoder.encode(uri, "UTF-8");		
+	    queryUri = baseUrl + "?uri=" + URLEncoder.encode(uri, "UTF-8");		
 	    xmlResponse = getHttpConnection().getURLContent(queryUri);
 	    jsonLdStr = convertToJsonLd(uri, xmlResponse, language).toString();
 	    res.put(uri, jsonLdStr);
