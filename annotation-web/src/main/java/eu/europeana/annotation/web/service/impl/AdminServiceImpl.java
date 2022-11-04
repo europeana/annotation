@@ -20,7 +20,7 @@ import eu.europeana.annotation.web.exception.response.AnnotationNotFoundExceptio
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.service.AdminService;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
@@ -127,7 +127,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 						annotation = getMongoPersistence().getByIdentifier(id);
 
 						if (annotation == null)
-							throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{String.valueOf(id)});
+							throw new AnnotationNotFoundException(null, I18nConstantsAnnotation.ANNOTATION_NOT_FOUND, new String[]{String.valueOf(id)});
 						boolean success = reindexAnnotationById(id, new Date());
 						if (success)
 							status.incrementSuccessCount();

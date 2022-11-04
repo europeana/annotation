@@ -250,7 +250,7 @@ public class AnnotationPageParser extends JsonLdParser {
      * @throws JsonParseException
      */
     private void parseFacets(AnnotationPage annoPage, Object facetsJson) throws JSONException {
-      Map<String,Map<String,Integer>> facets = new HashMap<String,Map<String,Integer>>();
+      Map<String,Map<String,Integer>> facets = new HashMap<>();
       if(facetsJson instanceof JSONArray) {
         JSONArray facetsArr = (JSONArray) facetsJson;
         for (int i = 0, size = facetsArr.length(); i < size; i++) {  
@@ -265,7 +265,7 @@ public class AnnotationPageParser extends JsonLdParser {
     
     private void parseFacetObj(JSONObject facetObj, Map<String,Map<String,Integer>> facets) throws JSONException {
       String field = facetObj.getString(WebAnnotationFields.SEARCH_RESP_FACETS_FIELD);
-      Map<String,Integer> values = new HashMap<String,Integer>();
+      Map<String,Integer> values = new HashMap<>();
       Object valuesJson = facetObj.get(WebAnnotationFields.SEARCH_RESP_FACETS_VALUES);
       if(valuesJson instanceof JSONArray) {
         JSONArray valuesArr = (JSONArray) valuesJson;

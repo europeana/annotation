@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.http.SwaggerConstants;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.exception.DateParsingException;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
@@ -59,7 +59,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	MotivationTypes motivation = MotivationTypes.getTypeForAnnoType(annoType);
 
 	if (motivation == null) {
-	  throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+	  throw new HttpException("Invalid parameter value.", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
           new String[] {"annoType", annoType}, HttpStatus.BAD_REQUEST); 
 	}
 
@@ -88,7 +88,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
     try {
       startDate = startDateStr==null ? DateUtils.parseToDate("1970-01-01T00:00:00Z") : DateUtils.parseToDate(startDateStr);
     } catch (DateParsingException e) {
-      throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+      throw new HttpException("Invalid parameter value.", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
           new String[] {"from", startDateStr}, HttpStatus.BAD_REQUEST, e);
     }
     
@@ -96,12 +96,12 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
     try {
       stopDate = stopDateStr==null ? new Date() : DateUtils.parseToDate(stopDateStr);
     } catch (DateParsingException e) {
-      throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+      throw new HttpException("Invalid parameter value.", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
           new String[] {"to", stopDateStr}, HttpStatus.BAD_REQUEST, e);
     }
 
     if(startDate.compareTo(stopDate)>=0) {
-      throw new HttpException("The start date (from) needs to be before the stop date (to).", I18nConstants.INVALID_PARAM_VALUE,
+      throw new HttpException("The start date (from) needs to be before the stop date (to).", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
           new String[] {"from / to ", " " + startDateStr + " / " + stopDateStr}, HttpStatus.BAD_REQUEST);
 	}
 
@@ -122,7 +122,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	if (StringUtils.isNotBlank(motivation)) {
 	    motivationType = MotivationTypes.getType(motivation);
 	    if (motivationType==MotivationTypes.UNKNOWN)
-	      throw new HttpException("Invalid parameter value.", I18nConstants.INVALID_PARAM_VALUE,
+	      throw new HttpException("Invalid parameter value.", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
 	          new String[] {"motivation", motivation}, HttpStatus.BAD_REQUEST);
 	}
 	return motivationType;

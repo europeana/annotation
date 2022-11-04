@@ -1,6 +1,6 @@
 package eu.europeana.api.common.config;
 
-public interface I18nConstants extends eu.europeana.api.commons.definitions.config.i18n.I18nConstants{
+public interface I18nConstantsAnnotation extends eu.europeana.api.commons.definitions.config.i18n.I18nConstants{
 	//TODO: add extends api-commons.I18nConstants
 	static final String ANNOTATION_NOT_FOUND = "error.annotation_not_found";
 //	static final String OPERATION_NOT_AUTHORIZED = "error.annotation_operation_not_authorized";

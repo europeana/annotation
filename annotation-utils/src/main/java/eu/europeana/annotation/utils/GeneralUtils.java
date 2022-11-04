@@ -9,6 +9,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class GeneralUtils {
+  
+  private GeneralUtils() {
+    throw new IllegalStateException("Utility class.");
+  }
   /**
    * Splitting a string into a list. It also strips whitespace from the start and end of every String in a list.
    * A null separator splits on whitespace.
@@ -21,7 +25,7 @@ public class GeneralUtils {
           return Collections.<String>emptyList();
       String[] array = StringUtils.splitByWholeSeparator(concatenatedStrings, separator);
       array=StringUtils.stripAll(array);
-      return new ArrayList<String>(Arrays.asList(array));
+      return new ArrayList<>(Arrays.asList(array));
   }
   
   public static String getQueryParamValue(String queryUrl, String paramName) throws MalformedURLException {
@@ -69,14 +73,8 @@ public class GeneralUtils {
   }
   
   public static boolean urlStartsWithHttps(String value) {
-      //only URLs that start with "https" are allowed
-      if(value.startsWith("https")) {
-        return true;
-      }
-      else {
-        return false;
-      }
+    //only URLs that start with "https" are allowed
+    return value.startsWith("https");
   }
-
 
 }

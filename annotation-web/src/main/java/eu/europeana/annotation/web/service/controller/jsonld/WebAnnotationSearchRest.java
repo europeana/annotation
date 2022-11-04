@@ -27,7 +27,8 @@ import eu.europeana.annotation.web.exception.request.ParamValidationI18NExceptio
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
+import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.exception.ParamValidationException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -52,7 +53,7 @@ public class WebAnnotationSearchRest extends BaseRest {
     value = "Search annotations for the given text query. By default the search will return all annotation fields. "
         + "The facet param refers to a list of fields the facets is calculated upon. "
         + "The filters and lang params are used to reduce the amount of data included in the response. ",
-    nickname = "search", response = java.lang.Void.class)
+    nickname = "search", response = Void.class)
     public ResponseEntity<String> search(
 	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String wskey,
 	    @RequestParam(value = WebAnnotationFields.PARAM_QUERY) String query,
@@ -84,7 +85,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    queryString = queryString.trim();
 	    if (StringUtils.isBlank(queryString))
 		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_BLANK_PARAMETER_VALUE,
-			I18nConstants.ANNOTATION_VALIDATION,
+			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
 			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
 
 	    SearchProfiles searchProfile = getProfile(profile, request);
@@ -174,7 +175,7 @@ public class WebAnnotationSearchRest extends BaseRest {
       validateProfiles(allProfiles);      
       allProfiles.remove(SearchProfiles.FACETS.toString());
       allProfiles.remove(SearchProfiles.DEBUG.toString());
-      if(allProfiles.size()>0) {
+      if(!allProfiles.isEmpty()) {
         return SearchProfiles.getByStr(allProfiles.get(0));
       }
 
