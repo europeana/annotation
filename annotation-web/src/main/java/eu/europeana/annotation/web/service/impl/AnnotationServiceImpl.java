@@ -39,7 +39,7 @@ import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
@@ -115,7 +115,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
     } catch (AnnotationAttributeInstantiationException e) {
       throw new RequestBodyValidationException(annotationJsonLdStr,
-          I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
     }
   }
 
@@ -216,8 +216,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     if (duplicateAnnotationIds != null) {
       String[] i18nParamsAnnoDuplicates = new String[1];
       i18nParamsAnnoDuplicates[0] = String.join(",", duplicateAnnotationIds);
-      throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
-          I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+      throw new AnnotationUniquenessValidationException(I18nConstantsAnnotation.ANNOTATION_DUPLICATION,
+          I18nConstantsAnnotation.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
     }
 
     Annotation res = updateAndReindex(persistentAnnotation);
@@ -658,11 +658,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       domainName = getMongoWhitelistPersistence().getDomainName(url);
       Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
       if (!domains.contains(domainName))
-        throw new ParamValidationI18NException(I18nConstants.INVALID_PARAM_VALUE,
-            I18nConstants.INVALID_PARAM_VALUE, new String[] {"target.value", url});
+        throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+            I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {"target.value", url});
     } catch (URISyntaxException e) {
       throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_URL_NOT_VALID,
-          I18nConstants.MESSAGE_URL_NOT_VALID, new String[] {"target.value", url});
+          I18nConstantsAnnotation.MESSAGE_URL_NOT_VALID, new String[] {"target.value", url});
     }
 
     return true;

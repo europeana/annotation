@@ -26,7 +26,7 @@ import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 import eu.europeana.api.commons.web.controller.BaseRestController;
@@ -189,8 +189,8 @@ public class BaseRest extends BaseRestController {
           org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes());
       res = new String(decodedBase64Str);
     } catch (Exception e) {
-      throw new ApplicationAuthenticationException(I18nConstants.BASE64_DECODING_FAIL,
-          I18nConstants.BASE64_DECODING_FAIL, null);
+      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.BASE64_DECODING_FAIL,
+          I18nConstantsAnnotation.BASE64_DECODING_FAIL, null);
     }
     return res;
   }
@@ -213,13 +213,13 @@ public class BaseRest extends BaseRestController {
     if (userTokenHeader != null) {
       String[] headerElems = userTokenHeader.split(" ");
       if (headerElems.length < 2)
-        throw new ApplicationAuthenticationException(I18nConstants.INVALID_HEADER_FORMAT,
-            I18nConstants.INVALID_HEADER_FORMAT, null);
+        throw new ApplicationAuthenticationException(I18nConstantsAnnotation.INVALID_HEADER_FORMAT,
+            I18nConstantsAnnotation.INVALID_HEADER_FORMAT, null);
 
       String userTokenType = headerElems[USER_TOKEN_TYPE_POS];
       if (!AnnotationHttpHeaders.BEARER.equals(userTokenType))
-        throw new ApplicationAuthenticationException(I18nConstants.UNSUPPORTED_TOKEN_TYPE,
-            I18nConstants.UNSUPPORTED_TOKEN_TYPE, new String[] {userTokenType});
+        throw new ApplicationAuthenticationException(I18nConstantsAnnotation.UNSUPPORTED_TOKEN_TYPE,
+            I18nConstantsAnnotation.UNSUPPORTED_TOKEN_TYPE, new String[] {userTokenType});
 
       String encodedUserToken = headerElems[BASE64_ENCODED_STRING_POS];
 
