@@ -3,9 +3,8 @@ package eu.europeana.api.common.config;
 public interface I18nConstantsAnnotation extends eu.europeana.api.commons.definitions.config.i18n.I18nConstants{
 	//TODO: add extends api-commons.I18nConstants
 	static final String ANNOTATION_NOT_FOUND = "error.annotation_not_found";
-//	static final String OPERATION_NOT_AUTHORIZED = "error.annotation_operation_not_authorized";
 	static final String CLIENT_NOT_AUTHORIZED = "error.annotation_client_not_authorized";
-	@Deprecated
+	@Deprecated(since="-", forRemoval=true)
 	static final String INVALID_TOKEN = "error.annotation_invalid_token";
 	static final String USER_NOT_AUTHORIZED = "error.annotation_user_not_authorized";
 	static final String ANNOTATION_NOT_ACCESSIBLE = "error.annotation_not_accessible";
@@ -18,7 +17,6 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	static final String ANNOTATION_VALIDATION = "error.annotation_validation";
 	static final String ANNOTATION_DUPLICATION = "error.annotation_duplication";
 	static final String APIKEY_FILE_NOT_FOUND = "error.annotation_apikey_file_not_found";
-//	static final String INVALID_APIKEY = "error.annotation_invalid_apikey";
 	static final String TEST_USER_FORBIDDEN = "error.annotation_test_user_forbidden";
 	static final String LOCKED_MAINTENANCE = "error.annotation_lock_maintenance";
 	static final String AUTHENTICATION_FAIL = "error.annotation_authentication_fail";
@@ -34,7 +32,6 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	static final String MESSAGE_IDENTIFIER_WRONG = "error.message_identifier_wrong";
 	static final String MESSAGE_ANNOTATION_ID_EXISTS = "error.message_annotation_id_exists";
 	static final String MESSAGE_ANNOTATION_ID_NOT_EXISTS = "error.message_annotation_id_not_exists";
-//	static final String MESSAGE_INVALID_PARAMETER_VALUE = "error.message_invalid_parameter_value";
 	static final String MESSAGE_BLANK_PARAMETER_VALUE = "error.message_blank_parameter_value";
 	static final String MESSAGE_URL_NOT_VALID = "error.message_url_not_valid";
 	static final String MESSAGE_INVALID_TAG_SIZE = "error.message_invalid_tag_size";
