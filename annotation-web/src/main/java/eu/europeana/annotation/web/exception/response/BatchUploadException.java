@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class BatchUploadException extends HttpException{
@@ -18,17 +18,17 @@ public class BatchUploadException extends HttpException{
 //	}
 	
 	public BatchUploadException(String message, BatchUploadStatus batchReport){
-		super(message, I18nConstants.BATCH_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+		super(message, I18nConstantsAnnotation.BATCH_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
 		this.operationReport = batchReport;
 	}
 	
 	public BatchUploadException(String message, BatchUploadStatus batchReport, HttpStatus status){
-		super(message, I18nConstants.BATCH_UPLOAD_FAILED, status);
+		super(message, I18nConstantsAnnotation.BATCH_UPLOAD_FAILED, status);
 		this.operationReport = batchReport;
 	}
 	
 	public BatchUploadException(String message, BatchUploadStatus batchReport, HttpStatus status, Throwable th){
-		super(message, I18nConstants.BATCH_UPLOAD_FAILED, null, status, th);
+		super(message, I18nConstantsAnnotation.BATCH_UPLOAD_FAILED, null, status, th);
 		this.operationReport = batchReport;
 	}
 

@@ -12,6 +12,11 @@
 	<name>annotation-fulltext</name>
 	<description>A simple annotation-fulltext.</description>
 	<url>http://www.europeanalabs.eu</url>
+	
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

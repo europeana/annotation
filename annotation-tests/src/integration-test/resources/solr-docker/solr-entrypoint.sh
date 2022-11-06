@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Please note, this file should have unix-based end of line
-# in case of errors use notepad++ to change EOL to unix LF
+# in case of errors use notepad++ to change EOL to unix LF (use EDIT -> EOL Conversion)
 
 set -e
 

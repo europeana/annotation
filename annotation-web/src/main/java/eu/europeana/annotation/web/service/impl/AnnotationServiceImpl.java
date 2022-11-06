@@ -11,6 +11,9 @@ import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -39,10 +42,11 @@ import eu.europeana.annotation.web.model.BatchReportable;
 import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.AnnotationService;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
+@Service(AnnotationConfiguration.BEAN_ANNO_SERVICE)
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
   @Resource(name = "annotation_db_whitelistService")
@@ -54,7 +58,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Resource(name = "i18nService")
   I18nService i18nService;
 
-  private MetisDereferenciationClient dereferenciationClient;
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
+  MetisDereferenciationClient dereferenciationClient;
 
   public AnnotationConfiguration getConfiguration() {
     return configuration;
@@ -86,16 +92,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     return getMongoPersistence().getAllAnnotations();
   }
 
-  public MetisDereferenciationClient getDereferenciationClient() {
-    if (dereferenciationClient == null) {
-      dereferenciationClient = new MetisDereferenciationClient(getConfiguration());
-    }
-    return dereferenciationClient;
-  }
+//  public MetisDereferenciationClient getDereferenciationClient() {
+//    if (dereferenciationClient == null) {
+//      dereferenciationClient = new MetisDereferenciationClient(getConfiguration());
+//    }
+//    return dereferenciationClient;
+//  }
 
-  public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
-    this.dereferenciationClient = dereferenciationClient;
-  }
+//  public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
+//    this.dereferenciationClient = dereferenciationClient;
+//  }
 
   @Override
   public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit)
@@ -115,7 +121,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       return europeanaParser.parseAnnotation(motivationType, annotationJsonLdStr);
     } catch (AnnotationAttributeInstantiationException e) {
       throw new RequestBodyValidationException(annotationJsonLdStr,
-          I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
     }
   }
 
@@ -216,8 +222,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     if (duplicateAnnotationIds != null) {
       String[] i18nParamsAnnoDuplicates = new String[1];
       i18nParamsAnnoDuplicates[0] = String.join(",", duplicateAnnotationIds);
-      throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
-          I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+      throw new AnnotationUniquenessValidationException(I18nConstantsAnnotation.ANNOTATION_DUPLICATION,
+          I18nConstantsAnnotation.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
     }
 
     Annotation res = updateAndReindex(persistentAnnotation);
@@ -585,8 +591,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     String bodyValue = annotation.getBody().getValue();
-    Map<String, String> dereferencedMap = getDereferenciationClient()
-        .dereferenceOne(getConfiguration().getMetisBaseUrl(), bodyValue, language);
+    Map<String, String> dereferencedMap = dereferenciationClient.dereferenceOne(bodyValue, language);
     setDereferencedBody(annotation, dereferencedMap);
   }
 
@@ -621,8 +626,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       return;
     }
 
-    Map<String, String> dereferencedMap = getDereferenciationClient()
-        .dereferenceMany(getConfiguration().getMetisBaseUrl(), entityIds, languages);
+    Map<String, String> dereferencedMap = dereferenciationClient.dereferenceMany(entityIds, languages);
 
     // update dereferenced bodies
     for (Annotation annotation : annotations) {
@@ -658,11 +662,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       domainName = getMongoWhitelistPersistence().getDomainName(url);
       Set<String> domains = getMongoWhitelistPersistence().getWhitelistDomains();
       if (!domains.contains(domainName))
-        throw new ParamValidationI18NException(I18nConstants.INVALID_PARAM_VALUE,
-            I18nConstants.INVALID_PARAM_VALUE, new String[] {"target.value", url});
+        throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+            I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {"target.value", url});
     } catch (URISyntaxException e) {
       throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_URL_NOT_VALID,
-          I18nConstants.MESSAGE_URL_NOT_VALID, new String[] {"target.value", url});
+          I18nConstantsAnnotation.MESSAGE_URL_NOT_VALID, new String[] {"target.value", url});
     }
 
     return true;

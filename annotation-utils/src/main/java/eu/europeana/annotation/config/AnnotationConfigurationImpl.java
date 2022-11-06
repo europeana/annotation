@@ -75,11 +75,6 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
   }
 
   @Override
-  public String getMetisBaseUrl() {
-    return getAnnotationProperties().getProperty(METIS_BASE_URL);
-  }
-
-  @Override
   public int getMetisConnectionRetries() {
     String value = getAnnotationProperties().getProperty(KEY_METIS_CONNECTION_RETRIES);
     return toInt(value);

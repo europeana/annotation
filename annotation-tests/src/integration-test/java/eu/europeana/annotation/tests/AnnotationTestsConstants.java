@@ -6,6 +6,11 @@ import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotation
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 
 public class AnnotationTestsConstants {
+  public static final String URI_VERMEER_VIAF = "http://viaf.org/viaf/51961439";
+  public static final String AGENT_VERMEER_VIAF_XML = "/metis-deref/agent_jan_vermeer_viaf.xml";
+  public static final String DEREFERENCE_MANY = "metis-deref_many";
+  public static final String DEREFERENCE_MANY_XML = "/metis-deref/dereference_many.xml";
+  public static final String EMPTY_METIS_RESPONSE = "/metis-deref/empty_metis_response.xml";
   
   public static final String TEST_REPORT_SUMMARY_FIELD = "reportSum";
   

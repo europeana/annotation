@@ -28,6 +28,8 @@ public interface AnnotationConfiguration {
     public static final String BEAN_ANNO_SOLR_CLIENT = "annoSolrClient";
     public static final String BEAN_SOLR_ANNO_SERVICE = "solrAnnotationService";
     public static final String BEAN_ANNO_MONGO_STORE = "annotation_db_morphia_datastore_annotation";
+    public static final String BEAN_METIS_DEREFERENCE_CLIENT = "metisDereferenceClient";
+    public static final String BEAN_ANNO_SERVICE = "annotationService";
     public static final String VALIDATION_API = "api";
     public static final String VALIDATION_ADMIN_API_KEY = "adminapikey";
     public static final String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
@@ -52,11 +54,6 @@ public interface AnnotationConfiguration {
     public String getJwtTokenSignatureKey();
 
     public String getAuthorizationApiName();
-
-    /**
-     * uses metis.baseUrl property
-     */
-    public String getMetisBaseUrl();
 
     public String getTranscriptionsLicenses();
 

@@ -185,10 +185,6 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String sort,
       String sortOrder, int pageNr, int pageSize, SearchProfiles profile) {
 
-    // TODO: check if needed
-    // String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
-    boolean isFacetsRequested = isFacetsRequest(facets);
-
     Query searchQuery = new QueryImpl();
     searchQuery.setQuery(queryString);
     if (pageNr < 0)
@@ -200,8 +196,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     int rows = buildRealPageSize(pageSize, profile);
     searchQuery.setPageSize(rows);
 
-    if (isFacetsRequested)
-      searchQuery.setFacetFields(facets);
+    searchQuery.setFacetFields(facets);
 
     translateSearchFilters(filters);
     searchQuery.setFilters(filters);
@@ -230,7 +225,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
 
   private void setSearchFields(Query searchQuery, SearchProfiles profile) {
     switch (profile) {
-      case FACET:
+      case FACETS:
         // only facets, do not return results but how? in page based
         // searchQuery.setViewFields(new
         // String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
@@ -249,10 +244,6 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
         break;
     }
 
-  }
-
-  protected boolean isFacetsRequest(String[] facets) {
-    return facets != null && facets.length > 0;
   }
 
   protected void translateSearchFilters(String[] filters) {

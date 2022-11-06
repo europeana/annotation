@@ -13,6 +13,10 @@
 		<version>${revision}</version>
 	</parent>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<!-- <dependency> <groupId>eu.europeana.annotation</groupId> <artifactId>annotation-definitions</artifactId> 
 			<version>${version.annotationApi}</version> </dependency> -->
@@ -31,10 +35,19 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>		
 		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -62,12 +75,22 @@
 			<version>${version.org.junit.jupiter}</version>
 			-->
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
+		<dependency>
+		    <groupId>javax.ws.rs</groupId>
+		    <artifactId>javax.ws.rs-api</artifactId>
+		    <version>${version.javax.ws.rs}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-common -->
+		<dependency>
+		    <groupId>org.glassfish.jersey.core</groupId>
+		    <artifactId>jersey-common</artifactId>
+	    </dependency>
+		
 		<!--
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			
 			<scope>test</scope>
 		</dependency>
 		-->

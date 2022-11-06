@@ -18,11 +18,11 @@ import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.utils.UriUtils;
+import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 
 public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator {
 
@@ -75,7 +75,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
       throws AnnotationNotFoundException, UserAuthorizationException {
     Annotation annotation = getMongoPersistence().getByIdentifier(annoIdentifier);
     if (annotation == null)
-      throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND,
+      throw new AnnotationNotFoundException(null, I18nConstantsAnnotation.ANNOTATION_NOT_FOUND,
           new String[] {String.valueOf(annoIdentifier)});
 
     try {
@@ -83,7 +83,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
       checkPrivacy(annotation, userId);
     } catch (AnnotationStateException e) {
       // TODO: either change method parameters to accept wsKey or return different exception
-      throw new UserAuthorizationException(null, I18nConstants.USER_NOT_AUTHORIZED,
+      throw new UserAuthorizationException(null, I18nConstantsAnnotation.USER_NOT_AUTHORIZED,
           new String[] {userId}, e);
     }
 
@@ -92,7 +92,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
         // check visibility
         checkVisibility(annotation);
       } catch (AnnotationStateException e) {
-        throw new UserAuthorizationException(null, I18nConstants.ANNOTATION_NOT_ACCESSIBLE,
+        throw new UserAuthorizationException(null, I18nConstantsAnnotation.ANNOTATION_NOT_ACCESSIBLE,
             new String[] {annotation.getStatus()}, HttpStatus.GONE, e);
       }
     }
@@ -217,7 +217,7 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
   }
 
   boolean hasBodyUrl(Annotation annotation) {
-    return UriUtils.isUrl(annotation.getBody().getValue());
+    return GeneralUtils.isUrl(annotation.getBody().getValue());
   }
 
   boolean isDereferenceProfile(SearchProfiles searchProfile) {

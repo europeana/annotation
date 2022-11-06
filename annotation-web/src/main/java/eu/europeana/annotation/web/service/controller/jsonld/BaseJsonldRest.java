@@ -53,7 +53,7 @@ import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.SearchServiceUtils;
 import eu.europeana.annotation.web.service.controller.BaseRest;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
@@ -86,7 +86,7 @@ public class BaseJsonldRest extends BaseRest {
 	    // annotation id cannot be provided in the input of the create method
 	    if (!(webAnnotation.getIdentifier()==0))
 		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_IDENTIFIER_PROVIDED_UPON_CREATION,
-			I18nConstants.ANNOTATION_VALIDATION,
+			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
 			new String[] { "identifier", String.valueOf(webAnnotation.getIdentifier()) });
 	    // 2.1 validate annotation properties
 	    getAnnotationService().validateWebAnnotation(webAnnotation);
@@ -96,8 +96,8 @@ public class BaseJsonldRest extends BaseRest {
         if(duplicateAnnotationIds!=null) {
             String [] i18nParamsAnnoDuplicates = new String [1];
             i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
-            throw new AnnotationUniquenessValidationException(I18nConstants.ANNOTATION_DUPLICATION,
-                    I18nConstants.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+            throw new AnnotationUniquenessValidationException(I18nConstantsAnnotation.ANNOTATION_DUPLICATION,
+                    I18nConstantsAnnotation.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
         }
 
         // 3-6 create ID and annotation + backend validation
@@ -132,14 +132,14 @@ public class BaseJsonldRest extends BaseRest {
 	    return response;
 
 	} catch (JsonParseException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (AnnotationValidationException e) { // TODO: transform to
 						    // checked annotation type
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (AnnotationAttributeInstantiationException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (AnnotationInstantiationException e) {
-	    throw new HttpException(null, I18nConstants.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e);
+	    throw new HttpException(null, I18nConstantsAnnotation.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e);
 	} catch (HttpException e) {
 	    // avoid wrapping HttpExceptions
 	    throw e;
@@ -263,7 +263,7 @@ public class BaseJsonldRest extends BaseRest {
 	    return response;
 
 	} catch (AnnotationInstantiationException e) {
-	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_INVALID_BODY,
+	    throw new HttpException("The submitted annotation body is invalid!", I18nConstantsAnnotation.ANNOTATION_INVALID_BODY,
 		    null, HttpStatus.BAD_REQUEST, e);
 	} catch (HttpException e) {
 	    // avoid wrapping HttpExceptions
@@ -400,8 +400,8 @@ public class BaseJsonldRest extends BaseRest {
 	}else {
 	    //not authorized
 		//not authorized
-	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."},
+	    throw new ApplicationAuthenticationException(I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED,
+		    I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."},
 		    HttpStatus.FORBIDDEN);
 	}
     }
@@ -484,13 +484,13 @@ public class BaseJsonldRest extends BaseRest {
 	    return response;
 
 	} catch (JsonParseException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (AnnotationValidationException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstants.ANNOTATION_CANT_PARSE_BODY, e);
+	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
 	} catch (HttpException e) {
 	    throw e;
 	} catch (AnnotationInstantiationException e) {
-	    throw new HttpException("The submitted annotation body is invalid!", I18nConstants.ANNOTATION_VALIDATION,
+	    throw new HttpException("The submitted annotation body is invalid!", I18nConstantsAnnotation.ANNOTATION_VALIDATION,
 		    null, HttpStatus.BAD_REQUEST, e);
 	}  catch (AnnotationServiceException e) {
       throw SearchServiceUtils.convertSearchException(annotation, e);
@@ -615,7 +615,7 @@ public class BaseJsonldRest extends BaseRest {
 	    String userId = authentication.getPrincipal().toString();
 	    if(!getAnnotationService().existsInDb(identifier)) {
 		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
-			I18nConstants.ANNOTATION_VALIDATION,
+			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
 			new String[] { "identifier", String.valueOf(identifier) });
 	    }
 	    	
@@ -661,7 +661,7 @@ public class BaseJsonldRest extends BaseRest {
 	for (Vote existingVote : moderationRecord.getReportList()) {
 	    if (vote.getUserId().equals(existingVote.getUserId()))
 		throw new OperationAuthorizationException("A report from the same users exists in database!",
-			I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { vote.getUserId() });
+			I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] { vote.getUserId() });
 	}
     }
 

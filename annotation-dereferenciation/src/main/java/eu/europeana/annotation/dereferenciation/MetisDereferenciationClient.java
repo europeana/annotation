@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -18,8 +19,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -30,38 +34,36 @@ import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationE
  * @author GrafR
  *
  */
-public class MetisDereferenciationClient {
+@Service(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
+@PropertySource(
+    value = {"classpath:config/annotation.properties", "classpath:config/annotation.user.properties"},
+    ignoreResourceNotFound = true)
+public class MetisDereferenciationClient implements InitializingBean {
+    @Value("${metis.baseUrl}")
+    private String baseUrl;  
+    @Value("${metis.connection.retries:3}")
+    private int connRetries;
+    @Value("${metis.connection.timeout:30000}")
+    private int connTimeout;
 
     static final String XSLT_TRANSFORMATION_FILE = "/deref2json.xsl";
     static final String PARAM_URI = "uri";
     static final String PARAM_LANGS = "langs";
     Transformer transformer;
     private HttpConnection httpConnection;
-    private final AnnotationConfiguration configuration;
 
     public HttpConnection getHttpConnection() {
-	if(httpConnection == null) {
-	    if(configuration != null) {
-		httpConnection = new HttpConnection(
-		    configuration.getMetisConnectionRetries(), 
-		    configuration.getMetisConnectionTimeout());
-	    }else {
-		httpConnection = new HttpConnection();
-	    }
-	}
-	return httpConnection;
+      if(httpConnection == null) {
+    	httpConnection = new HttpConnection(connRetries,connTimeout);
+      }
+      return httpConnection;
     }
 
     public void setHttpConnection(HttpConnection httpConnection) {
 	this.httpConnection = httpConnection;
     }
 
-    public MetisDereferenciationClient(AnnotationConfiguration configuration) {
-      this.configuration = configuration;
-      init();
-    }
-
-    protected void init() {
+    public void afterPropertiesSet() {
 	try {
 	    TransformerFactory factory = TransformerFactory.newInstance();
 	    InputStream xslFileAsStream = new ClassPathResource(
@@ -78,9 +80,9 @@ public class MetisDereferenciationClient {
 
     protected Transformer getTransformer() {
         if(transformer == null) {
-            init();
+          afterPropertiesSet();
         }
-	return transformer;
+        return transformer;
     }
     
     /**
@@ -99,7 +101,6 @@ public class MetisDereferenciationClient {
      * list and fills the map with the URI and JSON string. It sends GET HTTP
      * request to dereference URI.
      * 
-     * @param baseUrl  The Metis base URL.
      * @param uris     The list of query URIs. The URI is composed from the base URI
      *                 to Metis API completed with query URI from the entity.
      * @param language e.g.
@@ -107,20 +108,16 @@ public class MetisDereferenciationClient {
      * @return response from Metis API in JSON-LD format
      * @throws AnnotationDereferenciationException
      */
-    public synchronized Map<String, String> dereferenceOne(String baseUrl, String uri, String language) throws AnnotationDereferenciationException {
+    public synchronized Map<String, String> dereferenceOne(String uri, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
-	String queryUri, jsonLdStr;
+	String jsonLdStr;
 	InputStream streamResponse;
 	    
 	try {
-	    queryUri = UriComponentsBuilder.fromUriString(baseUrl)
-	        .queryParam("uri", uri)
-	        .build()
-	        .toString();
-	    streamResponse = getHttpConnection().getURLContent(queryUri);
+	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam("uri", uri);
+        streamResponse = getHttpConnection().getURLContent(uriBuilder.build().toString());
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
-	    res.put(uri, jsonLdStr);
-	    
+	    res.put(uri, jsonLdStr);	    
 	} catch (IOException ex) {
 	    throw new AnnotationDereferenciationException(ex);
 	} catch (RuntimeException ex) {
@@ -134,7 +131,6 @@ public class MetisDereferenciationClient {
      * list and fills the map with the URI and JSON string. It sends GET HTTP
      * request to dereference URI.
      * 
-     * @param baseUrl  The Metis base URL.
      * @param uris     The list of query URIs. The URI is composed from the base URI
      *                 to Metis API completed with query URI from the entity.
      * @param language e.g.
@@ -142,7 +138,7 @@ public class MetisDereferenciationClient {
      * @return response from Metis API in JSON-LD format
      * @throws AnnotationDereferenciationException
      */
-    public synchronized Map<String, String> dereferenceMany(String baseUrl, List<String> uris, String language) throws AnnotationDereferenciationException {
+    public synchronized Map<String, String> dereferenceMany(List<String> uris, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
 	InputStream streamResponse;
@@ -150,6 +146,10 @@ public class MetisDereferenciationClient {
       	@SuppressWarnings({ "rawtypes", "unchecked" })
       	String urisJson = JsonSerializer.toString((List)uris);
       	streamResponse = getHttpConnection().postRequest(baseUrl, urisJson);
+      	//the commented code below can be used to save the metis response for the mock in the integration tests (btw import the apache commons-io maven library)
+//      	StringWriter writer = new StringWriter();
+//      	IOUtils.copy(streamResponse, writer, StandardCharsets.UTF_8);
+//      	System.out.println(writer.toString());
       	String[] urisArray = new String[uris.size()];
         urisArray = uris.toArray(urisArray);
         jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
@@ -171,8 +171,13 @@ public class MetisDereferenciationClient {
 	return res;
     }
     
-    /*
+    /**
      * TODO: move this function to utils
+     * This method finds all indexes of a substring within a string, e.g. for the substring "abc" 
+     * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
+     * @param input
+     * @param substring
+     * @return
      */
     private List<Integer> findSubstringIndexes(String input, String substring) {
       List<Integer> indexes = new ArrayList<Integer>();
@@ -220,5 +225,17 @@ public class MetisDereferenciationClient {
 		    e);
 	}
 	return result;
+    }
+
+    public String getBaseUrl() {
+      return baseUrl;
+    }
+
+    public int getConnRetries() {
+      return connRetries;
+    }
+
+    public int getConnTimeout() {
+      return connTimeout;
     }
 }

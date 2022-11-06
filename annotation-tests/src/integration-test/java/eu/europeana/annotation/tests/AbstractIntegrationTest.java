@@ -8,17 +8,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Objects;
+import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.AfterAll;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +56,13 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
 import eu.europeana.annotation.tests.utils.MongoContainer;
 import eu.europeana.annotation.tests.utils.SolrContainer;
+import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.WhitelistService;
+import eu.europeana.annotation.web.service.impl.AnnotationServiceImpl;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 @ComponentScan(basePackageClasses = AnnotationBasePackageMapper.class)
 @AutoConfigureMockMvc
@@ -69,6 +76,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   protected static List<Long> createdModerationRecords = new ArrayList<Long>();
 
   protected static MockMvc mockMvc;
+  private static MockWebServer mockMetis;
 
   @Autowired
   protected WebApplicationContext webApplicationContext;
@@ -87,12 +95,16 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
   @Autowired
   AnnotationConfiguration configuration;
+  
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_ANNO_SERVICE)
+  private AnnotationServiceImpl annotationService;
 
   private static final MongoContainer MONGO_CONTAINER;
   private static final SolrContainer SOLR_CONTAINER;
 
   static {
-    MONGO_CONTAINER = new MongoContainer("annotation_test")
+    MONGO_CONTAINER = new MongoContainer("admin")
         .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
 
     MONGO_CONTAINER.start();
@@ -101,19 +113,16 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
         .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
 
     SOLR_CONTAINER.start();
-  }
+    
+    mockMetis = new MockWebServer();
+    mockMetis.setDispatcher(setupMetisDispatcher());
+    try {
+      mockMetis.start();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
-  // @BeforeEach
-  // protected void initTest() throws Exception {
-  // if(configuration.isAuthEnabled() && regularUserAuthorizationValue == null) {
-  // regularUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_REGULAR,
-  // AnnotationTestsConfiguration.getInstance().getOauthServiceUri(),
-  // AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_REGULAR));
-  // adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN,
-  // AnnotationTestsConfiguration.getInstance().getOauthServiceUri(),
-  // AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
-  // }
-  // }
+  }
 
   @BeforeAll
   protected void initAppConextAndOauthTokens() throws Exception {
@@ -133,6 +142,33 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
           AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
     }
   }
+  
+  private static Dispatcher setupMetisDispatcher() {
+    return new Dispatcher() {
+      @NotNull
+      @Override
+      public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+        String responseBody=null;
+        try {
+          if(request.getBody()!=null) {
+            responseBody = AnnotationTestUtils.loadFile(
+                AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
+                AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+          }
+          else {
+            String uri = Objects.requireNonNull(request.getRequestUrl()).queryParameter("uri");
+            responseBody = AnnotationTestUtils.loadFile(
+                AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
+                uri, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+          }
+          return new MockResponse().setResponseCode(200).setBody(responseBody);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
+  }
+
 
   private void initWhiteListCollection() {
     List<? extends WhitelistEntry> whiteList = whitelistService.getWhitelist();
@@ -167,17 +203,11 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
   @DynamicPropertySource
   static void setProperties(DynamicPropertyRegistry registry) {
-    Supplier<Object> hostSupplier = () -> MONGO_CONTAINER.getHost();
-    registry.add("mongodb.annotation.host", hostSupplier);
-    Supplier<Object> portSupplier = () -> MONGO_CONTAINER.getMappedPort(27017);
-    registry.add("mongodb.annotation.port", portSupplier);
-    Supplier<Object> dbnameSupplier = () -> MONGO_CONTAINER.getAnnotationDb();
-    registry.add("mongodb.annotation.databasename", dbnameSupplier);
-    Supplier<Object> adminUserSupplier = () -> MONGO_CONTAINER.getAdminUsername();
-    registry.add("mongodb.annotation.username", adminUserSupplier);
-    Supplier<Object> adminPassSupplier = () -> MONGO_CONTAINER.getAdminPassword();
-    registry.add("mongodb.annotation.password", adminPassSupplier);
+    registry.add("mongodb.annotation.connectionUrl", MONGO_CONTAINER::getConnectionUrl);
     registry.add("solr.annotation.url", SOLR_CONTAINER::getConnectionUrl);
+    registry.add(
+        "metis.baseUrl",
+        () -> String.format("http://%s:%s", mockMetis.getHostName(), mockMetis.getPort()));
   }
 
   protected String getAuthorizationHeaderValue(String user) {
@@ -417,21 +447,20 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   }
 
   protected AnnotationPage searchAnnotationsAddQueryField(String query, String page,
-      String pageSize, String field, String language, SearchProfiles searchProfile,
+      String pageSize, String field, String language, String searchProfile,
       String paramLanguage) throws Exception {
 
     if (StringUtils.isNotEmpty(field) && StringUtils.isNotEmpty(language)) {
       query = AnnotationTestUtils.addFieldToQuery(query, field, language);
     }
-    return searchAnnotations(query, null, null, null, page, pageSize, searchProfile, paramLanguage);
+    return searchAnnotations(query, null, null, null, null, page, pageSize, searchProfile, paramLanguage);
   }
 
-  protected AnnotationPage searchAnnotations(String query, String qf, String sort, String sortOrder,
-      String page, String pageSize, SearchProfiles searchProfile, String language)
+  protected AnnotationPage searchAnnotations(String query, String[] qf, String[] facets, String sort, String sortOrder,
+      String page, String pageSize, String searchProfile, String language)
       throws Exception {
 
-    String url = AnnotationTestUtils.buildUrl(query, qf, sort, sortOrder, page, pageSize,
-        searchProfile.toString(), language);
+    String url = AnnotationTestUtils.buildUrl(query, qf, facets, sort, sortOrder, page, pageSize, searchProfile, language);
     ResultActions mockMvcResult = mockMvc.perform(get(url));
     return AnnotationTestUtils
         .getAnnotationPage(mockMvcResult.andReturn().getResponse().getContentAsString());
@@ -508,44 +537,5 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
     return configuration;
   }
 
-
-  // /**
-  // * Sample HTTP request http://localhost:8080/whitelist/load?apiKey=apidemo
-  // *
-  // * @return WhitelistOperationResponse
-  // * @throws Exception
-  // */
-  // protected WhitelistOperationResponse loadWhitelist() throws Exception {
-  // String action = "load";
-  // String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WHITELIST + action;
-  // ResultActions mockMvcResult = mockMvc.perform(
-  // get(url)
-  // .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_ADMIN)));
-  // String jsonResponse = mockMvcResult.andReturn().getResponse().getContentAsString();
-  //
-  // WhitelistOperationResponse aor = new
-  // WhitelistOperationResponse(AnnotationTestsConfiguration.getInstance().getApiKey(), action);
-  // List<WhitelistEntry> resList = new ArrayList<WhitelistEntry>();
-  // JSONObject mainObject = new JSONObject(jsonResponse);
-  // JSONArray whitelistEntries = mainObject.getJSONArray("items");
-  // for (int i = 0; i < whitelistEntries.length(); i++) {
-  // JSONObject entry = (JSONObject) whitelistEntries.get(i);
-  // WhitelistEntry whitelistEntry = WhiteListParser.toWhitelistEntry(entry.toString());
-  // resList.add(whitelistEntry);
-  // }
-  // aor.setWhitelist(resList);
-  // return aor;
-  // }
-  //
-  // protected WhitelistOperationResponse deleteAllWhitelists () throws Exception {
-  // String url = AnnotationTestsConfiguration.BASE_SERVICE_URL_WHITELIST + "deleteall";
-  // ResultActions mockMvcResult = mockMvc.perform(
-  // delete(url)
-  // .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(USER_ADMIN)));
-  // String jsonResponse = mockMvcResult.andReturn().getResponse().getContentAsString();
-  //
-  // ObjectMapper mapper = new ObjectMapper();
-  // return mapper.readValue(jsonResponse, WhitelistOperationResponse.class);
-  // }
 
 }

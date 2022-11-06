@@ -53,7 +53,7 @@
 		<version.codehausJackson>1.9.9</version.codehausJackson>
 		<version.jackson>2.11.4</version.jackson>
 		<version.jackson-jsonld>0.1.1</version.jackson-jsonld>
-		<version.commonsApi>0.3.16</version.commonsApi>
+		<version.commonsApi>0.3.17-SNAPSHOT</version.commonsApi>
 		<version.apiKeyClient>1.1</version.apiKeyClient>
 		<version.apacheSolr>7.7.2</version.apacheSolr>
 		<version.woodstox>3.2.9</version.woodstox>
@@ -70,6 +70,7 @@
 		<version.testcontainers>1.16.0</version.testcontainers>
 		<version.morphia>2.1.4</version.morphia>
 		<version.mongo-java-driver>3.12.11</version.mongo-java-driver>
+		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
 		<version.surefire>3.0.0-M7</version.surefire>
 		<version.failsafe>3.0.0-M7</version.failsafe>
 		<!-- sonar plugins -->
@@ -77,17 +78,15 @@
 		<pmd-plugin.version>3.15.0</pmd-plugin.version>
 		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
 		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
-		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
 		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
 		<sonar.java.spotbugs.reportPaths>${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
 		<sonar.organization>europeana</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!-- Exclude POJOs code duplication analysis -->
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
-		<sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
-
-		<skipTests>true</skipTests>
-
+		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
 	</properties>
 	<modules>
 		<module>api2-common</module>
@@ -100,6 +99,7 @@
 		<module>annotation-client</module>
 		<module>annotation-fulltext</module>
 		<module>annotation-statistics</module>
+		<module>annotation-tests</module>
 	</modules>
 
 	<dependencyManagement>

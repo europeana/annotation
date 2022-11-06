@@ -10,6 +10,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Objects;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
@@ -31,6 +35,19 @@ import eu.europeana.annotation.utils.parse.AnnotationPageParser;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationTestUtils {
+
+  /** Maps Metis dereferenciation URIs to mocked XML responses */
+  public static final Map<String, String> METIS_RESPONSE_MAP =
+      Map.of(
+          AnnotationTestsConstants.URI_VERMEER_VIAF, AnnotationTestsConstants.AGENT_VERMEER_VIAF_XML,
+          AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.DEREFERENCE_MANY_XML);
+
+  public static String loadFile(String resourcePath) throws IOException {
+    return IOUtils.toString(
+            Objects.requireNonNull(AnnotationTestUtils.class.getResourceAsStream(resourcePath)),
+            StandardCharsets.UTF_8)
+        .replace("\n", "");
+  }
 
   public static String getJsonStringInput(String resource) throws IOException {
       InputStream resourceAsStream = AnnotationTestUtils.class.getResourceAsStream(resource);
@@ -190,7 +207,7 @@ public class AnnotationTestUtils {
     return query;
   }
 
-  public static String buildUrl(String query, String qf, String sort, String sortOrder, String page, String pageSize,
+  public static String buildUrl(String query, String[] qf, String[] facets, String sort, String sortOrder, String page, String pageSize,
       String profile, String language) throws IOException {
     String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
     url += "search?wskey=" + AnnotationTestsConfiguration.getInstance().getApiKey();
@@ -203,10 +220,18 @@ public class AnnotationTestUtils {
   //      url += "&query=" + encodeUrl(query);
       url += "&query=" + query;
     }
-    if (StringUtils.isNotEmpty(qf)) {
+    if (qf!=null) {
   //      url += "&qf=" + encodeUrl(qf);
-      url += "&qf=" + qf;
+      for(String qfElem : qf) {
+        url += "&qf=" + qfElem;
+      }
     }
+    if (facets!=null) {
+      for(String facet : facets) {
+        url += "&facet=" + facet;
+      }
+    }
+
     if (StringUtils.isNotEmpty(sort)) {
         url += "&sort=" + sort;
     }

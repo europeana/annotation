@@ -12,6 +12,7 @@ import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,6 +33,7 @@ import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 @Deprecated
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
+@Disabled("needs configuration file")
 public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
   
     Logger log = LogManager.getLogger(getClass());
