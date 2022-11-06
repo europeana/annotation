@@ -3,9 +3,12 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,11 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
 
   public long WRONG_GENERATED_IDENTIFIER = -1;
   public String UNKNOWN_WSKEY = "invalid_wskey";
+  private static final String URI_WKD_VERMEER = "http://www.wikidata.org/entity/Q41264";
+  private static final String URI_VIAF_VERMEER = "http://viaf.org/viaf/51961439";
+  private static final String URI_WKT_PARK = "http://www.wikidata.org/entity/Q22698";
+  private static final String URI_GETTY_COLD = "http://vocab.getty.edu/aat/300068991";
+  private static final String URI_WKD_DA_VINCI = "http://www.wikidata.org/entity/Q762";
 
   @Test
   public void getDeletedAnnotations() throws Exception {
@@ -99,12 +107,6 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
    */
   @Test
   public void dereferencedSemanticTag() throws Exception {
-
-    if (StringUtils.isBlank(getConfiguration().getMetisBaseUrl())) {
-      log.info("Metis base URL is not configured, skip execution of dereference test");
-      return;
-    }
-
     Annotation storedAnno1 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
     createdAnnotations.add(storedAnno1.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
@@ -136,6 +138,31 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
     log.info("Output body dereferenced:" + retrievedAnnotation.getBody());
     log.info("Identifier of the dereferenced annotation:" + retrievedAnnotation.getIdentifier());
   }
+  
+  /*
+   * This test uses only the metis dereference client, but it is in the integration tests since the metis mock is needed,
+   * which is configured in AbstractIntegrationTest.
+   */
+  @Test
+  public void testDereferenceMany() throws IOException {
+    List<String> uris = Arrays.asList(new String[] { URI_WKD_VERMEER, URI_WKT_PARK, URI_GETTY_COLD, URI_VIAF_VERMEER, URI_WKD_DA_VINCI });
+  
+    Map<String, String> dereferenced = dereferenciationClient.dereferenceMany(uris, "en,de");
+  
+    assertNotNull(dereferenced);
+    assertEquals(uris.size(), dereferenced.size());
+    assertTrue(dereferenced.containsKey(URI_WKD_VERMEER));
+    assertTrue(dereferenced.containsKey(URI_WKT_PARK));
+    assertTrue(dereferenced.containsKey(URI_GETTY_COLD));
+    assertTrue(dereferenced.containsKey(URI_VIAF_VERMEER));
+    assertTrue(dereferenced.containsKey(URI_WKD_DA_VINCI));
+    
+    assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_WKD_VERMEER)));
+    assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_WKT_PARK)));
+    assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_GETTY_COLD)));
+    assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_VIAF_VERMEER)));
+    assertTrue(StringUtils.isNotBlank(dereferenced.get(URI_WKD_DA_VINCI)));
+  }
 
   /**
    * This is a retrieval test for dereferenciation entity with only JWT token - without wskey.
@@ -145,12 +172,6 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
   @Test
   @Disabled("This test needs to be updated, the search is still performed using the APIKEY and not the JWT Token")
   public void retrieveByJwtTokenDereferencedSemanticTagEntity() throws Exception {
-
-    if (StringUtils.isBlank(getConfiguration().getMetisBaseUrl())) {
-      log.info("Metis base URL is not configured, skip execution of dereference test");
-      return;
-    }
-
     Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
     createdAnnotations.add(storedAnno.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);

@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,18 +65,18 @@ public class MetisDereferenciationClient implements InitializingBean {
     }
 
     public void afterPropertiesSet() {
-	try {
-	    TransformerFactory factory = TransformerFactory.newInstance();
-	    InputStream xslFileAsStream = new ClassPathResource(
-	        XSLT_TRANSFORMATION_FILE).getInputStream();
-	    StreamSource xslSource = new StreamSource(xslFileAsStream);
-	    Templates templates = factory.newTemplates(xslSource);
-	    transformer = templates.newTransformer();
-	} catch (TransformerConfigurationException | IOException e) {
-	    throw new AnnotationDereferenciationException(
-		    "Cannot instantiate XSLT Transformer",
-		    e);
-	}
+      if(StringUtils.isBlank(baseUrl)) {
+        throw new RuntimeException("Metis baseUrl cannot be null or empty.");
+      }
+      try {
+        TransformerFactory factory = TransformerFactory.newInstance();
+    	InputStream xslFileAsStream = new ClassPathResource(XSLT_TRANSFORMATION_FILE).getInputStream();
+    	StreamSource xslSource = new StreamSource(xslFileAsStream);
+    	Templates templates = factory.newTemplates(xslSource);
+    	transformer = templates.newTransformer();
+      } catch (TransformerConfigurationException | IOException e) {
+        throw new AnnotationDereferenciationException("Cannot instantiate XSLT Transformer", e);
+      }
     }
 
     protected Transformer getTransformer() {
@@ -227,15 +228,4 @@ public class MetisDereferenciationClient implements InitializingBean {
 	return result;
     }
 
-    public String getBaseUrl() {
-      return baseUrl;
-    }
-
-    public int getConnRetries() {
-      return connRetries;
-    }
-
-    public int getConnTimeout() {
-      return connTimeout;
-    }
 }

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,6 +44,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
+import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
@@ -56,9 +56,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
 import eu.europeana.annotation.tests.utils.MongoContainer;
 import eu.europeana.annotation.tests.utils.SolrContainer;
-import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.WhitelistService;
-import eu.europeana.annotation.web.service.impl.AnnotationServiceImpl;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -97,9 +95,9 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   AnnotationConfiguration configuration;
   
   @Autowired
-  @Qualifier(AnnotationConfiguration.BEAN_ANNO_SERVICE)
-  private AnnotationServiceImpl annotationService;
-
+  @Qualifier(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
+  protected MetisDereferenciationClient dereferenciationClient;
+  
   private static final MongoContainer MONGO_CONTAINER;
   private static final SolrContainer SOLR_CONTAINER;
 

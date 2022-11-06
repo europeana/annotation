@@ -39,7 +39,7 @@ public class MetisDereferenciationClientTest {
     private static final String URI_WKD_DA_VINCI = "http://www.wikidata.org/entity/Q762";
 
     @Test
-//    @Disabled("generates NPE")
+    @Disabled("generates NPE")
     public void testDereferenceOne() throws IOException {
 	Map<String, String> dereferenced = dereferenciationClient.dereferenceOne(URI_WKD_VERMEER, "en,de");
 	assertNotNull(dereferenced);
@@ -59,7 +59,7 @@ public class MetisDereferenciationClientTest {
     }
     
     @Test
-//    @Disabled("generates NPE")
+    @Disabled("generates NPE")
     public void testDereferenceMany() throws IOException {
 	List<String> uris = Arrays.asList(new String[] { URI_WKD_VERMEER, URI_WKT_PARK, URI_GETTY_COLD, URI_VIAF_VERMEER, URI_WKD_DA_VINCI });
 
