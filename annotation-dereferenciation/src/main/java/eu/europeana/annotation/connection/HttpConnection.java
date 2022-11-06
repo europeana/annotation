@@ -51,7 +51,6 @@ public class HttpConnection {
         get.setRequestHeader("Accept", "application/xml");
 
         client.executeMethod(get);
-        //ignore metis response if dereferencing fails
         if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
             return get.getResponseBodyAsStream();
         } else {
@@ -67,7 +66,6 @@ public class HttpConnection {
         post.setRequestEntity(requestBody);
 
         client.executeMethod(post);
-        //ignore metis response if dereferencing fails
         if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
             return post.getResponseBodyAsStream();
         } else {

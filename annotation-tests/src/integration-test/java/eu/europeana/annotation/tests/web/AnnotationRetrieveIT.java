@@ -144,7 +144,7 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
    * which is configured in AbstractIntegrationTest.
    */
   @Test
-  public void testDereferenceMany() throws IOException {
+  void testDereferenceMany() throws IOException {
     List<String> uris = Arrays.asList(new String[] { URI_WKD_VERMEER, URI_WKT_PARK, URI_GETTY_COLD, URI_VIAF_VERMEER, URI_WKD_DA_VINCI });
   
     Map<String, String> dereferenced = dereferenciationClient.dereferenceMany(uris, "en,de");

@@ -53,37 +53,22 @@ public class MetisDereferenciationClient implements InitializingBean {
     Transformer transformer;
     private HttpConnection httpConnection;
 
-    public HttpConnection getHttpConnection() {
-      if(httpConnection == null) {
-    	httpConnection = new HttpConnection(connRetries,connTimeout);
-      }
-      return httpConnection;
-    }
-
-    public void setHttpConnection(HttpConnection httpConnection) {
-	this.httpConnection = httpConnection;
-    }
-
-    public void afterPropertiesSet() {
-      if(StringUtils.isBlank(baseUrl)) {
-        throw new RuntimeException("Metis baseUrl cannot be null or empty.");
-      }
-      try {
-        TransformerFactory factory = TransformerFactory.newInstance();
-    	InputStream xslFileAsStream = new ClassPathResource(XSLT_TRANSFORMATION_FILE).getInputStream();
-    	StreamSource xslSource = new StreamSource(xslFileAsStream);
-    	Templates templates = factory.newTemplates(xslSource);
-    	transformer = templates.newTransformer();
-      } catch (TransformerConfigurationException | IOException e) {
-        throw new AnnotationDereferenciationException("Cannot instantiate XSLT Transformer", e);
-      }
-    }
-
-    protected Transformer getTransformer() {
-        if(transformer == null) {
-          afterPropertiesSet();
+    public void afterPropertiesSet() throws Exception {
+      synchronized(this) {
+        if(StringUtils.isBlank(baseUrl)) {
+          throw new AnnotationDereferenciationException(new RuntimeException("Metis baseUrl cannot be null or empty."));
         }
-        return transformer;
+        httpConnection = new HttpConnection(connRetries,connTimeout);
+        try {
+          TransformerFactory factory = TransformerFactory.newInstance();
+      	InputStream xslFileAsStream = new ClassPathResource(XSLT_TRANSFORMATION_FILE).getInputStream();
+      	StreamSource xslSource = new StreamSource(xslFileAsStream);
+      	Templates templates = factory.newTemplates(xslSource);
+      	transformer = templates.newTransformer();
+        } catch (TransformerConfigurationException | IOException e) {
+          throw e;
+        }
+      }
     }
     
     /**
@@ -93,7 +78,7 @@ public class MetisDereferenciationClient implements InitializingBean {
      * @return encoded URL
      * @throws UnsupportedEncodingException
      */
-    String encodeUrl(String url) throws UnsupportedEncodingException {
+    String encodeUrl(String url) {
 	return URLEncoder.encode(url, StandardCharsets.UTF_8);
     }
 
@@ -109,14 +94,14 @@ public class MetisDereferenciationClient implements InitializingBean {
      * @return response from Metis API in JSON-LD format
      * @throws AnnotationDereferenciationException
      */
-    public synchronized Map<String, String> dereferenceOne(String uri, String language) throws AnnotationDereferenciationException {
+    public Map<String, String> dereferenceOne(String uri, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
 	InputStream streamResponse;
 	    
 	try {
-	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam("uri", uri);
-        streamResponse = getHttpConnection().getURLContent(uriBuilder.build().toString());
+	    String uriWhole = UriBuilder.fromPath(baseUrl).queryParam("uri", uri).build().toString();
+        streamResponse = httpConnection.getURLContent(uriWhole);
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);	    
 	} catch (IOException ex) {
@@ -139,18 +124,14 @@ public class MetisDereferenciationClient implements InitializingBean {
      * @return response from Metis API in JSON-LD format
      * @throws AnnotationDereferenciationException
      */
-    public synchronized Map<String, String> dereferenceMany(List<String> uris, String language) throws AnnotationDereferenciationException {
+    public Map<String, String> dereferenceMany(List<String> uris, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
 	InputStream streamResponse;
 	try {
       	@SuppressWarnings({ "rawtypes", "unchecked" })
       	String urisJson = JsonSerializer.toString((List)uris);
-      	streamResponse = getHttpConnection().postRequest(baseUrl, urisJson);
-      	//the commented code below can be used to save the metis response for the mock in the integration tests (btw import the apache commons-io maven library)
-//      	StringWriter writer = new StringWriter();
-//      	IOUtils.copy(streamResponse, writer, StandardCharsets.UTF_8);
-//      	System.out.println(writer.toString());
+      	streamResponse = httpConnection.postRequest(baseUrl, urisJson);
       	String[] urisArray = new String[uris.size()];
         urisArray = uris.toArray(urisArray);
         jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
@@ -173,7 +154,8 @@ public class MetisDereferenciationClient implements InitializingBean {
     }
     
     /**
-     * TODO: move this function to utils
+     * This method need to be moved to utils.
+     * 
      * This method finds all indexes of a substring within a string, e.g. for the substring "abc" 
      * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
      * @param input
@@ -181,7 +163,7 @@ public class MetisDereferenciationClient implements InitializingBean {
      * @return
      */
     private List<Integer> findSubstringIndexes(String input, String substring) {
-      List<Integer> indexes = new ArrayList<Integer>();
+      List<Integer> indexes = new ArrayList<>();
       int substringLength = substring.length();
       int index = input.indexOf(substring, 0);
       if(index!=-1) {
@@ -209,13 +191,13 @@ public class MetisDereferenciationClient implements InitializingBean {
 	StringWriter result = new StringWriter();
 	try {
 	    //reuse transformer but update params
-	    getTransformer().clearParameters();
-	    getTransformer().setParameter(PARAM_URI, uris);
+	    transformer.clearParameters();
+	    transformer.setParameter(PARAM_URI, uris);
 	    if (language != null) {
-		getTransformer().setParameter(PARAM_LANGS, language);
+	      transformer.setParameter(PARAM_LANGS, language);
 	    }
 	    StreamSource text = new StreamSource(response);
-	    getTransformer().transform(text, new StreamResult(result));
+	    transformer.transform(text, new StreamResult(result));
 	} catch (TransformerConfigurationException e) {
 	    throw new AnnotationDereferenciationException(
 		    "Unexpected exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",

@@ -70,16 +70,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     return mongoWhitelistPersistence;
   }
 
-  public void setMongoWhitelistPersistance(PersistentWhitelistService mongoWhitelistPersistence) {
-    this.mongoWhitelistPersistence = mongoWhitelistPersistence;
-  }
-
   public PersistentStatusLogService getMongoStatusLogPersistence() {
     return mongoStatusLogPersistence;
-  }
-
-  public void setMongoStatusLogPersistance(PersistentStatusLogService mongoStatusLogPersistence) {
-    this.mongoStatusLogPersistence = mongoStatusLogPersistence;
   }
 
   @Override
@@ -91,17 +83,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   public List<? extends Annotation> getAllAnnotations() {
     return getMongoPersistence().getAllAnnotations();
   }
-
-//  public MetisDereferenciationClient getDereferenciationClient() {
-//    if (dereferenciationClient == null) {
-//      dereferenciationClient = new MetisDereferenciationClient(getConfiguration());
-//    }
-//    return dereferenciationClient;
-//  }
-
-//  public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
-//    this.dereferenciationClient = dereferenciationClient;
-//  }
 
   @Override
   public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit)
