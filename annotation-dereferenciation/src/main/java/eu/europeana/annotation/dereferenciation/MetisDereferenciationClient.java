@@ -58,16 +58,14 @@ public class MetisDereferenciationClient implements InitializingBean {
         if(StringUtils.isBlank(baseUrl)) {
           throw new AnnotationDereferenciationException(new RuntimeException("Metis baseUrl cannot be null or empty."));
         }
+        
         httpConnection = new HttpConnection(connRetries,connTimeout);
-        try {
-          TransformerFactory factory = TransformerFactory.newInstance();
+
+        TransformerFactory factory = TransformerFactory.newInstance();
       	InputStream xslFileAsStream = new ClassPathResource(XSLT_TRANSFORMATION_FILE).getInputStream();
       	StreamSource xslSource = new StreamSource(xslFileAsStream);
       	Templates templates = factory.newTemplates(xslSource);
       	transformer = templates.newTransformer();
-        } catch (TransformerConfigurationException | IOException e) {
-          throw e;
-        }
       }
     }
     
@@ -186,7 +184,7 @@ public class MetisDereferenciationClient implements InitializingBean {
      *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
      * @return dereferenced output in JSON-LD format
      */
-    public synchronized StringWriter convertToJsonLd(Object uris, InputStream response, String language) {
+    public StringWriter convertToJsonLd(Object uris, InputStream response, String language) {
 
 	StringWriter result = new StringWriter();
 	try {
