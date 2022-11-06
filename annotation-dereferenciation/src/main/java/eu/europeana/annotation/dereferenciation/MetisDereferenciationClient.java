@@ -98,8 +98,8 @@ public class MetisDereferenciationClient implements InitializingBean {
 	InputStream streamResponse;
 	    
 	try {
-	    String uriWhole = UriBuilder.fromPath(baseUrl).queryParam("uri", uri).build().toString();
-        streamResponse = httpConnection.getURLContent(uriWhole);
+	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam(PARAM_URI, uri);
+        streamResponse = httpConnection.getURLContent(uriBuilder.build().toString());
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);	    
 	} catch (IOException ex) {
