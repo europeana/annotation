@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.AnnotationService;
 import eu.europeana.annotation.web.service.authorization.AuthorizationService;
+import eu.europeana.annotation.web.service.impl.AnnotationServiceImpl;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
@@ -38,8 +41,9 @@ public class BaseRest extends BaseRestController {
   @Resource
   AnnotationConfiguration configuration;
 
-  @Resource(name = "annotationService")
-  private AnnotationService annotationService;
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_ANNO_SERVICE)
+  private AnnotationServiceImpl annotationService;
 
   @Resource(name = "annotation_authorizationService")
   AuthorizationService authorizationService;
@@ -81,10 +85,6 @@ public class BaseRest extends BaseRestController {
 
   protected AnnotationService getAnnotationService() {
     return annotationService;
-  }
-
-  public void setAnnotationService(AnnotationService annotationService) {
-    this.annotationService = annotationService;
   }
 
   public void setConfiguration(AnnotationConfiguration configuration) {

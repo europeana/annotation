@@ -29,7 +29,6 @@ import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AdminService;
-import eu.europeana.annotation.web.service.AnnotationService;
 
 
 /**
@@ -48,8 +47,9 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 	
 	Logger log = LogManager.getLogger(getClass());
 	
-	@Resource 
-	AnnotationService webAnnotationService;
+	@Autowired
+	@Qualifier(AnnotationConfiguration.BEAN_ANNO_SERVICE)
+	private AnnotationServiceImpl webAnnotationService;
 	
     @Autowired
     @Qualifier(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)

@@ -47,6 +47,22 @@
       <version>${version.testcontainers}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>mockwebserver</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
+	<dependency>
+	    <groupId>org.jetbrains</groupId>
+	    <artifactId>annotations</artifactId>
+	    <version>23.0.0</version>
+	</dependency>      
 	   
   </dependencies>
    <profiles>

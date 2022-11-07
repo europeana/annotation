@@ -11,6 +11,9 @@ import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -43,6 +46,7 @@ import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
+@Service(AnnotationConfiguration.BEAN_ANNO_SERVICE)
 public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
 
   @Resource(name = "annotation_db_whitelistService")
@@ -54,7 +58,9 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Resource(name = "i18nService")
   I18nService i18nService;
 
-  private MetisDereferenciationClient dereferenciationClient;
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
+  MetisDereferenciationClient dereferenciationClient;
 
   public AnnotationConfiguration getConfiguration() {
     return configuration;
@@ -64,16 +70,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     return mongoWhitelistPersistence;
   }
 
-  public void setMongoWhitelistPersistance(PersistentWhitelistService mongoWhitelistPersistence) {
-    this.mongoWhitelistPersistence = mongoWhitelistPersistence;
-  }
-
   public PersistentStatusLogService getMongoStatusLogPersistence() {
     return mongoStatusLogPersistence;
-  }
-
-  public void setMongoStatusLogPersistance(PersistentStatusLogService mongoStatusLogPersistence) {
-    this.mongoStatusLogPersistence = mongoStatusLogPersistence;
   }
 
   @Override
@@ -84,17 +82,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Override
   public List<? extends Annotation> getAllAnnotations() {
     return getMongoPersistence().getAllAnnotations();
-  }
-
-  public MetisDereferenciationClient getDereferenciationClient() {
-    if (dereferenciationClient == null) {
-      dereferenciationClient = new MetisDereferenciationClient(getConfiguration());
-    }
-    return dereferenciationClient;
-  }
-
-  public void setDereferenciationClient(MetisDereferenciationClient dereferenciationClient) {
-    this.dereferenciationClient = dereferenciationClient;
   }
 
   @Override
@@ -585,8 +572,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
 
     String bodyValue = annotation.getBody().getValue();
-    Map<String, String> dereferencedMap = getDereferenciationClient()
-        .dereferenceOne(getConfiguration().getMetisBaseUrl(), bodyValue, language);
+    Map<String, String> dereferencedMap = dereferenciationClient.dereferenceOne(bodyValue, language);
     setDereferencedBody(annotation, dereferencedMap);
   }
 
@@ -621,8 +607,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       return;
     }
 
-    Map<String, String> dereferencedMap = getDereferenciationClient()
-        .dereferenceMany(getConfiguration().getMetisBaseUrl(), entityIds, languages);
+    Map<String, String> dereferencedMap = dereferenciationClient.dereferenceMany(entityIds, languages);
 
     // update dereferenced bodies
     for (Annotation annotation : annotations) {

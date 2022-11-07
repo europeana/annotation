@@ -5,17 +5,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +44,7 @@ import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
+import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
@@ -53,6 +57,10 @@ import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
 import eu.europeana.annotation.tests.utils.MongoContainer;
 import eu.europeana.annotation.tests.utils.SolrContainer;
 import eu.europeana.annotation.web.service.WhitelistService;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 @ComponentScan(basePackageClasses = AnnotationBasePackageMapper.class)
 @AutoConfigureMockMvc
@@ -66,6 +74,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   protected static List<Long> createdModerationRecords = new ArrayList<Long>();
 
   protected static MockMvc mockMvc;
+  private static MockWebServer mockMetis;
 
   @Autowired
   protected WebApplicationContext webApplicationContext;
@@ -84,7 +93,11 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
   @Autowired
   AnnotationConfiguration configuration;
-
+  
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
+  protected MetisDereferenciationClient dereferenciationClient;
+  
   private static final MongoContainer MONGO_CONTAINER;
   private static final SolrContainer SOLR_CONTAINER;
 
@@ -98,6 +111,15 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
         .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
 
     SOLR_CONTAINER.start();
+    
+    mockMetis = new MockWebServer();
+    mockMetis.setDispatcher(setupMetisDispatcher());
+    try {
+      mockMetis.start();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
   }
 
   @BeforeAll
@@ -118,6 +140,33 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
           AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
     }
   }
+  
+  private static Dispatcher setupMetisDispatcher() {
+    return new Dispatcher() {
+      @NotNull
+      @Override
+      public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+        String responseBody=null;
+        try {
+          if(request.getBody()!=null) {
+            responseBody = AnnotationTestUtils.loadFile(
+                AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
+                AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+          }
+          else {
+            String uri = Objects.requireNonNull(request.getRequestUrl()).queryParameter("uri");
+            responseBody = AnnotationTestUtils.loadFile(
+                AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
+                uri, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+          }
+          return new MockResponse().setResponseCode(200).setBody(responseBody);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
+  }
+
 
   private void initWhiteListCollection() {
     List<? extends WhitelistEntry> whiteList = whitelistService.getWhitelist();
@@ -154,6 +203,9 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   static void setProperties(DynamicPropertyRegistry registry) {
     registry.add("mongodb.annotation.connectionUrl", MONGO_CONTAINER::getConnectionUrl);
     registry.add("solr.annotation.url", SOLR_CONTAINER::getConnectionUrl);
+    registry.add(
+        "metis.baseUrl",
+        () -> String.format("http://%s:%s", mockMetis.getHostName(), mockMetis.getPort()));
   }
 
   protected String getAuthorizationHeaderValue(String user) {

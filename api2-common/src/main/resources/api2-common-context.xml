@@ -23,7 +23,7 @@
 		
     <!--  configuration bean -->
 	<beans:bean id="configuration" class="eu.europeana.annotation.config.AnnotationConfigurationImpl">
-		<beans:property name="annotationProperties" ref="annotationProperties"/> 	
+		<beans:property name="annotationProperties" ref="annotationProperties"/> 
     </beans:bean>
    
 </beans:beans>

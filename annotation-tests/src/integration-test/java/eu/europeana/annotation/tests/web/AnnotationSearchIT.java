@@ -1016,10 +1016,6 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
    */
   @Test
   public void testSearchDereferencedAnnotation() throws Exception {
-    if (StringUtils.isBlank(getConfiguration().getMetisBaseUrl())) {
-      log.info("Metis base URL is not configured, skip execution of dereference test");
-      return;
-    }
     Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
     createdAnnotations.add(storedAnno.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
@@ -1048,11 +1044,6 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
    */
   @Test
   public void testSearchDereferencedAnnotationMultiLanguage() throws Exception {
-    if (StringUtils.isBlank(getConfiguration().getMetisBaseUrl())) {
-      log.info("Metis base URL is not configured, skip execution of dereference test");
-      return;
-    }
-
     Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
     createdAnnotations.add(storedAnno.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
