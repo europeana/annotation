@@ -2,9 +2,9 @@ package eu.europeana.annotation.web.service;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -219,7 +219,7 @@ public interface AnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException
 	 */
-	public List<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck) throws AnnotationServiceException;
+	public Set<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck) throws AnnotationServiceException;
 	
 	/**
 	 * Returns the deleted annotations in the given date range.

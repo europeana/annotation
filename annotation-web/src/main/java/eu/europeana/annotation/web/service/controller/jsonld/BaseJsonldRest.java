@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -92,8 +93,8 @@ public class BaseJsonldRest extends BaseRest {
 	    getAnnotationService().validateWebAnnotation(webAnnotation);
 	    
 	    //check the annotation uniqueness, only after validation 
-        List<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation, false);
-        if(duplicateAnnotationIds!=null) {
+        Set<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation, false);
+        if(!duplicateAnnotationIds.isEmpty()) {
             String [] i18nParamsAnnoDuplicates = new String [1];
             i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
             throw new AnnotationUniquenessValidationException(I18nConstantsAnnotation.ANNOTATION_DUPLICATION,
