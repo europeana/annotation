@@ -35,7 +35,7 @@ public interface AnnotationService {
 	 * @param identifiers
 	 * @return the list of not disabled annotations
 	 */
-	public List<? extends Annotation> getAnnotationList (List<Long> identifiers);
+	List<? extends Annotation> getAnnotationList (List<Long> identifiers);
 	
 	
 	/**
@@ -43,14 +43,14 @@ public interface AnnotationService {
 	 * @param target
 	 * @return the list of not disabled annotations
 	 */
-	public List<? extends Annotation> getAnnotationListByTarget (String target);
+	List<? extends Annotation> getAnnotationListByTarget (String target);
 	
 	/**
 	 * This method retrieves all not disabled annotations for given resourceId.
 	 * @param resourceId
 	 * @return the list of not disabled annotations
 	 */
-	public List<? extends Annotation> getAnnotationListByResourceId (String resourceId);
+	List<? extends Annotation> getAnnotationListByResourceId (String resourceId);
 	
 	
 	/**
@@ -61,14 +61,14 @@ public interface AnnotationService {
 	 * @throws JsonParseException 
 	 * @throws HttpException 
 	 */
-	public Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException, HttpException;
+	Annotation parseAnnotationLd(MotivationTypes motivationType, String annotationJsonLdStr) throws JsonParseException, HttpException;
 
 	/**
 	 * This method stores Annotation object in database and in Solr.
 	 * @param annotation
 	 * @return Annotation object
 	 */
-	public Annotation storeAnnotation(Annotation annotation);
+	Annotation storeAnnotation(Annotation annotation);
 
 	/**
 	 * This method stores Annotation object in database and in Solr if 'indexing' is true.
@@ -76,7 +76,7 @@ public interface AnnotationService {
 	 * @param indexing
 	 * @return Annotation object
 	 */
-	public Annotation storeAnnotation(Annotation annotation, boolean indexing);
+	Annotation storeAnnotation(Annotation annotation, boolean indexing);
 
 	/**
 	 * update (stored) <code>persistentAnnotation</code> with values from <code>webAnnotation</code>
@@ -86,7 +86,7 @@ public interface AnnotationService {
 	 * @throws AnnotationServiceException 
 	 * @throws HttpException 
 	 */
-	public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException;
+	Annotation updateAnnotation(PersistentAnnotation persistentAnnotation, Annotation webAnnotation) throws AnnotationServiceException, HttpException;
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -94,7 +94,7 @@ public interface AnnotationService {
 	 * @param annoIdentifier
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(long annoIdentifier);
+	Annotation disableAnnotation(long annoIdentifier);
 	
 	/**
 	 * This method enables the annotation by setting the 'disabled' field to null in the database 
@@ -103,7 +103,7 @@ public interface AnnotationService {
 	 * @return enabled Annotation
 	 * @throws AnnotationServiceException 
 	 */
-	public Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException;
+	Annotation enableAnnotation(long annoIdentifier) throws AnnotationServiceException;
 	
 	/**
 	 * This method sets 'disable' field to true in database and removes the annotation 
@@ -111,7 +111,7 @@ public interface AnnotationService {
 	 * @param annotation The annotation object
 	 * @return disabled Annotation
 	 */
-	public Annotation disableAnnotation(Annotation annotation);
+	Annotation disableAnnotation(Annotation annotation);
 	
 	/**
 	 * This method returns annotation object for the given identifier.
@@ -120,7 +120,7 @@ public interface AnnotationService {
 	 * @param enabled - a flag for telling which annotation to get (enabled, when the flag is true, or disabled)
 	 * @return annotation object
 	 */
-	public Annotation getAnnotationById(long annoIdentifier, String userId, boolean enabled) throws AnnotationNotFoundException, UserAuthorizationException;
+	Annotation getAnnotationById(long annoIdentifier, String userId, boolean enabled) throws AnnotationNotFoundException, UserAuthorizationException;
 		
 	
 	/**
@@ -131,13 +131,13 @@ public interface AnnotationService {
 	 * @return
 	 * @throws StatusLogServiceException 
 	 */
-	public List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit) throws StatusLogServiceException;
+	List<? extends StatusLog> searchStatusLogs(String query, String startOn, String limit) throws StatusLogServiceException;
 
 	
 	/**
 	 * Check whether annotation with the given identifier already exists in database.
 	 */
-	public boolean existsInDb(long annoIdentifier); 
+	boolean existsInDb(long annoIdentifier); 
 	
 	/**
 	 * Check whether moderation record with the given identifier already exists in database.
@@ -145,26 +145,26 @@ public interface AnnotationService {
 	 * @return
 	 * @throws ModerationMongoException
 	 */
-	public boolean existsModerationInDb(long annoIdentifier) throws ModerationMongoException;
+	boolean existsModerationInDb(long annoIdentifier) throws ModerationMongoException;
 		
 	/**
 	 * This method updates annotation status.
 	 * @param annotation
 	 * @return
 	 */
-	public Annotation updateAnnotationStatus(Annotation annotation);
+	Annotation updateAnnotationStatus(Annotation annotation);
 	
 	/**
 	 * @param annotation
 	 * @return
 	 */
-	public void logAnnotationStatusUpdate(String user, Annotation annotation);
+	void logAnnotationStatusUpdate(String user, Annotation annotation);
 
-	public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException;
+	void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException;
 
 	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationI18NException;
 	
-	public void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
+	void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
 			List<Long> missingIdentifiers);
 
 	/**
@@ -172,7 +172,7 @@ public interface AnnotationService {
 	 * @param newModerationRecord
 	 * @return
 	 */
-	public ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord);
+	ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord);
 	
 	/**
 	 * @param annoIdentifier
@@ -180,14 +180,14 @@ public interface AnnotationService {
 	 * @throws ModerationNotFoundException
 	 * @throws ModerationMongoException
 	 */
-	public ModerationRecord findModerationRecordById(long annoIdentifier) 
+	ModerationRecord findModerationRecordById(long annoIdentifier) 
 			throws ModerationNotFoundException, ModerationMongoException;
 
-	public List<? extends Annotation> getExisting(List<Long> annotationIdentifiers);
+	List<? extends Annotation> getExisting(List<Long> annotationIdentifiers);
 
-	public void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, List<? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
+	void updateExistingAnnotations(BatchReportable batchReportable, List<? extends Annotation> existingAnnos, List<? extends Annotation> updateAnnos, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 
-	public void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
+	void insertNewAnnotations(BatchUploadStatus uploadStatus, List<? extends Annotation> annotations, AnnotationDefaults annoDefaults, LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap) throws AnnotationValidationException, BulkOperationException, IOException, InterruptedException;
 
 	/**
 	 * This method extends the body for semantic tags for dereference profile
@@ -199,7 +199,7 @@ public interface AnnotationService {
 	 * @throws HttpException 
 	 * @throws JsonParseException 
 	 */
-	public void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, AnnotationDereferenciationException;
+	void dereferenceSemanticTags(Annotation annotation, SearchProfiles searchProfile, String language) throws HttpException, AnnotationDereferenciationException;
 	
 	/**
 	 * This method extends the body for semantic tags for dereference profile
@@ -210,7 +210,7 @@ public interface AnnotationService {
 	 * @throws HttpException 
 	 * @throws JsonParseException 
 	 */
-	public void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages) throws AnnotationDereferenciationException, HttpException;
+	void dereferenceSemanticTags(List<? extends Annotation> annotations, SearchProfiles searchProfile, String languages) throws AnnotationDereferenciationException, HttpException;
 
 	/**
 	 * This method checks for the duplicate annotations in order to ensure the annotation uniqueness.
@@ -219,7 +219,7 @@ public interface AnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException
 	 */
-	public Set<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck) throws AnnotationServiceException;
+	Set<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck) throws AnnotationServiceException;
 	
 	/**
 	 * Returns the deleted annotations in the given date range.
@@ -230,8 +230,8 @@ public interface AnnotationService {
 	 * @param limit
 	 * @return
 	 */
-	public List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
+	List<String> getDeletedAnnotationSet(MotivationTypes motivationType, Date startDate, Date stopDate, int page, int limit);
 
-    public List<? extends Annotation> getAllAnnotations();
+    List<? extends Annotation> getAllAnnotations();
 
 }

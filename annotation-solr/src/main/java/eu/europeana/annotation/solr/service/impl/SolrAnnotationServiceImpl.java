@@ -499,8 +499,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     public void index(ModerationRecord moderationRecord) {
 
     }
-    
-
 
 	@Override
 	public Set<String> checkDuplicateAnnotations(Annotation anno, boolean noSelfDupplicate) throws AnnotationServiceException {
@@ -556,7 +554,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     		final SolrDocumentList docs = rsp.getResults();
     		if(docs!=null) {
     			for (SolrDocument returnedDoc : docs) {
-    			  responseAnnoIds.add(String.valueOf(returnedDoc.getFieldValue("anno_id")));
+    			  responseAnnoIds.add(String.valueOf(returnedDoc.getFieldValue(SolrAnnotationConstants.ANNO_ID)));
     			}
     		}
 		}
@@ -574,7 +572,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
       }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, "anno_id");
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
 	  return query;
 	}
 
@@ -583,7 +581,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
       query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, "anno_id");
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
     }
 
@@ -594,7 +592,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, "anno_id");
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
     }
 
@@ -631,7 +629,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
       }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, "anno_id");
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
 	}
 	
@@ -650,7 +648,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       }
       
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, "anno_id");
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
 	}
 
@@ -675,7 +673,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
       addTargetRecordIdFilter(anno, query);
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, "anno_id");
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
   }
 }

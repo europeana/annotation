@@ -23,7 +23,7 @@ public interface SolrAnnotationService {
 	 * @return 
 	 */
 
-	public boolean store(Annotation anno) throws AnnotationServiceException ;
+	boolean store(Annotation anno) throws AnnotationServiceException ;
 
 
 	/**
@@ -32,42 +32,42 @@ public interface SolrAnnotationService {
 	 * @throws IOException 
 	 * @throws SolrServerException 
 	 */
-	public void store(List<? extends Annotation> annos) throws AnnotationServiceException;
+	void store(List<? extends Annotation> annos) throws AnnotationServiceException;
 	
 	/**
 	 * This method stores a SolrAnnotation object in SOLR.
 	 * @param anno
 	 * @param doCommit commit
 	 */
-	public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException ;	
+	void store(Annotation anno, boolean doCommit) throws AnnotationServiceException ;	
 	
 	/**
 	 * This method updates a SolrAnnotation object in SOLR.
 	 * @param anno
 	 */
-	public void update(Annotation anno) throws AnnotationServiceException ;
+	void update(Annotation anno) throws AnnotationServiceException ;
 		
 	/**
 	 * @param anno
 	 * @param summary
 	 * @throws AnnotationServiceException
 	 */
-	public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException;
+	boolean update(Annotation anno, Summary summary) throws AnnotationServiceException;
 
-	public void delete(long annoIdentifier) throws AnnotationServiceException;
+	void delete(long annoIdentifier) throws AnnotationServiceException;
 	
 	/**
 	 * This method removes a SolrAnnotation object from SOLR.
 	 * @param solrAnnotation
 	 */
-	public void delete(String annoUrl) throws AnnotationServiceException;
+	void delete(String annoUrl) throws AnnotationServiceException;
 	
 	/**
 	 * Return all solr entries
 	 * @return
 	 * @throws AnnotationServiceException
 	 */
-	public ResultSet<? extends AnnotationView> getAll() throws AnnotationServiceException;
+	ResultSet<? extends AnnotationView> getAll() throws AnnotationServiceException;
 
 	/**
 	 * This method retrieves available Annotations by searching the given term in all solr fields.
@@ -75,7 +75,7 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException 
 	 */
-	public ResultSet<? extends AnnotationView> search(String searchTerm) throws AnnotationServiceException;
+	ResultSet<? extends AnnotationView> search(String searchTerm) throws AnnotationServiceException;
 	
 	
 	/**
@@ -84,7 +84,7 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException 
 	 */
-	public AnnotationView searchById(String id) throws AnnotationServiceException;
+	AnnotationView searchById(String id) throws AnnotationServiceException;
 
 	
 	/**
@@ -94,7 +94,7 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException 
 	 */
-	public ResultSet<? extends AnnotationView> search(Query searchQuery) throws AnnotationServiceException;
+	ResultSet<? extends AnnotationView> search(Query searchQuery) throws AnnotationServiceException;
 	
 	
 	/**
@@ -104,7 +104,7 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException 
 	 */
-	public ResultSet<? extends AnnotationView> searchByLabel(String searchTerm) throws AnnotationServiceException;
+	ResultSet<? extends AnnotationView> searchByLabel(String searchTerm) throws AnnotationServiceException;
 	
 
 	/**
@@ -115,7 +115,7 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException
 	 */
-	public ResultSet<? extends AnnotationView> searchByField(String field, String searchValue)  throws AnnotationServiceException;
+	ResultSet<? extends AnnotationView> searchByField(String field, String searchValue)  throws AnnotationServiceException;
 
 	/**
 	 * This method searches in all fields that are defined in schema for that purpose.
@@ -123,7 +123,7 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException
 	 */
-	public ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException;
+	ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException;
 	
 	
 	/**
@@ -135,10 +135,10 @@ public interface SolrAnnotationService {
 	 * @return found rows
 	 * @throws AnnotationServiceException
 	 */
-	public ResultSet<? extends AnnotationView> search(String term, String start, String rows)
+	ResultSet<? extends AnnotationView> search(String term, String start, String rows)
 		throws AnnotationServiceException;
 
-	public QueryResponse getStatisticsByField(String fieldName) throws AnnotationServiceException;
+	QueryResponse getStatisticsByField(String fieldName) throws AnnotationServiceException;
 
 	/**
 	 * This method checks for the duplicate annotations, to ensure the annotation uniqueness.
@@ -146,7 +146,7 @@ public interface SolrAnnotationService {
 	 * @return the collection of the duplicate annotation ids
 	 * @throws AnnotationServiceException
 	 */
-	public Set<String> checkDuplicateAnnotations (Annotation anno, boolean noSelfCheck) throws AnnotationServiceException ;
+	Set<String> checkDuplicateAnnotations (Annotation anno, boolean noSelfCheck) throws AnnotationServiceException ;
 
 	/**
 	 * returns statistics per facetField tailored by annotation scenario
@@ -154,6 +154,6 @@ public interface SolrAnnotationService {
 	 * @return
 	 * @throws AnnotationServiceException
 	 */
-    public Map<String, Map<String, Long>> getStatisticsByFieldAndScenario(String facetField) throws AnnotationServiceException;
+    Map<String, Map<String, Long>> getStatisticsByFieldAndScenario(String facetField) throws AnnotationServiceException;
     
 }
