@@ -299,5 +299,9 @@ public class SolrAnnotationUtils {
       }
       return false;
     }
+    
+    public static void addQueryFieldFilter(SolrQuery q, String field) {
+      q.set("fl", field);
+    }
 
 }

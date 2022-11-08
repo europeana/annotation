@@ -435,7 +435,17 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
         createdAnnotations.add(storedAnno.getIdentifier());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
+        response = storeTestAnnotation(CAPTION_MINIMAL_EN, true, null);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
+    @Test
+    public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
+        ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
+        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+        createdAnnotations.add(storedAnno.getIdentifier());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
     
@@ -448,7 +458,17 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
-    
+
+    @Test
+    public void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
+        ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+        createdAnnotations.add(storedAnno.getIdentifier());
+        response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
     @Test
     public void checkAnnotationDuplicatesCreateTags() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(TAG_MINIMAL, true, null);
