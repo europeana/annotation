@@ -187,6 +187,7 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 	public static final String USER_TOKEN = "userToken";
 	public static final String RESOURCE_ID = "resourceId";
 	public static final String JSON_REST = ".json";
+	public static final String JSONLD_REST = ".jsonld";
 	public static final String ANNOTATION_JSON_LD_REST = "annotation.jsonld";
 	public static final String ANNOTATION_LD_JSON_LD_REST = "annotationld.jsonld";
 	public static final String CONCEPT_JSON_REST = "uri.json";

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import com.google.common.base.Strings;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -21,7 +20,7 @@ import eu.europeana.annotation.web.exception.response.AnnotationNotFoundExceptio
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.service.AdminService;
-import eu.europeana.api.common.config.I18nConstants;
+import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
@@ -82,11 +81,11 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 		// int successCount = 0;
 		// int failureCount = 0;
-		if (!Strings.isNullOrEmpty(startDate)) {
+		if (!StringUtils.isBlank(startDate)) {
 			startTimestamp = TypeUtils.getUnixDateStringFromDate(startDate);
 		}
 
-		if (!Strings.isNullOrEmpty(endDate)) {
+		if (!StringUtils.isBlank(endDate)) {
 			endTimestamp = TypeUtils.getUnixDateStringFromDate(endDate);
 		}
 
@@ -128,7 +127,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 						annotation = getMongoPersistence().getByIdentifier(id);
 
 						if (annotation == null)
-							throw new AnnotationNotFoundException(null, I18nConstants.ANNOTATION_NOT_FOUND, new String[]{String.valueOf(id)});
+							throw new AnnotationNotFoundException(null, I18nConstantsAnnotation.ANNOTATION_NOT_FOUND, new String[]{String.valueOf(id)});
 						boolean success = reindexAnnotationById(id, new Date());
 						if (success)
 							status.incrementSuccessCount();

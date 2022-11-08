@@ -12,8 +12,6 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AdminService {
 
-	public String getComponentName();
-
 	/**
 	 * This method finds annotation object in database by annotation ID and
 	 * reindexes it in Solr.
@@ -91,7 +89,5 @@ public interface AdminService {
 	 * @return
 	 */
 	public BatchProcessingStatus updateRecordId(String oldId, String newId);
-	
-    public boolean getRemoveAnnotationAuthorization();
 	
 }

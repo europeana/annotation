@@ -1,8 +1,0 @@
-					<!-- Box for the Service Description -->
-					<div class="">
-						<!--  <h3>Annotation</h3>
-						-->
-						<div class="left">
-							<%=pageDescription%>
-						</div>
-					</div>

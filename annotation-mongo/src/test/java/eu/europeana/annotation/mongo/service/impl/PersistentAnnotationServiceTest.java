@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,19 +44,20 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.model.PersistentAnnotationImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl;
+import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
+@Disabled("needs configuration file")
 public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	
 	public PersistentAnnotationServiceTest() {
 		super(null);
 	}
 
-	@Resource(name = "annotation_db_annotationService") 
-	PersistentAnnotationServiceImpl annotation_db_annotationService;
+	@Resource(name = "annotation_db_annotationService")
+	PersistentAnnotationService persistentAnnoService;
 
 	@Resource AnnotationConfiguration configuration;
 
@@ -92,12 +94,12 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setBody(body);
 
 		// persistentObject.setLabel("testTag");
-		Annotation storedTag = annotation_db_annotationService.store(persistentObject); 
+		Annotation storedTag = mongoPersistance.store(persistentObject); 
 		checkAnnotation(persistentObject, storedTag);
 
 		assertTrue(storedTag instanceof ObjectTag);
 		
-		annotation_db_annotationService.remove(storedTag.getIdentifier());		
+		mongoPersistance.remove(storedTag.getIdentifier());		
 	}
 	
 	@Test
@@ -112,12 +114,12 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.TAGGING.name());
 		
 		// persistentObject.setLabel("testTag");
-		Annotation storedTag = annotation_db_annotationService.store(persistentObject); 
+		Annotation storedTag = mongoPersistance.store(persistentObject); 
 		
 		assertEquals(MotivationTypes.TAGGING.name(), storedTag.getMotivation());
 		assertEquals(MotivationTypes.TAGGING, storedTag.getMotivationType());
 		
-		annotation_db_annotationService.remove(storedTag.getIdentifier());
+		mongoPersistance.remove(storedTag.getIdentifier());
 	}
 
 	// TODO: Test must be reviewed
@@ -131,14 +133,14 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setBody(body);
 		
 		//persistentObject.setLabel("testTag");
-		Annotation storedTag = annotation_db_annotationService.store(persistentObject); 
+		Annotation storedTag = mongoPersistance.store(persistentObject); 
 		checkAnnotation(persistentObject, storedTag);
 
 		assertTrue(storedTag instanceof ObjectTag);
 		assertTrue(storedTag.getBody() instanceof SemanticTagBody);
 		assertNotNull(((TagBody)storedTag.getBody()).getTagId());
 		
-		annotation_db_annotationService.remove(storedTag.getIdentifier());
+		mongoPersistance.remove(storedTag.getIdentifier());
 	}
 
 	// TODO: Test must be reviewed
@@ -151,7 +153,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		firstObject.setBody(body);
 
 		// store first annotation
-		Annotation firstAnnotation = annotation_db_annotationService.store(firstObject);
+		Annotation firstAnnotation = mongoPersistance.store(firstObject);
 
 		ObjectTag secondObject = buildObjectTag();
 
@@ -163,7 +165,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		secondObject.setBody(bodyEn);
 		
 		// store second annotation
-		Annotation secondAnnotation = annotation_db_annotationService.store(secondObject);
+		Annotation secondAnnotation = mongoPersistance.store(secondObject);
 
 		assertFalse(firstAnnotation.getIdentifier() == secondAnnotation.getIdentifier());
 		
@@ -175,8 +177,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		
 		assertEquals(firstTagId, secondTagId);
 		
-		annotation_db_annotationService.remove(firstAnnotation.getIdentifier());
-		annotation_db_annotationService.remove(secondAnnotation.getIdentifier());
+		mongoPersistance.remove(firstAnnotation.getIdentifier());
+		mongoPersistance.remove(secondAnnotation.getIdentifier());
 	}
 
 	@Test
@@ -189,7 +191,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		firstObject.setBody(body);
 
 		// store first annotation
-		annotation_db_annotationService.store(firstObject);
+		mongoPersistance.store(firstObject);
 
 		ObjectTag secondObject = buildObjectTag();
 		annosIdentifiers.add(secondObject.getIdentifier());
@@ -202,18 +204,18 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		secondObject.setBody(bodyEn);
 		
 		// store second annotation
-		annotation_db_annotationService.store(secondObject);
+		mongoPersistance.store(secondObject);
 		
 		
 		//** RETRIEVE OBJECTS **
-		List<? extends Annotation> results = annotation_db_annotationService.getAnnotationList(annosIdentifiers);
+		List<? extends Annotation> results = mongoPersistance.getAnnotationList(annosIdentifiers);
 		
 		//** CHECK OBJECTS **
 		assertNotNull(results);
 		assertEquals(2, results.size());
 		
-		annotation_db_annotationService.remove(firstObject.getIdentifier());
-		annotation_db_annotationService.remove(secondObject.getIdentifier());
+		mongoPersistance.remove(firstObject.getIdentifier());
+		mongoPersistance.remove(secondObject.getIdentifier());
 //		for (Annotation annotation : results) {
 //			assertEquals(TEST_DRACULA_ID, annotation.getAnnotationId().getResourceId());
 ////			assertEquals(TEST_DRACULA_ID, annotation.getTarget().getEuropeanaId());
@@ -230,15 +232,15 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 				firstObject.setBody(body);
 
 				// store first annotation
-				ObjectTag storedObject = (ObjectTag) annotation_db_annotationService.store(firstObject);
+				ObjectTag storedObject = (ObjectTag) mongoPersistance.store(firstObject);
 				String tagId = ((TagBody)storedObject.getBody()).getTagId();
 				assertNull(tagId);
 				
 				//delete object
-				annotation_db_annotationService.remove(storedObject.getIdentifier());
+				mongoPersistance.remove(storedObject.getIdentifier());
 				
 				//check deletion
-				Annotation anno = annotation_db_annotationService.getByIdentifier(storedObject.getIdentifier());
+				Annotation anno = mongoPersistance.getByIdentifier(storedObject.getIdentifier());
 				assertNull(anno);				
 	}
 	
@@ -248,7 +250,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		 ImageAnnotation annotation = createSimpleAnnotationInstance();
 		 
 		 ImageAnnotation storedAnnotation = (ImageAnnotation) 
-				 annotation_db_annotationService.store(annotation);
+				 mongoPersistance.store(annotation);
 		 
 		 checkAnnotation(annotation, storedAnnotation);
 		 
@@ -257,7 +259,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		 assertNotNull(storedAnnotation.getTarget().getSelector());
 		 assertNotNull(storedAnnotation.getTarget().getState());
 		 
-		 annotation_db_annotationService.remove(storedAnnotation.getIdentifier());		 
+		 mongoPersistance.remove(storedAnnotation.getIdentifier());		 
 		 
 	}
 
@@ -313,7 +315,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		persistentObject.setMotivation(MotivationTypes.COMMENTING.name());
 		
 		//persistentObject.setType(type)
-		persistentObject.setIdentifier(annotation_db_annotationService.generateAnnotationIdentifier());
+		persistentObject.setIdentifier(mongoPersistance.generateAnnotationIdentifier());
 		return persistentObject;
 	}
 	
@@ -322,17 +324,17 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	public void testCreateAndUpdatePersistanceAnnotation() throws AnnotationMongoException {
 		
 		Annotation initialPersistentAnnotation = createPersistentAnnotationInstance();
-		Annotation storedAnnotation = annotation_db_annotationService.store(initialPersistentAnnotation);
+		Annotation storedAnnotation = mongoPersistance.store(initialPersistentAnnotation);
 		Logger.getLogger(getClass().getName()).info(
 				"testCreatePersistentAnnotation initialPersistentAnnotation: " + initialPersistentAnnotation.toString());
-		Annotation updatedAnnotation = annotation_db_annotationService.updateIndexingTime(storedAnnotation, initialPersistentAnnotation.getLastUpdate());
+		Annotation updatedAnnotation = mongoPersistance.updateIndexingTime(storedAnnotation, initialPersistentAnnotation.getLastUpdate());
 		PersistentAnnotation persistentAnnotation = (PersistentAnnotation) updatedAnnotation;
 	    
 		Logger.getLogger(getClass().getName()).info(
 				"testCreatePersistentAnnotation persistent annotation after update: " + persistentAnnotation.toString());
 
 		assertNotNull(persistentAnnotation.getLastIndexed());
-		annotation_db_annotationService.remove(persistentAnnotation.getIdentifier());
+		mongoPersistance.remove(persistentAnnotation.getIdentifier());
 	}
 	
 	
@@ -341,7 +343,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	// ImageAnnotation annotation = createSimpleAnnotationInstance();
 	// annotation.setEuropeanaId(null);
 	// //expect exception
-	// annotation_db_annotationService.store(annotation);
+	// mongoPersistance.store(annotation);
 	//
 	// }
 	//
@@ -350,7 +352,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	// ImageAnnotation annotation = createSimpleAnnotationInstance();
 	// Annotation storedAnnotation = storeAnCheck(annotation);
 	// //expect exception
-	// annotation_db_annotationService.store(storedAnnotation);
+	// mongoPersistance.store(storedAnnotation);
 	//
 	// }
 	//
@@ -413,7 +415,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	// testStoreShapedImageAnnotation();
 	//
 	// List<? extends Annotation> results =
-	// annotation_db_annotationService.getAnnotationList(TEST_EUROPEANA_ID);
+	// mongoPersistance.getAnnotationList(TEST_EUROPEANA_ID);
 	// assertTrue(results.size() > 0);
 	// for (Annotation annotation : results) {
 	// assertEquals(TEST_EUROPEANA_ID, annotation.getResourceId());
@@ -426,12 +428,12 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	//
 	// //need a stored annotation in order to have an annotationNr
 	// Annotation anno = createSimpleAnnotationInstance();
-	// Annotation storedAnnotation = annotation_db_annotationService.store(anno);
+	// Annotation storedAnnotation = mongoPersistance.store(anno);
 	// assertNotNull(storedAnnotation.getAnnotationId().getAnnotationNr());
 	//
 	// //retrieve annotation
 	// Annotation retrievedAnnotation =
-	// annotation_db_annotationService.getAnnotation(storedAnnotation.getResourceId(),
+	// mongoPersistance.getAnnotation(storedAnnotation.getResourceId(),
 	// storedAnnotation.getAnnotationNr());
 	//
 	// assertNotNull(retrievedAnnotation);
@@ -447,7 +449,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 	
 
 	protected List<Annotation> getTestAnnotationList(Integer numAnnotations) {
-		List<Long> annoIdSequence = annotation_db_annotationService.generateAnnotationIdentifierSequence(numAnnotations);
+		List<Long> annoIdSequence = mongoPersistance.generateAnnotationIdentifierSequence(numAnnotations);
 		List<Annotation> annoList = new ArrayList<Annotation>(numAnnotations);
 		Annotation anno;
 		for(int i = 0; i < numAnnotations; i++) {
@@ -464,13 +466,13 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		int annotationListSize = 5;
 			
 		List<Annotation> annoList = getTestAnnotationList(annotationListSize);
-		annotation_db_annotationService.create(annoList);
+		mongoPersistance.create(annoList);
 		assertNotNull(annoList);
 		
 		List<Long> annoIdentifiers = annoList.stream().map(Annotation::getIdentifier).collect(Collectors.toList());
 
 		@SuppressWarnings("unchecked")
-		List<PersistentAnnotation> annoListFromDb = (List<PersistentAnnotation>)annotation_db_annotationService.getAnnotationList(annoIdentifiers);
+		List<PersistentAnnotation> annoListFromDb = (List<PersistentAnnotation>)mongoPersistance.getAnnotationList(annoIdentifiers);
 		assertNotNull(annoListFromDb);
 		assertEquals(annoList.size(), annoListFromDb.size());
 			
@@ -491,11 +493,11 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 			
 	    Assertions.assertThrows(BulkOperationException.class, () -> {
 	      // expected exception: BulkOperationException
-	      annotation_db_annotationService.update(annoListFromDb);
+	      mongoPersistance.update(annoListFromDb);
 	    });		
 	    
         for(int i = 0; i < annoListFromDb.size(); i++) {
-          annotation_db_annotationService.remove(annoListFromDb.get(i).getIdentifier());
+          mongoPersistance.remove(annoListFromDb.get(i).getIdentifier());
         }
 	}
 	
@@ -504,8 +506,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		int annotationListSize = 5;
 		List<Annotation> annoList = getTestAnnotationList(annotationListSize);
 		assertNotNull(annoList);
-		annotation_db_annotationService.create(annoList);		
-		annotation_db_annotationService.createBackupCopy(annoList);
+		mongoPersistance.create(annoList);		
+		mongoPersistance.createBackupCopy(annoList);
 	}
 	
 }

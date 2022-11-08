@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,8 +15,6 @@ import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
-import org.springframework.stereotype.Component;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
@@ -40,7 +37,6 @@ import eu.europeana.annotation.mongo.service.validation.impl.EdmPlaceValidatorIm
 import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 
-@Component
 public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<PersistentAnnotation, String>
 		implements PersistentAnnotationService {
 
@@ -48,13 +44,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	
 	protected final Logger logger = LogManager.getLogger(this.getClass());
 	
-//	@Resource
-//	private PersistentTagService tagService;
-
-	@Resource
-	private AnnotationConfiguration configuration;
-
-	/**
+    /**
 	 * This method shouldn't be public but protected. Anyway, it is forced to be
 	 * public by the supper implementation
 	 * 
@@ -500,14 +490,6 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	@Override
 	public Annotation findByTagId(String tagId) {
 		throw new RuntimeException("This method is not supported yet!");
-	}
-
-	public AnnotationConfiguration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(AnnotationConfiguration configuration) {
-		this.configuration = configuration;
 	}
 
 	public GeoPlaceValidator getGeoPlaceValidator() {

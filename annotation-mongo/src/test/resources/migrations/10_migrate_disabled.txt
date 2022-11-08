@@ -7,3 +7,4 @@ db.getCollection('annotation').deleteMany({"disabled":true})
 
 #UNSET DISABLED
 db.getCollection('annotation').updateMany({},{$unset:{"disabled":null}})
+

@@ -1,13 +1,10 @@
 package eu.europeana.annotation.mongo.service;
 
 import java.util.Date;
-
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.PersistentApiWriteLockImpl;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -15,7 +12,7 @@ import eu.europeana.api.commons.nosql.service.impl.AbstractNoSqlServiceImpl;
 
 @Configuration
 @EnableCaching
-@Component
+//@Component
 public class PersistentApiWriteLockServiceImpl extends
 		AbstractNoSqlServiceImpl<PersistentApiWriteLock, String> implements	
 		PersistentApiWriteLockService {

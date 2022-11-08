@@ -7,27 +7,40 @@
 
 	<artifactId>annotation-mongo</artifactId>
 	<name>Europeana Annotation - Mongo based persistance </name>
+	<description>Mongo persistence layer</description>
+	
 	<url>http://www.europeanalabs.eu</url>
 
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<version>${revision}</version>
 	</parent>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>api2-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
@@ -39,26 +52,34 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!--
 			<version>${version.org.junit.jupiter}</version>
+			-->
 		</dependency>
 		
 		<!-- overwrite -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<!-- <version>${version.springCore}</version> -->
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 
 		<!-- TESTING PURPOSES -->
@@ -68,13 +89,9 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<!-- <version>${version.springCore}</version> -->
+			<!--
 			<version>${version.spring}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>api2-common</artifactId>
-			<version>${version.annotationApi}</version>
+			-->
 		</dependency>
 		
 <!-- 		<dependency> -->
@@ -84,9 +101,5 @@
 <!-- 		</dependency>		 -->
 		
 	</dependencies>
-
-	<organization>
-		<name>Europeana Foundation</name>
-	</organization>
 
 </project>

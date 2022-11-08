@@ -2,6 +2,8 @@
 **/.classpath
 **/.settings/
 .classpath
+/target/
 **/classes/
 **/log4j2.xml
 **/*.bk
+**/*.user.properties

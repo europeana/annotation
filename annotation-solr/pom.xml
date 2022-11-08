@@ -6,46 +6,55 @@
 
 	<artifactId>annotation-solr</artifactId>
 	<name>Europeana Annotation - Solr index management </name>
+	<description>Solr based indexing module</description>
+	
 	<url>http://www.europeanalabs.eu</url>
 
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.annotationApi}</version>
+		<version>${revision}</version>
 	</parent>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>api2-common</artifactId>
-			<version>${version.annotationApi}</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<!-- <version>${version.springCore}</version> -->
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 
 		<!-- Other -->
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
+			<!--
 			<version>${version.apacheSolr}</version>
+			-->
 		</dependency>
 
 		<!-- Other -->
@@ -60,6 +69,11 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
 
 		<!-- TEST Dependencies -->
 		<dependency>
@@ -67,18 +81,24 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<!-- <version>${version.springCore}</version> -->
+			<!--
 			<version>${version.spring}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+			<!--
 			<version>${version.org.junit.jupiter}</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-test-framework</artifactId>
+			<!--
 			<version>${version.apacheSolr}</version>
+			-->
 			<scope>test</scope>
 	    </dependency>
 

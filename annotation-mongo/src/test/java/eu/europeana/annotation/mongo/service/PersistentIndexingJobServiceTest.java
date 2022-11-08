@@ -4,19 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.util.Date;
-
 import javax.annotation.Resource;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -24,9 +21,10 @@ import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
+@Disabled("needs configuration file")
 public class PersistentIndexingJobServiceTest {
 	
-	@Resource(name = "annotation_db_apilockService")
+    @Resource(name = "annotation_db_apilockService")
 	private PersistentApiWriteLockService indexingJobService;
 
 

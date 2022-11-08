@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<metis:results xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:edm="http://www.europeana.eu/schemas/edm/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema" xmlns:cc="http://creativecommons.org/ns" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdaGr2="http://rdvocab.info/ElementsGr2/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:wgs84_pos="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:metis="http://www.europeana.eu/schemas/metis" xmlns:ns13="http://www.w3.org/2006/vcard/ns#">
+	<metis:result>
+		<edm:Agent rdf:about="http://www.wikidata.org/entity/Q41264">
+			<skos:altLabel xml:lang="pl">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="pl">Vermer</skos:altLabel>
+			<skos:altLabel xml:lang="pl">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="pl">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="es">Johannes van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="es">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="es">Vermeer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="es">Vermer</skos:altLabel>
+			<skos:altLabel xml:lang="es">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="es">Johannes Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="es">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="hu">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="hu">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="hu">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="hu">Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="et">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="et">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="et">Johannes Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="et">Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="el">Βερμέερ</skos:altLabel>
+			<skos:altLabel xml:lang="el">Γιαν Βερμέερ</skos:altLabel>
+			<skos:altLabel xml:lang="el">Γιοχάννες Βερμέερ</skos:altLabel>
+			<skos:altLabel xml:lang="sv">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="sv">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="pt">Jan van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="pt">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="pt">Johannes van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="pt">Jan van delft</skos:altLabel>
+			<skos:altLabel xml:lang="pt">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="ru">Вермер Я.</skos:altLabel>
+			<skos:altLabel xml:lang="ru">Вермеер Делфтский, Ян</skos:altLabel>
+			<skos:altLabel xml:lang="ru">Ян Вермер</skos:altLabel>
+			<skos:altLabel xml:lang="ru">Вермер, Ян</skos:altLabel>
+			<skos:altLabel xml:lang="ru">Вермеер Ян</skos:altLabel>
+			<skos:altLabel xml:lang="ru">Вермер Ян</skos:altLabel>
+			<skos:altLabel xml:lang="fi">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="fi">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="hr">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="hr">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="hr">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="da">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Vermer</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Vermeer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="lv">Johanness Vermērs</skos:altLabel>
+			<skos:altLabel xml:lang="lv">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="lv">Vermērs</skos:altLabel>
+			<skos:altLabel xml:lang="lv">Jans Vermērs van Delfts</skos:altLabel>
+			<skos:altLabel xml:lang="it">Johannes van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="it">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="de">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="de">Joannis van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="de">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="de">Joannis ver Meer</skos:altLabel>
+			<skos:altLabel xml:lang="de">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="sk">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="ro">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="ro">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="ro">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="ca">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="ca">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="ca">Vermeer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="ca">Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="sl">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="cs">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="cs">Johannes Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="cs">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="bg">Йоханес Вермеер</skos:altLabel>
+			<skos:altLabel xml:lang="bg">Ян Вермеер</skos:altLabel>
+			<skos:altLabel xml:lang="bg">Йоханес Вермеер ван Делфт</skos:altLabel>
+			<skos:altLabel xml:lang="bg">Вермеер ван Делфт</skos:altLabel>
+			<skos:altLabel xml:lang="bg">Вермеер</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Johannes Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Johanesas Vermejeris</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Vermejeris Delftietis</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Johanas Vermejeris</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Johan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Janas Vermejeris</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Reyniersz Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan van Der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Vermeer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Johannes van Delft Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Van der Meer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Ĭokhannes Vermer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Ĭokhannes Vermer Delftskiĭ</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Vermeer Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Johannes Schwartz</skos:altLabel>
+			<skos:altLabel xml:lang="en">vander Meer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Vermeer van van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">jan vermeer of haarlem</skos:altLabel>
+			<skos:altLabel xml:lang="en">Delfsche van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">of Delft Van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Vandermeer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">J. vander Meer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">V. D. Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Der Delftsche v. d. Neer</skos:altLabel>
+			<skos:altLabel xml:lang="en">de Delft Vander Méer</skos:altLabel>
+			<skos:altLabel xml:lang="en">de Delfet Vander-Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">jan van der meer der altere</skos:altLabel>
+			<skos:altLabel xml:lang="en">de Delfze van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">J. Vermeer of Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Delftsche Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="en">van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">jan der meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">of Delft V. der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Vermeer van Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">De Delfsche van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">vermeer of haarlem</skos:altLabel>
+			<skos:altLabel xml:lang="en">De Meere</skos:altLabel>
+			<skos:altLabel xml:lang="en">de Delftsche van der Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Van der Meer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Vermeer of Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">ver meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Delfter Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="en">de Delfsche vander Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Vander Meer de Delft</skos:altLabel>
+			<skos:altLabel xml:lang="en">Van der, of Delft Meer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Jan Vermeer</skos:altLabel>
+			<skos:altLabel xml:lang="en">Johannes Vermeer van Delft</skos:altLabel>
+			<skos:prefLabel xml:lang="pl">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="es">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="hu">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="et">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="el">Γιοχάνες Βερμέερ</skos:prefLabel>
+			<skos:prefLabel xml:lang="nl">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="sv">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="pt">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="ru">Ян Вермеер</skos:prefLabel>
+			<skos:prefLabel xml:lang="fi">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="hr">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="da">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="fr">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="lv">Jans Vermērs</skos:prefLabel>
+			<skos:prefLabel xml:lang="it">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="de">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="en">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="sk">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="ro">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="ca">Johannes Vermeer de Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="sl">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="cs">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="bg">Йоханес Вермер</skos:prefLabel>
+			<skos:prefLabel xml:lang="lt">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="mt">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="ga">Johannes Vermeer</skos:prefLabel>
+			<skos:note xml:lang="it">pittore olandese</skos:note>
+			<skos:note xml:lang="en">Dutch painter (1632-1675)</skos:note>
+			<skos:note xml:lang="de">Holländischer Maler</skos:note>
+			<skos:note xml:lang="fr">peintre néerlandais</skos:note>
+			<skos:note xml:lang="pl">malarz niderlandzki</skos:note>
+			<skos:note xml:lang="nl">Nederlands kunstschilder</skos:note>
+			<skos:note xml:lang="el">Ολλανδός ζωγράφος</skos:note>
+			<skos:note xml:lang="es">pintor neerlandés del siglo XVII</skos:note>
+			<skos:note xml:lang="ca">Pintor neerlandés del segle XVII</skos:note>
+			<skos:note xml:lang="et">Hollandi maalikunstnik</skos:note>
+			<skos:note xml:lang="ro">pictor olandez</skos:note>
+			<skos:note xml:lang="cs">barokní malíř</skos:note>
+			<skos:note xml:lang="fi">hollantilainen taidemaalari</skos:note>
+			<skos:note xml:lang="sv">nederländsk målare</skos:note>
+			<skos:note xml:lang="ru">голландский художник</skos:note>
+			<skos:note xml:lang="da">nederlandsk kunstmaler (1632-1675)</skos:note>
+			<skos:note xml:lang="mt">pittur Olandiż</skos:note>
+			<skos:note xml:lang="ga">péintéir Ísiltíreach (1632-1675)</skos:note>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q2352880"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q808561"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q214127"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q134307"/>
+			<rdaGr2:placeOfBirth rdf:resource="http://www.wikidata.org/entity/Q690"/>
+			<rdaGr2:placeOfDeath rdf:resource="http://www.wikidata.org/entity/Q690"/>
+			<rdaGr2:dateOfBirth>1632-10-01T00:00:00Z</rdaGr2:dateOfBirth>
+			<rdaGr2:dateOfDeath>1675-12-15T00:00:00Z</rdaGr2:dateOfDeath>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q1028181"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q10732476"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q11629"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q108668855"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q352954"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q355213"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q380708"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q979381"/>
+			<owl:sameAs rdf:resource="http://viaf.org/viaf/51961439"/>
+			<owl:sameAs rdf:resource="http://d-nb.info/gnd/118626590"/>
+			<owl:sameAs rdf:resource="http://id.loc.gov/authorities/names/n79006488"/>
+			<owl:sameAs rdf:resource="http://vocab.getty.edu/ulan/500032927"/>
+			<owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb11940023b"/>
+			<owl:sameAs rdf:resource="http://www.idref.fr/027336336/id"/>
+			<owl:sameAs rdf:resource="http://id.ndl.go.jp/auth/ndlna/00459685"/>
+			<owl:sameAs rdf:resource="https://www.freebase.com/m/0bw2x"/>
+			<owl:sameAs rdf:resource="https://g.co/kg/m/0bw2x"/>
+			<owl:sameAs rdf:resource="http://openlibrary.org/works/OL134473A"/>
+			<owl:sameAs rdf:resource="http://libris.kb.se/resource/auth/99582"/>
+			<owl:sameAs rdf:resource="http://datos.bne.es/resource/XX914312"/>
+			<owl:sameAs rdf:resource="http://data.bibliotheken.nl/id/thes/p068676581"/>
+			<owl:sameAs rdf:resource="https://livedata.bibsys.no/authority/90170004"/>
+			<owl:sameAs rdf:resource="http://id.worldcat.org/fast/30117"/>
+			<owl:sameAs rdf:resource="http://nlg.okfn.gr/resource/authority/record67540"/>
+			<owl:sameAs rdf:resource="http://lod.nl.go.kr/resource/KAC201719233"/>
+			<owl:sameAs rdf:resource="https://libris.kb.se/vs68521d1gmzgzs"/>
+			<owl:sameAs rdf:resource="http://dbpedia.org/resource/Johannes_Vermeer"/>
+		</edm:Agent>
+	</metis:result>
+	<metis:result>
+		<skos:Concept rdf:about="http://www.wikidata.org/entity/Q22698">
+			<skos:altLabel xml:lang="de">Parkanlage</skos:altLabel>
+			<skos:altLabel xml:lang="el">Πάρκο</skos:altLabel>
+			<skos:altLabel xml:lang="en">park (public recreation area)</skos:altLabel>
+			<skos:altLabel xml:lang="en">garden &amp; park</skos:altLabel>
+			<skos:altLabel xml:lang="en">Parks, Recreational</skos:altLabel>
+			<skos:altLabel xml:lang="nl">parkaanleg</skos:altLabel>
+			<skos:altLabel xml:lang="nl">parken (openbare ruimten)</skos:altLabel>
+			<skos:prefLabel xml:lang="fr">parc</skos:prefLabel>
+			<skos:prefLabel xml:lang="bg">Парк</skos:prefLabel>
+			<skos:prefLabel xml:lang="ca">parc</skos:prefLabel>
+			<skos:prefLabel xml:lang="cs">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="da">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="de">Park</skos:prefLabel>
+			<skos:prefLabel xml:lang="en">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="es">parque</skos:prefLabel>
+			<skos:prefLabel xml:lang="et">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="fi">puisto</skos:prefLabel>
+			<skos:prefLabel xml:lang="hr">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="hu">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="lt">Parkas</skos:prefLabel>
+			<skos:prefLabel xml:lang="lv">parks</skos:prefLabel>
+			<skos:prefLabel xml:lang="nl">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="pl">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="pt">parque</skos:prefLabel>
+			<skos:prefLabel xml:lang="ro">parc</skos:prefLabel>
+			<skos:prefLabel xml:lang="ru">парк</skos:prefLabel>
+			<skos:prefLabel xml:lang="sk">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="sl">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="sv">park</skos:prefLabel>
+			<skos:prefLabel xml:lang="it">parco</skos:prefLabel>
+			<skos:prefLabel xml:lang="el">πάρκο</skos:prefLabel>
+			<skos:prefLabel xml:lang="ga">páirc</skos:prefLabel>
+			<skos:note xml:lang="fr">territoire maintenu dans un état naturel ou seminaturel, à des fins conservatoires ou récréatives</skos:note>
+			<skos:note xml:lang="en">permanently dedicated recreation area, often open to the public and generally characterized by natural, historic, or landscape features</skos:note>
+			<skos:note xml:lang="cs">udržovaná zeleň</skos:note>
+			<skos:note xml:lang="de">gestaltete größere Grünflächen</skos:note>
+			<skos:note xml:lang="es">terreno situado en el interior de una población que se destina a prados, jardines y arbolado</skos:note>
+			<skos:note xml:lang="nl">openbare ruimte met een permanente recreatieve functie die meestal wordt gekenmerkt door een natuurlijke, historische of landschappelijk aspect</skos:note>
+			<skos:note xml:lang="pt">espaço aberto para recreação ou conservação</skos:note>
+			<skos:note xml:lang="pl">obszar na otwartej przestrzeni służący rozrywce i odpoczynkowi</skos:note>
+			<skos:note xml:lang="sv">anläggning med naturlig eller planterad växtlighet</skos:note>
+			<skos:note xml:lang="da">åbent rekreativt område</skos:note>
+			<skos:note xml:lang="ru">предназначенная для отдыха открытая озеленённая территория</skos:note>
+			<skos:note xml:lang="it">area protetta o per ricreazione</skos:note>
+			<skos:note xml:lang="el">ανοιχτός χώρος διατηρημένος στην φυσική του μορφή</skos:note>
+			<skos:note xml:lang="ca">espai destinat al lleure o destinat a arbrat i jardins</skos:note>
+			<skos:note xml:lang="ro">teritoriu verde sub cerul liber destinat odihnei și recreației</skos:note>
+			<skos:note xml:lang="lv">īpaši iekārtota, parasti plaša, dekoratīva atpūtas teritorija, dārzs, arī ar dabiskās ainavas iesaistījumu, apstādījumiem, lielu koku grupām, celiņiem, strūklakām, spēļu laukumiem u. tml.</skos:note>
+			<skos:note xml:lang="fi">virkistyskäyttöön tarkoitettu viheralue</skos:note>
+			<skos:note xml:lang="hr">dio grada ili naselja u kojem se nalazi održavano zelenilo</skos:note>
+			<skos:broader rdf:resource="http://www.wikidata.org/entity/Q22652"/>
+			<skos:broader rdf:resource="http://www.wikidata.org/entity/Q111415237"/>
+			<skos:broader rdf:resource="http://www.wikidata.org/entity/Q13226383"/>
+			<skos:broader rdf:resource="http://www.wikidata.org/entity/Q811979"/>
+			<skos:broader rdf:resource="http://www.wikidata.org/entity/Q35145743"/>
+			<skos:exactMatch rdf:resource="https://schema.org/Park"/>
+			<skos:exactMatch rdf:resource="http://d-nb.info/gnd/4044673-6"/>
+			<skos:exactMatch rdf:resource="http://id.loc.gov/authorities/names/sh85098119"/>
+			<skos:exactMatch rdf:resource="http://data.bnf.fr/ark:/12148/cb11933025j"/>
+			<skos:exactMatch rdf:resource="http://id.ndl.go.jp/auth/ndlna/00566129"/>
+			<skos:exactMatch rdf:resource="http://id.nlm.nih.gov/mesh/D000068316"/>
+			<skos:exactMatch rdf:resource="https://www.freebase.com/m/0166ls"/>
+			<skos:exactMatch rdf:resource="https://g.co/kg/m/0166ls"/>
+			<skos:exactMatch rdf:resource="http://id.nlm.nih.gov/mesh/J03.925.680"/>
+			<skos:exactMatch rdf:resource="http://vocab.getty.edu/aat/300008187"/>
+			<skos:exactMatch rdf:resource="http://vocab.getty.edu/aat/300254248"/>
+			<skos:exactMatch rdf:resource="http://iconclass.org/43B42"/>
+			<skos:exactMatch rdf:resource="http://id.worldcat.org/fast/1053705"/>
+			<skos:exactMatch rdf:resource="http://www.yso.fi/onto/yso/p3227"/>
+			<skos:exactMatch rdf:resource="http://www.geonames.org/ontology#L.PRK"/>
+			<skos:exactMatch rdf:resource="http://babelnet.org/rdf/s00060690n"/>
+			<skos:exactMatch rdf:resource="http://vocabularies.unesco.org/thesaurus/concept4252"/>
+			<skos:exactMatch rdf:resource="https://id.erfgoed.net/thesauri/erfgoedtypes/337"/>
+			<skos:exactMatch rdf:resource="http://cv.iptc.org/newscodes/mediatopic/20000422"/>
+			<skos:exactMatch rdf:resource="http://www.yso.fi/onto/ysa/Y98299"/>
+		</skos:Concept>
+	</metis:result>
+	<metis:result>
+		<skos:Concept rdf:about="http://vocab.getty.edu/aat/300068991">
+			<skos:altLabel xml:lang="zh-hant">冷</skos:altLabel>
+			<skos:altLabel xml:lang="zh-latn-wadegile">lěng de</skos:altLabel>
+			<skos:altLabel xml:lang="nl">kou</skos:altLabel>
+			<skos:prefLabel xml:lang="en">cold</skos:prefLabel>
+			<skos:prefLabel xml:lang="zh-hant">冷的</skos:prefLabel>
+			<skos:prefLabel xml:lang="zh-latn-pinyin-x-notone">leng de</skos:prefLabel>
+			<skos:prefLabel xml:lang="zh-latn-wadegile">leng te</skos:prefLabel>
+			<skos:prefLabel xml:lang="nl">koude</skos:prefLabel>
+			<skos:prefLabel xml:lang="es">frío</skos:prefLabel>
+			<skos:note xml:lang="en">The state of low temperature or to describe processes or situations that take place under conditions of low temperatures.</skos:note>
+			<skos:note xml:lang="es">Úsese para el estado de baja temperatura o para describir procesos o situaciones que tienen lugar bajo condiciones de bajas temperaturas.</skos:note>
+			<skos:note xml:lang="nl">Te gebruiken voor de staat van lage temperatuur of om processen of situaties te beschrijven die plaats vinden onder omstandigheden van lage temperaturen.</skos:note>
+			<skos:note xml:lang="zh-hant">低溫狀態，或描述在低溫狀態中的程序或狀況。</skos:note>
+			<skos:broader rdf:resource="http://vocab.getty.edu/aat/300056066"/>
+			<skos:inScheme rdf:resource="http://vocab.getty.edu/aat/"/>
+			<skos:related rdf:resource="http://vocab.getty.edu/aat/300343848"/>
+		</skos:Concept>
+	</metis:result>
+	<metis:result>
+		<edm:Agent rdf:about="http://viaf.org/viaf/51961439">
+			<skos:altLabel>Meer de Delft, ... Van der</skos:altLabel>
+			<skos:altLabel>Ян Вэрмээр</skos:altLabel>
+			<skos:altLabel>of Delft Van der Meer</skos:altLabel>
+			<skos:altLabel>Յան Վերմեեր</skos:altLabel>
+			<skos:altLabel>Вермеер</skos:altLabel>
+			<skos:altLabel>van der Meer</skos:altLabel>
+			<skos:altLabel>Johannes Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>Vermer</skos:altLabel>
+			<skos:altLabel>جان ورمیر</skos:altLabel>
+			<skos:altLabel>Եան Վէրմիր</skos:altLabel>
+			<skos:altLabel>Jan V. van Delft</skos:altLabel>
+			<skos:altLabel>J. vander Meer van Delft</skos:altLabel>
+			<skos:altLabel>jan der meer</skos:altLabel>
+			<skos:altLabel>Vermeer Van Delft</skos:altLabel>
+			<skos:altLabel>V. D. Meer</skos:altLabel>
+			<skos:altLabel>얀 베르메르</skos:altLabel>
+			<skos:altLabel>Jan van der Meer Vermeer</skos:altLabel>
+			<skos:altLabel>vermeer of haarlem</skos:altLabel>
+			<skos:altLabel>Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>얀 페르메이르</skos:altLabel>
+			<skos:altLabel>Yohanesu Ferumēru</skos:altLabel>
+			<skos:altLabel>Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>Ĭokhannes Vermer</skos:altLabel>
+			<skos:altLabel>Delfter Vermeer</skos:altLabel>
+			<skos:altLabel>Delftsche Vermeer</skos:altLabel>
+			<skos:altLabel>جوهانس فيرمير</skos:altLabel>
+			<skos:altLabel>De Delfsche van der Meer</skos:altLabel>
+			<skos:altLabel>... Van der Meer</skos:altLabel>
+			<skos:altLabel>Vander Meer de Delft</skos:altLabel>
+			<skos:altLabel>Jan Reyniersz Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>Вермеер Дельфтский</skos:altLabel>
+			<skos:altLabel>یوهانس ورمیر</skos:altLabel>
+			<skos:altLabel>Van der Meer van Delft</skos:altLabel>
+			<skos:altLabel>of Delft V. der Meer</skos:altLabel>
+			<skos:altLabel>Johann Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>Jan Vermeer</skos:altLabel>
+			<skos:altLabel>베르메르</skos:altLabel>
+			<skos:altLabel>Вермер Делфтский</skos:altLabel>
+			<skos:altLabel>யொஹான்னெஸ் வெர்மீர்</skos:altLabel>
+			<skos:altLabel>Van der Meer</skos:altLabel>
+			<skos:altLabel>יוהנס ורמיר</skos:altLabel>
+			<skos:altLabel>... Van der Meer de Delft</skos:altLabel>
+			<skos:altLabel>de Delftsche van der Meer</skos:altLabel>
+			<skos:altLabel>vander Meer van Delft</skos:altLabel>
+			<skos:altLabel>โยฮันเนิส เฟอร์เมร์</skos:altLabel>
+			<skos:altLabel>フェルメール</skos:altLabel>
+			<skos:altLabel>Johannes Van Der Meer</skos:altLabel>
+			<skos:altLabel>Jan Vermeer de Delft</skos:altLabel>
+			<skos:altLabel>Jan Vermer</skos:altLabel>
+			<skos:altLabel>יאן ורמר</skos:altLabel>
+			<skos:altLabel>Jan van Der Meer</skos:altLabel>
+			<skos:altLabel>یوهانس ورمر</skos:altLabel>
+			<skos:altLabel>Vermeras Delftietis</skos:altLabel>
+			<skos:altLabel>Ĭokhannes Vermer</skos:altLabel>
+			<skos:altLabel>Jan Vermeer Van Delft</skos:altLabel>
+			<skos:altLabel>Jan Vermeervan Delft</skos:altLabel>
+			<skos:altLabel>Vermer Delftlik Yan</skos:altLabel>
+			<skos:altLabel>Ян Вермеер</skos:altLabel>
+			<skos:altLabel>Delfsche van der Meer</skos:altLabel>
+			<skos:altLabel>Johannes van Delft Vermeer</skos:altLabel>
+			<skos:altLabel>Јан Вермер</skos:altLabel>
+			<skos:altLabel>ver meer</skos:altLabel>
+			<skos:altLabel>Vermeras</skos:altLabel>
+			<skos:altLabel>Van der, of Delft Meer</skos:altLabel>
+			<skos:altLabel>Meer</skos:altLabel>
+			<skos:altLabel>維梅爾</skos:altLabel>
+			<skos:altLabel>Ян Вермеер Дельфтский</skos:altLabel>
+			<skos:altLabel>Vermeer van van Delft</skos:altLabel>
+			<skos:altLabel>Ĭokhannes Vermer Delftskiĭ</skos:altLabel>
+			<skos:altLabel>Johannes van Der Meer</skos:altLabel>
+			<skos:altLabel>jan vermeer of haarlem</skos:altLabel>
+			<skos:altLabel>ヨハネス・フェルメール</skos:altLabel>
+			<skos:altLabel>J. Vermeer of Delft</skos:altLabel>
+			<skos:altLabel>Jana Vermeera</skos:altLabel>
+			<skos:altLabel>Johannes Vermeer de Delft</skos:altLabel>
+			<skos:altLabel>יאן ורמיר</skos:altLabel>
+			<skos:altLabel>扬·弗美尔</skos:altLabel>
+			<skos:altLabel>Johannes Vermeer</skos:altLabel>
+			<skos:altLabel>de Delft Vander Méer</skos:altLabel>
+			<skos:altLabel>Juan Vermeer</skos:altLabel>
+			<skos:altLabel>Jans Vermērs</skos:altLabel>
+			<skos:altLabel>Jan Vermeer de Delft</skos:altLabel>
+			<skos:altLabel>Ян Вермер</skos:altLabel>
+			<skos:altLabel>요하네스 페르메이르</skos:altLabel>
+			<skos:altLabel>یوهانس فرمیر</skos:altLabel>
+			<skos:altLabel>Jan, dit Vermeer de Delft Vermeer</skos:altLabel>
+			<skos:altLabel>Jan Van der Meer</skos:altLabel>
+			<skos:altLabel>يوهانس فيرمير</skos:altLabel>
+			<skos:altLabel>Вермер Делфтский</skos:altLabel>
+			<skos:altLabel>Johan Vermeer</skos:altLabel>
+			<skos:altLabel>ဂျိုဟန်နက် ဗာမီယာ</skos:altLabel>
+			<skos:altLabel>.. Vermeer</skos:altLabel>
+			<skos:altLabel>Jan‏ Vermeer</skos:altLabel>
+			<skos:altLabel>Vandermeer de Delft</skos:altLabel>
+			<skos:altLabel>Вермер Дельфтский</skos:altLabel>
+			<skos:altLabel>يوهانيس ڤيرمير</skos:altLabel>
+			<skos:altLabel>Ĭokhannes Vermer Delftskiĭ</skos:altLabel>
+			<skos:altLabel>Јоханес Вермер</skos:altLabel>
+			<skos:altLabel>Jan Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>იან ვერმეერი</skos:altLabel>
+			<skos:altLabel>Jan van der Meer</skos:altLabel>
+			<skos:altLabel>Jan Van der Meer van Delft</skos:altLabel>
+			<skos:altLabel>Van Delft</skos:altLabel>
+			<skos:altLabel>Jan V. van Delft</skos:altLabel>
+			<skos:altLabel>Вермеер Дельфтский</skos:altLabel>
+			<skos:altLabel>योहानेस व्हर्मीर</skos:altLabel>
+			<skos:altLabel>Delft</skos:altLabel>
+			<skos:altLabel>Meer, ... Van der</skos:altLabel>
+			<skos:altLabel>জোহানস্‌ ভারমির</skos:altLabel>
+			<skos:altLabel>Johannes Vermeer van Delft</skos:altLabel>
+			<skos:altLabel>jan van der meer der altere</skos:altLabel>
+			<skos:altLabel>Der Delftsche v. d. Neer</skos:altLabel>
+			<skos:altLabel>Johannis Vermeer</skos:altLabel>
+			<skos:altLabel>ヨハネス (japanisch) フェルメール</skos:altLabel>
+			<skos:altLabel>Vermeer, ...,</skos:altLabel>
+			<skos:altLabel>요네하스 페르메이르</skos:altLabel>
+			<skos:altLabel>ਜੋਹਾਨਸ ਵਰਮੀਅਰ</skos:altLabel>
+			<skos:altLabel>യോഹാൻ വെർമീർ</skos:altLabel>
+			<skos:altLabel>de Delfet Vander-Meer</skos:altLabel>
+			<skos:altLabel>Yohanesu Ferumēru</skos:altLabel>
+			<skos:altLabel>Johannes Reyniersz Vermeer</skos:altLabel>
+			<skos:altLabel>Iohannes Vermeer</skos:altLabel>
+			<skos:altLabel>约翰尼斯·弗美尔</skos:altLabel>
+			<skos:altLabel>Vermeer de Delft</skos:altLabel>
+			<skos:altLabel>De Meere</skos:altLabel>
+			<skos:altLabel>Jan van der Meer</skos:altLabel>
+			<skos:altLabel>Jana Vermeera z Delft</skos:altLabel>
+			<skos:altLabel>Jan van Der Meer</skos:altLabel>
+			<skos:altLabel>de Delfze van der Meer</skos:altLabel>
+			<skos:altLabel>Jan Vermeer of Delft</skos:altLabel>
+			<skos:altLabel>Yan Vermeer</skos:altLabel>
+			<skos:altLabel>Вермер</skos:altLabel>
+			<skos:altLabel>Γιοχάνες Βερμέερ</skos:altLabel>
+			<skos:altLabel>约翰尼斯·維梅爾</skos:altLabel>
+			<skos:altLabel>ヨハネス フェルメール</skos:altLabel>
+			<skos:altLabel>Vermeeri Johannes</skos:altLabel>
+			<skos:altLabel>Johannes Vermeer Van Delft</skos:altLabel>
+			<skos:altLabel>Iokhannes Vermeer Delftskii</skos:altLabel>
+			<skos:altLabel>フエルメール</skos:altLabel>
+			<skos:altLabel>J フェルメール</skos:altLabel>
+			<skos:altLabel>Van der Meer de Delft</skos:altLabel>
+			<skos:altLabel>Jan Vermeer von Delft</skos:altLabel>
+			<skos:altLabel>Der Meer</skos:altLabel>
+			<skos:altLabel>Joannis Vermeer</skos:altLabel>
+			<skos:altLabel>Vermeer</skos:altLabel>
+			<skos:altLabel>Йоханес Вермер</skos:altLabel>
+			<skos:altLabel>Jan Van der Meer de Delft</skos:altLabel>
+			<skos:altLabel>de Delfsche vander Meer</skos:altLabel>
+			<skos:prefLabel xml:lang="cs-CZ">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="da-DK">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="hr-HR">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="de-DE">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="fr-CH">Jan Vermeer van Delft</skos:prefLabel>
+			<skos:prefLabel xml:lang="it-IT">Jan Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="sv-SE">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="it-VA">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="lv-LV">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="en-US">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="ja-JP">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="nl-NL">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="en-AU">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="ca-ES">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="en-KR">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="es-ES">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="no-NO">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="fr-FR">Johannes Vermeer</skos:prefLabel>
+			<skos:prefLabel xml:lang="pt-PT">Vermeer op Delft</skos:prefLabel>
+			<skos:note>Ян</skos:note>
+			<skos:note>Dutch painter, 1632-1675</skos:note>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/175564520"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/309401611"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/991152502875710800003"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/310623824"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/174026082"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/126149719101011130007"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/186016388"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/174923208"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/309268027"/>
+			<edm:hasMet rdf:resource="http://viaf.org/viaf/309341960"/>
+			<rdaGr2:dateOfBirth>1632-10-31</rdaGr2:dateOfBirth>
+			<rdaGr2:dateOfDeath>1675-12-15</rdaGr2:dateOfDeath>
+			<owl:sameAs rdf:resource="http://www.idref.fr/027336336/id"/>
+			<owl:sameAs rdf:resource="http://www.wikidata.org/entity/Q41264"/>
+			<owl:sameAs rdf:resource="http://id.ndl.go.jp/auth/entity/00459685"/>
+			<owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb11940023b#foaf:Person"/>
+			<owl:sameAs rdf:resource="http://id.loc.gov/authorities/names/n79006488"/>
+			<owl:sameAs rdf:resource="http://dbpedia.org/resource/Johannes_Vermeer"/>
+			<owl:sameAs rdf:resource="http://data.bibsys.no/data/notrbib/authorityentry/x90170004"/>
+			<owl:sameAs rdf:resource="http://libris.kb.se/resource/auth/99582"/>
+			<owl:sameAs rdf:resource="http://datos.bne.es/resource/XX914312"/>
+			<owl:sameAs rdf:resource="http://isni.org/isni/000000010901268X"/>
+			<owl:sameAs rdf:resource="http://d-nb.info/gnd/118626590"/>
+			<owl:sameAs rdf:resource="http://vocab.getty.edu/ulan/500032927-agent"/>
+		</edm:Agent>
+	</metis:result>
+	<metis:result>
+		<edm:Agent rdf:about="http://www.wikidata.org/entity/Q762">
+			<skos:altLabel xml:lang="it">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Léonard</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Leonardo</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Leonardo da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="fr">Leonard de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="it">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="lt">Leonardas da Vinčis</skos:altLabel>
+			<skos:altLabel xml:lang="es">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="nl">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="nl">Leonardo Da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="nl">L. da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="hu">Leonardo ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="hu">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="de">Leonardo di ser Piero</skos:altLabel>
+			<skos:altLabel xml:lang="de">Lionardo di ser Piero</skos:altLabel>
+			<skos:altLabel xml:lang="de">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="el">Λεονάρντο</skos:altLabel>
+			<skos:altLabel xml:lang="el">ντα Βίντσι</skos:altLabel>
+			<skos:altLabel xml:lang="cs">Léonard de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="et">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="pt">Leonardo di Ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="ro">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="da">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="fi">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo di ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo</skos:altLabel>
+			<skos:altLabel xml:lang="en">da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. Davinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonhardo da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de Binçi</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo Davinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardi di Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo Vincj</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo De Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo da Avinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Vinci Leonardo da</skos:altLabel>
+			<skos:altLabel xml:lang="en">leonardo de avinçe</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardi da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de Avince</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonhardt Davinçé</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. da Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de a Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">da vinci leonardo</skos:altLabel>
+			<skos:altLabel xml:lang="en">La Da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leo. da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lunardo da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonhard da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leo da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lionardo</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonhard da Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. D'Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard. da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">De Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardi de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo d'Avinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard d'Avins</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. De Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leon da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo di Ser Piero da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Léonard de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leornadi De Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lornardi De Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardi Devinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo Da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardi</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo del Linc</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard de Vincy</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard Davincy</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leornardo de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. D. Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lionarda da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Léonard</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de Vinza</skos:altLabel>
+			<skos:altLabel xml:lang="en">Da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. di Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L.D. Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leandro da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardi d' Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo del Vincio</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leo da. Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leon. Da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo da Vinchi</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lonardo d'Avinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lionardi da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lion. Da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo da Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard da Vincy</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard Davinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Léonardo de Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lionardo da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonhard de Winci</skos:altLabel>
+			<skos:altLabel xml:lang="en">leonardo Vilchi</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo da vinze</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardavinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">leonardo de avinze</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. Da. Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">lorenzo de abinçi</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo di Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lieh-ao-na-to</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo de Binci</skos:altLabel>
+			<skos:altLabel xml:lang="en">leonardo de albinzi</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo di Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonardo D'Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonard d'Alvins</skos:altLabel>
+			<skos:altLabel xml:lang="en">L. de Pinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Lionarde da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">da Vinci Leonardo</skos:altLabel>
+			<skos:altLabel xml:lang="en">L da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">Le da Vinci</skos:altLabel>
+			<skos:altLabel xml:lang="en">L da Vince</skos:altLabel>
+			<skos:altLabel xml:lang="en">Leonhardt Davincé</skos:altLabel>
+			<skos:prefLabel xml:lang="lt">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="ro">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="da">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="ca">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="ru">Леонардо да Винчи</skos:prefLabel>
+			<skos:prefLabel xml:lang="cs">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="de">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="en">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="et">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="fi">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="bg">Леонардо да Винчи</skos:prefLabel>
+			<skos:prefLabel xml:lang="it">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="pl">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="sv">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="sk">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="es">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="ga">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="sl">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="el">Λεονάρντο ντα Βίντσι</skos:prefLabel>
+			<skos:prefLabel xml:lang="lv">Leonardo da Vinči</skos:prefLabel>
+			<skos:prefLabel xml:lang="pt">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="hu">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="nl">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="fr">Léonard de Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="mt">Leonardo da Vinci</skos:prefLabel>
+			<skos:prefLabel xml:lang="hr">Leonardo da Vinci</skos:prefLabel>
+			<skos:note xml:lang="fr">peintre, sculpteur, architecte et ingénieur, théoricien de l'art et chercheur scientifique italien</skos:note>
+			<skos:note xml:lang="en">Italian Renaissance polymath (1452-1519)</skos:note>
+			<skos:note xml:lang="it">artista, inventore e scienziato italiano</skos:note>
+			<skos:note xml:lang="pl">włoski artysta i uczony</skos:note>
+			<skos:note xml:lang="sk">taliansky architekt, hudobník, vynálezca, sochár a maliar</skos:note>
+			<skos:note xml:lang="fi">italialainen taidemaalari ja yleisnero</skos:note>
+			<skos:note xml:lang="cs">italský malíř, sochař, architekt, přírodovědec, hudebník, spisovatel, vynálezce a konstruktér</skos:note>
+			<skos:note xml:lang="ru">итальянский художник, учёный, изобретатель, писатель, один из крупнейших представителей искусства Высокого Возрождения</skos:note>
+			<skos:note xml:lang="pt">pintor renascentista</skos:note>
+			<skos:note xml:lang="es">polímata italiano</skos:note>
+			<skos:note xml:lang="hr">talijanski slikar, kipar, arhitekt, izumitelj, matematičar, glazbenik</skos:note>
+			<skos:note xml:lang="hu">olasz/itáliai polihisztor (1452-1519)</skos:note>
+			<skos:note xml:lang="nl">Italiaanse schilder, architect, ingenieur, uitvinder, ingenieur, filosoof, natuurkundige, anatomist en beeldhouwer</skos:note>
+			<skos:note xml:lang="de">italienischer Maler, Bildhauer, Architekt, Anatom, Ingenieur und Naturphilosoph (1452–1519)</skos:note>
+			<skos:note xml:lang="da">italiensk maler, billedhugger, arkitekt, ingeniør, opfinder, botaniker og anatom</skos:note>
+			<skos:note xml:lang="ca">home polimàtic del Renaixement italià</skos:note>
+			<skos:note xml:lang="sv">italienskt universalgeni</skos:note>
+			<skos:note xml:lang="ro">pictor, sculptor, arhitect, muzician, inginer, inventator, anatomist și geolog italian</skos:note>
+			<skos:note xml:lang="el">Ιταλός καλλιτέχνης της Αναγέννησης</skos:note>
+			<skos:note xml:lang="ga">ileolaí Iodálach</skos:note>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q183458"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q26648"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q321563"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q1474884"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q134307"/>
+			<edm:hasMet rdf:resource="http://www.wikidata.org/entity/Q2414609"/>
+			<rdaGr2:placeOfBirth rdf:resource="http://www.wikidata.org/entity/Q154184"/>
+			<rdaGr2:placeOfDeath rdf:resource="http://www.wikidata.org/entity/Q205116"/>
+			<rdaGr2:dateOfBirth>1452-04-24T00:00:00Z</rdaGr2:dateOfBirth>
+			<rdaGr2:dateOfDeath>1519-05-12T00:00:00Z</rdaGr2:dateOfDeath>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q121998"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q1028181"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q81096"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q11063"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q4964182"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q10872101"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q170790"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q1281618"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q270141"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q42973"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q13582652"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q193391"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q205375"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q36834"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q49757"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q639669"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q169470"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q2055046"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q2374149"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q593644"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q350979"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q3658608"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q901"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q14623005"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q5322166"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q36180"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q236122"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q737201"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q11023"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q521"/>
+			<rdaGr2:professionOrOccupation rdf:resource="http://www.wikidata.org/entity/Q11629"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q56229514"/>
+			<edm:isRelatedTo rdf:resource="http://www.wikidata.org/entity/Q371916"/>
+			<owl:sameAs rdf:resource="http://www.treccani.it/enciclopedia/leonardo-da-vinci-se-la-pittura-e-scienzia_%28I-classici-della-pittura%29/"/>
+			<owl:sameAs rdf:resource="http://viaf.org/viaf/24604287"/>
+			<owl:sameAs rdf:resource="http://d-nb.info/gnd/118640445"/>
+			<owl:sameAs rdf:resource="http://id.loc.gov/authorities/names/n79034525"/>
+			<owl:sameAs rdf:resource="http://vocab.getty.edu/ulan/500010879"/>
+			<owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb11912491s"/>
+			<owl:sameAs rdf:resource="http://www.idref.fr/085975915/id"/>
+			<owl:sameAs rdf:resource="http://id.ndl.go.jp/auth/ndlna/00447394"/>
+			<owl:sameAs rdf:resource="https://www.freebase.com/m/04lg6"/>
+			<owl:sameAs rdf:resource="https://g.co/kg/m/04lg6"/>
+			<owl:sameAs rdf:resource="http://openlibrary.org/works/OL54736A"/>
+			<owl:sameAs rdf:resource="http://libris.kb.se/resource/auth/207435"/>
+			<owl:sameAs rdf:resource="http://datos.bne.es/resource/XX971832"/>
+			<owl:sameAs rdf:resource="http://data.bibliotheken.nl/id/thes/p068519451"/>
+			<owl:sameAs rdf:resource="https://livedata.bibsys.no/authority/90075047"/>
+			<owl:sameAs rdf:resource="http://kulturarvsdata.se/LSH/agents/17814"/>
+			<owl:sameAs rdf:resource="http://ta.sandrart.net/-person-195"/>
+			<owl:sameAs rdf:resource="http://id.worldcat.org/fast/33122"/>
+			<owl:sameAs rdf:resource="http://data.cervantesvirtual.com/person/2248"/>
+			<owl:sameAs rdf:resource="http://nlg.okfn.gr/resource/authority/record78924"/>
+			<owl:sameAs rdf:resource="http://lod.nl.go.kr/resource/KAC199616385"/>
+			<owl:sameAs rdf:resource="https://libris.kb.se/zw9cd5zh025njcf"/>
+			<owl:sameAs rdf:resource="http://dbpedia.org/resource/Leonardo_da_Vinci"/>
+		</edm:Agent>
+	</metis:result>
+</metis:results>

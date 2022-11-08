@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,9 +16,10 @@ import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
+@Disabled("needs configuration file")
 public class PersistentAnnotationDaoTest {
 
-	@Resource(name = "annotation_db_annotationDao")
+    @Resource(name = "annotation_db_annotationDao")
 	PersistentAnnotationDao<PersistentAnnotation, Long> annotationDao;
 	
 	public final Integer SEQUENCE_LENGTH = 10;

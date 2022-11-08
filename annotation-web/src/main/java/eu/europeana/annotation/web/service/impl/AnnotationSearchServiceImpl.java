@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
-import com.google.common.base.Strings;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -21,12 +20,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.service.PersistentAnnotationService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
-import eu.europeana.annotation.solr.service.impl.SolrAnnotationUtils;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.search.QueryFilteringFields;
 import eu.europeana.annotation.web.service.AnnotationSearchService;
 import eu.europeana.annotation.web.service.SearchServiceUtils;
-import eu.europeana.api.common.config.I18nConstants;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.HttpException;
 
@@ -35,29 +32,13 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   @Resource
   AnnotationConfiguration configuration;
 
-  @Resource
-  SolrAnnotationService solrService;
+  @Resource(name="solrAnnotationService")
+  SolrAnnotationService solrAnnotationService;
 
-  @Resource
+  @Resource(name="annotation_db_annotationService")
   PersistentAnnotationService mongoPersistance;
 
-  // @Resource
-  // AuthenticationService authenticationService;
-
   Logger logger = LogManager.getLogger(getClass());
-
-  // public AuthenticationService getAuthenticationService() {
-  // return authenticationService;
-  // }
-  //
-  // public void setAuthenticationService(AuthenticationService authenticationService) {
-  // this.authenticationService = authenticationService;
-  // }
-
-  @Override
-  public String getComponentName() {
-    return configuration.getComponentName();
-  }
 
   protected AnnotationConfiguration getConfiguration() {
     return configuration;
@@ -68,11 +49,11 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   }
 
   public SolrAnnotationService getSolrService() {
-    return solrService;
+    return solrAnnotationService;
   }
 
   public void setSolrService(SolrAnnotationService solrService) {
-    this.solrService = solrService;
+    this.solrAnnotationService = solrService;
   }
 
   protected ResultSet<? extends AnnotationView> searchItems(Query query) throws HttpException {
@@ -204,10 +185,6 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String sort,
       String sortOrder, int pageNr, int pageSize, SearchProfiles profile) {
 
-    // TODO: check if needed
-    // String[] normalizedFacets = StringArrayUtils.splitWebParameter(facets);
-    boolean isFacetsRequested = isFacetsRequest(facets);
-
     Query searchQuery = new QueryImpl();
     searchQuery.setQuery(queryString);
     if (pageNr < 0)
@@ -219,15 +196,14 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     int rows = buildRealPageSize(pageSize, profile);
     searchQuery.setPageSize(rows);
 
-    if (isFacetsRequested)
-      searchQuery.setFacetFields(facets);
+    searchQuery.setFacetFields(facets);
 
     translateSearchFilters(filters);
     searchQuery.setFilters(filters);
     searchQuery.setSearchProfile(profile);
 
     setSearchFields(searchQuery, profile);
-    if (!Strings.isNullOrEmpty(sort)) {
+    if (!StringUtils.isBlank(sort)) {
       searchQuery.setSort(sort);
       searchQuery.setSortOrder(sortOrder);
     }
@@ -249,7 +225,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
 
   private void setSearchFields(Query searchQuery, SearchProfiles profile) {
     switch (profile) {
-      case FACET:
+      case FACETS:
         // only facets, do not return results but how? in page based
         // searchQuery.setViewFields(new
         // String[]{SolrAnnotationFields.ANNOTATION_ID_URL});
@@ -268,10 +244,6 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
         break;
     }
 
-  }
-
-  protected boolean isFacetsRequest(String[] facets) {
-    return facets != null && facets.length > 0;
   }
 
   protected void translateSearchFilters(String[] filters) {

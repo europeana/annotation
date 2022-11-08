@@ -1,0 +1,7 @@
+annotation.api.key=
+
+oauth.service.uri=
+oauth.token.request.params.regular=
+oauth.token.request.params.admin=
+
+annotation.item.data.endpoint=

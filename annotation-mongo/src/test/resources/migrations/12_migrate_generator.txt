@@ -8,14 +8,52 @@ db.getCollection('annotation').distinct("creator.httpUrl")
 #migration of creator required for http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24" },
-     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a" } }
+     { $set: { 
+     		"generator.httpUrl": "https://api.europeana.eu/apikey/408ae803-544d-4329-97c8-32382bcfea0a",
+     		"generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     		"generator.agentType" : "Software",
+        	"generator.internalType" : "SOFTWARE"
+     		} 
+     }
 )
 
 #http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8
 db.getCollection('annotation').updateMany(   
      { "creator.httpUrl": "http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8" },
-     { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/8d18a824-8d98-4251-af2c-56514732ce5a" } }
+     { $set: { 
+     	"generator.httpUrl": "https://api.europeana.eu/apikey/8d18a824-8d98-4251-af2c-56514732ce5a",
+     	 "generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     	 "generator.agentType" : "Software",
+         "generator.internalType" : "SOFTWARE"
+     	} 
+     }
 )
+
+#assign all transcriptions to transcribathon user
+#http://data.europeana.eu/user/df872745-6ab5-4822-802e-34082c0da0b8
+db.getCollection('annotation').updateMany(   
+     { "motivation":"transcribing" },
+     { $set: { 
+     	 "creator.httpUrl" : "http://data.europeana.eu/user/64e3a49c-c619-4637-8643-80fcce1dc12c", 
+     	 "generator.httpUrl" : "https://api.europeana.eu/apikey/d87ddc3d-711e-4871-b3d8-64b1e1b97476",
+     	 "generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     	 "generator.agentType" : "Software",
+         "generator.internalType" : "SOFTWARE"
+     	} 
+     }
+)
+
+#update lastUpdate timestamp
+db.getCollection('annotation').updateMany(   
+     { "motivation":"transcribing" },
+     { $set: { 
+		"lastUpdate" : ISODate("2022-08-23T16:25:21.860Z")     	 
+     	} 
+     }
+)
+
+
+
 
 ###### ACCEPTANCE environment
 #migration of creator required for http://data.europeana.eu/user/1dc2799c-b236-4285-ab74-71efd92d8b24
@@ -76,6 +114,15 @@ db.getCollection('annotation').updateMany(
      { $set: { "generator.httpUrl": "https://api.europeana.eu/apikey/f66fe60d-4829-4f90-affb-b0360dbca477" } }
 )
 
+db.getCollection('annotation').updateMany(   
+     { },
+     { $set: { 
+     	 "generator.className" : "eu.europeana.annotation.definitions.model.agent.impl.SoftwareAgent",
+     	 "generator.agentType" : "Software",
+         "generator.internalType" : "SOFTWARE"
+     	} 
+     }
+)
 
 
 

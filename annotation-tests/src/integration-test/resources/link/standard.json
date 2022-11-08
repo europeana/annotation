@@ -1,0 +1,13 @@
+{
+	"@context": "http://www.europeana.eu/annotation/context.jsonld",
+	"type": "Annotation",
+	"motivation": "linking",
+	"created": "2015-02-27T12:00:43Z",
+	"generator": "http://europeana.transcribathon.eu",
+	"target": [
+		"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19584",
+		"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_6191",
+		"http://data.europeana.eu/item/2020601/https___1914_1918_europeana_eu_contributions_19586"
+	],
+	"oa:equivalentTo": "https://europeana.transcribathon.eu/documents/story/?story=106191"
+}

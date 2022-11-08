@@ -1,0 +1,19 @@
+{
+    "whitelist": [
+		{
+			"name": "data.europeana",
+			"httpUrl": "http://data.europeana.eu",
+			"status": "enabled"
+		}, 	
+		{
+			"name": "wikidata",
+			"httpUrl": "http://wikidata.org",
+			"status": "enabled"
+		}, 	
+		{
+			"name": "dbpedia",
+			"httpUrl": "http://dbpedia.org",
+			"status": "enabled"
+		}
+    ]
+}

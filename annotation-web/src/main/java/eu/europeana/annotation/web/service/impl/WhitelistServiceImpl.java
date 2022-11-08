@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
@@ -20,7 +18,7 @@ import eu.europeana.annotation.web.service.WhitelistService;
 
 public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements WhitelistService {
 
-	@Resource
+    @Resource(name="annotation_db_whitelistService")
 	PersistentWhitelistService mongoWhitelistPersistence;
 
 	public PersistentWhitelistService getMongoWhitelistPersistence() {

@@ -5,7 +5,7 @@
 package eu.europeana.annotation.connection;
 
 import java.io.IOException;
-
+import java.io.InputStream;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -25,7 +25,6 @@ public class HttpConnection {
     public static final int DEFAULT_TIMEOUT_CONNECTION = 40000;
     private static final int STATUS_OK_START = 200;
     private static final int STATUS_OK_END = 299;
-    private static final String ENCODING = "UTF-8";
     private HttpClient httpClient = null;
     private int connectionRetries, connectionTimeout;
     
@@ -46,48 +45,31 @@ public class HttpConnection {
 	this(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
     }
     
-    public String getURLContent(String url) throws IOException {
+    public InputStream getURLContent(String url) throws IOException {
         HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
         get.setRequestHeader("Accept", "application/xml");
 
-
-        try {
-            client.executeMethod(get);
-
-            if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
-                byte[] byteResponse = get.getResponseBody();
-                String res = new String(byteResponse, ENCODING);
-                return res;
-            } else {
-                return null;
-            }
-
-        } finally {
-            get.releaseConnection();
+        client.executeMethod(get);
+        if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+            return get.getResponseBodyAsStream();
+        } else {
+            return null;
         }
     }
     
-    public String postRequest(String url, String body) throws IOException {
+    public InputStream postRequest(String url, String body) throws IOException {
         HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
         post.setRequestHeader("Accept", "application/xml");
         StringRequestEntity requestBody = new StringRequestEntity(body, "application/json;charset=UTF-8", null);
         post.setRequestEntity(requestBody);
 
-        try {
-            client.executeMethod(post);
-
-            if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
-                byte[] byteResponse = post.getResponseBody();
-                String res = new String(byteResponse, ENCODING);
-                return res;
-            } else {
-                return null;
-            }
-
-        } finally {
-            post.releaseConnection();
+        client.executeMethod(post);
+        if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
+            return post.getResponseBodyAsStream();
+        } else {
+            return null;
         }
     }
    

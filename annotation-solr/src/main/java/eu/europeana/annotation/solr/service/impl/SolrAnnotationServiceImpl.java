@@ -3,14 +3,15 @@ package eu.europeana.annotation.solr.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.PivotField;
@@ -18,7 +19,11 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
@@ -36,13 +41,25 @@ import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
-@Component
+@Service(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
+@PropertySource(
+    value = {"classpath:config/annotation.properties", "classpath:config/annotation.user.properties"},
+    ignoreResourceNotFound = true)
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
-    @Resource
+    @Autowired
+    @Qualifier(AnnotationConfiguration.BEAN_ANNO_SOLR_CLIENT)
     SolrClient solrClient;
-    @Resource
-    AnnotationConfiguration configuration;
+    
+    @Value("${solr.stats.facets:10}")
+    private int solrStatsFacets;
+    
+    @Value("${annotation.data.endpoint:}")
+    private String annotationDataEndpoint;
+
+    
+//    @Resource
+//    AnnotationConfiguration configuration;
 
     public void setSolrClient(SolrClient solrServer) {
 	this.solrClient = solrServer;
@@ -87,7 +104,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    if (anno instanceof SolrAnnotation)
 		indexedAnno = (SolrAnnotation) anno;
 	    else {
-		indexedAnno = copyIntoSolrAnnotation(anno, null, configuration.getAnnotationBaseUrl());
+		indexedAnno = copyIntoSolrAnnotation(anno, null, annotationDataEndpoint);
 	    }
 	    
 	    UpdateResponse rsp = solrClient.addBean(indexedAnno);
@@ -137,8 +154,6 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    throws AnnotationServiceException {
 
 	ResultSet<? extends AnnotationView> res = null;
-
-	String msg = term + "' and start: '" + start + "' and rows: '" + limit + "'.";
 
 	/**
 	 * Construct a SolrQuery
@@ -384,9 +399,11 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         String nestedFacetsFields = mainFacetField + ',' + SolrAnnotationConstants.SCENARIO;
         query.addFacetPivotField(nestedFacetsFields);
         query.setFacet(true);
-        if(getConfiguration().getStatsFacets() > 0) {
-          query.setFacetLimit(getConfiguration().getStatsFacets());
+        if(solrStatsFacets > 0) {
+          query.setFacetLimit(solrStatsFacets);
         }  
+        
+        
         query.setRows(0);       
         // Query the server
         try {
@@ -426,14 +443,14 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	      indexedAnnotation = (SolrAnnotation) anno;
 	    }
 	    else {
-	      indexedAnnotation = copyIntoSolrAnnotation(anno, summary, configuration.getAnnotationBaseUrl());
+	      indexedAnnotation = copyIntoSolrAnnotation(anno, summary, annotationDataEndpoint);
 	    }
 	    return store(indexedAnnotation);
 	}
     }
 
     public void delete(long annotationIdentifier) throws AnnotationServiceException {
-	String annoUri = AnnotationIdHelper.buildAnnotationUri(configuration.getAnnotationBaseUrl(), annotationIdentifier);
+	String annoUri = AnnotationIdHelper.buildAnnotationUri(annotationDataEndpoint, annotationIdentifier);
 	delete(annoUri);
     }
 
@@ -482,72 +499,66 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     public void index(ModerationRecord moderationRecord) {
 
     }
-    
-
 
 	@Override
-	public List<String> checkDuplicateAnnotations(Annotation anno, boolean noSelfDupplicate) throws AnnotationServiceException {
-		SolrQuery query = null;
+	public Set<String> checkDuplicateAnnotations(Annotation anno, boolean noSelfDupplicate) throws AnnotationServiceException {
+		List<SolrQuery> queries = new ArrayList<>();
 		switch (anno.getMotivationType()) {
 		case TRANSCRIBING  :
-			query=solrUniquenessQueryTranscriptions(anno, noSelfDupplicate);
-		    break;
+		  queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
+		  break;
 		case CAPTIONING :
-			query=solrUniquenessQueryCaptions(anno, noSelfDupplicate);
-		    break;
+		  queries.add(solrUniquenessQueryCaptions(anno, noSelfDupplicate));
+		  queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
+		  break;
 		case SUBTITLING :
-			query=solrUniquenessQuerySubtitles(anno, noSelfDupplicate);
-		    break;
+		  queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
+		  break;
 		case TAGGING :
-			if(BodyInternalTypes.isSemanticTagBody(anno.getBody().getInternalType())) {
-				query=solrUniquenessQuerySemanticTagging(anno, noSelfDupplicate);
-			}
-			else if(BodyInternalTypes.isSimpleTagBody(anno.getBody().getInternalType())) {
-				query=solrUniquenessQuerySimpleTagging(anno, noSelfDupplicate);
-			}
-		    break;
+		  if(BodyInternalTypes.isSemanticTagBody(anno.getBody().getInternalType())) {
+		    queries.add(solrUniquenessQuerySemanticTagging(anno, noSelfDupplicate));
+		  }
+		  else if(BodyInternalTypes.isSimpleTagBody(anno.getBody().getInternalType())) {
+		    queries.add(solrUniquenessQuerySimpleTagging(anno, noSelfDupplicate));
+		  }
+		  break;
 //		case LINKING :
 //			query=solrUniquenessQueryLinking(anno, noSelfCheck);
 //		    break;
 	    case LINKFORCONTRIBUTING :
-	        query=solrUniquenessQueryLinkForContributing(anno, noSelfDupplicate);
-            break;
+	      queries.add(solrUniquenessQueryLinkForContributing(anno, noSelfDupplicate));
+          break;
 		default:
-		    break;
-
-		}
-		
-		if(query==null) {
-		  return null;
+		  break;
 		}
 
-		getLogger().debug("Solr query for checking the duplicate annotations has been created.");
-		//getting back only the "anno_id" field
-		query.set("fl", "anno_id");
+		getLogger().debug("List of Solr querier for checking the duplicate annotations has been created.");
 
 		/**
 		 * Query the server
 		 */
-		QueryResponse rsp=null;
-		try {
-		    rsp = solrClient.query(query);
-		} 
-	    catch (SolrServerException | RemoteSolrException | IOException ex) {
-	      throw new AnnotationServiceException(
-	          "Unexpected Solr server exception occured when searching with the query: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()), ex);
-	    }		
-		
-		List<String> responseAnnotationIds = null;
-		final SolrDocumentList docs = rsp.getResults();
-		if(docs!=null && docs.size()>0) {
-			responseAnnotationIds = new ArrayList<String>();
-			for (SolrDocument returnedDoc : docs) {
-				responseAnnotationIds.add(String.valueOf(returnedDoc.getFieldValue("anno_id")));
-			}
+		Set<String> responseAnnoIds = new HashSet<>();
+		for(SolrQuery query : queries) {
+    		QueryResponse rsp=null;
+    		try {
+    		    rsp = solrClient.query(query);
+    		} 
+    	    catch (SolrServerException | RemoteSolrException | IOException ex) {
+    	      throw new AnnotationServiceException(
+    	          "Unexpected Solr server exception occured when searching with the query: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()), ex);
+    	    }		
+    		if(rsp==null) {
+    		  continue;
+    		}
+    		
+    		final SolrDocumentList docs = rsp.getResults();
+    		if(docs!=null) {
+    			for (SolrDocument returnedDoc : docs) {
+    			  responseAnnoIds.add(String.valueOf(returnedDoc.getFieldValue(SolrAnnotationConstants.ANNO_ID)));
+    			}
+    		}
 		}
-
-		return responseAnnotationIds;
-		
+		return responseAnnoIds;
 	}
 	
 	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
@@ -561,52 +572,51 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
       }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
 	  return query;
 	}
-	
-	private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfDupplicate) {
+
+    private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
       query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
-	}
+    }
 
-  private void addNotSelfDupplicateFilter(Annotation anno, SolrQuery query, boolean noSelfDupplicate) {
-    if(noSelfDupplicate && anno.getIdentifier() > 0) {
-      query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":" + anno.getIdentifier());
-    }
-  }
-  
-  private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
-    if(anno.getTarget()!=null) {
-      // extract URIs for target_uri field
-      List<String> targetUris = extractUriValues(anno.getTarget());
-      if(targetUris!=null) {
-        // Extract URIs for target_record_id
-        List<String> recordIds = extractRecordIds(targetUris);
-        if(recordIds != null) {
-          for(String recordIdElem: recordIds) {
-            query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
-          }
-        }  
-      }
-    }
-  }
-	
-	private SolrQuery solrUniquenessQuerySubtitles(Annotation anno, boolean noSelfDupplicate) {
+    private SolrQuery solrUniquenessQueryCaptionsAndSubtitles(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.SUBTITLING.getOaType() + "\"");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":(\"" + MotivationTypes.CAPTIONING.getOaType() + "\"" 
+          + " OR " + "\"" + MotivationTypes.SUBTITLING.getOaType() + "\")");
       query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
-      if(anno.getBody().getLanguage()!=null) {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*"); 
-      }
-      else {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
-      }
+      query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
-	}
+    }
+
+    private void addNotSelfDupplicateFilter(Annotation anno, SolrQuery query, boolean noSelfDupplicate) {
+      if(noSelfDupplicate && anno.getIdentifier() > 0) {
+        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":" + anno.getIdentifier());
+      }
+    }
+  
+    private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
+      if(anno.getTarget()!=null) {
+        // extract URIs for target_uri field
+        List<String> targetUris = extractUriValues(anno.getTarget());
+        if(targetUris!=null) {
+          // Extract URIs for target_record_id
+          List<String> recordIds = extractRecordIds(targetUris);
+          if(recordIds != null) {
+            for(String recordIdElem: recordIds) {
+              query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
+            }
+          }  
+        }
+      }
+    }
 	
 	private SolrQuery solrUniquenessQuerySemanticTagging(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
@@ -619,6 +629,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
       }
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
 	}
 	
@@ -637,6 +648,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       }
       
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
 	}
 
@@ -659,15 +671,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	private SolrQuery solrUniquenessQueryLinkForContributing(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
-
       addTargetRecordIdFilter(anno, query);
-
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
   }
-
-  public AnnotationConfiguration getConfiguration() {
-    return configuration;
-  }
-
 }
