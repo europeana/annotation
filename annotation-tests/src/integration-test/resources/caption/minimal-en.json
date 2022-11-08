@@ -1,0 +1,15 @@
+{
+  "motivation": "captioning",
+  "body": {
+    "type": "FullTextResource",
+    "language": "en",
+    "value": " WEBVTT\nNOTE Paragraph\n00:00:00.988 --> 00:00:03.572\nDolo the latest news\nof fashion for lady\n...\n00:00:30.359 --> 00:00:33.608\nwith the grand finale:\nCarnival with the Eskimo people.\n\n00:00:34.199 --> 00:00:35.780\n <special char/> music) <special char/> ",
+    "format": "text/vtt",
+    "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/2051933/data_euscreenXL_EUS_D61E8DF003E30114621A92ABDE846AD7",
+    "source": 
+    "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"
+  }
+}
