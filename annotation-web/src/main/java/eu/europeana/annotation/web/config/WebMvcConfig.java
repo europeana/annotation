@@ -52,7 +52,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         
         registry.addMapping("/annotation/**")
         .allowedOrigins("*")
-        .allowedMethods("POST,GET,OPTIONS,HEAD")
+        .allowedMethods("POST", "GET", "OPTIONS", "HEAD")
         .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.VARY, HttpHeaders.LINK, HttpHeaders.ETAG, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
         .maxAge(600L); // in seconds
