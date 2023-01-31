@@ -38,7 +38,7 @@ metis.baseUrl=<METIS DEREF URL>
 annotation.api.endpoint=http://localhost:8080/annotation
 annotation.data.endpoint=http://localhost:8080/annotation
 annotation.user.data.endpoint=http://data.europeana.eu/user
-annotation.client.data.endpoint=http://data.europeana.eu/software
+annotation.client.api.endpoint=https://api.europeana.eu/apikey
 annotation.item.data.endpoint=http://data.europeana.eu/item
 
 
