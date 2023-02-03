@@ -19,7 +19,7 @@ public interface AnnotationConfiguration {
     String ANNO_API_ENDPOINT = "annotation.api.endpoint";
     String ANNO_DATA_ENDPOINT = "annotation.data.endpoint";
     String ANNO_USER_DATA_ENDPOINT = "annotation.user.data.endpoint";
-    String ANNO_CLIENT_DATA_ENDPOINT = "annotation.client.data.endpoint";
+    String ANNO_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
     String ANNO_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
     String MONGO_DATABASE_NAME = "mongodb.annotation.databasename";
     String MONGO_COLLECTION_NAME = "annotation";
