@@ -142,7 +142,7 @@
 		        <includes>
 		            <include>*/*.properties</include>
 		            <include>*/*.info</include>
-		            <include>*.xml</include>
+		            <include>*/*.xml</include>
 		        </includes>
 		        <excludes>
 		            <exclude>*/*.jks</exclude>
