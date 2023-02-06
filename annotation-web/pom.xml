@@ -259,6 +259,7 @@
 		            <include>*/*.properties</include>
 		            <include>*/*.info</include>
 		            <include>*.xml</include>
+		            <include>*.json</include>
 		        </includes>
 		        <excludes>
 		            <exclude>*/*.jks</exclude>
@@ -270,6 +271,7 @@
 		        <includes>
 		            <include>*/*.jks</include>
 		            <include>public/**</include>
+		            <include>context/**</include>
 		        </includes>
 		    </resource>
 		</resources>	
