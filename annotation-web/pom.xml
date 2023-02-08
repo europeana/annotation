@@ -256,20 +256,20 @@
 		        <directory>src/main/resources</directory>
 		        <filtering>true</filtering>
 		        <includes>
-		            <include>*/*.properties</include>
-		            <include>*/*.info</include>
+		            <include>**.properties</include>
+		            <include>**.info</include>
 		            <include>*.xml</include>
-		            <include>*.json</include>
+		            <include>**.json</include>
 		        </includes>
 		        <excludes>
-		            <exclude>*/*.jks</exclude>
+		            <exclude>**.jks</exclude>
 		        </excludes>
 		    </resource>
 		    <resource>
 		        <directory>src/main/resources</directory>
 		        <filtering>false</filtering>
 		        <includes>
-		            <include>*/*.jks</include>
+		            <include>**.jks</include>
 		            <include>public/**</include>
 		            <include>context/**</include>
 		        </includes>
