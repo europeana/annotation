@@ -6,6 +6,12 @@ import java.net.URLClassLoader;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 
+@Deprecated
+/**
+ * @deprecated replaced by SocksProxyActivator
+ * @author GordeaS
+ *
+ */
 public abstract class BasePropertyLoaderListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
 	protected File getConfigFile(String filename) {
