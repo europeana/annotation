@@ -1,6 +1,6 @@
 # Please note, this file should have unix-based end of line
 # Use same version as CloudFoundry deployment
-FROM library/mongo:3.6.17
+FROM library/mongo:4.4.15
 
 EXPOSE 27017
 

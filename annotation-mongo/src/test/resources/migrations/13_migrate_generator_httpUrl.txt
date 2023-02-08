@@ -1,0 +1,6 @@
+#replaces the nulls in the generator.httpUrl, from null/837e4b22-b3eb-4868-9d39-b23be16c111f, to https://api.europeana.eu/apikey/837e4b22-b3eb-4868-9d39-b23be16c111f
+db.getCollection("annotation").find({"generator.httpUrl":{$regex:"null/*"}}).forEach(
+    function (elem) {
+        newGeneratorId=elem.generator.httpUrl.replace("null/","https://api.europeana.eu/apikey/");
+        db.annotation.updateOne({_id: elem._id},{$set:{"generator.httpUrl": newGeneratorId}});
+});

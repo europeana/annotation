@@ -5,6 +5,12 @@ import org.springframework.context.ApplicationListener;
 
 import eu.europeana.api.commons.web.context.BaseApplicationLoaderListener;
 
+@Deprecated
+/**
+ * @deprecated replaced by SocksProxyActivator
+ * @author GordeaS
+ *
+ */
 public class ApplicationLoaderListener extends BaseApplicationLoaderListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>{
 
 	public ApplicationLoaderListener(){
