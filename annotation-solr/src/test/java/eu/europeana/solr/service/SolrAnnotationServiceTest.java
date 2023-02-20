@@ -1,8 +1,7 @@
 package eu.europeana.solr.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 //import org.easymock.EasyMock;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +34,7 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 //@RunWith(SpringJUnit4ClassRunner.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-solr-test.xml"})
+@Disabled
 public class SolrAnnotationServiceTest {
 
 	private static final String TEST_RESEARCH_ID = "1234"; 

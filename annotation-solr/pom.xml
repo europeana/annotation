@@ -75,12 +75,14 @@
 			<scope>test</scope>
 			<version>${version.org.junit.jupiter}</version>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-test-framework</artifactId>
 			<version>${version.apacheSolr}</version>
 			<scope>test</scope>
 	    </dependency>
+	    -->
 
 	</dependencies>
 </project>
