@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
-import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
@@ -30,6 +28,9 @@ import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
+import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -55,14 +56,14 @@ public class ManagementRest extends BaseRest {
     }
 
     @Resource(name = "annotation_db_apilockService")
-    private PersistentApiWriteLockService indexingJobService;
+    private ApiWriteLockService apiWriteLockService;
 
-    public PersistentApiWriteLockService getApiWriteLockService() {
-	return indexingJobService;
+    public ApiWriteLockService getApiWriteLockService() {
+	return apiWriteLockService;
     }
 
-    public void setPersistentIndexingJobService(PersistentApiWriteLockService indexingJobService) {
-	this.indexingJobService = indexingJobService;
+    public void setPersistentIndexingJobService(ApiWriteLockService apiWriteLockService) {
+	this.apiWriteLockService = apiWriteLockService;
     }
 
     @RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = {
@@ -284,7 +285,7 @@ public class ManagementRest extends BaseRest {
 
 	// get last active lock check if start date is correct and end date does
 	// not exist
-	PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+	ApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 	//if already locked, an exception is thrown in verifyWriteAccess
 	boolean isLocked = false;
 	if(activeLock == null) {
@@ -305,12 +306,12 @@ public class ManagementRest extends BaseRest {
 	return buildResponse(jsonStr, httpStatus);
     }
 
-    private boolean isLocked(PersistentApiWriteLock activeLock) {
+    private boolean isLocked(ApiWriteLock activeLock) {
 	return activeLock != null && activeLock.getStarted() != null && activeLock.getEnded() == null;
     }
 
-    @RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+    @RequestMapping(value = "/admin/lock", method = RequestMethod.DELETE, produces = {
+	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> unlockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
@@ -319,10 +320,10 @@ public class ManagementRest extends BaseRest {
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/unlock");
 
-	PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+	ApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 	if (activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
 	    getApiWriteLockService().unlock(activeLock);
-	    PersistentApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+	    ApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
 	    if (lock == null) {
 		response.setStatus("Server is now unlocked for changes");
 		response.success = true;

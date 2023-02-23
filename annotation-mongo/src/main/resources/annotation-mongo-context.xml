@@ -38,12 +38,7 @@
 	<bean name="annotation_db_whitelistService" class="eu.europeana.annotation.mongo.service.PersistentWhitelistServiceImpl"
 		p:dao-ref="annotation_db_whitelistDao"/>
 
-<!-- 
-	<bean name="annotation_db_clientService" class="eu.europeana.annotation.mongo.service.PersistentClientServiceImpl"
-		p:dao-ref="annotation_db_clientDao"/>
-		 -->
-		
-	<bean name="annotation_db_apilockService" class="eu.europeana.annotation.mongo.service.PersistentApiWriteLockServiceImpl"
+	<bean name="annotation_db_apilockService" class="eu.europeana.api.commons.nosql.service.impl.ApiWriteLockServiceImpl"
 		p:dao-ref="annotation_db_lockDao"/>
 	
 			
