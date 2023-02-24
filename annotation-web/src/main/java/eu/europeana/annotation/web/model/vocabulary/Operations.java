@@ -6,8 +6,8 @@ public interface Operations extends eu.europeana.api.commons.web.model.vocabular
 	public static final String REPORT = "report";
 	
 	//admin
-	@Deprecated
-	public static final String ADMIN_UNLOCK = "admin_unlock";
+//	@Deprecated
+//	public static final String ADMIN_UNLOCK = "admin_unlock";
 	public static final String ADMIN_REINDEX = "admin_reindex"; 
 	
 	//moderation

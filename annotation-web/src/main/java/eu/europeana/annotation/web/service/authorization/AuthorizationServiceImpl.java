@@ -22,9 +22,7 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService
   @Resource(name = "annotation_db_apilockService")
   private ApiWriteLockService apiWriteLockService;
   
-  private static final Set<String> maintenanceOperations = Set.of(Operations.WRITE_UNLOCK, Operations.ADMIN_UNLOCK, Operations.ADMIN_REINDEX);
-
-  public AuthorizationServiceImpl() {}
+  private final Set<String> maintenanceOperations = Set.of(Operations.WRITE_UNLOCK, Operations.ADMIN_REINDEX);
 
   // @Override
   protected String getAuthorizationApiName() {

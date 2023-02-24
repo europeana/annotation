@@ -11,7 +11,10 @@ public enum UserRoles implements Role {
 	anonimous(new String[]{Operations.RETRIEVE}), 
 	user(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
 	tester(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
-	admin(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT, Operations.ADMIN_ALL, Operations.ADMIN_UNLOCK, Operations.ADMIN_REINDEX, Operations.WHITELIST_ALL, Operations.WHITELIST_CREATE, Operations.WHITELIST_RETRIEVE, Operations.WHITELIST_DELETE}), 
+	admin(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT, 
+	    Operations.ADMIN_ALL, Operations.WRITE_UNLOCK, Operations.WRITE_LOCK, 
+	    Operations.ADMIN_REINDEX, Operations.WHITELIST_ALL, 
+	    Operations.WHITELIST_CREATE, Operations.WHITELIST_RETRIEVE, Operations.WHITELIST_DELETE}), 
 	moderator(new String[]{Operations.MODERATION_ALL});
 	
 	String[] operations;

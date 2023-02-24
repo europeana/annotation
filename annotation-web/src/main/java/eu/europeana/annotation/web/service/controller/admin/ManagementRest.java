@@ -315,7 +315,7 @@ public class ManagementRest extends BaseRest {
     @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> unlockWriteOperations(
 	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
-	verifyWriteAccess(Operations.ADMIN_UNLOCK, request);
+	verifyWriteAccess(Operations.WRITE_UNLOCK, request);
 
 	AnnotationOperationResponse response;
 	response = new AnnotationOperationResponse("admin", "/admin/unlock");
