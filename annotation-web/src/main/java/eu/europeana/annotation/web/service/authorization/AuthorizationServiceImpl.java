@@ -1,19 +1,14 @@
 package eu.europeana.annotation.web.service.authorization;
 
+import java.util.Set;
 import javax.annotation.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
-import eu.europeana.api.common.config.I18nConstantsAnnotation;
-import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
-import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
 import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
-import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public class AuthorizationServiceImpl extends BaseAuthorizationService
     implements AuthorizationService {
@@ -26,6 +21,8 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService
 
   @Resource(name = "annotation_db_apilockService")
   private ApiWriteLockService apiWriteLockService;
+  
+  private static final Set<String> maintenanceOperations = Set.of(Operations.WRITE_UNLOCK, Operations.ADMIN_UNLOCK, Operations.ADMIN_REINDEX);
 
   public AuthorizationServiceImpl() {}
 
@@ -59,36 +56,10 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService
     return apiWriteLockService;
   }
 
-
-
-  /**
-   * Check if a write lock is in effect. Returns HttpStatus.LOCKED for change operations in case the
-   * write lock is active.
-   * 
-   * @param userToken
-   * @param operationName
-   * @throws UserAuthorizationException
-   */
-  public void checkWriteLockInEffect(String operationName)
-      throws ApplicationAuthenticationException {
-    ApiWriteLock lastWriteLock;
-    try {
-      lastWriteLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-      // refuse operation if a write lock is effective (allow only unlock and retrieve
-      // operations)
-      if (!(operationName.equals(Operations.ADMIN_UNLOCK)
-          || operationName.equals(Operations.ADMIN_REINDEX)
-          || operationName.endsWith(Operations.RETRIEVE)) && lastWriteLock != null
-          && lastWriteLock.getName().equals("lockWriteOperations") && lastWriteLock.getEnded() == null) {
-        throw new ApplicationAuthenticationException(I18nConstantsAnnotation.LOCKED_MAINTENANCE,
-            I18nConstantsAnnotation.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED, null);
-      }
-    } catch (ApiWriteLockException e) {
-      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.LOCKED_MAINTENANCE,
-          I18nConstantsAnnotation.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED, e);
-    }
+  protected Set<String> getMaintenanceOperations(){
+    return maintenanceOperations;
   }
-
+  
   public AnnotationConfiguration getConfiguration() {
     return configuration;
   }
