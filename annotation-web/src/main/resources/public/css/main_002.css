@@ -3938,7 +3938,7 @@ ul.navigation li.selected,.portlet-navigation li.selected {
 	font-weight: normal;
 }
 
-ul.navigation li.current>a, . li.current>ul>li>a {
+ul.navigation li.current>a, .li.current>ul>li>a {
 	color: #434348;
 }
 

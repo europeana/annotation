@@ -2,11 +2,11 @@ package eu.europeana.annotation.web.service;
 
 import java.util.Date;
 import java.util.List;
-import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
+import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.web.exception.HttpException;
 //import eu.europeana.apikey.client.ValidationRequest;
 

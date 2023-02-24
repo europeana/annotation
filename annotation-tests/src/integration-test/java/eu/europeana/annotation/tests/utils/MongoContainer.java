@@ -51,8 +51,9 @@ public class MongoContainer extends GenericContainer<MongoContainer> {
     if (!this.isRunning()) {
       throw new IllegalStateException("MongoDBContainer should be started first");
     } else {
+      //"anno-it"
       String connectionUrl = String.format(
-        "mongodb://%s:%s@%s:%d/%s?ssl=false",
+        "mongodb://%s:%s@%s:%d/%s?authSource=admin&ssl=false",
         adminUsername, adminPassword, this.getHost(), this.getMappedPort(defaultMongoPort), this.getAnnotationDb());
         return connectionUrl;  
       }

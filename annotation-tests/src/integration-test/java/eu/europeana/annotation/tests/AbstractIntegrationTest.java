@@ -102,7 +102,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   private static final SolrContainer SOLR_CONTAINER;
 
   static {
-    MONGO_CONTAINER = new MongoContainer("admin")
+    MONGO_CONTAINER = new MongoContainer("anno-it")
         .withLogConsumer(new WaitingConsumer().andThen(new ToStringConsumer()));
 
     MONGO_CONTAINER.start();

@@ -1,7 +1,7 @@
 package eu.europeana.solr.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
@@ -31,12 +31,13 @@ import eu.europeana.annotation.solr.vocabulary.SolrAnnotationConstants;
 
 /**
  * Unit test for the SolrAnnotationImpl service
+ * @deprecated this class is not used anymore, the tests should me migrated to integration testing and use solr doker instance
  *
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-solr-test.xml"})
-@Disabled("needs configuration file")
+@Disabled("needs configuration file, solr test framework removed from dependecies")
+@Deprecated
 public class SolrAnnotationServiceTest {
 
 	private static final String TEST_RESEARCH_ID = "1234"; 
