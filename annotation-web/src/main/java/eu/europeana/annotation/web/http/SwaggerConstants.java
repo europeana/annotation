@@ -32,6 +32,6 @@ public interface SwaggerConstants {
 	
 	public static final String DATE_FORMAT_HELP_NOTE = "Valid date format is: " + ModelConst.DATE_FORMAT;
 
-	public static final String URIS_HELP_NOTE = "identifiers parameter needs to be provided as a an (json) array of annotation ids";
+	public static final String URIS_HELP_NOTE = "identifiers parameter needs to be provided as a an (json) array of annotation ids. e.g. [{\"anno_id\":<numeric_id>}, ..]";
 	
 }
