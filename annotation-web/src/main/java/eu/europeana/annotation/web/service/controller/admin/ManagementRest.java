@@ -279,7 +279,7 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> lockWriteOperations(
-	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+	    HttpServletRequest request) throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException {
 
 	verifyWriteAccess(Operations.ADMIN_ALL, request);
 
@@ -314,7 +314,7 @@ public class ManagementRest extends BaseRest {
 	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
     @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", response = java.lang.Void.class)
     public ResponseEntity<String> unlockWriteOperations(
-	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
+	    HttpServletRequest request) throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException {
 	verifyWriteAccess(Operations.WRITE_UNLOCK, request);
 
 	AnnotationOperationResponse response;
