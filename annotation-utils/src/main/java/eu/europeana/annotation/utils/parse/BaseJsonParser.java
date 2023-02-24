@@ -1,10 +1,13 @@
 package eu.europeana.annotation.utils.parse;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -20,8 +23,10 @@ public class BaseJsonParser {
     /**
      * Supports conversion of {["val1", "val2"]} or ["val1", "val2"] 
      * @param value The input string
+     * @deprecated {@link #extractAnnotationIds(String)} instead 
      * @return
      */
+    @Deprecated
     public static List<Long> toLongList(String json, boolean removeQuote) {
     		String list = json.trim();
     		String startCurly = "{";
@@ -52,4 +57,17 @@ public class BaseJsonParser {
  		  result[i] = Long.parseLong(values[i]);
         return Arrays.asList(result);
     }
+    
+    /**
+     * Returns the list with the Long value for anno_id fields  
+     * @param json
+     * @return
+     * @throws JsonProcessingException
+     * @throws IOException
+     */
+    public static List<Long> extractAnnotationIds(String json) throws JsonProcessingException, IOException{
+      List<JsonNode> nodes = objectMapper.readTree(json).findValues("anno_id");
+      return nodes.stream().map(node -> node.asLong()).collect(Collectors.toList());    
+    }
+    
 }

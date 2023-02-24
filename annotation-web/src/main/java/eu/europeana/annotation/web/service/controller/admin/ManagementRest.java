@@ -1,11 +1,13 @@
 package eu.europeana.annotation.web.service.controller.admin;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,15 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
-import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
+import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
@@ -30,6 +31,9 @@ import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
+import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -41,304 +45,337 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Web Annotation Admin", description = " ", hidden = true)
 public class ManagementRest extends BaseRest {
 
-    Logger logger = LogManager.getLogger(getClass());
+  Logger logger = LogManager.getLogger(getClass());
 
-    @Resource(name="adminService")
-    private AdminService adminService;
+  @Resource(name = "adminService")
+  private AdminService adminService;
 
-    public AdminService getAdminService() {
-	return adminService;
-    }
+  public AdminService getAdminService() {
+    return adminService;
+  }
 
-    public void setAdminService(AdminService adminService) {
-	this.adminService = adminService;
-    }
+  public void setAdminService(AdminService adminService) {
+    this.adminService = adminService;
+  }
 
-    @Resource(name = "annotation_db_apilockService")
-    private PersistentApiWriteLockService indexingJobService;
+  @Resource(name = "annotation_db_apilockService")
+  private ApiWriteLockService apiWriteLockService;
 
-    public PersistentApiWriteLockService getApiWriteLockService() {
-	return indexingJobService;
-    }
+  public ApiWriteLockService getApiWriteLockService() {
+    return apiWriteLockService;
+  }
 
-    public void setPersistentIndexingJobService(PersistentApiWriteLockService indexingJobService) {
-	this.indexingJobService = indexingJobService;
-    }
+  public void setPersistentIndexingJobService(ApiWriteLockService apiWriteLockService) {
+    this.apiWriteLockService = apiWriteLockService;
+  }
 
-    @RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById", response = java.lang.Void.class)
-    public ResponseEntity<String> deleteAnnotationById(
-	    @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER, required = true) long identifier,
-	    HttpServletRequest request) throws HttpException {
+  @RequestMapping(value = "/admin/annotation/delete", method = RequestMethod.DELETE,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Delete Annotation for good", nickname = "deleteAnnotationById",
+      response = java.lang.Void.class)
+  public ResponseEntity<String> deleteAnnotationById(
+      @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER,
+          required = true) long identifier,
+      HttpServletRequest request) throws HttpException {
 
-    //check the property for the authorization
-    if(getConfiguration().isAuthEnabled()) {
+    // check the property for the authorization
+    if (getConfiguration().isAuthEnabled()) {
       verifyWriteAccess(Operations.ADMIN_ALL, request);
     }
 
-	deleteAnnotationForGood(identifier);
+    deleteAnnotationForGood(identifier);
 
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/delete");
-	response.success = true;
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	logger.info("Delete Annotation for good result: " + jsonStr);
-	return buildResponse(jsonStr);
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/annotation/delete");
+    response.success = true;
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    logger.info("Delete Annotation for good result: " + jsonStr);
+    return buildResponse(jsonStr);
+  }
+
+  @RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.POST,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet",
+      notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
+  public ResponseEntity<String> deleteAnnotationSet(@RequestBody String identifiers,
+      HttpServletRequest request) throws HttpException {
+
+    verifyWriteAccess(Operations.ADMIN_ALL, request);
+
+    List<Long> identifierList = parseIdentifiers(identifiers); 
+    BatchProcessingStatus status = getAdminService().deleteAnnotationSet(identifierList);
+
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/annotation/deleteset");
+    response.setStatus("Success count: " + status.getSuccessCount() + ". Failure count: "
+        + status.getFailureCount());
+    response.success = true;
+
+    // return JsonWebUtils.toJson(response, null);
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    logger.info("Delete a set of Annotations for good result: " + jsonStr);
+    return buildResponse(jsonStr);
+  }
+
+  private List<Long> parseIdentifiers(String identifiers) throws RequestBodyValidationException {
+    List<Long> identifiersList;
+    try {
+      identifiersList = BaseJsonParser.extractAnnotationIds(identifiers);
+    } catch (IOException e) {
+      throw new RequestBodyValidationException("Cannot parse request body! Body must be in form of [{\"anno_id\":<numeric_id>}, ..]", null, (String[]) null);
+    }
+    return identifiersList;
+  }
+
+  protected void deleteAnnotationForGood(long identifier)
+      throws InternalServerException, UserAuthorizationException,
+      ApplicationAuthenticationException, OperationAuthorizationException {
+    try {
+      getAdminService().deleteAnnotation(identifier);
+    } catch (AnnotationServiceException e) {
+      throw new InternalServerException(e);
+    }
+  }
+
+  @RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.PUT,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Reindex by annotation id. Authorization required.",
+      nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
+  public ResponseEntity<String> reindexAnnotationByAnnotationId(
+      @RequestParam(value = "identifier", required = true,
+          defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) long identifier,
+      HttpServletRequest request) throws UserAuthorizationException, HttpException {
+
+    verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+
+    getAdminService().reindexAnnotationById(identifier, new Date());
+
+    AnnotationOperationResponse response =
+        new AnnotationOperationResponse("admin", "/admin/reindex");
+
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    logger.info("Reindex by annotation id result: " + jsonStr);
+    return buildResponse(jsonStr);
+  }
+
+  @RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.PUT,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(
+      value = "Reindex a set of annotations defined by selection criteria. Authorization required.",
+      notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE,
+      nickname = Actions.REINDEX_ANNOTATION_SELECTION, response = java.lang.Void.class)
+  public ResponseEntity<String> reindexAnnotationSelection(
+      @RequestParam(value = "startDate", required = false) String startDate,
+      @RequestParam(value = "endDate", required = false) String endDate,
+      @RequestParam(value = "startTimestamp", required = false) String startTimestamp,
+      @RequestParam(value = "endTimestamp", required = false) String endTimestamp,
+      HttpServletRequest request) throws UserAuthorizationException, ApiWriteLockException,
+      IndexingJobLockedException, HttpException {
+
+    verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+
+    BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate,
+        startTimestamp, endTimestamp, Actions.REINDEX_ANNOTATION_SELECTION);
+
+    AnnotationOperationResponse response =
+        new AnnotationOperationResponse("admin", "/admin/reindexselection");
+    response.setStatus(status.toString());
+
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    logger.info("Reindex a set of annotations defined by selection criteria result: " + jsonStr);
+    return buildResponse(jsonStr);
+  }
+
+  @RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.PUT,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Reindex a set of annotations. Authorization required.",
+      nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE,
+      response = java.lang.Void.class)
+  public ResponseEntity<String> reindexAnnotationSet(@RequestBody String identifiers,
+      HttpServletRequest request) throws UserAuthorizationException, HttpException {
+
+    verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+
+    List<Long> identifierList = parseIdentifiers(identifiers); 
+    
+
+    BatchProcessingStatus status;
+    try {
+      status = getAdminService().reindexAnnotationSet(identifierList, "/admin/annotation/reindexset");
+    } catch (ApiWriteLockException e) {
+      throw new InternalServerException("Cannot reindex annotation selection", e);
     }
 
-    @RequestMapping(value = "/admin/annotation/deleteset", method = RequestMethod.DELETE, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
-    public ResponseEntity<String> deleteAnnotationSet(
-	    @RequestBody String identifiers, HttpServletRequest request) throws HttpException {
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexset");
+    response.setStatus("Success count: " + status.getSuccessCount() + ". Failure count: "
+        + status.getFailureCount());
+    // only if at least one item was successfully reindexed
+    response.success = (status.getSuccessCount() > 0);
 
-	verifyWriteAccess(Operations.ADMIN_ALL, request);
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+    logger.info("Reindex a set of annotations result: " + jsonStr + "(HTTP status: "
+        + httpStatus.toString() + ")");
+    return buildResponse(jsonStr, httpStatus);
+  }
 
-	List<Long> identifiersList = BaseJsonParser.toLongList(identifiers, true);
+  @RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.PUT,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Reindex all annotations. Authorization required.",
+      nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
+  public ResponseEntity<String> reindexAll(HttpServletRequest request)
+      throws UserAuthorizationException, HttpException {
 
-	BatchProcessingStatus status = getAdminService().deleteAnnotationSet(identifiersList);
+    verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/deleteset");
-	response.setStatus(
-		"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
-	response.success = true;
-
-	// return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	logger.info("Delete a set of Annotations for good result: " + jsonStr);
-	return buildResponse(jsonStr);
+    BatchProcessingStatus status;
+    try {
+      status = getAdminService().reindexAll();
+    } catch (ApiWriteLockException e) {
+      throw new InternalServerException("Cannot reindex annotation selection", e);
     }
 
-    protected void deleteAnnotationForGood(long identifier) throws InternalServerException,
-	    UserAuthorizationException, ApplicationAuthenticationException, OperationAuthorizationException {
-	try {
-	    getAdminService().deleteAnnotation(identifier);
-	} catch (AnnotationServiceException e) {
-	    throw new InternalServerException(e);
-	}
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexall");
+    response.setStatus("Success count: " + status.getSuccessCount() + ". Failure count: "
+        + status.getFailureCount());
+    response.success = true;
+
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    logger.info("Reindex all annotations result: " + jsonStr);
+    return buildResponse(jsonStr);
+  }
+
+  @RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.PUT,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Index new and reindex outdated annotations. Authorization required.",
+      nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
+  public ResponseEntity<String> reindexOutdated(HttpServletRequest request)
+      throws UserAuthorizationException, HttpException {
+
+    verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+
+    AnnotationOperationResponse response =
+        new AnnotationOperationResponse("admin", "/admin/annotation/reindexoutdated");
+    BatchProcessingStatus status;
+    try {
+      status = getAdminService().reindexOutdated();
+
+    } catch (ApiWriteLockException e) {
+      throw new InternalServerException("Cannot reindex annotation selection", e);
     }
 
-    @RequestMapping(value = "/admin/annotation/reindex", method = RequestMethod.PUT, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex by annotation id. Authorization required.", nickname = Actions.REINDEX_ANNOTATION_BY_ANNOTATION_ID, response = java.lang.Void.class)
-    public ResponseEntity<String> reindexAnnotationByAnnotationId(
-	    @RequestParam(value = "identifier", required = true, defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) long identifier,
-	    HttpServletRequest request) throws UserAuthorizationException, HttpException {
+    String successMsg = "Outdated annotations reindexed. " + status.toString();
+    response.setStatus(successMsg);
+    response.success = true;
+    HttpStatus httpStatus = HttpStatus.OK;
+    logger.info(successMsg);
 
-	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    return buildResponse(jsonStr, httpStatus);
+  }
 
-	getAdminService().reindexAnnotationById(identifier, new Date());
+  @RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Update record identifiers with new ones. Authorization required.",
+      nickname = "updateRecordId", response = java.lang.Void.class)
+  public ResponseEntity<String> updateRecordId(
+      @RequestParam(value = WebAnnotationFields.OLD_RECORD_ID, required = true) String oldId,
+      @RequestParam(value = WebAnnotationFields.NEW_RECORD_ID, required = true) String newId,
+      HttpServletRequest request) throws HttpException {
 
-	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindex");
+    verifyWriteAccess(Operations.ADMIN_ALL, request);
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	logger.info("Reindex by annotation id result: " + jsonStr);
-	return buildResponse(jsonStr);
+    if (oldId.isEmpty() || newId.isEmpty()) {
+      throw new HttpException("Both newId and oldId parameters must be provided!", null, null,
+          HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexselection", method = RequestMethod.PUT, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex a set of annotations defined by selection criteria. Authorization required.", notes = SwaggerConstants.DATE_FORMAT_HELP_NOTE, nickname = Actions.REINDEX_ANNOTATION_SELECTION, response = java.lang.Void.class)
-    public ResponseEntity<String> reindexAnnotationSelection(
-	    @RequestParam(value = "startDate", required = false) String startDate,
-	    @RequestParam(value = "endDate", required = false) String endDate,
-	    @RequestParam(value = "startTimestamp", required = false) String startTimestamp,
-	    @RequestParam(value = "endTimestamp", required = false) String endTimestamp, HttpServletRequest request)
-	    throws UserAuthorizationException, ApiWriteLockException, IndexingJobLockedException, HttpException {
+    // 2. update record id
+    BatchProcessingStatus status = getAdminService().updateRecordId(oldId, newId);
 
-	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/annotation/updateRecordId");
+    response.setStatus("Updated record IDs. " + status.toString());
+    response.success = true;
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    logger.info("Update record ID operation result. \n Old ID: " + oldId + "\nnewId : " + newId
+        + "\nResult: " + jsonStr);
+    return buildResponse(jsonStr);
 
-	BatchProcessingStatus status = getAdminService().reindexAnnotationSelection(startDate, endDate, startTimestamp,
-		endTimestamp, Actions.REINDEX_ANNOTATION_SELECTION);
+  }
 
-	AnnotationOperationResponse response = new AnnotationOperationResponse("admin", "/admin/reindexselection");
-	response.setStatus(status.toString());
+  @RequestMapping(value = "/admin/lock", method = RequestMethod.POST,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Lock write operations. Authorization required.",
+      nickname = "lockWriteOperations", response = java.lang.Void.class)
+  public ResponseEntity<String> lockWriteOperations(HttpServletRequest request)
+      throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException {
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	logger.info("Reindex a set of annotations defined by selection criteria result: " + jsonStr);
-	return buildResponse(jsonStr);
+    verifyWriteAccess(Operations.ADMIN_ALL, request);
+
+    // get last active lock check if start date is correct and end date does
+    // not exist
+    ApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+    // if already locked, an exception is thrown in verifyWriteAccess
+    boolean isLocked = false;
+    if (activeLock == null) {
+      activeLock = getApiWriteLockService().lock("lockWriteOperations");
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexset", method = RequestMethod.PUT, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex a set of annotations. Authorization required.", nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
-    public ResponseEntity<String> reindexAnnotationSet(
-	    @RequestBody String identifiers, HttpServletRequest request) throws UserAuthorizationException, HttpException {
+    isLocked = isLocked(activeLock);
 
-	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/lock");
 
-	List<Long> uriList = BaseJsonParser.toLongList(identifiers, true);
+    response.setStatus(isLocked ? "Server is now locked for changes" : "Unable to set lock");
+    response.success = isLocked;
 
-	BatchProcessingStatus status;
-	try {
-	    status = getAdminService().reindexAnnotationSet(uriList, "/admin/annotation/reindexset");
-	} catch (ApiWriteLockException e) {
-	    throw new InternalServerException("Cannot reindex annotation selection", e);
-	}
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+    logger.info("Lock write operations result: " + jsonStr + "(HTTP status: "
+        + httpStatus.toString() + ")");
+    return buildResponse(jsonStr, httpStatus);
+  }
 
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexset");
-	response.setStatus(
-		"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
-	// only if at least one item was successfully reindexed
-	response.success = (status.getSuccessCount() > 0);
+  private boolean isLocked(ApiWriteLock activeLock) {
+    return activeLock != null && activeLock.getStarted() != null && activeLock.getEnded() == null;
+  }
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
-	logger.info("Reindex a set of annotations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
-	return buildResponse(jsonStr, httpStatus);
+  @RequestMapping(value = "/admin/lock", method = RequestMethod.DELETE,
+      produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8})
+  @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations",
+      response = java.lang.Void.class)
+  public ResponseEntity<String> unlockWriteOperations(HttpServletRequest request)
+      throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException {
+    verifyWriteAccess(Operations.WRITE_UNLOCK, request);
+
+    AnnotationOperationResponse response;
+    response = new AnnotationOperationResponse("admin", "/admin/unlock");
+
+    ApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+    if (activeLock != null && activeLock.getName().equals("lockWriteOperations")
+        && activeLock.getEnded() == null) {
+      getApiWriteLockService().unlock(activeLock);
+      ApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
+      if (lock == null) {
+        response.setStatus("Server is now unlocked for changes");
+        response.success = true;
+      } else {
+        response.setStatus("Unlocking write operations failed");
+        response.success = false;
+      }
+    } else {
+      response.setStatus("No write lock in effect (remains unlocked)");
+      response.success = true;
     }
 
-    @RequestMapping(value = "/admin/annotation/reindexall", method = RequestMethod.PUT, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Reindex all annotations. Authorization required.", nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
-    public ResponseEntity<String> reindexAll(
-	    HttpServletRequest request) throws UserAuthorizationException, HttpException {
-
-	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
-
-	BatchProcessingStatus status;
-	try {
-	    status = getAdminService().reindexAll();
-	} catch (ApiWriteLockException e) {
-	    throw new InternalServerException("Cannot reindex annotation selection", e);
-	}
-
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/reindexall");
-	response.setStatus(
-		"Success count: " + status.getSuccessCount() + ". Failure count: " + status.getFailureCount());
-	response.success = true;
-
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	logger.info("Reindex all annotations result: " + jsonStr);
-	return buildResponse(jsonStr);
-    }
-
-    @RequestMapping(value = "/admin/annotation/reindexoutdated", method = RequestMethod.PUT, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Index new and reindex outdated annotations. Authorization required.", nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
-    public ResponseEntity<String> reindexOutdated(HttpServletRequest request)
-	    throws UserAuthorizationException, HttpException {
-
-	verifyWriteAccess(Operations.ADMIN_REINDEX, request);
-
-	AnnotationOperationResponse response = new AnnotationOperationResponse("admin",
-		"/admin/annotation/reindexoutdated");
-	BatchProcessingStatus status;
-	try {
-	    status = getAdminService().reindexOutdated();
-
-	} catch (ApiWriteLockException e) {
-	    throw new InternalServerException("Cannot reindex annotation selection", e);
-	}
-
-	String successMsg = "Outdated annotations reindexed. " + status.toString();
-	response.setStatus(successMsg);
-	response.success = true;
-	HttpStatus httpStatus = HttpStatus.OK;
-	logger.info(successMsg);
-
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	return buildResponse(jsonStr, httpStatus);
-    }
-
-    @RequestMapping(value = "/admin/annotation/updateRecordId", method = RequestMethod.POST, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8, HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Update record identifiers with new ones. Authorization required.", nickname = "updateRecordId", response = java.lang.Void.class)
-    public ResponseEntity<String> updateRecordId(
-	    @RequestParam(value = WebAnnotationFields.OLD_RECORD_ID, required = true) String oldId,
-	    @RequestParam(value = WebAnnotationFields.NEW_RECORD_ID, required = true) String newId,
-	    HttpServletRequest request) throws HttpException {
-	
-	verifyWriteAccess(Operations.ADMIN_ALL, request);
-	
-	if (oldId.isEmpty() || newId.isEmpty()) {
-	    throw new HttpException("Both newId and oldId parameters must be provided!", null, null,
-		    HttpStatus.BAD_REQUEST);
-	}
-
-	// 2. update record id
-	BatchProcessingStatus status = getAdminService().updateRecordId(oldId, newId);
-
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/annotation/updateRecordId");
-	response.setStatus("Updated record IDs. " + status.toString());
-	response.success = true;
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	logger.info("Update record ID operation result. \n Old ID: " + oldId + "\nnewId : " + newId + "\nResult: "
-		+ jsonStr);
-	return buildResponse(jsonStr);
-
-    }
-
-    @RequestMapping(value = "/admin/lock", method = RequestMethod.POST, produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8,
-	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8 })
-    @ApiOperation(value = "Lock write operations. Authorization required.", nickname = "lockWriteOperations", response = java.lang.Void.class)
-    public ResponseEntity<String> lockWriteOperations(
-	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
-
-	verifyWriteAccess(Operations.ADMIN_ALL, request);
-
-	// get last active lock check if start date is correct and end date does
-	// not exist
-	PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-	//if already locked, an exception is thrown in verifyWriteAccess
-	boolean isLocked = false;
-	if(activeLock == null) {
-	    activeLock = getApiWriteLockService().lock("lockWriteOperations");
-	} 
-	
-	isLocked = isLocked(activeLock);
-	
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/lock");
-
-	response.setStatus(isLocked ? "Server is now locked for changes" : "Unable to set lock");
-	response.success = isLocked;
-
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
-	logger.info("Lock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
-	return buildResponse(jsonStr, httpStatus);
-    }
-
-    private boolean isLocked(PersistentApiWriteLock activeLock) {
-	return activeLock != null && activeLock.getStarted() != null && activeLock.getEnded() == null;
-    }
-
-    @RequestMapping(value = "/admin/unlock", method = RequestMethod.POST, produces = {
-	    HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations", response = java.lang.Void.class)
-    public ResponseEntity<String> unlockWriteOperations(
-	    HttpServletRequest request) throws UserAuthorizationException, HttpException, ApiWriteLockException {
-	verifyWriteAccess(Operations.ADMIN_UNLOCK, request);
-
-	AnnotationOperationResponse response;
-	response = new AnnotationOperationResponse("admin", "/admin/unlock");
-
-	PersistentApiWriteLock activeLock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-	if (activeLock != null && activeLock.getName().equals("lockWriteOperations") && activeLock.getEnded() == null) {
-	    getApiWriteLockService().unlock(activeLock);
-	    PersistentApiWriteLock lock = getApiWriteLockService().getLastActiveLock("lockWriteOperations");
-	    if (lock == null) {
-		response.setStatus("Server is now unlocked for changes");
-		response.success = true;
-	    } else {
-		response.setStatus("Unlocking write operations failed");
-		response.success = false;
-	    }
-	} else {
-	    response.setStatus("No write lock in effect (remains unlocked)");
-	    response.success = true;
-	}
-
-	String jsonStr = JsonWebUtils.toJson(response, null);
-	HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
-	logger.info("Unlock write operations result: " + jsonStr + "(HTTP status: " + httpStatus.toString() + ")");
-	return buildResponse(jsonStr, httpStatus);
-    }
+    String jsonStr = JsonWebUtils.toJson(response, null);
+    HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+    logger.info("Unlock write operations result: " + jsonStr + "(HTTP status: "
+        + httpStatus.toString() + ")");
+    return buildResponse(jsonStr, httpStatus);
+  }
 
 }
