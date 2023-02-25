@@ -1,9 +1,12 @@
-package eu.europeana.annotation.web.service.impl;
+package eu.europeana.annotation.web.validation;
 
 import java.net.URI;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -29,6 +32,9 @@ public abstract class BaseAnnotationValidator {
 	
 	@Resource(name="subtitleHandler")
 	private SubtitleHandler subtitleHandler;
+	
+	@Resource(name="mediaFormatValidator")
+	private MediaFormatValidator mediaFormatValidator;	
 
     protected abstract AnnotationConfiguration getConfiguration();
 
@@ -167,15 +173,24 @@ public abstract class BaseAnnotationValidator {
      */
     protected void validateTranscriptionBodyWithFullTextResource(Body body)
 	    throws ParamValidationI18NException, PropertyValidationException, RequestBodyValidationException {
-	// the body type shouldn't be null at this stage
-	validateFullTextResource(body);
-
-	// check mandatory field edmRights
-	if (StringUtils.isBlank(body.getEdmRights())) {
-	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.edmRights" });
-	}
-	validateEdmRights(body);
+		// the body type shouldn't be null at this stage
+		validateFullTextResource(body);
+	
+		// check mandatory field edmRights
+		if (StringUtils.isBlank(body.getEdmRights())) {
+		    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+			    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.edmRights" });
+		}
+		validateEdmRights(body);
+		
+		//validate format compliance
+		String bodyFormat = body.getContentType();
+		if(bodyFormat!=null) {
+	    	if(! mediaFormatValidator.validateMediaFormat(body.getValue(), body.getContentType())) {
+	     	    throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT,
+	     		    I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT, new String[] { bodyFormat });
+	    	}
+		}
     }
 
     private void validateFullTextResource(Body body) throws PropertyValidationException {

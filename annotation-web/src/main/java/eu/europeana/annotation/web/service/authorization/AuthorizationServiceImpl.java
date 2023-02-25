@@ -1,8 +1,10 @@
 package eu.europeana.annotation.web.service.authorization;
 
 import javax.annotation.Resource;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
@@ -12,6 +14,7 @@ import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
@@ -96,5 +99,10 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService implement
     protected String getApiName() {
 	return getConfiguration().getAuthorizationApiName();
     }
+
+	@Override
+	protected ApiWriteLockService getApiWriteLockService() {
+		return null;
+	}
 
 }

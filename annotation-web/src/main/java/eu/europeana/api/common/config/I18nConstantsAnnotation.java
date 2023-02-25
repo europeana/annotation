@@ -8,6 +8,7 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	 String ANNOTATION_INVALID_BODY = "error.annotation_invalid_body";
 	 String ANNOTATION_INVALID_SUBTITLES_FORMATS = "error.annotation_invalid_subtitles_formats";
 	 String ANNOTATION_INVALID_SUBTITLES_VALUE = "error.annotation_invalid_subtitles_value";
+	 String ANNOTATION_INVALID_MEDIA_FORMAT = "error.annotation_invalid_media_format";
 	 String ANNOTATION_INVALID_RIGHTS = "annotation_invalid_rights";
 	 String ANNOTATION_CANT_PARSE_BODY = "error.annotation_cant_parse_body";
 	 String API_WRITE_LOCK = "error.annotation_write_lock";

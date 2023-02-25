@@ -1,8 +1,8 @@
-package eu.europeana.annotation.fulltext.subtitles;
+package eu.europeana.annotation.fulltext;
 
 import java.io.InputStream;
 
-public abstract class SubtitleConverterTests {
+public abstract class FulltextTests {
 
     protected InputStream getFile(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();

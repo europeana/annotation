@@ -30,6 +30,12 @@
 			<groupId>com.dotsub.converter</groupId>
 			<artifactId>subtitle-converter</artifactId>
 			<version>${version.subtitle-converter}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>						
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>

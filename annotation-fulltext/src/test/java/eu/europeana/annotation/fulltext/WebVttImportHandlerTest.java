@@ -1,4 +1,4 @@
-package eu.europeana.annotation.fulltext.subtitles;
+package eu.europeana.annotation.fulltext;
 
 import com.dotsub.converter.exception.FileFormatException;
 import com.dotsub.converter.importer.SubtitleImportHandler;
@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class WebVttImportHandlerTest extends SubtitleConverterTests {
+public class WebVttImportHandlerTest extends FulltextTests {
 
     private SubtitleImportHandler webVttImportHandler = new WebVttImportHandler();
 

@@ -69,7 +69,8 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public static final String TRANSCRIPTION_WITHOUT_RIGHTS = "/transcription/transcription-without-rights.json";
     public static final String TRANSCRIPTION_WITHOUT_LANG = "/transcription/transcription-without-language.json";
     public static final String TRANSCRIPTION_WITHOUT_VALUE = "/transcription/transcription-without-value.json";
-	
+    public static final String TRANSCRIPTION_WITH_ALTO_BODY = "/transcription/transcription-with-alto-body.json";
+    
 	static final String VALUE_BATCH_TESTSET = "body_value: \"*-ff45d28b-8717-42f4-a486-f3a62f97fb64\"";
 
 	// test annotations
@@ -949,5 +950,11 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     String expectedMessage = "Missing mandatory field! transcription.body.value";
     assertTrue(response.getBody().contains(expectedMessage));
     }
+    
+//    @Test
+//    public void createTranscriptionWithAltoBody() throws Exception {
+//    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
+//    }
+
     
 }

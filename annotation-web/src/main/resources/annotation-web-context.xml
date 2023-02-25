@@ -41,6 +41,10 @@
          
     <beans:bean id="subtitleHandler" class="eu.europeana.annotation.fulltext.subtitles.SubtitleHandler"/>
     
+    <beans:bean id="mediaFormatValidator" class="eu.europeana.annotation.web.validation.MediaFormatValidator">
+    	<beans:constructor-arg value="#{annotationProperties['annotation.media.formats']}"/>
+    </beans:bean>
+   
 	<beans:bean id="whitelistService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
     </beans:bean>
     

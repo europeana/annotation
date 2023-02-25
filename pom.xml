@@ -87,6 +87,7 @@
 		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
+		<version.apache.commons.io>2.11.0</version.apache.commons.io>
 	</properties>
 	<modules>
 		<module>api2-common</module>
