@@ -9,10 +9,7 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
-import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
-import eu.europeana.annotation.mongo.service.PersistentApiWriteLockService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.InternalServerException;
@@ -21,12 +18,15 @@ import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
+import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
+import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 
 	@Resource(name = "annotation_db_apilockService")
-	PersistentApiWriteLockService apiWriteLockService;
+	ApiWriteLockService apiWriteLockService;
 	
 	public BatchProcessingStatus deleteAnnotationSet(List<Long> identifiers) {
 		BatchProcessingStatus status = new BatchProcessingStatus();
@@ -109,9 +109,9 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 		if (apiWriteLockService.getLastActiveLock("reindex") != null)
 			throw new IndexingJobLockedException(action);
 		
-		PersistentApiWriteLock pij = null;
+		ApiWriteLock apriWriteLock = null;
 		try {
-			pij = apiWriteLockService.lock(action);
+			apriWriteLock = apiWriteLockService.lock(action);
 
 			synchronized (this) {
 				BatchProcessingStatus status = new BatchProcessingStatus();
@@ -153,8 +153,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 			}
 		}finally{
 			//unlock the index
-			apiWriteLockService.unlock(pij);
-			
+			apiWriteLockService.unlock(apriWriteLock);		
 		} 
 
 	}

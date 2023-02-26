@@ -8,10 +8,12 @@ import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotation
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,10 +25,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
@@ -70,6 +74,9 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public static final String TRANSCRIPTION_WITHOUT_LANG = "/transcription/transcription-without-language.json";
     public static final String TRANSCRIPTION_WITHOUT_VALUE = "/transcription/transcription-without-value.json";
     public static final String TRANSCRIPTION_WITH_ALTO_BODY = "/transcription/transcription-with-alto-body.json";
+    public static final String TRANSCRIPTION_WITH_ALTO_BODY_WRONG = "/transcription/transcription-with-alto-body-wrong.json";
+    public static final String TRANSCRIPTION_WITH_PAGE_XML_BODY = "/transcription/transcription-with-page-xml-body.json";
+    public static final String TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG = "/transcription/transcription-with-page-xml-body-wrong.json";
     
 	static final String VALUE_BATCH_TESTSET = "body_value: \"*-ff45d28b-8717-42f4-a486-f3a62f97fb64\"";
 
@@ -951,10 +958,20 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     assertTrue(response.getBody().contains(expectedMessage));
     }
     
-//    @Test
-//    public void createTranscriptionWithAltoBody() throws Exception {
-//    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
-//    }
-
+    @Test
+    public void createTranscriptionWithAltoBody() throws Exception {
+        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
+        createdAnnotations.add(storedAnno.getIdentifier());
+    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
+    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());    	
+    }
+    
+    @Test
+	public void createTranscriptionWithPageXmlBody() throws Exception {
+        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true, null);
+        createdAnnotations.add(storedAnno.getIdentifier());
+    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true, null);
+    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());        
+    }    
     
 }

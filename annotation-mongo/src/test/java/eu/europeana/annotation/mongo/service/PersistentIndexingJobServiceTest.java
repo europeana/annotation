@@ -15,25 +15,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
-import eu.europeana.annotation.mongo.exception.ApiWriteLockException;
 import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
+import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
+import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration({"/annotation-mongo-test.xml"})
-@Disabled("needs configuration file")
+@Disabled("needs configuration file, to be moved to integration tests")
 public class PersistentIndexingJobServiceTest {
 	
     @Resource(name = "annotation_db_apilockService")
-	private PersistentApiWriteLockService indexingJobService;
+	private ApiWriteLockService apiWriteLockService;
 
 
-	public void setIndexingJobService(PersistentApiWriteLockService indexingJobService) {
-		this.indexingJobService = indexingJobService;
+	public void setApiWriteLockService(ApiWriteLockService apiWriteLockService) {
+		this.apiWriteLockService = apiWriteLockService;
 	}
 
-	private PersistentApiWriteLockServiceImpl getIndexingJobService() {
-		return (PersistentApiWriteLockServiceImpl) indexingJobService;	
+	private ApiWriteLockService getApiWriteLockService() {
+		return apiWriteLockService;	
 	}
 	
 	/**
@@ -58,20 +60,21 @@ public class PersistentIndexingJobServiceTest {
 	public void getJobById() throws AnnotationMongoException, ApiWriteLockException{
 		
 		// create job
-		PersistentApiWriteLock newJob = indexingJobService.lock("testaction");
+		ApiWriteLock apiWriteLock = apiWriteLockService.lock("testaction");
 		
 		// id of the job
-		String id = newJob.getId().toString();
+		String id = apiWriteLock.getId().toString();
 		
 		// get indexing job just created by its id
-		PersistentApiWriteLock newJobRetrieved = getIndexingJobService().getLockById(id);
+		ApiWriteLock newJobRetrieved = getApiWriteLockService().getLockById(id);
 		
 		// check if the retrieved object exists and if the id is correct
 		assertNotNull(newJobRetrieved);
 		assertEquals(id, newJobRetrieved.getId().toString());
 		
 		// remove test job object
-		getIndexingJobService().deleteLock(newJob); 
+		//TODO: might want to really delete the lock from the database 
+		getApiWriteLockService().unlock(apiWriteLock);  
 		
 	}
 	
@@ -81,20 +84,20 @@ public class PersistentIndexingJobServiceTest {
 	public void jobLockedAndInStatusRunning() throws AnnotationMongoException, ApiWriteLockException{
 		
 		// lock job indicating the action 
-		PersistentApiWriteLock newJob = indexingJobService.lock("testaction");
+		ApiWriteLock newJob = getApiWriteLockService().lock("testaction");
 		assertNotNull(newJob);
 
 		// get last indexing job and check if start date is correct and end date does not exist
-		PersistentApiWriteLock newRunningJob = getIndexingJobService().getLastActiveLock();
+		ApiWriteLock newRunningJob = getApiWriteLockService().getLastActiveLock("testaction");
 		assertTrue(newRunningJob.getStarted() instanceof Date);
 		assertNull(newRunningJob.getEnded());
 		
 		// unlock the job (which sets the end date) and verify that the end date is set correctly
-		getIndexingJobService().unlock(newRunningJob);
+		getApiWriteLockService().unlock(newRunningJob);
 		assertTrue(newRunningJob.getEnded() instanceof Date);	
 		
 		// remove test job object
-		getIndexingJobService().deleteLock(newJob); 
+		getApiWriteLockService().unlock(newJob); 
 		
 	}
 	

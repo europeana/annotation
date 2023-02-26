@@ -57,14 +57,14 @@ public class MediaFormatValidator {
         //in case of xsd validation
         if(XSD_VALIDATION.equals(mediaF.get().getValidation())) {
             String xsdFilePath = mediaF.get().getValidationResource();
-            if(xsdFilePath==null) {
+            if(StringUtils.isBlank(xsdFilePath)) {
             	return false;
             }                
             return validateXsd(content, xsdFilePath);
         }
-        else {
-        	return false;
-        }
+        
+        //in case of not supported validation return true
+        return true;
     }
     
     //validate xml using xsd schema
@@ -81,10 +81,10 @@ public class MediaFormatValidator {
 	        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        Schema schema = factory.newSchema (file);
 	        Validator validator = schema.newValidator();
-//	        String altoXmlFile = "1781-12-01_page_9.alto.xml";
-//	        String altoXmlFile = "alto-example2.xml";
-//	        url = getClass().getClassLoader().getResource(altoXmlFile);
-//	        File file2 = new File(url.getFile());
+//	        String altoXmlFile = "xsd-validation/Glyph_Sample01_General.xml";
+//	        String pageXmlFile = "xsd-validation/aletheiaexamplepage.xml";
+//	        File file2 = new File(getClass().getClassLoader().getResource(pageXmlFile).getFile());
+//	        validator.validate(new StreamSource(file2));
 	        Reader xmlReader = new StringReader(xmlToValidate);
 	        validator.validate(new StreamSource(xmlReader));
 	    } catch (IOException | SAXException e) {
