@@ -84,8 +84,10 @@ public class MediaFormatValidator {
 	        	return false;
 	        }
 	        File file = new File(url.getFile());
+	        logger.info("Media formats: creating SchemaFactory.");
 	        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        Schema schema = factory.newSchema (file);
+	        logger.info("Media formats: creating Validator.");
 	        Validator validator = schema.newValidator();
 //	        String altoXmlFile = "xsd-validation/Glyph_Sample01_General.xml";
 //	        String pageXmlFile = "xsd-validation/aletheiaexamplepage.xml";
