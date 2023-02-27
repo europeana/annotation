@@ -8,4 +8,4 @@ spec:
     app: annotation-api
   ports:
     - port: 8080
-      nodePort: 30000
+      nodePort: 30091

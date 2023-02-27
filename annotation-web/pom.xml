@@ -269,7 +269,8 @@
 		            <include>context/**</include>
 		        </includes>
 		    </resource>
-		</resources>	
+		</resources>
+		<finalName>${artifactId}</finalName>	
 		<!-- plugins -->
 		<plugins>
       		<plugin>
