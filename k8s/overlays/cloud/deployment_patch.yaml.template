@@ -11,7 +11,7 @@ spec:
         fluentd/multiline: 'true'
     spec:
       containers:
-        - name: set-api
+        - name: annotation-api
           imagePullPolicy: Always
           env:
             - name: JAVA_TOOL_OPTIONS

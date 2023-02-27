@@ -6,7 +6,7 @@ spec:
   # selector.matchLabels is provided via Kustomize
   #selector:
   #  matchLabels:
-  #    app: set-api
+  #    app: annotation-api
   template:
     spec:
       containers:
