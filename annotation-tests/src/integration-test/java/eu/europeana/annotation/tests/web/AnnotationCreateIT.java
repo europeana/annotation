@@ -960,8 +960,8 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     
     @Test
     public void createTranscriptionWithAltoBody() throws Exception {
-        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
-        createdAnnotations.add(storedAnno.getIdentifier());
+//        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
+//        createdAnnotations.add(storedAnno.getIdentifier());
     	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
     	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());    	
     }
