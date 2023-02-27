@@ -12,8 +12,9 @@
      <beans:bean id="annotationProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     	<beans:property name="locations">
     		<beans:list>
-            	<beans:value>classpath:config/annotation.properties</beans:value>
-            	<beans:value>classpath:config/annotation.user.properties</beans:value>
+            	<beans:value>classpath:annotation.properties</beans:value>
+            	<beans:value>classpath:annotation.user.properties</beans:value>
+            	<beans:value>file:/opt/app/config/annotation.user.properties</beans:value>
             </beans:list>	
     	</beans:property>
     	<beans:property name="ignoreResourceNotFound" value="true"/>

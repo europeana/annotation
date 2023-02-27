@@ -42,7 +42,7 @@ public class AnnotationApp extends SpringBootServletInitializer {
    *
    * @param args command-line arguments
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception{
     // When deploying to Cloud Foundry, this will log the instance index number, IP and GUID
     
     logger.info("CF_INSTANCE_INDEX  = {}, CF_INSTANCE_GUID = {}, CF_INSTANCE_IP  = {}",
@@ -50,7 +50,10 @@ public class AnnotationApp extends SpringBootServletInitializer {
         System.getenv("CF_INSTANCE_IP"));
 
     // Activate socks proxy (if your application requires it)
-    SocksProxyActivator.activate("config/annotation.properties");
+    if(args != null) {
+      
+    }
+    SocksProxyActivator.activate("annotation.user.properties");
 
     ApplicationContext ctx = SpringApplication.run(AnnotationApp.class, args);
 

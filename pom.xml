@@ -91,7 +91,6 @@
 		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
 	</properties>
 	<modules>
-		<module>api2-common</module>
 		<module>annotation-definitions</module>
 		<module>annotation-utils</module>
 		<module>annotation-dereferenciation</module>

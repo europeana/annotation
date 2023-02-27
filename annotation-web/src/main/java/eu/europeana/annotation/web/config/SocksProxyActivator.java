@@ -1,5 +1,8 @@
 package eu.europeana.annotation.web.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -22,19 +25,20 @@ public final class SocksProxyActivator {
   private static final String PROP_SOCKS_PROXY_URL = "socks.proxy.url";
 
   private SocksProxyActivator() {
-    
+
   }
- 
+
   public static void activate(String propertiesFileName) {
     Properties props = loadProperties(propertiesFileName);
-    if(props.containsKey(PROP_SOCKS_PROXY_URL)) {
+    if (props.containsKey(PROP_SOCKS_PROXY_URL)) {
       String socksProxyUrl = props.getProperty(PROP_SOCKS_PROXY_URL);
-      if(StringUtils.isNotBlank(socksProxyUrl)) {
-         try {
+      if (StringUtils.isNotBlank(socksProxyUrl)) {
+        try {
           SocksProxyConfig socksConfig = new SocksProxyConfig(socksProxyUrl);
           socksConfig.init();
         } catch (URISyntaxException e) {
-          LOG.warn("Invalid SOCKS Proxy URL {},  skip socks proxy initialization!", socksProxyUrl, e);
+          LOG.warn("Invalid SOCKS Proxy URL {},  skip socks proxy initialization!", socksProxyUrl,
+              e);
         }
       }
     }
@@ -42,17 +46,36 @@ public final class SocksProxyActivator {
 
   private static Properties loadProperties(String propertiesFileName) {
     Properties props = new Properties();
+    // check first additional configuration
+    if (propertiesFileName.startsWith("/")) {
+      loadPropertiesFromFileSystem(propertiesFileName, props);
+    } else {
+      loadPropertiesFromClasspath(propertiesFileName, props);
+    }
+    return props;
+  }
+
+  private static void loadPropertiesFromClasspath(String propertiesFileName, Properties props) {
     try (InputStream in =
         Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFileName)) {
       if (in == null) {
-        LOG.warn("Properties file {} does not exist!", propertiesFileName);
+        LOG.warn("Properties file {} does not exist in the classpath!", propertiesFileName);
       } else {
         props.load(in);
       }
     } catch (IOException e) {
-      LOG.error("Error reading properties file {}!", propertiesFileName, e);
+      LOG.warn("Error reading properties classpath {}!", propertiesFileName, e);
     }
-    
-    return props;
-  }  
+  }
+
+  private static void loadPropertiesFromFileSystem(String propertiesFileName, Properties props) {
+    File propsFile = new File(propertiesFileName);
+    if (propsFile.exists()) {
+      try {
+        props.load(new FileInputStream(propsFile));
+      } catch (IOException e) {
+        LOG.warn("Cannot read properties file from system {}!", propertiesFileName);
+      }
+    }
+  }
 }
