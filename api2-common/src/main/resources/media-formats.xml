@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <media-formats>
-  <format mimetype="application/alto+xml" name="ALTO-XML" validation="xsd" validationResource="xsd-validation/alto-4-3.xsd"/>
-  <format mimetype="application/vnd.prima.page+xml" name="Page-XML" validation="xsd" validationResource="xsd-validation/pagecontent-2018-07-15.xsd"/>
+  <format mimetype="application/alto+xml" name="ALTO-XML" validation="xsd" validationResource="/xsd-validation/alto-4-3.xsd"/>
+  <format mimetype="application/vnd.prima.page+xml" name="Page-XML" validation="xsd" validationResource="/xsd-validation/pagecontent-2018-07-15.xsd"/>
 </media-formats>

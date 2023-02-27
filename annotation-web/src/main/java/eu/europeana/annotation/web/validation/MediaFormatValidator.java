@@ -39,7 +39,7 @@ public class MediaFormatValidator {
 	MediaFormats mediaFormats = null;
 	
     void initMediaFormats(String formatsFile) {
-		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(formatsFile)) {
+		try (InputStream inputStream = getClass().getResourceAsStream(formatsFile)) {
 		    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		    String contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
 		    mediaFormats = (new XmlMapper()).readValue(contents, MediaFormats.class);
@@ -79,7 +79,7 @@ public class MediaFormatValidator {
 	    	if(xsdFilePath==null) {
 		       	return false;
 		    }
-	        URL url = getClass().getClassLoader().getResource(xsdFilePath);
+	        URL url = getClass().getResource(xsdFilePath);
 	        if(url == null) {
 	        	return false;
 	        }
