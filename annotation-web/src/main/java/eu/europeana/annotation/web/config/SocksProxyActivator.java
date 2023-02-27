@@ -71,8 +71,8 @@ public final class SocksProxyActivator {
   private static void loadPropertiesFromFileSystem(String propertiesFileName, Properties props) {
     File propsFile = new File(propertiesFileName);
     if (propsFile.exists()) {
-      try {
-        props.load(new FileInputStream(propsFile));
+      try(InputStream in = new FileInputStream(propsFile))  {
+        props.load(in);
       } catch (IOException e) {
         LOG.warn("Cannot read properties file from system {}!", propertiesFileName);
       }

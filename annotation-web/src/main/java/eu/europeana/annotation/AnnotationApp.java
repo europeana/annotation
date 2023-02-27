@@ -42,7 +42,7 @@ public class AnnotationApp extends SpringBootServletInitializer {
    *
    * @param args command-line arguments
    */
-  public static void main(String[] args) throws Exception{
+  public static void main(String[] args){
     // When deploying to Cloud Foundry, this will log the instance index number, IP and GUID
     
     logger.info("CF_INSTANCE_INDEX  = {}, CF_INSTANCE_GUID = {}, CF_INSTANCE_IP  = {}",
