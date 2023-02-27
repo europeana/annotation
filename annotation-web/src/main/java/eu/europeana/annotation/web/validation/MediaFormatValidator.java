@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -79,14 +80,10 @@ public class MediaFormatValidator {
 	    	if(xsdFilePath==null) {
 		       	return false;
 		    }
-	        URL url = getClass().getResource(xsdFilePath);
-	        if(url == null) {
-	        	return false;
-	        }
-	        File file = new File(url.getFile());
 	        logger.info("Media formats: creating SchemaFactory.");
 	        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	        Schema schema = factory.newSchema (file);
+	        Source xsdSource = new StreamSource(getClass().getResourceAsStream(xsdFilePath));
+	        Schema schema = factory.newSchema(xsdSource);
 	        logger.info("Media formats: creating Validator.");
 	        Validator validator = schema.newValidator();
 //	        String altoXmlFile = "xsd-validation/Glyph_Sample01_General.xml";
