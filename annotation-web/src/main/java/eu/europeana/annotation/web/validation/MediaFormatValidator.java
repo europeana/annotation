@@ -18,6 +18,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -27,6 +29,8 @@ import eu.europeana.annotation.definitions.model.impl.MediaFormat;
 import eu.europeana.annotation.definitions.model.impl.MediaFormats;
 
 public class MediaFormatValidator {
+	
+	protected static Logger logger = LogManager.getLogger(MediaFormatValidator.class);
 	
 	private static final String XSD_VALIDATION = "xsd";
 	
@@ -88,6 +92,7 @@ public class MediaFormatValidator {
 	        Reader xmlReader = new StringReader(xmlToValidate);
 	        validator.validate(new StreamSource(xmlReader));
 	    } catch (IOException | SAXException e) {
+	    	logger.error("XML does not match the xsd schema.");
 	        return false;
 	    }   
     	return true;
