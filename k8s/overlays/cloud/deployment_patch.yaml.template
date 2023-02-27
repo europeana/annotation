@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: set-api-deployment
+  name: annotation-api-deployment
 spec:
   replicas: ${MIN_REPLICAS}
   template:
