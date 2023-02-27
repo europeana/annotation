@@ -98,7 +98,7 @@ public class MediaFormatValidator {
 			
 	        validator.validate(new StreamSource(xmlReader));
 	    } catch (IOException | SAXException e) {
-	    	logger.error("XML does not match the xsd schema.");
+	    	logger.error("XML does not match the xsd schema.", e);
 	        return false;
 	    }   
     	return true;
