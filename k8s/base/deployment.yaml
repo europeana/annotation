@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: annotation-api-deployment
+spec:
+  # selector.matchLabels is provided via Kustomize
+  #selector:
+  #  matchLabels:
+  #    app: set-api
+  template:
+    spec:
+      containers:
+      - name: annotation-api
+        image: europeana/annotation-api
+        env:
+          - name: SPRING_CONFIG_NAME
+            value: "annotation,annotation.user"
+          - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+            value: "/opt/app/config/annotation.user.properties"
+        ports:
+          - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        volumeMounts:
+          - name: app-properties
+            mountPath: "/opt/app/config/annotation.user.properties"
+            readOnly: true
+            subPath: annotation.user.properties
+      volumes:
+        - name: app-properties
+          secret:
+            secretName: annotation-api-properties
