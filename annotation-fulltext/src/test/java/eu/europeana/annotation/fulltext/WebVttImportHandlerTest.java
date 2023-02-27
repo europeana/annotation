@@ -25,7 +25,7 @@ class WebVttImportHandlerTest extends FulltextTests {
 
     @Test
     void testImportFileWrongFormat() throws Exception {
-    	InputStream inputFile = getFile("Autumn_hats.fr.vtt");
+    	InputStream inputFile = getFile("Autumn_hats.fr.srt");
         Assertions.assertThrows(FileFormatException.class, () -> {
         	webVttImportHandler.importFile(inputFile, new Configuration());
         });
