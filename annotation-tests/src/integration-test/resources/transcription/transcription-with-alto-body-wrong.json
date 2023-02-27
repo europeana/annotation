@@ -3,7 +3,7 @@
   "body": {
     "type": "FullTextResource",
     "language": "en",
-    "value": "<?xml version=1.0 encoding=UTF-8?>",
+    "value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
     "format": "application/alto+xml",
     "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"
   },
