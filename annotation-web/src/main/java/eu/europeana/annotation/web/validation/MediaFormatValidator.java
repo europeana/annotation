@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,6 +92,8 @@ public class MediaFormatValidator {
 //	        File file2 = new File(getClass().getClassLoader().getResource(pageXmlFile).getFile());
 //	        validator.validate(new StreamSource(file2));
 	        Reader xmlReader = new StringReader(xmlToValidate);
+	        logger.info("Media format validator jar: " + validator.getClass().getResource(validator.getClass().getSimpleName() + ".class"));
+			
 	        validator.validate(new StreamSource(xmlReader));
 	    } catch (IOException | SAXException e) {
 	    	logger.error("XML does not match the xsd schema.");
