@@ -962,16 +962,16 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createTranscriptionWithAltoBody() throws Exception {
         Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
         createdAnnotations.add(storedAnno.getIdentifier());
-//    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
-//    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
+    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
     }
     
-//    @Test
-//	public void createTranscriptionWithPageXmlBody() throws Exception {
-//        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true, null);
-//        createdAnnotations.add(storedAnno.getIdentifier());
-//    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true, null);
-//    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());        
-//    }    
+    @Test
+	public void createTranscriptionWithPageXmlBody() throws Exception {
+        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true, null);
+        createdAnnotations.add(storedAnno.getIdentifier());
+    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true, null);
+    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());        
+    }    
     
 }

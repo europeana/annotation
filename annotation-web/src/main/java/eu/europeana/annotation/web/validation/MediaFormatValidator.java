@@ -1,15 +1,11 @@
 package eu.europeana.annotation.web.validation;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,29 +23,26 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import eu.europeana.annotation.definitions.exception.AnnotationServiceInstantiationException;
 import eu.europeana.annotation.definitions.model.impl.MediaFormat;
 import eu.europeana.annotation.definitions.model.impl.MediaFormats;
 
 public class MediaFormatValidator {
 	
-	protected static Logger logger = LogManager.getLogger(MediaFormatValidator.class);
+	protected Logger logger = LogManager.getLogger(MediaFormatValidator.class);
 	
 	private static final String XSD_VALIDATION = "xsd";
 	
-	MediaFormats mediaFormats = null;
+	MediaFormats mediaFormats;
 	
-    void initMediaFormats(String formatsFile) {
-		try (InputStream inputStream = getClass().getResourceAsStream(formatsFile)) {
+    void initMediaFormats(String formatsFile) throws IOException {
+    	try (InputStream inputStream = getClass().getResourceAsStream(formatsFile)) {
 		    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		    String contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
 		    mediaFormats = (new XmlMapper()).readValue(contents, MediaFormats.class);
-		}catch (Exception e) {
-		    throw new AnnotationServiceInstantiationException("MediaFormats", e);
-		}
+    	}
     }
 
-    public MediaFormatValidator(String formatsFile) {
+    public MediaFormatValidator(String formatsFile) throws IOException {
 		initMediaFormats(formatsFile);
 	}
 
@@ -80,22 +73,19 @@ public class MediaFormatValidator {
 	    	if(xsdFilePath==null) {
 		       	return false;
 		    }
-	        logger.info("Media formats: creating SchemaFactory.");
 	        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	        //Disable access to external entities in XML parsing (XML parsers should not be vulnerable to XXE attacks java:S2755).
+	        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 	        Source xsdSource = new StreamSource(getClass().getResourceAsStream(xsdFilePath));
 	        Schema schema = factory.newSchema(xsdSource);
-	        logger.info("Media formats: creating Validator.");
 	        Validator validator = schema.newValidator();
-//	        String altoXmlFile = "xsd-validation/Glyph_Sample01_General.xml";
-//	        String pageXmlFile = "xsd-validation/aletheiaexamplepage.xml";
-//	        File file2 = new File(getClass().getClassLoader().getResource(pageXmlFile).getFile());
-//	        validator.validate(new StreamSource(file2));
+//	        String altoXmlFile = "/xsd-validation/Glyph_Sample01_General.xml";
+//	        String pageXmlFile = "/xsd-validation/aletheiaexamplepage.xml";
+//	        validator.validate(new StreamSource(getClass().getResourceAsStream(altoXmlFile)));
 	        Reader xmlReader = new StringReader(xmlToValidate);
-	        logger.info("Media format validator jar: " + validator.getClass().getResource(validator.getClass().getSimpleName() + ".class"));
-			
 	        validator.validate(new StreamSource(xmlReader));
 	    } catch (IOException | SAXException e) {
-	    	logger.error("XML does not match the xsd schema.", e);
+	    	logger.error("XML does not match the XSD schema.", e);
 	        return false;
 	    }   
     	return true;

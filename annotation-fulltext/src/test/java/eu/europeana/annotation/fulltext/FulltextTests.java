@@ -2,7 +2,7 @@ package eu.europeana.annotation.fulltext;
 
 import java.io.InputStream;
 
-public abstract class FulltextTests {
+abstract class FulltextTests {
 
     protected InputStream getFile(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();

@@ -27,6 +27,7 @@ import eu.europeana.annotation.web.exception.request.ParamValidationI18NExceptio
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
+import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 
 public abstract class BaseAnnotationValidator {
 	
@@ -48,7 +49,7 @@ public abstract class BaseAnnotationValidator {
      * @throws PropertyValidationException
      */
     void validateAgentBody(Body body) throws ParamValidationI18NException, PropertyValidationException {
-	if (body.getType() == null || !(body.getType().size() == 1)) {
+	if (body.getType() == null || body.getType().size() != 1) {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
 
@@ -71,7 +72,7 @@ public abstract class BaseAnnotationValidator {
      * @throws ParamValidationI18NException
      * @throws PropertyValidationException
      */
-    void validateAgentEntityBody(Body body) throws ParamValidationI18NException, PropertyValidationException {
+    void validateAgentEntityBody(Body body) throws PropertyValidationException {
 	EdmAgent agent = (EdmAgent) ((EdmAgentBody) body).getAgent();
 
 	// check mandatory field prefLabel
@@ -84,21 +85,9 @@ public abstract class BaseAnnotationValidator {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
 
-	// check mandatory field - one of the professionOrOccupation, begin,
-	// dateOfBirth, end, dateOfDeath
-	// placeOfBirth, placeOfDeath
-	// if (agent.getPlaceOfBirth() == null && agent.getPlaceOfDeath() == null
-	// && agent.getDateOfDeath() == null && agent.getDateOfDeath() == null)
-	// throw new
-	// ParamValidationException(ParamValidationException.MESSAGE_MISSING_MANDATORY_FIELD,
-	// I18nConstants.MESSAGE_MISSING_MANDATORY_FIELD,
-	// new String[] { "agent.body.fields",
-	// "missing one of the professionOrOccupation, begin, dateOfBirth, end,
-	// dateOfDeath, placeOfBirth, placeOfDeath" });
     }
 
-    void validateGeoTag(Body body)
-        throws ParamValidationI18NException, PropertyValidationException {
+    void validateGeoTag(Body body) throws ParamValidationI18NException {
       if (!(body instanceof PlaceBody))
         throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
             I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
@@ -118,10 +107,9 @@ public abstract class BaseAnnotationValidator {
 
     }
 
-    void validateTagWithSpecificResource(Body body)
-        throws ParamValidationI18NException, PropertyValidationException {
+    void validateTagWithSpecificResource(Body body) throws ParamValidationI18NException {
       // check mandatory fields
-      if (StringUtils.isBlank(body.getInternalType().toString()))
+      if (StringUtils.isBlank(body.getInternalType()))
         throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"body.type"});
       if (StringUtils.isBlank(body.getSource()))
@@ -146,19 +134,19 @@ public abstract class BaseAnnotationValidator {
       	    new String[] { fieldName + ".httpUri", resource.getHttpUri() });
       }
       
-      if(resource.getScope() != null) {
-        if (!GeneralUtils.isUrl(resource.getScope())) {
-          throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-            I18nConstantsAnnotation.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
-            new String[] { fieldName + ".scope", resource.getScope() });
-        }
-      }else {
-        //scope exists
-        if(isScopeMandatory) {
-            throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-                I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {fieldName + ".scope"});
+      if(resource.getScope() == null) {
+          //scope exists
+          if(isScopeMandatory) {
+              throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+                  I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {fieldName + ".scope"});
           }
-        }
+      }else {
+          if (!GeneralUtils.isUrl(resource.getScope())) {
+              throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+                I18nConstantsAnnotation.MESSAGE_INVALID_TAG_SPECIFIC_RESOURCE,
+                new String[] { fieldName + ".scope", resource.getScope() });
+          }
+      }
     }
 
     /**
@@ -185,16 +173,14 @@ public abstract class BaseAnnotationValidator {
 		
 		//validate format compliance
 		String bodyFormat = body.getContentType();
-		if(bodyFormat!=null) {
-	    	if(! mediaFormatValidator.validateMediaFormat(body.getValue(), body.getContentType())) {
-	     	    throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT,
-	     		    I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT, new String[] { bodyFormat });
-	    	}
+		if(bodyFormat!=null && ! mediaFormatValidator.validateMediaFormat(body.getValue(), body.getContentType())) {
+     	    throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT,
+     		    I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT, new String[] { bodyFormat });
 		}
     }
 
     private void validateFullTextResource(Body body) throws PropertyValidationException {
-    if (body.getType() == null || !(body.getType().size() == 1)) {
+    if (body.getType() == null || body.getType().size() != 1) {
 	    // (external) Type is mandatory
 	    // temporarily commented out to verify if type is mandatory
 	    // throw new
@@ -240,11 +226,10 @@ public abstract class BaseAnnotationValidator {
      * @throws ParamValidationI18NException
      * @throws PropertyValidationException
      */
-    void validateSemanticTagVcardAddressBody(Body body)
-	    throws ParamValidationI18NException, PropertyValidationException {
+    void validateSemanticTagVcardAddressBody(Body body) throws PropertyValidationException {
     
 	// check type
-	if (body.getType() == null || !(body.getType().size() == 1)) {
+	if (body.getType() == null || body.getType().size() != 1) {
 	    // (external) Type is mandatory
 	    // temporarily commented out to verify if type is mandatory
 	    // throw new
@@ -311,7 +296,7 @@ public abstract class BaseAnnotationValidator {
 	return ResourceTypes.EXTERNAL_TEXT.hasJsonValue(body.getType().get(0)) || ResourceTypes.TEXTUAL_BODY.hasJsonValue(body.getType().get(0));
     }
 
-    void validateTagWithValue(Body body) throws ParamValidationI18NException, PropertyValidationException {
+    void validateTagWithValue(Body body) throws ParamValidationI18NException {
 	String value = body.getValue();
 
 	value = value.trim();
@@ -331,19 +316,14 @@ public abstract class BaseAnnotationValidator {
 	// reset the tag value with the trimmed value
 	body.setValue(value);
 
-	int MAX_TAG_LENGTH = 64;
+	int MaxTagLength = 64;
 
 	if (GeneralUtils.isUrl(value))
 	    throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_SIMPLE_TAG,
 		    I18nConstantsAnnotation.MESSAGE_INVALID_SIMPLE_TAG, new String[] { value });
-	else if (value.length() > MAX_TAG_LENGTH)
+	else if (value.length() > MaxTagLength)
 	    throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_INVALID_TAG_SIZE,
 		    I18nConstantsAnnotation.MESSAGE_INVALID_TAG_SIZE, new String[] { String.valueOf(value.length()) });
-    }
-
-    void validateSemanticTagUrl(Body body) {
-	// TODO Add whitelist based validation here
-
     }
 
     /**
@@ -373,14 +353,12 @@ public abstract class BaseAnnotationValidator {
       }
 
       // validate via to be valid URL(s)
-      if (webAnnotation.getVia() != null) {
-        if (webAnnotation.getVia() instanceof String[]) {
-          for (String via : webAnnotation.getVia()) {
-            if (!(GeneralUtils.isUrl(via)))
-              throw new ParamValidationI18NException("This is not a valid URL:",
-                  I18nConstantsAnnotation.ANNOTATION_VALIDATION, new String[] {WebAnnotationFields.VIA, via});
-          }
-        }
+      if (webAnnotation.getVia() != null && webAnnotation.getVia() instanceof String[]) {
+	      for (String via : webAnnotation.getVia()) {
+	        if (!(GeneralUtils.isUrl(via)))
+	          throw new ParamValidationI18NException("This is not a valid URL:",
+	              I18nConstantsAnnotation.ANNOTATION_VALIDATION, new String[] {WebAnnotationFields.VIA, via});
+	      }
       }
 
       switch (webAnnotation.getMotivationType()) {
@@ -389,6 +367,7 @@ public abstract class BaseAnnotationValidator {
           break;
         case DESCRIBING:
           validateDescribing(webAnnotation);
+          break;
         case TAGGING:
           validateTag(webAnnotation);
           break;
@@ -418,15 +397,15 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException 
      */
-    void validateEdmRights(Body body) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
+    void validateEdmRights(Body body) throws RequestBodyValidationException {
 	// if rights are provided, check if it belongs to the valid license list
 	String rightsClaim = body.getEdmRights();
 	String licence = null;
 	// remove version from the right and get licenses
-	char PATH_DELIMITER = '/';
-	long delimiterCount = rightsClaim.chars().filter(ch -> ch == PATH_DELIMITER).count();
+	char PathDelimiter = '/';
+	long delimiterCount = rightsClaim.chars().filter(ch -> ch == PathDelimiter).count();
 
-	if (delimiterCount < 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
+	if (delimiterCount < 6 || !rightsClaim.endsWith("" + PathDelimiter)) {
 	    // wrong format, max 6 (including the / after version, for )
 	    throw new RequestBodyValidationException(body.getInputString(), I18nConstantsAnnotation.ANNOTATION_INVALID_RIGHTS,
 		    new String[] { rightsClaim });
@@ -434,12 +413,12 @@ public abstract class BaseAnnotationValidator {
 	    // remove last /
 	    licence = rightsClaim.substring(0, rightsClaim.length() - 1);
 	    // remove version, but preserve last /
-	    int versionStart = licence.lastIndexOf(PATH_DELIMITER) + 1;
+	    int versionStart = licence.lastIndexOf(PathDelimiter) + 1;
 	    licence = licence.substring(0, versionStart);
 	}
 	Set<String> rights = getConfiguration().getAcceptedLicenceses();
 	if (!rights.contains(licence))
-	    throw new RequestBodyValidationException(body.getInputString(), I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+	    throw new RequestBodyValidationException(body.getInputString(), I18nConstants.INVALID_PARAM_VALUE,
 		    new String[] { "body.edmRights", rightsClaim });
 
     }
@@ -467,7 +446,7 @@ public abstract class BaseAnnotationValidator {
 	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 	    validateTagWithSpecificResource(body);
 	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
-	    validateSemanticTagUrl(body);
+	    //validateSemanticTagUrl(body);
 	} else if (BodyInternalTypes.isAgentBodyTag(body.getInternalType())) {
 	    validateAgentBody(body);
 	} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
@@ -569,7 +548,7 @@ public abstract class BaseAnnotationValidator {
     }
     
     protected void validateLinkForContributing(Annotation webAnnotation)
-        throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
+        throws RequestBodyValidationException, PropertyValidationException {
 
       validateBodyExists(webAnnotation.getBody());
       
@@ -598,13 +577,13 @@ public abstract class BaseAnnotationValidator {
       //specific resources not allowed 
       String scope = webAnnotation.getTarget().getScope();
       if(scope != null) {
-          throw new RequestBodyValidationException(I18nConstantsAnnotation.INVALID_PARAM_VALUE, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
               new String[] { "target.scope is not allowed for this annotation type: ", scope });
       }
       
       String source = webAnnotation.getTarget().getSource();
       if(source != null) {
-        throw new RequestBodyValidationException(I18nConstantsAnnotation.INVALID_PARAM_VALUE, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+        throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
             new String[] { "target.source is not allowed for this annotation type: ", source });
       }
       
