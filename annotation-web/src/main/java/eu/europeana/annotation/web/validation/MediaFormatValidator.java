@@ -75,11 +75,11 @@ public class MediaFormatValidator {
 		    }
 	        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        //Disable access to external entities in XML parsing (XML parsers should not be vulnerable to XXE attacks java:S2755, see https://rules.sonarsource.com/java/RSPEC-2755).
-	        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-	        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); 
+	        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 	        Source xsdSource = new StreamSource(getClass().getResourceAsStream(xsdFilePath));
 	        Schema schema = factory.newSchema(xsdSource);
 	        Validator validator = schema.newValidator();
+
 //	        String altoXmlFile = "/xsd-validation/Glyph_Sample01_General.xml";
 //	        String pageXmlFile = "/xsd-validation/aletheiaexamplepage.xml";
 //	        validator.validate(new StreamSource(getClass().getResourceAsStream(altoXmlFile)));
