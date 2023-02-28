@@ -6,4 +6,5 @@
 **/classes/
 **/log4j2.xml
 **/*.bk
+**/*.jks
 **/*.user.properties
