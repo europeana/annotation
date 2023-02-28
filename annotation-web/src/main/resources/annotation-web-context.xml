@@ -17,13 +17,15 @@
         ">
     
     <!-- USING OTHER MODULES -->
-    <beans:import resource="classpath:api2-common-context.xml"/>
-	<beans:import resource="classpath:annotation-definitions-context.xml"/>
+<!--    <beans:import resource="classpath:annotation-utils-context.xml"/>-->
+<!--	<beans:import resource="classpath:annotation-definitions-context.xml"/>-->
+    <beans:import resource="classpath:annotation-definitions-context.xml"/>
+    <beans:import resource="classpath:annotation-utils-context.xml"/>
 <!-- will be already imported by annotation-mongo	
-	<beans:import resource="api2-common-context.xml"/>
+	<beans:import resource="annotation-utils-context.xml"/>
  -->	
 	<beans:import resource="classpath:annotation-mongo-context.xml"/>
-	<beans:import resource="classpath:annotation-solr-context.xml"/>
+<!--	<beans:import resource="classpath:annotation-solr-context.xml"/>-->
 	
     
    	<!--  ApiKeyService -->

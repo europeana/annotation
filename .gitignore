@@ -7,3 +7,4 @@
 **/log4j2.xml
 **/*.bk
 **/*.user.properties
+**/*.jks

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: annotation-api-service
+spec:
+  ## selector provided via kustomize
+  #selector:
+  #  app: annotation-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

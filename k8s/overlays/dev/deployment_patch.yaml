@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: annotation-api-deployment
+spec:
+  template:
+    spec:
+      containers:
+      - name: annotation-api
+        # required to use local image
+        imagePullPolicy: Never

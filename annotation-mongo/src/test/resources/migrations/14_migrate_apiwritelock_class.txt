@@ -1,0 +1,2 @@
+#updates the classname for the api write lock collection
+db.getCollection("apiwritelock").updateMany({}, {$set: {"className": "eu.europeana.api.commons.nosql.entity.ApiWriteLockImpl"}})
