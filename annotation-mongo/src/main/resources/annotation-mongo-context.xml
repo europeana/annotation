@@ -12,10 +12,10 @@
 	">
 	
 	<!-- utils (configuration) -->
-	<!--  note datasource configuration was moved to MongoConfig -->
 
 	<!-- INTERNAL DEFINITIONS -->
-	<import resource="classpath:internal/annotation-mongo-datasource.xml"/>
+<!--	<import resource="classpath:internal/annotation-mongo-datasource.xml"/>-->
+	<!--  note datasource configuration was moved to MongoConfig -->
 	<import resource="classpath:internal/annotation-mongo-beans.xml"/>
 	<import resource="classpath:internal/annotation-mongo-dao.xml"/>
 

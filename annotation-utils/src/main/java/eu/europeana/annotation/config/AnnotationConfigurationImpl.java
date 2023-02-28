@@ -1,7 +1,5 @@
 package eu.europeana.annotation.config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
