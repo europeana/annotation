@@ -37,6 +37,7 @@ import eu.europeana.annotation.web.config.SocksProxyActivator;
 public class AnnotationApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LogManager.getLogger(AnnotationApp.class);
+
   /**
    * Main entry point of this application
    *
@@ -50,13 +51,30 @@ public class AnnotationApp extends SpringBootServletInitializer {
         System.getenv("CF_INSTANCE_IP"));
 
     // Activate socks proxy (if your application requires it)
-    SocksProxyActivator.activate("config/annotation.properties");
+    String propertiesFileName = getUserPropertiesFileName(args);
+    SocksProxyActivator.activate(propertiesFileName);
 
     ApplicationContext ctx = SpringApplication.run(AnnotationApp.class, args);
 
     if (logger.isDebugEnabled()) {
       printRegisteredBeans(ctx);
     }
+  }
+
+  private static String getUserPropertiesFileName(String[] args) {
+    String propertiesFileName = "annotation.user.properties";
+    String ADITIONAL_CONFIG_REFIX = "--spring.config.additional-location=";
+    if(args != null) {
+      for (String config : args) {
+        if(config.startsWith(ADITIONAL_CONFIG_REFIX)){
+          propertiesFileName = config.substring(ADITIONAL_CONFIG_REFIX.length());
+          propertiesFileName = propertiesFileName.replaceFirst("optional\\:", "");
+          propertiesFileName = propertiesFileName.replaceFirst("file\\:", "");
+          continue;
+        }
+      }
+    }
+    return propertiesFileName;
   }
 
   private static void printRegisteredBeans(ApplicationContext ctx) {

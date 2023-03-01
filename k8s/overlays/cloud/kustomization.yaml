@@ -1,0 +1,17 @@
+resources:
+  - ../../base
+  - service.yaml
+  - ingress.yaml
+  - hpa.yaml
+
+commonLabels:
+  app: annotation-api
+
+patchesStrategicMerge:
+  - deployment_patch.yaml
+  
+# expects files to be in the same directory
+secretGenerator:
+  - name: ibm-secret
+    files:
+      - ibm-databases-truststore.jks
