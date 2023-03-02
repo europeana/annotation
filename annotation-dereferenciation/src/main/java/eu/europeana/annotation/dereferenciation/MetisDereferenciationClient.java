@@ -37,7 +37,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationE
  */
 @Service(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
 @PropertySource(
-    value = {"classpath:config/annotation.properties", "classpath:config/annotation.user.properties"},
+    value = {"classpath:annotation.properties", "classpath:config/annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class MetisDereferenciationClient implements InitializingBean {
     @Value("${metis.baseUrl}")

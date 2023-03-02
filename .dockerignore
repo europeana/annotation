@@ -1,0 +1,5 @@
+# Send only zip archive to docker, prevent copying sentitive files
+**
+!/annotation-web/target/annotation-web-executable.jar
+**/*.user.properties
+**/*.jks

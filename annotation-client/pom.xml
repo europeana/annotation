@@ -38,12 +38,6 @@
 
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>api2-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
