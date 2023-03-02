@@ -1,8 +1,7 @@
-/.project
+**/.project
 **/.classpath
 **/.settings/
-.classpath
-/target/
+**/target/
 **/classes/
 **/log4j2.xml
 **/*.bk
