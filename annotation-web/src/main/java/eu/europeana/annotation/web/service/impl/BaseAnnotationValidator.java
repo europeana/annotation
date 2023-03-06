@@ -2,8 +2,12 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.net.URI;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -23,7 +27,9 @@ import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
+import eu.europeana.api2.utils.WebUtils;
 
 public abstract class BaseAnnotationValidator {
 	
@@ -165,7 +171,7 @@ public abstract class BaseAnnotationValidator {
      * @throws PropertyValidationException
      * @throws RequestBodyValidationException
      */
-    protected void validateTranscriptionBodyWithFullTextResource(Body body)
+    protected void validateTranscriptionBodyWithFullTextResource(Body body, Authentication authentication)
 	    throws ParamValidationI18NException, PropertyValidationException, RequestBodyValidationException {
 	// the body type shouldn't be null at this stage
 	validateFullTextResource(body);
@@ -175,7 +181,7 @@ public abstract class BaseAnnotationValidator {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.edmRights" });
 	}
-	validateEdmRights(body);
+	validateEdmRights(body, authentication);
     }
 
     private void validateFullTextResource(Body body) throws PropertyValidationException {
@@ -339,7 +345,7 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException,
+    public void validateWebAnnotation(Annotation webAnnotation, Authentication authentication) throws ParamValidationI18NException,
         RequestBodyValidationException, PropertyValidationException {
       
       // validate canonical to be an absolute URI
@@ -378,13 +384,13 @@ public abstract class BaseAnnotationValidator {
           validateTag(webAnnotation);
           break;
         case TRANSCRIBING:
-          validateTranscription(webAnnotation);
+          validateTranscription(webAnnotation, authentication);
           break;
         case SUBTITLING:
-          validateSubtitleOrCaption(webAnnotation);
+          validateSubtitleOrCaption(webAnnotation, authentication);
           break;
         case CAPTIONING:
-          validateSubtitleOrCaption(webAnnotation);
+          validateSubtitleOrCaption(webAnnotation, authentication);
           break;
         case LINKFORCONTRIBUTING:
           validateLinkForContributing(webAnnotation);
@@ -403,30 +409,33 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException 
      */
-    void validateEdmRights(Body body) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
-	// if rights are provided, check if it belongs to the valid license list
-	String rightsClaim = body.getEdmRights();
-	String licence = null;
-	// remove version from the right and get licenses
-	char PATH_DELIMITER = '/';
-	long delimiterCount = rightsClaim.chars().filter(ch -> ch == PATH_DELIMITER).count();
-
-	if (delimiterCount < 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
-	    // wrong format, max 6 (including the / after version, for )
-	    throw new RequestBodyValidationException(body.getInputString(), I18nConstantsAnnotation.ANNOTATION_INVALID_RIGHTS,
-		    new String[] { rightsClaim });
-	} else {
-	    // remove last /
-	    licence = rightsClaim.substring(0, rightsClaim.length() - 1);
-	    // remove version, but preserve last /
-	    int versionStart = licence.lastIndexOf(PATH_DELIMITER) + 1;
-	    licence = licence.substring(0, versionStart);
-	}
-	Set<String> rights = getConfiguration().getAcceptedLicenceses();
-	if (!rights.contains(licence))
-	    throw new RequestBodyValidationException(body.getInputString(), I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-		    new String[] { "body.edmRights", rightsClaim });
-
+    void validateEdmRights(Body body, Authentication authentication) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
+    	if(WebUtils.checkRights(authentication, UserRoles.publisher.getName())) {
+    		return;
+    	}
+		// if rights are provided, check if it belongs to the valid license list
+		String rightsClaim = body.getEdmRights();
+		String licence = null;
+		// remove version from the right and get licenses
+		char PATH_DELIMITER = '/';
+		long delimiterCount = rightsClaim.chars().filter(ch -> ch == PATH_DELIMITER).count();
+	
+		if (delimiterCount < 6 || !rightsClaim.endsWith("" + PATH_DELIMITER)) {
+		    // wrong format, max 6 (including the / after version, for )
+		    throw new RequestBodyValidationException(body.getInputString(), I18nConstantsAnnotation.ANNOTATION_INVALID_RIGHTS,
+			    new String[] { rightsClaim });
+		} else {
+		    // remove last /
+		    licence = rightsClaim.substring(0, rightsClaim.length() - 1);
+		    // remove version, but preserve last /
+		    int versionStart = licence.lastIndexOf(PATH_DELIMITER) + 1;
+		    licence = licence.substring(0, versionStart);
+		}
+		Set<String> rights = getConfiguration().getAcceptedLicenceses();
+		if (!rights.contains(licence))
+		    throw new RequestBodyValidationException(body.getInputString(), I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+			    new String[] { "body.edmRights", rightsClaim });
+	
     }
 
     /**
@@ -502,10 +511,10 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    protected void validateTranscription(Annotation webAnnotation)
+    protected void validateTranscription(Annotation webAnnotation, Authentication authentication)
 	    throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
     validateBodyExists(webAnnotation.getBody());
-	validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody());
+	validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(), authentication);
 	// validate target
 	// TODO consider moving to validateSpecificResource method
 	// "source" becomes mandatory as soon as you have a "scope" in the target
@@ -524,7 +533,7 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    protected void validateSubtitleOrCaption(Annotation webAnnotation)
+    protected void validateSubtitleOrCaption(Annotation webAnnotation, Authentication authentication)
 	    throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
 
 	// validate body
@@ -549,7 +558,7 @@ public abstract class BaseAnnotationValidator {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.edmRights" });
 	}
-	validateEdmRights(body);
+	validateEdmRights(body, authentication);
 
     }
     

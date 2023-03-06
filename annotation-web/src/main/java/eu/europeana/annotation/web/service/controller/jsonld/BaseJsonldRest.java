@@ -2,20 +2,22 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import com.google.gson.Gson;
+
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -60,6 +62,7 @@ import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.api2.utils.WebUtils;
 
 public class BaseJsonldRest extends BaseRest {
 
@@ -90,7 +93,7 @@ public class BaseJsonldRest extends BaseRest {
 			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
 			new String[] { "identifier", String.valueOf(webAnnotation.getIdentifier()) });
 	    // 2.1 validate annotation properties
-	    getAnnotationService().validateWebAnnotation(webAnnotation);
+	    getAnnotationService().validateWebAnnotation(webAnnotation, authentication);
 	    
 	    //check the annotation uniqueness, only after validation 
         Set<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation, false);
@@ -178,7 +181,7 @@ public class BaseJsonldRest extends BaseRest {
 
 	    // validate annotations
 	    uploadStatus.setStep(BatchOperationStep.VALIDATION);
-	    getAnnotationService().validateWebAnnotations(annotations, uploadStatus);
+	    getAnnotationService().validateWebAnnotations(annotations, uploadStatus, authentication);
 
 	    // in case of validation errors, return error report
 	    if (uploadStatus.getFailureCount() > 0)
@@ -395,7 +398,7 @@ public class BaseJsonldRest extends BaseRest {
 	
 	//verify ownership
 	boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
-	if(isOwner || hasAdminRights(authentication)) {
+	if(isOwner || WebUtils.checkRights(authentication, UserRoles.admin.getName())) {
 	    //approve owner or admin
 	    return annotation;
 	}else {
@@ -405,18 +408,6 @@ public class BaseJsonldRest extends BaseRest {
 		    I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."},
 		    HttpStatus.FORBIDDEN);
 	}
-    }
-
-    private boolean hasAdminRights(Authentication authentication) {
-	
-	for (Iterator<? extends GrantedAuthority> iterator = authentication.getAuthorities().iterator(); iterator.hasNext();) {
-	    //role based authorization
-	    String role = iterator.next().getAuthority();
-	    if(UserRoles.admin.getName().equals(role)){
-		return true;
-	    }
-	}
-	return false;
     }
 
     /**
@@ -460,7 +451,7 @@ public class BaseJsonldRest extends BaseRest {
 	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
 
 	    checkIfMatchHeader(eTagOrigin, request);
-	    getAnnotationService().validateWebAnnotation(updateWebAnnotation);
+	    getAnnotationService().validateWebAnnotation(updateWebAnnotation, authentication);
 
 	    // 6. apply updates - merge current and updated annotation
 	    // 7. and call database update method

@@ -8,12 +8,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -434,10 +438,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
   @Override
   public void validateWebAnnotations(List<? extends Annotation> webAnnotations,
-      BatchReportable batchReportable) {
+      BatchReportable batchReportable, Authentication authentication) {
     for (Annotation webanno : webAnnotations) {
       try {
-        validateWebAnnotation(webanno);
+        validateWebAnnotation(webanno, authentication);
         // TODO: validate via, size must be 1
         batchReportable.incrementSuccessCount();
       } catch (ParamValidationI18NException | RequestBodyValidationException

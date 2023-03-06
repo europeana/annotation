@@ -29,7 +29,7 @@ import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.api2.utils.JsonWebUtils;
+import eu.europeana.api2.utils.WebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -80,7 +80,7 @@ public class WhitelistRest extends BaseRest {
 	    response.error = errorMessage;
 	}
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response, null);
 	return buildResponse(jsonStr);
     }
 
@@ -99,7 +99,7 @@ public class WhitelistRest extends BaseRest {
 	WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(whitelist, null, action);
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response, null);
 	return buildResponse(jsonStr);
     }
 
@@ -124,7 +124,7 @@ public class WhitelistRest extends BaseRest {
 	response.setWhitelistEntry(serializeWhitelist(storedWhitelist));
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response, null);
 	return buildResponse(jsonStr);
     }
 
@@ -145,7 +145,7 @@ public class WhitelistRest extends BaseRest {
 	WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(whitelist, null, action);
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response, null);
 	return buildResponse(jsonStr);
     }
 
@@ -173,7 +173,7 @@ public class WhitelistRest extends BaseRest {
 	}
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response, null);
 	return buildResponse(jsonStr);
     }
 
@@ -202,7 +202,7 @@ public class WhitelistRest extends BaseRest {
 	    response.error = e.getMessage();
 	}
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response, null);
 	return buildResponse(jsonStr);
     }
 

@@ -5,10 +5,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,8 +35,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.output.ToStringConsumer;
 import org.testcontainers.containers.output.WaitingConsumer;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.europeana.annotation.AnnotationBasePackageMapper;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.config.AnnotationConfigurationImpl;
@@ -57,6 +61,7 @@ import eu.europeana.annotation.tests.utils.EuropeanaOauthClient;
 import eu.europeana.annotation.tests.utils.MongoContainer;
 import eu.europeana.annotation.tests.utils.SolrContainer;
 import eu.europeana.annotation.web.service.WhitelistService;
+import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -69,7 +74,10 @@ import okhttp3.mockwebserver.RecordedRequest;
 public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
   static String regularUserAuthorizationValue = null;
-  static String adminUserAuthorizationValue = null;
+  static String adminUserAuthorizationValue = null; 
+  public static final String USER_PUBLISHER = "publisher-userid:publisher-username:publisher";
+  static String publisherUserAuthorizationValue = OAuthUtils.TYPE_BEARER + " " + USER_PUBLISHER;
+  
   protected static List<Long> createdAnnotations = new ArrayList<Long>();
   protected static List<Long> createdModerationRecords = new ArrayList<Long>();
 
@@ -138,6 +146,10 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
       adminUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_ADMIN,
           AnnotationTestsConfiguration.getInstance().getOauthServiceUri(),
           AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_ADMIN));
+      publisherUserAuthorizationValue = EuropeanaOauthClient.getOauthToken(USER_PUBLISHER,
+              AnnotationTestsConfiguration.getInstance().getOauthServiceUri(),
+              AnnotationTestsConfiguration.getInstance().getOauthRequestParams(USER_PUBLISHER));
+
     }
   }
   
@@ -209,12 +221,18 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   }
 
   protected String getAuthorizationHeaderValue(String user) {
-    if (user != null && user.equals(USER_ADMIN)) {
+    if (USER_ADMIN.equals(user)) {
       if (adminUserAuthorizationValue != null) {
         return adminUserAuthorizationValue;
       } else {
         return "";
       }
+    } else if(USER_PUBLISHER.equals(user)) {
+    	if (publisherUserAuthorizationValue != null) {
+    		return publisherUserAuthorizationValue;
+        } else {
+            return "";
+        }
     } else {
       if (regularUserAuthorizationValue != null) {
         return regularUserAuthorizationValue;
@@ -234,23 +252,29 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
       anno = AnnotationTestUtils.getJsonStringInput(inputFile);
     }
 
-    String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
-
-    ResultActions mockMvcResult = null;
-    if (anno != null) {
-      mockMvcResult = mockMvc.perform(
-          post(url).queryParam(WebAnnotationFields.INDEX_ON_CREATE, String.valueOf(indexOnCreate))
-              .content(anno).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-              .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(user)));
-    } else {
-      mockMvcResult = mockMvc.perform(
-          post(url).queryParam(WebAnnotationFields.INDEX_ON_CREATE, String.valueOf(indexOnCreate))
-              .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-              .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(user)));
-    }
-
-    return AnnotationTestUtils.buildResponseEntity(mockMvcResult);
+    return storeTestAnnotationFromJson(anno, indexOnCreate, user);
   }
+  
+  protected ResponseEntity<String> storeTestAnnotationFromJson(String jsonAnno, boolean indexOnCreate,
+	      String user) throws Exception {
+	  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
+
+	  ResultActions mockMvcResult = null;
+	  if (jsonAnno != null) {
+	    mockMvcResult = mockMvc.perform(
+	        post(url).queryParam(WebAnnotationFields.INDEX_ON_CREATE, String.valueOf(indexOnCreate))
+	            .content(jsonAnno).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+	            .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(user)));
+	  } else {
+	    mockMvcResult = mockMvc.perform(
+	        post(url).queryParam(WebAnnotationFields.INDEX_ON_CREATE, String.valueOf(indexOnCreate))
+	            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+	            .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeaderValue(user)));
+	  }
+	
+	  return AnnotationTestUtils.buildResponseEntity(mockMvcResult);
+  }
+  
 
   protected ResponseEntity<String> storeTestAnnotationReport(String apiKey, long identifier,
       String userToken) throws Exception {
@@ -289,7 +313,15 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
     Annotation annotation = AnnotationTestUtils.parseAndVerifyTestAnnotation(response);
     return annotation;
   }
+  
+  protected Annotation createTestAnnotationFromJson(String annoJson, boolean indexOnCreate, String user)
+		  throws Exception {
+	  ResponseEntity<String> response = storeTestAnnotationFromJson(annoJson, indexOnCreate, user);
+	  Annotation annotation = AnnotationTestUtils.parseAndVerifyTestAnnotation(response);
+	  return annotation;
+  }
 
+  
   protected ResponseEntity<String> storeTestAnnotationByType(boolean indexOnCreate, String body,
       String annoType, String user) throws Exception {
 

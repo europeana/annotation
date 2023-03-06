@@ -15,7 +15,8 @@ public enum UserRoles implements Role {
 	    Operations.ADMIN_ALL, Operations.WRITE_UNLOCK, Operations.WRITE_LOCK, 
 	    Operations.ADMIN_REINDEX, Operations.WHITELIST_ALL, 
 	    Operations.WHITELIST_CREATE, Operations.WHITELIST_RETRIEVE, Operations.WHITELIST_DELETE}), 
-	moderator(new String[]{Operations.MODERATION_ALL});
+	moderator(new String[]{Operations.MODERATION_ALL}),
+	publisher(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT});
 	
 	String[] operations;
 	static Set<String> operationSet;

@@ -26,7 +26,7 @@ import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.model.vocabulary.Operations;
-import eu.europeana.api2.utils.JsonWebUtils;
+import eu.europeana.api2.utils.WebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -107,7 +107,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 
 	List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate, stopDate, page, limit);
 
-	String jsonStr = JsonWebUtils.toJson(deletions, null);
+	String jsonStr = WebUtils.toJson(deletions, null);
 	
     // build response entity with headers
     MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);

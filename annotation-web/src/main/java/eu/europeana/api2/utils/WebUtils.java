@@ -1,10 +1,13 @@
 package eu.europeana.api2.utils;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -18,9 +21,9 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
  * @author GordeaS
  *
  */
-public class JsonWebUtils {
+public class WebUtils {
 	
-	private static final Logger log = LogManager.getLogger(JsonWebUtils.class);
+	private static final Logger log = LogManager.getLogger(WebUtils.class);
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
 	public static String toJson(Object object) {
@@ -103,5 +106,15 @@ public class JsonWebUtils {
 		}
 		return query;
 	}
-		
+	
+	public static boolean checkRights(Authentication authentication, String userRole) {
+    	for (Iterator<? extends GrantedAuthority> iterator = authentication.getAuthorities().iterator(); iterator.hasNext();) {
+    	    //role based authorization
+    	    String role = iterator.next().getAuthority();
+    	    if(role!=null && role.equals(userRole)){
+    	    	return true;
+    	    }
+    	}
+    	return false;
+	}	
 }

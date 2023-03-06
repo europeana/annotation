@@ -8,10 +8,12 @@ import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotation
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,10 +25,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
@@ -646,7 +650,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
     }
-  
+      
     protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
     MotivationTypes motivationType = MotivationTypes.SUBTITLING;
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
@@ -667,7 +671,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     
     Assertions.assertTrue(true);
     }
- 
+    
     @Test
     public void createSemanticTagSimpleMinimal() throws Exception {
 
@@ -907,7 +911,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
    
     @Test
-    public void createTranscriptionWithRights() throws Exception {
+    public void createTranscriptionWithRights() throws Exception {    	
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
     Annotation inputAnno = parseTranscription(requestBody);
@@ -922,6 +926,25 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
     
     }
+    
+    @Test
+    public void createTranscriptionWithWrongRights() throws Exception {    	
+
+		String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
+		JSONObject jsonObj = new JSONObject(requestBody);
+		JSONObject newBody = jsonObj.getJSONObject("body");
+		newBody.remove("edmRights");
+		newBody.put("edmRights", "wrong rights");
+		jsonObj.remove("body");
+		jsonObj.put("body", newBody);
+		
+		ResponseEntity<String> response = storeTestAnnotationFromJson(jsonObj.toString(), true, null);
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		
+		Annotation storedAnno = createTestAnnotationFromJson(jsonObj.toString(), true, USER_PUBLISHER);
+		createdAnnotations.add(storedAnno.getIdentifier());
+    
+    }    
 
     @Test
     public void createTranscriptionWithoutRights() throws Exception {

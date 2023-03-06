@@ -16,6 +16,7 @@ public class AnnotationTestsConstants {
   
   public static final String USER_REGULAR = "regular";
   public static final String USER_ADMIN = "admin";
+  public static final String USER_PUBLISHER = "publisher";
 
   public static final String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 
