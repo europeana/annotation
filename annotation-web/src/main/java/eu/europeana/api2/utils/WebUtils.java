@@ -25,12 +25,7 @@ public class WebUtils {
 	
 	private static final Logger log = LogManager.getLogger(WebUtils.class);
 	private static ObjectMapper objectMapper = new ObjectMapper();
-	
-	public static String toJson(Object object) {
-//		public static ModelAndView toJson(Object object) {
-		return toJson(object, null);
-	}
-	
+		
 //	public static ModelAndView toJson(String json, String callback) {
 //		String resultPage = "json";
 //		Map<String, Object> model = new HashMap<String, Object>();
@@ -42,12 +37,12 @@ public class WebUtils {
 //		return new ModelAndView(resultPage, model);
 //	}
 
-	public static String toJson(Object object, String callback) {
+	public static String toJson(Object object) {
 //		public static ModelAndView toJson(Object object, String callback) {
-		return toJson(object, callback, false, -1);
+		return toJson(object, false, -1);
 	}
 		
-	public static String toJson(Object object, String callback, boolean shortObject, int objectId) {
+	public static String toJson(Object object, boolean shortObject, int objectId) {
 //		public static ModelAndView toJson(Object object, String callback, boolean shortObject, int objectId) {
 			
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
@@ -57,7 +52,7 @@ public class WebUtils {
 			if (shortObject) {
 				String idBeginStr = "id\":{";
 				int startIdPos = jsonStr.indexOf(idBeginStr);
-				int endIdPos = jsonStr.indexOf("}", startIdPos);
+				int endIdPos = jsonStr.indexOf('}', startIdPos);
 				jsonStr = jsonStr.substring(0, startIdPos) + idBeginStr.substring(0, idBeginStr.length() - 1) 
 				    + Integer.valueOf(objectId) + jsonStr.substring(endIdPos + 1);
 			}
@@ -80,14 +75,13 @@ public class WebUtils {
 	}
 	
 	/**
-	 * This method extends SOLR query by field and language if given.
+	 * This method extends SOLR query by field if given.
 	 * @deprecated needs to be re-implemented according to new schema and 
 	 * @param query
 	 * @param field
-	 * @param language
 	 * @return extended query
 	 */
-	public static String addFieldToQuery(String query, String field, String language) {
+	public static String addFieldToQuery(String query, String field) {
 		if (StringUtils.isNotEmpty(field)) {
 //			if (SolrAnnotationFields.contains(field)) {
 				String prefix = WebAnnotationFields.DEFAULT_LANGUAGE + WebAnnotationFields.UNDERSCORE;

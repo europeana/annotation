@@ -3,11 +3,12 @@ package eu.europeana.annotation.web.service.controller.admin;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
-import eu.europeana.annotation.mongo.model.internal.PersistentApiWriteLock;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
@@ -88,7 +89,7 @@ public class ManagementRest extends BaseRest {
     AnnotationOperationResponse response;
     response = new AnnotationOperationResponse("admin", "/admin/annotation/delete");
     response.success = true;
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     logger.info("Delete Annotation for good result: " + jsonStr);
     return buildResponse(jsonStr);
   }
@@ -112,7 +113,7 @@ public class ManagementRest extends BaseRest {
     response.success = true;
 
     // return JsonWebUtils.toJson(response, null);
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     logger.info("Delete a set of Annotations for good result: " + jsonStr);
     return buildResponse(jsonStr);
   }
@@ -153,7 +154,7 @@ public class ManagementRest extends BaseRest {
     AnnotationOperationResponse response =
         new AnnotationOperationResponse("admin", "/admin/reindex");
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     logger.info("Reindex by annotation id result: " + jsonStr);
     return buildResponse(jsonStr);
   }
@@ -181,7 +182,7 @@ public class ManagementRest extends BaseRest {
         new AnnotationOperationResponse("admin", "/admin/reindexselection");
     response.setStatus(status.toString());
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     logger.info("Reindex a set of annotations defined by selection criteria result: " + jsonStr);
     return buildResponse(jsonStr);
   }
@@ -213,7 +214,7 @@ public class ManagementRest extends BaseRest {
     // only if at least one item was successfully reindexed
     response.success = (status.getSuccessCount() > 0);
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
     logger.info("Reindex a set of annotations result: " + jsonStr + "(HTTP status: "
         + httpStatus.toString() + ")");
@@ -242,7 +243,7 @@ public class ManagementRest extends BaseRest {
         + status.getFailureCount());
     response.success = true;
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     logger.info("Reindex all annotations result: " + jsonStr);
     return buildResponse(jsonStr);
   }
@@ -272,7 +273,7 @@ public class ManagementRest extends BaseRest {
     HttpStatus httpStatus = HttpStatus.OK;
     logger.info(successMsg);
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     return buildResponse(jsonStr, httpStatus);
   }
 
@@ -299,7 +300,7 @@ public class ManagementRest extends BaseRest {
     response = new AnnotationOperationResponse("admin", "/admin/annotation/updateRecordId");
     response.setStatus("Updated record IDs. " + status.toString());
     response.success = true;
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     logger.info("Update record ID operation result. \n Old ID: " + oldId + "\nnewId : " + newId
         + "\nResult: " + jsonStr);
     return buildResponse(jsonStr);
@@ -332,7 +333,7 @@ public class ManagementRest extends BaseRest {
     response.setStatus(isLocked ? "Server is now locked for changes" : "Unable to set lock");
     response.success = isLocked;
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
     logger.info("Lock write operations result: " + jsonStr + "(HTTP status: "
         + httpStatus.toString() + ")");
@@ -371,7 +372,7 @@ public class ManagementRest extends BaseRest {
       response.success = true;
     }
 
-    String jsonStr = WebUtils.toJson(response, null);
+    String jsonStr = WebUtils.toJson(response);
     HttpStatus httpStatus = response.success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
     logger.info("Unlock write operations result: " + jsonStr + "(HTTP status: "
         + httpStatus.toString() + ")");

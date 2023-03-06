@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.controller;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,7 +195,7 @@ public class BaseRest extends BaseRestController {
 		try {
 			// byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
 			byte[] decodedBase64Str = org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes());
-			res = new String(decodedBase64Str);
+			res = new String(decodedBase64Str, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			throw new ApplicationAuthenticationException(I18nConstantsAnnotation.BASE64_DECODING_FAIL,
 					I18nConstantsAnnotation.BASE64_DECODING_FAIL, null);

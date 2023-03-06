@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
+import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
@@ -20,7 +21,7 @@ import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
  */
 public class AnnotationAuthorizationUtils {
   
-  public static Authentication createAuthentication(String userId, String userName, UserRoles role, String apiName) {
+  public static Authentication createAuthentication(String userId, String userName, Role role, String apiName) {
     return createAuthertication(userId, userName, role.getName(), apiName);
   }
 
