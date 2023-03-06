@@ -194,8 +194,8 @@ public class BaseRest extends BaseRestController {
 		String res = null;
 		try {
 			// byte[] decodedBase64Str = Base64.decodeBase64(base64Str);
-			byte[] decodedBase64Str = org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes());
-			res = new String(decodedBase64Str, StandardCharsets.UTF_8);
+			byte[] decodedBase64Str = org.apache.commons.codec.binary.Base64.decodeBase64(base64Str.getBytes(StandardCharsets.UTF_8));
+			res = new String(decodedBase64Str);
 		} catch (Exception e) {
 			throw new ApplicationAuthenticationException(I18nConstantsAnnotation.BASE64_DECODING_FAIL,
 					I18nConstantsAnnotation.BASE64_DECODING_FAIL, null);
