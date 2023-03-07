@@ -70,13 +70,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public static final String DESCRIBING_CHO = "/describing/cho.json";
     public static final String LINK_EDM_IS_SIMMILAR_TO = "/link/edmIsSimilarTo.json";
     public static final String LINK_EDM_IS_SIMMILAR_TO_MINIMAL = "/link/edmIsSimilarTo_minimal.json";
-    public static final String TRANSCRIPTION_WITHOUT_RIGHTS = "/transcription/transcription-without-rights.json";
-    public static final String TRANSCRIPTION_WITHOUT_LANG = "/transcription/transcription-without-language.json";
-    public static final String TRANSCRIPTION_WITHOUT_VALUE = "/transcription/transcription-without-value.json";
-    public static final String TRANSCRIPTION_WITH_ALTO_BODY = "/transcription/transcription-with-alto-body.json";
-    public static final String TRANSCRIPTION_WITH_ALTO_BODY_WRONG = "/transcription/transcription-with-alto-body-wrong.json";
-    public static final String TRANSCRIPTION_WITH_PAGE_XML_BODY = "/transcription/transcription-with-page-xml-body.json";
-    public static final String TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG = "/transcription/transcription-with-page-xml-body-wrong.json";
     
 	static final String VALUE_BATCH_TESTSET = "body_value: \"*-ff45d28b-8717-42f4-a486-f3a62f97fb64\"";
 
@@ -894,84 +887,5 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
                 ((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardPostOfficeBox());
         assertNotNull(
                 ((VcardAddressBody) storedAnno.getBody()).getAddress().getVcardStreetAddress());
-    }    
-    
-    protected Annotation parseTranscription(String jsonString) throws JsonParseException {
-      MotivationTypes motivationType = MotivationTypes.TRANSCRIBING;
-      return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);     
-    }
-    
-    @Test
-    public void createMinimalTranscription() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_MINIMAL);
-    Annotation inputAnno = parseTranscription(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
-    
-    // validate the reflection of input in output!
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-    }
-   
-    @Test
-    public void createTranscriptionWithRights() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
-    Annotation inputAnno = parseTranscription(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
-
-    // validate the reflection of input in output!
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-
-    assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
-    assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
-    
-    }
-
-    @Test
-    public void createTranscriptionWithoutRights() throws Exception {
-
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS, true, null);
-    assertEquals(org.apache.commons.httpclient.HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
-    String expectedMessage = "Missing mandatory field! transcription.body.edmRights";
-    assertTrue(response.getBody().contains(expectedMessage));
-    }
-    
-    @Test
-    public void createTranscriptionWithoutLanguage() throws Exception {
-
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_LANG, true, null);
-    assertEquals(org.apache.commons.httpclient.HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
-    String expectedMessage = "Missing mandatory field! transcription.body.language";
-    assertTrue(response.getBody().contains(expectedMessage));
-    }
-    
-    @Test
-    public void createTranscriptionWithoutValue() throws Exception {
-
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_VALUE, true, null);
-    assertEquals(org.apache.commons.httpclient.HttpStatus.SC_BAD_REQUEST, response.getStatusCodeValue());
-    String expectedMessage = "Missing mandatory field! transcription.body.value";
-    assertTrue(response.getBody().contains(expectedMessage));
-    }
-    
-    @Test
-    public void createTranscriptionWithAltoBody() throws Exception {
-        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
-        createdAnnotations.add(storedAnno.getIdentifier());
-    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
-    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
-    }
-    
-    @Test
-	public void createTranscriptionWithPageXmlBody() throws Exception {
-        Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true, null);
-        createdAnnotations.add(storedAnno.getIdentifier());
-    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true, null);
-    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());        
-    }    
-    
+    }        
 }
