@@ -1,18 +1,18 @@
 package eu.europeana.annotation.fulltext.transcription;
 
 import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_BLANK_CONTENT;
-import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_CANNOT_READ_CONFIG;
-import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_INVALID_CONFIG;
-import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_INIT_VALIDATOR_ERROR;
 import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_CANNOT_PERFORM_VALIDATION;
+import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_CANNOT_READ_CONFIG;
+import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_INIT_VALIDATOR_ERROR;
+import static eu.europeana.annotation.fulltext.exception.MediaTypeValidationException.MESSAGE_INVALID_CONFIG;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -39,7 +39,7 @@ public class TranscriptionFormatValidator {
   private static final String VALIDATION_NONE = "none";
   static final String MEDIA_FORMATS_FILE = "/media-formats.xml";
   private MediaFormats mediaFormats;
-  private Map<MediaFormat, Validator> validators = new HashMap<MediaFormat, Validator>();
+  private final Map<MediaFormat, Validator> validators = new ConcurrentHashMap<>();
 
   public TranscriptionFormatValidator() throws MediaTypeValidationException {
     this(MEDIA_FORMATS_FILE);
@@ -54,23 +54,24 @@ public class TranscriptionFormatValidator {
     try (InputStream inputStream = getClass().getResourceAsStream(formatsFile)) {
       BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
       String contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-      mediaFormats = (new XmlMapper()).readValue(contents, MediaFormats.class);
-
-      for (MediaFormat mediaFormat : mediaFormats.getFormats()) {
-        //validation is mandatoy none can be used for skipping
-        if (StringUtils.isBlank(mediaFormat.getValidation())) {
-          throw new MediaTypeValidationException(
-              MESSAGE_INVALID_CONFIG + " no validation element for mime type " + mediaFormat.getMimetype());
-        } 
-        //if xsd validation required validation resource
-        if (VALIDATION_XSD.equals(mediaFormat.getValidation()) && StringUtils.isBlank(mediaFormat.getValidationResource())) {
-          throw new MediaTypeValidationException(
-              MESSAGE_INVALID_CONFIG + mediaFormat.getMimetype());
-        }
-      }
+      mediaFormats = (new XmlMapper()).readValue(contents, MediaFormats.class);    
     } catch (IOException e) {
       throw new MediaTypeValidationException(
           MESSAGE_CANNOT_READ_CONFIG + formatsFile, e);
+    }
+    
+    //validate media formats configurations
+    for (MediaFormat mediaFormat : mediaFormats.getFormats()) {
+      //validation is mandatoy none can be used for skipping
+      if (StringUtils.isBlank(mediaFormat.getValidation())) {
+        throw new MediaTypeValidationException(
+            MESSAGE_INVALID_CONFIG + " no validation element for mime type " + mediaFormat.getMimetype());
+      } 
+      //if xsd validation required validation resource
+      if (VALIDATION_XSD.equals(mediaFormat.getValidation()) && StringUtils.isBlank(mediaFormat.getValidationResource())) {
+        throw new MediaTypeValidationException(
+            MESSAGE_INVALID_CONFIG + mediaFormat.getMimetype());
+      }
     }
   }
 
@@ -113,7 +114,7 @@ public class TranscriptionFormatValidator {
         validator.validate(new StreamSource(new StringReader(xmlToValidate)));
       } catch (SAXParseException e) {
         throw new MediaTypeValidationException(MediaTypeValidationException.MESSAGE_INVALID_XML + xmlToValidate, e);
-      } catch (Throwable e) {
+      } catch (Exception e) {
         throw new MediaTypeValidationException(MESSAGE_CANNOT_PERFORM_VALIDATION + xmlToValidate, e);
       }
       return validationErrorCollector;
@@ -130,10 +131,15 @@ public class TranscriptionFormatValidator {
   private Validator initXmlValidator(MediaFormat mediaFormat) throws MediaTypeValidationException{
     try(InputStream xsdInputStream = getClass().getResourceAsStream(mediaFormat.getValidationResource())){
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      // to be compliant, completely disable DOCTYPE declaration:
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      // or prohibit the use of all protocols by external entities:
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      
       Source xsdSource = new StreamSource(xsdInputStream);
       Schema schema = factory.newSchema(xsdSource);
-      Validator validator = schema.newValidator();
-      return validator;
+      return schema.newValidator();
     } catch (IOException | SAXException e) {
       throw new MediaTypeValidationException(MESSAGE_INIT_VALIDATOR_ERROR + mediaFormat.getMimetype(), e);
     }

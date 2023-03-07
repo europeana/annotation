@@ -46,7 +46,7 @@ public class XmlValidationErrorCollector implements ErrorHandler{
     
     StringBuilder formattingErros = new StringBuilder();
     for (XmlValidationError xmlValidationError : getErrors()) {
-      formattingErros.append(xmlValidationError.getMessageWithLocation()).append("\n");
+      formattingErros.append(xmlValidationError.getMessageWithLocation()).append('\n');
     }
     return formattingErros.toString();
   }

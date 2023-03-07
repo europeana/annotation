@@ -35,7 +35,43 @@ import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 
 public abstract class BaseAnnotationValidator {
 	
-	@Resource(name="subtitleHandler")
+	private static final String TAG_BODY_TYPE = "tag.body.type";
+
+  private static final String TRANSCRIPTION_TARGET_SOURCE = "transcription.target.source";
+
+  private static final String BODY_EDM_RIGHTS = "body.edmRights";
+
+  private static final String TARGET = "target";
+
+  private static final String BODY_FORMAT = "body.format";
+
+  private static final String BODY_VALUE = "body.value";
+
+  private static final String BODY = "body";
+
+  private static final String TRANSCRIPTION_BODY_VALUE = "transcription.body.value";
+
+  private static final String TRANSCRIPTION_BODY_LANGUAGE = "transcription.body.language";
+
+  private static final String TRANSCRIPTION_BODY_TYPE = "transcription.body.type";
+
+  private static final String TRANSCRIPTION_BODY_FORMAT = "transcription.body.format";
+
+  private static final String TRANSCRIPTION_BODY_EDM_RIGHTS = "transcription.body.edmRights";
+
+  private static final String BODY_SOURCE = "body.source";
+
+  private static final String BODY_TYPE = "body.type";
+
+  private static final String TAG_BODY_LONGITUDE = "tag.body.longitude";
+
+  private static final String TAG_BODY_LATITUDE = "tag.body.latitude";
+
+  private static final String AGENT_BODY_PREF_LABEL = "agent.body.prefLabel";
+
+  private static final String AGENT_BODY_TYPE = "agent.body.type";
+
+  @Resource(name="subtitleHandler")
 	private SubtitleHandler subtitleHandler;
 	
 	@Resource(name="mediaFormatValidator")
@@ -55,12 +91,12 @@ public abstract class BaseAnnotationValidator {
     void validateAgentBody(Body body) throws ParamValidationI18NException, PropertyValidationException {
 	if (body.getType() == null || body.getType().size() != 1) {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { AGENT_BODY_TYPE });
 
 	} else if (!ResourceTypes.AGENT.hasJsonValue(body.getType().get(0))) {
 	    // only full text resources accepted
 	    throw new PropertyValidationException(I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
-		    I18nConstantsAnnotation.INVALID_PROPERTY_VALUE, new String[] { "agent.body.type" });
+		    I18nConstantsAnnotation.INVALID_PROPERTY_VALUE, new String[] { AGENT_BODY_TYPE });
 	}
 
 	validateAgentEntityBody(body);
@@ -82,12 +118,12 @@ public abstract class BaseAnnotationValidator {
 	// check mandatory field prefLabel
 	if (agent.getPrefLabel() == null)
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.prefLabel" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { AGENT_BODY_PREF_LABEL });
 
 	// check mandatory field type
 	if (body.getType() == null || StringUtils.isBlank(body.getType().get(0)))
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "agent.body.type" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { AGENT_BODY_TYPE });
 
     }
 
@@ -95,18 +131,18 @@ public abstract class BaseAnnotationValidator {
       if (!(body instanceof PlaceBody))
         throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
             I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
-            new String[] {"tag.body.type", ResourceTypes.PLACE.toString()});
+            new String[] {TAG_BODY_TYPE, ResourceTypes.PLACE.toString()});
 
       Place place = ((PlaceBody) body).getPlace();
 
       if (StringUtils.isEmpty(place.getLatitude())) {
         throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"tag.body.latitude"});
+            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TAG_BODY_LATITUDE});
       }
 
       if (StringUtils.isEmpty(place.getLongitude())) {
         throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"tag.body.longitude"});
+            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TAG_BODY_LONGITUDE});
       }
 
     }
@@ -115,12 +151,12 @@ public abstract class BaseAnnotationValidator {
       // check mandatory fields
       if (StringUtils.isBlank(body.getInternalType()))
         throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"body.type"});
+            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {BODY_TYPE});
       if (StringUtils.isBlank(body.getSource()))
         throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {"body.source"});
+            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {BODY_SOURCE});
 
-      validateSpecificResource(body, "body", false);
+      validateSpecificResource(body, BODY, false);
     }
 
     private void validateSpecificResource(SpecificResource resource, String fieldName, boolean isScopeMandatory) throws ParamValidationI18NException {
@@ -174,7 +210,7 @@ public abstract class BaseAnnotationValidator {
         throw new PropertyValidationException(
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            new String[] {"transcription.body.edmRights"});
+            new String[] {TRANSCRIPTION_BODY_EDM_RIGHTS});
       }
       validateEdmRights(body);
 
@@ -185,7 +221,7 @@ public abstract class BaseAnnotationValidator {
         throw new PropertyValidationException(
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            new String[] {"transcription.body.format"});
+            new String[] {TRANSCRIPTION_BODY_FORMAT});
       }
 
       validateTranscriptionBody(body);
@@ -226,18 +262,18 @@ public abstract class BaseAnnotationValidator {
 	    // only full text resources accepted
 	    throw new PropertyValidationException(I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
 		    I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
-		    new String[] { "transcription.body.type", ResourceTypes.FULL_TEXT_RESOURCE.getJsonValue() });
+		    new String[] { TRANSCRIPTION_BODY_TYPE, ResourceTypes.FULL_TEXT_RESOURCE.getJsonValue() });
 	}
 	// check mandatory field language
 	if (StringUtils.isBlank(body.getLanguage())) {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.language" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TRANSCRIPTION_BODY_LANGUAGE });
 	}
 
 	// check mandatory field value
 	if (StringUtils.isBlank(body.getValue())) {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.body.value" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TRANSCRIPTION_BODY_VALUE });
 	}
     }
 
@@ -322,7 +358,7 @@ public abstract class BaseAnnotationValidator {
 	// check type
 	if (body.getType() == null || ! isTextualBodyType(body)) {
 	    throw new ParamValidationI18NException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "tag.body.type" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TAG_BODY_TYPE });
 	}
     }
 
@@ -453,7 +489,7 @@ public abstract class BaseAnnotationValidator {
 	Set<String> rights = getConfiguration().getAcceptedLicenceses();
 	if (!rights.contains(licence))
 	    throw new RequestBodyValidationException(body.getInputString(), I18nConstants.INVALID_PARAM_VALUE,
-		    new String[] { "body.edmRights", rightsClaim });
+		    new String[] { BODY_EDM_RIGHTS, rightsClaim });
 
     }
 
@@ -541,7 +577,7 @@ public abstract class BaseAnnotationValidator {
 	    validateTargetBaseUrl(webAnnotation.getTarget());
 	    if(!StringUtils.isBlank(webAnnotation.getTarget().getScope()) && StringUtils.isBlank(webAnnotation.getTarget().getSource()))
 	      throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.source" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TRANSCRIPTION_TARGET_SOURCE });
 	}
     }
 
@@ -569,13 +605,13 @@ public abstract class BaseAnnotationValidator {
 	  validateTargetBaseUrl(webAnnotation.getTarget());
 	  if(!StringUtils.isBlank(webAnnotation.getTarget().getScope()) && StringUtils.isBlank(webAnnotation.getTarget().getSource()))
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "transcription.target.source" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TRANSCRIPTION_TARGET_SOURCE });
 	}
 	
 	// check mandatory field edmRights
 	if (StringUtils.isBlank(body.getEdmRights())) {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.edmRights" });
+		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { BODY_EDM_RIGHTS });
 	}
 	validateEdmRights(body);
 
@@ -599,7 +635,7 @@ public abstract class BaseAnnotationValidator {
       
       if (webAnnotation.getTarget() == null) { 
         throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target" });
+            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TARGET });
       }
       
       //target.id/httpUri is mandatory 
@@ -629,12 +665,12 @@ public abstract class BaseAnnotationValidator {
     	// check mandatory field body.format (please note that this field is saved in the "contentType" field of the given Resource)
     	if (StringUtils.isBlank(body.getContentType())) {
     	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-    		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body.format" });
+    		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { BODY_FORMAT });
     	}
     	// check if the body.format field has a valid value
     	if (!subtitleHandler.hasSubtitleFormat(body.getContentType())) {
     	    throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_SUBTITLES_FORMATS,
-    		    I18nConstantsAnnotation.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { "body.format" });
+    		    I18nConstantsAnnotation.ANNOTATION_INVALID_SUBTITLES_FORMATS, new String[] { BODY_FORMAT });
     	}
     	// check if the body.value is valid 
     	try {
@@ -643,7 +679,7 @@ public abstract class BaseAnnotationValidator {
     	catch (Throwable e) {
 //    	   FileFormatException | IOException are known exceptions but also runtime exceptions might be thrown  
     	    throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_SUBTITLES_VALUE,
-    		    I18nConstantsAnnotation.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { "body.value" }, e);
+    		    I18nConstantsAnnotation.ANNOTATION_INVALID_SUBTITLES_VALUE, new String[] { BODY_VALUE }, e);
     	} 	
     }
     
@@ -652,7 +688,7 @@ public abstract class BaseAnnotationValidator {
     	// if (body == null || (body.getHttpUri() == null && body.getValue() == null)) {
     	if (body == null) {
     	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-    		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "body" });
+    		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { BODY });
     	}
     }
     //validates that the target value/values/scope (depending on what provided) has a valid base url
