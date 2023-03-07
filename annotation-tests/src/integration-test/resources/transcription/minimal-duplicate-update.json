@@ -3,6 +3,7 @@
 	"body": {
 		"type": "FullTextResource",
     	"language": "de",
+    	"format": "text/plain",
 		"value": "... complete transcribed text in HTML ...",
         "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"		
 	},
