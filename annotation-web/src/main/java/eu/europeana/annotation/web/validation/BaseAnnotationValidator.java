@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.xml.sax.SAXParseException;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -195,16 +196,21 @@ public abstract class BaseAnnotationValidator {
       String mimeType = body.getContentType();
       try {
         XmlValidationErrorCollector xmlErrorCollector = mediaFormatValidator.validateMediaFormat(body.getValue(), mimeType);
-        if (xmlErrorCollector.hasErrors()) {
+        if (xmlErrorCollector!= null && xmlErrorCollector.hasErrors()) {
           throw new PropertyValidationException(
               I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT,
               I18nConstantsAnnotation.ANNOTATION_INVALID_MEDIA_FORMAT, new String[] {xmlErrorCollector.getValidationErrors()});
         }
       } catch (MediaTypeValidationException e) {
+        HttpStatus responseStatus = isXmlParseException(e)? HttpStatus.BAD_REQUEST :  HttpStatus.UNSUPPORTED_MEDIA_TYPE;
         throw new PropertyValidationException(
             I18nConstantsAnnotation.ANNOTATION_TRANSCRIPTION_VALIDATION_ERROR,
-            I18nConstantsAnnotation.ANNOTATION_TRANSCRIPTION_VALIDATION_ERROR, new String[] {mimeType}, HttpStatus.UNSUPPORTED_MEDIA_TYPE, e);
+            I18nConstantsAnnotation.ANNOTATION_TRANSCRIPTION_VALIDATION_ERROR, new String[] {mimeType}, responseStatus, e);
       }
+    }
+
+    private boolean isXmlParseException(MediaTypeValidationException e) {
+      return e.getCause() != null && e.getCause() instanceof SAXParseException;
     }
 
     private void validateFullTextResource(Body body) throws PropertyValidationException {

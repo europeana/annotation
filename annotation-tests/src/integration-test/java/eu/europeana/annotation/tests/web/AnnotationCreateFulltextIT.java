@@ -168,7 +168,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
 
     assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
-    assertTrue(storedAnno.getBody().getEdmRights().equals(inputAnno.getBody().getEdmRights()));
+    assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
     
     }
 
@@ -203,8 +203,12 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     public void createTranscriptionWithAltoBody() throws Exception {
         Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
         createdAnnotations.add(storedAnno.getIdentifier());
-    	ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
-    	assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void createTranscriptionWithInvalidAltoBody() throws Exception {
+        ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
     
     @Test
@@ -222,6 +226,6 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     @Test
     public void createTranscriptionWithPageXmlInvalidBody() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true, null);
-        assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());        
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());        
     }
 }

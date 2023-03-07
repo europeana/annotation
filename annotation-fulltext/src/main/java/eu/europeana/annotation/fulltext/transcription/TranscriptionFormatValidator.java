@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import eu.europeana.annotation.definitions.model.impl.MediaFormat;
 import eu.europeana.annotation.definitions.model.impl.MediaFormats;
@@ -110,6 +111,8 @@ public class TranscriptionFormatValidator {
       validator.setErrorHandler(validationErrorCollector);
       try {
         validator.validate(new StreamSource(new StringReader(xmlToValidate)));
+      } catch (SAXParseException e) {
+        throw new MediaTypeValidationException(MediaTypeValidationException.MESSAGE_INVALID_XML + xmlToValidate, e);
       } catch (Throwable e) {
         throw new MediaTypeValidationException(MESSAGE_CANNOT_PERFORM_VALIDATION + xmlToValidate, e);
       }

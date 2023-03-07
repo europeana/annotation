@@ -12,6 +12,7 @@ public class MediaTypeValidationException extends Exception{
   public static final String MESSAGE_CANNOT_READ_CONFIG = "Invalid mediatype configurations. No resource validation available for format: ";
   public static final String MESSAGE_INIT_VALIDATOR_ERROR = "Cannot initialize validator for media type: ";
   public static final String MESSAGE_CANNOT_PERFORM_VALIDATION = "Cannot perform validation for xml content: \n";
+  public static final String MESSAGE_INVALID_XML = "Cannot parse xml content, invalid formatting: \n";
       
   
   public MediaTypeValidationException(String message) {
