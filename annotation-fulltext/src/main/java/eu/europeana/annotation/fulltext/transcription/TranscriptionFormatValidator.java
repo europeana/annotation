@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -129,20 +128,23 @@ public class TranscriptionFormatValidator {
   }
 
   private Validator initXmlValidator(MediaFormat mediaFormat) throws MediaTypeValidationException{
-    try(InputStream xsdInputStream = getClass().getResourceAsStream(mediaFormat.getValidationResource())){
-      SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    
+    Schema schema;
+    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    try (XsdSources sourceWraper = new XsdSources(mediaFormat);) {
+      //set restrictions for validations
       // to be compliant, completely disable DOCTYPE declaration:
       factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       // or prohibit the use of all protocols by external entities:
       factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
       
-      Source xsdSource = new StreamSource(xsdInputStream);
-      Schema schema = factory.newSchema(xsdSource);
-      return schema.newValidator();
-    } catch (IOException | SAXException e) {
+      //build schema from sources
+      schema = factory.newSchema(sourceWraper.getXsdSources());
+      //build xsd validator
+      return schema.newValidator();    
+    } catch (SAXException e) {
       throw new MediaTypeValidationException(MESSAGE_INIT_VALIDATOR_ERROR + mediaFormat.getMimetype(), e);
-    }
+    } 
   }
-
 }
