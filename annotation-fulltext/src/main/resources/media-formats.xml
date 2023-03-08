@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<media-formats>
+  <!-- Default ALTO-XML Version: 2 Note: ordering of resource locations needs to be the reverse order of xsd dependencies -->
+  <format mimetype="application/alto+xml" name="ALTO-XML" validation="xsd" validationResource="/xsd-validation/xlink.xsd,/xsd-validation/alto-2-0.xsd"/>
+  <!-- Default ALTO-XML Version: 4.3 Note: ordering of resource locations needs to be the reverse order of xsd dependencies -->
+  <format mimetype="application/alto+xml;version=&quot;4.3&quot;" name="ALTO-XML" validation="xsd" validationResource="/xsd-validation/xlink.xsd,/xsd-validation/alto-4-3.xsd"/>
+  <!-- Default PAGE XML Version:  2013-07-15-->
+  <format mimetype="application/vnd.prima.page+xml" name="Page-XML" validation="xsd" validationResource="/xsd-validation/pagecontent-2013-07-15.xsd"/>
+  <!-- Latest PAGE XML Version:  2013-07-15-->
+  <format mimetype="application/vnd.prima.page+xml;version=&quot;2019-07-15&quot;" name="Page-XML" validation="xsd" validationResource="/xsd-validation/pagecontent-2019-07-15.xsd"/>
+  <format mimetype="text/html" name="Text-HTML" validation="none"/>
+  <format mimetype="text/plain" name="Text-Plain" validation="none"/>
+</media-formats>

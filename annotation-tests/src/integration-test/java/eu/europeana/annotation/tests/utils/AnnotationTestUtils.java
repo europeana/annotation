@@ -50,13 +50,14 @@ public class AnnotationTestUtils {
   }
 
   public static String getJsonStringInput(String resource) throws IOException {
-      InputStream resourceAsStream = AnnotationTestUtils.class.getResourceAsStream(resource);
+    try(InputStream resourceAsStream = AnnotationTestUtils.class.getResourceAsStream(resource)) {
       StringBuilder out = new StringBuilder();
       BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream));
-      for (String line = br.readLine(); line != null; line = br.readLine())
+      for (String line = br.readLine(); line != null; line = br.readLine()) {
           out.append(line);
-      br.close();
+      }
       return out.toString();
+    }
   }
 
   public static ResponseEntity<String> buildResponseEntity(ResultActions mockMvcResult) throws IOException {
