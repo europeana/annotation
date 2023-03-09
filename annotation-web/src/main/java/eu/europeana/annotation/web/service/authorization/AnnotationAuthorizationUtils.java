@@ -22,10 +22,10 @@ import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 public class AnnotationAuthorizationUtils {
   
   public static Authentication createAuthentication(String userId, String userName, Role role, String apiName) {
-    return createAuthertication(userId, userName, role.getName(), apiName);
+    return createAuthentication(userId, userName, role.getName(), apiName);
   }
 
-  private static Authentication createAuthertication(String userId, String userName,
+  private static Authentication createAuthentication(String userId, String userName,
       final String roleName, String apiName) {
     GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(roleName);
     return new EuropeanaAuthenticationToken(List.of(grantedAuthority), apiName, userId,
