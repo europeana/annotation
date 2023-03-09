@@ -100,15 +100,4 @@ public class WebUtils {
 		}
 		return query;
 	}
-	
-	public static boolean checkRights(Authentication authentication, String userRole) {
-    	for (Iterator<? extends GrantedAuthority> iterator = authentication.getAuthorities().iterator(); iterator.hasNext();) {
-    	    //role based authorization
-    	    String role = iterator.next().getAuthority();
-    	    if(role!=null && role.equals(userRole)){
-    	    	return true;
-    	    }
-    	}
-    	return false;
-	}	
 }

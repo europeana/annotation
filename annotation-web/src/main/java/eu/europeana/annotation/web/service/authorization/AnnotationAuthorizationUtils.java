@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.authorization;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,4 +45,15 @@ public class AnnotationAuthorizationUtils {
     String[] parts = plainToken.trim().split("\\:");
     return createAuthentication(parts[0], parts[1], UserRoles.valueOf(parts[SEPARATOR_COUNT]), apiName);
   }
+  
+  public static boolean hasRole(Authentication authentication, String userRole) {
+    for (Iterator<? extends GrantedAuthority> iterator = authentication.getAuthorities().iterator(); iterator.hasNext();) {
+        //role based authorization
+        String role = iterator.next().getAuthority();
+        if(role!=null && role.equals(userRole)){
+            return true;
+        }
+    }
+    return false;
+}   
 }

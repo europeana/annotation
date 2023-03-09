@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -15,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import com.google.gson.Gson;
-
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -55,6 +51,7 @@ import eu.europeana.annotation.web.model.BatchUploadStatus;
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.AnnotationDefaults;
 import eu.europeana.annotation.web.service.SearchServiceUtils;
+import eu.europeana.annotation.web.service.authorization.AnnotationAuthorizationUtils;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
@@ -62,7 +59,6 @@ import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api2.utils.WebUtils;
 
 public class BaseJsonldRest extends BaseRest {
 
@@ -398,7 +394,7 @@ public class BaseJsonldRest extends BaseRest {
 	
 	//verify ownership
 	boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
-	if(isOwner || WebUtils.checkRights(authentication, UserRoles.admin.getName())) {
+	if(isOwner || AnnotationAuthorizationUtils.hasRole(authentication, UserRoles.admin.getName())) {
 	    //approve owner or admin
 	    return annotation;
 	}else {

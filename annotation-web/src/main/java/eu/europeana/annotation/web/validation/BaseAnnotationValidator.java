@@ -2,11 +2,10 @@ package eu.europeana.annotation.web.validation;
 
 import java.net.URI;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.xml.sax.SAXParseException;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
@@ -30,6 +29,8 @@ import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.model.vocabulary.UserRoles;
+import eu.europeana.annotation.web.service.authorization.AnnotationAuthorizationUtils;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 
@@ -199,7 +200,7 @@ public abstract class BaseAnnotationValidator {
      * @throws PropertyValidationException
      * @throws RequestBodyValidationException
      */
-    protected void validateTranscriptionBodyWithFullTextResource(Body body)
+    protected void validateTranscriptionBodyWithFullTextResource(Body body, Authentication authentication)
         throws ParamValidationI18NException, PropertyValidationException,
         RequestBodyValidationException {
       // the body type shouldn't be null at this stage
@@ -212,7 +213,7 @@ public abstract class BaseAnnotationValidator {
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
             new String[] {TRANSCRIPTION_BODY_EDM_RIGHTS});
       }
-      validateEdmRights(body);
+      validateEdmRights(body, authentication);
 
       // validate format compliance
       String bodyFormat = body.getContentType();
@@ -404,7 +405,7 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    public void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException,
+    public void validateWebAnnotation(Annotation webAnnotation, Authentication authentication) throws ParamValidationI18NException,
         RequestBodyValidationException, PropertyValidationException {
       
       // validate canonical to be an absolute URI
@@ -442,13 +443,13 @@ public abstract class BaseAnnotationValidator {
           validateTag(webAnnotation);
           break;
         case TRANSCRIBING:
-          validateTranscription(webAnnotation);
+          validateTranscription(webAnnotation, authentication);
           break;
         case SUBTITLING:
-          validateSubtitleOrCaption(webAnnotation);
+          validateSubtitleOrCaption(webAnnotation, authentication);
           break;
         case CAPTIONING:
-          validateSubtitleOrCaption(webAnnotation);
+          validateSubtitleOrCaption(webAnnotation, authentication);
           break;
         case LINKFORCONTRIBUTING:
           validateLinkForContributing(webAnnotation);
@@ -467,7 +468,10 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException 
      */
-    void validateEdmRights(Body body) throws RequestBodyValidationException {
+    void validateEdmRights(Body body, Authentication authentication) throws RequestBodyValidationException {
+      if(AnnotationAuthorizationUtils.hasRole(authentication, UserRoles.publisher.getName())) {
+        return;
+    }
 	// if rights are provided, check if it belongs to the valid license list
 	String rightsClaim = body.getEdmRights();
 	String licence = null;
@@ -516,7 +520,7 @@ public abstract class BaseAnnotationValidator {
 	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 	    validateTagWithSpecificResource(body);
 	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
-	    //validateSemanticTagUrl(body);
+	    //implement when needed validateSemanticTagUrl(body);
 	} else if (BodyInternalTypes.isAgentBodyTag(body.getInternalType())) {
 	    validateAgentBody(body);
 	} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {
@@ -566,10 +570,10 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    protected void validateTranscription(Annotation webAnnotation)
+    protected void validateTranscription(Annotation webAnnotation, Authentication authentication)
 	    throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
     validateBodyExists(webAnnotation.getBody());
-	validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody());
+	validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(), authentication);
 	// validate target
 	// TODO consider moving to validateSpecificResource method
 	// "source" becomes mandatory as soon as you have a "scope" in the target
@@ -588,7 +592,7 @@ public abstract class BaseAnnotationValidator {
      * @throws RequestBodyValidationException
      * @throws PropertyValidationException
      */
-    protected void validateSubtitleOrCaption(Annotation webAnnotation)
+    protected void validateSubtitleOrCaption(Annotation webAnnotation, Authentication authentication)
 	    throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException {
 
 	// validate body
@@ -613,7 +617,7 @@ public abstract class BaseAnnotationValidator {
 	    throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
 		    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { BODY_EDM_RIGHTS });
 	}
-	validateEdmRights(body);
+	validateEdmRights(body, authentication);
 
     }
     
@@ -647,7 +651,7 @@ public abstract class BaseAnnotationValidator {
       //specific resources not allowed 
       String scope = webAnnotation.getTarget().getScope();
       if(scope != null) {
-          throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+          throw new RequestBodyValidationException(I18nConstantsAnnotation.INVALID_PARAM_VALUE, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
               new String[] { "target.scope is not allowed for this annotation type: ", scope });
       }
       
@@ -712,5 +716,4 @@ public abstract class BaseAnnotationValidator {
                I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL, new String[] { getConfiguration().getAnnoItemDataEndpoint() });
        }      
     }
-
 }
