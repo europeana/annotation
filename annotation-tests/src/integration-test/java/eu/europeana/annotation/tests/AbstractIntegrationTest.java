@@ -192,10 +192,6 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
         .put(AnnotationConfiguration.ANNOTATION_AUTH_DISABLED, "true");
   }
 
-  // @AfterAll
-  // protected void deleteWhitelists() throws Exception {
-  // whitelistService.deleteWholeWhitelist();
-  // }
 
   @AfterEach
   private void removeCreatedAnnotations()
