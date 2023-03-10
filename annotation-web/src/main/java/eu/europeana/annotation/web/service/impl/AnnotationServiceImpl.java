@@ -663,12 +663,4 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     return getSolrService().checkDuplicateAnnotations(annotation, noSelfCheck);
   }
 
-  @Override
-  public void validateWebAnnotation(Annotation webAnnotation, Authentication authentication)
-      throws ParamValidationI18NException, RequestBodyValidationException,
-      PropertyValidationException {
-    // TODO Auto-generated method stub
-    
-  }
-
 }

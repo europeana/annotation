@@ -217,7 +217,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   }
 
   protected String getAuthorizationHeaderValue(String user) {
-    if (USER_ADMIN.equals(user)) {
+    if (user.equals(USER_ADMIN)) {
       if (adminUserAuthorizationValue != null) {
         return adminUserAuthorizationValue;
       } else {
