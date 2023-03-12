@@ -38,13 +38,13 @@ public class WebUtils {
 			}
 			return jsonStr;
 		} catch (JsonGenerationException e) {
-			log.error(e.getMessage(),e);
+			log.error(e);
 			errorMessage = JSON_GENERATION_EXCEPTION + e.getMessage();
 		} catch (JsonMappingException e) {
-			log.error(e.getMessage(),e);
+			log.error(e);
 			errorMessage = JSON_GENERATION_EXCEPTION + e.getMessage();
 		} catch (IOException e) {
-			log.error(e.getMessage(),e);
+			log.error(e);
 			errorMessage = "I/O Exception: " + e.getMessage();
 		}
 		return errorMessage;
