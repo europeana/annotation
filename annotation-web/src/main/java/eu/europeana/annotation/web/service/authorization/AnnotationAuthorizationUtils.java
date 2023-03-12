@@ -22,7 +22,9 @@ import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
  */
 public class AnnotationAuthorizationUtils {
   
-  private AnnotationAuthorizationUtils() {};
+  private AnnotationAuthorizationUtils() {
+    super();
+  };
   
   public static Authentication createAuthentication(String userId, String userName, Role role, String apiName) {
     return createAuthentication(userId, userName, role.getName(), apiName);

@@ -364,32 +364,32 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     void createSemanticTagSimpleMinimal() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_MINIMAL);
-        addToCreatedAnnotations(anno.getIdentifier());
-        log.info(anno.getBody().getInternalType());
+        assertNotNull(anno);
+        addToCreatedAnnotations(anno.getIdentifier());   
     }
 
     @Test
     void createSemanticTagSimpleStandard() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_STANDARD);
+        assertNotNull(anno);
         addToCreatedAnnotations(anno.getIdentifier());
-        log.info(anno.getBody().getInternalType());
     }
 
     @Test
     void createSemanticTagSpecificMinimal() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_MINIMAL);
+        assertNotNull(anno);
         addToCreatedAnnotations(anno.getIdentifier());
-        log.info(anno.getBody().getInternalType());
     }
 
     @Test
     void createSemanticTagSpecificStandard() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_STANDARD);
+        assertNotNull(anno);
         addToCreatedAnnotations(anno.getIdentifier());
-        log.info(anno.getBody().getInternalType());
     }
 
     @Test
@@ -397,7 +397,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 
         Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
-        log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertTrue(storedAnno.getTarget().getSource() != null);
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.SEMANTIC_TAG.name());
@@ -408,7 +407,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 
         Annotation storedAnno = createTag(SEMANTICTAG_ENTITY, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
-        log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());
         EdmAgent agentBody = (EdmAgent) ((EdmAgentBody) storedAnno.getBody()).getAgent();
@@ -424,7 +422,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 
         Annotation storedAnno = createTag(SEMANTICTAG_AGENT_ENTITY, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
-        log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());
         EdmAgent agentBody = (EdmAgent) ((EdmAgentBody) storedAnno.getBody()).getAgent();
@@ -440,10 +437,10 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_BODY_TEXT);
         
         Annotation storedAnno = createTag(requestBody);
+        assertNotNull(storedAnno);
         addToCreatedAnnotations(storedAnno.getIdentifier());
         
         Annotation inputAnno = parseTag(requestBody);
-        
         //validate the reflection of input in output!
         AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
     }
@@ -454,6 +451,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_MINIMAL);
         
         Annotation storedAnno = createTag(requestBody);
+        assertNotNull(storedAnno);
         addToCreatedAnnotations(storedAnno.getIdentifier());
         
         Annotation inputAnno = parseTag(requestBody);
@@ -486,6 +484,8 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         Annotation inputAnno = parseTag(requestBody);
         
         Annotation storedAnno = createTag(requestBody);
+        assertNotNull(storedAnno);
+        
         addToCreatedAnnotations(storedAnno.getIdentifier());
         
         assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
@@ -501,7 +501,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         ResponseEntity<String> response = storeTestAnnotationByType(true, requestBody,  WebAnnotationFields.TAG, null);
         
         assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
-        //log.debug("Error message: " + );
     }
     
     @Test
@@ -512,7 +511,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         ResponseEntity<String> response = storeTestAnnotationByType(true, requestBody,  WebAnnotationFields.TAG, null);
         
         assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
-        //log.debug("Error message: " + );
     }
     
     
@@ -540,6 +538,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     void createCanonicalTag() throws Exception {
             
       Annotation storedAnno = createAndValidateTag(TAG_CANONICAL);
+      assertNotNull(storedAnno);
       addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
@@ -547,6 +546,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     void createViaTagString() throws Exception {
         
         Annotation storedAnno = createAndValidateTag(TAG_VIA_STRING);
+        assertNotNull(storedAnno);
         addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
@@ -554,6 +554,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     void createViaTagArray() throws Exception {
 
         Annotation storedAnno = createAndValidateTag(TAG_VIA_ARRAY);
+        assertNotNull(storedAnno);
         addToCreatedAnnotations(storedAnno.getIdentifier());
     }
 
@@ -562,7 +563,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 
         Annotation storedAnno = createTag(SEMANTICTAG_VCARD_ADDRESS, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
-        log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.VCARD_ADDRESS.name());
         assertEquals(

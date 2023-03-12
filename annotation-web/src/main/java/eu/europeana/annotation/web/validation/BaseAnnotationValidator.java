@@ -632,7 +632,7 @@ public abstract class BaseAnnotationValidator {
       }
       
       if (bodyUrl == null || !GeneralUtils.urlStartsWithHttps(bodyUrl)) {
-        throw new RequestBodyValidationException(I18nConstantsAnnotation.INVALID_PARAM_VALUE, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+        throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
             new String[] { "body.id or body.value is mandatory and must use https protocol: ", bodyUrl });
       }
       
@@ -644,7 +644,7 @@ public abstract class BaseAnnotationValidator {
       //specific resources not allowed 
       String scope = webAnnotation.getTarget().getScope();
       if(scope != null) {
-          throw new RequestBodyValidationException(I18nConstantsAnnotation.INVALID_PARAM_VALUE, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
               new String[] { "target.scope is not allowed for this annotation type: ", scope });
       }
       
