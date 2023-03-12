@@ -642,12 +642,6 @@ public abstract class BaseAnnotationValidator {
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { TARGET });
       }
       
-      //target.id/httpUri is mandatory 
-      if(StringUtils.isBlank(webAnnotation.getTarget().getHttpUri())) {
-        throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target/target.id" });
-      }
-      
       //specific resources not allowed 
       String scope = webAnnotation.getTarget().getScope();
       if(scope != null) {
@@ -659,6 +653,12 @@ public abstract class BaseAnnotationValidator {
       if(source != null) {
         throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
             new String[] { "target.source is not allowed for this annotation type: ", source });
+      }
+      
+      //target.id/httpUri is mandatory, however the check for specific resources takes precedence 
+      if(StringUtils.isBlank(webAnnotation.getTarget().getHttpUri())) {
+        throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] { "target/target.id" });
       }
       
       //validate base URLs

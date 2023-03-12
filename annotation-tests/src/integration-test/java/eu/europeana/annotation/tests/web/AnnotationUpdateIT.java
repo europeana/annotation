@@ -44,7 +44,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
             get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + 
             "\"" + END;
 		Annotation anno = createTestAnnotation(TAG_STANDARD, false, null);
-		createdAnnotations.add(anno.getIdentifier());
+		addToCreatedAnnotations(anno.getIdentifier());
 		ResponseEntity<String> response = updateAnnotation(
 				anno.getIdentifier(), CORRUPTED_UPDATE_JSON, null);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());		
@@ -54,7 +54,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
 	@Disabled("This test is successfull only when the authorization is enabled")
 	public void updateWebAnnotationWithWrongUserToken() throws Exception { 
 		Annotation anno = createTestAnnotation(TAG_STANDARD, false, USER_ADMIN);
-		createdAnnotations.add(anno.getIdentifier());
+		addToCreatedAnnotations(anno.getIdentifier());
 		String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		ResponseEntity<String> response = updateAnnotation(
 				anno.getIdentifier(), requestBody, USER_REGULAR);
@@ -74,7 +74,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
         assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
         assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), updatedAnnotation.getTarget().getHttpUri());
         
-        createdAnnotations.add(anno.getIdentifier());
+        addToCreatedAnnotations(anno.getIdentifier());
         //TODO: search annotation in solr and verify body and target values.
     }
 
@@ -88,11 +88,11 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
         ResponseEntity<String> response1 = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
         assertEquals(HttpStatus.CREATED, response1.getStatusCode());
         Annotation annotation1 = AnnotationTestUtils.parseAndVerifyTestAnnotation(response1);
-        createdAnnotations.add(annotation1.getIdentifier());
+        addToCreatedAnnotations(annotation1.getIdentifier());
         ResponseEntity<String> response2 = storeTestAnnotation(TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE, true, null);
         assertEquals(HttpStatus.CREATED, response2.getStatusCode());
         Annotation annotation2 = AnnotationTestUtils.parseAndVerifyTestAnnotation(response2);
-        createdAnnotations.add(annotation2.getIdentifier());
+        addToCreatedAnnotations(annotation2.getIdentifier());
         //updated annotation value
         String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_MINIMAL);
         //update annotation by identifier URL

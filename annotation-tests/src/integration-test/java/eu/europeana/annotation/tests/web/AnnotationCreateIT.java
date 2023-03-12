@@ -3,11 +3,9 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -106,12 +104,12 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     @Test
     public void createWebannoAnnotationTag() throws Exception {
         
-        ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true, null);
+        ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true);
 
         AnnotationTestUtils.validateResponse(response);
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
         
     @Test
@@ -125,7 +123,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         AnnotationTestUtils.validateResponse(response);
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
         
     @Test
@@ -133,7 +131,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         ResponseEntity<String> response = storeTestAnnotationByType(
                 true, get_LINK_JSON_WITHOUT_BLANK(), null, null);
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
@@ -147,7 +145,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         AnnotationTestUtils.validateResponse(response);
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }    
     
     /**
@@ -178,7 +176,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         AnnotationTestUtils.validateResponseForTrimming(response);
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }    
     
     @Test
@@ -190,113 +188,16 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         AnnotationTestUtils.validateResponse(response);
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }   
     
-    /*
-     * For the below duplicate tests to pass please make sure that there are no annotations 
-     * stored in Solr that are the same as the ones defined in the test, prior to the test execution.
-     */
-    @Test
-    public void checkAnnotationDuplicatesCreateTranscriptions() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);    
-        createdAnnotations.add(storedAnno.getIdentifier());
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    @Test
-    public void checkAnnotationDuplicatesCreateCaptions() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        response = storeTestAnnotation(CAPTION_MINIMAL_EN, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    @Test
-    public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    @Test
-    public void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-
-    @Test
-    public void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-
-    @Test
-    public void checkAnnotationDuplicatesCreateTags() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(TAG_MINIMAL, true, null);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        response = storeTestAnnotation(TAG_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    @Test
-    public void checkAnnotationDuplicatesCreateSemanticTags() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL, true, null);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    @Test
-    public void checkAnnotationDuplicatesCreateLinkForContributing() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true, null);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
-        response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());        
-    }
-    
-    /*
-     * For this test to pass please comment out the validation part in the validateWebAnnotation() method
-     * in the BaseAnnotationValidator class, if the whitelists are not created
-     */
-    @Disabled
-    @Test
-    public void checkAnnotationDuplicatesCreateObjectLinks() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(LINK_MINIMAL, true, null);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        response = storeTestAnnotation(LINK_MINIMAL, true, null);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-
     @Test
     public void createAnnotationAgentDetails() throws Exception {
         
-        ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT, true, null);
+        ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT, true);
         AnnotationTestUtils.validateResponse(response);
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(FULL_AGENT);
         Annotation inputAnno = parseTag(requestBody);
@@ -335,7 +236,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
                                 
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
@@ -355,7 +256,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
                 
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
         assertTrue(storedAnno.getTarget().getSource() != null);
@@ -364,11 +265,11 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     
     @Test
     public void createLinkAnnotation() throws Exception {
-        ResponseEntity<String> response = storeTestAnnotation(LINK_STANDARD, true, null);
+        ResponseEntity<String> response = storeTestAnnotation(LINK_STANDARD, true);
         AnnotationTestUtils.validateResponse(response);  
         
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
     @Test
@@ -376,7 +277,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_EDM_IS_SIMMILAR_TO);
         Annotation inputAnno = AnnotationTestUtils.parseAnnotation(requestBody, MotivationTypes.LINKING);
         Annotation storedAnno = createLink(requestBody);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         //validate the reflection of input in output!
         AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
     }
@@ -386,27 +287,40 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_EDM_IS_SIMMILAR_TO_MINIMAL);
         Annotation inputAnno = AnnotationTestUtils.parseAnnotation(requestBody, MotivationTypes.LINKING);
         Annotation storedAnno = createLink(requestBody);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         //validate the reflection of input in output!
         AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
     }
 
     @Test
     public void createLinkForContributingBodyObject() throws Exception {        
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true, null);
+        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
         AnnotationTestUtils.validateResponse(response); 
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
     @Test
     public void createLinkForContributingBodyString() throws Exception {        
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_STRING, true, null);
+        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_STRING, true);
         AnnotationTestUtils.validateResponse(response);     
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
 
+    
+    @Test
+    public void createLinkForContributingSpecificTarget_ShouldFail() throws Exception {        
+        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC, true);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
+    @Test
+    public void createLinkForContributingSpecificTargetWithId_shouldFail() throws Exception {        
+        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID, true);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
     protected Annotation parseCaption(String jsonString) throws JsonParseException {
     MotivationTypes motivationType = MotivationTypes.CAPTIONING;
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
@@ -418,8 +332,8 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     String requestBody = AnnotationTestUtils.getJsonStringInput(CAPTION_MINIMAL);
     Annotation inputAnno = parseCaption(requestBody);
 
-    Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, true);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
@@ -437,8 +351,8 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 
     Annotation inputAnno = parseSubtitle(requestBody);
 
-    Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
@@ -450,7 +364,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagSimpleMinimal() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_MINIMAL);
-        createdAnnotations.add(anno.getIdentifier());
+        addToCreatedAnnotations(anno.getIdentifier());
         log.info(anno.getBody().getInternalType());
     }
 
@@ -458,7 +372,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagSimpleStandard() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_STANDARD);
-        createdAnnotations.add(anno.getIdentifier());
+        addToCreatedAnnotations(anno.getIdentifier());
         log.info(anno.getBody().getInternalType());
     }
 
@@ -466,7 +380,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagSpecificMinimal() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_MINIMAL);
-        createdAnnotations.add(anno.getIdentifier());
+        addToCreatedAnnotations(anno.getIdentifier());
         log.info(anno.getBody().getInternalType());
     }
 
@@ -474,7 +388,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagSpecificStandard() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_STANDARD);
-        createdAnnotations.add(anno.getIdentifier());
+        addToCreatedAnnotations(anno.getIdentifier());
         log.info(anno.getBody().getInternalType());
     }
 
@@ -482,7 +396,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagWebResource() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false, true);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertTrue(storedAnno.getTarget().getSource() != null);
@@ -493,7 +407,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagEntity() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_ENTITY, false, true);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());
@@ -509,7 +423,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createSemanticTagAgentEntity() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_AGENT_ENTITY, false, true);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.AGENT.name());
@@ -526,7 +440,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_BODY_TEXT);
         
         Annotation storedAnno = createTag(requestBody);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         
         Annotation inputAnno = parseTag(requestBody);
         
@@ -540,7 +454,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_MINIMAL);
         
         Annotation storedAnno = createTag(requestBody);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         
         Annotation inputAnno = parseTag(requestBody);
         
@@ -555,7 +469,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD);
         
         Annotation storedAnno = createTag(requestBody);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         
         Annotation inputAnno = parseTag(requestBody);
         //validate the reflection of input in output!
@@ -572,7 +486,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         Annotation inputAnno = parseTag(requestBody);
         
         Annotation storedAnno = createTag(requestBody);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         
         assertTrue(BodyInternalTypes.isGeoTagBody(storedAnno.getBody().getInternalType()));
         //validate the reflection of input in output!
@@ -626,28 +540,28 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     public void createCanonicalTag() throws Exception {
             
       Annotation storedAnno = createAndValidateTag(TAG_CANONICAL);
-      createdAnnotations.add(storedAnno.getIdentifier());
+      addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
     @Test
     public void createViaTagString() throws Exception {
         
         Annotation storedAnno = createAndValidateTag(TAG_VIA_STRING);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
     @Test
     public void createViaTagArray() throws Exception {
 
         Annotation storedAnno = createAndValidateTag(TAG_VIA_ARRAY);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
     }
 
     @Test
     public void createSemanticTagWithVcardAddress() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_VCARD_ADDRESS, false, true);
-        createdAnnotations.add(storedAnno.getIdentifier());
+        addToCreatedAnnotations(storedAnno.getIdentifier());
         log.info(storedAnno.getBody().getInternalType());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.VCARD_ADDRESS.name());

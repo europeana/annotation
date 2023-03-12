@@ -47,29 +47,29 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
    */
   @Test
   public void checkAnnotationDuplicatesCreateTranscriptions() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
+    response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void checkAnnotationDuplicatesCreateCaptions() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    response = storeTestAnnotation(CAPTION_MINIMAL_EN, true, null);
+    response = storeTestAnnotation(CAPTION_MINIMAL_EN, true);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -77,20 +77,20 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
 
   @Test
   public void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -98,11 +98,11 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
   @Test
   public void checkAnnotationDuplicatesCreateLinkForContributing() throws Exception {
     ResponseEntity<String> response =
-        storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true, null);
+        storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    createdAnnotations.add(storedAnno.getIdentifier());
-    response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true, null);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+    response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
@@ -119,7 +119,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     Annotation inputAnno = parseCaption(requestBody);
 
     Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
@@ -138,7 +138,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     Annotation inputAnno = parseSubtitle(requestBody);
 
     Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     // validate the reflection of input in output!
     assertNotNull(storedAnno);
@@ -158,7 +158,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
 
     Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
     assertNotNull(storedAnno);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
@@ -172,7 +172,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
 
     Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_RIGHTS, true, null);
     assertNotNull(storedAnno);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
@@ -185,7 +185,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
   @Test
   public void createTranscriptionWithoutRights() throws Exception {
 
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
         response.getStatusCodeValue());
     String expectedMessage = "Missing mandatory field! transcription.body.edmRights";
@@ -195,7 +195,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
   @Test
   public void createTranscriptionWithoutLanguage() throws Exception {
 
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_LANG, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_LANG, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
         response.getStatusCodeValue());
     String expectedMessage = "Missing mandatory field! transcription.body.language";
@@ -205,7 +205,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
   @Test
   public void createTranscriptionWithoutValue() throws Exception {
 
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_VALUE, true, null);
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_VALUE, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
         response.getStatusCodeValue());
     String expectedMessage = "Missing mandatory field! transcription.body.value";
@@ -214,36 +214,36 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
 
   @Test
   public void createTranscriptionWithAltoBody() throws Exception {
-    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true, null);
+    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true);
     assertNotNull(storedAnno);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   @Test
   public void createTranscriptionWithInvalidAltoBody() throws Exception {
     ResponseEntity<String> response =
-        storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true, null);
+        storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
   }
 
   @Test
   public void createTranscriptionWithPageXmlBody() throws Exception {
-    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true, null);
+    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true);
     assertNotNull(storedAnno);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   @Test
   public void createTranscriptionWithPageXmlBodyTP() throws Exception {
-    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_TP, true, null);
+    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_TP, true);
     assertNotNull(storedAnno);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   @Test
   public void createTranscriptionWithPageXmlInvalidBody() throws Exception {
     ResponseEntity<String> response =
-        storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true, null);
+        storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
   }
 }

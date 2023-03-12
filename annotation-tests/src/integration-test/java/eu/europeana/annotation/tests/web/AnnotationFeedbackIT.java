@@ -32,7 +32,7 @@ public class AnnotationFeedbackIT extends AbstractIntegrationTest {
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true, null);
 		AnnotationTestUtils.validateResponse(response);
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-		createdAnnotations.add(storedAnno.getIdentifier());
+		addToCreatedAnnotations(storedAnno.getIdentifier());
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY
@@ -49,7 +49,7 @@ public class AnnotationFeedbackIT extends AbstractIntegrationTest {
 		ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true, null);
 		AnnotationTestUtils.validateResponse(response);
 		Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-		createdAnnotations.add(storedAnno.getIdentifier());
+		addToCreatedAnnotations(storedAnno.getIdentifier());
 		
 		ResponseEntity<String> reportResponse = storeTestAnnotationReport(
 				TEST_API_KEY

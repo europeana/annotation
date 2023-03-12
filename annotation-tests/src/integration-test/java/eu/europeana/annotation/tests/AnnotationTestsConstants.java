@@ -38,6 +38,8 @@ public class AnnotationTestsConstants {
   public static final String CAPTION_MINIMAL_EN = "/caption/minimal-en.json";
   public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
   public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";
+  public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC = "/linkforcontributing/link_for_contributing_target_specific.json";
+  public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID = "/linkforcontributing/link_for_contributing_target_specific_id.json";
   
   public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
   public static final String VALUE_ID = "anno_id:";

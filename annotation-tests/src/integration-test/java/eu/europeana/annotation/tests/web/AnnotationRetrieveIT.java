@@ -42,9 +42,9 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
   public void getDeletedAnnotations() throws Exception {
     // store 2 annotations
     Annotation anno_tag = createTestAnnotation(TAG_STANDARD, true, null);
-    createdAnnotations.add(anno_tag.getIdentifier());
+    addToCreatedAnnotations(anno_tag.getIdentifier());
     Annotation anno_subtitle = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    createdAnnotations.add(anno_subtitle.getIdentifier());
+    addToCreatedAnnotations(anno_subtitle.getIdentifier());
 
     // delete both annotations
     deleteAnnotation(anno_tag.getIdentifier());
@@ -97,7 +97,7 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
         AnnotationTestUtils.parseAndVerifyTestAnnotation(response, HttpStatus.OK);
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, annotation);
 
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   /**
@@ -108,11 +108,11 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
   @Test
   public void dereferencedSemanticTag() throws Exception {
     Annotation storedAnno1 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
-    createdAnnotations.add(storedAnno1.getIdentifier());
+    addToCreatedAnnotations(storedAnno1.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
-    createdAnnotations.add(storedAnno2.getIdentifier());
+    addToCreatedAnnotations(storedAnno2.getIdentifier());
     Annotation storedAnno3 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);
-    createdAnnotations.add(storedAnno3.getIdentifier());
+    addToCreatedAnnotations(storedAnno3.getIdentifier());
 
     log.info(storedAnno1.getBody().getInternalType());
     assertTrue(storedAnno1.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
@@ -173,11 +173,11 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
   @Disabled("This test needs to be updated, the search is still performed using the APIKEY and not the JWT Token")
   public void retrieveByJwtTokenDereferencedSemanticTagEntity() throws Exception {
     Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
-    createdAnnotations.add(storedAnno2.getIdentifier());
+    addToCreatedAnnotations(storedAnno2.getIdentifier());
     Annotation storedAnno3 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);
-    createdAnnotations.add(storedAnno3.getIdentifier());
+    addToCreatedAnnotations(storedAnno3.getIdentifier());
 
     log.info(storedAnno.getBody().getInternalType());
     assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));

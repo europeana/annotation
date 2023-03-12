@@ -69,7 +69,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     String defaultRequestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD_TESTSET);
     annotations = createMultipleTestAnnotations(defaultRequestBody, TOTAL_IN_COLLECTION);
     for (Annotation anno : annotations) {
-      createdAnnotations.add(anno.getIdentifier());
+      addToCreatedAnnotations(anno.getIdentifier());
     }
     assertEquals(TOTAL_IN_COLLECTION, annotations.length);
   }
@@ -225,7 +225,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isGeoTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -264,7 +264,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -299,7 +299,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isTextualBody(createdAnno.getBody().getInternalType()));
 
@@ -336,7 +336,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createLink(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // search for indexed id and textual values
     Annotation retrievedAnno =
@@ -362,7 +362,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createLink(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // search for indexed id and textual values
     Annotation retrievedAnno =
@@ -388,7 +388,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createLink(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // search for indexed id and textual values
     Annotation retrievedAnno =
@@ -426,7 +426,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -492,7 +492,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     long annotationNr = System.currentTimeMillis();
     Annotation annotation =
         createAnnotationLd(MotivationTypes.LINKING.name(), annotationNr, requestBody, null);
-    createdAnnotations.add(annotation.getIdentifier());
+    addToCreatedAnnotations(annotation.getIdentifier());
     String resJson = "";
     // List<Long> idList = new ArrayList<Long>();
     Iterator<String> itr = annotation.getTarget().getValues().iterator();
@@ -522,7 +522,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     long annotationNr = System.currentTimeMillis();
     Annotation annotation =
         createAnnotationLd(MotivationTypes.LINKING.name(), annotationNr, requestBody, null);
-    createdAnnotations.add(annotation.getIdentifier());
+    addToCreatedAnnotations(annotation.getIdentifier());
     Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();
     while (itr.hasNext()) {
       String resourceId = itr.next();
@@ -540,7 +540,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createLink(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // search for indexed id and textual values
     Annotation retrievedAnno =
@@ -588,7 +588,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createLink(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // search for indexed id and textual values
     Annotation retrievedAnno =
@@ -625,7 +625,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createLink(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // search for indexed id and textual values
     Annotation retrievedAnno =
@@ -666,7 +666,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed subtitle
     Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isFullTextResourceTagBody(storedAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -712,7 +712,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -762,7 +762,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isGeoTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -810,7 +810,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -859,7 +859,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // create indexed tag
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(BodyInternalTypes.isSemanticTagBody(createdAnno.getBody().getInternalType()));
     // validate the reflection of input in output!
@@ -908,7 +908,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     // create indexed tag
     // TODO: change to create annotation
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     // "scope": "http://data.europeana.eu/item/07931/diglit_uah_m1",
     // "source":
@@ -965,7 +965,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     // create indexed tag
     // TODO: change to create annotation
     Annotation createdAnno = createTag(requestBody);
-    createdAnnotations.add(createdAnno.getIdentifier());
+    addToCreatedAnnotations(createdAnno.getIdentifier());
 
     assertTrue(
         BodyInternalTypes.isFullTextResourceTagBody(createdAnno.getBody().getInternalType()));
@@ -1017,11 +1017,11 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
   @Test
   public void testSearchDereferencedAnnotation() throws Exception {
     Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
-    createdAnnotations.add(storedAnno2.getIdentifier());
+    addToCreatedAnnotations(storedAnno2.getIdentifier());
     Annotation storedAnno3 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);
-    createdAnnotations.add(storedAnno3.getIdentifier());
+    addToCreatedAnnotations(storedAnno3.getIdentifier());
 
     // first page
     AnnotationPage annPg = searchAnnotationsAddQueryField(SEARCH_VALUE_TEST, null, null, null, null,
@@ -1045,11 +1045,11 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
   @Test
   public void testSearchDereferencedAnnotationMultiLanguage() throws Exception {
     Annotation storedAnno = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY, false, true);
-    createdAnnotations.add(storedAnno.getIdentifier());
+    addToCreatedAnnotations(storedAnno.getIdentifier());
     Annotation storedAnno2 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2, false, true);
-    createdAnnotations.add(storedAnno2.getIdentifier());
+    addToCreatedAnnotations(storedAnno2.getIdentifier());
     Annotation storedAnno3 = createTag(DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3, false, true);
-    createdAnnotations.add(storedAnno3.getIdentifier());
+    addToCreatedAnnotations(storedAnno3.getIdentifier());
 
     // first page
     AnnotationPage annPg = searchAnnotationsAddQueryField(SEARCH_VALUE_TEST, null, null, null, null,
