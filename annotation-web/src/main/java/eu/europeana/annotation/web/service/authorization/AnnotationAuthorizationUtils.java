@@ -16,11 +16,13 @@ import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 
 /* 
- * TODO:
+ * NOTE:
  * This class exists also in the set-api (here a new parameter "apiName" is added to the methods) and needs to be moved to the api-commons.
  * It implements authorization utils when fake tokens are used (not with real credentials)
  */
 public class AnnotationAuthorizationUtils {
+  
+  private AnnotationAuthorizationUtils() {};
   
   public static Authentication createAuthentication(String userId, String userName, Role role, String apiName) {
     return createAuthentication(userId, userName, role.getName(), apiName);

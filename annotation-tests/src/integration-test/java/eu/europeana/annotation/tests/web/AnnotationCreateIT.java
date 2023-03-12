@@ -48,13 +48,13 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 	static final String VALUE_BATCH_TESTSET = "body_value: \"*-ff45d28b-8717-42f4-a486-f3a62f97fb64\"";
 
     @Test
-    public void createWebannoAnnotationWithoutBody() throws Exception {
+    void createWebannoAnnotationWithoutBody() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(null, false, null);
         assertEquals( HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
     
     @Test
-    public void createWebAnnotationWithCorruptedBody() throws Exception {
+    void createWebAnnotationWithCorruptedBody() throws Exception {
         
         ResponseEntity<String> response = storeTestAnnotationByType(
             false, get_CORRUPTED_JSON(), null, null);
@@ -63,7 +63,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createWebannoAnnotationLinkWithWrongMotivation() throws Exception {
+    void createWebannoAnnotationLinkWithWrongMotivation() throws Exception {
         ResponseEntity<String> response = storeTestAnnotationByType(
                 false, get_LINK_JSON_WITH_WRONG_MOTIVATION(), null, null
                 );
@@ -71,14 +71,14 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     } 
     
     @Test
-    public void createWebannoAnnotationByWrongAnnoTypeJsonld() throws Exception {
+    void createWebannoAnnotationByWrongAnnoTypeJsonld() throws Exception {
         ResponseEntity<String> response = storeTestAnnotationByType(
                 false, get_TAG_JSON_BY_TYPE_JSONLD(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), INVALID_ANNO_TYPE, null);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
     
     @Test
-    public void createDescribingAnnoWithoutBodyLanguage() throws Exception { 
+    void createDescribingAnnoWithoutBodyLanguage() throws Exception { 
         String requestBody = AnnotationTestUtils.getJsonStringInput(DESCRIBING_WITHOUT_BODY_LANGUAGE);
         ResponseEntity<String> response = storeTestAnnotationByType(
             false, requestBody, null, null);
@@ -86,7 +86,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createTaggingAnnoBodyAddressWithoutType() throws Exception { 
+    void createTaggingAnnoBodyAddressWithoutType() throws Exception { 
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAGGING_BODY_ADDRESS_NO_TYPE);
         ResponseEntity<String> response = storeTestAnnotationByType(
             false, requestBody, null, null);
@@ -94,7 +94,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createTaggingAnnoBodyAddressWithoutStreetAddress() throws Exception { 
+    void createTaggingAnnoBodyAddressWithoutStreetAddress() throws Exception { 
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAGGING_BODY_ADDRESS_NO_STREET_ADDRESS);
         ResponseEntity<String> response = storeTestAnnotationByType(
             false, requestBody, null, null);
@@ -102,7 +102,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }    
     
     @Test
-    public void createWebannoAnnotationTag() throws Exception {
+    void createWebannoAnnotationTag() throws Exception {
         
         ResponseEntity<String> response = storeTestAnnotation(TAG_STANDARD, true);
 
@@ -113,7 +113,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
         
     @Test
-    public void createWebannoAnnotationLink() throws Exception {
+    void createWebannoAnnotationLink() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_STANDARD);
         
@@ -127,7 +127,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
         
     @Test
-    public void createWebannoAnnotationLinkWithoutBlanksInMotivation() throws Exception {
+    void createWebannoAnnotationLinkWithoutBlanksInMotivation() throws Exception {
         ResponseEntity<String> response = storeTestAnnotationByType(
                 true, get_LINK_JSON_WITHOUT_BLANK(), null, null);
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -137,7 +137,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createWebannoAnnotationTagByTypeJsonld() throws Exception {
+    void createWebannoAnnotationTagByTypeJsonld() throws Exception {
         
         ResponseEntity<String> response = storeTestAnnotationByType(
                 true, get_TAG_JSON_BY_TYPE_JSONLD(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), WebAnnotationFields.TAG, null);
@@ -168,7 +168,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
      * @throws Exception 
      */
     @Test
-    public void createWebannoAnnotationTagForValidation() throws Exception {
+    void createWebannoAnnotationTagForValidation() throws Exception {
         
         ResponseEntity<String> response = storeTestAnnotationByType(
             true, get_TAG_JSON_VALIDATION(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), WebAnnotationFields.TAG, null);
@@ -180,7 +180,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }    
     
     @Test
-    public void createWebannoAnnotationLinkByTypeJsonld() throws Exception {
+    void createWebannoAnnotationLinkByTypeJsonld() throws Exception {
         
         ResponseEntity<String> response = storeTestAnnotationByType(
                 true, get_LINK_JSON_BY_TYPE_JSONLD(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), WebAnnotationFields.LINK, null);
@@ -192,7 +192,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }   
     
     @Test
-    public void createAnnotationAgentDetails() throws Exception {
+    void createAnnotationAgentDetails() throws Exception {
         
         ResponseEntity<String> response = storeTestAnnotation(FULL_AGENT, true);
         AnnotationTestUtils.validateResponse(response);
@@ -209,7 +209,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
 //  @Test
-    public void agentIDNotUrlMustThrowException() throws Exception {
+    void agentIDNotUrlMustThrowException() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(WRONG_AGENT_ID_NOT_URL);
         
@@ -225,7 +225,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
   
     @Test
-    public void createDescribing1() throws Exception {
+    void createDescribing1() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(DESCRIBING_CHO);
         
@@ -243,7 +243,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createDescribing2() throws Exception {
+    void createDescribing2() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(DESCRIBING_WEB_RESOURCE);
         
@@ -264,7 +264,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createLinkAnnotation() throws Exception {
+    void createLinkAnnotation() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(LINK_STANDARD, true);
         AnnotationTestUtils.validateResponse(response);  
         
@@ -273,7 +273,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createIsSimilarToLink() throws Exception {
+    void createIsSimilarToLink() throws Exception {
         String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_EDM_IS_SIMMILAR_TO);
         Annotation inputAnno = AnnotationTestUtils.parseAnnotation(requestBody, MotivationTypes.LINKING);
         Annotation storedAnno = createLink(requestBody);
@@ -283,7 +283,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createIsSimilarToMinimalLink() throws Exception {
+    void createIsSimilarToMinimalLink() throws Exception {
         String requestBody = AnnotationTestUtils.getJsonStringInput(LINK_EDM_IS_SIMMILAR_TO_MINIMAL);
         Annotation inputAnno = AnnotationTestUtils.parseAnnotation(requestBody, MotivationTypes.LINKING);
         Annotation storedAnno = createLink(requestBody);
@@ -293,7 +293,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createLinkForContributingBodyObject() throws Exception {        
+    void createLinkForContributingBodyObject() throws Exception {        
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
         AnnotationTestUtils.validateResponse(response); 
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -301,7 +301,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createLinkForContributingBodyString() throws Exception {        
+    void createLinkForContributingBodyString() throws Exception {        
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_STRING, true);
         AnnotationTestUtils.validateResponse(response);     
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -310,13 +310,13 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
 
     
     @Test
-    public void createLinkForContributingSpecificTarget_ShouldFail() throws Exception {        
+    void createLinkForContributingSpecificTarget_ShouldFail() throws Exception {        
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC, true);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
     
     @Test
-    public void createLinkForContributingSpecificTargetWithId_shouldFail() throws Exception {        
+    void createLinkForContributingSpecificTargetWithId_shouldFail() throws Exception {        
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID, true);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -327,7 +327,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createMinimalCaption() throws Exception {
+    void createMinimalCaption() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(CAPTION_MINIMAL);
     Annotation inputAnno = parseCaption(requestBody);
@@ -345,7 +345,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createMinimalSubtitle() throws Exception {
+    void createMinimalSubtitle() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(SUBTITLE_MINIMAL);
 
@@ -361,7 +361,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createSemanticTagSimpleMinimal() throws Exception {
+    void createSemanticTagSimpleMinimal() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_MINIMAL);
         addToCreatedAnnotations(anno.getIdentifier());
@@ -369,7 +369,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createSemanticTagSimpleStandard() throws Exception {
+    void createSemanticTagSimpleStandard() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SIMPLE_STANDARD);
         addToCreatedAnnotations(anno.getIdentifier());
@@ -377,7 +377,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createSemanticTagSpecificMinimal() throws Exception {
+    void createSemanticTagSpecificMinimal() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_MINIMAL);
         addToCreatedAnnotations(anno.getIdentifier());
@@ -385,7 +385,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createSemanticTagSpecificStandard() throws Exception {
+    void createSemanticTagSpecificStandard() throws Exception {
 
         Annotation anno = createAndValidateTag(SEMANTICTAG_SPECIFIC_STANDARD);
         addToCreatedAnnotations(anno.getIdentifier());
@@ -393,7 +393,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createSemanticTagWebResource() throws Exception {
+    void createSemanticTagWebResource() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -404,7 +404,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createSemanticTagEntity() throws Exception {
+    void createSemanticTagEntity() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_ENTITY, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -420,7 +420,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createSemanticTagAgentEntity() throws Exception {
+    void createSemanticTagAgentEntity() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_AGENT_ENTITY, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -435,7 +435,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createTagBodyText() throws Exception {
+    void createTagBodyText() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_BODY_TEXT);
         
@@ -449,7 +449,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createTagMinimal() throws Exception {
+    void createTagMinimal() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_MINIMAL);
         
@@ -464,7 +464,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     
 
     @Test
-    public void createTagStandard() throws Exception {
+    void createTagStandard() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD);
         
@@ -479,7 +479,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createGeoTag() throws Exception {
+    void createGeoTag() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_GEOTAG);
         
@@ -494,7 +494,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createWrongTag() throws Exception {
+    void createWrongTag() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_MINIMAL_WRONG);
         
@@ -505,7 +505,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createTagWithoutBody() throws Exception {
+    void createTagWithoutBody() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_WITHOUT_BODY);
         
@@ -517,7 +517,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     
     
     @Test
-    public void createWrongGeoTagLat() throws Exception {
+    void createWrongGeoTagLat() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_GEO_WRONG_LAT);
         
@@ -527,7 +527,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void createWrongGeoTagLong() throws Exception {
+    void createWrongGeoTagLong() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_GEO_WRONG_LONG);
         
@@ -537,28 +537,28 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createCanonicalTag() throws Exception {
+    void createCanonicalTag() throws Exception {
             
       Annotation storedAnno = createAndValidateTag(TAG_CANONICAL);
       addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
     @Test
-    public void createViaTagString() throws Exception {
+    void createViaTagString() throws Exception {
         
         Annotation storedAnno = createAndValidateTag(TAG_VIA_STRING);
         addToCreatedAnnotations(storedAnno.getIdentifier());
     }
     
     @Test
-    public void createViaTagArray() throws Exception {
+    void createViaTagArray() throws Exception {
 
         Annotation storedAnno = createAndValidateTag(TAG_VIA_ARRAY);
         addToCreatedAnnotations(storedAnno.getIdentifier());
     }
 
     @Test
-    public void createSemanticTagWithVcardAddress() throws Exception {
+    void createSemanticTagWithVcardAddress() throws Exception {
 
         Annotation storedAnno = createTag(SEMANTICTAG_VCARD_ADDRESS, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());

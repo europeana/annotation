@@ -442,7 +442,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     for (Annotation webanno : webAnnotations) {
       try {
         validateWebAnnotation(webanno, authentication);
-        // TODO: validate via, size must be 1
+        //NOTE: validate via, size must be 1
         batchReportable.incrementSuccessCount();
       } catch (ParamValidationI18NException | RequestBodyValidationException
           | PropertyValidationException e) {

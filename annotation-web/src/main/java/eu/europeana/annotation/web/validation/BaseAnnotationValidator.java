@@ -398,7 +398,6 @@ public abstract class BaseAnnotationValidator {
     }
 
     /**
-     * @deprecated TODO: separate param and property validation exceptions 
      * 
      * @param webAnnotation
      * @throws ParamValidationI18NException
@@ -520,7 +519,7 @@ public abstract class BaseAnnotationValidator {
 	if (body.getType() != null && body.getType().contains(WebAnnotationFields.SPECIFIC_RESOURCE)) {
 	    validateTagWithSpecificResource(body);
 	} else if (BodyInternalTypes.isSemanticTagBody(body.getInternalType())) {
-	    //implement when needed validateSemanticTagUrl(body);
+	    //implement when needed validateSemanticTagUrl
 	} else if (BodyInternalTypes.isAgentBodyTag(body.getInternalType())) {
 	    validateAgentBody(body);
 	} else if (BodyInternalTypes.isGeoTagBody(body.getInternalType())) {

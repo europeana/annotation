@@ -1,7 +1,6 @@
 package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,14 +17,14 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
+class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
 
     /*
      * For the below duplicate tests to pass please make sure that there are no annotations 
      * stored in Solr that are the same as the ones defined in the test, prior to the test execution.
      */
     @Test
-    public void checkAnnotationDuplicatesCreateTranscriptions() throws Exception {
+    void checkAnnotationDuplicatesCreateTranscriptions() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true);
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);    
         addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -35,7 +34,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void checkAnnotationDuplicatesCreateCaptions() throws Exception {
+    void checkAnnotationDuplicatesCreateCaptions() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
         addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -45,7 +44,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
+    void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
         addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -55,7 +54,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
+    void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -65,7 +64,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
+    void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -75,7 +74,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void checkAnnotationDuplicatesCreateTags() throws Exception {
+    void checkAnnotationDuplicatesCreateTags() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(TAG_MINIMAL, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -85,7 +84,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void checkAnnotationDuplicatesCreateSemanticTags() throws Exception {
+    void checkAnnotationDuplicatesCreateSemanticTags() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(SEMANTICTAG_SIMPLE_MINIMAL, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -95,7 +94,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
     }
     
     @Test
-    public void checkAnnotationDuplicatesCreateLinkForContributing() throws Exception {
+    void checkAnnotationDuplicatesCreateLinkForContributing() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -108,7 +107,7 @@ public class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
      *  
      */
     @Test
-    public void checkAnnotationDuplicatesCreateObjectLinks() throws Exception {
+    void checkAnnotationDuplicatesCreateObjectLinks() throws Exception {
         ResponseEntity<String> response = storeTestAnnotation(LINK_MINIMAL, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         //there is no dupplicate check for linking, it is tricky to check dupplication when multiple targets are provided

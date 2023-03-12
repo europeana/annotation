@@ -1,6 +1,7 @@
 package eu.europeana.annotation.web.service.controller;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -108,9 +109,9 @@ public class BaseRest extends BaseRestController {
 
 	public AnnotationSearchResults<AbstractAnnotation> buildSearchResponse(List<? extends Annotation> annotations,
 			String apiKey, String action) {
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(apiKey,
+		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<>(apiKey,
 				action);
-		response.items = new ArrayList<AbstractAnnotation>(annotations.size());
+		response.items = new ArrayList<>(annotations.size());
 
 		AbstractAnnotation webAnnotation;
 		for (Annotation annotation : annotations) {
@@ -129,8 +130,8 @@ public class BaseRest extends BaseRestController {
 
 	public WhitelsitSearchResults<WhitelistEntry> buildSearchWhitelistResponse(List<? extends WhitelistEntry> entries,
 			String apiKey, String action) {
-		WhitelsitSearchResults<WhitelistEntry> response = new WhitelsitSearchResults<WhitelistEntry>(apiKey, action);
-		List<WhitelistEntry> webWhitelist = new ArrayList<WhitelistEntry>();
+		WhitelsitSearchResults<WhitelistEntry> response = new WhitelsitSearchResults<>(apiKey, action);
+		List<WhitelistEntry> webWhitelist = new ArrayList<>();
 		for (WhitelistEntry entry : entries) {
 			entry.setCreationDate(null);
 			entry.setLastUpdate(null);
@@ -148,7 +149,7 @@ public class BaseRest extends BaseRestController {
 	public AnnotationSearchResults<AbstractAnnotation> buildSearchErrorResponse(String apiKey, String action,
 			Throwable th) {
 
-		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<AbstractAnnotation>(apiKey,
+		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<>(apiKey,
 				action);
 		response.success = false;
 		response.error = th.getMessage();
@@ -217,7 +218,7 @@ public class BaseRest extends BaseRestController {
 		int USER_TOKEN_TYPE_POS = 0;
 		int BASE64_ENCODED_STRING_POS = 1;
 		String userToken = null;
-		String userTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		String userTokenHeader = request.getHeader(AUTHORIZATION);
 		if (userTokenHeader != null) {
 			String[] headerElems = userTokenHeader.split(" ");
 			if (headerElems.length < 2)
@@ -294,7 +295,7 @@ public class BaseRest extends BaseRestController {
 			auth = ((AuthorizationServiceImpl) getAuthorizationService()).checkPermissions(auth, operation);
 		} catch (AuthorizationExtractionException e) {
 			throw new ApplicationAuthenticationException("Authentication error: " + e.getMessage(),
-					I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { operation }, HttpStatus.UNAUTHORIZED, e);
+					I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { operation }, UNAUTHORIZED, e);
 		}
 		return auth;
 	}
