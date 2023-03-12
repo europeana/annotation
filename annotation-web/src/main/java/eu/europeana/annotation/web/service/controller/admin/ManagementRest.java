@@ -3,10 +3,8 @@ package eu.europeana.annotation.web.service.controller.admin;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -16,12 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
-import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -32,13 +28,14 @@ import eu.europeana.annotation.web.model.vocabulary.Actions;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.AdminService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.annotation.web.service.controller.WebUtils;
 import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
 import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.exception.InternalServerException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api2.utils.WebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -312,7 +309,7 @@ public class ManagementRest extends BaseRest {
   @ApiOperation(value = "Lock write operations. Authorization required.",
       nickname = "lockWriteOperations", response = java.lang.Void.class)
   public ResponseEntity<String> lockWriteOperations(HttpServletRequest request)
-      throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException {
+      throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException, InternalServerException {
 
     verifyWriteAccess(Operations.ADMIN_ALL, request);
 
@@ -349,7 +346,7 @@ public class ManagementRest extends BaseRest {
   @ApiOperation(value = "Unlock write operations", nickname = "unlockWriteOperations",
       response = java.lang.Void.class)
   public ResponseEntity<String> unlockWriteOperations(HttpServletRequest request)
-      throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException {
+      throws UserAuthorizationException, ApiWriteLockException, ApplicationAuthenticationException, InternalServerException {
     verifyWriteAccess(Operations.WRITE_UNLOCK, request);
 
     AnnotationOperationResponse response;

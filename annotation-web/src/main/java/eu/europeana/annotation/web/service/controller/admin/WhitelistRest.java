@@ -28,11 +28,12 @@ import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.WhitelistService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.annotation.web.service.controller.WebUtils;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.api2.utils.WebUtils;
+import eu.europeana.api.commons.web.exception.InternalServerException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -65,7 +66,7 @@ public class WhitelistRest extends BaseRest {
     public ResponseEntity<String> getWhitelistEntry(
 //			public ModelAndView getWhitelistEntry (
 	    @RequestParam(value = "url", required = true) String url, HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, InternalServerException {
 	// JWT Token Only
 	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
 
@@ -91,7 +92,7 @@ public class WhitelistRest extends BaseRest {
     @ResponseBody
     @ApiOperation(value = "Retrieve the whole whitelist", nickname = "getFullWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> getFullWhitelist(HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, InternalServerException {
 
 	// JWT Token Only
 	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
@@ -137,7 +138,7 @@ public class WhitelistRest extends BaseRest {
     public ResponseEntity<String> loadDefaultWhitelist(
 	    HttpServletRequest request)
 	    throws WhitelistValidationException, ApplicationAuthenticationException, UserAuthorizationException,
-	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_CREATE, request);
 
@@ -158,7 +159,7 @@ public class WhitelistRest extends BaseRest {
     @ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAllWhitelistEntries(
 	    HttpServletRequest request) throws ApplicationAuthenticationException, UserAuthorizationException,
-	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
@@ -188,7 +189,7 @@ public class WhitelistRest extends BaseRest {
 	    @RequestParam(value = "url", required = true) String url, 
 	    HttpServletRequest request)
 	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException,
-	    ApiKeyExtractionException, AuthorizationExtractionException {
+	    ApiKeyExtractionException, AuthorizationExtractionException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
