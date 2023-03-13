@@ -13,6 +13,10 @@ public class WebUtils {
 
 
   private static ObjectMapper objectMapper = new ObjectMapper();
+  
+  private WebUtils() {
+    super();
+  }
 
   public static String toJson(Object object) throws InternalServerException {
     objectMapper.setSerializationInclusion(Include.NON_NULL);

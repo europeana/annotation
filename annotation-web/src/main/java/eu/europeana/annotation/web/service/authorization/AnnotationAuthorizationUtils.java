@@ -24,7 +24,7 @@ public class AnnotationAuthorizationUtils {
   
   private AnnotationAuthorizationUtils() {
     super();
-  };
+  }
   
   public static Authentication createAuthentication(String userId, String userName, Role role, String apiName) {
     return createAuthentication(userId, userName, role.getName(), apiName);

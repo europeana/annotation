@@ -66,7 +66,7 @@ public class WhitelistRest extends BaseRest {
     public ResponseEntity<String> getWhitelistEntry(
 //			public ModelAndView getWhitelistEntry (
 	    @RequestParam(value = "url", required = true) String url, HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, InternalServerException {
+	    throws ApplicationAuthenticationException, InternalServerException {
 	// JWT Token Only
 	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
 
@@ -92,7 +92,7 @@ public class WhitelistRest extends BaseRest {
     @ResponseBody
     @ApiOperation(value = "Retrieve the whole whitelist", nickname = "getFullWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> getFullWhitelist(HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException, InternalServerException {
+	    throws ApplicationAuthenticationException, InternalServerException {
 
 	// JWT Token Only
 	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
@@ -137,8 +137,7 @@ public class WhitelistRest extends BaseRest {
     @ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> loadDefaultWhitelist(
 	    HttpServletRequest request)
-	    throws WhitelistValidationException, ApplicationAuthenticationException, UserAuthorizationException,
-	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException, InternalServerException {
+	    throws WhitelistValidationException, ApplicationAuthenticationException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_CREATE, request);
 
@@ -158,8 +157,7 @@ public class WhitelistRest extends BaseRest {
     @ResponseBody
     @ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAllWhitelistEntries(
-	    HttpServletRequest request) throws ApplicationAuthenticationException, UserAuthorizationException,
-	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException, InternalServerException {
+	    HttpServletRequest request) throws ApplicationAuthenticationException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
@@ -188,8 +186,7 @@ public class WhitelistRest extends BaseRest {
     public ResponseEntity<String> deleteWhitelistEntry(
 	    @RequestParam(value = "url", required = true) String url, 
 	    HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException,
-	    ApiKeyExtractionException, AuthorizationExtractionException, InternalServerException {
+	    throws ApplicationAuthenticationException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
