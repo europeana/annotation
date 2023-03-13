@@ -490,7 +490,8 @@ public abstract class BaseAnnotationValidator {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {BODY_EDM_RIGHTS});
     }
-
+    
+    //skip license verification for publisher 
     if (AnnotationAuthorizationUtils.hasRole(authentication, UserRoles.publisher.getName())) {
       return;
     }

@@ -188,7 +188,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
         response.getStatusCodeValue());
-    String expectedMessage = "Missing mandatory field! transcription.body.edmRights";
+    String expectedMessage = "Missing mandatory field! body.edmRights";
     assertTrue(response.getBody().contains(expectedMessage));
   }
 
