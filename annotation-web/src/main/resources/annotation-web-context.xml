@@ -17,20 +17,10 @@
         ">
     
     <!-- USING OTHER MODULES -->
-    <beans:import resource="classpath:api2-common-context.xml"/>
-	<beans:import resource="classpath:annotation-definitions-context.xml"/>
-<!-- will be already imported by annotation-mongo	
-	<beans:import resource="api2-common-context.xml"/>
- -->	
+    <beans:import resource="classpath:annotation-definitions-context.xml"/>
+    <beans:import resource="classpath:annotation-utils-context.xml"/>
 	<beans:import resource="classpath:annotation-mongo-context.xml"/>
-	<beans:import resource="classpath:annotation-solr-context.xml"/>
-	
     
-   	<!--  ApiKeyService -->
-   	<!-- 
-   	<beans:bean name="annotation_apiKeyService" class="eu.europeana.corelib.db.service.mock.impl.MockApiKeyServiceImpl"/>
-	 -->
-	 		
     <!--  Authorization Service -->
 	<beans:bean name="annotation_authorizationService" class="eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl">
     </beans:bean>
@@ -41,13 +31,10 @@
          
     <beans:bean id="subtitleHandler" class="eu.europeana.annotation.fulltext.subtitles.SubtitleHandler"/>
     
+    <beans:bean id="mediaFormatValidator" class="eu.europeana.annotation.fulltext.transcription.TranscriptionFormatValidator"/>
+   
 	<beans:bean id="whitelistService" class="eu.europeana.annotation.web.service.impl.WhitelistServiceImpl">
     </beans:bean>
-    
-    <!-- 									
-   <beans:bean id="clientService" class="eu.europeana.annotation.mongo.service.PersistentClientServiceImpl" p:dao-ref="annotation_db_clientDao">
-    </beans:bean>
-     -->
     
     <beans:bean id="adminService" class="eu.europeana.annotation.web.service.impl.AdminServiceImpl">
     </beans:bean>

@@ -27,8 +27,8 @@ import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.serialize.AnnotationLdSerializer;
-import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.service.AdminService;
+import eu.europeana.api.commons.web.exception.InternalServerException;
 
 
 /**

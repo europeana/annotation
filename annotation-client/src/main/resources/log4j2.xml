@@ -16,7 +16,7 @@
       <appender-ref ref="Console"/>
     </Root>
 
-    <Logger name="eu.europeana.annotation" level="INFO"/>
+    <Logger name="eu.europeana.annotation" level="DEBUG"/>
 
   </Loggers>
 </Configuration>

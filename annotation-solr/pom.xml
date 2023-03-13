@@ -34,12 +34,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>eu.europeana.annotation</groupId>
-			<artifactId>api2-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
@@ -55,6 +49,12 @@
 			<groupId>org.codehaus.woodstox</groupId>
 			<artifactId>wstx-asl</artifactId>
 			<version>${version.woodstox}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>stax</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+			</exclusions>									
 		</dependency>
 		
 		<dependency>

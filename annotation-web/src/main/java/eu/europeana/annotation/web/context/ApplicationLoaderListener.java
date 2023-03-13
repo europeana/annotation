@@ -25,7 +25,7 @@ public class ApplicationLoaderListener extends BaseApplicationLoaderListener imp
 
 	@Override
 	protected String getAppConfigFile() {
-		return "config/annotation.properties";
+		return "annotation.properties";
 	}
 
 }

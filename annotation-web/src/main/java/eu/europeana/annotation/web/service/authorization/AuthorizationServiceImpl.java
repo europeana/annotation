@@ -1,8 +1,11 @@
 package eu.europeana.annotation.web.service.authorization;
 
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
@@ -65,7 +68,5 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService
   public void setConfiguration(AnnotationConfiguration configuration) {
     this.configuration = configuration;
   }
-
-
 
 }

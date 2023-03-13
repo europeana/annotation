@@ -22,6 +22,7 @@ import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
+import eu.europeana.annotation.web.validation.BaseAnnotationValidator;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 
 public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator {

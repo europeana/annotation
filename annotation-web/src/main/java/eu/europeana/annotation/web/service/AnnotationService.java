@@ -5,7 +5,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.security.core.Authentication;
+
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -160,9 +163,9 @@ public interface AnnotationService {
 	 */
 	void logAnnotationStatusUpdate(String user, Annotation annotation);
 
-	void validateWebAnnotation(Annotation webAnnotation) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException;
+	void validateWebAnnotation(Annotation webAnnotation, Authentication authentication) throws ParamValidationI18NException, RequestBodyValidationException, PropertyValidationException;
 
-	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable) throws ParamValidationI18NException;
+	void validateWebAnnotations(List<? extends Annotation> webAnnotations, BatchReportable batchReportable, Authentication authentication) throws ParamValidationI18NException;
 	
 	void reportNonExisting(List<? extends Annotation> annotations, BatchReportable batchReportable,
 			List<Long> missingIdentifiers);

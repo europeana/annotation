@@ -12,19 +12,13 @@
 	">
 	
 	<!-- utils (configuration) -->
-	<!-- 
-	<import resource="classpath:api2-common-context.xml"/>
-	 -->
-		
+
 	<!-- INTERNAL DEFINITIONS -->
-	<import resource="classpath:internal/annotation-mongo-datasource.xml"/>
+<!--	<import resource="classpath:internal/annotation-mongo-datasource.xml"/>-->
+	<!--  note datasource configuration was moved to MongoConfig -->
 	<import resource="classpath:internal/annotation-mongo-beans.xml"/>
 	<import resource="classpath:internal/annotation-mongo-dao.xml"/>
-	
-	<!--
-	<context:annotation-config/>
-	-->
-	
+
 	<bean name="annotation_db_annotationService" class="eu.europeana.annotation.mongo.service.PersistentAnnotationServiceImpl"
 		p:dao-ref="annotation_db_annotationDao">
 	</bean>

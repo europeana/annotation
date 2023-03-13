@@ -1,12 +1,11 @@
 package eu.europeana.annotation.config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -132,20 +131,5 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
   @Override
   public boolean isAuthEnabled() {
     return !isAuthDisabled();
-  }
-  
-  /**
-   * utility method to be used in unit tests
-   * @throws IOException 
-   */
-  public void loadProperties() throws IOException{
-    Properties props = new Properties();
-    InputStream annoPropsStream = getClass().getResourceAsStream("/config/annotation.properties");
-    props.load(annoPropsStream);
-    InputStream userPropsStream = getClass().getResourceAsStream("/config/annotation.user.properties");
-    if(userPropsStream != null) {
-      props.load(userPropsStream); 
-    }
-    setAnnotationProperties(props);
   }
 }

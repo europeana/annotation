@@ -34,7 +34,7 @@ public interface AnnotationConfiguration {
     String VALIDATION_ADMIN_API_KEY = "adminapikey";
     String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
     String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
-    
+    String ANNO_MEDIA_FORMATS = "annotation.media.formats";
     
     /**
      * uses annotation.indexing.enabled property

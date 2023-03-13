@@ -43,7 +43,7 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 
 @Service(AnnotationConfiguration.BEAN_SOLR_ANNO_SERVICE)
 @PropertySource(
-    value = {"classpath:config/annotation.properties", "classpath:config/annotation.user.properties"},
+    value = {"classpath:annotation.properties", "classpath:config/annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
 
