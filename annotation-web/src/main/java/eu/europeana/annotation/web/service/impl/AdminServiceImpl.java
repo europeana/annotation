@@ -12,7 +12,6 @@ import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.web.exception.IndexingJobLockedException;
-import eu.europeana.annotation.web.exception.InternalServerException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
 import eu.europeana.annotation.web.model.BatchProcessingStatus;
 import eu.europeana.annotation.web.model.vocabulary.Actions;
@@ -22,6 +21,7 @@ import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
 import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.exception.InternalServerException;
 
 public class AdminServiceImpl extends BaseAnnotationServiceImpl implements AdminService {
 

@@ -2,7 +2,9 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.http.SwaggerConstants;
+import eu.europeana.annotation.web.service.controller.WebUtils;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.exception.DateParsingException;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
@@ -26,7 +30,6 @@ import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.model.vocabulary.Operations;
-import eu.europeana.api2.utils.JsonWebUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -107,7 +110,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 
 	List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate, stopDate, page, limit);
 
-	String jsonStr = JsonWebUtils.toJson(deletions, null);
+	String jsonStr = WebUtils.toJson(deletions);
 	
     // build response entity with headers
     MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);

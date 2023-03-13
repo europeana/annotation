@@ -5,17 +5,19 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europeana.api.commons.definitions.vocabulary.Role;
+import static eu.europeana.annotation.web.model.vocabulary.Operations.*;
 
 public enum UserRoles implements Role {
 
-	anonimous(new String[]{Operations.RETRIEVE}), 
-	user(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
-	tester(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT}), 
-	admin(new String[]{Operations.RETRIEVE, Operations.CREATE, Operations.DELETE, Operations.UPDATE, Operations.REPORT, 
-	    Operations.ADMIN_ALL, Operations.WRITE_UNLOCK, Operations.WRITE_LOCK, 
-	    Operations.ADMIN_REINDEX, Operations.WHITELIST_ALL, 
-	    Operations.WHITELIST_CREATE, Operations.WHITELIST_RETRIEVE, Operations.WHITELIST_DELETE}), 
-	moderator(new String[]{Operations.MODERATION_ALL});
+	anonimous(new String[]{RETRIEVE}), 
+	user(new String[]{RETRIEVE, CREATE, DELETE, UPDATE, REPORT}), 
+	tester(new String[]{RETRIEVE, CREATE, DELETE, UPDATE, REPORT}), 
+	admin(new String[]{RETRIEVE, CREATE, DELETE, UPDATE, REPORT, 
+	    ADMIN_ALL, WRITE_UNLOCK, WRITE_LOCK, 
+	    ADMIN_REINDEX, WHITELIST_ALL, 
+	    WHITELIST_CREATE, WHITELIST_RETRIEVE, WHITELIST_DELETE}), 
+	moderator(new String[]{MODERATION_ALL}),
+	publisher(new String[]{RETRIEVE, CREATE, DELETE, UPDATE, REPORT});
 	
 	String[] operations;
 	static Set<String> operationSet;

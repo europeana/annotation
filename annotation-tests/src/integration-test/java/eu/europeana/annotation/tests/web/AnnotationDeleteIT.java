@@ -31,7 +31,7 @@ public class AnnotationDeleteIT extends AbstractIntegrationTest {
 			log.error("Wrong status code: " + response.getStatusCode());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 		
-		createdAnnotations.add(anno.getIdentifier());
+		addToCreatedAnnotations(anno.getIdentifier());
 	}
 			
 				

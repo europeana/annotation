@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class GeneralUtils {
@@ -76,5 +77,5 @@ public class GeneralUtils {
     //only URLs that start with "https" are allowed
     return value.startsWith("https");
   }
-
+  
 }

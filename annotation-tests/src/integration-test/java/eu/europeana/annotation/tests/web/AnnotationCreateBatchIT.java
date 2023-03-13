@@ -70,7 +70,7 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
     for (int i = 0; i < TEST_NUM_ANNOTATIONS; i++) {
       testAnnotation = createTestAnnotation(TAG_MINIMAL, false, null);
       testAnnotations.add(testAnnotation);
-      createdAnnotations.add(testAnnotation.getIdentifier());
+      addToCreatedAnnotations(testAnnotation.getIdentifier());
     }
   }
 
@@ -112,7 +112,7 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
 
     long startingId = testAnnotations.get(0).getIdentifier();
     for (long i = startingId + TEST_NUM_ANNOTATIONS; i < startingId + 5; i++) {
-      createdAnnotations.add(i);
+      addToCreatedAnnotations(i);
     }
   }
 
@@ -174,7 +174,7 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
 
     long startingId = testAnnotations.get(0).getIdentifier();
     for (long i = startingId + TEST_NUM_ANNOTATIONS; i < startingId + 8; i++) {
-      createdAnnotations.add(i);
+      addToCreatedAnnotations(i);
     }
   }
 
@@ -212,7 +212,7 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
 
     long startingId = testAnnotations.get(0).getIdentifier();
     for (long i = startingId + TEST_NUM_ANNOTATIONS; i < startingId + 5; i++) {
-      createdAnnotations.add(i);
+      addToCreatedAnnotations(i);
     }
   }
 

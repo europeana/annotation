@@ -71,7 +71,7 @@ public class AnnotationAdminIT extends AbstractIntegrationTest {
 			// create test annotations without indexing it
 			for (int i = 0; i < numAnnotations; i++) {
 				annotations.add(createTestAnnotation(TAG_INDEXING, false, null));
-				createdAnnotations.add(annotations.get(i).getIdentifier());
+				addToCreatedAnnotations(annotations.get(i).getIdentifier());
 			}
 			assertNotNull(annotations);
 			assertEquals(numAnnotations, annotations.size());
@@ -124,7 +124,7 @@ public class AnnotationAdminIT extends AbstractIntegrationTest {
 		assertEquals(ANNOTATION_TESTSET_LOCK_SIZE, annotations.size());		
 
         for (Annotation anno : annotations) {
-          createdAnnotations.add(anno.getIdentifier());
+          addToCreatedAnnotations(anno.getIdentifier());
         }		
 			
 		ApiInvoker call1 = new ApiInvoker();

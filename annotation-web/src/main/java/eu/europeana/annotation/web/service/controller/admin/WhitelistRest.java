@@ -18,18 +18,17 @@ import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.definitions.model.whitelist.WhitelistEntry;
 import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 import eu.europeana.annotation.utils.parse.WhiteListParser;
-import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
-import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.model.WhitelistOperationResponse;
 import eu.europeana.annotation.web.model.WhitelsitSearchResults;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.WhitelistService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
+import eu.europeana.annotation.web.service.controller.WebUtils;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.api2.utils.JsonWebUtils;
+import eu.europeana.api.commons.web.exception.InternalServerException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -62,7 +61,7 @@ public class WhitelistRest extends BaseRest {
     public ResponseEntity<String> getWhitelistEntry(
 //			public ModelAndView getWhitelistEntry (
 	    @RequestParam(value = "url", required = true) String url, HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+	    throws ApplicationAuthenticationException, InternalServerException {
 	// JWT Token Only
 	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
 
@@ -80,7 +79,7 @@ public class WhitelistRest extends BaseRest {
 	    response.error = errorMessage;
 	}
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response);
 	return buildResponse(jsonStr);
     }
 
@@ -88,7 +87,7 @@ public class WhitelistRest extends BaseRest {
     @ResponseBody
     @ApiOperation(value = "Retrieve the whole whitelist", nickname = "getFullWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> getFullWhitelist(HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException {
+	    throws ApplicationAuthenticationException, InternalServerException {
 
 	// JWT Token Only
 	verifyWriteAccess(Operations.WHITELIST_RETRIEVE, request);
@@ -99,7 +98,7 @@ public class WhitelistRest extends BaseRest {
 	WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(whitelist, null, action);
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response);
 	return buildResponse(jsonStr);
     }
 
@@ -124,7 +123,7 @@ public class WhitelistRest extends BaseRest {
 	response.setWhitelistEntry(serializeWhitelist(storedWhitelist));
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response);
 	return buildResponse(jsonStr);
     }
 
@@ -133,8 +132,7 @@ public class WhitelistRest extends BaseRest {
     @ApiOperation(value = "Load the default whitelist entries in DB", nickname = "loadDefaultWhitelist", response = java.lang.Void.class)
     public ResponseEntity<String> loadDefaultWhitelist(
 	    HttpServletRequest request)
-	    throws WhitelistValidationException, ApplicationAuthenticationException, UserAuthorizationException,
-	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	    throws WhitelistValidationException, ApplicationAuthenticationException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_CREATE, request);
 
@@ -145,7 +143,7 @@ public class WhitelistRest extends BaseRest {
 	WhitelsitSearchResults<WhitelistEntry> response = buildSearchWhitelistResponse(whitelist, null, action);
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response);
 	return buildResponse(jsonStr);
     }
 
@@ -154,8 +152,7 @@ public class WhitelistRest extends BaseRest {
     @ResponseBody
     @ApiOperation(value = "Delete the whole whitelist", nickname = "deleteAllWhitelistEntries", response = java.lang.Void.class)
     public ResponseEntity<String> deleteAllWhitelistEntries(
-	    HttpServletRequest request) throws ApplicationAuthenticationException, UserAuthorizationException,
-	    OperationAuthorizationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	    HttpServletRequest request) throws ApplicationAuthenticationException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
@@ -173,7 +170,7 @@ public class WhitelistRest extends BaseRest {
 	}
 
 //		return JsonWebUtils.toJson(response, null);
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response);
 	return buildResponse(jsonStr);
     }
 
@@ -184,8 +181,7 @@ public class WhitelistRest extends BaseRest {
     public ResponseEntity<String> deleteWhitelistEntry(
 	    @RequestParam(value = "url", required = true) String url, 
 	    HttpServletRequest request)
-	    throws ApplicationAuthenticationException, UserAuthorizationException, OperationAuthorizationException,
-	    ApiKeyExtractionException, AuthorizationExtractionException {
+	    throws ApplicationAuthenticationException, InternalServerException {
 
 	verifyWriteAccess(Operations.WHITELIST_DELETE, request);
 
@@ -202,7 +198,7 @@ public class WhitelistRest extends BaseRest {
 	    response.error = e.getMessage();
 	}
 
-	String jsonStr = JsonWebUtils.toJson(response, null);
+	String jsonStr = WebUtils.toJson(response);
 	return buildResponse(jsonStr);
     }
 
