@@ -34,8 +34,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<revision>0.3.4-SNAPSHOT</revision>
-		<version.commonsApi>0.3.20-SNAPSHOT</version.commonsApi>
+		<revision>0.4</revision>
+		<version.commonsApi>0.3.20</version.commonsApi>
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
