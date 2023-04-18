@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -18,6 +19,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
@@ -95,11 +98,14 @@ public class MetisDereferenciationClient implements InitializingBean {
     public Map<String, String> dereferenceOne(String uri, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
-	InputStream streamResponse;
+	InputStream streamResponse=null;
 	    
 	try {
 	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam(PARAM_URI, uri);
         streamResponse = httpConnection.getURLContent(uriBuilder.build().toString());
+      	if(streamResponse==null) {
+    	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
+      	}
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);	    
 	} catch (IOException ex) {
@@ -125,11 +131,14 @@ public class MetisDereferenciationClient implements InitializingBean {
     public Map<String, String> dereferenceMany(List<String> uris, String language) throws AnnotationDereferenciationException {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
-	InputStream streamResponse;
+	InputStream streamResponse=null;
 	try {
       	@SuppressWarnings({ "rawtypes", "unchecked" })
       	String urisJson = JsonSerializer.toString((List)uris);
       	streamResponse = httpConnection.postRequest(baseUrl, urisJson);
+      	if(streamResponse==null) {
+    	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
+      	}
       	String[] urisArray = new String[uris.size()];
         urisArray = uris.toArray(urisArray);
         jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
