@@ -3,7 +3,9 @@ package eu.europeana.annotation.client.connection;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +45,8 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
   public static String USER_REGULAR = "regular";
   public static String USER_ADMIN = "admin";
+  
+  Map<String, String> userTokens = new HashMap<>();
 
   /**
    * Create a new connection to the Annotation Service (REST API).
@@ -61,16 +65,19 @@ public class AnnotationApiConnection extends BaseApiConnection {
   }
 
   private void initConfigurations() {
-    regularUserAuthorizationValue = "Bearer " + getOauthToken(USER_REGULAR);
-    adminUserAuthorizationValue = "Bearer " + getOauthToken(USER_ADMIN);
+//    regularUserAuthorizationValue = getOauthToken(USER_REGULAR);
+//    userTokens.put(USER_REGULAR, regularUserAuthorizationValue);
+//    adminUserAuthorizationValue = getOauthToken(USER_ADMIN);
+//    userTokens.put(USER_ADMIN, adminUserAuthorizationValue);
   }
 
   private String getAuthorizationHeaderValue(String user) {
-    if (user != null && user.equals(USER_ADMIN)) {
-      return adminUserAuthorizationValue;
-    } else {
-      return regularUserAuthorizationValue;
-    }
+//    if (user != null && user.equals(USER_ADMIN)) {
+//      return adminUserAuthorizationValue;
+//    } else {
+//      return regularUserAuthorizationValue;
+//    }
+      return getOauthToken(user);
   }
 
   /**
@@ -1138,6 +1145,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
 
   @SuppressWarnings("deprecation")
   public String getOauthToken(String user) {
+    if(userTokens.containsKey(user)) {
+      return userTokens.get(user);
+    }
+    String userToken = null;
     try {
       // String accessToken = "access_token";
       String oauthUri = ClientConfiguration.getInstance().getOauthServiceUri();
@@ -1156,10 +1167,10 @@ public class AnnotationApiConnection extends BaseApiConnection {
           byte[] byteResponse = post.getResponseBody();
           String jsonResponse = new String(byteResponse, StandardCharsets.UTF_8);
           JSONObject jo = new JSONObject(jsonResponse);
-          return jo.getString("access_token");
-        } else {
-
-        }
+          userToken = "Bearer " + jo.getString("access_token");
+          userTokens.put(user, userToken);
+        } 
+        
       } catch (JSONException e) {
         throw new TechnicalRuntimeException("Cannot retrieve authentication token!", e);
       } finally {
@@ -1168,7 +1179,7 @@ public class AnnotationApiConnection extends BaseApiConnection {
     } catch (IOException e) {
       throw new TechnicalRuntimeException("Cannot retrieve authentication token!", e);
     }
-
-    return null;
+    //would be null only in case of wrong configurations, consider throwing exception
+    return userToken;
   }
 }

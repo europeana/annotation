@@ -37,8 +37,10 @@ public class ClientConfiguration {
      * @return
      */
     public static synchronized ClientConfiguration getInstance() {
-	singleton = new ClientConfiguration();
-	singleton.loadProperties();
+      if(singleton == null) {
+        singleton = new ClientConfiguration();
+        singleton.loadProperties();
+      }
 	return singleton;
     }
 
