@@ -3,12 +3,16 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,12 +20,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
+import eu.europeana.annotation.tests.AnnotationTestsConstants;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
@@ -71,6 +78,15 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
             WRONG_GENERATED_IDENTIFIER, false, null);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
+  
+  @Test
+  public void getAnnotationWrongParamType() throws Exception {
+	  String url = AnnotationTestsConfiguration.BASE_SERVICE_URL;
+	  url += AnnotationTestsConstants.DUMMY_PARAM;
+	  url += WebAnnotationFields.PAR_CHAR;
+	  url += WebAnnotationFields.PARAM_WSKEY + "=" + AnnotationTestsConfiguration.getInstance().getApiKey();
+	  mockMvc.perform(get(url)).andExpect(status().isBadRequest());
+  }  
 
   @Test
   @Disabled("This test is successfull only when the authorization is enabled")
