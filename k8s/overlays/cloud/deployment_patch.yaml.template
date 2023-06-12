@@ -12,6 +12,7 @@ spec:
     spec:
       containers:
         - name: annotation-api
+          image: europeana/annotation-api:${DOCKER_IMAGE_TAG}
           imagePullPolicy: Always
           env:
             - name: JAVA_TOOL_OPTIONS
