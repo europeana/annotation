@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -123,6 +124,7 @@ public class HttpConnection {
 		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
         	post.setRequestHeader(requestHeaderName, requestHeaderValue);
         }
+		post.setRequestHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         post.setRequestBody(jsonParamValue);
 
         try {
@@ -144,6 +146,7 @@ public class HttpConnection {
 	public ResponseEntity<String> postURL(String url, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PostMethod post = new PostMethod(url);
+        post.setRequestHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         post.setRequestBody(jsonParamValue);
 
         try {
@@ -166,6 +169,7 @@ public class HttpConnection {
 	public ResponseEntity<String> putURL(String url, String jsonParamValue) throws IOException {
         HttpClient client = this.getHttpClient(CONNECTION_RETRIES, TIMEOUT_CONNECTION);
         PutMethod put = new PutMethod(url);
+        put.setRequestHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         put.setRequestBody(jsonParamValue);
 
         try {
@@ -193,6 +197,7 @@ public class HttpConnection {
 		if (StringUtils.isNotBlank(requestHeaderName) && StringUtils.isNotBlank(requestHeaderValue)) {
         	put.setRequestHeader(requestHeaderName, requestHeaderValue);
         }
+		put.setRequestHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         put.setRequestBody(jsonParamValue);
 
         try {

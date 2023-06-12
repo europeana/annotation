@@ -1,10 +1,7 @@
 package eu.europeana.annotation.client;
 
-import java.util.List;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 

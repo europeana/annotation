@@ -1,11 +1,13 @@
 package eu.europeana.annotation.tests;
 
 import java.io.IOException;
+
 import eu.europeana.annotation.definitions.model.vocabulary.StatusTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 
 public class AnnotationTestsConstants {
+  public static final String DUMMY_PARAM = "dummy";
   public static final String URI_VERMEER_VIAF = "http://viaf.org/viaf/51961439";
   public static final String AGENT_VERMEER_VIAF_XML = "/metis-deref/agent_jan_vermeer_viaf.xml";
   public static final String DEREFERENCE_MANY = "metis-deref_many";
