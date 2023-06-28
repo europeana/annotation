@@ -2,11 +2,14 @@ package eu.europeana.annotation.web.validation;
 
 import java.net.URI;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.xml.sax.SAXParseException;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -37,6 +40,8 @@ import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 public abstract class BaseAnnotationValidator {
 
   private static final String TRANSCRIPTION_TARGET_SOURCE = "transcription.target.source";
+  
+  private static final String TRANSCRIPTION_TARGET_SCOPE = "transcription.target.scope";
 
   private static final String BODY_EDM_RIGHTS = "body.edmRights";
 
@@ -558,7 +563,7 @@ public abstract class BaseAnnotationValidator {
       throws ParamValidationI18NException, PropertyValidationException {
     // validate target URLs against whitelist
     if (webAnnotation.getTarget() != null) {
-      validateTargetBaseUrl(webAnnotation.getTarget());
+      validateTargetFields(webAnnotation.getTarget());
 
       if (webAnnotation.getTarget().getValue() != null)
         validateResource(webAnnotation.getTarget().getValue());
@@ -586,7 +591,7 @@ public abstract class BaseAnnotationValidator {
       validateTextualBody(body, true);
     }
     if (webAnnotation.getTarget() != null)
-      validateTargetBaseUrl(webAnnotation.getTarget());
+      validateTargetFields(webAnnotation.getTarget());
   }
 
   /**
@@ -603,15 +608,8 @@ public abstract class BaseAnnotationValidator {
     validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(), authentication);
     // validate target
     // TODO consider moving to validateSpecificResource method
-    // "source" becomes mandatory as soon as you have a "scope" in the target
     if (webAnnotation.getTarget() != null) {
-      validateTargetBaseUrl(webAnnotation.getTarget());
-      if (!StringUtils.isBlank(webAnnotation.getTarget().getScope())
-          && StringUtils.isBlank(webAnnotation.getTarget().getSource()))
-        throw new PropertyValidationException(
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            new String[] {TRANSCRIPTION_TARGET_SOURCE});
+      validateTargetFields(webAnnotation.getTarget());
     }
   }
 
@@ -634,15 +632,8 @@ public abstract class BaseAnnotationValidator {
 
     // validate target
     // TODO consider moving to validateSpecificResource method
-    // "source" becomes mandatory as soon as you have a "scope" in the target
     if (webAnnotation.getTarget() != null) {
-      validateTargetBaseUrl(webAnnotation.getTarget());
-      if (!StringUtils.isBlank(webAnnotation.getTarget().getScope())
-          && StringUtils.isBlank(webAnnotation.getTarget().getSource()))
-        throw new PropertyValidationException(
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
-            new String[] {TRANSCRIPTION_TARGET_SOURCE});
+      validateTargetFields(webAnnotation.getTarget());
     }
 
     // check mandatory field edmRights
@@ -695,7 +686,7 @@ public abstract class BaseAnnotationValidator {
     }
 
     // validate base URLs
-    validateTargetBaseUrl(webAnnotation.getTarget());
+    validateTargetFields(webAnnotation.getTarget());
   }
 
   private void validateSubtitleBody(Body body) throws PropertyValidationException {
@@ -734,7 +725,7 @@ public abstract class BaseAnnotationValidator {
   }
 
   // validates that the target value/values/scope (depending on what provided) has a valid base url
-  private void validateTargetBaseUrl(Target target) throws PropertyValidationException {
+  private void validateTargetFields(Target target) throws PropertyValidationException {
     if (target.getValue() != null) {
       if (!target.getValue().contains(getConfiguration().getAnnoItemDataEndpoint()))
         throw new PropertyValidationException(
@@ -750,12 +741,33 @@ public abstract class BaseAnnotationValidator {
               new String[] {getConfiguration().getAnnoItemDataEndpoint()});
 
       }
-    } else if (target.getScope() != null) {
-      if (!target.getScope().contains(getConfiguration().getAnnoItemDataEndpoint()))
-        throw new PropertyValidationException(
-            I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
-            I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
-            new String[] {getConfiguration().getAnnoItemDataEndpoint()});
+    } else if (target.getScope()!=null || target.getSource()!=null) {
+    	//scope and source must both be present in the target if one of them is present
+    	if(target.getScope() == null) {
+    		throw new PropertyValidationException(
+                    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+                    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+                    new String[] {TRANSCRIPTION_TARGET_SCOPE});
+    	}
+    	if(target.getSource() == null) {
+    		throw new PropertyValidationException(
+                    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+                    I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
+                    new String[] {TRANSCRIPTION_TARGET_SOURCE});
+    	}
+    	if(!target.getScope().contains(getConfiguration().getAnnoItemDataEndpoint())) {
+    		throw new PropertyValidationException(
+    				I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
+    				I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
+    				new String[] {getConfiguration().getAnnoItemDataEndpoint()});
+    	}
+    	//target.source must be a valid url
+    	if(! GeneralUtils.isUrl(target.getSource())) {
+    		throw new PropertyValidationException(
+    				I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_SOURCE,
+    				I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_SOURCE,
+    				null);    		
+    	}
     }
   }
 }

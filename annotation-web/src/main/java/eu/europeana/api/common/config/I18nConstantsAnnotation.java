@@ -25,7 +25,7 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	 String INVALID_HEADER_FORMAT = "error.annotation_invalid_format";
 	 String INVALID_PROPERTY_VALUE = "error.annotation_invalid_property_value";
 	 String ANNOTATION_INVALID_TARGET_BASE_URL = "error.annotation_target_base_url";
-	
+	 String ANNOTATION_INVALID_TARGET_SOURCE = "error.annotation_target_source";
 	
 	 String MESSAGE_IDENTIFIER_NOT_NULL = "error.message_identifier_not_null";
 	 String MESSAGE_IDENTIFIER_NULL = "error.message_identifier_null";
