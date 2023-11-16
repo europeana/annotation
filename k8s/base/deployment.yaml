@@ -26,8 +26,8 @@ spec:
             httpHeaders:
             - name: Accept
               value: application/json
-          initialDelaySeconds: 30
-          periodSeconds: 30
+          initialDelaySeconds: 55
+          periodSeconds: 20
         readinessProbe:
           httpGet:
             port: 8080
@@ -35,8 +35,8 @@ spec:
             httpHeaders:
             - name: Accept
               value: application/json
-          initialDelaySeconds: 30
-          periodSeconds: 30
+          initialDelaySeconds: 55
+          periodSeconds: 20
         volumeMounts:
           - name: app-properties
             mountPath: "/opt/app/config/annotation.user.properties"
