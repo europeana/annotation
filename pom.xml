@@ -42,10 +42,8 @@
 		<java.version>17</java.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<!-- SG: NOTE: for newer maven compiler plugin only release version should be required -->
-		<!-- 
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		-->
 		
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
 
