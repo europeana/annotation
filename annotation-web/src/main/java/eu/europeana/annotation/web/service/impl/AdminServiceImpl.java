@@ -249,12 +249,6 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 	protected boolean isIndexInSync(PersistentAnnotation storedAnno) {
 		return storedAnno.getLastIndexed() != null && (!storedAnno.getLastIndexed().before(storedAnno.getLastUpdate()));
 	}
-
-	@Override
-	protected boolean validateResource(String value) {
-	    // TODO Auto-generated method stub
-	    return false;
-	}
    	
 }
   

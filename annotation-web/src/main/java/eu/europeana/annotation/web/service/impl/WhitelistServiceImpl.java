@@ -159,7 +159,7 @@ public class WhitelistServiceImpl extends BaseAnnotationServiceImpl implements W
 	}
 
 	@Override
-	protected boolean validateResource(String value) {
+	protected boolean validateLinkingAgainstWhitelist(String value) {
 	    // TODO Auto-generated method stub
 	    return false;
 	}
