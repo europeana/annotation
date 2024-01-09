@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -109,8 +110,11 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	}
 
 	List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate, stopDate, page, limit);
-
-	String jsonStr = WebUtils.toJson(deletions);
+	//add the base data endpoint
+	List<String> deletionsUrl = deletions.stream().map(id -> getConfiguration().getAnnotationBaseUrl() + WebAnnotationFields.SLASH + id)
+			.collect(Collectors.toList());
+	
+	String jsonStr = WebUtils.toJson(deletionsUrl);
 	
     // build response entity with headers
     MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);

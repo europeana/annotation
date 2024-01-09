@@ -28,10 +28,6 @@ europeana.apikey.serviceurl=<API KEY API URL>
 ###### PRODUCTION KEYCLOAK
 europeana.apikey.jwttoken.siganturekey=-----BEGIN PUBLIC KEY-----<PUBLIC KEY>-----END PUBLIC KEY-----
 
-#Socks proxy configuration. If provided it will be used for all http connections (e.g. solr.entity.url) 
-# Url Format: socks://username:password@socks_proxy_server:1080 
-socks.proxy.url=
-
 # Metis API
 metis.baseUrl=<METIS DEREF URL>
 
