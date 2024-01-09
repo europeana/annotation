@@ -640,6 +640,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   /**
    * @deprecated change to property validation exception
    */
+  @Override
   protected boolean validateLinkingAgainstWhitelist(String url) throws ParamValidationI18NException {
 
     String domainName;

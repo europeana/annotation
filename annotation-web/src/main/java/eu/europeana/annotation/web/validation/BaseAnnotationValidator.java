@@ -81,7 +81,7 @@ public abstract class BaseAnnotationValidator {
   protected boolean validateLinkingAgainstWhitelist(String value)
       throws ParamValidationI18NException {
     // enforce subclasses to overwrite implementation when needed
-    return false;
+    return value == null;
   }
 
 
@@ -722,7 +722,9 @@ public abstract class BaseAnnotationValidator {
     if (target == null) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TARGET});
-    } else if (target.getValue() != null) {
+    } 
+    
+    if (target.getValue() != null) {
       // validate simple target
       validateTargetSimpleValue(target);
     } else if (target.getValues() != null) {
