@@ -39,7 +39,8 @@
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
-		<version.java>11</version.java>
+		<version.java>17</version.java>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
 
 		<version.junit-platform>1.2.0</version.junit-platform>
