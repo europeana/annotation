@@ -39,8 +39,14 @@
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
-		<version.java>17</version.java>
+		<java.version>17</java.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
+		<!-- SG: NOTE: for newer maven compiler plugin only release version should be required -->
+		<!-- 
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		-->
+		
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
 
 		<version.junit-platform>1.2.0</version.junit-platform>
@@ -265,10 +271,12 @@
 					<inherited>true</inherited>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<!--
 					<configuration>
 						<source>${version.java}</source>
 						<target>${version.java}</target>
 					</configuration>
+					-->
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
