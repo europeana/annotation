@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFact
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportResource;
-import eu.europeana.annotation.web.config.SocksProxyActivator;
 
 /**
  * Main application. Allows deploying as a war and logs instance data when deployed in Cloud Foundry
@@ -44,16 +43,6 @@ public class AnnotationApp extends SpringBootServletInitializer {
    * @param args command-line arguments
    */
   public static void main(String[] args) {
-    // When deploying to Cloud Foundry, this will log the instance index number, IP and GUID
-    
-    logger.info("CF_INSTANCE_INDEX  = {}, CF_INSTANCE_GUID = {}, CF_INSTANCE_IP  = {}",
-        System.getenv("CF_INSTANCE_INDEX"), System.getenv("CF_INSTANCE_GUID"),
-        System.getenv("CF_INSTANCE_IP"));
-
-    // Activate socks proxy (if your application requires it)
-    String propertiesFileName = getUserPropertiesFileName(args);
-    SocksProxyActivator.activate(propertiesFileName);
-
     ApplicationContext ctx = SpringApplication.run(AnnotationApp.class, args);
 
     if (logger.isDebugEnabled()) {

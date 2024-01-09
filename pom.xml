@@ -39,7 +39,8 @@
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
-		<version.java>11</version.java>
+		<version.java>17</version.java>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
 
 		<version.junit-platform>1.2.0</version.junit-platform>
@@ -48,7 +49,7 @@
  		-->
 		<version.spring.boot>2.5.7</version.spring.boot>
 		<version.swagger>3.0.0</version.swagger>
-
+		<version.apache.commons.io>2.11.0</version.apache.commons.io>
 		<version.aspectj>1.8.8</version.aspectj>
 		<version.log4j2>2.17.2</version.log4j2>
 		<version.commonsLang3>3.0</version.commonsLang3>
@@ -75,6 +76,8 @@
 		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
 		<version.surefire>3.0.0-M7</version.surefire>
 		<version.failsafe>3.0.0-M7</version.failsafe>
+		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
+		
 		<!-- sonar plugins -->
 		<jacoco-plugin.version>0.8.7</jacoco-plugin.version>
 		<pmd-plugin.version>3.15.0</pmd-plugin.version>
@@ -88,8 +91,7 @@
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
 		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
-		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
-		<version.apache.commons.io>2.11.0</version.apache.commons.io>
+		
 	</properties>
 	<modules>
 		<module>annotation-definitions</module>

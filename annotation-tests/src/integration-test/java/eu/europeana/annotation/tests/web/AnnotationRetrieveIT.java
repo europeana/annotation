@@ -67,8 +67,8 @@ public class AnnotationRetrieveIT extends AbstractIntegrationTest {
 
     List<String> result = getDeleted(null, DateUtils.convertDateToStr(startDate),
         DateUtils.convertDateToStr(stopDate), 0, 100);
-    assertTrue(result.contains(String.valueOf(anno_tag.getIdentifier())));
-    assertTrue(result.contains(String.valueOf(anno_subtitle.getIdentifier())));
+    assertTrue(result.contains(getConfiguration().getAnnotationBaseUrl() + WebAnnotationFields.SLASH + String.valueOf(anno_tag.getIdentifier())));
+    assertTrue(result.contains(getConfiguration().getAnnotationBaseUrl() + WebAnnotationFields.SLASH + String.valueOf(anno_subtitle.getIdentifier())));
   }
 
   @Test
