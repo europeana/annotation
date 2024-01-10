@@ -15,6 +15,7 @@ import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.UpdateResults;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
@@ -343,7 +344,10 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
 		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(PersistentAnnotation.FIELD_IDENTIFIER)
 				.equal(annotation.getIdentifier());
-		getAnnotationDao().update(updateQuery, ops);
+		UpdateResults res = getAnnotationDao().update(updateQuery, ops);
+		if(res.getUpdatedCount() != 1) {
+		  throw new AnnotationMongoException("Cannot successfully update the last indexing timestamp, expected to update one object but: ");
+		}
 
 		return annotation;
 	}
