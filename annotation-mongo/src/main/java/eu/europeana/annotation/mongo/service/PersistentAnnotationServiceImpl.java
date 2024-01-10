@@ -340,7 +340,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 		annotation.setLastIndexed(lastIndexing);
 		
 		UpdateOperations<PersistentAnnotation> ops = getAnnotationDao().createUpdateOperations()
-				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing.getTime()).set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
+				.set(WebAnnotationFields.LAST_INDEXED, lastIndexing);
 		Query<PersistentAnnotation> updateQuery = getAnnotationDao().createQuery().field(PersistentAnnotation.FIELD_IDENTIFIER)
 				.equal(annotation.getIdentifier());
 		getAnnotationDao().update(updateQuery, ops);
