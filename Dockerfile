@@ -12,4 +12,4 @@ ADD https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/$ELASTIC_APM
 
 COPY ./annotation-web/target/annotation-web-executable.jar /opt/app/annotation-web-executable.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/opt/app/annotation-web-executable.jar"]
+ENTRYPOINT ["java", "--add-opens=java.base/java.util=ALL-UNNAMED",  "--add-opens=java.base/java.lang=ALL-UNNAMED",   "-jar", "/opt/app/annotation-web-executable.jar"]

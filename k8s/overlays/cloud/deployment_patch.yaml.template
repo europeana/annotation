@@ -21,9 +21,7 @@ spec:
                      -Delastic.apm.application_packages=${ELASTIC_APP_PACKAGES}
                      -Delastic.apm.server_urls=${ELASTIC_APM_SERVERS}
                      -Delastic.apm.service_name=${APP_NAME}
-                     -Delastic.apm.environment=${K8S_NAMESPACE}
-                     --add-opens java.base/java.util=ALL-UNNAMED  
-                     --add-opens java.base/java.lang=ALL-UNNAMED"
+                     -Delastic.apm.environment=${K8S_NAMESPACE}"
           resources:
             requests:
               memory: "${MEMORY_REQUEST}M"
