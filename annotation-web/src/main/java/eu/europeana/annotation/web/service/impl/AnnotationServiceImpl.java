@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -37,6 +38,7 @@ import eu.europeana.annotation.mongo.service.PersistentStatusLogService;
 import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
+import eu.europeana.annotation.utils.HttpConnection;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
@@ -51,7 +53,7 @@ import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 
 @Service(AnnotationConfiguration.BEAN_ANNO_SERVICE)
-public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
+public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService, InitializingBean {
 
   @Resource(name = "annotation_db_whitelistService")
   PersistentWhitelistService mongoWhitelistPersistence;
@@ -65,11 +67,24 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Autowired
   @Qualifier(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
   MetisDereferenciationClient dereferenciationClient;
-
+  
+  private HttpConnection httpConnection;
+  
+  public void afterPropertiesSet() throws Exception {
+	  synchronized(this) {
+		  httpConnection = new HttpConnection(getConfiguration().getMetisConnectionRetries(), getConfiguration().getMetisConnectionTimeout());
+      }
+  }
+ 
   public AnnotationConfiguration getConfiguration() {
     return configuration;
   }
 
+  @Override
+  public HttpConnection getHttpConnection() {
+	  return httpConnection;
+  }
+  
   public PersistentWhitelistService getMongoWhitelistPersistence() {
     return mongoWhitelistPersistence;
   }

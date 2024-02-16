@@ -1,6 +1,10 @@
 package eu.europeana.annotation.web.validation;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -29,6 +33,8 @@ import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.fulltext.transcription.TranscriptionFormatValidator;
 import eu.europeana.annotation.fulltext.transcription.XmlValidationErrorCollector;
 import eu.europeana.annotation.utils.GeneralUtils;
+import eu.europeana.annotation.utils.HttpConnection;
+import eu.europeana.annotation.utils.JsonUtils;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -36,6 +42,7 @@ import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.authorization.AnnotationAuthorizationUtils;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 
 public abstract class BaseAnnotationValidator {
 
@@ -77,6 +84,8 @@ public abstract class BaseAnnotationValidator {
   private TranscriptionFormatValidator mediaFormatValidator;
 
   protected abstract AnnotationConfiguration getConfiguration();
+  
+  protected abstract HttpConnection getHttpConnection();
 
   protected boolean validateLinkingAgainstWhitelist(String value)
       throws ParamValidationI18NException {
@@ -215,14 +224,14 @@ public abstract class BaseAnnotationValidator {
    * @throws PropertyValidationException
    * @throws RequestBodyValidationException
    */
-  protected void validateTranscriptionBodyWithFullTextResource(Body body,
+  protected void validateTranscriptionBodyWithFullTextResource(Body body, Target target,
       Authentication authentication) throws ParamValidationI18NException,
       PropertyValidationException, RequestBodyValidationException {
     // the body type shouldn't be null at this stage
     validateFullTextResource(body);
 
     // check mandatory field edmRights
-    validateEdmRights(body, authentication);
+    validateEdmRights(body, target, authentication);
 
     // validate format compliance
     String bodyFormat = body.getContentType();
@@ -493,7 +502,7 @@ public abstract class BaseAnnotationValidator {
    * @throws RequestBodyValidationException
    * @throws PropertyValidationException
    */
-  void validateEdmRights(Body body, Authentication authentication)
+  void validateEdmRights(Body body, Target target, Authentication authentication)
       throws RequestBodyValidationException, PropertyValidationException {
     // rights are mandatory
     if (StringUtils.isBlank(body.getEdmRights())) {
@@ -524,10 +533,38 @@ public abstract class BaseAnnotationValidator {
       licence = licence.substring(0, versionStart);
     }
     Set<String> rights = getConfiguration().getAcceptedLicenceses();
-    if (!rights.contains(licence))
-      throw new RequestBodyValidationException(body.getInputString(),
-          I18nConstants.INVALID_PARAM_VALUE, new String[] {BODY_EDM_RIGHTS, rightsClaim});
-
+    if (!rights.contains(licence)) {
+    	//if license not supported, check the jwt affiliation
+        EuropeanaApiCredentials apiCred = ((EuropeanaApiCredentials) authentication.getCredentials());
+        if(!validateDataProviderAffiliation(target.getResourceId(), apiCred.getAffiliation())) {    
+            throw new RequestBodyValidationException(body.getInputString(),
+                    I18nConstants.INVALID_PARAM_VALUE, new String[] {BODY_EDM_RIGHTS, rightsClaim});
+        }        
+    }
+  }
+  
+  private boolean validateDataProviderAffiliation(String recordId, String affiliation) {
+	  if(recordId==null || affiliation==null) {
+		  return false;
+	  }
+	  String url = getConfiguration().getSearchApiBaseUrl();
+	  url += "?";
+	  url += "query=europeana_id:" + URLEncoder.encode("\"" + recordId + "\"", StandardCharsets.UTF_8);
+	  url += "&";
+	  url += "qf=foaf_organization:" + URLEncoder.encode("\"" + affiliation + "\"", StandardCharsets.UTF_8);
+	  url += "&";
+	  url += "rows=0";
+	  url += "&";
+	  url += "wskey=apidemo";
+	  try {
+		String searchApiResp = getHttpConnection().getURLContentAsString(url, "Accept", "application/json");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> searchApiRespMap = (Map<String, Object>) JsonUtils.getObjectMapper().readValue(searchApiResp, Map.class);
+		int totalResults = (int) searchApiRespMap.get("totalResults");
+		return totalResults>0;
+	} catch (IOException e) {
+		return false;
+	}
   }
 
   /**
@@ -609,7 +646,7 @@ public abstract class BaseAnnotationValidator {
       throws ParamValidationI18NException, RequestBodyValidationException,
       PropertyValidationException {
     validateBodyExists(webAnnotation.getBody());
-    validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(), authentication);
+    validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(), webAnnotation.getTarget(), authentication);
     // validate target
     validateTargetFields(webAnnotation.getTarget());   
   }
@@ -635,7 +672,7 @@ public abstract class BaseAnnotationValidator {
     validateTargetFields(webAnnotation.getTarget());
 
     // check mandatory field edmRights
-    validateEdmRights(body, authentication);
+    validateEdmRights(body, webAnnotation.getTarget(), authentication);
   }
 
   protected void validateLinkForContributing(Annotation webAnnotation)

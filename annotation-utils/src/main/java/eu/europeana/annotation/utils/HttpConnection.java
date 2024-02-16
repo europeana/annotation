@@ -2,7 +2,7 @@
  * HttpConnector.java - europeana4j
  * (C) 2011 Digibis S.L.
  */
-package eu.europeana.annotation.connection;
+package eu.europeana.annotation.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,8 +44,21 @@ public class HttpConnection {
     public HttpConnection() {
 	this(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
     }
-    
-    public InputStream getURLContent(String url) throws IOException {
+
+    public String getURLContentAsString(String url, String headerName, String headerValue) throws IOException {
+        HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
+        GetMethod get = new GetMethod(url);
+        get.setRequestHeader(headerName, headerValue);
+
+        client.executeMethod(get);
+        if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+            return get.getResponseBodyAsString();
+        } else {
+            return null;
+        }
+    }
+
+    public InputStream getURLContentAsStream(String url) throws IOException {
         HttpClient client = this.getHttpClient(DEFAULT_CONNECTION_RETRIES, DEFAULT_TIMEOUT_CONNECTION);
         GetMethod get = new GetMethod(url);
         get.setRequestHeader("Accept", "application/xml");

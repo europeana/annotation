@@ -29,8 +29,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.connection.HttpConnection;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
+import eu.europeana.annotation.utils.HttpConnection;
 
 /**
  * This class supports requests to Metis API and XSLT conversion of response.
@@ -102,7 +102,7 @@ public class MetisDereferenciationClient implements InitializingBean {
 	    
 	try {
 	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam(PARAM_URI, uri);
-        streamResponse = httpConnection.getURLContent(uriBuilder.build().toString());
+        streamResponse = httpConnection.getURLContentAsStream(uriBuilder.build().toString());
       	if(streamResponse==null) {
     	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
       	}

@@ -19,6 +19,7 @@ import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.utils.GeneralUtils;
+import eu.europeana.annotation.utils.HttpConnection;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -42,10 +43,12 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
   @Resource(name = "annotation_db_moderationRecordService")
   PersistentModerationRecordService mongoModerationRecordPersistance;
 
-
-
   protected AnnotationConfiguration getConfiguration() {
     return configuration;
+  }
+  
+  protected HttpConnection getHttpConnection() {
+	  return null;
   }
 
   public void setConfiguration(AnnotationConfiguration configuration) {

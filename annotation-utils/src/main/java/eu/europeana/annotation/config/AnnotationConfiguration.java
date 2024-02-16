@@ -35,6 +35,7 @@ public interface AnnotationConfiguration {
     String VALIDATION_ADMIN_SECRET_KEY = "adminsecretkey";
     String API_KEY_CACHING_TIME = "annotation.apikey.caching.time";
     String ANNO_MEDIA_FORMATS = "annotation.media.formats";
+    String SEARCH_API_BASE_URL = "searchApi.baseUrl";
     
     /**
      * uses annotation.indexing.enabled property
@@ -79,4 +80,5 @@ public interface AnnotationConfiguration {
     String getSolrUrls();
 
     boolean isAuthEnabled();
+    String getSearchApiBaseUrl();
 }
