@@ -468,8 +468,11 @@ public abstract class BaseAnnotationValidator {
         validateTag(webAnnotation);
         break;
       case TRANSCRIBING:
-        validateTranscription(webAnnotation, authentication);
+    	validateTranscription(webAnnotation, authentication);
         break;
+      case TRANSLATING:
+    	validateTranscription(webAnnotation, authentication);
+        break;        
       case SUBTITLING:
         validateSubtitleOrCaption(webAnnotation, authentication);
         break;
@@ -599,7 +602,7 @@ public abstract class BaseAnnotationValidator {
   }
 
   /**
-   * Validation of transcribing.
+   * Validation of transcriptions.
    * 
    * @param webAnnotation
    * @throws RequestBodyValidationException

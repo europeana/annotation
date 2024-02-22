@@ -97,6 +97,7 @@ public class AnnotationTestsConstants {
   public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
   public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
   public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
+  public static final String TRANSLATION_MINIMAL = "/translation/minimal.json";
   public static final String DESCRIBING_WITHOUT_BODY_LANGUAGE = "/describing/web_resource_without_body_language.json";
   public static final String TAGGING_BODY_ADDRESS_NO_TYPE = "/tag/wrong/body_address_no_type.json";
   public static final String TAGGING_BODY_ADDRESS_NO_STREET_ADDRESS = "/tag/wrong/body_address_no_street_address.json";

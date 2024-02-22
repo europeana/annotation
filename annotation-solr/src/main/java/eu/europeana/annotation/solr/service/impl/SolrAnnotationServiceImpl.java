@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
@@ -507,6 +509,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		case TRANSCRIBING  :
 		  queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
 		  break;
+		case TRANSLATING  :
+		  queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
+		  break;
 		case CAPTIONING :
 		  queries.add(solrUniquenessQueryCaptions(anno, noSelfDupplicate));
 		  queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
@@ -563,7 +568,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	
 	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
 	  SolrQuery query = new SolrQuery();	
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TRANSCRIBING.getOaType() + "\"");
+      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + anno.getMotivationType().getOaType() + "\"");
       query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
       if(anno.getBody().getLanguage()!=null) {
         query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*"); 

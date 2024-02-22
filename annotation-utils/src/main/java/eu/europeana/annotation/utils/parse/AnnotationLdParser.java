@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -17,6 +18,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONString;
+
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -1025,6 +1027,8 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.LINK;
 		case TRANSCRIBING:
 			return BodyInternalTypes.FULL_TEXT_RESOURCE;
+		case TRANSLATING:
+			return BodyInternalTypes.FULL_TEXT_RESOURCE;			
 		case SUBTITLING:
 			return BodyInternalTypes.FULL_TEXT_RESOURCE;
 		case CAPTIONING:

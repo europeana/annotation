@@ -4,14 +4,15 @@ import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractAnnotationFactory;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationTypes;
 import eu.europeana.annotation.mongo.model.PersistentCaptionImpl;
-import eu.europeana.annotation.mongo.model.PersistentObjectCommentImpl;
 import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentLinkForContributingImpl;
+import eu.europeana.annotation.mongo.model.PersistentObjectCommentImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectDescribingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectLinkingImpl;
-import eu.europeana.annotation.mongo.model.PersistentSubtitleImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTranscriptionImpl;
+import eu.europeana.annotation.mongo.model.PersistentObjectTranslationImpl;
+import eu.europeana.annotation.mongo.model.PersistentSubtitleImpl;
 
 public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 
@@ -52,6 +53,9 @@ public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 		case OBJECT_TRANSCRIPTION:
 			ret = PersistentObjectTranscriptionImpl.class;
 			break;
+		case OBJECT_TRANSLATION:
+			ret = PersistentObjectTranslationImpl.class;
+			break;			
 		case OBJECT_SUBTITLLE:
 			ret = PersistentSubtitleImpl.class;
 			break;
