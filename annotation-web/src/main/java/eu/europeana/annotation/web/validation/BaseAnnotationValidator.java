@@ -1,9 +1,6 @@
 package eu.europeana.annotation.web.validation;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,8 +30,7 @@ import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.fulltext.transcription.TranscriptionFormatValidator;
 import eu.europeana.annotation.fulltext.transcription.XmlValidationErrorCollector;
 import eu.europeana.annotation.utils.GeneralUtils;
-import eu.europeana.annotation.utils.HttpConnection;
-import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.SearchApiClient;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -85,8 +81,6 @@ public abstract class BaseAnnotationValidator {
 
   protected abstract AnnotationConfiguration getConfiguration();
   
-  protected abstract HttpConnection getHttpConnection();
-
   protected boolean validateLinkingAgainstWhitelist(String value)
       throws ParamValidationI18NException {
     // enforce subclasses to overwrite implementation when needed
@@ -536,37 +530,15 @@ public abstract class BaseAnnotationValidator {
     if (!rights.contains(licence)) {
     	//if license not supported, check the jwt affiliation
         EuropeanaApiCredentials apiCred = ((EuropeanaApiCredentials) authentication.getCredentials());
-        if(!validateDataProviderAffiliation(target.getResourceId(), apiCred.getAffiliation())) {    
+        Map<String,Object> searchApiResp = SearchApiClient.getSearchApiResponseMap(target.getResourceId(), apiCred.getAffiliation());
+        Integer searchApiRespResults=(Integer) searchApiResp.get("totalResults");
+        if(searchApiRespResults==null || searchApiRespResults<=0) {    
             throw new RequestBodyValidationException(body.getInputString(),
                     I18nConstants.INVALID_PARAM_VALUE, new String[] {BODY_EDM_RIGHTS, rightsClaim});
         }        
     }
   }
   
-  private boolean validateDataProviderAffiliation(String recordId, String affiliation) {
-	  if(recordId==null || affiliation==null) {
-		  return false;
-	  }
-	  String url = getConfiguration().getSearchApiBaseUrl();
-	  url += "?";
-	  url += "query=europeana_id:" + URLEncoder.encode("\"" + recordId + "\"", StandardCharsets.UTF_8);
-	  url += "&";
-	  url += "qf=foaf_organization:" + URLEncoder.encode("\"" + affiliation + "\"", StandardCharsets.UTF_8);
-	  url += "&";
-	  url += "rows=0";
-	  url += "&";
-	  url += "wskey=apidemo";
-	  try {
-		String searchApiResp = getHttpConnection().getURLContentAsString(url, "Accept", "application/json");
-		@SuppressWarnings("unchecked")
-		Map<String, Object> searchApiRespMap = (Map<String, Object>) JsonUtils.getObjectMapper().readValue(searchApiResp, Map.class);
-		int totalResults = (int) searchApiRespMap.get("totalResults");
-		return totalResults>0;
-	} catch (IOException e) {
-		return false;
-	}
-  }
-
   /**
    * Validation of simple tags.
    * 

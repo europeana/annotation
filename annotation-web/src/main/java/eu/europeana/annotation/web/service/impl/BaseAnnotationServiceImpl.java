@@ -1,12 +1,15 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.Date;
+
 import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -19,7 +22,6 @@ import eu.europeana.annotation.mongo.service.PersistentModerationRecordService;
 import eu.europeana.annotation.solr.exceptions.AnnotationStateException;
 import eu.europeana.annotation.solr.service.SolrAnnotationService;
 import eu.europeana.annotation.utils.GeneralUtils;
-import eu.europeana.annotation.utils.HttpConnection;
 import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.response.AnnotationNotFoundException;
@@ -47,10 +49,6 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
     return configuration;
   }
   
-  protected HttpConnection getHttpConnection() {
-	  return null;
-  }
-
   public void setConfiguration(AnnotationConfiguration configuration) {
     this.configuration = configuration;
   }
