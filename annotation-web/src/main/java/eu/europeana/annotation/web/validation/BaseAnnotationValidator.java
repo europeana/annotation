@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.validation;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -30,12 +31,12 @@ import eu.europeana.annotation.fulltext.subtitles.SubtitleHandler;
 import eu.europeana.annotation.fulltext.transcription.TranscriptionFormatValidator;
 import eu.europeana.annotation.fulltext.transcription.XmlValidationErrorCollector;
 import eu.europeana.annotation.utils.GeneralUtils;
-import eu.europeana.annotation.utils.SearchApiClient;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
 import eu.europeana.annotation.web.model.vocabulary.UserRoles;
 import eu.europeana.annotation.web.service.authorization.AnnotationAuthorizationUtils;
+import eu.europeana.annotation.web.service.impl.SearchApiClient;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
@@ -80,7 +81,7 @@ public abstract class BaseAnnotationValidator {
   private TranscriptionFormatValidator mediaFormatValidator;
 
   protected abstract AnnotationConfiguration getConfiguration();
-  
+
   protected boolean validateLinkingAgainstWhitelist(String value)
       throws ParamValidationI18NException {
     // enforce subclasses to overwrite implementation when needed
@@ -509,7 +510,21 @@ public abstract class BaseAnnotationValidator {
       return;
     }
     // if rights are provided, check if it belongs to the valid license list
-    String rightsClaim = body.getEdmRights();
+    String licence = extractMainLicence(body, body.getEdmRights());
+    Set<String> rights = getConfiguration().getAcceptedLicenceses();
+    if (rights.contains(licence) || isContentOwner(target, authentication)) {
+      // open license are valid
+      // content owners can provide own license
+      return;
+    } else {
+      // license is invalid
+      throw new RequestBodyValidationException(body.getInputString(),
+          I18nConstants.INVALID_PARAM_VALUE, new String[] {BODY_EDM_RIGHTS, body.getEdmRights()});
+    }
+  }
+
+  private String extractMainLicence(Body body, String rightsClaim)
+      throws RequestBodyValidationException {
     String licence = null;
     // remove version from the right and get licenses
     char PathDelimiter = '/';
@@ -526,19 +541,24 @@ public abstract class BaseAnnotationValidator {
       int versionStart = licence.lastIndexOf(PathDelimiter) + 1;
       licence = licence.substring(0, versionStart);
     }
-    Set<String> rights = getConfiguration().getAcceptedLicenceses();
-    if (!rights.contains(licence)) {
-    	//if license not supported, check the jwt affiliation
-        EuropeanaApiCredentials apiCred = ((EuropeanaApiCredentials) authentication.getCredentials());
-        Map<String,Object> searchApiResp = SearchApiClient.getSearchApiResponseMap(target.getResourceId(), apiCred.getAffiliation());
-        Integer searchApiRespResults=(Integer) searchApiResp.get("totalResults");
-        if(searchApiRespResults==null || searchApiRespResults<=0) {    
-            throw new RequestBodyValidationException(body.getInputString(),
-                    I18nConstants.INVALID_PARAM_VALUE, new String[] {BODY_EDM_RIGHTS, rightsClaim});
-        }        
+    return licence;
+  }
+
+  private boolean isContentOwner(Target target, Authentication authentication)
+      throws PropertyValidationException {
+    EuropeanaApiCredentials apiCred = ((EuropeanaApiCredentials) authentication.getCredentials());
+    try {
+      return getSearchApiClient().isRecordsContentProvider(target.getResourceId(),
+          apiCred.getAffiliation());
+    } catch (IOException e) {
+      throw new PropertyValidationException(I18nConstantsAnnotation.SEARCH_API_ACCESS,
+          I18nConstantsAnnotation.SEARCH_API_ACCESS, new String[] {target.getResourceId()},
+          HttpStatus.BAD_GATEWAY, e);
     }
   }
-  
+
+  protected abstract SearchApiClient getSearchApiClient();
+
   /**
    * Validation of simple tags.
    * 
@@ -618,9 +638,10 @@ public abstract class BaseAnnotationValidator {
       throws ParamValidationI18NException, RequestBodyValidationException,
       PropertyValidationException {
     validateBodyExists(webAnnotation.getBody());
-    validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(), webAnnotation.getTarget(), authentication);
+    validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(),
+        webAnnotation.getTarget(), authentication);
     // validate target
-    validateTargetFields(webAnnotation.getTarget());   
+    validateTargetFields(webAnnotation.getTarget());
   }
 
   /**
@@ -675,7 +696,7 @@ public abstract class BaseAnnotationValidator {
     if (scope != null || source != null) {
       throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE,
           I18nConstants.INVALID_PARAM_VALUE,
-          new String[] {"target.scope and target.source are not allowed for this annotation type: ", 
+          new String[] {"target.scope and target.source are not allowed for this annotation type: ",
               "[ scope: " + scope + ", source: " + source + "]"});
     }
 
@@ -731,8 +752,8 @@ public abstract class BaseAnnotationValidator {
     if (target == null) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TARGET});
-    } 
-    
+    }
+
     if (target.getValue() != null) {
       // validate simple target
       validateTargetSimpleValue(target);

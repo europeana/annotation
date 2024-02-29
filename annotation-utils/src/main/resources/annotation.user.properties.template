@@ -42,5 +42,5 @@ annotation.item.data.endpoint=http://data.europeana.eu/item
 # enable profiling for all service method invocations
 # profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..)) 
 
-searchApi.baseUrl=
+searchApi.baseUrl=https://api.europeana.eu/record/search.json?wskey=YOURAPIKEY
                                                                  

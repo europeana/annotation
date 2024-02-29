@@ -268,7 +268,7 @@ public class BaseRest extends BaseRestController {
 	private Authentication createAnnonymousUser() {
 		Authentication auth;
 		auth = new EuropeanaAuthenticationToken(null, "annotations", "annonymous-user",
-				new EuropeanaApiCredentials("anonymous", "unknown-client"));
+				new EuropeanaApiCredentials("anonymous", "unknown-client", "anonymous-apikey"));
 		return auth;
 	}
 
@@ -278,10 +278,13 @@ public class BaseRest extends BaseRestController {
 		if (getConfiguration().isAuthEnabled()) {
 			return getAuthorizationService().authorizeReadAccess(request);
 		} else {
+		    //return dummy users 
 			if (StringUtils.isBlank(request.getHeader(AUTHORIZATION))) {
-				return createAnnonymousUser();
+			  //build user by plain text authorization token (used for testing)
+			  return authorizeByPlainTextToken(Operations.RETRIEVE, request);
 			} else {
-				return authorizeByPlainTextToken(Operations.RETRIEVE, request);
+			  //anonymous
+			  return createAnnonymousUser();	
 			}
 		}
 	}

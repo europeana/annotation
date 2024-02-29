@@ -29,6 +29,7 @@ public interface AnnotationConfiguration {
     String BEAN_SOLR_ANNO_SERVICE = "solrAnnotationService";
     String BEAN_ANNO_MONGO_STORE = "annotation_db_morphia_datastore_annotation";
     String BEAN_METIS_DEREFERENCE_CLIENT = "metisDereferenceClient";
+    String BEAN_SEARCH_API_CLIENT = "seachApiClient";
     String BEAN_ANNO_SERVICE = "annotationService";
     String VALIDATION_API = "api";
     String VALIDATION_ADMIN_API_KEY = "adminapikey";

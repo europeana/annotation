@@ -27,7 +27,15 @@
     
 	<beans:bean name="commons_oauth2_europeanaClientDetailsService" class="eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService">
 		<beans:property name="apiKeyServiceUrl" value="#{annotationProperties['europeana.apikey.serviceurl']}"/>
+	</beans:bean>
+	
+	<beans:bean name="commons_oauth2_europeanaClientDetailsService" class="eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService">
+		<beans:property name="apiKeyServiceUrl" value="#{annotationProperties['europeana.apikey.serviceurl']}"/>
 	</beans:bean>     
+    
+    <beans:bean name="searchApiClient" class="eu.europeana.annotation.web.service.impl.SearchApiClient">
+        <beans:constructor-arg name="baseApiUrl" value="#{annotationProperties['searchApi.baseUrl']}"/>
+	</beans:bean>
          
     <beans:bean id="subtitleHandler" class="eu.europeana.annotation.fulltext.subtitles.SubtitleHandler"/>
     
