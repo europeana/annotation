@@ -31,6 +31,9 @@ europeana.apikey.jwttoken.siganturekey=-----BEGIN PUBLIC KEY-----<PUBLIC KEY>---
 # Metis API
 metis.baseUrl=<METIS DEREF URL>
 
+# Search API
+searchApi.baseUrl=https://api.europeana.eu/record/search.json?wskey=YOURAPIKEY
+
 annotation.api.endpoint=http://localhost:8080/annotation
 annotation.data.endpoint=http://localhost:8080/annotation
 annotation.user.data.endpoint=http://data.europeana.eu/user
@@ -42,5 +45,4 @@ annotation.item.data.endpoint=http://data.europeana.eu/item
 # enable profiling for all service method invocations
 # profiler.expression=execution(* eu.europeana.annotation.*.service..*.*(..)) 
 
-searchApi.baseUrl=https://api.europeana.eu/record/search.json?wskey=YOURAPIKEY
                                                                  

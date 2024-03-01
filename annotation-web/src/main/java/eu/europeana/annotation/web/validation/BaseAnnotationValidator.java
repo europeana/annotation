@@ -531,9 +531,8 @@ public abstract class BaseAnnotationValidator {
     long delimiterCount = rightsClaim.chars().filter(ch -> ch == PathDelimiter).count();
 
     if (delimiterCount < 6 || !rightsClaim.endsWith("" + PathDelimiter)) {
-      // wrong format, max 6 (including the / after version, for )
-      throw new RequestBodyValidationException(body.getInputString(),
-          I18nConstantsAnnotation.ANNOTATION_INVALID_RIGHTS, new String[] {rightsClaim});
+      //proprietary licence format, not a creative commons 
+      return rightsClaim;
     } else {
       // remove last /
       licence = rightsClaim.substring(0, rightsClaim.length() - 1);
@@ -547,6 +546,7 @@ public abstract class BaseAnnotationValidator {
   private boolean isContentOwner(Target target, Authentication authentication)
       throws PropertyValidationException {
     EuropeanaApiCredentials apiCred = ((EuropeanaApiCredentials) authentication.getCredentials());
+      
     try {
       return getSearchApiClient().isRecordsContentProvider(target.getResourceId(),
           apiCred.getAffiliation());
