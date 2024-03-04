@@ -106,14 +106,11 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 
   @Override
   public int hashCode() {
-    //generate code by identifier if known annotation
-    if(getIdentifier() > 0) {
-      return (Long.hashCode(getIdentifier()));
-    }
-    
-    //if identifier is not availably generate based on the mandatory motivation on field
-    //note, would be good to use also the target in hashcode, but this require to implement a hascode for normal and SpecificTargets 
-    return getMotivation().hashCode();
+    //body is optional, we should also overwrite the hashCode() for body and target (base and specific resource)
+    //however, we aim to generate de-duplication keys which can be used instead
+    return (getBody() != null)?
+        getMotivation().hashCode() + getTarget().hashCode() + getBody().hashCode():
+        getMotivation().hashCode() + getTarget().hashCode();  
   }
 
   @Override
