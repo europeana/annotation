@@ -7,7 +7,7 @@ public class BaseTranscriptionAnnotation extends AbstractAnnotation implements T
 
 	public BaseTranscriptionAnnotation(){
 		super();
-		setMotivation(MotivationTypes.TRANSCRIBING.getOaType());
+		motivation = MotivationTypes.TRANSCRIBING.getOaType();
 
 	} 
 	

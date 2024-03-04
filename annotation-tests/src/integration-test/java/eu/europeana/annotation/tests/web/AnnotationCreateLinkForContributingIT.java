@@ -1,25 +1,13 @@
 package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
-import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
-import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
-import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
-import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 
 /**
@@ -29,7 +17,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationCreateLinkForContributingIT extends AbstractIntegrationTest {
+class AnnotationCreateLinkForContributingIT extends AbstractIntegrationTest {
 
 
 

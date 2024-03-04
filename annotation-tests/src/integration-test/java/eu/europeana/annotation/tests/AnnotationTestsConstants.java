@@ -90,6 +90,7 @@ public class AnnotationTestsConstants {
   public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2 = "/semantictag/dereferenced_semantictag_viaf_test_entity2.json";
   public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3 = "/semantictag/dereferenced_semantictag_viaf_test_entity3.json";
   public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
+
   public static final String DESCRIBING_WITHOUT_BODY_LANGUAGE = "/describing/web_resource_without_body_language.json";
   public static final String TAGGING_BODY_ADDRESS_NO_TYPE = "/tag/wrong/body_address_no_type.json";
   public static final String TAGGING_BODY_ADDRESS_NO_STREET_ADDRESS = "/tag/wrong/body_address_no_street_address.json";
@@ -99,6 +100,8 @@ public class AnnotationTestsConstants {
   public static final String TRANSCRIPTION_COPYRIGHT = "/transcription/transcription-coypright.json";
   public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
   public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
+
+  public static final String TRANSLATION_MINIMAL = "/translation/minimal.json";
   
   public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
   public static final String SUBTITLE_WITH_COYRIGHT= "/subtitle/subtitle-copyright.json";

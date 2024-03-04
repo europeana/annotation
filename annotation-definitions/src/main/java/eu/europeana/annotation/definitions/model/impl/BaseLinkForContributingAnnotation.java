@@ -7,6 +7,6 @@ public class BaseLinkForContributingAnnotation extends AbstractAnnotation implem
 
 	public BaseLinkForContributingAnnotation(){
 		super();
-		setMotivation(MotivationTypes.LINKFORCONTRIBUTING.getOaType());
+		motivation = MotivationTypes.LINKFORCONTRIBUTING.getOaType();
 	}	
 }

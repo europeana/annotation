@@ -17,5 +17,10 @@ public class BaseTranscribingTest extends BaseWebAnnotationTest {
 		MotivationTypes motivationType = MotivationTypes.TRANSCRIBING;
 		return parseAnnotation(jsonString, motivationType);		
 	}
+	
+	protected Annotation parseTranslation(String jsonString) throws JsonParseException {
+		MotivationTypes motivationType = MotivationTypes.TRANSLATING;
+		return parseAnnotation(jsonString, motivationType);		
+	}
 
 }

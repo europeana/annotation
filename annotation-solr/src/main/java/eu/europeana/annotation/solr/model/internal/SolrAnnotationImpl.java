@@ -3,7 +3,9 @@ package eu.europeana.annotation.solr.model.internal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.solr.client.solrj.beans.Field;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.impl.AbstractAnnotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -97,6 +99,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 		switch(anno.getMotivationType()) {
 		case TRANSCRIBING:
 			return AnnotationScenarioTypes.TRANSCRIPTION;
+		case TRANSLATING:
+			return AnnotationScenarioTypes.TRANSLATION;
 		case CAPTIONING:
 			return AnnotationScenarioTypes.CAPTION;
 		case SUBTITLING:
@@ -163,7 +167,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 	public void setMotivation(String motivation) {
 		super.setMotivation(motivation);
 	}
-
+	
 	@Override
 	public String getAnnoUri() {
 		return annoUri;

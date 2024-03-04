@@ -7,7 +7,7 @@ public class BaseSubtitleAnnotation extends AbstractAnnotation implements Annota
 
 	public BaseSubtitleAnnotation(){
 		super();
-		setMotivation(MotivationTypes.SUBTITLING.getOaType());
+		motivation = MotivationTypes.SUBTITLING.getOaType();
 
 	} 
 	

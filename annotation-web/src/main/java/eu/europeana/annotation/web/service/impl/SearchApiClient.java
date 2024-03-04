@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,6 @@ public class SearchApiClient {
   
   private final HttpConnection httpConnection = new HttpConnection();
   
-  @SuppressWarnings("unchecked")
   private Map<String, Object> getSearchApiResponseMap(String recordId, String providerId) throws IOException {
     
     String url = String.format(PATTERN_QUERY_RECORD_PROVIDER, baseUrl,
@@ -37,8 +37,11 @@ public class SearchApiClient {
     
     String searchApiResp =
         httpConnection.getURLContentAsString(url, "Accept", "application/json");
-    return
-        (Map<String, Object>) BaseJsonParser.objectMapper.readValue(searchApiResp, Map.class);
+    @SuppressWarnings("unchecked")
+    Map<String, Object> res = BaseJsonParser.objectMapper.readValue(searchApiResp, Map.class);
+    //ensure a non null response, or fail
+    Objects.nonNull(res);
+    return res;
   }
 
   /**
@@ -53,6 +56,9 @@ public class SearchApiClient {
       return false;
     }
     Map<String, Object> searchApiResp = getSearchApiResponseMap(recordId, providerId);
+    if(searchApiResp == null) {
+      return false;
+    }
     Integer searchApiRespResults = (Integer) searchApiResp.get("totalResults");
     return searchApiRespResults != null && searchApiRespResults > 0;
   }
