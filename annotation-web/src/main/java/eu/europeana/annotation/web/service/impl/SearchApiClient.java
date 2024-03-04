@@ -56,6 +56,9 @@ public class SearchApiClient {
       return false;
     }
     Map<String, Object> searchApiResp = getSearchApiResponseMap(recordId, providerId);
+    if(searchApiResp == null) {
+      return false;
+    }
     Integer searchApiRespResults = (Integer) searchApiResp.get("totalResults");
     return searchApiRespResults != null && searchApiRespResults > 0;
   }
