@@ -7,7 +7,7 @@ public class BaseCaptionAnnotation extends AbstractAnnotation implements Annotat
 
 	public BaseCaptionAnnotation(){
 		super();
-		setMotivation(MotivationTypes.CAPTIONING.getOaType());
+		motivation = MotivationTypes.CAPTIONING.getOaType();
 	}
 
 }

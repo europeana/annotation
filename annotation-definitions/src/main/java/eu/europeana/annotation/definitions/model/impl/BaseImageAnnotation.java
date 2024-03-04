@@ -7,7 +7,7 @@ public class BaseImageAnnotation extends AbstractAnnotation implements ImageAnno
 
 	public BaseImageAnnotation(){
 		super();
-		setMotivation(MotivationTypes.COMMENTING.getOaType());
+		motivation = MotivationTypes.COMMENTING.getOaType();
 
 	} 
 	

@@ -23,7 +23,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
   private Date generated;
   private Body body;
   private Target target;
-  private String motivation;
+  protected String motivation;
   private Style styledBy;
   protected MotivationTypes motivationType;
   private Date disabled;
@@ -244,7 +244,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
   }
 
   @Override
-  public final void setMotivation(String motivation) {
+  public void setMotivation(String motivation) {
     this.motivation = motivation;
   }
 

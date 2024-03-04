@@ -13,7 +13,7 @@ public class BaseTranslationAnnotation extends AbstractAnnotation implements Tra
    */
   public BaseTranslationAnnotation(){
 		super();
-		setMotivation(MotivationTypes.TRANSLATING.getOaType());
+		motivation = MotivationTypes.TRANSLATING.getOaType();
 	} 
 	
 }

@@ -7,7 +7,7 @@ public class BaseDescribingAnnotation extends AbstractAnnotation implements Desc
 
 	public BaseDescribingAnnotation(){
 		super();
-		setMotivation(MotivationTypes.DESCRIBING.getOaType());
+		motivation =MotivationTypes.DESCRIBING.getOaType();
 
 	} 
 	
