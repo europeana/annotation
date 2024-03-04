@@ -64,7 +64,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
 
     assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
-    assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
+    assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
 
   }
   
@@ -110,7 +110,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
 
     assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
-    assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
+    assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
 
   }
   

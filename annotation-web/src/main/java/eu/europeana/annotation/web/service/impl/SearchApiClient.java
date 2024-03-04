@@ -3,19 +3,21 @@ package eu.europeana.annotation.web.service.impl;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.utils.HttpConnection;
-import eu.europeana.annotation.utils.JsonUtils;
+import eu.europeana.annotation.utils.parse.BaseJsonParser;
 
 @Component(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
 @PropertySource(
     value = {"classpath:annotation.properties", "annotation.user.properties"},
     ignoreResourceNotFound = true)
+/**
+ * Class used to perform requests to the Europeana Search&Record API
+ */
 public class SearchApiClient {
   
   private static final String PATTERN_QUERY_RECORD_PROVIDER =
@@ -26,6 +28,7 @@ public class SearchApiClient {
   
   private final HttpConnection httpConnection = new HttpConnection();
   
+  @SuppressWarnings("unchecked")
   private Map<String, Object> getSearchApiResponseMap(String recordId, String providerId) throws IOException {
     
     String url = String.format(PATTERN_QUERY_RECORD_PROVIDER, baseUrl,
@@ -34,10 +37,8 @@ public class SearchApiClient {
     
     String searchApiResp =
         httpConnection.getURLContentAsString(url, "Accept", "application/json");
-    @SuppressWarnings("unchecked")
-    Map<String, Object> searchApiRespMap =
-        (Map<String, Object>) JsonUtils.getObjectMapper().readValue(searchApiResp, Map.class);
-    return searchApiRespMap;
+    return
+        (Map<String, Object>) BaseJsonParser.objectMapper.readValue(searchApiResp, Map.class);
   }
 
   /**

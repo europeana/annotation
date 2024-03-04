@@ -49,8 +49,10 @@ public class AnnotationAuthorizationUtils {
     } 
     String plainToken = plainTextToken.replace(OAuthUtils.TYPE_BEARER, "");
     String[] parts = plainToken.trim().split("\\:");
-    String apiKey = (parts.length > 3) ? parts[3] : "noapikey";
-    String affiliation = (parts.length > 4) ? parts[4] : null;
+    final int apiKEyPos = 3;
+    String apiKey = (parts.length > apiKEyPos) ? parts[apiKEyPos] : "noapikey";
+    final int affiliationPos = 4;
+    String affiliation = (parts.length > affiliationPos) ? parts[affiliationPos] : null;
     return createAuthentication(parts[0], parts[1], UserRoles.valueOf(parts[2]), apiKey, affiliation, apiName);
   }
   

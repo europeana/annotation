@@ -2,16 +2,13 @@ package eu.europeana.annotation.web.validation;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.xml.sax.SAXParseException;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -510,7 +507,7 @@ public abstract class BaseAnnotationValidator {
       return;
     }
     // if rights are provided, check if it belongs to the valid license list
-    String licence = extractMainLicence(body, body.getEdmRights());
+    String licence = extractMainLicence(body.getEdmRights());
     Set<String> rights = getConfiguration().getAcceptedLicenceses();
     if (rights.contains(licence) || isContentOwner(target, authentication)) {
       // open license are valid
@@ -523,9 +520,7 @@ public abstract class BaseAnnotationValidator {
     }
   }
 
-  private String extractMainLicence(Body body, String rightsClaim)
-      throws RequestBodyValidationException {
-    String licence = null;
+  private String extractMainLicence(@NonNull String rightsClaim){
     // remove version from the right and get licenses
     char PathDelimiter = '/';
     long delimiterCount = rightsClaim.chars().filter(ch -> ch == PathDelimiter).count();
@@ -535,12 +530,11 @@ public abstract class BaseAnnotationValidator {
       return rightsClaim;
     } else {
       // remove last /
-      licence = rightsClaim.substring(0, rightsClaim.length() - 1);
+      String licence = rightsClaim.substring(0, rightsClaim.length() - 1);
       // remove version, but preserve last /
       int versionStart = licence.lastIndexOf(PathDelimiter) + 1;
-      licence = licence.substring(0, versionStart);
+      return licence.substring(0, versionStart);
     }
-    return licence;
   }
 
   private boolean isContentOwner(Target target, Authentication authentication)

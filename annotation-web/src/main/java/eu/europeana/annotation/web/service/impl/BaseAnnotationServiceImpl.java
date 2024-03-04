@@ -45,10 +45,14 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
   @Resource(name = "annotation_db_moderationRecordService")
   PersistentModerationRecordService mongoModerationRecordPersistance;
   
-  @Autowired
-  @Qualifier(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
   SearchApiClient searchApiClient;
 
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
+  public void setSearchApiClient(SearchApiClient searchApiClient) {
+    this.searchApiClient = searchApiClient;
+  }
+  
   protected AnnotationConfiguration getConfiguration() {
     return configuration;
   }
@@ -234,4 +238,5 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
   protected SearchApiClient getSearchApiClient() {
     return searchApiClient;
   }
+
 }
