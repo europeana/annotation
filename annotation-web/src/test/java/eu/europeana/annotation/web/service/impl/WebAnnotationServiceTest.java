@@ -208,6 +208,7 @@ public class WebAnnotationServiceTest extends AnnotationTestObjectBuilder{
 		 * Store Annotation in database.
 		 */
 		Annotation storedAnnotation = webAnnotationService.storeAnnotation(testAnnotation);
+		assertNull(storedAnnotation);
 		
 		/**
 		 * Reindex Annotation.

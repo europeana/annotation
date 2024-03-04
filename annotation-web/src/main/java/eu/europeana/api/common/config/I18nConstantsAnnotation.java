@@ -43,6 +43,9 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	 String INVALID_PROVIDER = "error.invalid_provider";
 	 String SOLR_EXCEPTION = "error.solr_exception";
 	 String SOLR_MALFORMED_QUERY_EXCEPTION = "error.solr_malformed_query_exception";
+	 
+	 //#502
+	 String SEARCH_API_ACCESS = "error.annotation_search_api_access";
 	
 	 String BATCH_UPLOAD_FAILED = "error.batch_upload_failed";
 	

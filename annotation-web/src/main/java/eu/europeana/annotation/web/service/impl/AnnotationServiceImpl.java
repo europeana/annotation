@@ -65,11 +65,11 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Autowired
   @Qualifier(AnnotationConfiguration.BEAN_METIS_DEREFERENCE_CLIENT)
   MetisDereferenciationClient dereferenciationClient;
-
+     
   public AnnotationConfiguration getConfiguration() {
     return configuration;
   }
-
+  
   public PersistentWhitelistService getMongoWhitelistPersistence() {
     return mongoWhitelistPersistence;
   }

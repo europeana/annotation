@@ -35,7 +35,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<revision>0.5.1-SNAPSHOT</revision>
-		<version.commonsApi>0.3.22-SNAPSHOT</version.commonsApi>
+		<version.commonsApi>0.3.24-SNAPSHOT</version.commonsApi>
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
@@ -45,6 +45,12 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		
+		<!-- property to be used for add opens jvm arguments in plugins -->
+		<java.17.addopens>--add-opens java.base/java.util=ALL-UNNAMED
+        	--add-opens java.base/java.lang=ALL-UNNAMED
+		</java.17.addopens>
+			
+			
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
 
 		<version.junit-platform>1.2.0</version.junit-platform>
@@ -72,14 +78,14 @@
 		<version.saxonHE>10.1</version.saxonHE>
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
-		<version.maven-surfire-plugin>3.0.0-M6</version.maven-surfire-plugin>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
 		<version.testcontainers>1.16.0</version.testcontainers>
 		<version.morphia>2.1.4</version.morphia>
 		<version.mongo-java-driver>3.12.11</version.mongo-java-driver>
 		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
-		<version.surefire>3.0.0-M7</version.surefire>
 		<version.failsafe>3.0.0-M7</version.failsafe>
+		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
+		
 		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
 		
 		<!-- sonar plugins -->
@@ -264,6 +270,9 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<version>${version.spring.boot}</version>
+					<configuration>
+        				<jvmArguments>${java.17.addopens}</jvmArguments>
+    				</configuration>
 				</plugin>
 				<plugin>
 					<inherited>true</inherited>
@@ -281,7 +290,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${version.maven-surfire-plugin}</version>
 					<configuration>
-        				<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
+        				<argLine>${java.17.addopens}</argLine>
     				</configuration>
 				</plugin>
 				<plugin>

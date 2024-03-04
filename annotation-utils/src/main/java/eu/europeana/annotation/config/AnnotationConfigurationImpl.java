@@ -132,4 +132,10 @@ public class AnnotationConfigurationImpl implements AnnotationConfiguration {
   public boolean isAuthEnabled() {
     return !isAuthDisabled();
   }
+  
+  @Override
+  public String getSearchApiBaseUrl() {
+    return getAnnotationProperties().getProperty(SEARCH_API_BASE_URL);
+  }
+
 }

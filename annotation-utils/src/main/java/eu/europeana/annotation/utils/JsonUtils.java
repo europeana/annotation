@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.module.SimpleModule;
+
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -92,8 +94,7 @@ public class JsonUtils extends BaseJsonParser{
 //			module.addAbstractTypeMapping(Agent.class, Person.class);
 			module.addAbstractTypeMapping(Target.class, ImageTarget.class);
 
-			objectMapper.registerModule(module); 
-	
+			objectMapper.registerModule(module);
 			
 			parser.setCodec(objectMapper);
 			annotation = objectMapper.readValue(parser, Annotation.class);

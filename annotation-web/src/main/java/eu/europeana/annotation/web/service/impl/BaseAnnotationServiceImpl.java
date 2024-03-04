@@ -1,12 +1,15 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.Date;
+
 import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
@@ -41,13 +44,19 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
 
   @Resource(name = "annotation_db_moderationRecordService")
   PersistentModerationRecordService mongoModerationRecordPersistance;
+  
+  SearchApiClient searchApiClient;
 
-
-
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
+  public void setSearchApiClient(SearchApiClient searchApiClient) {
+    this.searchApiClient = searchApiClient;
+  }
+  
   protected AnnotationConfiguration getConfiguration() {
     return configuration;
   }
-
+  
   public void setConfiguration(AnnotationConfiguration configuration) {
     this.configuration = configuration;
   }
@@ -223,6 +232,11 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
 
   boolean isDereferenceProfile(SearchProfiles searchProfile) {
     return SearchProfiles.DEREFERENCE.equals(searchProfile);
+  }
+
+  @Override
+  protected SearchApiClient getSearchApiClient() {
+    return searchApiClient;
   }
 
 }

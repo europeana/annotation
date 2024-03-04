@@ -25,29 +25,35 @@ public class AnnotationAuthorizationUtils {
   private AnnotationAuthorizationUtils() {
     super();
   }
-  
-  public static Authentication createAuthentication(String userId, String userName, Role role, String apiName) {
-    return createAuthentication(userId, userName, role.getName(), apiName);
+ 
+  private static Authentication createAuthentication(String userId, String userName, Role role, String apikey, String affiliation, String apiName) {
+    return createAuthentication(userId, userName, role.getName(), apikey, affiliation, apiName);
   }
-
+ 
   private static Authentication createAuthentication(String userId, String userName,
-      final String roleName, String apiName) {
+      final String roleName, String apikey, String affiliation, String apiName) {
     GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(roleName);
     return new EuropeanaAuthenticationToken(List.of(grantedAuthority), apiName, userId,
-        new EuropeanaApiCredentials(userName, "unknown-client"));
+        new EuropeanaApiCredentials(userName, "test-client-id", apikey, affiliation));
 
   }
 
   public static Authentication createAuthentication(String plainTextToken, String apiName)
       throws AuthorizationExtractionException {
-    final int SEPARATOR_COUNT = 2;
+    
+    //FAKE Tokens format: user_id:user_name:role:apikey(optional):affiliation(optional)
+    final int MANDATORY_PARTS = 3; //mandatory separators + 1
     if (StringUtils.isBlank(plainTextToken)
-        || StringUtils.countMatches(plainTextToken, ':') != SEPARATOR_COUNT) {
+        || StringUtils.countMatches(plainTextToken, ':') +1 < MANDATORY_PARTS) {
       throw new AuthorizationExtractionException("invalid plain text token: " + plainTextToken);
     } 
     String plainToken = plainTextToken.replace(OAuthUtils.TYPE_BEARER, "");
     String[] parts = plainToken.trim().split("\\:");
-    return createAuthentication(parts[0], parts[1], UserRoles.valueOf(parts[SEPARATOR_COUNT]), apiName);
+    final int apiKEyPos = 3;
+    String apiKey = (parts.length > apiKEyPos) ? parts[apiKEyPos] : "noapikey";
+    final int affiliationPos = 4;
+    String affiliation = (parts.length > affiliationPos) ? parts[affiliationPos] : null;
+    return createAuthentication(parts[0], parts[1], UserRoles.valueOf(parts[2]), apiKey, affiliation, apiName);
   }
   
   public static boolean hasRole(Authentication authentication, String userRole) {
