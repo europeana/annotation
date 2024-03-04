@@ -31,17 +31,7 @@ public class SearchApiClient {
     String url = String.format(PATTERN_QUERY_RECORD_PROVIDER, baseUrl,
         URLEncoder.encode("\""+recordId+"\"", StandardCharsets.UTF_8),
         URLEncoder.encode("\""+providerId+"\"", StandardCharsets.UTF_8));
-    // StringBuilder url=new StringBuilder(baseUrl);
-    // url.append("?");
-    // url.append(String.join("", "query=europeana_id:", URLEncoder.encode("\"" + recordId + "\"",
-    // StandardCharsets.UTF_8)));
-    // url.append("&");
-    // url.append(String.join("", "qf=foaf_organization:", URLEncoder.encode("\"" + providerId +
-    // "\"", StandardCharsets.UTF_8)));
-    // url.append("&");
-    // url.append("rows=0");
-    // url.append("&");
-    // url.append("wskey=apidemo");
+    
     String searchApiResp =
         httpConnection.getURLContentAsString(url, "Accept", "application/json");
     @SuppressWarnings("unchecked")
@@ -53,9 +43,9 @@ public class SearchApiClient {
   /**
    * Verify if the provided providerId matches the content provider for the given record using the search api (search by using foaf_organization as filter)
    * @param recordId the data.europena.eu Id of an europeana record
-   * @param providerId the data.europena.eu Id of and orgnaization
+   * @param providerId the data.europena.eu Id of and organization
    * @return true if the search api indicates the provider id to match the content provider of the giver record, false otherwise
-   * @throws IOException if a runctume exceptions occured during the invocation of the search api
+   * @throws IOException if a runtime exceptions occured during the invocation of the search api
    */
   public boolean isRecordsContentProvider(String recordId, String providerId) throws IOException {
     if (recordId == null || providerId == null) {

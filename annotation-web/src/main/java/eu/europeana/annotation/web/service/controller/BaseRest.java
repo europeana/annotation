@@ -279,7 +279,7 @@ public class BaseRest extends BaseRestController {
 			return getAuthorizationService().authorizeReadAccess(request);
 		} else {
 		    //return dummy users 
-			if (StringUtils.isBlank(request.getHeader(AUTHORIZATION))) {
+			if (StringUtils.isNotBlank(request.getHeader(AUTHORIZATION))) {
 			  //build user by plain text authorization token (used for testing)
 			  return authorizeByPlainTextToken(Operations.RETRIEVE, request);
 			} else {

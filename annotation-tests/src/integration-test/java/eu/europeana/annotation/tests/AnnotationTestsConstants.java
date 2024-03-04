@@ -14,11 +14,14 @@ public class AnnotationTestsConstants {
   public static final String DEREFERENCE_MANY_XML = "/metis-deref/dereference_many.xml";
   public static final String EMPTY_METIS_RESPONSE = "/metis-deref/empty_metis_response.xml";
   
+  public static final String EMPTY_SEARCH_API_RESPONSE = "/search-api/empty_api_response.json";
+  
   public static final String TEST_REPORT_SUMMARY_FIELD = "reportSum";
   
   public static final String USER_REGULAR = "regular";
   public static final String USER_ADMIN = "admin";
   public static final String USER_PUBLISHER = "publisher";
+  public static final String USER_PROVIDER_SAZ = "provider_saz";
 
   public static final String TEST_STATUS = StatusTypes.PRIVATE.name().toLowerCase();
 
@@ -35,13 +38,6 @@ public class AnnotationTestsConstants {
   //  public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
   public static final String TAG_ANNOTATION = "/tag/annotation.json";
   public static final String WHITELIST_ENTRY = "/whitelist/entry.json";
-  public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
-  public static final String CAPTION_MINIMAL = "/caption/minimal.json";
-  public static final String CAPTION_MINIMAL_EN = "/caption/minimal-en.json";
-  public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
-  public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";
-  public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC = "/linkforcontributing/link_for_contributing_target_specific.json";
-  public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID = "/linkforcontributing/link_for_contributing_target_specific_id.json";
   
   public static final String VALUE_TESTSET = "generator_uri: \"http://test.europeana.org/45e86248-1218-41fc-9643-689d30dbe651\"";
   public static final String VALUE_ID = "anno_id:";
@@ -94,12 +90,26 @@ public class AnnotationTestsConstants {
   public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_2 = "/semantictag/dereferenced_semantictag_viaf_test_entity2.json";
   public static final String DEREFERENCED_SEMANTICTAG_TEST_ENTITY_3 = "/semantictag/dereferenced_semantictag_viaf_test_entity3.json";
   public static final String DESCRIBING_WEB_RESOURCE = "/describing/web_resource.json";
-  public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
-  public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
-  public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
   public static final String DESCRIBING_WITHOUT_BODY_LANGUAGE = "/describing/web_resource_without_body_language.json";
   public static final String TAGGING_BODY_ADDRESS_NO_TYPE = "/tag/wrong/body_address_no_type.json";
   public static final String TAGGING_BODY_ADDRESS_NO_STREET_ADDRESS = "/tag/wrong/body_address_no_street_address.json";
+  
+  // FULLTEXT 
+  public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
+  public static final String TRANSCRIPTION_COPYRIGHT = "/transcription/transcription-coypright.json";
+  public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
+  public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
+  
+  public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
+  public static final String CAPTION_MINIMAL = "/caption/minimal.json";
+  public static final String CAPTION_MINIMAL_EN = "/caption/minimal-en.json";
+  
+  public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
+  public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";
+  public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC = "/linkforcontributing/link_for_contributing_target_specific.json";
+  public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID = "/linkforcontributing/link_for_contributing_target_specific_id.json";
+  
+  
   
   public static final String START = "{";
   public static final String END = "}";
