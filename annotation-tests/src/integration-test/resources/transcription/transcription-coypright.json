@@ -1,0 +1,14 @@
+{
+  "motivation": "transcribing",
+  "body": {
+    "type": "FullTextResource",
+    "language": "en",
+    "value": "... complete transcribed text in HTML ...",
+    "format": "text/plain",
+    "edmRights": "http://mylicence.org/copywrited"
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/saz-collections/item1",
+    "source": "https://ekultura.hr/purl/url/ADOD2JWHV3ZIITL7G23TPHGZLC7BYYT4"
+  }
+}

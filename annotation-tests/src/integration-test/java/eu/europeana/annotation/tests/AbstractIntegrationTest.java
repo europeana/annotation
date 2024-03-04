@@ -5,12 +5,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,10 +33,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.output.ToStringConsumer;
 import org.testcontainers.containers.output.WaitingConsumer;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.europeana.annotation.AnnotationBasePackageMapper;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.config.AnnotationConfigurationImpl;
@@ -72,18 +68,31 @@ import okhttp3.mockwebserver.RecordedRequest;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
-  public static final String TOKEN_REGULAR = "regular-userid:publisher-username:user";
-  public static final String TOKEN_PUBLISHER = "publisher-userid:publisher-username:publisher";
-  public static final String TOKEN_ADMIN = "admin-userid:admin-username:admin";
+  public static final String ORG_ID_SAZ = "saz-org-id";
+  
+  //FAKE Tokens format: user_id:user_name:role:apikey(optional):affiliation(optional)
+  public static final String TOKEN_REGULAR = "regular-userid:regular-username:user:regular-user-apikey";
+  public static final String TOKEN_PUBLISHER = "publisher-userid:publisher-username:publisher:publisher-apikey";
+  
+  public static final String TOKEN_PROVIDER_SAZ = "provider-saz-userid:saz-username:user:saz-apikey:"+ ORG_ID_SAZ;
+  public static final String TOKEN_ADMIN = "admin-userid:admin-username:admin:admin-apikey";
   static String regularUserAuthorizationValue = OAuthUtils.TYPE_BEARER + " " + TOKEN_REGULAR;
   static String publisherUserAuthorizationValue = OAuthUtils.TYPE_BEARER + " " + TOKEN_PUBLISHER;
+  static String providerSazUserAuthorizationValue = OAuthUtils.TYPE_BEARER + " " + TOKEN_PROVIDER_SAZ;
   static String adminUserAuthorizationValue = OAuthUtils.TYPE_BEARER + " " + TOKEN_ADMIN;
+  
+  
+  public static final String SEARCH_API_FOUND = "{\"apikey\":\"testapikey\",\"success\":true,\"requestNumber\":999,\"itemsCount\":0,\"totalResults\":1,\"items\":[]}";
+  public static final String SEARCH_API_NOT_FOUND = "{\"apikey\":\"testapikey\",\"success\":true,\"requestNumber\":999,\"itemsCount\":0,\"totalResults\":0,\"items\":[]}";
+  
+  public static final String KEY_SAZ_ITEM1 = buildAffiliationSetKey(ORG_ID_SAZ, "item1");
+  public static final Set<String> SEARCH_API_AFFILIATION_CHECK = Set.of(KEY_SAZ_ITEM1); 
   
   private static List<Long> createdAnnotations = new ArrayList<Long>();
   protected static List<Long> createdModerationRecords = new ArrayList<Long>();
 
   protected static MockMvc mockMvc;
-  private static MockWebServer mockMetis;
+  private static MockWebServer mockMetisAndSearch;
 
   @Autowired
   protected WebApplicationContext webApplicationContext;
@@ -109,6 +118,12 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   
   private static final MongoContainer MONGO_CONTAINER;
   private static final SolrContainer SOLR_CONTAINER;
+  
+  static String buildAffiliationSetKey(String organization, String id) {
+    String key = organization+":"+id;
+    return key;
+  }
+
 
   static {
     MONGO_CONTAINER = new MongoContainer("anno-it")
@@ -121,15 +136,16 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
 
     SOLR_CONTAINER.start();
     
-    mockMetis = new MockWebServer();
-    mockMetis.setDispatcher(setupMetisDispatcher());
+    mockMetisAndSearch = new MockWebServer();
+    mockMetisAndSearch.setDispatcher(setupMetisDispatcher());
     try {
-      mockMetis.start();
+      mockMetisAndSearch.start();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
   }
+  
 
   @BeforeAll
   protected void initAppConextAndOauthTokens() throws Exception {
@@ -138,6 +154,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
     // initialize mockMvc
     mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
+    //disable OAuth.
     disableOauth();
   }
   
@@ -147,17 +164,32 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
       @Override
       public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
         String responseBody=null;
+        String uri = request.getRequestUrl().queryParameter("uri");
+        String query = request.getRequestUrl().queryParameter("query");
+        
         try {
-          if(request.getBody()!=null) {
+          if(request.getBody()!=null && request.getBody().size() > 0) {
             responseBody = AnnotationTestUtils.loadFile(
                 AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
                 AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
           }
-          else {
-            String uri = Objects.requireNonNull(request.getRequestUrl()).queryParameter("uri");
+          else if(uri != null){
+            //handle METIS deref request
             responseBody = AnnotationTestUtils.loadFile(
                 AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
                 uri, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+          } else if(query != null){
+            //handle SEARCH API request
+            String itemId = StringUtils.substringAfterLast(query.replaceAll("\"", ""), '/');
+            //currently we have only one qf, but we might have more
+            String qf = request.getRequestUrl().queryParameter("qf");
+            assertNotNull(qf);
+            String organization = StringUtils.substringAfter(qf.replaceAll("\"", ""), ':'); 
+            
+            String key = buildAffiliationSetKey(organization, itemId);
+            
+            responseBody = SEARCH_API_AFFILIATION_CHECK.contains(key) ? 
+                SEARCH_API_FOUND : SEARCH_API_NOT_FOUND; 
           }
           return new MockResponse().setResponseCode(200).setBody(responseBody);
         } catch (Exception e) {
@@ -201,29 +233,35 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
     registry.add("solr.annotation.url", SOLR_CONTAINER::getConnectionUrl);
     registry.add(
         "metis.baseUrl",
-        () -> String.format("http://%s:%s", mockMetis.getHostName(), mockMetis.getPort()));
+        () -> String.format("http://%s:%s", mockMetisAndSearch.getHostName(), mockMetisAndSearch.getPort()));
+    registry.add(
+        "searchApi.baseUrl",
+        () -> String.format("http://%s:%s?wskey=testapikey", mockMetisAndSearch.getHostName(), mockMetisAndSearch.getPort()));  
   }
 
   protected String getAuthorizationHeaderValue(String user) {
-    if (USER_ADMIN.equals(user)) {
-      if (adminUserAuthorizationValue != null) {
-        return adminUserAuthorizationValue;
-      } else {
-        return "";
-      }
-    } else if(TOKEN_PUBLISHER.equals(user)) {
-    	if (publisherUserAuthorizationValue != null) {
-    		return publisherUserAuthorizationValue;
-        } else {
-            return "";
-        }
-    } else {
-      if (regularUserAuthorizationValue != null) {
-        return regularUserAuthorizationValue;
-      } else {
-        return "";
-      }
+    String authorization;
+    if(user == null) {
+      //allow tests to use the default user without explicitly stating it
+      user = USER_REGULAR;
     }
+    switch (user) {
+      case USER_ADMIN:
+        authorization = adminUserAuthorizationValue;
+        break;
+      case USER_PUBLISHER: //TO CHECK why TOKEN_PUBLISHER was used before
+        authorization = publisherUserAuthorizationValue;
+        break;
+      case USER_PROVIDER_SAZ:
+        authorization = providerSazUserAuthorizationValue;
+        break;
+      case USER_REGULAR:
+      default:
+         authorization = regularUserAuthorizationValue;
+         break;
+    }
+    
+    return authorization;
   }
 
   protected Logger log = LogManager.getLogger(getClass());

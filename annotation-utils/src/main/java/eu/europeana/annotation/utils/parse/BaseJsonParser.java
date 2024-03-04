@@ -15,9 +15,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class BaseJsonParser {
 
-	protected static ObjectMapper objectMapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY)
+	public static ObjectMapper objectMapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY)
 			.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    protected static final JsonFactory jsonFactory = new JsonFactory();
+
+	protected static final JsonFactory jsonFactory = new JsonFactory();
 
     
     /**
@@ -69,5 +70,5 @@ public class BaseJsonParser {
       List<JsonNode> nodes = objectMapper.readTree(json).findValues("anno_id");
       return nodes.stream().map(node -> node.asLong()).collect(Collectors.toList());    
     }
-    
+
 }

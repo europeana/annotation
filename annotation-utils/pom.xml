@@ -116,7 +116,12 @@
 			<version>${version.javax.annotation}</version>
 			-->
 		</dependency>
-						
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${version.httpClient}</version>
+		</dependency>
+								
 	</dependencies>
 </project>
 

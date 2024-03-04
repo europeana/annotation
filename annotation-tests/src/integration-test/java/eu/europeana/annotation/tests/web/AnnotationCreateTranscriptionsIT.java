@@ -3,14 +3,12 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
@@ -24,7 +22,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
+public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
 
   public static final String TRANSCRIPTION_WITHOUT_RIGHTS =
       "/transcription/transcription-without-rights.json";
@@ -48,7 +46,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
    * Solr that are the same as the ones defined in the test, prior to the test execution.
    */
   @Test
-  public void checkAnnotationDuplicatesCreateTranscriptions() throws Exception {
+  public void checkTranscriptionDuplicatesCreate() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
     addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -57,108 +55,13 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
-  @Test
-  public void checkAnnotationDuplicatesCreateCaptions() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    response = storeTestAnnotation(CAPTION_MINIMAL_EN, true);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-  @Test
-  public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-  @Test
-  public void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    response = storeTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-  @Test
-  public void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    response = storeTestAnnotation(CAPTION_MINIMAL, true, null);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-  @Test
-  public void checkAnnotationDuplicatesCreateLinkForContributing() throws Exception {
-    ResponseEntity<String> response =
-        storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-
-  protected Annotation parseCaption(String jsonString) throws JsonParseException {
-    MotivationTypes motivationType = MotivationTypes.CAPTIONING;
-    return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
-  }
-
-  @Test
-  public void createMinimalCaption() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(CAPTION_MINIMAL);
-    Annotation inputAnno = parseCaption(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, true, null);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-
-    // validate the reflection of input in output!
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-  }
-
-  protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
-    MotivationTypes motivationType = MotivationTypes.SUBTITLING;
-    return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
-  }
-
-  @Test
-  public void createMinimalSubtitle() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(SUBTITLE_MINIMAL);
-
-    Annotation inputAnno = parseSubtitle(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true, null);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-
-    // validate the reflection of input in output!
-    assertNotNull(storedAnno);
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-  }
-
   protected Annotation parseTranscription(String jsonString) throws JsonParseException {
     MotivationTypes motivationType = MotivationTypes.TRANSCRIBING;
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
   }
-  
-  protected Annotation parseTranslation(String jsonString) throws JsonParseException {
-    MotivationTypes motivationType = MotivationTypes.TRANSLATING;
-    return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
-  }
 
   @Test
-  public void createMinimalTranscription() throws Exception {
+  void createTranscriptionMinimal() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_MINIMAL);
     Annotation inputAnno = parseTranscription(requestBody);
@@ -170,21 +73,6 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
   }
-  
-  @Test
-  public void createMinimalTranslation() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSLATION_MINIMAL);
-    Annotation inputAnno = parseTranslation(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(TRANSLATION_MINIMAL, true, null);
-    assertNotNull(storedAnno);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-
-    // validate the reflection of input in output!
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-  }
-
 
   @Test
   public void createTranscriptionWithRights() throws Exception {
@@ -200,8 +88,38 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
 
     assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
-    assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
+    assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
 
+  }
+  
+  @Test
+  public void createTranscriptionWithCopyright() throws Exception {
+
+    String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_COPYRIGHT);
+    Annotation inputAnno = parseTranscription(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_COPYRIGHT, true, USER_PROVIDER_SAZ);
+    assertNotNull(storedAnno);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+
+    // validate the reflection of input in output!
+    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+
+    assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
+    assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
+
+  }
+  
+  @Test
+  public void createTranscriptionWithCopyrightNotOwner() throws Exception {
+
+    //creation should fail if the user is not the owner
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_COPYRIGHT, true, USER_REGULAR);
+    
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    //the error must indicate the invalid field
+    assertTrue(response.getBody().contains("body.edmRights"));
+    
   }
 
   @Test
@@ -213,7 +131,7 @@ public class AnnotationCreateFulltextIT extends AbstractIntegrationTest {
     String expectedMessage = "Missing mandatory field! body.edmRights";
     assertTrue(response.getBody().contains(expectedMessage));
   }
-
+  
   @Test
   public void createTranscriptionWithoutLanguage() throws Exception {
 

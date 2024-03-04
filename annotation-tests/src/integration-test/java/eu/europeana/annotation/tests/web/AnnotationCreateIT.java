@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
-import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -292,74 +290,6 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
     }
 
-    @Test
-    void createLinkForContributingBodyObject() throws Exception {        
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_OBJECT, true);
-        AnnotationTestUtils.validateResponse(response); 
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        addToCreatedAnnotations(storedAnno.getIdentifier());
-    }
-    
-    @Test
-    void createLinkForContributingBodyString() throws Exception {        
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_BODY_STRING, true);
-        AnnotationTestUtils.validateResponse(response);     
-        Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-        addToCreatedAnnotations(storedAnno.getIdentifier());
-    }
-
-    
-    @Test
-    void createLinkForContributingSpecificTarget_ShouldFail() throws Exception {        
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC, true);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    @Test
-    void createLinkForContributingSpecificTargetWithId_shouldFail() throws Exception {        
-        ResponseEntity<String> response = storeTestAnnotation(LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID, true);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-    
-    protected Annotation parseCaption(String jsonString) throws JsonParseException {
-    MotivationTypes motivationType = MotivationTypes.CAPTIONING;
-    return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
-    }
-
-    @Test
-    void createMinimalCaption() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(CAPTION_MINIMAL);
-    Annotation inputAnno = parseCaption(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(CAPTION_MINIMAL, true);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-
-    // validate the reflection of input in output!
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-    }
-      
-    protected Annotation parseSubtitle(String jsonString) throws JsonParseException {
-    MotivationTypes motivationType = MotivationTypes.SUBTITLING;
-    return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
-    }
-    
-    @Test
-    void createMinimalSubtitle() throws Exception {
-
-    String requestBody = AnnotationTestUtils.getJsonStringInput(SUBTITLE_MINIMAL);
-
-    Annotation inputAnno = parseSubtitle(requestBody);
-
-    Annotation storedAnno = createTestAnnotation(SUBTITLE_MINIMAL, true);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-
-    // validate the reflection of input in output!
-    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-    
-    Assertions.assertTrue(true);
-    }
-    
     @Test
     void createSemanticTagSimpleMinimal() throws Exception {
 
