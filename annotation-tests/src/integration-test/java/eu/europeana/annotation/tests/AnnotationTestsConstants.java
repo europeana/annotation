@@ -101,8 +101,10 @@ public class AnnotationTestsConstants {
   public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
   
   public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
+  public static final String SUBTITLE_WITH_COYRIGHT= "/subtitle/subtitle-copyright.json";
   public static final String CAPTION_MINIMAL = "/caption/minimal.json";
   public static final String CAPTION_MINIMAL_EN = "/caption/minimal-en.json";
+  public static final String CAPTION_WITH_COPYRIGHT = "/caption/caption-copyright.json";
   
   public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
   public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";

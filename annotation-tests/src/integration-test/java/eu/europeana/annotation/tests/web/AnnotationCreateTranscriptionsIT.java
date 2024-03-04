@@ -109,6 +109,18 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
     assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
 
   }
+  
+  @Test
+  public void createTranscriptionWithCopyrightNotOwner() throws Exception {
+
+    //creation should fail if the user is not the owner
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_COPYRIGHT, true, USER_REGULAR);
+    
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    //the error must indicate the invalid field
+    assertTrue(response.getBody().contains("body.edmRights"));
+    
+  }
 
   @Test
   public void createTranscriptionWithoutRights() throws Exception {

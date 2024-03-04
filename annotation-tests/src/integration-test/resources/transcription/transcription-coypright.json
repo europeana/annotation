@@ -8,7 +8,7 @@
     "edmRights": "http://mylicence.org/copywrited"
   },
   "target": {
-    "scope": "http://data.europeana.eu/item/colection1/item1",
+    "scope": "http://data.europeana.eu/item/saz-collections/item1",
     "source": "https://ekultura.hr/purl/url/ADOD2JWHV3ZIITL7G23TPHGZLC7BYYT4"
   }
 }

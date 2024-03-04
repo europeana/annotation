@@ -2,9 +2,7 @@ package eu.europeana.annotation.tests.web;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,14 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
-import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
-import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
-import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
-import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 
 /**
@@ -56,6 +49,36 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     MotivationTypes motivationType = MotivationTypes.SUBTITLING;
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
   }
+  
+  @Test
+  public void createCaptionWithCopyright() throws Exception {
+
+    String requestBody = AnnotationTestUtils.getJsonStringInput(CAPTION_WITH_COPYRIGHT);
+    Annotation inputAnno = parseCaption(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(CAPTION_WITH_COPYRIGHT, true, USER_PROVIDER_SAZ);
+    assertNotNull(storedAnno);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+
+    // validate the reflection of input in output!
+    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+
+    assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
+    assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
+
+  }
+  
+  @Test
+  public void createCaptionWithCopyrightNotOwner() throws Exception {
+
+    //creation should fail if the user is not the owner
+    ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_COPYRIGHT, true, USER_REGULAR);
+    
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    //the error must indicate the invalid field
+    assertTrue(response.getBody().contains("body.edmRights"));
+    
+  }
 
   @Test
   void createMinimalSubtitle() throws Exception {
@@ -73,6 +96,37 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     Assertions.assertTrue(true);
   }
 
+  @Test
+  public void createSubtitleWithCopyright() throws Exception {
+
+    String requestBody = AnnotationTestUtils.getJsonStringInput(SUBTITLE_WITH_COYRIGHT);
+    Annotation inputAnno = parseSubtitle(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(SUBTITLE_WITH_COYRIGHT, true, USER_PROVIDER_SAZ);
+    assertNotNull(storedAnno);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+
+    // validate the reflection of input in output!
+    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+
+    assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
+    assertTrue(inputAnno.getBody().getEdmRights().equals(storedAnno.getBody().getEdmRights()));
+
+  }
+  
+  @Test
+  public void createSubtitleWithCopyrightNotOwner() throws Exception {
+
+    //creation should fail if the user is not the owner
+    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_WITH_COYRIGHT, true, USER_REGULAR);
+    
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    //the error must indicate the invalid field
+    assertTrue(response.getBody().contains("body.edmRights"));
+    
+  }
+
+  
   @Test
   public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
