@@ -110,7 +110,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		return MotivationTypes.getType(getMotivation());
 	}
 
-	public void setMotivation(String motivation) {
+	public final void setMotivation(String motivation) {
 		this.motivation = motivation;
 	}
 
@@ -217,7 +217,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	}
 
 	@Override
-	public void setInternalType(String internalType) {
+	public final void setInternalType(String internalType) {
 		this.internalType = internalType;
 	}
 

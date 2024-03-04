@@ -515,12 +515,12 @@ public abstract class BaseAnnotationValidator {
     if (rights.contains(licence) || isContentOwner(target, authentication)) {
       // open license are valid
       // content owners can provide own license
-      return;
-    } else {
-      // license is invalid
-      throw new RequestBodyValidationException(body.getInputString(),
+      return; 
+    } 
+    
+    //otherwise, license is invalid
+    throw new RequestBodyValidationException(body.getInputString(),
           I18nConstants.INVALID_PARAM_VALUE, new String[] {BODY_EDM_RIGHTS, body.getEdmRights()});
-    }
   }
 
   private String extractMainLicence(@NonNull String rightsClaim){

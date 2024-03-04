@@ -22,7 +22,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
+class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
 
   public static final String TRANSCRIPTION_WITHOUT_RIGHTS =
       "/transcription/transcription-without-rights.json";
@@ -46,7 +46,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
    * Solr that are the same as the ones defined in the test, prior to the test execution.
    */
   @Test
-  public void checkTranscriptionDuplicatesCreate() throws Exception {
+  void checkTranscriptionDuplicatesCreate() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
     addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -75,7 +75,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void createTranscriptionWithRights() throws Exception {
+  void createTranscriptionWithRights() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_WITH_RIGHTS);
     Annotation inputAnno = parseTranscription(requestBody);
@@ -93,7 +93,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
   
   @Test
-  public void createTranscriptionWithCopyright() throws Exception {
+  void createTranscriptionWithCopyright() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSCRIPTION_COPYRIGHT);
     Annotation inputAnno = parseTranscription(requestBody);
@@ -111,7 +111,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
   
   @Test
-  public void createTranscriptionWithCopyrightNotOwner() throws Exception {
+  void createTranscriptionWithCopyrightNotOwner() throws Exception {
 
     //creation should fail if the user is not the owner
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_COPYRIGHT, true, USER_REGULAR);
@@ -123,7 +123,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void createTranscriptionWithoutRights() throws Exception {
+  void createTranscriptionWithoutRights() throws Exception {
 
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_RIGHTS, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
@@ -133,7 +133,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
   
   @Test
-  public void createTranscriptionWithoutLanguage() throws Exception {
+  void createTranscriptionWithoutLanguage() throws Exception {
 
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_LANG, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
@@ -143,7 +143,7 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void createTranscriptionWithoutValue() throws Exception {
+  void createTranscriptionWithoutValue() throws Exception {
 
     ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WITHOUT_VALUE, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(),
@@ -153,35 +153,35 @@ public class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void createTranscriptionWithAltoBody() throws Exception {
+  void createTranscriptionWithAltoBody() throws Exception {
     Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY, true);
     assertNotNull(storedAnno);
     addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   @Test
-  public void createTranscriptionWithInvalidAltoBody() throws Exception {
+  void createTranscriptionWithInvalidAltoBody() throws Exception {
     ResponseEntity<String> response =
         storeTestAnnotation(TRANSCRIPTION_WITH_ALTO_BODY_WRONG, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
   }
 
   @Test
-  public void createTranscriptionWithPageXmlBody() throws Exception {
+  void createTranscriptionWithPageXmlBody() throws Exception {
     Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY, true);
     assertNotNull(storedAnno);
     addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   @Test
-  public void createTranscriptionWithPageXmlBodyTP() throws Exception {
+  void createTranscriptionWithPageXmlBodyTP() throws Exception {
     Annotation storedAnno = createTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_TP, true);
     assertNotNull(storedAnno);
     addToCreatedAnnotations(storedAnno.getIdentifier());
   }
 
   @Test
-  public void createTranscriptionWithPageXmlInvalidBody() throws Exception {
+  void createTranscriptionWithPageXmlInvalidBody() throws Exception {
     ResponseEntity<String> response =
         storeTestAnnotation(TRANSCRIPTION_WITH_PAGE_XML_BODY_WRONG, true);
     assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());

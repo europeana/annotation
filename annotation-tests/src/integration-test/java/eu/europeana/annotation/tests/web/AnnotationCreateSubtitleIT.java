@@ -23,7 +23,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
+class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
 
 
 
@@ -51,7 +51,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   }
   
   @Test
-  public void createCaptionWithCopyright() throws Exception {
+  void createCaptionWithCopyright() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(CAPTION_WITH_COPYRIGHT);
     Annotation inputAnno = parseCaption(requestBody);
@@ -69,7 +69,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   }
   
   @Test
-  public void createCaptionWithCopyrightNotOwner() throws Exception {
+  void createCaptionWithCopyrightNotOwner() throws Exception {
 
     //creation should fail if the user is not the owner
     ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_COPYRIGHT, true, USER_REGULAR);
@@ -92,12 +92,10 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
-
-    Assertions.assertTrue(true);
   }
 
   @Test
-  public void createSubtitleWithCopyright() throws Exception {
+  void createSubtitleWithCopyright() throws Exception {
 
     String requestBody = AnnotationTestUtils.getJsonStringInput(SUBTITLE_WITH_COYRIGHT);
     Annotation inputAnno = parseSubtitle(requestBody);
@@ -115,7 +113,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   }
   
   @Test
-  public void createSubtitleWithCopyrightNotOwner() throws Exception {
+  void createSubtitleWithCopyrightNotOwner() throws Exception {
 
     //creation should fail if the user is not the owner
     ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_WITH_COYRIGHT, true, USER_REGULAR);
@@ -128,7 +126,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
 
   
   @Test
-  public void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
+  void checkAnnotationDuplicatesCaptionsThenSubtitles() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
     addToCreatedAnnotations(storedAnno.getIdentifier());
@@ -138,7 +136,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
+  void checkAnnotationDuplicatesCreateSubtitles() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -148,7 +146,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
+  void checkAnnotationDuplicatesSubtitlesThenCaptions() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_MINIMAL, true);
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
@@ -158,7 +156,7 @@ public class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void checkAnnotationDuplicatesCreateCaptions() throws Exception {
+  void checkAnnotationDuplicatesCreateCaptions() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(CAPTION_MINIMAL, true);
     Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
     addToCreatedAnnotations(storedAnno.getIdentifier());

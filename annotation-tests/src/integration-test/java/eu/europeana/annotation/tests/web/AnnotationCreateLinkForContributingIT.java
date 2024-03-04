@@ -17,7 +17,7 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AnnotationCreateLinkForContributingIT extends AbstractIntegrationTest {
+class AnnotationCreateLinkForContributingIT extends AbstractIntegrationTest {
 
 
 

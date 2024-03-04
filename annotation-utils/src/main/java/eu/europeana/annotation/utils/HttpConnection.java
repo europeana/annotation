@@ -25,7 +25,8 @@ public class HttpConnection {
   private static final int STATUS_OK_START = 200;
   private static final int STATUS_OK_END = 299;
   private HttpClient httpClient;
-  private int connectionRetries, connectionTimeout;
+  private int connectionRetries; 
+  private int connectionTimeout;
 
   /**
    * Constructor with explicit indication of retries and timeout
@@ -94,6 +95,7 @@ public class HttpConnection {
   /**
    * retrieve the response as stream to be used for parsing to specific type
    * @param url - url of the web resource
+   * @param body - the request body
    * @return - the Stream for accessing the content of the body
    * @throws IOException - if the access to remote resource fails
    */
