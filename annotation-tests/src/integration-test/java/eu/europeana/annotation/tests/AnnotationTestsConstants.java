@@ -102,6 +102,8 @@ public class AnnotationTestsConstants {
   public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
 
   public static final String TRANSLATION_MINIMAL = "/translation/minimal.json";
+  public static final String TRANSLATION_COPYRIGHT = "/translation/translation-coypright.json";
+  
   
   public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
   public static final String SUBTITLE_WITH_COYRIGHT= "/subtitle/subtitle-copyright.json";

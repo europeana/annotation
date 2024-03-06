@@ -1,12 +1,17 @@
 package eu.europeana.annotation.tests.web;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 
@@ -37,5 +42,35 @@ public class AnnotationCreateTranslationIT extends AbstractIntegrationTest {
 
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+  }
+  
+  @Test
+  void createTranscriptionWithCopyright() throws Exception {
+
+    String requestBody = AnnotationTestUtils.getJsonStringInput(TRANSLATION_COPYRIGHT);
+    Annotation inputAnno = parseTranslation(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(TRANSLATION_COPYRIGHT, true, USER_PROVIDER_SAZ);
+    assertNotNull(storedAnno);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+
+    // validate the reflection of input in output!
+    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+
+    assertEquals(ResourceTypes.FULL_TEXT_RESOURCE.name(), storedAnno.getBody().getInternalType());
+    assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
+
+  }
+  
+  @Test
+  void createTranscriptionWithCopyrightNotOwner() throws Exception {
+
+    //creation should fail if the user is not the owner
+    ResponseEntity<String> response = storeTestAnnotation(TRANSLATION_COPYRIGHT, true, USER_REGULAR);
+    
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    //the error must indicate the invalid field
+    assertTrue(response.getBody().contains("body.edmRights"));
+    
   }
 }

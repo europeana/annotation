@@ -4,7 +4,7 @@
 		"type": "FullTextResource",
     	"language": "de",
     	"format": "text/plain",
-		"value": "... complete transcribed text in HTML ...",
+		"value": "... complete translation as plain text ...",
         "edmRights": "http://creativecommons.org/licenses/by-sa/1.0/"		
 	},
 	"target": {

@@ -469,15 +469,11 @@ public abstract class BaseAnnotationValidator {
         validateTag(webAnnotation);
         break;
       case TRANSCRIBING:
-    	validateTranscription(webAnnotation, authentication);
-        break;
       case TRANSLATING:
-    	validateTranscription(webAnnotation, authentication);
+        validateTranscriptionOrTranslation(webAnnotation, authentication);
         break;        
       case SUBTITLING:
-        validateSubtitleOrCaption(webAnnotation, authentication);
-        break;
-      case CAPTIONING:
+      case CAPTIONING: 
         validateSubtitleOrCaption(webAnnotation, authentication);
         break;
       case LINKFORCONTRIBUTING:
@@ -631,7 +627,7 @@ public abstract class BaseAnnotationValidator {
    * @throws RequestBodyValidationException
    * @throws PropertyValidationException
    */
-  protected void validateTranscription(Annotation webAnnotation, Authentication authentication)
+  protected void validateTranscriptionOrTranslation(Annotation webAnnotation, Authentication authentication)
       throws ParamValidationI18NException, RequestBodyValidationException,
       PropertyValidationException {
     validateBodyExists(webAnnotation.getBody());

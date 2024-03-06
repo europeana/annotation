@@ -1,0 +1,14 @@
+{
+	"motivation": "translating",
+	"body": {
+		"type": "FullTextResource",
+		"language": "de",
+		"format": "text/plain",
+		"value": "... complete translation as plain text ...",
+		"edmRights": "http://mylicence.org/copywrited"
+	},
+	"target": {
+		"scope": "http://data.europeana.eu/item/saz-collections/item1",
+		"source": "https://ekultura.hr/purl/url/ADOD2JWHV3ZIITL7G23TPHGZLC7BYYT4"
+	}
+}

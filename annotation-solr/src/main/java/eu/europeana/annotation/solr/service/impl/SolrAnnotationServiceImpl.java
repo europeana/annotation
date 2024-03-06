@@ -507,9 +507,8 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		List<SolrQuery> queries = new ArrayList<>();
 		switch (anno.getMotivationType()) {
 		case TRANSCRIBING  :
-		  queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
-		  break;
-		case TRANSLATING  :
+		case TRANSLATING  : 
+		  //the motivation is the passed as parameter, can use the same method for transcriptions and annotations
 		  queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
 		  break;
 		case CAPTIONING :
@@ -527,9 +526,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		    queries.add(solrUniquenessQuerySimpleTagging(anno, noSelfDupplicate));
 		  }
 		  break;
-//		case LINKING :
-//			query=solrUniquenessQueryLinking(anno, noSelfCheck);
-//		    break;
+		case LINKING :
+			//skip for now because the multiple targets introduce issues on semantic level  query=solrUniquenessQueryLinking(anno, noSelfCheck);
+		    break;
 	    case LINKFORCONTRIBUTING :
 	      queries.add(solrUniquenessQueryLinkForContributing(anno, noSelfDupplicate));
           break;
@@ -566,6 +565,12 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 		return responseAnnoIds;
 	}
 	
+	/**
+	 * creates uniqueness soll query for transcriptions or translations
+	 * @param anno
+	 * @param noSelfDupplicate
+	 * @return
+	 */
 	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
 	  SolrQuery query = new SolrQuery();	
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + anno.getMotivationType().getOaType() + "\"");
