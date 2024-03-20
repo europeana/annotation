@@ -84,7 +84,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     configurer.favorPathExtension(true);
 
     // use application/ld+json if no Content-Type is specified
-    configurer.defaultContentType(MediaType.APPLICATION_JSON);
+    configurer.defaultContentType(APPLICATION_JSONLD, MediaType.APPLICATION_JSON);
 
     configurer.mediaTypes(getMediaTypesMapping());
   }

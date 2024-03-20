@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.annotation</groupId>
@@ -36,28 +38,27 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<revision>0.5.1-SNAPSHOT</revision>
 		<version.commonsApi>0.3.24-SNAPSHOT</version.commonsApi>
+
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
 		<java.version>17</java.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
-		<!-- SG: NOTE: for newer maven compiler plugin only release version should be required -->
+		<!-- SG: NOTE: for newer maven compiler plugin only release version
+		should be required -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		
+
 		<!-- property to be used for add opens jvm arguments in plugins -->
 		<java.17.addopens>--add-opens java.base/java.util=ALL-UNNAMED
-        	--add-opens java.base/java.lang=ALL-UNNAMED
+			--add-opens java.base/java.lang=ALL-UNNAMED
 		</java.17.addopens>
-			
-			
+
+
 		<version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
 
 		<version.junit-platform>1.2.0</version.junit-platform>
-		<!--	 can be enabled only when there is a need to change the version used by spring boot (not recommended, consider changing the spring boot version instead) 	
- 		<version.spring>5.3.7</version.spring>
- 		-->
-		<version.spring.boot>2.5.7</version.spring.boot>
+		<version.spring.boot>2.5.14</version.spring.boot>
 		<version.swagger>3.0.0</version.swagger>
 		<version.apache.commons.io>2.11.0</version.apache.commons.io>
 		<version.aspectj>1.8.8</version.aspectj>
@@ -80,28 +81,33 @@
 		<version.subtitle-converter>1</version.subtitle-converter>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
 		<version.testcontainers>1.16.0</version.testcontainers>
-		<version.morphia>2.1.4</version.morphia>
-		<version.mongo-java-driver>3.12.11</version.mongo-java-driver>
+
+		<mongodb.version>4.7.2</mongodb.version>
+		<version.morphia>1.6.1</version.morphia>
+
+
 		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
-		<version.failsafe>3.0.0-M7</version.failsafe>
 		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
-		
+        <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
+
 		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
-		
+
 		<!-- sonar plugins -->
 		<jacoco-plugin.version>0.8.7</jacoco-plugin.version>
 		<pmd-plugin.version>3.15.0</pmd-plugin.version>
 		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
 		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
 		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
-		<sonar.java.spotbugs.reportPaths>${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
+		<sonar.java.spotbugs.reportPaths>
+			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
 		<sonar.organization>europeana</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!-- Exclude POJOs code duplication analysis -->
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
-		<aggregate.report.xml>annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<aggregate.report.xml>
+			annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
-		
+
 	</properties>
 	<modules>
 		<module>annotation-definitions</module>
@@ -119,24 +125,94 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<!-- Import dependency management from Spring Boot (because we don't use Spring-Boot as parent pom)-->
+				<!-- Import dependency management from Spring Boot (because we
+				don't use Spring-Boot as parent pom)-->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
 				<version>${version.spring.boot}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<!-- upgrade mongo driver and morphia to support mongo V6-->
+			<!-- SG: for some reason, the versions from spring boot take
+			precedence over the versions from api-commons depencies, therefore
+			we need to replicate here the configs from api-commons -->
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongodb-driver-legacy</artifactId>
+				<version>${mongodb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongodb-driver-sync</artifactId>
+				<version>${mongodb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>bson</artifactId>
+				<version>${mongodb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongodb-driver-core</artifactId>
+				<version>${mongodb.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>dev.morphia.morphia</groupId>
+				<artifactId>core</artifactId>
+				<version>${version.morphia}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-sync</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-legacy</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+
+			<!-- excude conflicting dependecies for mongo and logging-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-mongodb</artifactId>
+				<version>${version.springBoot}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>logback-classic</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-sync</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-core</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 		</dependencies>
+
 	</dependencyManagement>
 
 
 	<build>
 		<resources>
-		    <resource>
-		        <directory>src/main/resources</directory>
-		        <filtering>true</filtering>
-		    </resource>					
-		</resources>	
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
@@ -162,10 +238,12 @@
 				</executions>
 				<configuration>
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+					<generateGitPropertiesFilename>
+						${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
 					<includeOnlyProperties>
 						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
 						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+						<includeOnlyProperty>git.branch</includeOnlyProperty>
 					</includeOnlyProperties>
 					<commitIdGenerationMode>full</commitIdGenerationMode>
 				</configuration>
@@ -184,7 +262,8 @@
 						<configuration>
 							<additionalProperties>
 								<project.description>${project.description}</project.description>
-								<!-- For some reason BuildProperties.getName() doesn't return the correct value,
+								<!-- For some reason BuildProperties.getName()
+								doesn't return the correct value,
                            so we set the name under a different property                      -->
 								<project.name>${project.name}</project.name>
 							</additionalProperties>
@@ -195,7 +274,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${version.failsafe}</version>
+				<!--
+				<version>${version.maven-failsafe-plugin}</version>
+				-->
 				<executions>
 					<execution>
 						<goals>
@@ -205,7 +286,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- Fixes Integration test not finding beans. May be removed with 3.0.0-M6 is available
+					<!-- Fixes Integration test not finding beans. May be
+					removed with 3.0.0-M6 is available
                     See: https://stackoverflow.com/a/65806777/14530159 -->
 					<useModulePath>false</useModulePath>
 				</configuration>
@@ -217,15 +299,18 @@
 				<executions>
 					<execution>
 						<id>add-integration-test-source</id>
-						<!-- Normally this would be attached to the generate-test-source phase,
-                          however we attach to generate-sources so that the git-code-format plugin can pick
+						<!-- Normally this would be attached to the
+						generate-test-source phase,
+                          however we attach to generate-sources so that the git-code-format plugin can
+						pick
                           up integration test source files (see plugin config above) -->
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-test-source</goal>
 						</goals>
 						<configuration>
-							<!-- Configures the source directory of our integration tests -->
+							<!-- Configures the source directory of our
+							integration tests -->
 							<sources>
 								<source>src/integration-test/java</source>
 							</sources>
@@ -238,7 +323,8 @@
 							<goal>add-test-resource</goal>
 						</goals>
 						<configuration>
-							<!-- Configures the resource directory of our integration tests -->
+							<!-- Configures the resource directory of our
+							integration tests -->
 							<resources>
 								<resource>
 									<filtering>true</filtering>
@@ -271,8 +357,8 @@
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<version>${version.spring.boot}</version>
 					<configuration>
-        				<jvmArguments>${java.17.addopens}</jvmArguments>
-    				</configuration>
+						<jvmArguments>${java.17.addopens}</jvmArguments>
+					</configuration>
 				</plugin>
 				<plugin>
 					<inherited>true</inherited>
@@ -290,8 +376,16 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${version.maven-surfire-plugin}</version>
 					<configuration>
-        				<argLine>${java.17.addopens}</argLine>
-    				</configuration>
+						<argLine>${java.17.addopens}</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${version.maven-failsafe-plugin}</version>
+					<configuration>
+						<argLine>${java.17.addopens}</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
@@ -330,8 +424,10 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-pmd-plugin</artifactId>
-						<!-- Plugin has an indirect dependency on an old version os asm. This is disabled, so we
-              can use the asm version specified above. See: https://issueexplorer.com/issue/pmd/pmd/3504#21570220 -->
+						<!-- Plugin has an indirect dependency on an old version
+						os asm. This is disabled, so we
+              can use the asm version specified above. See:
+						https://issueexplorer.com/issue/pmd/pmd/3504#21570220 -->
 						<dependencies>
 							<dependency>
 								<groupId>org.eclipse.sisu</groupId>
@@ -348,7 +444,8 @@
 						<version>${pmd-plugin.version}</version>
 						<configuration>
 							<rulesets>
-								<ruleset>https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-pmd-ruleset.xml</ruleset>
+								<ruleset>
+									https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-pmd-ruleset.xml</ruleset>
 							</rulesets>
 							<printFailingErrors>true</printFailingErrors>
 						</configuration>
@@ -375,7 +472,8 @@
 							</execution>
 						</executions>
 						<configuration>
-							<includeFilterFile>https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-findbugs-ruleset.xml</includeFilterFile>
+							<includeFilterFile>
+								https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-findbugs-ruleset.xml</includeFilterFile>
 							<!--We just want the reports; build should still pass -->
 							<failOnError>false</failOnError>
 							<!-- Import additional rules from plugins -->

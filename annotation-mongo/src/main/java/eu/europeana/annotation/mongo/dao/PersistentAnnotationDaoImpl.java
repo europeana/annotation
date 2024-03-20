@@ -7,11 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.mapping.Mapper;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
+import com.mongodb.AggregationOptions;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteError;
 import com.mongodb.BulkWriteException;
@@ -19,6 +15,11 @@ import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
+import dev.morphia.mapping.Mapper;
+import dev.morphia.query.Query;
+import dev.morphia.query.UpdateOperations;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.mongo.batch.BulkOperationMode;
@@ -217,7 +218,7 @@ public class PersistentAnnotationDaoImpl<E extends PersistentAnnotation, T exten
     ops.add(new BasicDBObject("$match", query.getQueryObject()));
     ops.add(new BasicDBObject("$out", targetCollection));
     DBCollection source = getDatastore().getDB().getCollection(sourceCollection);
-    source.aggregate(ops);
+    source.aggregate(ops, getDefaultAggregationOptions());
 
   }
 
