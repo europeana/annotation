@@ -532,6 +532,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	    case LINKFORCONTRIBUTING :
 	      queries.add(solrUniquenessQueryLinkForContributing(anno, noSelfDupplicate));
           break;
+	    case HIGHLIGHTING :
+	      queries.add(solrUniquenessQueryDebias(anno, noSelfDupplicate));
+          break;          
 		default:
 		  break;
 		}
@@ -604,6 +607,19 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
+    }
+
+    private SolrQuery solrUniquenessQueryDebias(Annotation anno, boolean noSelfDupplicate) {
+        SolrQuery query = new SolrQuery();
+        query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
+        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+        List<String> bodyUris = extractUriValues(anno.getBody());
+        for (int i=0; i<bodyUris.size(); i++) { 
+          query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
+        }
+        addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+        SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+        return query;
     }
 
     private void addNotSelfDupplicateFilter(Annotation anno, SolrQuery query, boolean noSelfDupplicate) {

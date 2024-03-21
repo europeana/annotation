@@ -1,6 +1,7 @@
 package eu.europeana.annotation.definitions.model;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -31,6 +32,10 @@ public interface Annotation {
 	public abstract void setTarget(Target target);
 
 	public abstract Target getTarget();
+	
+	public abstract void setTargets(List<Target> target);
+
+	public abstract List<Target> getTargets();
 
 	public abstract void setBody(Body body);
 

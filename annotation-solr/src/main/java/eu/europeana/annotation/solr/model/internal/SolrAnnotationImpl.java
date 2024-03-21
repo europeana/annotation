@@ -86,6 +86,7 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 			this.setModerationScore(summary.getScore());
 		
 		this.setTarget(annotation.getTarget());
+		this.setTargets(annotation.getTargets());
 		this.setBody(annotation.getBody());
 		
 		this.setScenario(findScenarioType(annotation));

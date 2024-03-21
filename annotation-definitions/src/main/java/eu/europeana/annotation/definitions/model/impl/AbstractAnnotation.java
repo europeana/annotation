@@ -1,7 +1,10 @@
 package eu.europeana.annotation.definitions.model.impl;
 
 import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -23,6 +26,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
   private Date generated;
   private Body body;
   private Target target;
+  private List<Target> targets;
   protected String motivation;
   private Style styledBy;
   protected MotivationTypes motivationType;
@@ -79,6 +83,11 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
     if ((this.getTarget() != null) && (that.getTarget() != null)
         && (!this.getTarget().equals(that.getTarget()))) {
       res = false;
+    }
+    
+    if ((this.getTargets() != null) && (that.getTargets() != null)
+            && (!this.getTargets().equals(that.getTargets()))) {
+    	res = false;
     }
 
     if ((this.getMotivation() != null) && (that.getMotivation() != null)
@@ -149,6 +158,11 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
     if ((this.getTarget() != null) && (that.getTarget() != null)
         && (!this.getTarget().equalsContent(that.getTarget()))) {
       res = false;
+    }
+
+    if ((this.getTargets() != null) && (that.getTargets() != null) 
+    		&& (!this.getTargets().equals(that.getTargets()))) {
+    	res = false;
     }
 
     if ((this.getMotivation() != null) && (that.getMotivation() != null)
@@ -228,6 +242,16 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
   @Override
   public void setTarget(Target target) {
     this.target = target;
+  }
+
+  @Override
+  public List<Target> getTargets() {
+    return targets;
+  }
+
+  @Override
+  public void setTargets(List<Target> targets) {
+    this.targets = targets;
   }
 
   @Override

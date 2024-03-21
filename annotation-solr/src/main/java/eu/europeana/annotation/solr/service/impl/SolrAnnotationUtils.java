@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrException;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -204,17 +206,26 @@ public class SolrAnnotationUtils {
     }
 
     protected void processTargetUris(SolrAnnotation solrAnnotation) {
-
-	SpecificResource internetResource = solrAnnotation.getTarget();
-	// extract URIs for target_uri field
-	List<String> targetUris = extractUriValues(internetResource);
-	solrAnnotation.setTargetUris(targetUris);
-
-	if(targetUris!=null) {
-    	// Extract URIs for target_record_id
-    	List<String> recordIds = extractRecordIds(targetUris);
-    	solrAnnotation.setTargetRecordIds(recordIds);
-	}
+    	SpecificResource internetResource = null;
+    	if(solrAnnotation.getTarget()!=null) {
+    		internetResource=solrAnnotation.getTarget();
+    	}
+    	else if(solrAnnotation.getTargets()!=null && solrAnnotation.getTargets().size()>0) {
+    		/*
+    		 * in case of multiple targets, they all have the same uri, e.g. a source (e.g. in case of the debias targets),
+    		 * so we only process the first target
+    		 */
+    		internetResource=solrAnnotation.getTargets().get(0);
+    	}
+    	
+		// extract URIs for target_uri field
+		List<String> targetUris = extractUriValues(internetResource);
+		if(! targetUris.isEmpty()) {
+			solrAnnotation.setTargetUris(targetUris);
+	    	// Extract URIs for target_record_id
+	    	List<String> recordIds = extractRecordIds(targetUris);
+	    	solrAnnotation.setTargetRecordIds(recordIds);
+		}
     }
 
     protected List<String> extractUriValues(SpecificResource specificResource) {

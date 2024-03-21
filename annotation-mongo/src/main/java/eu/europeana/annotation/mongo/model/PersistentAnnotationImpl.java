@@ -1,6 +1,8 @@
 package eu.europeana.annotation.mongo.model;
 
 import java.util.Date;
+import java.util.List;
+
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -42,7 +44,9 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	private Body body;
 	@Embedded
 	private Target target;
-	
+	@Embedded
+	private List<Target> targets;
+
 	@Property(PersistentAnnotation.FIELD_MOTIVATION)
 	private String motivation;
 	private Style styledBy;
@@ -101,6 +105,14 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.target = target;
 	}
 
+	public List<Target> getTargets() {
+		return targets;
+	}
+
+	public void setTargets(List<Target> targets) {
+		this.targets = targets;
+	}
+		
 	public String getMotivation() {
 		return motivation;
 	}

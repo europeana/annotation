@@ -94,5 +94,14 @@ public interface WebAnnotationModelFields {
 	public static final String COUNTRY_NAME = "countryName";
 	
 	public static final String COMMA = ",";
+	
+	// selector fields
+	public static final String HAS_PREDICATE="hasPredicate";
+	public static final String REFINED_BY="refinedBy";
+	public static final String EXACT="exact";
+	public static final String EXACT_VALUE="@value";
+	public static final String EXACT_LANGUAGE="@language";
+	public static final String PREFIX="prefix";
+	public static final String SUFFIX="suffix";
 
 }
