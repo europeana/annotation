@@ -39,9 +39,6 @@
 		<revision>0.5.1-SNAPSHOT</revision>
 		<version.commonsApi>0.3.24-SNAPSHOT</version.commonsApi>
 
-		<!-- not used anymore
-		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
-		-->
 		<java.version>17</java.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<!-- SG: NOTE: for newer maven compiler plugin only release version
