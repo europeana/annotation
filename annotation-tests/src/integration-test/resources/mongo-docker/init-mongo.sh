@@ -3,12 +3,12 @@
 # The script schould have a unix end of line
 # in case of errors use notepad++ to change EOL to unix LF (edit -> EOL Conversion)
 #seems that the EOF is changed somehow by the configurations from the windows OS
-mongo -- "$MONGO_INITDB_DATABASE" <<EOF
+mongosh --eval "$MONGO_INITDB_DATABASE" <<EOF
     var rootUser = '$MONGO_INITDB_ROOT_USERNAME';
     var rootPassword = '$MONGO_INITDB_ROOT_PASSWORD';
-
+    
     db.auth(rootUser, rootPassword);
 
-db.getSiblingDB('$ANNOTATION_DB').createCollection('annotation');
+db.getSiblingDB('$MONGO_INITDB_DATABASE').createCollection('annotation');
 
 EOF

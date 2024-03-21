@@ -80,7 +80,7 @@
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
-		<version.testcontainers>1.16.0</version.testcontainers>
+		<version.testcontainers>1.19.7</version.testcontainers>
 
 		<mongodb.version>4.7.2</mongodb.version>
 		<version.morphia>1.6.1</version.morphia>

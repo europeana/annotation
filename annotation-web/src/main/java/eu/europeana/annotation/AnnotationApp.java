@@ -50,21 +50,21 @@ public class AnnotationApp extends SpringBootServletInitializer {
     }
   }
 
-  private static String getUserPropertiesFileName(String[] args) {
-    String propertiesFileName = "annotation.user.properties";
-    String ADITIONAL_CONFIG_REFIX = "--spring.config.additional-location=";
-    if(args != null) {
-      for (String config : args) {
-        if(config.startsWith(ADITIONAL_CONFIG_REFIX)){
-          propertiesFileName = config.substring(ADITIONAL_CONFIG_REFIX.length());
-          propertiesFileName = propertiesFileName.replaceFirst("optional\\:", "");
-          propertiesFileName = propertiesFileName.replaceFirst("file\\:", "");
-          continue;
-        }
-      }
-    }
-    return propertiesFileName;
-  }
+//  private static String getUserPropertiesFileName(String[] args) {
+//    String propertiesFileName = "annotation.user.properties";
+//    String ADITIONAL_CONFIG_REFIX = "--spring.config.additional-location=";
+//    if(args != null) {
+//      for (String config : args) {
+//        if(config.startsWith(ADITIONAL_CONFIG_REFIX)){
+//          propertiesFileName = config.substring(ADITIONAL_CONFIG_REFIX.length());
+//          propertiesFileName = propertiesFileName.replaceFirst("optional\\:", "");
+//          propertiesFileName = propertiesFileName.replaceFirst("file\\:", "");
+//          continue;
+//        }
+//      }
+//    }
+//    return propertiesFileName;
+//  }
 
   private static void printRegisteredBeans(ApplicationContext ctx) {
     String[] beanNames = ctx.getBeanDefinitionNames();
