@@ -9,13 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.query.Criteria;
-import org.mongodb.morphia.query.CriteriaContainer;
-import org.mongodb.morphia.query.FindOptions;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.QueryResults;
-import org.mongodb.morphia.query.UpdateOperations;
-import org.mongodb.morphia.query.UpdateResults;
+import dev.morphia.query.Criteria;
+import dev.morphia.query.CriteriaContainer;
+import dev.morphia.query.FindOptions;
+import dev.morphia.query.Query;
+import dev.morphia.query.QueryResults;
+import dev.morphia.query.UpdateOperations;
+import dev.morphia.query.UpdateResults;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.PlaceBody;
@@ -197,7 +197,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	 * @param multiple
 	 * @return evaluated list
 	 */
-	protected List<? extends Annotation> filterAnnotationListByTarget(String target, boolean multiple) {
+	protected List<Annotation> filterAnnotationListByTarget(String target, boolean multiple) {
 		Query<PersistentAnnotation> query = getAnnotationDao().createQuery();
 		if (StringUtils.isNotEmpty(target)) {
 			if (multiple)
@@ -208,8 +208,8 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 						target);
 		}
 		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
-		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
-		return results.asList();
+		QueryResults<PersistentAnnotation> results = getAnnotationDao().find(query);
+		return asList(results);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 			
 		query.filter(PersistentAnnotation.FIELD_DISABLED, null);
 		QueryResults<? extends PersistentAnnotation> results = getAnnotationDao().find(query);
-		return results.asList();
+		return asList(results);
 	}
 
 	@Override

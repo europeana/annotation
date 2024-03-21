@@ -1,7 +1,6 @@
 package eu.europeana.annotation.mongo.model.shape;
 
-import org.mongodb.morphia.annotations.Embedded;
-
+import dev.morphia.annotations.Embedded;
 import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
 
 @Embedded
