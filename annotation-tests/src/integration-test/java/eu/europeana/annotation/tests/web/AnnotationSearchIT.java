@@ -5,18 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.ResultActions;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
 import eu.europeana.annotation.definitions.model.body.TagBody;
@@ -248,7 +251,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertTrue(placeBody.getLatitude().equals("48.853415"));
     assertNotNull(placeBody.getLongitude());
     assertTrue(placeBody.getLongitude().equals("-102.348800"));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -285,7 +288,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     TagBody tagBody = ((TagBody) retrievedAnno.getBody());
     assertNotNull(tagBody.getValue());
     assertTrue(tagBody.getValue().equals("trombone"));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -319,7 +322,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     TextBody textBody = ((TextBody) retrievedAnno.getBody());
     assertNotNull(textBody.getValue());
     assertTrue(textBody.getValue().equals("... this is the textual description of the item ..."));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getSource());
     assertTrue(target.getSource()
         .equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
@@ -348,7 +351,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // validate fields
     assertTrue(retrievedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getValues());
     assertTrue(target.getValues()
         .contains(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -374,7 +377,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
 
     // validate fields
     assertTrue(retrievedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -410,7 +413,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertTrue(graphBody.getResourceUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
             + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -449,7 +452,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertTrue(tagBody.getHttpUri().equals("http://sws.geonames.org/2988506"));
     assertNotNull(tagBody.getLanguage());
     assertTrue(tagBody.getLanguage().equals("en"));
-    Target target = retrievedAnno.getTarget();
+    Target target = retrievedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -495,7 +498,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     addToCreatedAnnotations(annotation.getIdentifier());
     String resJson = "";
     // List<Long> idList = new ArrayList<Long>();
-    Iterator<String> itr = annotation.getTarget().getValues().iterator();
+    Iterator<String> itr = annotation.getTarget().get(0).getValues().iterator();
     while (itr.hasNext()) {
       String target = itr.next();
       String annotationStrRes = searchAnnotationLd(target, null);
@@ -523,7 +526,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     Annotation annotation =
         createAnnotationLd(MotivationTypes.LINKING.name(), annotationNr, requestBody, null);
     addToCreatedAnnotations(annotation.getIdentifier());
-    Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();
+    Iterator<String> itr = annotation.getTarget().get(0).getResourceIds().iterator();
     while (itr.hasNext()) {
       String resourceId = itr.next();
       String annotationStrRes = searchAnnotationLd(null, resourceId);
@@ -576,7 +579,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
         AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
             + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
     assertEquals(VALUE_TARGET_LINK_SEMANTIC_URI, graphBody.getResourceUri());
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertEquals(VALUE_TARGET_LINK_SEMANTIC_URI, target.getHttpUri());
   }
@@ -610,7 +613,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
    */
   private void validateLink(Annotation storedAnno) throws IOException {
     assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getValues());
     String VALUE_TARGET_LINK_URI =
         AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -648,7 +651,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
    */
   private void validateSemanticLink(Annotation storedAnno) throws IOException {
     assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     String VALUE_TARGET_LINK_SEMANTIC_URI =
         AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -693,7 +696,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());
     assertNotNull(textBody.getValue());
     assertTrue(textBody.getValue().contains("con il grande finale"));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getSource());
     assertTrue(target.getSource()
         .equals("http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"));
@@ -746,7 +749,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertTrue(tagBody.getHttpUri().equals("http://www.geonames.org/2988507"));
     assertNotNull(tagBody.getLanguage());
     assertTrue(tagBody.getLanguage().equals("en"));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -794,7 +797,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertTrue(placeBody.getLatitude().equals("48.853415"));
     assertNotNull(placeBody.getLongitude());
     assertTrue(placeBody.getLongitude().equals("-102.348800"));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -842,7 +845,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     TagBody tagBody = ((TagBody) storedAnno.getBody());
     assertNotNull(tagBody.getValue());
     assertTrue(tagBody.getValue().equals("trombone"));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -893,7 +896,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertTrue(tagBody.getHttpUri().equals("http://sws.geonames.org/2988506"));
     assertNotNull(tagBody.getLanguage());
     assertTrue(tagBody.getLanguage().equals("en"));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getHttpUri());
     assertTrue(target.getHttpUri()
         .equals(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()
@@ -945,7 +948,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     TextBody textBody = ((TextBody) storedAnno.getBody());
     assertNotNull(textBody.getValue());
     assertTrue(textBody.getValue().equals("... this is the textual description of the item ..."));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getSource());
     assertTrue(target.getSource()
         .equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
@@ -999,7 +1002,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());
     assertNotNull(textBody.getValue());
     assertTrue(textBody.getValue().equals("... complete transcribed text in HTML ..."));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getSource());
     assertTrue(target.getSource()
         .equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));

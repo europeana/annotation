@@ -86,7 +86,6 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 			this.setModerationScore(summary.getScore());
 		
 		this.setTarget(annotation.getTarget());
-		this.setTargets(annotation.getTargets());
 		this.setBody(annotation.getBody());
 		
 		this.setScenario(findScenarioType(annotation));
@@ -120,6 +119,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 			return AnnotationScenarioTypes.OBJECT_LINK;
 	    case LINKFORCONTRIBUTING:
             return AnnotationScenarioTypes.CONTRIBUTE_LINK;
+	    case HIGHLIGHTING:
+            return AnnotationScenarioTypes.DEBIAS;            
 		default:
 			return "";
 		}		

@@ -179,53 +179,50 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 
 		for (Annotation anno : annotations) {
 			if (!anno.isDisabled()) {
-				Target annoTarget = anno.getTarget();
-
-				// update resourceIds
-				if (annoTarget.getResourceIds() != null) {
-					List<String> currentResourceIds = annoTarget.getResourceIds();
-					List<String> updatedResourceIds = new ArrayList<String>();
-					for (String id : currentResourceIds) {
-						if (id.equals(oldId)) {
-							String updatedId = newId;
-							updatedResourceIds.add(updatedId);
-						} else {
-							updatedResourceIds.add(id);
+				for(Target annoTarget : anno.getTarget()) {
+					// update resourceIds
+					if (annoTarget.getResourceIds() != null) {
+						List<String> currentResourceIds = annoTarget.getResourceIds();
+						List<String> updatedResourceIds = new ArrayList<String>();
+						for (String id : currentResourceIds) {
+							if (id.equals(oldId)) {
+								String updatedId = newId;
+								updatedResourceIds.add(updatedId);
+							} else {
+								updatedResourceIds.add(id);
+							}
 						}
+						annoTarget.setResourceIds(updatedResourceIds);
 					}
-					annoTarget.setResourceIds(updatedResourceIds);
-				}
-
-				// update fields: httpUri, value(s) + inputString
-				if (annoTarget.getHttpUri() != null) {
-					String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
-					annoTarget.setHttpUri(newHttpUri);
-				}
-
-				if (annoTarget.getValue() != null) {
-					String newValue = annoTarget.getValue().replace(oldId, newId);
-					annoTarget.setValue(newValue);
-					// inputString depends on value(s)
-					annoTarget.setInputString(newValue);
-				}
-
-				// change "value" and "values" fields, so we only have one of
-				// them
-				if (annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
-					List<String> currentValues = annoTarget.getValues();
-					List<String> updatedValues = new ArrayList<String>();
-					for (String value : currentValues) {
-						String updatedValue = value.replace(oldId, newId);
-						updatedValues.add(updatedValue);
+	
+					// update fields: httpUri, value(s) + inputString
+					if (annoTarget.getHttpUri() != null) {
+						String newHttpUri = annoTarget.getHttpUri().replace(oldId, newId);
+						annoTarget.setHttpUri(newHttpUri);
 					}
-					annoTarget.setValues(updatedValues);
-					// inputString depends on value(s)
-					annoTarget.setInputString(updatedValues.toString());
+	
+					if (annoTarget.getValue() != null) {
+						String newValue = annoTarget.getValue().replace(oldId, newId);
+						annoTarget.setValue(newValue);
+						// inputString depends on value(s)
+						annoTarget.setInputString(newValue);
+					}
+	
+					// change "value" and "values" fields, so we only have one of
+					// them
+					if (annoTarget.getValues() != null && !annoTarget.getValues().isEmpty()) {
+						List<String> currentValues = annoTarget.getValues();
+						List<String> updatedValues = new ArrayList<String>();
+						for (String value : currentValues) {
+							String updatedValue = value.replace(oldId, newId);
+							updatedValues.add(updatedValue);
+						}
+						annoTarget.setValues(updatedValues);
+						// inputString depends on value(s)
+						annoTarget.setInputString(updatedValues.toString());
+					}
 				}
-
-				// replace target
-				anno.setTarget(annoTarget);
-
+				
 				// update mongo
 				try {
 					PersistentAnnotation storedAnno = (PersistentAnnotation) updateAndReindex(
@@ -240,6 +237,7 @@ public class AdminServiceImpl extends BaseAnnotationServiceImpl implements Admin
 					status.incrementFailureCount();
 					throw e;
 				}
+				
 			}
 		}
 

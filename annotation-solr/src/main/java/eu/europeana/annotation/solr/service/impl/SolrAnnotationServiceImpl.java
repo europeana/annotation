@@ -577,7 +577,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
 	  SolrQuery query = new SolrQuery();	
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + anno.getMotivationType().getOaType() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
       if(anno.getBody().getLanguage()!=null) {
         query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*"); 
       }
@@ -592,7 +592,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfDupplicate) {
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
       return query;
@@ -602,7 +602,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
       SolrQuery query = new SolrQuery();
       query.setQuery(WebAnnotationModelFields.MOTIVATION + ":(\"" + MotivationTypes.CAPTIONING.getOaType() + "\"" 
           + " OR " + "\"" + MotivationTypes.SUBTITLING.getOaType() + "\")");
-      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
       query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
       addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
       SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
@@ -612,7 +612,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     private SolrQuery solrUniquenessQueryDebias(Annotation anno, boolean noSelfDupplicate) {
         SolrQuery query = new SolrQuery();
         query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
-        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().getSource() + "\"");
+        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
         List<String> bodyUris = extractUriValues(anno.getBody());
         for (int i=0; i<bodyUris.size(); i++) { 
           query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
@@ -631,7 +631,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
     private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
       if(anno.getTarget()!=null) {
         // extract URIs for target_uri field
-        List<String> targetUris = extractUriValues(anno.getTarget());
+        List<String> targetUris = extractUriValues(anno.getTarget().get(0));
         if(targetUris!=null) {
           // Extract URIs for target_record_id
           List<String> recordIds = extractRecordIds(targetUris);

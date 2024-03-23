@@ -41,9 +41,9 @@ public class MongoContainer extends GenericContainer<MongoContainer> {
 
     this.withEnv("MONGO_INITDB_ROOT_USERNAME", adminUsername);
     this.withEnv("MONGO_INITDB_ROOT_PASSWORD", adminPassword);
-    this.withEnv("ANNOTATION_DB", annotationDb);
+    this.withEnv("MONGO_INITDB_DATABASE", annotationDb);
 
-    this.waitingFor(Wait.forLogMessage("(?i).*waiting for connections.*", 1));
+    this.waitingFor(Wait.forLogMessage("(?i).*Waiting for connections.*", 1));
     this.annotationDb = annotationDb;
   }
 

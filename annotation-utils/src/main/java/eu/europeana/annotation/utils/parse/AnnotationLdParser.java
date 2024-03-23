@@ -3,6 +3,7 @@ package eu.europeana.annotation.utils.parse;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -366,12 +367,12 @@ public class AnnotationLdParser extends JsonLdParser {
 		if (valueObject instanceof String) {
 			Target target=parseTarget(TargetTypes.WEB_PAGE.name(), (String) valueObject);
 			target.setInputString(valueObject.toString());
-			anno.setTarget(target);
+			anno.setTarget(Arrays.asList(target));
 		}
 		else if (valueObject instanceof JSONObject) {
 			Target target=parseTarget((JSONObject) valueObject);
 			target.setInputString(valueObject.toString());
-			anno.setTarget(target);
+			anno.setTarget(Arrays.asList(target));
 		}
 		else if (valueObject instanceof JSONArray) {
 			JSONArray jsonArray=(JSONArray)valueObject;
@@ -380,13 +381,13 @@ public class AnnotationLdParser extends JsonLdParser {
 					//in case we have an array of JSONObject objects, set multiple targets
 					List<Target> targets=parseTargets(jsonArray);
 					if(! targets.isEmpty()) {
-						anno.setTargets(targets);
+						anno.setTarget(targets);
 					}
 				}
 				else {
 					Target target= parseTarget((JSONArray) valueObject);
 					target.setInputString(valueObject.toString());
-					anno.setTarget(target);
+					anno.setTarget(Arrays.asList(target));
 				}
 			}
 		}
@@ -725,7 +726,7 @@ public class AnnotationLdParser extends JsonLdParser {
 			switch(selectorType) {
 				case WebAnnotationFields.RDF_STATEMENT_SELECTOR:
 					parseRdfStatementSelector(specificResource, json);
-					break;
+					return;
 				default:
 					break;
 			}	
@@ -744,12 +745,22 @@ public class AnnotationLdParser extends JsonLdParser {
 			BaseRDFStatementSelector rdfStatementSelector = (BaseRDFStatementSelector) SelectorObjectFactory.getInstance().createObjectInstance(SelectorTypes.RDF_STATEMENT_SELECTOR);
 			
 			String hasPredicate=json.getString(WebAnnotationModelFields.HAS_PREDICATE);
-			JSONObject refinedBy=json.getJSONObject(WebAnnotationModelFields.REFINED_BY);
-			BaseTextQuoteSelector baseTextQuoteSelector = parseTextQuoteSelector(refinedBy);
-			
 			rdfStatementSelector.setHasPredicate(hasPredicate);
-			rdfStatementSelector.setRefinedBy(baseTextQuoteSelector);
+
+			if(json.has(WebAnnotationModelFields.REFINED_BY)) {
+				JSONObject refinedBy=json.getJSONObject(WebAnnotationModelFields.REFINED_BY);
+				BaseTextQuoteSelector baseTextQuoteSelector = parseTextQuoteSelector(refinedBy);			
+				rdfStatementSelector.setRefinedBy(baseTextQuoteSelector);
+			}
 			
+			if(json.has(WebAnnotationModelFields.HAS_SUBJECT)) {
+				rdfStatementSelector.setHasSubject(json.getString(WebAnnotationModelFields.HAS_SUBJECT));
+			}
+
+			if(json.has(WebAnnotationModelFields.HAS_OBJECT)) {
+				rdfStatementSelector.setHasObject(json.getString(WebAnnotationModelFields.HAS_OBJECT));
+			}
+
 			specificResource.setSelector(rdfStatementSelector);
 		}
 		catch (JSONException e) {
@@ -767,8 +778,15 @@ public class AnnotationLdParser extends JsonLdParser {
 			exact.put(WebAnnotationModelFields.EXACT_VALUE, exactJson.getString(WebAnnotationModelFields.EXACT_VALUE));
 			exact.put(WebAnnotationModelFields.EXACT_LANGUAGE, exactJson.getString(WebAnnotationModelFields.EXACT_LANGUAGE));
 			baseTextQuoteSelector.setExact(exact);
-			baseTextQuoteSelector.setPrefix(json.getString(WebAnnotationModelFields.PREFIX));
-			baseTextQuoteSelector.setSuffix(json.getString(WebAnnotationModelFields.SUFFIX));
+			
+			if(json.has(WebAnnotationModelFields.PREFIX)) {
+				baseTextQuoteSelector.setPrefix(json.getString(WebAnnotationModelFields.PREFIX));
+			}
+			
+			if(json.has(WebAnnotationModelFields.SUFFIX)) {
+				baseTextQuoteSelector.setSuffix(json.getString(WebAnnotationModelFields.SUFFIX));
+			}
+			
 			return baseTextQuoteSelector;
 		}
 		catch (JSONException e) {

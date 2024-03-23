@@ -9,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.WhitelistJsonApiImpl;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;

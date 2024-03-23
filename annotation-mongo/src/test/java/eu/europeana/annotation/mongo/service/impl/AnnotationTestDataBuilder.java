@@ -3,7 +3,11 @@ package eu.europeana.annotation.mongo.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Arrays;
+
 import javax.annotation.Resource;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.ImageAnnotation;
 import eu.europeana.annotation.definitions.model.ObjectTag;
@@ -73,7 +77,7 @@ public class AnnotationTestDataBuilder {
 	protected ObjectTag buildObjectTag() {
 		ObjectTag persistentObject = new PersistentObjectTagImpl();
 		Target target = buildWebpageTarget();
-		persistentObject.setTarget(target);
+		persistentObject.setTarget(Arrays.asList(target));
 	
 		// set AnnotatedBy
 		Agent creator = new SoftwareAgent();
@@ -119,7 +123,7 @@ public class AnnotationTestDataBuilder {
 		
 		// set target
 		Target target = buildImageTarget();
-		persistentObject.setTarget(target);
+		persistentObject.setTarget(Arrays.asList(target));
 			
 		//set Body
 		String comment = "Same hair style as in Dracula Untold: https://www.youtube.com/watch?v=_2aWqecTTuE";

@@ -609,10 +609,10 @@ public abstract class BaseAnnotationValidator {
     validateTargetFields(webAnnotation.getTarget());
 
     // validate target URLs against whitelist
-    if (webAnnotation.getTarget().getValue() != null) {
-      validateLinkingAgainstWhitelist(webAnnotation.getTarget().getValue());
-    } else if (webAnnotation.getTarget().getValues() != null) {
-      for (String url : webAnnotation.getTarget().getValues()) {
+    if (webAnnotation.getTarget().get(0).getValue() != null) {
+      validateLinkingAgainstWhitelist(webAnnotation.getTarget().get(0).getValue());
+    } else if (webAnnotation.getTarget().get(0).getValues() != null) {
+      for (String url : webAnnotation.getTarget().get(0).getValues()) {
         validateLinkingAgainstWhitelist(url);
       }
     }
@@ -649,7 +649,7 @@ public abstract class BaseAnnotationValidator {
       PropertyValidationException {
     validateBodyExists(webAnnotation.getBody());
     validateTranscriptionBodyWithFullTextResource(webAnnotation.getBody(),
-        webAnnotation.getTarget(), authentication);
+        webAnnotation.getTarget().get(0), authentication);
     // validate target
     validateTargetFields(webAnnotation.getTarget());
   }
@@ -657,7 +657,7 @@ public abstract class BaseAnnotationValidator {
   protected void validateDebias(Annotation webAnnotation) throws PropertyValidationException {
 	  validateBodyExists(webAnnotation.getBody());
 	  // validate targets
-	  validateMultipleTargets(webAnnotation.getTargets());
+	  validateMultipleTargets(webAnnotation.getTarget());
   }  
 
   /**
@@ -681,7 +681,7 @@ public abstract class BaseAnnotationValidator {
     validateTargetFields(webAnnotation.getTarget());
 
     // check mandatory field edmRights
-    validateEdmRights(body, webAnnotation.getTarget(), authentication);
+    validateEdmRights(body, webAnnotation.getTarget().get(0), authentication);
   }
 
   protected void validateLinkForContributing(Annotation webAnnotation)
@@ -707,8 +707,8 @@ public abstract class BaseAnnotationValidator {
     }
 
     // specific resources not allowed
-    String scope = webAnnotation.getTarget().getScope();
-    String source = webAnnotation.getTarget().getSource();
+    String scope = webAnnotation.getTarget().get(0).getScope();
+    String source = webAnnotation.getTarget().get(0).getSource();
     if (scope != null || source != null) {
       throw new RequestBodyValidationException(I18nConstants.INVALID_PARAM_VALUE,
           I18nConstants.INVALID_PARAM_VALUE,
@@ -717,7 +717,7 @@ public abstract class BaseAnnotationValidator {
     }
 
     // target.id/httpUri is mandatory, however the check for specific resources takes precedence
-    if (StringUtils.isBlank(webAnnotation.getTarget().getHttpUri())) {
+    if (StringUtils.isBlank(webAnnotation.getTarget().get(0).getHttpUri())) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TARGET});
     }
@@ -776,24 +776,26 @@ public abstract class BaseAnnotationValidator {
 	  }
   }
 
-  private void validateTargetFields(Target target) throws PropertyValidationException {
+  private void validateTargetFields(List<Target> targets) throws PropertyValidationException {
     // validates that the target value/values/scope (depending on what provided) has a valid base
     // url
     // target is mandatory field
-    if (target == null) {
+    if (targets == null) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TARGET});
     }
 
-    if (target.getValue() != null) {
-      // validate simple target
-      validateTargetSimpleValue(target);
-    } else if (target.getValues() != null) {
-      // validate multiple target values
-      validateTargetMultipleValues(target);
-    } else if (target.getSource()!=null || target.getScope()!=null || target.getSelector()!=null) {
-      // validate target for specific resource
-      validateTargetSpecificResource(target);
+    for(Target target : targets) {
+		if (target.getValue() != null) {
+		  // validate simple target
+		  validateTargetSimpleValue(target);
+		} else if (target.getValues() != null) {
+		  // validate multiple target values
+		  validateTargetMultipleValues(target);
+		} else if (target.getSource()!=null || target.getScope()!=null || target.getSelector()!=null) {
+		  // validate target for specific resource
+		  validateTargetSpecificResource(target);
+		}
     }
   }
 
@@ -809,12 +811,13 @@ public abstract class BaseAnnotationValidator {
             I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
             new String[] {TARGET_SCOPE + " or " + TARGET_SELECTOR});
     }
+    
     //validate target selectors
     if(target.getSelector()!=null) {
     	validateTargetSelectors(target.getSelector());
     }
 
-    if (!target.getScope().contains(getConfiguration().getAnnoItemDataEndpoint())) {
+    if (target.getScope()!=null && !target.getScope().contains(getConfiguration().getAnnoItemDataEndpoint())) {
       throw new PropertyValidationException(
           I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
           I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,

@@ -97,6 +97,8 @@ public interface WebAnnotationModelFields {
 	
 	// selector fields
 	public static final String HAS_PREDICATE="hasPredicate";
+	public static final String HAS_SUBJECT="hasSubject";
+	public static final String HAS_OBJECT="hasObject";
 	public static final String REFINED_BY="refinedBy";
 	public static final String EXACT="exact";
 	public static final String EXACT_VALUE="@value";

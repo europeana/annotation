@@ -3,10 +3,10 @@ package eu.europeana.annotation.mongo.service;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.Key;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.QueryResults;
 import com.mongodb.WriteResult;
+import dev.morphia.Key;
+import dev.morphia.query.Query;
+import dev.morphia.query.QueryResults;
 import eu.europeana.annotation.definitions.exception.ModerationRecordValidationException;
 import eu.europeana.annotation.definitions.exception.ProviderAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
@@ -65,7 +65,7 @@ public class PersistentModerationRecordServiceImpl extends AbstractNoSqlServiceI
 		}
 
 		QueryResults<? extends PersistentModerationRecord> results = getDao().find(query);
-		return results.asList();
+		return asList(results);
 	}
 
 	protected Query<PersistentModerationRecord> createQuery(PersistentModerationRecord moderationRecord) {

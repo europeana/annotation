@@ -29,14 +29,10 @@ public interface Annotation {
 
 	public abstract MotivationTypes getMotivationType();
 
-	public abstract void setTarget(Target target);
+	public abstract void setTarget(List<Target> target);
 
-	public abstract Target getTarget();
+	public abstract List<Target> getTarget();
 	
-	public abstract void setTargets(List<Target> target);
-
-	public abstract List<Target> getTargets();
-
 	public abstract void setBody(Body body);
 
 	public abstract Body getBody();

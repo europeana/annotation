@@ -206,17 +206,11 @@ public class SolrAnnotationUtils {
     }
 
     protected void processTargetUris(SolrAnnotation solrAnnotation) {
-    	SpecificResource internetResource = null;
-    	if(solrAnnotation.getTarget()!=null) {
-    		internetResource=solrAnnotation.getTarget();
-    	}
-    	else if(solrAnnotation.getTargets()!=null && solrAnnotation.getTargets().size()>0) {
-    		/*
-    		 * in case of multiple targets, they all have the same uri, e.g. a source (e.g. in case of the debias targets),
-    		 * so we only process the first target
-    		 */
-    		internetResource=solrAnnotation.getTargets().get(0);
-    	}
+		/*
+		 * in case of multiple targets, they all have the same uri, e.g. a source (e.g. in case of the debias targets),
+		 * so we only process the first target
+		 */
+    	SpecificResource internetResource = solrAnnotation.getTarget().get(0);
     	
 		// extract URIs for target_uri field
 		List<String> targetUris = extractUriValues(internetResource);

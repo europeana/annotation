@@ -4,13 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Field;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.Indexes;
-import org.mongodb.morphia.annotations.Property;
+
+import dev.morphia.annotations.Embedded;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Field;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Index;
+import dev.morphia.annotations.Indexes;
+import dev.morphia.annotations.Property;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -43,9 +44,7 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 	@Embedded(PersistentAnnotation.FIELD_BODY)
 	private Body body;
 	@Embedded
-	private Target target;
-	@Embedded
-	private List<Target> targets;
+	private List<Target> target;
 
 	@Property(PersistentAnnotation.FIELD_MOTIVATION)
 	private String motivation;
@@ -97,20 +96,12 @@ public class PersistentAnnotationImpl implements PersistentAnnotation, Persisten
 		this.body = body;
 	}
 
-	public Target getTarget() {
+	public List<Target> getTarget() {
 		return target;
 	}
 
-	public void setTarget(Target target) {
+	public void setTarget(List<Target> target) {
 		this.target = target;
-	}
-
-	public List<Target> getTargets() {
-		return targets;
-	}
-
-	public void setTargets(List<Target> targets) {
-		this.targets = targets;
 	}
 		
 	public String getMotivation() {

@@ -66,7 +66,7 @@ public class SemanticTaggingTest extends BaseTaggingTest {
 		addCreatedAnnotation(storedAnno);
 		log.info(storedAnno.getBody().getInternalType());
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
-		assertTrue(storedAnno.getTarget().getSource() != null);
+		assertTrue(storedAnno.getTarget().get(0).getSource() != null);
 		assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.SEMANTIC_TAG.name());
 	}
 

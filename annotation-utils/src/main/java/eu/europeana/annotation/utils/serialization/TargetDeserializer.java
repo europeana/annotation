@@ -31,7 +31,6 @@ public class TargetDeserializer extends StdDeserializer<Target> {
 		ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 		ObjectNode root = (ObjectNode) mapper.readTree(jp);
 		Class<? extends Target> realClass = null;
-		
 		Iterator<Entry<String, JsonNode>> elementsIterator = root.getFields();
 		while (elementsIterator.hasNext()) {
 			Entry<String, JsonNode> element = elementsIterator.next();
