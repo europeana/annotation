@@ -1,8 +1,11 @@
 package eu.europeana.annotation.definitions.model.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -105,7 +108,7 @@ public class AnnotationTestObjectBuilder {
 
         // set target
 		Target target = buildTarget();
-		annotation.setTarget(target);
+		annotation.setTarget(Arrays.asList(target));
 			
 		//set Body
 		String comment = "Vlad Tepes";
@@ -160,7 +163,7 @@ public class AnnotationTestObjectBuilder {
 
         // set target
 		Target target = buildTarget();
-		annotation.setTarget(target);
+		annotation.setTarget(Arrays.asList(target));
 			
 		//set Body
 		String comment = "Vlad Tepes";

@@ -13,8 +13,7 @@ public class PersistentImageAnnotationImpl extends PersistentAnnotationImpl impl
 
 	@Override
 	public String getImageUrl() {
-		
-		return getTarget().getHttpUri();
+		return getTarget().get(0).getHttpUri();
 	}
 
 }

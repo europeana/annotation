@@ -8,6 +8,7 @@ import eu.europeana.annotation.mongo.model.PersistentImageAnnotationImpl;
 import eu.europeana.annotation.mongo.model.PersistentLinkForContributingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectCommentImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectDescribingImpl;
+import eu.europeana.annotation.mongo.model.PersistentObjectHighlightingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectLinkingImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTagImpl;
 import eu.europeana.annotation.mongo.model.PersistentObjectTranscriptionImpl;
@@ -68,6 +69,9 @@ public class PersistentAnnotationFactory extends AbstractAnnotationFactory{
 	    case OBJECT_LINK_FOR_CONTRIBUTING:
             ret = PersistentLinkForContributingImpl.class;
             break;
+	    case OBJECT_HIGHLIGHTING:
+            ret = PersistentObjectHighlightingImpl.class;
+            break;            
 		default:
 			throw new RuntimeException(
 					"The given type is not supported by the web model");

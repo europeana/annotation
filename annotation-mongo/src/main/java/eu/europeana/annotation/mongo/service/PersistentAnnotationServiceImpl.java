@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
+
 import dev.morphia.query.Criteria;
 import dev.morphia.query.CriteriaContainer;
 import dev.morphia.query.FindOptions;
@@ -97,7 +99,7 @@ public class PersistentAnnotationServiceImpl extends AbstractNoSqlServiceImpl<Pe
 	}
 
 	protected void validateTarget(PersistentAnnotation object) {
-		if (object.getTarget() == null)
+		if (object.getTarget()==null)
 			throw new AnnotationValidationException(AnnotationValidationException.ERROR_NULL_TARGET);
 	}
 

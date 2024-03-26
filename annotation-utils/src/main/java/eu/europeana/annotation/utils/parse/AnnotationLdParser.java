@@ -3,6 +3,7 @@ package eu.europeana.annotation.utils.parse;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,10 +34,13 @@ import eu.europeana.annotation.definitions.model.body.impl.VcardAddressBody;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.AnnotationObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.BodyObjectFactory;
+import eu.europeana.annotation.definitions.model.factory.impl.SelectorObjectFactory;
 import eu.europeana.annotation.definitions.model.factory.impl.TargetObjectFactory;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
 import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.resource.impl.BaseInternetResource;
+import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseRDFStatementSelector;
+import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseTextQuoteSelector;
 import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
@@ -45,8 +49,10 @@ import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ContextTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.TargetTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelKeywords;
 
 /**
@@ -279,9 +285,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		case WebAnnotationFields.TARGET:
 			// TODO: move the parsing of ID and target in the upper method to
 			// avoid redundant computations
-			Target target = parseTarget(valueObject);
-			target.setInputString(valueObject.toString());
-			anno.setTarget(target);
+			parseTarget(anno, valueObject);
 			break;
 		case (WebAnnotationFields.EQUIVALENT_TO):
 			anno.setEquivalentTo((String) valueObject);
@@ -342,13 +346,51 @@ public class AnnotationLdParser extends JsonLdParser {
 		return parseAgent(AgentTypes.PERSON, valueObject);
 	}
 
-	private Target parseTarget(Object valueObject) throws JsonParseException {
-		if (valueObject instanceof String)
-			return parseTarget(TargetTypes.WEB_PAGE.name(), (String) valueObject);
-		else if (valueObject instanceof JSONObject)
-			return parseTarget((JSONObject) valueObject);
-		else if (valueObject instanceof JSONArray)
-			return parseTarget((JSONArray) valueObject);
+	private List<Target> parseTargets(JSONArray valueObject) throws JsonParseException {
+		List<Target> targets=new ArrayList<>();
+		try {
+			for(int i=0;i<valueObject.length();i++) {
+				JSONObject targetJson = valueObject.getJSONObject(i);
+				Target target=parseTarget(targetJson);
+				target.setInputString(valueObject.toString());
+				targets.add(target);
+			}
+		}
+		catch (JSONException e) {
+			throw new JsonParseException("unsupported targets (array) deserialization for json represetnation: " + valueObject
+					+ " " + e.getMessage());
+		}
+		return targets;
+	}
+
+	private void parseTarget(Annotation anno, Object valueObject) throws JsonParseException, JSONException {
+		if (valueObject instanceof String) {
+			Target target=parseTarget(TargetTypes.WEB_PAGE.name(), (String) valueObject);
+			target.setInputString(valueObject.toString());
+			anno.setTarget(Arrays.asList(target));
+		}
+		else if (valueObject instanceof JSONObject) {
+			Target target=parseTarget((JSONObject) valueObject);
+			target.setInputString(valueObject.toString());
+			anno.setTarget(Arrays.asList(target));
+		}
+		else if (valueObject instanceof JSONArray) {
+			JSONArray jsonArray=(JSONArray)valueObject;
+			if(jsonArray.length()>0) {
+				if(jsonArray.get(0) instanceof JSONObject) {
+					//in case we have an array of JSONObject objects, set multiple targets
+					List<Target> targets=parseTargets(jsonArray);
+					if(! targets.isEmpty()) {
+						anno.setTarget(targets);
+					}
+				}
+				else {
+					Target target= parseTarget((JSONArray) valueObject);
+					target.setInputString(valueObject.toString());
+					anno.setTarget(Arrays.asList(target));
+				}
+			}
+		}
 		else
 			throw new JsonParseException("unsupported target+- deserialization for: " + valueObject);
 	}
@@ -663,6 +705,10 @@ public class AnnotationLdParser extends JsonLdParser {
 			parseEuropeanaResourceId(specificResource, value);		    
 			break;
 
+		case WebAnnotationFields.SELECTOR:
+			parseSelector(specificResource, value);
+			break;
+
 		case WebAnnotationFields.RIGHTS:
 			specificResource.setEdmRights(value.toString());
 			break;
@@ -672,6 +718,83 @@ public class AnnotationLdParser extends JsonLdParser {
 
 		}
 	}
+	
+	protected void parseSelector(SpecificResource specificResource, Object value) throws JsonParseException {
+		JSONObject json = (JSONObject) value;
+		try {
+			String selectorType=json.getString(WebAnnotationModelFields.TYPE);
+			switch(selectorType) {
+				case WebAnnotationFields.RDF_STATEMENT_SELECTOR:
+					parseRdfStatementSelector(specificResource, json);
+					return;
+				default:
+					break;
+			}	
+			throw new AnnotationAttributeInstantiationException(
+					"Cannot find appropriate selector type for string: " + selectorType);
+		}
+		catch (JSONException e) {
+			throw new JsonParseException(
+					"unsupported json deserialization for the selector field with the json: " + json + " " + e.getMessage());
+		}
+		
+	}
+	
+	private void parseRdfStatementSelector(SpecificResource specificResource, JSONObject json) throws JsonParseException {
+		try {
+			BaseRDFStatementSelector rdfStatementSelector = (BaseRDFStatementSelector) SelectorObjectFactory.getInstance().createObjectInstance(SelectorTypes.RDF_STATEMENT_SELECTOR);
+			
+			String hasPredicate=json.getString(WebAnnotationModelFields.HAS_PREDICATE);
+			rdfStatementSelector.setHasPredicate(hasPredicate);
+
+			if(json.has(WebAnnotationModelFields.REFINED_BY)) {
+				JSONObject refinedBy=json.getJSONObject(WebAnnotationModelFields.REFINED_BY);
+				BaseTextQuoteSelector baseTextQuoteSelector = parseTextQuoteSelector(refinedBy);			
+				rdfStatementSelector.setRefinedBy(baseTextQuoteSelector);
+			}
+			
+			if(json.has(WebAnnotationModelFields.HAS_SUBJECT)) {
+				rdfStatementSelector.setHasSubject(json.getString(WebAnnotationModelFields.HAS_SUBJECT));
+			}
+
+			if(json.has(WebAnnotationModelFields.HAS_OBJECT)) {
+				rdfStatementSelector.setHasObject(json.getString(WebAnnotationModelFields.HAS_OBJECT));
+			}
+
+			specificResource.setSelector(rdfStatementSelector);
+		}
+		catch (JSONException e) {
+			throw new JsonParseException(
+					"unsupported json deserialization for the RdfStatementSelector json representation: " + json + " " + e.getMessage());
+		}
+		
+	}
+
+	private BaseTextQuoteSelector parseTextQuoteSelector(JSONObject json) throws JsonParseException {
+		try {
+			BaseTextQuoteSelector baseTextQuoteSelector = (BaseTextQuoteSelector) SelectorObjectFactory.getInstance().createObjectInstance(SelectorTypes.TEXT_QUOTE_SELECTOR);
+			JSONObject exactJson=json.getJSONObject(WebAnnotationModelFields.EXACT);
+			Map<String,String> exact=new HashMap<>();
+			exact.put(WebAnnotationModelFields.EXACT_VALUE, exactJson.getString(WebAnnotationModelFields.EXACT_VALUE));
+			exact.put(WebAnnotationModelFields.EXACT_LANGUAGE, exactJson.getString(WebAnnotationModelFields.EXACT_LANGUAGE));
+			baseTextQuoteSelector.setExact(exact);
+			
+			if(json.has(WebAnnotationModelFields.PREFIX)) {
+				baseTextQuoteSelector.setPrefix(json.getString(WebAnnotationModelFields.PREFIX));
+			}
+			
+			if(json.has(WebAnnotationModelFields.SUFFIX)) {
+				baseTextQuoteSelector.setSuffix(json.getString(WebAnnotationModelFields.SUFFIX));
+			}
+			
+			return baseTextQuoteSelector;
+		}
+		catch (JSONException e) {
+			throw new JsonParseException(
+					"unsupported json deserialization for the TextQuoteSelector json representation: " + json + " " + e.getMessage());
+		}
+	}
+
 
 	protected void parseEuropeanaResourceId(SpecificResource specificResource, Object value) {
 	    if(specificResource instanceof Target) {
@@ -1002,7 +1125,9 @@ public class AnnotationLdParser extends JsonLdParser {
 		case TAGGING:
 			return guesBodyTagSubType(value);
 		case LINKFORCONTRIBUTING:
-          return BodyInternalTypes.SPECIFIC_RESOURCE;
+			return BodyInternalTypes.SPECIFIC_RESOURCE;
+		case HIGHLIGHTING:
+			return BodyInternalTypes.SEMANTIC_TAG;
 		default:
 			break;
 		}
@@ -1054,7 +1179,9 @@ public class AnnotationLdParser extends JsonLdParser {
 				return BodyInternalTypes.TAG;
 			break;
 		case LINKFORCONTRIBUTING:
-          return BodyInternalTypes.SPECIFIC_RESOURCE;
+			return BodyInternalTypes.SPECIFIC_RESOURCE;
+		case HIGHLIGHTING:
+			return BodyInternalTypes.SEMANTIC_TAG;
 		default:
 			break;
 
@@ -1063,7 +1190,7 @@ public class AnnotationLdParser extends JsonLdParser {
 		throw new AnnotationAttributeInstantiationException(
 				"Cannot find appropriate body type with MotivationType: " + motivation);
 	}
-
+	
 	private BodyInternalTypes guesBodyTagSubType(String value) {
 		// TODO: improve this .. similar check is done in validation.. these two
 		// places should be merged.

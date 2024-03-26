@@ -44,7 +44,7 @@ public class SearchLinksTest extends BaseSearchTest {
 	 */
 	private void validateLink(Annotation storedAnno) {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getValues());
 		String VALUE_TARGET_LINK_URI = ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2020601/https___1914_1918_europeana_eu_contributions_19584";
 		assertTrue(target.getValues().contains(VALUE_TARGET_LINK_URI));
@@ -77,7 +77,7 @@ public class SearchLinksTest extends BaseSearchTest {
 	 */
 	private void validateSemanticLink(Annotation storedAnno) {
 		assertTrue(storedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		String VALUE_TARGET_LINK_SEMANTIC_URI = ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6";
 		assertTrue(target.getHttpUri().equals(VALUE_TARGET_LINK_SEMANTIC_URI));

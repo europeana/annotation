@@ -3,10 +3,13 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
+
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.TagBody;
@@ -64,7 +67,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		assertTrue(tagBody.getHttpUri().equals("http://www.geonames.org/2988507"));
 		assertNotNull(tagBody.getLanguage());
 		assertTrue(tagBody.getLanguage().equals("en"));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 	}
@@ -106,7 +109,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		assertTrue(placeBody.getLatitude().equals("48.853415"));
 		assertNotNull(placeBody.getLongitude());
 		assertTrue(placeBody.getLongitude().equals("-102.348800"));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 	}
@@ -150,7 +153,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		TagBody tagBody = ((TagBody) storedAnno.getBody());
 		assertNotNull(tagBody.getValue());
 		assertTrue(tagBody.getValue().equals("trombone"));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/000002/_UEDIN_214"));
 	}
@@ -197,7 +200,7 @@ public class SearchTagsTest extends BaseSearchTest {
 		assertTrue(tagBody.getHttpUri().equals("http://sws.geonames.org/2988506"));
 		assertNotNull(tagBody.getLanguage());
 		assertTrue(tagBody.getLanguage().equals("en"));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 	}

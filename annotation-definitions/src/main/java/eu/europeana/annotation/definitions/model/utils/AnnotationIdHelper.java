@@ -1,8 +1,7 @@
 package eu.europeana.annotation.definitions.model.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.target.impl.BaseTarget;
+
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 public class AnnotationIdHelper {
@@ -50,24 +49,6 @@ public class AnnotationIdHelper {
 	    res[1] = object;
 	}
 	return res;
-    }
-
-    /**
-     * Extract resourceId from target.source.httpUri if source exists otherwise from
-     * target.httpUri.
-     * 
-     * @param newAnnotation
-     * @return resourceId string
-     */
-    public static String extractResourceId(Annotation newAnnotation) {
-	String resourceId = "";
-	if (((BaseTarget) newAnnotation.getTarget()).getSourceResource() != null) {
-	    resourceId = extractResourceIdFromHttpUri(
-		    ((BaseTarget) newAnnotation.getTarget()).getSourceResource().getHttpUri());
-	} else {
-	    resourceId = extractResourceIdFromHttpUri(newAnnotation.getTarget().getHttpUri());
-	}
-	return resourceId;
     }
 
     /**

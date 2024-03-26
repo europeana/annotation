@@ -4,6 +4,7 @@ import eu.europeana.annotation.definitions.exception.AnnotationInstantiationExce
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.impl.BaseCaptionAnnotation;
+import eu.europeana.annotation.definitions.model.impl.BaseHighlightingAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseDescribingAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageAnnotation;
 import eu.europeana.annotation.definitions.model.impl.BaseImageTag;
@@ -85,8 +86,11 @@ public class AnnotationObjectFactory
 			annoType = AnnotationTypes.OBJECT_DESCRIBING;
 			break;
         case LINKFORCONTRIBUTING:
-          annoType = AnnotationTypes.OBJECT_LINK_FOR_CONTRIBUTING;
-          break;
+        	annoType = AnnotationTypes.OBJECT_LINK_FOR_CONTRIBUTING;
+        	break;
+        case HIGHLIGHTING:
+            annoType = AnnotationTypes.OBJECT_HIGHLIGHTING;
+            break;          
 		default:
 			break;
 		}
@@ -141,6 +145,9 @@ public class AnnotationObjectFactory
 	    case OBJECT_LINK_FOR_CONTRIBUTING:
             ret = BaseLinkForContributingAnnotation.class;
             break;
+	    case OBJECT_HIGHLIGHTING:
+            ret = BaseHighlightingAnnotation.class;
+            break;            
 		default:
 			throw new RuntimeException(
 					"The given type is not supported by the web model");
