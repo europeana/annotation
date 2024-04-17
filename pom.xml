@@ -92,6 +92,7 @@
 		<!-- sonar plugins -->
 		<jacoco-plugin.version>0.8.7</jacoco-plugin.version>
 		<pmd-plugin.version>3.15.0</pmd-plugin.version>
+		<flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
 		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
 		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
 		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
@@ -216,6 +217,7 @@
 			</testResource>
 		</testResources>
 
+
 		<!--  plugins to run on build time  -->
 		<plugins>
 			<plugin>
@@ -323,6 +325,38 @@
 								</resource>
 							</resources>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>${java.version}</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>${flatten-maven-plugin.version}</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>resolveCiFriendliesOnly</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
