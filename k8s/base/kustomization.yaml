@@ -1,8 +1,10 @@
 resources:
   - deployment.yaml
 
-commonLabels:
-  app: annotation-api
+labels:
+  - includeSelectors: true
+    pairs:
+      app: annotation-api
 
 # expects files to be in the same directory
 secretGenerator:
