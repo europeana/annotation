@@ -7,3 +7,4 @@
 **/*.bk
 **/*.user.properties
 **/*.jks
+**/.flattened-pom.xml
