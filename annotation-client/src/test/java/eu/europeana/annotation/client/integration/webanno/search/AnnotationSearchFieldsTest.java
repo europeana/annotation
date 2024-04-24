@@ -3,10 +3,13 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
+
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -65,7 +68,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(placeBody.getLatitude().equals("48.853415"));
 		assertNotNull(placeBody.getLongitude());
 		assertTrue(placeBody.getLongitude().equals("-102.348800"));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 	}
@@ -97,7 +100,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		TagBody tagBody = ((TagBody) retrievedAnno.getBody());
 		assertNotNull(tagBody.getValue());
 		assertTrue(tagBody.getValue().equals("trombone"));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/000002/_UEDIN_214"));
 	}
@@ -125,7 +128,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		TextBody textBody = ((TextBody) retrievedAnno.getBody());
 		assertNotNull(textBody.getValue());
 		assertTrue(textBody.getValue().equals("... this is the textual description of the item ..."));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getSource());
 		assertTrue(target.getSource().equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
 		assertNotNull(target.getScope());
@@ -148,7 +151,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// validate fields
 		assertTrue(retrievedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getValues());
 		assertTrue(target.getValues().contains(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2020601/https___1914_1918_europeana_eu_contributions_19584"));
 	}
@@ -169,7 +172,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		
 		// validate fields
 		assertTrue(retrievedAnno.getMotivation().equals(MotivationTypes.LINKING.name().toLowerCase()));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 	}
@@ -198,7 +201,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(graphBody.getNode().getHttpUri().equals("https://www.wikidata.org/wiki/Q762"));
 		assertTrue(graphBody.getRelationName().equals("isSimilarTo"));
 		assertTrue(graphBody.getResourceUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/2048410/item_I5DUPVW2Q5HT2OQFSVXV7VYODA5P32P6"));
 	}
@@ -232,7 +235,7 @@ public class AnnotationSearchFieldsTest extends BaseSearchTest {
 		assertTrue(tagBody.getHttpUri().equals("http://sws.geonames.org/2988506"));
 		assertNotNull(tagBody.getLanguage());
 		assertTrue(tagBody.getLanguage().equals("en"));
-		Target target = retrievedAnno.getTarget();
+		Target target = retrievedAnno.getTarget().get(0);
 		assertNotNull(target.getHttpUri());
 		assertTrue(target.getHttpUri().equals(ClientConfiguration.getInstance().getPropAnnotationItemDataEndpoint() + "/09102/_UEDIN_214"));
 	}

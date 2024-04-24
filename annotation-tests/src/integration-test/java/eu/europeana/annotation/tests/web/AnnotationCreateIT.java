@@ -3,12 +3,15 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
@@ -257,7 +260,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         addToCreatedAnnotations(storedAnno.getIdentifier());
                 
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.DESCRIBING.name().toLowerCase()));
-        assertTrue(storedAnno.getTarget().getSource() != null);
+        assertTrue(storedAnno.getTarget().get(0).getSource() != null);
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.TEXT.name());
     }
     
@@ -328,7 +331,7 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
         Annotation storedAnno = createTag(SEMANTICTAG_WEB_RESOURCE, false, true);
         addToCreatedAnnotations(storedAnno.getIdentifier());
         assertTrue(storedAnno.getMotivation().equals(MotivationTypes.TAGGING.name().toLowerCase()));
-        assertTrue(storedAnno.getTarget().getSource() != null);
+        assertTrue(storedAnno.getTarget().get(0).getSource() != null);
         assertEquals(storedAnno.getBody().getInternalType(), BodyInternalTypes.SEMANTIC_TAG.name());
     }
 

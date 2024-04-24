@@ -1,6 +1,5 @@
 package eu.europeana.annotation.utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,37 +9,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.module.SimpleModule;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.agent.Agent;
-import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.resource.InternetResource;
-import eu.europeana.annotation.definitions.model.resource.selector.Selector;
-import eu.europeana.annotation.definitions.model.resource.state.State;
-import eu.europeana.annotation.definitions.model.resource.state.impl.BaseState;
-import eu.europeana.annotation.definitions.model.resource.style.Style;
-import eu.europeana.annotation.definitions.model.resource.style.impl.CssStyle;
-import eu.europeana.annotation.definitions.model.selector.shape.Point;
-import eu.europeana.annotation.definitions.model.selector.shape.impl.PointImpl;
-import eu.europeana.annotation.definitions.model.target.Target;
-import eu.europeana.annotation.definitions.model.target.impl.ImageTarget;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.ModelConst;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.utils.parse.AnnotationLdParser;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
-import eu.europeana.annotation.utils.serialization.AgentDeserializer;
-import eu.europeana.annotation.utils.serialization.AnnotationDeserializer;
-import eu.europeana.annotation.utils.serialization.BodyDeserializer;
-import eu.europeana.annotation.utils.serialization.InternetResourceDeserializer;
-import eu.europeana.annotation.utils.serialization.ListDeserializer;
-import eu.europeana.annotation.utils.serialization.MapDeserializer;
-import eu.europeana.annotation.utils.serialization.SelectorDeserializer;
-import eu.europeana.annotation.utils.serialization.TargetDeserializer;
 
 /**
  * @Deprecated the provided methods must be replaced by proper usage of the json to annotation parser 
@@ -66,50 +46,17 @@ public class JsonUtils extends BaseJsonParser{
 	 * @return
 	 */
 	public static Annotation toAnnotationObject(String json) {
-		JsonParser parser;
-		Annotation annotation = null;
 		try {
-			parser = jsonFactory.createJsonParser(json);
-			//DeserializationConfig cfg = DeserializerFactory.Config.
-			SimpleModule module =  
-			      new SimpleModule("AnnotationDeserializerModule",  
-			          new Version(1, 0, 0, null));  
-			    
-			module.addDeserializer(Annotation.class, new AnnotationDeserializer());  
-			module.addDeserializer(Target.class, new TargetDeserializer());  
-			module.addDeserializer(Body.class, new BodyDeserializer());  
-//			module.addDeserializer(Concept.class, new ConceptDeserializer());  
-			module.addDeserializer(Agent.class, new AgentDeserializer());
-			module.addDeserializer(Selector.class, new SelectorDeserializer());
-			module.addDeserializer(InternetResource.class, new InternetResourceDeserializer());
-			//module.addDeserializer(State.class, new StateDeserializer());
-			//TODO: needs improvement, otherwise all strings and maps will be converted to String entries
-			module.addDeserializer(Map.class, new MapDeserializer());
-			module.addDeserializer(List.class, new ListDeserializer());
-			
-			//module.addDeserializer(Style.class, new StyleDeserializer());
-			module.addAbstractTypeMapping(Point.class, PointImpl.class); 
-			module.addAbstractTypeMapping(Style.class, CssStyle.class); 
-			module.addAbstractTypeMapping(State.class, BaseState.class);
-//			module.addAbstractTypeMapping(Agent.class, Person.class);
-			module.addAbstractTypeMapping(Target.class, ImageTarget.class);
-
-			objectMapper.registerModule(module);
-			
-			parser.setCodec(objectMapper);
-			annotation = objectMapper.readValue(parser, Annotation.class);
-			annotation.setInternalType(annotation.getType());
-			if (annotation.getTarget() != null) 
-				setResourceIds(annotation.getTarget());
-			if (annotation.getBody() != null) 
-				setResourceIds(annotation.getBody());
-		} catch (JsonParseException e) {
-			throw new AnnotationInstantiationException("Json formating exception!", e);
-		} catch (IOException e) {
-			throw new AnnotationInstantiationException("Json reading exception!", e);
+			AnnotationLdParser annoLdParser = new AnnotationLdParser();
+			JSONObject annoJson=new JSONObject(json);
+			String annoType=annoJson.getString(WebAnnotationFields.TYPE);
+		    return annoLdParser.parseAnnotation(MotivationTypes.getType(annoType), json);
 		}
-		
-		return annotation;
+		catch(JSONException e) {
+			throw new AnnotationInstantiationException("Json formating exception!", e);
+		} catch (org.apache.stanbol.commons.exception.JsonParseException e) {
+			throw new AnnotationInstantiationException("Exception during parsing json into an annotation!", e);
+		}	
 	}
 	
 	    /**
@@ -152,7 +99,7 @@ public class JsonUtils extends BaseJsonParser{
 	        it.remove(); // avoids a ConcurrentModificationException
 	    }
 	    if (res.length() > 0) {
-	    	res = "[" + res + "]";
+	    	res = "{" + res + "}";
 	    }
 	    return res;
 	}	

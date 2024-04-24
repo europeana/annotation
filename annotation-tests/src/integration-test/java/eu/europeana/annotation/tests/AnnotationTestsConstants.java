@@ -116,7 +116,9 @@ public class AnnotationTestsConstants {
   public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC = "/linkforcontributing/link_for_contributing_target_specific.json";
   public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID = "/linkforcontributing/link_for_contributing_target_specific_id.json";
   
-  
+  public static final String HIGHLIGHTING = "/highlighting/highlighting.json";
+  public static final String HIGHLIGHTING_WITHOUT_PREDICATE = "/highlighting/highlighting_without_predicate.json";
+  public static final String HIGHLIGHTING_WITHOUT_EXACT = "/highlighting/highlighting_without_exact.json";
   
   public static final String START = "{";
   public static final String END = "}";

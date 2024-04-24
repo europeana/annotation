@@ -3,10 +3,13 @@ package eu.europeana.annotation.client.integration.webanno.search;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
+
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.impl.FullTextResourceBody;
@@ -61,7 +64,7 @@ public class SearchSubtitlesTest extends BaseSearchTest {
 		FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());
 		assertNotNull(textBody.getValue());
 		assertTrue(textBody.getValue().contains("con il grande finale"));
-		Target target = storedAnno.getTarget();
+		Target target = storedAnno.getTarget().get(0);
 		assertNotNull(target.getSource());
 		assertTrue(target.getSource().equals("http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"));
 		assertNotNull(target.getScope());

@@ -3,9 +3,12 @@ package eu.europeana.annotation.jsonld;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
+
 import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -16,7 +19,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import com.google.gson.Gson;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.util.AnnotationTestObjectBuilder;
@@ -151,17 +156,17 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
     	
         long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
         Annotation baseObjectTag = createBaseObjectTagInstance(annoIdentifier);     
-        baseObjectTag.getTarget().setContentType(null);
-        baseObjectTag.getTarget().setHttpUri(null);
+        baseObjectTag.getTarget().get(0).setContentType(null);
+        baseObjectTag.getTarget().get(0).setHttpUri(null);
 //        baseObjectTag.getTarget().setEuropeanaId(null);
-        baseObjectTag.getTarget().setLanguage(null);
+        baseObjectTag.getTarget().get(0).setLanguage(null);
 //        baseObjectTag.getTarget().setMediaType(null);
-        baseObjectTag.getTarget().setSelector(null);
-        baseObjectTag.getTarget().setSource(null);
-        baseObjectTag.getTarget().setState(null);
-        baseObjectTag.getTarget().setStyleClass(null);
-        baseObjectTag.getTarget().setType(null);
-        baseObjectTag.getTarget().setValue(null);
+        baseObjectTag.getTarget().get(0).setSelector(null);
+        baseObjectTag.getTarget().get(0).setSource(null);
+        baseObjectTag.getTarget().get(0).setState(null);
+        baseObjectTag.getTarget().get(0).setStyleClass(null);
+        baseObjectTag.getTarget().get(0).setType(null);
+        baseObjectTag.getTarget().get(0).setValue(null);
         AnnotationLdSerializer annotation = new AnnotationLdSerializer(baseObjectTag, configuration.getAnnotationBaseUrl());
         
         String actual = annotation.toString();
@@ -437,7 +442,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
         /**
          * add Selector to the Target in Annotation object
          */
-        originalAnnotation.getTarget().setSelector(AnnotationTestObjectBuilder.buildSelector());
+        originalAnnotation.getTarget().get(0).setSelector(AnnotationTestObjectBuilder.buildSelector());
         
         /**
          * convert Annotation object to EuropeanaAnnotationLd object.
@@ -458,7 +463,7 @@ public class EuropeanaAnnotationLdTest  extends AnnotationTestObjectBuilder{
 //        EuropeanaAnnotationLd.toConsole("### convertedAnnotation ###", convertedAnnotationIndent);
 
 //        log.debug(originalAnnotation.toString());
-        assertEquals(originalAnnotation.getTarget().getSelector(), annotationFromEuropeanaAnnotationLd.getTarget().getSelector());
+        assertEquals(originalAnnotation.getTarget().get(0).getSelector(), annotationFromEuropeanaAnnotationLd.getTarget().get(0).getSelector());
         // Original object does not have EuropeanaUri
 //        originalAnnotation.getTarget().setEuropeanaId(annotationFromEuropeanaAnnotationLd.getTarget().getEuropeanaId());
         assertEquals(originalAnnotation, annotationFromEuropeanaAnnotationLd);

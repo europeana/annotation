@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Disabled;
+
 import eu.europeana.annotation.client.abstracts.BaseJsonLdApiTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -41,7 +43,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
 		String resJson = "";
 //		List<Long> idList = new ArrayList<Long>();
-		Iterator<String> itr = annotation.getTarget().getValues().iterator();
+		Iterator<String> itr = annotation.getTarget().get(0).getValues().iterator();
 		while (itr.hasNext()) {
 			String target = itr.next();
 			String annotationStrRes = europeanaLdApi.searchLd(
@@ -75,7 +77,7 @@ public class EuropeanaLdSearchApiTest extends BaseJsonLdApiTest {
 				, requestBody
 				);
 		Annotation annotation = europeanaParser.parseAnnotation(null, annotationStr);
-		Iterator<String> itr = annotation.getTarget().getResourceIds().iterator();
+		Iterator<String> itr = annotation.getTarget().get(0).getResourceIds().iterator();
 		while (itr.hasNext()) {
 			String resourceId = itr.next();
 			String annotationStrRes = europeanaLdApi.searchLd(

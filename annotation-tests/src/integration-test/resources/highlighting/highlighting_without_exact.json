@@ -1,0 +1,33 @@
+{
+	"motivation": "highlighting",
+  	"body": "http://debias.example.org/term/xpto",
+  	"target": [
+  		{
+		  	"source": "http://data.europeana.eu/item/some_cho",
+    	  	"selector":{
+				  "type" : "RDFStatementSelector",
+   				  "hasPredicate": "dc:title",
+   				  "refinedBy" :{
+						 "type" : "TextQuoteSelector",
+			 		     "exact": {
+							  "@value": "bias term",
+           					  "@language": "en"
+       					  },
+    					  "prefix": "same "
+    			  }
+			}
+    	},
+    	{
+			"source": "http://data.europeana.eu/item/some_cho",
+      		"selector": {
+        		"type" : "RDFStatementSelector",
+        		"hasPredicate": "dc:description",
+        		"refinedBy" : {
+          			"type" : "TextQuoteSelector",
+          			"prefix": "with a ",
+          			"suffix": ". Also"
+        		}
+      		}
+  		}
+  	]
+}

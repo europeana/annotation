@@ -148,6 +148,9 @@ public interface WebAnnotationFields extends WebAnnotationModelFields{
 
 	public static final String SCOPE = "scope";
 	public static final String SOURCE = "source";
+	public static final String SELECTOR = "selector";
+	public static final String RDF_STATEMENT_SELECTOR = "RDFStatementSelector";
+	public static final String TEXT_QUOTE_SELECTOR = "TextQuoteSelector";
 
 	public static final String RIGHTS = "edmRights";
 

@@ -5,12 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
+
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -20,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.model.Annotation;
@@ -256,8 +261,8 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		 
 		 assertNotNull(storedAnnotation.getImageUrl());
 		 assertNotNull(storedAnnotation.getTarget());
-		 assertNotNull(storedAnnotation.getTarget().getSelector());
-		 assertNotNull(storedAnnotation.getTarget().getState());
+		 assertNotNull(storedAnnotation.getTarget().get(0).getSelector());
+		 assertNotNull(storedAnnotation.getTarget().get(0).getState());
 		 
 		 mongoPersistance.remove(storedAnnotation.getIdentifier());		 
 		 
@@ -295,7 +300,7 @@ public class PersistentAnnotationServiceTest extends AnnotationTestDataBuilder {
 		
 		// set target
 		Target target = buildTarget();
-		persistentObject.setTarget(target);
+		persistentObject.setTarget(Arrays.asList(target));
 			
 		//set Body
 		String comment = "Same hair style as in Dracula Untold: https://www.youtube.com/watch?v=_2aWqecTTuE";

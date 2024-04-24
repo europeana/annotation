@@ -1,7 +1,10 @@
 package eu.europeana.annotation.definitions.model.impl;
 
 import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.body.Body;
@@ -22,7 +25,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
   private Date created;
   private Date generated;
   private Body body;
-  private Target target;
+  private List<Target> target;
   protected String motivation;
   private Style styledBy;
   protected MotivationTypes motivationType;
@@ -80,7 +83,7 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
         && (!this.getTarget().equals(that.getTarget()))) {
       res = false;
     }
-
+    
     if ((this.getMotivation() != null) && (that.getMotivation() != null)
         && (!this.getMotivation().equals(that.getMotivation()))) {
       res = false;
@@ -121,57 +124,61 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
 
     Annotation that = (Annotation) other;
 
-    boolean res = true;
-
     /**
      * equality check for all relevant fields.
      */
     if ((this.getType() != null) && (that.getType() != null)
         && (!this.getType().equals(that.getType()))) {
-      res = false;
+    	return false;
     }
 
     if ((this.getCreated() != null) && (that.getCreated() != null)
         && (!this.getCreated().equals(that.getCreated()))) {
-      res = false;
+    	return false;
     }
 
     if ((this.getCreator() != null) && (that.getCreator() != null)
         && (!this.getCreator().equalsContent(that.getCreator()))) {
-      res = false;
+    	return false;
     }
 
     if ((this.getBody() != null) && (that.getBody() != null)
         && (!this.getBody().equalsContent(that.getBody()))) {
-      res = false;
+    	return false;
     }
 
-    if ((this.getTarget() != null) && (that.getTarget() != null)
-        && (!this.getTarget().equalsContent(that.getTarget()))) {
-      res = false;
+    if ((this.getTarget() != null) && (that.getTarget() != null)) {
+    	if(this.getTarget().size()!=that.getTarget().size()) {
+    		return false;
+    	}
+    	for(int i=0;i<this.getTarget().size();i++) {
+    		if(! this.getTarget().get(i).equalsContent(that.getTarget().get(i))) {
+    			return false;
+    		}
+    	}
     }
 
     if ((this.getMotivation() != null) && (that.getMotivation() != null)
         && (!this.getMotivation().equals(that.getMotivation()))) {
-      res = false;
+    	return false;
     }
 
     if ((this.getGenerated() != null) && (that.getGenerated() != null)
         && (!this.getGenerated().equals(that.getGenerated()))) {
-      res = false;
+    	return false;
     }
 
     if ((this.getGenerator() != null) && (that.getGenerator() != null)
         && (!this.getGenerator().equalsContent(that.getGenerator()))) {
-      res = false;
+    	return false;
     }
 
     if ((this.getStyledBy() != null) && (that.getStyledBy() != null)
         && (!this.getStyledBy().equalsContent(that.getStyledBy()))) {
-      res = false;
+    	return false;
     }
 
-    return res;
+    return true;
   }
 
   @Override
@@ -221,12 +228,12 @@ public abstract class AbstractAnnotation implements Annotation, AnnotationView {
   }
 
   @Override
-  public Target getTarget() {
+  public List<Target> getTarget() {
     return target;
   }
 
   @Override
-  public void setTarget(Target target) {
+  public void setTarget(List<Target> target) {
     this.target = target;
   }
 
