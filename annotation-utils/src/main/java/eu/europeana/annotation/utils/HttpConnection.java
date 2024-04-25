@@ -5,12 +5,15 @@ package eu.europeana.annotation.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -27,6 +30,7 @@ public class HttpConnection {
   private HttpClient httpClient;
   private int connectionRetries; 
   private int connectionTimeout;
+  Logger logger = LogManager.getLogger(getClass().getName());
 
   /**
    * Constructor with explicit indication of retries and timeout
@@ -69,7 +73,11 @@ public class HttpConnection {
     if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
       return get.getResponseBodyAsString();
     } else {
-      return null;
+	    if(logger.isWarnEnabled()) {
+	    	logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}", 
+	    			get.getStatusCode(), get.getResponseBodyAsString(), url);
+	    }
+	    return null;
     }
   }
 
@@ -88,7 +96,11 @@ public class HttpConnection {
     if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
       return get.getResponseBodyAsStream();
     } else {
-      return null;
+        if(logger.isWarnEnabled()) {
+        	logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}", 
+        			get.getStatusCode(), get.getResponseBodyAsString(), url);
+        }
+        return null;
     }
   }
 
@@ -111,7 +123,11 @@ public class HttpConnection {
     if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
       return post.getResponseBodyAsStream();
     } else {
-      return null;
+        if(logger.isWarnEnabled()) {
+        	logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}", 
+        			post.getStatusCode(), post.getResponseBodyAsString(), url);
+        }
+        return null;
     }
   }
 
