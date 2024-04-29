@@ -437,6 +437,13 @@ public class AnnotationCreateIT extends AbstractIntegrationTest {
     }
     
     @Test
+    void createSemanticTagWithMissingScope() throws Exception {
+        String requestBody = AnnotationTestUtils.getJsonStringInput(SEMANTICTAG_WRONG_MISSING_SCOPE);
+        ResponseEntity<String> response = storeTestAnnotationByType(true, requestBody,  WebAnnotationFields.TAG, null);
+        assertEquals(response.getStatusCode().value(), HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
     void createTagWithoutBody() throws Exception {
         
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_WITHOUT_BODY);
