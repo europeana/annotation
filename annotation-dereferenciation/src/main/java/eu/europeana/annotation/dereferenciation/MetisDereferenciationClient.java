@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
+import eu.europeana.annotation.definitions.exception.UpstreamServerErrorRuntimeException;
 import eu.europeana.annotation.utils.HttpConnection;
 
 /**
@@ -104,10 +105,12 @@ public class MetisDereferenciationClient implements InitializingBean {
 	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam(PARAM_URI, uri);
         streamResponse = httpConnection.getURLContentAsStream(uriBuilder.build().toString());
       	if(streamResponse==null) {
-    	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
+    	    throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient returns null.");
       	}
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);	    
+	} catch (UpstreamServerErrorRuntimeException ex) {
+		throw ex;
 	} catch (IOException ex) {
 	    throw new AnnotationDereferenciationException(ex);
 	} catch (RuntimeException ex) {
@@ -137,7 +140,7 @@ public class MetisDereferenciationClient implements InitializingBean {
       	String urisJson = JsonSerializer.toString((List)uris);
       	streamResponse = httpConnection.postRequest(baseUrl, urisJson);
       	if(streamResponse==null) {
-    	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
+      		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient returns null.");
       	}
       	String[] urisArray = new String[uris.size()];
         urisArray = uris.toArray(urisArray);
@@ -152,9 +155,11 @@ public class MetisDereferenciationClient implements InitializingBean {
             res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i+1)));
           }
         }          
-	}catch(IOException ex) {
+	} catch (UpstreamServerErrorRuntimeException ex) {
+		throw ex;
+	} catch(IOException ex) {
 	    throw new AnnotationDereferenciationException(ex);
-	}catch(RuntimeException ex) {
+	} catch(RuntimeException ex) {
 	    throw new AnnotationDereferenciationException(ex);
 	}
 	return res;

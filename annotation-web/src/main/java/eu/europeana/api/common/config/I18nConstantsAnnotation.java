@@ -46,7 +46,8 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	 
 	 //#502
 	 String SEARCH_API_ACCESS = "error.annotation_search_api_access";
-	
+	 String UPSTREAM_SERVER_ACCESS = "error.annotation_upstream_server_access";
+	 
 	 String BATCH_UPLOAD_FAILED = "error.batch_upload_failed";
 	
 	 String OPERATION_EXECUTION_NOT_ALLOWED = "error.operation_execution_not_allowed";

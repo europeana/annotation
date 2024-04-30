@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
+import eu.europeana.annotation.definitions.exception.UpstreamServerErrorRuntimeException;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
 import eu.europeana.annotation.definitions.model.factory.impl.AgentObjectFactory;
@@ -43,6 +44,7 @@ import eu.europeana.annotation.web.exception.authorization.OperationAuthorizatio
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
+import eu.europeana.annotation.web.exception.request.UpstreamServerErrorHttpException;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.model.BatchOperationStep;
@@ -328,7 +330,11 @@ public class BaseJsonldRest extends BaseRest {
 
 	    return response;
 
-	} catch (RuntimeException e) {
+	} catch (UpstreamServerErrorRuntimeException e) {
+		throw new UpstreamServerErrorHttpException(I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, 
+				I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, null, e);
+	}
+	catch (RuntimeException e) {
 	    // not found ..
 	    throw new InternalServerException(e);
 	} catch (HttpException e) {

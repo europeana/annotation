@@ -1,7 +1,9 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import eu.europeana.annotation.definitions.exception.UpstreamServerErrorRuntimeException;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
@@ -23,6 +27,7 @@ import eu.europeana.annotation.solr.vocabulary.search.SortOrder;
 import eu.europeana.annotation.utils.GeneralUtils;
 import eu.europeana.annotation.utils.serialize.AnnotationPageSerializer;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
+import eu.europeana.annotation.web.exception.request.UpstreamServerErrorHttpException;
 import eu.europeana.annotation.web.http.AnnotationHttpHeaders;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.service.controller.BaseRest;
@@ -137,6 +142,9 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 	    return response;
 
+	} catch (UpstreamServerErrorRuntimeException e) {
+		throw new UpstreamServerErrorHttpException(I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, 
+				I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, null, e);
 	} catch (RuntimeException e) {
 	    // not found ..
 	    throw new InternalServerException(e);
