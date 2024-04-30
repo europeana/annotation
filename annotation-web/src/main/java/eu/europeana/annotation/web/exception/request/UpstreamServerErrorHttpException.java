@@ -4,9 +4,10 @@ import org.springframework.http.HttpStatus;
 
 import eu.europeana.api.commons.web.exception.HttpException;
 
+/**
+ * Errors while communicating with the (upstream) server
+ */
 public class UpstreamServerErrorHttpException extends HttpException{
-
-
 	/**
 	 * 
 	 */

@@ -333,8 +333,7 @@ public class BaseJsonldRest extends BaseRest {
 	} catch (UpstreamServerErrorRuntimeException e) {
 		throw new UpstreamServerErrorHttpException(I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, 
 				I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, null, e);
-	}
-	catch (RuntimeException e) {
+	} catch (RuntimeException e) {
 	    // not found ..
 	    throw new InternalServerException(e);
 	} catch (HttpException e) {
