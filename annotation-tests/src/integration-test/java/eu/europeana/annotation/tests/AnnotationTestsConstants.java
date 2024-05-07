@@ -82,6 +82,7 @@ public class AnnotationTestsConstants {
   public static final String SEMANTICTAG_ENTITY = "/semantictag/semantictag_entity.json";
   public static final String SEMANTICTAG_AGENT_ENTITY = "/semantictag/semantictag_agent_entity.json";
   public static final String SEMANTICTAG_VCARD_ADDRESS = "/semantictag/vcard_address.json";
+  public static final String SEMANTICTAG_WRONG_MISSING_SCOPE = "/semantictag/wrong/web_resource_missing_scope.json";
   public static final String TAG_CANONICAL = "/tag/canonical.json";
   public static final String TAG_VIA_STRING = "/tag/via_string.json";
   public static final String TAG_VIA_ARRAY = "/tag/via_array.json";

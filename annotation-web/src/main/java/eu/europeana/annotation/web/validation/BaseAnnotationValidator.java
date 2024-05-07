@@ -601,6 +601,8 @@ public abstract class BaseAnnotationValidator {
     } else {
       validateTagWithValue(body);
     }
+    
+    validateTargetFields(webAnnotation.getTarget());
   }
 
   protected void validateLinking(Annotation webAnnotation)
@@ -800,7 +802,7 @@ public abstract class BaseAnnotationValidator {
   }
 
   private void validateTargetSpecificResource(Target target) throws PropertyValidationException {
-    // source must both be present in the target, and beside it (scope or selector) as well
+    // source must be present in the target, and beside it (scope or selector) as well
     if (target.getSource() == null) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
