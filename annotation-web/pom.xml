@@ -5,13 +5,13 @@
 	<artifactId>annotation-web</artifactId>
 	<name>Europeana Annotation - WEB API </name>
 	<packaging>jar</packaging>
-	<description>The implementation of the &quot;annotation&quot; service</description>
+	<description>The implementation of the "annotation" service</description>
 
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${revision}</version>
+		<version>0.5</version>
 	</parent>
 
 	<properties>
@@ -88,17 +88,17 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-mongo</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.jena</groupId>
@@ -109,17 +109,17 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-fulltext</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-dereferenciation</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-statistics</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 		</dependency>
 		
 				<dependency>
@@ -220,7 +220,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>${project.version}</version>
+			<version>0.5</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 			<!-- <type>test-jar</type> -->
