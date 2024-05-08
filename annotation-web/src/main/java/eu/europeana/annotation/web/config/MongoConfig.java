@@ -1,10 +1,10 @@
 package eu.europeana.annotation.web.config;
 
-import org.mongodb.morphia.Datastore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import dev.morphia.Datastore;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.corelib.db.wrapper.ApiMongoConnector;
 

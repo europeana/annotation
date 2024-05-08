@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
+import eu.europeana.annotation.definitions.exception.UpstreamServerErrorRuntimeException;
 import eu.europeana.annotation.utils.HttpConnection;
 
 /**
@@ -93,9 +94,8 @@ public class MetisDereferenciationClient implements InitializingBean {
      * @param language e.g.
      *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
      * @return response from Metis API in JSON-LD format
-     * @throws AnnotationDereferenciationException
      */
-    public Map<String, String> dereferenceOne(String uri, String language) throws AnnotationDereferenciationException {
+    public Map<String, String> dereferenceOne(String uri, String language) {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
 	InputStream streamResponse=null;
@@ -104,12 +104,14 @@ public class MetisDereferenciationClient implements InitializingBean {
 	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam(PARAM_URI, uri);
         streamResponse = httpConnection.getURLContentAsStream(uriBuilder.build().toString());
       	if(streamResponse==null) {
-    	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
+    	    throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient invalid status code or response not available.");
       	}
 	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
 	    res.put(uri, jsonLdStr);	    
-	} catch (IOException ex) {
-	    throw new AnnotationDereferenciationException(ex);
+	} catch (UpstreamServerErrorRuntimeException ex) {
+		throw ex;
+	} catch (IOException ex) {//comes from the httpConnection.getURLContentAsStream
+		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient I/O (transport) problem while obtaining the response body.", ex);
 	} catch (RuntimeException ex) {
 	    throw new AnnotationDereferenciationException(ex);
 	}
@@ -126,9 +128,8 @@ public class MetisDereferenciationClient implements InitializingBean {
      * @param language e.g.
      *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
      * @return response from Metis API in JSON-LD format
-     * @throws AnnotationDereferenciationException
      */
-    public Map<String, String> dereferenceMany(List<String> uris, String language) throws AnnotationDereferenciationException {
+    public Map<String, String> dereferenceMany(List<String> uris, String language) {
 	Map<String, String> res = new HashMap<String, String>();
 	String jsonLdStr;
 	InputStream streamResponse=null;
@@ -137,7 +138,7 @@ public class MetisDereferenciationClient implements InitializingBean {
       	String urisJson = JsonSerializer.toString((List)uris);
       	streamResponse = httpConnection.postRequest(baseUrl, urisJson);
       	if(streamResponse==null) {
-    	    throw new AnnotationDereferenciationException("MetisDereferenciationClient returns null.");
+      		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient invalid status code or response not available.");
       	}
       	String[] urisArray = new String[uris.size()];
         urisArray = uris.toArray(urisArray);
@@ -152,9 +153,11 @@ public class MetisDereferenciationClient implements InitializingBean {
             res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i+1)));
           }
         }          
-	}catch(IOException ex) {
-	    throw new AnnotationDereferenciationException(ex);
-	}catch(RuntimeException ex) {
+	} catch (UpstreamServerErrorRuntimeException ex) {
+		throw ex;
+	} catch (IOException ex) {//comes from the httpConnection.postRequest
+		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient I/O (transport) problem while obtaining the response body.", ex);
+	} catch(RuntimeException ex) {
 	    throw new AnnotationDereferenciationException(ex);
 	}
 	return res;

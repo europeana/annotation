@@ -6,14 +6,12 @@ import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotation
 import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_FIELD;
 import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,7 +26,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
-import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 
 /**
@@ -146,7 +143,7 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 		// get response body properties
 		JSONObject jsonObj = new JSONObject(uploadResponse.getBody());
 		Integer total = (Integer) jsonObj.get(BATCH_TOTAL_FIELD);
-		assertEquals(new Integer(1), total);
+		assertEquals(Integer.valueOf(1), total);
 
 	}
 
@@ -254,9 +251,8 @@ public class BatchUploadTest extends BaseWebAnnotationTest {
 	 * @param jsonStr JSON string
 	 */
 	private void jsonPrettyPrint(String jsonStr) {
-		JsonParser parser = new JsonParser();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		JsonElement el = parser.parse(jsonStr);
+		JsonElement el = JsonParser.parseString(jsonStr);
 		log.debug(gson.toJson(el));
 	}
 

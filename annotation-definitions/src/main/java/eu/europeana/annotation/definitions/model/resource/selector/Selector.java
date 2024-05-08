@@ -9,7 +9,6 @@ public interface Selector{
 	public abstract void setDimensionMap(Map<String, Integer> dimensionMap);
 
 	public abstract Map<String, Integer> getDimensionMap();
-
 	
 	public abstract void setSelectorTypeEnum(SelectorTypes selectorType);
 

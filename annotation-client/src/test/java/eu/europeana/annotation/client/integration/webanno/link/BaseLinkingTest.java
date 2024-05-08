@@ -1,9 +1,6 @@
 package eu.europeana.annotation.client.integration.webanno.link;
 
-import java.io.IOException;
 import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationTest;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;

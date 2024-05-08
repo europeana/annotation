@@ -1,0 +1,6 @@
+db.getCollection("annotation").find({}).forEach(function(myDocument) {
+   db.annotation.updateMany(
+      { _id: myDocument._id },
+      { "$set": { "target": [myDocument.target] } }
+   );
+})

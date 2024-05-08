@@ -1,7 +1,7 @@
 package eu.europeana.annotation.mongo.dao;
 
 import java.io.Serializable;
-import org.mongodb.morphia.Datastore;
+import dev.morphia.Datastore;
 import eu.europeana.annotation.mongo.model.internal.PersistentWhitelistEntry;
 import eu.europeana.api.commons.nosql.dao.impl.NosqlDaoImpl;
 

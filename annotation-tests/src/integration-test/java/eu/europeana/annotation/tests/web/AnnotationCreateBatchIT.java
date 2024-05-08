@@ -243,9 +243,8 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
    * @param jsonStr JSON string
    */
   private void jsonPrettyPrint(String jsonStr) {
-    JsonParser parser = new JsonParser();
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    JsonElement el = parser.parse(jsonStr);
+    JsonElement el = JsonParser.parseString(jsonStr);
     log.debug(gson.toJson(el));
   }
 }

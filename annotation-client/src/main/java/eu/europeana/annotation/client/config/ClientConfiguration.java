@@ -8,18 +8,18 @@ import eu.europeana.annotation.client.exception.TechnicalRuntimeException;
 public class ClientConfiguration {
 
     protected static final String ANNOTATION_CLIENT_PROPERTIES_FILE = "/annotation-client.properties";
-    protected static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
-    protected static final String PROP_ANNOTATION_SERVICE_BASE_URI = "annotation.service.uri";
-    protected static final String PROP_ANNOTATION_ID_BASE_URI = "annotation.id.baseUrl";
-    protected static final String PROP_ANNOTATION_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
-    protected static final String PROP_ANNOTATION_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
-   
-    protected static final String PROP_AUTHORIZATION_HEADER_NAME = "annotation.header.name";
-    protected static final String PROP_REGULAR_AUTHORIZATION_HEADER_VALUE = "annotation.regular.authorization.value";
-    protected static final String PROP_ADMIN_ANNOTATION_HEADER_VALUE = "annotation.admin.authorization.value";
+    public static final String PROP_ANNOTATION_API_KEY = "annotation.api.key";
+    public static final String PROP_ANNOTATION_SERVICE_BASE_URI = "annotation.service.uri";
+    public static final String PROP_ANNOTATION_ID_BASE_URI = "annotation.id.baseUrl";
+    public static final String PROP_ANNOTATION_ITEM_DATA_ENDPOINT = "annotation.item.data.endpoint";
+    public static final String PROP_ANNOTATION_CLIENT_API_ENDPOINT = "annotation.client.api.endpoint";
 
-    protected static final String PROP_OAUTH_SERVICE_URI = "oauth.service.uri";
-    protected static final String PROP_OAUTH_REQUEST_PARAMS_PREFIX = "oauth.token.request.params.";
+    public static final String PROP_AUTHORIZATION_HEADER_NAME = "annotation.header.name";
+    public static final String PROP_REGULAR_AUTHORIZATION_HEADER_VALUE = "annotation.regular.authorization.value";
+    public static final String PROP_ADMIN_ANNOTATION_HEADER_VALUE = "annotation.admin.authorization.value";
+
+    public static final String PROP_OAUTH_SERVICE_URI = "oauth.service.uri";
+    public static final String PROP_OAUTH_REQUEST_PARAMS_PREFIX = "oauth.token.request.params.";
     
     private static Properties properties = null;
 
@@ -42,6 +42,10 @@ public class ClientConfiguration {
         singleton.loadProperties();
       }
 	return singleton;
+    }
+
+    public ClientConfiguration(Properties properties) {
+        this.properties = properties;
     }
 
     /**

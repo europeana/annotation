@@ -40,6 +40,7 @@ The following properties are optional in all annotations:
 						<li><a href="#tag_webResource">Create (Object) tag - web resource</a></li>
 						<li><a href="#linkForContributing_bodyAsObject">Create Link For Contributing - Body As Object</a></li>
 						<li><a href="#linkForContributing_bodyAsString">Create Link For Contributing - Body As String</a></li>
+						<li><a href="#debias">Create Debias</a></li>
 					</ul>
 
 <!-- BEGIN Annotation Templates -->
@@ -330,7 +331,55 @@ NOTE: The body should contain the URI starting with the https.
 }	
 
 </textarea>
-<br>		
+<br>	
+
+<h3 id="debias">Create Debias</h3>
+The json-ld serialization available in the following box is a valid input to be used for the creation of the debias annotations. 
+&nbsp;&nbsp;&nbsp; <a href="#top">top</a> 
+<br>
+(motivation:highlighting)
+<textarea rows="7" cols="38" name="jsonldtag">
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",  
+	"motivation": "highlighting",	
+    "body": "http://debias.example.org/term/xpto",
+    "target": [
+  		{
+		  	"source": "http://data.europeana.eu/item/some_cho",
+    	  	"selector":{
+				  "type" : "RDFStatementSelector",
+   				  "hasPredicate": "dc:title",
+   				  "refinedBy" :{
+						 "type" : "TextQuoteSelector",
+			 		     "exact": {
+							  "@value": "bias term",
+           					  "@language": "en"
+       					  },
+    					  "prefix": "same "
+    			  }
+			}
+    	},
+    	{
+			"source": "http://data.europeana.eu/item/some_cho",
+      		"selector": {
+        		"type" : "RDFStatementSelector",
+        		"hasPredicate": "dc:description",
+        		"refinedBy" : {
+          			"type" : "TextQuoteSelector",
+          			"exact": {
+            			"@value": "bias term",
+            			"@language": "en"
+          			},
+          			"prefix": "with a ",
+          			"suffix": ". Also"
+        		}
+      		}
+  		}
+  	]
+}
+</textarea>
+<br>
+	
 <!--  END of annotation templates -->
 </div>
 			<!-- end of content -->

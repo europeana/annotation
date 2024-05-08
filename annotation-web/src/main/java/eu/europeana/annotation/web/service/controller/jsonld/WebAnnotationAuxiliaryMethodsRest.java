@@ -70,7 +70,8 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	return storeAnnotation(motivation, indexOnCreate, annotation, authentication);
     }
 
-    @RequestMapping(value = "/annotations/deleted", method = RequestMethod.GET)
+    @RequestMapping(value = "/annotations/deleted", method = RequestMethod.GET, produces = {
+    		HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(value = "Get ids of deleted Annotations", nickname = "getDeleted", response = java.lang.Void.class,
             notes = "The from and to parameters should have the format yyyy-mm-dd'T'hh:mm:ss'Z', e.g. 1970-01-01T00:00:00Z.")
     public ResponseEntity<String> getDeleted(

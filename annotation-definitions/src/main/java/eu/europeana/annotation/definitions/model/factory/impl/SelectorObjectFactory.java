@@ -3,8 +3,10 @@ package eu.europeana.annotation.definitions.model.factory.impl;
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.model.factory.AbstractModelObjectFactory;
 import eu.europeana.annotation.definitions.model.resource.selector.Selector;
+import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseRDFStatementSelector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseSvgSelector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseTextPositionSelector;
+import eu.europeana.annotation.definitions.model.resource.selector.impl.BaseTextQuoteSelector;
 import eu.europeana.annotation.definitions.model.resource.selector.impl.SvgRectangleSelector;
 import eu.europeana.annotation.definitions.model.vocabulary.SelectorTypes;
 
@@ -35,6 +37,12 @@ public class SelectorObjectFactory extends AbstractModelObjectFactory<Selector, 
 				case TEXT_POSITION_SELECTOR:
 					returnType = BaseTextPositionSelector.class;
 					break;
+				case TEXT_QUOTE_SELECTOR:
+					returnType = BaseTextQuoteSelector.class;
+					break;					
+				case RDF_STATEMENT_SELECTOR:
+					returnType = BaseRDFStatementSelector.class;
+					break;					
 				case SVG_RECTANGLE_SELECTOR:
 					returnType = SvgRectangleSelector.class;
 					break;

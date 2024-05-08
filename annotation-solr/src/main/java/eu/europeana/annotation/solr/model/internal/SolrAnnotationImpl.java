@@ -119,6 +119,8 @@ public class SolrAnnotationImpl extends AbstractAnnotation implements SolrAnnota
 			return AnnotationScenarioTypes.OBJECT_LINK;
 	    case LINKFORCONTRIBUTING:
             return AnnotationScenarioTypes.CONTRIBUTE_LINK;
+	    case HIGHLIGHTING:
+            return AnnotationScenarioTypes.DEBIAS;            
 		default:
 			return "";
 		}		

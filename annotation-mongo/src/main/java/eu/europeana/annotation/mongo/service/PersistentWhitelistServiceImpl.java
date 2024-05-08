@@ -7,13 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.QueryResults;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import com.mongodb.WriteResult;
+import dev.morphia.query.Query;
+import dev.morphia.query.QueryResults;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
 import eu.europeana.annotation.definitions.exception.WhitelistValidationException;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -210,7 +210,7 @@ public class PersistentWhitelistServiceImpl extends
 		query.filter(PersistentWhitelistEntry.FIELD_HTTP_URL, url);
 		QueryResults<? extends PersistentWhitelistEntry> results = getDao()
 				.find(query);
-		List<? extends PersistentWhitelistEntry> whitelistList = results.asList();
+		List<? extends PersistentWhitelistEntry> whitelistList = asList(results);
 		if (whitelistList.size() == 0)
 			return null;
 		return whitelistList.get(whitelistList.size() - 1);
@@ -220,9 +220,9 @@ public class PersistentWhitelistServiceImpl extends
 	public PersistentWhitelistEntry findByName(String name) {
 		Query<PersistentWhitelistEntry> query = getDao().createQuery();
 		query.filter(PersistentWhitelistEntry.FIELD_NAME, name);
-		QueryResults<? extends PersistentWhitelistEntry> results = getDao()
+		QueryResults<PersistentWhitelistEntry> results = getDao()
 				.find(query);
-		List<? extends PersistentWhitelistEntry> whitelistList = results.asList();
+		List<PersistentWhitelistEntry> whitelistList = asList(results);
 		if (whitelistList.size() == 0)
 			return null;
 		return whitelistList.get(whitelistList.size() - 1);

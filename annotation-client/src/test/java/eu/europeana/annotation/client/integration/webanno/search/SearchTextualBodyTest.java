@@ -69,7 +69,7 @@ public class SearchTextualBodyTest extends BaseSearchTest {
     TextBody textBody = ((TextBody) storedAnno.getBody());
     assertNotNull(textBody.getValue());
     assertTrue(textBody.getValue().equals("... this is the textual description of the item ..."));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getSource());
     assertTrue(target.getSource()
         .equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));
@@ -123,7 +123,7 @@ public class SearchTextualBodyTest extends BaseSearchTest {
     FullTextResourceBody textBody = ((FullTextResourceBody) storedAnno.getBody());
     assertNotNull(textBody.getValue());
     assertTrue(textBody.getValue().equals("... complete transcribed text in HTML ..."));
-    Target target = storedAnno.getTarget();
+    Target target = storedAnno.getTarget().get(0);
     assertNotNull(target.getSource());
     assertTrue(target.getSource()
         .equals("http://www.europeana1914-1918.eu/attachments/2020601/20841.235882.full.jpg"));

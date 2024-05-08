@@ -4,11 +4,13 @@ resources:
   - ingress.yaml
   - hpa.yaml
 
-commonLabels:
-  app: annotation-api
+labels:
+  - includeSelectors: true
+    pairs:
+      app: annotation-api
 
-patchesStrategicMerge:
-  - deployment_patch.yaml
+patches:
+  - path: deployment_patch.yaml
   
 # expects files to be in the same directory
 secretGenerator:

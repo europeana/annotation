@@ -190,6 +190,16 @@
 			</exclusions>
 		</dependency>
 		
+		
+		<!-- TO_DO: change to spring doc 
+		dependency>
+            groupId>org.springdoc</groupId>
+            artifactId>springdoc-openapi-ui</artifactId>
+            version>${springdoc.version}</version>
+        /dependency>
+        -->
+
+		
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
@@ -229,20 +239,6 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>${version.httpClient}</version>
 		</dependency>
-<!--         <dependency> -->
-<!--             <groupId>dev.morphia.morphia</groupId> -->
-<!--             <artifactId>morphia-core</artifactId> -->
-<!--             <version>${version.morphia}</version> -->
-<!--         </dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
-		<dependency>
-		    <groupId>org.mongodb</groupId>
-		    <artifactId>mongo-java-driver</artifactId>
-		    <version>${version.mongo-java-driver}</version>
-		</dependency>
-
-		
-
 	</dependencies>
 
 	<build>
@@ -270,7 +266,7 @@
 		        </includes>
 		    </resource>
 		</resources>
-		<finalName>${artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<!-- plugins -->
 		<plugins>
       		<plugin>

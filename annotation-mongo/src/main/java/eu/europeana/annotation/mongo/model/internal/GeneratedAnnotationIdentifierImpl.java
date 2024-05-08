@@ -1,7 +1,7 @@
 package eu.europeana.annotation.mongo.model.internal;
 
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 
 /**

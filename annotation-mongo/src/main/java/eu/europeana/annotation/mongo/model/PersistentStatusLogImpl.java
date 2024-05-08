@@ -1,8 +1,8 @@
 package eu.europeana.annotation.mongo.model;
 
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import eu.europeana.annotation.mongo.model.internal.PersistentObject;
 import eu.europeana.annotation.mongo.model.internal.PersistentStatusLog;
 
