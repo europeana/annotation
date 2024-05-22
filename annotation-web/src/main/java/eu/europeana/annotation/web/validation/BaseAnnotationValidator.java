@@ -772,9 +772,7 @@ public abstract class BaseAnnotationValidator {
 	   * so the same check as in the validateTargetFields method 
 	   */
 	  for(Target target : targets) {
-		  if (target.getSource()!=null || target.getScope()!=null || target.getSelector()!=null) {
-			  validateTargetSpecificResource(target);
-		  }
+		  validateTargetSpecificResource(target);
 	  }
   }
 
@@ -819,11 +817,12 @@ public abstract class BaseAnnotationValidator {
     	validateTargetSelectors(target.getSelector());
     }
 
-    if (target.getScope()!=null && !target.getScope().contains(getConfiguration().getAnnoItemDataEndpoint())) {
-      throw new PropertyValidationException(
-          I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
-          I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
-          new String[] {getConfiguration().getAnnoItemDataEndpoint()});
+    if (target.getScope()!=null) {
+    	if(!GeneralUtils.isUrl(target.getScope()) || !target.getScope().startsWith(getConfiguration().getAnnoItemDataEndpoint()))
+    		throw new PropertyValidationException(
+				I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
+				I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
+				new String[] {getConfiguration().getAnnoItemDataEndpoint()});
     }
     // target.source must be a valid url
     if (!GeneralUtils.isUrl(target.getSource())) {
@@ -861,7 +860,7 @@ public abstract class BaseAnnotationValidator {
 
   private void validateTargetMultipleValues(Target target) throws PropertyValidationException {
     for (String targetValue : target.getValues()) {
-      if (!targetValue.contains(getConfiguration().getAnnoItemDataEndpoint()))
+      if (!GeneralUtils.isUrl(targetValue) || !targetValue.startsWith(getConfiguration().getAnnoItemDataEndpoint()))
         throw new PropertyValidationException(
             I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
             I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
@@ -871,7 +870,7 @@ public abstract class BaseAnnotationValidator {
   }
 
   private void validateTargetSimpleValue(Target target) throws PropertyValidationException {
-    if (!target.getValue().contains(getConfiguration().getAnnoItemDataEndpoint()))
+    if (!GeneralUtils.isUrl(target.getValue()) || !target.getValue().startsWith(getConfiguration().getAnnoItemDataEndpoint()))
       throw new PropertyValidationException(
           I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
           I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
