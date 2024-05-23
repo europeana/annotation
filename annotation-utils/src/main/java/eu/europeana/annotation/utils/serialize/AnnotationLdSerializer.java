@@ -133,17 +133,15 @@ public class AnnotationLdSerializer extends JsonLd {
 	}
 
 	protected void putTarget(Annotation annotation, JsonLdResource jsonLdResource) {
-		if(annotation.getTarget().size()>1) {
+		/*
+		 * check if the inputString is a json object or an array of json objects in which case the target(s) are
+		 * serialized as SpecificResource objects
+		 */
+		if (isJsonObjectOrArrayOfJsonObjects(annotation.getTarget().get(0).getInputString())) {
 			JsonLdProperty targetProperty = new JsonLdProperty(WebAnnotationFields.TARGET);
 			for(Target tar : annotation.getTarget()) {
 				addTargetPropertyValue(tar, targetProperty);
 			}
-			if (targetProperty.getValues()!=null && targetProperty.getValues().size()>0)
-				jsonLdResource.putProperty(targetProperty);
-		}
-		else if (isJsonObjectInput(annotation.getTarget().get(0).getInputString())) {
-			JsonLdProperty targetProperty = new JsonLdProperty(WebAnnotationFields.TARGET);
-			addTargetPropertyValue(annotation.getTarget().get(0), targetProperty);
 			if (targetProperty.getValues()!=null && targetProperty.getValues().size()>0)
 				jsonLdResource.putProperty(targetProperty);
 		} else {
@@ -172,7 +170,7 @@ public class AnnotationLdSerializer extends JsonLd {
 	protected void putBody(Annotation annotation, JsonLdResource jsonLdResource) {
 		//if (!annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
 		// tag or comment, not linking
-		if (isJsonObjectInput(annotation.getBody().getInputString())) {
+		if (isJsonObjectOrBodyValueStartsAt1(annotation.getBody().getInputString())) {
 			// annotation.getBody().setInputString(null);
 			JsonLdProperty bodyProperty = addBodyProperty(annotation);
 			if (bodyProperty != null)
@@ -540,8 +538,13 @@ public class AnnotationLdSerializer extends JsonLd {
 		return creator;
 	}
 
-	private boolean isJsonObjectInput(String inputString) {
-		return inputString != null && (inputString.startsWith("{") 
+	private boolean isJsonObjectOrArrayOfJsonObjects(String inputString) {
+		return inputString != null && (inputString.startsWith("{")
+				|| (inputString.startsWith("[") && inputString.contains("{")));
+	}
+
+	private boolean isJsonObjectOrBodyValueStartsAt1(String inputString) {
+		return inputString != null && (inputString.startsWith("{")
 				|| (inputString.indexOf(WebAnnotationFields.BODY_VALUE) == 1));
 	}
 
