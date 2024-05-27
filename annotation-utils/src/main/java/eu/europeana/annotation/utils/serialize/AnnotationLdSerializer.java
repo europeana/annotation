@@ -1,13 +1,11 @@
 package eu.europeana.annotation.utils.serialize;
 
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-
 import eu.europeana.annotation.definitions.model.Address;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.Agent;
@@ -35,7 +33,9 @@ import eu.europeana.annotation.utils.JsonUtils;
 
 public class AnnotationLdSerializer extends JsonLd {
 
+  
   String annoBaseDataEndpoint;
+  
   
 	/**
 	 * @param annotation
@@ -137,7 +137,7 @@ public class AnnotationLdSerializer extends JsonLd {
 		 * check if the inputString is a json object or an array of json objects in which case the target(s) are
 		 * serialized as SpecificResource objects
 		 */
-		if (isJsonObjectOrArrayOfJsonObjects(annotation.getTarget().get(0).getInputString())) {
+		if (mustSerializeAsJsonObject(annotation.getTarget().get(0).getInputString())) {
 			JsonLdProperty targetProperty = new JsonLdProperty(WebAnnotationFields.TARGET);
 			for(Target tar : annotation.getTarget()) {
 				addTargetPropertyValue(tar, targetProperty);
@@ -170,7 +170,7 @@ public class AnnotationLdSerializer extends JsonLd {
 	protected void putBody(Annotation annotation, JsonLdResource jsonLdResource) {
 		//if (!annotation.getInternalType().equals(AnnotationTypes.OBJECT_LINKING.name())) {
 		// tag or comment, not linking
-		if (isJsonObjectOrBodyValueStartsAt1(annotation.getBody().getInputString())) {
+		if (mustSerializeAsJsonObject(annotation.getBody().getInputString())) {
 			// annotation.getBody().setInputString(null);
 			JsonLdProperty bodyProperty = addBodyProperty(annotation);
 			if (bodyProperty != null)
@@ -538,14 +538,15 @@ public class AnnotationLdSerializer extends JsonLd {
 		return creator;
 	}
 
-	private boolean isJsonObjectOrArrayOfJsonObjects(String inputString) {
-		return inputString != null && (inputString.startsWith("{")
-				|| (inputString.startsWith("[") && inputString.contains("{")));
-	}
-
-	private boolean isJsonObjectOrBodyValueStartsAt1(String inputString) {
-		return inputString != null && (inputString.startsWith("{")
-				|| (inputString.indexOf(WebAnnotationFields.BODY_VALUE) == 1));
+	private boolean mustSerializeAsJsonObject(String inputString) {
+	  if(inputString == null) {
+	    return false;
+	  }
+	  
+	  // isJsonObject OR isArrayOfObjects OR isBodyValue
+	  return inputString.startsWith("{") //
+	      || (inputString.startsWith("[") && inputString.contains("{")) 
+	      ||  inputString.indexOf(WebAnnotationFields.BODY_VALUE) == 1;
 	}
 
 	private JsonLdProperty addStyledByProperty(Annotation annotation) {
