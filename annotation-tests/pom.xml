@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>annotation-api</artifactId>
@@ -13,7 +15,7 @@
 
 	<properties>
 		<sonar.coverage.jacoco.xmlReportPaths>
-			${basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>
@@ -84,13 +86,45 @@
 						<version>${jacoco-plugin.version}</version>
 						<executions>
 							<execution>
-								<id>report</id>
+								<phase>verify</phase>
 								<goals>
 									<goal>report-aggregate</goal>
 								</goals>
-								<phase>verify</phase>
+								<!-- include the reports from all modules -->
+								<configuration>
+									<dataFileIncludes>
+										<dataFileInclude>**/jacoco.exec</dataFileInclude>
+									</dataFileIncludes>
+									<outputDirectory>
+										${project.reporting.outputDirectory}/jacoco-aggregate
+									</outputDirectory>
+								</configuration>
 							</execution>
 						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>${version.maven-failsafe-plugin}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+
+						<!-- useModulePath = false Fixes Integration test not
+						finding beans. May
+							be
+					removed with 3.0.0-M6 is available
+                    See: https://stackoverflow.com/a/65806777/14530159 -->
+						<configuration>
+							<useModulePath>false</useModulePath>
+						</configuration>
+
 					</plugin>
 				</plugins>
 			</build>
