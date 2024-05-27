@@ -34,7 +34,31 @@ class AnnotationCreateHighlightingIT extends AbstractIntegrationTest {
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
   }
-  
+
+  @Test
+  void createHighlightingWithTargetAsArrayOf1() throws Exception {
+    String requestBody = AnnotationTestUtils.getJsonStringInput(HIGHLIGHTING_TARGET_AS_ARRAY_OF_1);
+    Annotation inputAnno = parseHighlighting(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(HIGHLIGHTING_TARGET_AS_ARRAY_OF_1, true);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+
+    // validate the reflection of input in output!
+    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+  }
+
+  @Test
+  void createHighlightingWithTargetAsObject() throws Exception {
+    String requestBody = AnnotationTestUtils.getJsonStringInput(HIGHLIGHTING_TARGET_AS_OBJECT);
+    Annotation inputAnno = parseHighlighting(requestBody);
+
+    Annotation storedAnno = createTestAnnotation(HIGHLIGHTING_TARGET_AS_OBJECT, true);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+
+    // validate the reflection of input in output!
+    AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
+  }
+
   @Test
   void createHighlightingWihoutPredicate() throws Exception {
     ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING_WITHOUT_PREDICATE, true);
