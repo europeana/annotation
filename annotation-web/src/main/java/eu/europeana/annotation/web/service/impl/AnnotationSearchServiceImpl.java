@@ -100,13 +100,13 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     String currentPageUrl = buildPageUrl(collectionUrl, currentPage, query.getPageSize());
     protocol.setCurrentPageUri(currentPageUrl);
 
-    if (currentPage > 0) {
+    if (currentPage > Query.DEFAULT_PAGE) {
       String prevPage = buildPageUrl(collectionUrl, currentPage - 1, query.getPageSize());
       protocol.setPrevPageUri(prevPage);
     }
 
     // if current page is not the last one
-    boolean isLastPage = protocol.getTotalInCollection() <= (currentPage + 1) * query.getPageSize();
+    boolean isLastPage = protocol.getTotalInCollection() <= (currentPage - Query.DEFAULT_PAGE + 1) * query.getPageSize();
     if (!isLastPage) {
       String nextPage = buildPageUrl(collectionUrl, currentPage + 1, query.getPageSize());
       protocol.setNextPageUri(nextPage);
@@ -187,7 +187,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
 
     Query searchQuery = new QueryImpl();
     searchQuery.setQuery(queryString);
-    if (pageNr < 0)
+    if (pageNr < Query.DEFAULT_PAGE)
       searchQuery.setPageNr(Query.DEFAULT_PAGE);
     else
       searchQuery.setPageNr(pageNr);

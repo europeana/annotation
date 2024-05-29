@@ -14,6 +14,7 @@ import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.client.config.ClientConfiguration;
 import eu.europeana.annotation.client.integration.webanno.BaseWebAnnotationDataSetTest;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -76,10 +77,10 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there might be old annotations of failing tests in the database
 		assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
-		assertEquals(annPg.getCurrentPage(), 0);
+		assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
 		assertEquals(TOTAL_IN_PAGE, annPg.getTotalInPage());
 		assertEquals(TOTAL_IN_PAGE, annPg.getItems().getResultSize());
-		assertNextPageNumber(annPg, 1);
+		assertNextPageNumber(annPg, Query.DEFAULT_PAGE + 1);
 
 		// second page
 		String npUri = annPg.getNextPageUri();
@@ -93,13 +94,13 @@ public class AnnotationSearchApiTest extends BaseWebAnnotationDataSetTest {
 		String nextCurrentPageUri = secondAnnoPg.getNextPageUri();
 		log.debug("nextCurrentPageUri" + nextCurrentPageUri);
 		assertNotNull(secondAnnoPg);
-		assertEquals(secondAnnoPg.getCurrentPage(), 1);
-		assertNextPageNumber(secondAnnoPg, 2);
+		assertEquals(secondAnnoPg.getCurrentPage(), Query.DEFAULT_PAGE + 1);
+		assertNextPageNumber(secondAnnoPg, Query.DEFAULT_PAGE + 2);
 		assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getTotalInPage());
 		assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getItems().getResultSize());
 		
 		// last page
-		int lastPageNum = (int)Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
+		int lastPageNum = (int)Math.ceil(1.0 * TOTAL_IN_COLLECTION / TOTAL_IN_PAGE) + Query.DEFAULT_PAGE - 1;
 		AnnotationPage lastPage = annSearchApi.searchAnnotations(VALUE_ALL, Integer.toString(lastPageNum), Integer.toString(TOTAL_IN_PAGE), null, null);
 		assertEquals(lastPage.getCurrentPage(), lastPageNum);
 		

@@ -63,7 +63,7 @@ public class SolrAnnotationUtils {
 
 //		searchQuery.setStart(page>0? page -1: page);
 //		searchQuery.setRows(Math.min(rows, Query.MAX_PAGE_SIZE));
-	solrQuery.setStart(searchQuery.getPageNr() * searchQuery.getPageSize());
+	solrQuery.setStart((searchQuery.getPageNr() - Query.DEFAULT_PAGE) * searchQuery.getPageSize());
 	solrQuery.setRows(searchQuery.getPageSize());
 
 	return solrQuery;

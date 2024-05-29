@@ -45,7 +45,7 @@ public interface Query {
 	/**
 	 * Default start parameter for Solr
 	 */
-	public static final int DEFAULT_PAGE = 0;
+	public static final int DEFAULT_PAGE = 1;
 	/**
 	 * Default number of items in the SERP
 	 */
