@@ -32,6 +32,7 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -614,12 +615,13 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         
         query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
         
-        String targetOrQuery="(\"" + anno.getTarget().get(0).getSource() + "\"";
-        for(int i=1;i<anno.getTarget().size();i++) {
-        	targetOrQuery += " OR \"" + anno.getTarget().get(i).getSource() + "\"";
+        StringBuilder targetOrQuery=new StringBuilder();
+        targetOrQuery.append("(\"" + anno.getTarget().get(0).getSource() + "\"");
+        for(Target t : anno.getTarget()) {
+        	targetOrQuery.append(" OR \"" + t.getSource() + "\"");
         }
-        targetOrQuery += ")";
-        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":" + targetOrQuery);
+        targetOrQuery.append(")");
+        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":" + targetOrQuery.toString());
         
         List<String> bodyUris = extractUriValues(anno.getBody());
         for (int i=0; i<bodyUris.size(); i++) { 

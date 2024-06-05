@@ -23,6 +23,7 @@ import eu.europeana.annotation.definitions.model.resource.SpecificResource;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.FacetFieldView;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -214,8 +215,8 @@ public class SolrAnnotationUtils {
 		 * we process all targets
 		 */
     	Set<String> targetUrisAll=new HashSet<>();
-    	for(int i=0;i<solrAnnotation.getTarget().size();i++) {
-        	SpecificResource internetResource = solrAnnotation.getTarget().get(i);
+    	for(Target t : solrAnnotation.getTarget()) {
+        	SpecificResource internetResource = t;
     		// extract URIs for target_uri field
     		List<String> targetUrisEach = extractUriValues(internetResource);
     		targetUrisAll.addAll(targetUrisEach);
