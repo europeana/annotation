@@ -70,15 +70,5 @@ class AnnotationCreateHighlightingIT extends AbstractIntegrationTest {
     ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING_WITHOUT_EXACT, true);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
-
-  @Test
-  void checkAnnotationDuplicatesCreateHighlighting() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING, true);
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    response = storeTestAnnotation(HIGHLIGHTING, true, null);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
      
 }

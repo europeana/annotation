@@ -611,8 +611,16 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
     private SolrQuery solrUniquenessQueryDebias(Annotation anno, boolean noSelfDupplicate) {
         SolrQuery query = new SolrQuery();
+        
         query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
-        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
+        
+        String targetOrQuery="(\"" + anno.getTarget().get(0).getSource() + "\"";
+        for(int i=1;i<anno.getTarget().size();i++) {
+        	targetOrQuery += " OR \"" + anno.getTarget().get(i).getSource() + "\"";
+        }
+        targetOrQuery += ")";
+        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":" + targetOrQuery);
+        
         List<String> bodyUris = extractUriValues(anno.getBody());
         for (int i=0; i<bodyUris.size(); i++) { 
           query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");

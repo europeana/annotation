@@ -3,8 +3,10 @@ package eu.europeana.annotation.solr.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -208,12 +210,18 @@ public class SolrAnnotationUtils {
     protected void processTargetUris(SolrAnnotation solrAnnotation) {
 		/*
 		 * in case of multiple targets, they all have the same uri, e.g. a source (e.g. in case of the debias targets),
-		 * so we only process the first target
+		 * so we only can process the first target, but still it may be that some cases have different targets so
+		 * we process all targets
 		 */
-    	SpecificResource internetResource = solrAnnotation.getTarget().get(0);
+    	Set<String> targetUrisAll=new HashSet<>();
+    	for(int i=0;i<solrAnnotation.getTarget().size();i++) {
+        	SpecificResource internetResource = solrAnnotation.getTarget().get(i);
+    		// extract URIs for target_uri field
+    		List<String> targetUrisEach = extractUriValues(internetResource);
+    		targetUrisAll.addAll(targetUrisEach);
+    	}
     	
-		// extract URIs for target_uri field
-		List<String> targetUris = extractUriValues(internetResource);
+    	List<String> targetUris=new ArrayList<>(targetUrisAll);
 		if(! targetUris.isEmpty()) {
 			solrAnnotation.setTargetUris(targetUris);
 	    	// Extract URIs for target_record_id
