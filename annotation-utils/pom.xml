@@ -106,6 +106,10 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
+                <exclusion>
+                	<groupId>xerces</groupId>
+                	<artifactId>xercesImpl</artifactId>
+                </exclusion>
             </exclusions>            
         </dependency>
         <!-- dependencies for switching to JDK 11 -->
