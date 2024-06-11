@@ -465,7 +465,7 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
         + AnnotationTestsConfiguration.getInstance().getApiKey();
 
     ResultActions mockMvcResult = mockMvc.perform(get(url));
-    assertEquals(mockMvcResult.andReturn().getResponse().getHeader(HttpHeaders.CONTENT_TYPE), eu.europeana.api.commons.web.http.HttpHeaders.CONTENT_TYPE_JSON_UTF8);
+    assertEquals(eu.europeana.api.commons.web.http.HttpHeaders.CONTENT_TYPE_JSON_UTF8, mockMvcResult.andReturn().getResponse().getHeader(HttpHeaders.CONTENT_TYPE));
     
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readValue(mockMvcResult.andReturn().getResponse().getContentAsString(),
