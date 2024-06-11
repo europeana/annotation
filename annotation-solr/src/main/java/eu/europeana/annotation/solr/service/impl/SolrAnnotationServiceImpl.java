@@ -32,6 +32,7 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -611,8 +612,24 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
 
     private SolrQuery solrUniquenessQueryDebias(Annotation anno, boolean noSelfDupplicate) {
         SolrQuery query = new SolrQuery();
+        
         query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
-        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
+        
+        StringBuilder targetOrQuery=new StringBuilder();
+        //all validated annotations have at least one target 
+        for(Target t : anno.getTarget()) {
+          if(targetOrQuery.isEmpty()) {
+            //for first entry append the bracket
+            targetOrQuery.append("(\"" + anno.getTarget().get(0).getSource() + "\"");
+          }else {
+            //for the rest of the entries append the OR operator
+            targetOrQuery.append(" OR \"" + t.getSource() + "\"");  
+          }  
+        }
+        //close bracket in the end
+        targetOrQuery.append(")");
+        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":" + targetOrQuery.toString());
+        
         List<String> bodyUris = extractUriValues(anno.getBody());
         for (int i=0; i<bodyUris.size(); i++) { 
           query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");

@@ -1,11 +1,13 @@
 package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
@@ -114,4 +116,25 @@ class AnnotationDupplicateCheckIT extends AbstractIntegrationTest {
         response = storeTestAnnotation(LINK_MINIMAL, true);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
+    
+    @Test
+    void checkAnnotationDuplicatesCreateHighlighting() throws Exception {
+      ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING, true);
+      assertEquals(HttpStatus.CREATED, response.getStatusCode());
+      Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+      addToCreatedAnnotations(storedAnno.getIdentifier());
+      response = storeTestAnnotation(HIGHLIGHTING, true, null);
+      assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void checkAnnotationDuplicatesCreateHighlightingDifferentTargets() throws Exception {
+      ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING_DIFFERENT_TARGETS, true);
+      assertEquals(HttpStatus.CREATED, response.getStatusCode());
+      Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
+      addToCreatedAnnotations(storedAnno.getIdentifier());
+      response = storeTestAnnotation(HIGHLIGHTING_TARGET_AS_ARRAY_OF_1, true, null);
+      assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
 }

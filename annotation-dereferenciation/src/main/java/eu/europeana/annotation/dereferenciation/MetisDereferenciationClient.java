@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -19,7 +17,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
+import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
 import org.springframework.beans.factory.InitializingBean;
@@ -27,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.exception.AnnotationDereferenciationException;
 import eu.europeana.annotation.definitions.exception.UpstreamServerErrorRuntimeException;
@@ -101,8 +98,9 @@ public class MetisDereferenciationClient implements InitializingBean {
 	InputStream streamResponse=null;
 	    
 	try {
-	    UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl).queryParam(PARAM_URI, uri);
-        streamResponse = httpConnection.getURLContentAsStream(uriBuilder.build().toString());
+	    HttpURL metisRequestUrl  = new HttpURL(baseUrl);
+	    metisRequestUrl.setQuery(PARAM_URI, uri);
+        streamResponse = httpConnection.getURLContentAsStream(metisRequestUrl.toString());
       	if(streamResponse==null) {
     	    throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient invalid status code or response not available.");
       	}
