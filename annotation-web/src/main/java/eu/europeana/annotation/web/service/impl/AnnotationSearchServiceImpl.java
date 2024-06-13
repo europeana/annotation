@@ -61,7 +61,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     try {
       return getSolrService().search(query);
     } catch (AnnotationServiceException e) {
-      throw SearchServiceUtils.convertSearchException(query.toString(), e);
+      throw SearchServiceUtils.convertSolrSearchException(query.toString(), e);
     }
   }
 

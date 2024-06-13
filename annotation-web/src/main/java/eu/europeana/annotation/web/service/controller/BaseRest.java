@@ -152,7 +152,7 @@ public class BaseRest extends BaseRestController {
 		AnnotationSearchResults<AbstractAnnotation> response = new AnnotationSearchResults<>(apiKey,
 				action);
 		response.success = false;
-		response.error = th.getMessage();
+		response.setError(th.getMessage());
 		// response.requestNumber = 0L;
 
 		return response;

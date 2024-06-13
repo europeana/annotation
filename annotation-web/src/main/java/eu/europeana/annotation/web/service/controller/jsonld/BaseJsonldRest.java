@@ -147,7 +147,7 @@ public class BaseJsonldRest extends BaseRest {
 	    throw e;
 	} catch (AnnotationServiceException e) {
 	    String debugInfo = (webAnnotation != null) ?  webAnnotation.toString() : ""; 
-	    throw SearchServiceUtils.convertSearchException(debugInfo, e);
+	    throw SearchServiceUtils.convertSolrSearchException(debugInfo, e);
 	} catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
@@ -486,7 +486,7 @@ public class BaseJsonldRest extends BaseRest {
 	    throw new HttpException("The submitted annotation body is invalid!", I18nConstantsAnnotation.ANNOTATION_VALIDATION,
 		    null, HttpStatus.BAD_REQUEST, e);
 	}  catch (AnnotationServiceException e) {
-      throw SearchServiceUtils.convertSearchException(annotation, e);
+      throw SearchServiceUtils.convertSolrSearchException(annotation, e);
     } catch (Exception e) {
       throw new InternalServerException(e);
     }

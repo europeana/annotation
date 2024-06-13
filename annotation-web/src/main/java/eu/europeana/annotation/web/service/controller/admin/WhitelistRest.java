@@ -76,7 +76,7 @@ public class WhitelistRest extends BaseRest {
 	    String errorMessage = WhitelistOperationResponse.ERROR_NO_OBJECT_FOUND;
 	    response.action = "get: /whitelist/search";
 	    response.success = false;
-	    response.error = errorMessage;
+	    response.setError(errorMessage);
 	}
 
 	String jsonStr = WebUtils.toJson(response);
@@ -162,11 +162,11 @@ public class WhitelistRest extends BaseRest {
 	try {
 	    int numDeletedWhitelistEntries = getWhitelistService().deleteWholeWhitelist();
 	    response.success = true;
-	    response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
+	    response.setError("number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries));
 	} catch (Exception e) {
 	    LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 	    response.success = false;
-	    response.error = e.getMessage();
+	    response.setError(e.getMessage());
 	}
 
 //		return JsonWebUtils.toJson(response, null);
@@ -191,11 +191,11 @@ public class WhitelistRest extends BaseRest {
 	try {
 	    int numDeletedWhitelistEntries = getWhitelistService().deleteWhitelistEntry(url);
 	    response.success = true;
-	    response.error = "number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries);
+	    response.setError("number of deleted whitelist entries: " + Integer.toString(numDeletedWhitelistEntries));
 	} catch (Exception e) {
 	    LogManager.getLogger(SolrSyntaxConstants.ROOT).error(e);
 	    response.success = false;
-	    response.error = e.getMessage();
+	    response.setError(e.getMessage());
 	}
 
 	String jsonStr = WebUtils.toJson(response);

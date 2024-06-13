@@ -270,7 +270,7 @@ public class SolrAnnotationUtils {
 
   List<String> extractRecordIds(Collection<String> targetUrls) {
 
-    List<String> recordIds = new ArrayList<String>(targetUrls.size());
+    List<String> recordIds = new ArrayList<String>();
     for (String targetUrl : targetUrls) {
       addRecordIdToList(targetUrl, recordIds);
     }
