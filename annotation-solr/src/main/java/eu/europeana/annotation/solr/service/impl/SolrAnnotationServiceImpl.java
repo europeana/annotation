@@ -622,9 +622,9 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
           //for first entry append the bracket, for the rest of the entries append the OR operator
           bindElement = targetOrQuery.isEmpty()? "(" : " OR ";
           //add URI in quotes  
-          targetOrQuery.append(bindElement).append("\"")
+          targetOrQuery.append(bindElement).append('"')
           .append(t.getSource())
-          .append("\"");
+          .append('"');
           
         }
         //close bracket in the end
