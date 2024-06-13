@@ -616,15 +616,16 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements So
         query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
         
         StringBuilder targetOrQuery=new StringBuilder();
-        //all validated annotations have at least one target 
+        //all validated annotations have at least one target
+        String bindElement;
         for(Target t : anno.getTarget()) {
-          if(targetOrQuery.isEmpty()) {
-            //for first entry append the bracket
-            targetOrQuery.append("(\"" + anno.getTarget().get(0).getSource() + "\"");
-          }else {
-            //for the rest of the entries append the OR operator
-            targetOrQuery.append(" OR \"" + t.getSource() + "\"");  
-          }  
+          //for first entry append the bracket, for the rest of the entries append the OR operator
+          bindElement = targetOrQuery.isEmpty()? "(" : " OR ";
+          //add URI in quotes  
+          targetOrQuery.append(bindElement).append("\"")
+          .append(t.getSource())
+          .append("\"");
+          
         }
         //close bracket in the end
         targetOrQuery.append(")");
