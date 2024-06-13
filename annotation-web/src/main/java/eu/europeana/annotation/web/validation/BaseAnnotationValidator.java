@@ -806,33 +806,42 @@ public abstract class BaseAnnotationValidator {
     if (target.getSource() == null) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD, new String[] {TARGET_SOURCE});
+    } else if (!GeneralUtils.isUrl(target.getSource())) {
+      // target.source must be a valid url
+      throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_URL,
+          I18nConstantsAnnotation.ANNOTATION_INVALID_URL, new String[] {TARGET_SOURCE});
     }
+    
+   //scope or selector are mandatory
     if (target.getScope() == null && target.getSelector() == null) {
       throw new PropertyValidationException(I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           I18nConstantsAnnotation.MESSAGE_MISSING_MANDATORY_FIELD,
           new String[] {TARGET_SCOPE + " or " + TARGET_SELECTOR});
     }
-
+    
+    //validate item id, if scope is not present, the item id must be present in the source (e.g. for debias - highlighting)
+    String itemId = (target.getScope() == null) ? target.getSource() : target.getScope();   
+    validateItemId(itemId);
+    
     // validate target selectors
     if (target.getSelector() != null) {
       validateTargetSelectors(target.getSelector());
     }
 
-    if (target.getScope() != null) {
-      final boolean notDataEuropeanaUrl =
-          !target.getScope().startsWith(getConfiguration().getAnnoItemDataEndpoint());
-      final boolean notUrl = !GeneralUtils.isUrl(target.getScope());
-      if (notUrl || notDataEuropeanaUrl)
-        throw new PropertyValidationException(
-            I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
-            I18nConstantsAnnotation.ANNOTATION_INVALID_TARGET_BASE_URL,
-            new String[] {getConfiguration().getAnnoItemDataEndpoint()});
+  }
+
+  private void validateItemId(final String itemId) throws PropertyValidationException {
+    final boolean notDataEuropeanaUrl =
+        !itemId.startsWith(getConfiguration().getAnnoItemDataEndpoint());
+    final boolean notUrl = !GeneralUtils.isUrl(itemId);
+    if (notUrl || notDataEuropeanaUrl) {
+      throw new PropertyValidationException(
+          I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
+          I18nConstantsAnnotation.INVALID_PROPERTY_VALUE,
+          new String[] { WebAnnotationFields.SOURCE + " or " + WebAnnotationFields.SCOPE,
+              "must contain the item id with the base URL " + getConfiguration().getAnnoItemDataEndpoint()});
     }
-    // target.source must be a valid url
-    if (!GeneralUtils.isUrl(target.getSource())) {
-      throw new PropertyValidationException(I18nConstantsAnnotation.ANNOTATION_INVALID_URL,
-          I18nConstantsAnnotation.ANNOTATION_INVALID_URL, new String[] {TARGET_SOURCE});
-    }
+      
   }
 
   private void validateTargetSelectors(Selector selector) throws PropertyValidationException {

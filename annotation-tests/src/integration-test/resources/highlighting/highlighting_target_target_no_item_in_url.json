@@ -1,0 +1,21 @@
+{
+	"type": "Annotation",
+	"motivation": "highlighting",
+	"body": "http://example.com/kleuren",
+	"target": {
+		"source": "http://no.data.europeana.eu/no_item_/no_record_id",
+		"selector": {
+			"type": "RDFStatementSelector",
+			"hasPredicate": "dc:title",
+			"refinedBy": {
+				"type": "TextQuoteSelector",
+				"exact": {
+					"@value": "kleuren",
+					"@language": "nl"
+				},
+				"prefix": ". Origineel handgeschreven en ",
+				"suffix": " document met daarop o.a. afbeeldingen van de H. Michael"
+			}
+		}
+	}
+}

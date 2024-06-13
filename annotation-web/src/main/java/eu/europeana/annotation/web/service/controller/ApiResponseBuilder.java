@@ -14,7 +14,7 @@ public class ApiResponseBuilder {
 				apiKey, action);
 		
 		response.success = false;
-		response.error = errorMessage;
+		response.setError(errorMessage);
 		return response;
 	}
 

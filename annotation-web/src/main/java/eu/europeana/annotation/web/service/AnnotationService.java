@@ -21,6 +21,7 @@ import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
+import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
@@ -68,18 +69,20 @@ public interface AnnotationService {
 
 	/**
 	 * This method stores Annotation object in database and in Solr.
-	 * @param annotation
-	 * @return Annotation object
+     * @param annotation object to store 
+     * @return Annotation stored object 
+     * @throws AnnotationServiceException if the solr indexing fails
 	 */
-	Annotation storeAnnotation(Annotation annotation);
+	Annotation storeAnnotation(Annotation annotation) throws AnnotationServiceException;
 
 	/**
 	 * This method stores Annotation object in database and in Solr if 'indexing' is true.
-	 * @param annotation
-	 * @param indexing
-	 * @return Annotation object
+	 * @param annotation object to store 
+	 * @param indexing if the indexing should be run synchronuously
+	 * @return Annotation stored object 
+	 * @throws AnnotationServiceException if the solr indexing fails 
 	 */
-	Annotation storeAnnotation(Annotation annotation, boolean indexing);
+	Annotation storeAnnotation(Annotation annotation, boolean indexing) throws AnnotationServiceException;
 
 	/**
 	 * update (stored) <code>persistentAnnotation</code> with values from <code>webAnnotation</code>
@@ -172,10 +175,11 @@ public interface AnnotationService {
 
 	/**
 	 * This method stores moderation record in database
-	 * @param newModerationRecord
-	 * @return
+	 * @param newModerationRecord to store
+	 * @return stored object
+	 * @throws AnnotationIndexingException if the data cannot be indexed in solr 
 	 */
-	ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord);
+	ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord) throws AnnotationIndexingException;
 	
 	/**
 	 * @param annoIdentifier

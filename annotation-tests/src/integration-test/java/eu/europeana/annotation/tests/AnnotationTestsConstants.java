@@ -118,6 +118,8 @@ public class AnnotationTestsConstants {
   public static final String LINK_FOR_CONTRIBUTING_TARGET_SPECIFIC_ID = "/linkforcontributing/link_for_contributing_target_specific_id.json";
   
   public static final String HIGHLIGHTING = "/highlighting/highlighting_target_as_array_more_than_1.json";
+  public static final String HIGHLIGHTING_NO_ITEM_IN_URL = "/highlighting/highlighting_target_target_no_item_in_url.json";
+  
   public static final String HIGHLIGHTING_DIFFERENT_TARGETS = "/highlighting/highlighting_different_targets.json";
   public static final String HIGHLIGHTING_TARGET_AS_ARRAY_OF_1 = "/highlighting/highlighting_target_as_array_of_1.json";
   public static final String HIGHLIGHTING_TARGET_AS_OBJECT = "/highlighting/highlighting_target_as_object.json";

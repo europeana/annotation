@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
 import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.api.commons.config.i18n.I18nService;
@@ -22,49 +22,51 @@ import eu.europeana.api.commons.web.model.ApiResponse;
 @ConditionalOnWebApplication
 public class GlobalExceptionHandler extends AbstractExceptionHandlingController {
 
-	@Resource
-	I18nService i18nService;
+  @Resource
+  I18nService i18nService;
 
-	protected I18nService getI18nService() {
-		return i18nService;
-	}
-	
-	@Override
-	public ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
+  protected I18nService getI18nService() {
+    return i18nService;
+  }
 
-		AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, action);
-		response.success = false;
-		response.error = errorMessage;
-		return response;
-	}
-	
-	@Override
-	protected ApiResponse getErrorReport(String apiKey, String action, Throwable th, boolean includeErrorStack) {
-		// TODO Auto-generated method stub
-		AnnotationOperationResponse response = (AnnotationOperationResponse) super.getErrorReport(apiKey, action, th, includeErrorStack);
-		
-		if(th instanceof BatchUploadException)
-			response.setOperationReport(((BatchUploadException)th).getOperationReport());
+  // TODO: eventually change to EuropeanaApiErrorResponse
+  // @Override
+  // public ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
+  //
+  // AnnotationOperationResponse response = new AnnotationOperationResponse(apiKey, action);
+  // response.success = false;
+  // response.setError(errorMessage);
+  // return response;
+  // }
 
-		return response;
-	}
-	
-	  /*
-	   * This is the exception thrown when there is a type mismatch, e.g.: 
-	   * "Failed to convert value of type [java.lang.String] to required type [java.lang.Long]; nested exception is java.lang.NumberFormatException:...
-	   */
-	  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	  public ResponseEntity<EuropeanaApiErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest httpRequest) {
-		  EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse
-				  .Builder(httpRequest, e, true)
-		          .setStatus(HttpStatus.BAD_REQUEST.value())
-		          .setError("Error in parsing request parameter (wrong type).")
-		          .setMessage(e.getMessage())
-		          .build();
+  @ExceptionHandler(BatchUploadException.class)
+  public ResponseEntity<AnnotationOperationResponse> handleBatchUploadException(
+      BatchUploadException ex, HttpServletRequest httpRequest) {
+    AnnotationOperationResponse response = new AnnotationOperationResponse(
+        httpRequest.getParameter(WebAnnotationFields.PARAM_WSKEY), "batchUpload");
+    response.setOperationReport(ex.getOperationReport());
+    response.success = false;
+    response.setError(ex.getMessage());
 
-		  return ResponseEntity.status(response.getStatus())
-				  .contentType(MediaType.APPLICATION_JSON)
-				  .body(response);
-	  }
+    return ResponseEntity.status(ex.getStatus()).contentType(MediaType.APPLICATION_JSON)
+        .body(response);
+  }
+
+  /*
+   * This is the exception thrown when there is a type mismatch, e.g.: "Failed to convert value of
+   * type [java.lang.String] to required type [java.lang.Long]; nested exception is
+   * java.lang.NumberFormatException:...
+   */
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<EuropeanaApiErrorResponse> handleMethodArgumentTypeMismatchException(
+      MethodArgumentTypeMismatchException e, HttpServletRequest httpRequest) {
+    EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, true)
+        .setStatus(HttpStatus.BAD_REQUEST.value())
+        .setError("Error in parsing request parameter (wrong type).").setMessage(e.getMessage())
+        .build();
+
+    return ResponseEntity.status(response.getStatus()).contentType(MediaType.APPLICATION_JSON)
+        .body(response);
+  }
 
 }

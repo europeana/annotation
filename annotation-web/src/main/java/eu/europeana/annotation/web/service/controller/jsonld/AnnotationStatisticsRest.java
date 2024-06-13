@@ -55,7 +55,7 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
         try {
           annotationStatisticsService.getAnnotationsStatistics(annoMetric);
         } catch (AnnotationServiceException e) {
-          throw SearchServiceUtils.convertSearchException("verify statistics computation queries", e);
+          throw SearchServiceUtils.convertSolrSearchException("verify statistics computation queries", e);
         } 
         String json = serializeMetricView(annoMetric);
         return buildUsageStatsResponse(json);
