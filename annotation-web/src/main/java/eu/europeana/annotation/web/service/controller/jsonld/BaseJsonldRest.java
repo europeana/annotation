@@ -64,619 +64,656 @@ import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public class BaseJsonldRest extends BaseRest {
 
-    protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation, boolean indexOnCreate,
-	    String annotation, Authentication authentication) throws HttpException {
-	
-      Annotation webAnnotation = null;
-      try {
-	    // parse
-	    webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
+  protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation,
+      boolean indexOnCreate, String annotation, Authentication authentication)
+      throws HttpException {
 
-		// validate annotation and check that no generator and creator exists in input
-	    // set generator and creator
-	    String userId = authentication.getPrincipal().toString();
-	    String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
+    Annotation webAnnotation = null;
+    try {
+      // parse
+      webAnnotation = getAnnotationService().parseAnnotationLd(motivation, annotation);
 
-	    String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), clientId);
-	    String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
+      // validate annotation and check that no generator and creator exists in input
+      // set generator and creator
+      String userId = authentication.getPrincipal().toString();
+      String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
 
-	    //overwrite creator and generator with values generated from the JWT token 
-	    webAnnotation.setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE));
-	    webAnnotation.setCreator(buildAgent(creatorId, AgentTypes.PERSON));
+      String generatorId = AnnotationIdHelper
+          .buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), clientId);
+      String creatorId =
+          AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
 
-	    // 2. validate
-	    // annotation id cannot be provided in the input of the create method
-	    if (!(webAnnotation.getIdentifier()==0))
-		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_IDENTIFIER_PROVIDED_UPON_CREATION,
-			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
-			new String[] { "identifier", String.valueOf(webAnnotation.getIdentifier()) });
-	    // 2.1 validate annotation properties
-	    getAnnotationService().validateWebAnnotation(webAnnotation, authentication);
-	    
-	    //check the annotation uniqueness, only after validation 
-        Set<String> duplicateAnnotationIds = getAnnotationService().checkDuplicateAnnotations(webAnnotation, false);
-        if(!duplicateAnnotationIds.isEmpty()) {
-            String [] i18nParamsAnnoDuplicates = new String [1];
-            i18nParamsAnnoDuplicates[0]=String.join(",", duplicateAnnotationIds);
-            throw new AnnotationUniquenessValidationException(I18nConstantsAnnotation.ANNOTATION_DUPLICATION,
-                    I18nConstantsAnnotation.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
-        }
+      // overwrite creator and generator with values generated from the JWT token
+      webAnnotation.setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE));
+      webAnnotation.setCreator(buildAgent(creatorId, AgentTypes.PERSON));
 
-        // 3-6 create ID and annotation + backend validation
-        long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
-	    webAnnotation.setIdentifier(annoIdentifier);
+      // 2. validate
+      // annotation id cannot be provided in the input of the create method
+      if (!(webAnnotation.getIdentifier() == 0))
+        throw new ParamValidationI18NException(
+            ParamValidationI18NException.MESSAGE_ANNOTATION_IDENTIFIER_PROVIDED_UPON_CREATION,
+            I18nConstantsAnnotation.ANNOTATION_VALIDATION,
+            new String[] {"identifier", String.valueOf(webAnnotation.getIdentifier())});
+      // 2.1 validate annotation properties
+      getAnnotationService().validateWebAnnotation(webAnnotation, authentication);
 
-	    // validate api key ... and request limit only if the request is
-	    // correct (avoid useless DB requests)
-	    // Done in authorize user
-	    // validateApiKey(wsKey);
+      // check the annotation uniqueness, only after validation
+      Set<String> duplicateAnnotationIds =
+          getAnnotationService().checkDuplicateAnnotations(webAnnotation, false);
+      if (!duplicateAnnotationIds.isEmpty()) {
+        String[] i18nParamsAnnoDuplicates = new String[1];
+        i18nParamsAnnoDuplicates[0] = String.join(",", duplicateAnnotationIds);
+        throw new AnnotationUniquenessValidationException(
+            I18nConstantsAnnotation.ANNOTATION_DUPLICATION,
+            I18nConstantsAnnotation.ANNOTATION_DUPLICATION, i18nParamsAnnoDuplicates);
+      }
 
-	    Annotation storedAnnotation = getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
+      // 3-6 create ID and annotation + backend validation
+      long annoIdentifier = mongoPersistance.generateAnnotationIdentifier();
+      webAnnotation.setIdentifier(annoIdentifier);
 
-	    // serialize to jsonld
-        JsonLd annotationLd = new AnnotationLdSerializer(storedAnnotation, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = annotationLd.toString(4);
+      Annotation storedAnnotation =
+          getAnnotationService().storeAnnotation(webAnnotation, indexOnCreate);
 
-	    // build response entity with headers
-	    // TODO: clarify serialization ETag: "_87e52ce126126"
-	    // TODO: clarify Allow: PUT,GET,DELETE,OPTIONS,HEAD,PATCH
-//	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTag = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+      // serialize to jsonld
+      JsonLd annotationLd =
+          new AnnotationLdSerializer(storedAnnotation, getConfiguration().getAnnotationBaseUrl());
+      String jsonLd = annotationLd.toString(4);
 
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, eTag);
-	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
+      // build response entity with headers
+      // TODO: clarify serialization ETag: "_87e52ce126126"
+      String eTag = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD,
+          buildInfo.getVersion());
 
-	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      headers.add(HttpHeaders.ETAG, eTag);
+      headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+      headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
-	    return response;
+      ResponseEntity<String> response =
+          new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
 
-	} catch (JsonParseException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationValidationException e) { // TODO: transform to
-						    // checked annotation type
-	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationAttributeInstantiationException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationInstantiationException e) {
-	    throw new HttpException(null, I18nConstantsAnnotation.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e);
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    throw e;
-	} catch (AnnotationServiceException e) {
-	    String debugInfo = (webAnnotation != null) ?  webAnnotation.toString() : ""; 
-	    throw SearchServiceUtils.convertSolrSearchException(debugInfo, e);
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+      return response;
 
+    } catch (JsonParseException e) {
+      throw new RequestBodyValidationException(annotation,
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
+    } catch (AnnotationValidationException e) {
+      // TODO: transform to checked annotation type
+      throw new RequestBodyValidationException(annotation,
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
+    } catch (AnnotationAttributeInstantiationException e) {
+      throw new RequestBodyValidationException(annotation,
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
+    } catch (AnnotationInstantiationException e) {
+      throw new HttpException(null, I18nConstantsAnnotation.ANNOTATION_INVALID_BODY, null,
+          HttpStatus.BAD_REQUEST, e);
+    } catch (HttpException e) {
+      // avoid wrapping HttpExceptions
+      throw e;
+    } catch (AnnotationServiceException e) {
+      String debugInfo = (webAnnotation != null) ? webAnnotation.toString() : "";
+      throw SearchServiceUtils.convertSolrSearchException(debugInfo, e);
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
 
-    /**
-     * 
-     * @param wsKey
-     * @param annotationPageIn
-     * @param authentication
-     * @return
-     * @throws HttpException
-     */
-    protected ResponseEntity<String> storeAnnotations(String annotationPageIn, Authentication authentication)
-	    throws HttpException {
-	try {
+  }
 
-	    String userId = authentication.getPrincipal().toString();
+  /**
+   * 
+   * @param wsKey
+   * @param annotationPageIn
+   * @param authentication
+   * @return
+   * @throws HttpException
+   */
+  protected ResponseEntity<String> storeAnnotations(String annotationPageIn,
+      Authentication authentication) throws HttpException {
+    try {
 
-	    // parse annotation page
-	    AnnotationPageParser annoPageParser = new AnnotationPageParser();
-	    AnnotationPage annotationPage = annoPageParser.parseAnnotationPage(annotationPageIn);
-	    List<? extends Annotation> annotations = annotationPage.getAnnotations();
+      String userId = authentication.getPrincipal().toString();
 
-	    // initialize upload status
-	    BatchUploadStatus uploadStatus = new BatchUploadStatus();
-	    uploadStatus.setTotalNumberOfAnnotations(annotations.size());
+      // parse annotation page
+      AnnotationPageParser annoPageParser = new AnnotationPageParser();
+      AnnotationPage annotationPage = annoPageParser.parseAnnotationPage(annotationPageIn);
+      List<? extends Annotation> annotations = annotationPage.getAnnotations();
 
-	    // validate annotations
-	    uploadStatus.setStep(BatchOperationStep.VALIDATION);
-	    getAnnotationService().validateWebAnnotations(annotations, uploadStatus, authentication);
+      // initialize upload status
+      BatchUploadStatus uploadStatus = new BatchUploadStatus();
+      uploadStatus.setTotalNumberOfAnnotations(annotations.size());
 
-	    // in case of validation errors, return error report
-	    if (uploadStatus.getFailureCount() > 0)
-		throw new BatchUploadException(uploadStatus.toString(), uploadStatus);
+      // validate annotations
+      uploadStatus.setStep(BatchOperationStep.VALIDATION);
+      getAnnotationService().validateWebAnnotations(annotations, uploadStatus, authentication);
 
-	    AnnotationsList webAnnotations = new AnnotationsList(annotationPage.getAnnotations());
+      // in case of validation errors, return error report
+      if (uploadStatus.getFailureCount() > 0)
+        throw new BatchUploadException(uploadStatus.toString(), uploadStatus);
 
-	    // annotations are separated into those with identifier (assumed updates)
-	    // and those without identifier (new annotations which should be created);
-	    // first annotations with identifier (assumed updates)
-	    AnnotationsList annosWithId = webAnnotations.getAnnotationsWithId();
-	    uploadStatus.setNumberOfAnnotationsWithId(annosWithId.size());
+      AnnotationsList webAnnotations = new AnnotationsList(annotationPage.getAnnotations());
 
-	    // verify if the annotations with identifiers exist in the database
-	    List<Long> annoIdentifiers = annosWithId.getIdentifiers();
-	    AnnotationsList existingInDb;
+      // annotations are separated into those with identifier (assumed updates)
+      // and those without identifier (new annotations which should be created);
+      // first annotations with identifier (assumed updates)
+      AnnotationsList annosWithId = webAnnotations.getAnnotationsWithId();
+      uploadStatus.setNumberOfAnnotationsWithId(annosWithId.size());
 
-	    if (!annoIdentifiers.isEmpty()) {
-	      existingInDb = new AnnotationsList(getAnnotationService().getExisting(annoIdentifiers));
-	    }
-	    else {
-	      existingInDb = new AnnotationsList(new ArrayList<AbstractAnnotation>(0));
-	    }
+      // verify if the annotations with identifiers exist in the database
+      List<Long> annoIdentifiers = annosWithId.getIdentifiers();
+      AnnotationsList existingInDb;
 
-	    // consistency (annotations with identifier must match existing annotations)
-	    uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
-	    if (annosWithId.size() != existingInDb.size()) {
-		// remove existing identifiers, the remaining list contains only missing identifiers
-	    annoIdentifiers.removeAll(existingInDb.getIdentifiers());
-		getAnnotationService().reportNonExisting(annotations, uploadStatus, annoIdentifiers);
-		throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
-	    }
+      if (!annoIdentifiers.isEmpty()) {
+        existingInDb = new AnnotationsList(getAnnotationService().getExisting(annoIdentifiers));
+      } else {
+        existingInDb = new AnnotationsList(new ArrayList<AbstractAnnotation>(0));
+      }
 
-	    LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap = webAnnotations.getAnnotationsMap();
+      // consistency (annotations with identifier must match existing annotations)
+      uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
+      if (annosWithId.size() != existingInDb.size()) {
+        // remove existing identifiers, the remaining list contains only missing identifiers
+        annoIdentifiers.removeAll(existingInDb.getIdentifiers());
+        getAnnotationService().reportNonExisting(annotations, uploadStatus, annoIdentifiers);
+        throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
+      }
 
-	    // update existing annotations
-	    if (annosWithId.getAnnotations().size() > 0) {
-		uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
-		getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(),
-		    annosWithId.getAnnotations(), webAnnoStoredAnnoAnnoMap);
-	    }
-	    // annotations are separated into those with identifier (assumed updates)
-	    // and those without identifier (new annotations which should be created);
-	    // second annotations without (assumed inserts)
-	    AnnotationsList annosWithoutId = webAnnotations.getAnnotationsWithoutId();
-	    uploadStatus.setStep(BatchOperationStep.INSERT_NEW_ANNOTATIONS);
-	    uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
-	    // default values
-	    if (annosWithoutId.size() > 0) {
-    	    String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
-    		String generatorId = AnnotationIdHelper.buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), clientId);
-    		String creatorId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
-    
-    //				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
-    		AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder().setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE))
-    			.setUser(buildAgent(creatorId, AgentTypes.PERSON)).build();
-    		getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults,
-    			webAnnoStoredAnnoAnnoMap);
-	    }
+      LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap =
+          webAnnotations.getAnnotationsMap();
 
-	    // create result annotation page
-	    AnnotationPage apRes = new AnnotationPageImpl();
-	    List<Annotation> resList = new ArrayList<Annotation>();
-	    // the "web annotation - stored annotation" map has preserved the order of
-	    // submitted annotations
-	    for (Annotation ann : webAnnoStoredAnnoAnnoMap.keySet())
-		resList.add(webAnnoStoredAnnoAnnoMap.get(ann));
-	    apRes.setAnnotations(resList);
-	    apRes.setTotalInCollection(resList.size());
-	    apRes.setTotalInPage(resList.size());
-//			apRes.setCurrentPageUri("http://UNDEFINED");
+      // update existing annotations
+      if (annosWithId.getAnnotations().size() > 0) {
+        uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
+        getAnnotationService().updateExistingAnnotations(uploadStatus,
+            existingInDb.getAnnotations(), annosWithId.getAnnotations(), webAnnoStoredAnnoAnnoMap);
+      }
+      // annotations are separated into those with identifier (assumed updates)
+      // and those without identifier (new annotations which should be created);
+      // second annotations without (assumed inserts)
+      AnnotationsList annosWithoutId = webAnnotations.getAnnotationsWithoutId();
+      uploadStatus.setStep(BatchOperationStep.INSERT_NEW_ANNOTATIONS);
+      uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
+      // default values
+      if (annosWithoutId.size() > 0) {
+        String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
+        String generatorId = AnnotationIdHelper
+            .buildGeneratorUri(getConfiguration().getAnnoClientApiEndpoint(), clientId);
+        String creatorId = AnnotationIdHelper
+            .buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), userId);
 
-	    String jsonLd = (new AnnotationPageSerializer(apRes, getConfiguration().getAnnotationBaseUrl())).serialize(SearchProfiles.STANDARD);
-	    
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(3);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
+        // getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
+        AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder()
+            .setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE))
+            .setUser(buildAgent(creatorId, AgentTypes.PERSON)).build();
+        getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(),
+            annoDefaults, webAnnoStoredAnnoAnnoMap);
+      }
 
-	    // build response
-	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
+      // create result annotation page
+      AnnotationPage apRes = new AnnotationPageImpl();
+      List<Annotation> resList = new ArrayList<Annotation>();
+      // the "web annotation - stored annotation" map has preserved the order of
+      // submitted annotations
+      for (Annotation ann : webAnnoStoredAnnoAnnoMap.keySet())
+        resList.add(webAnnoStoredAnnoAnnoMap.get(ann));
+      apRes.setAnnotations(resList);
+      apRes.setTotalInCollection(resList.size());
+      apRes.setTotalInPage(resList.size());
+      // apRes.setCurrentPageUri("http://UNDEFINED");
 
-	    return response;
+      String jsonLd =
+          (new AnnotationPageSerializer(apRes, getConfiguration().getAnnotationBaseUrl()))
+              .serialize(SearchProfiles.STANDARD);
 
-	} catch (AnnotationInstantiationException e) {
-	    throw new HttpException("The submitted annotation body is invalid!", I18nConstantsAnnotation.ANNOTATION_INVALID_BODY,
-		    null, HttpStatus.BAD_REQUEST, e);
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    throw e;
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(3);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+      headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_POST);
 
+      // build response
+      ResponseEntity<String> response =
+          new ResponseEntity<String>(jsonLd, headers, HttpStatus.CREATED);
+
+      return response;
+
+    } catch (AnnotationInstantiationException e) {
+      throw new HttpException("The submitted annotation body is invalid!",
+          I18nConstantsAnnotation.ANNOTATION_INVALID_BODY, null, HttpStatus.BAD_REQUEST, e);
+    } catch (HttpException e) {
+      // avoid wrapping HttpExceptions
+      throw e;
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
 
-    /**
-     * This method builds agent object
-     * 
-     * @param id agent id
-     * @return agent as an Agent object
-     */
-    protected Agent buildAgent(String id, AgentTypes type) {
-	Agent agent = AgentObjectFactory.getInstance().createObjectInstance(type);
-	agent.setHttpUrl(id);
-//		agent.setName(id);		
-	return agent;
+  }
+
+  /**
+   * This method builds agent object
+   * 
+   * @param id agent id
+   * @return agent as an Agent object
+   */
+  protected Agent buildAgent(String id, AgentTypes type) {
+    Agent agent = AgentObjectFactory.getInstance().createObjectInstance(type);
+    agent.setHttpUrl(id);
+    // agent.setName(id);
+    return agent;
+  }
+
+  /**
+   * This method retrieves annotation by ID optionally providing profile and language
+   * 
+   * @param identifier
+   * @param profileStr e.g. "dereference"
+   * @param language e.g.
+   *        "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
+   * @return
+   * @throws HttpException
+   */
+  protected ResponseEntity<String> getAnnotationById(long identifier, String profileStr,
+      String language) throws HttpException {
+
+    try {
+
+      // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
+      // annotation id doesn’t exists )
+      // 4.or 410 (if the user is not allowed to access the annotation);
+      Annotation annotation = getAnnotationService().getAnnotationById(identifier, null, true);
+
+      SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
+      // will update body if dereference profile is used
+      getAnnotationService().dereferenceSemanticTags(annotation, searchProfile, language);
+
+      JsonLd annotationLd =
+          new AnnotationLdSerializer(annotation, getConfiguration().getAnnotationBaseUrl());
+      String jsonLd = annotationLd.toString(4);
+
+      // String apiVersion = getConfiguration().getAnnotationApiVersion();
+      String eTag =
+          generateETag(annotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      headers.add(HttpHeaders.ETAG, eTag);
+      headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+      headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
+
+      ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
+
+      return response;
+
+    } catch (UpstreamServerErrorRuntimeException e) {
+      throw new UpstreamServerErrorHttpException(I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS,
+          I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, null, e);
+    } catch (RuntimeException e) {
+      // not found ..
+      throw new InternalServerException(e);
+    } catch (HttpException e) {
+      // avoid wrapping http exception
+      throw e;
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
+  }
 
-    /**
-     * This method retrieves annotation by ID optionally providing profile and
-     * language
-     * 
-     * @param identifier
-     * @param profileStr e.g. "dereference"
-     * @param language   e.g.
-     *                   "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
-     * @return
-     * @throws HttpException
-     */
-    protected ResponseEntity<String> getAnnotationById(long identifier, String profileStr, String language)
-	    throws HttpException {
+  protected ResponseEntity<String> getModerationReportSummary(String wsKey, long identifier)
+      throws HttpException {
 
-	try {
+    try {
 
-	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
-	    // annotation id doesn’t exists )
-	    // 4.or 410 (if the user is not allowed to access the annotation);
-	    Annotation annotation = getAnnotationService().getAnnotationById(identifier, null, true);
+      // 2. Check client access (a valid “wskey” must be provided)
+      // validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
 
-	    SearchProfiles searchProfile = SearchProfiles.getByStr(profileStr);
-	    // will update body if dereference profile is used
-	    getAnnotationService().dereferenceSemanticTags(annotation, searchProfile, language);
+      // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
+      // moderation id doesn’t exists )
+      ModerationRecord moderationRecord =
+          getAnnotationService().findModerationRecordById(identifier);
+      if (moderationRecord == null)
+        moderationRecord = buildNewModerationRecord(identifier, null);
 
-        JsonLd annotationLd = new AnnotationLdSerializer(annotation, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = annotationLd.toString(4);
+      Gson gsonObj = new Gson();
+      String jsonString = gsonObj.toJson(moderationRecord.getSummary());
 
-//	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTag = generateETag(annotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
+      // headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+      headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
 
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, eTag);
-	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-	    headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
+      // build response
+      ResponseEntity<String> response =
+          new ResponseEntity<String>(jsonString, headers, HttpStatus.OK);
 
-	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
+      return response;
 
-	    return response;
-
-	} catch (UpstreamServerErrorRuntimeException e) {
-		throw new UpstreamServerErrorHttpException(I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, 
-				I18nConstantsAnnotation.UPSTREAM_SERVER_ACCESS, null, e);
-	} catch (RuntimeException e) {
-	    // not found ..
-	    throw new InternalServerException(e);
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+    } catch (RuntimeException e) {
+      // not found ..
+      throw new InternalServerException(e);
+    } catch (HttpException e) {
+      // avoid wrapping http exception
+      throw e;
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
+  }
 
-    protected ResponseEntity<String> getModerationReportSummary(String wsKey, long identifier) throws HttpException {
+  /**
+   * This method validates input values wsKey, identifier and userToken.
+   * 
+   * @param identifier
+   * @param userId
+   * @param enabled
+   * @return
+   * @return annotation object
+   * @throws HttpException
+   */
+  private Annotation verifyOwnerOrAdmin(long identifier, Authentication authentication,
+      boolean enabled) throws HttpException {
 
-	try {
+    String userId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(),
+        (String) authentication.getPrincipal());
+    Annotation annotation = getAnnotationService().getAnnotationById(identifier, userId, enabled);
 
-	    // 2. Check client access (a valid “wskey” must be provided)
-//			validateApiKey(wsKey, WebAnnotationFields.READ_METHOD);
-
-	    // 4. If annotation doesn’t exist respond with HTTP 404 (if provided
-	    // moderation id doesn’t exists )
-	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(identifier);
-	    if (moderationRecord == null)
-		moderationRecord = buildNewModerationRecord(identifier, null);
-
-	    Gson gsonObj = new Gson();
-	    String jsonString = gsonObj.toJson(moderationRecord.getSummary());
-
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
-	    // headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-
-	    // build response
-	    ResponseEntity<String> response = new ResponseEntity<String>(jsonString, headers, HttpStatus.OK);
-
-	    return response;
-
-	} catch (RuntimeException e) {
-	    // not found ..
-	    throw new InternalServerException(e);
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+    // verify ownership
+    boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
+    if (isOwner
+        || AnnotationAuthorizationUtils.hasRole(authentication, UserRoles.admin.getName())) {
+      // approve owner or admin
+      return annotation;
+    } else {
+      // not authorized
+      // not authorized
+      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED,
+          I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED,
+          new String[] {
+              "Only the creators of the annotation or admins are authorized to perform this operation."},
+          HttpStatus.FORBIDDEN);
     }
+  }
 
-    /**
-     * This method validates input values wsKey, identifier and userToken.
-     * 
-     * @param identifier
-     * @param userId
-     * @param enabled
-     * @return
-     * @return annotation object
-     * @throws HttpException
-     */
-    private Annotation verifyOwnerOrAdmin(long identifier, Authentication authentication, boolean enabled) throws HttpException {
+  /**
+   * This method validates input values, retrieves annotation object and updates it.
+   * 
+   * @param identifier
+   * @param annotation
+   * @param authentication Contains user name
+   * @param action
+   * @return response entity that comprises response body, headers and status code
+   * @throws HttpException
+   */
+  protected ResponseEntity<String> updateAnnotation(long identifier, String annotation,
+      Authentication authentication, HttpServletRequest request) throws HttpException {
 
-	String userId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(), (String)authentication.getPrincipal());
-	Annotation annotation = getAnnotationService().getAnnotationById(identifier, userId, enabled);
-	
-	//verify ownership
-	boolean isOwner = annotation.getCreator().getHttpUrl().equals(userId);
-	if(isOwner || AnnotationAuthorizationUtils.hasRole(authentication, UserRoles.admin.getName())) {
-	    //approve owner or admin
-	    return annotation;
-	}else {
-	    //not authorized
-		//not authorized
-	    throw new ApplicationAuthenticationException(I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED,
-		    I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] { "Only the creators of the annotation or admins are authorized to perform this operation."},
-		    HttpStatus.FORBIDDEN);
-	}
-    }
+    try {
+      // String userId = authentication.getPrincipal().toString();
 
-    /**
-     * This method validates input values, retrieves annotation object and updates
-     * it.
-     * 
-     * @param identifier
-     * @param annotation
-     * @param authentication Contains user name
-     * @param action
-     * @return response entity that comprises response body, headers and status code
-     * @throws HttpException
-     */
-    protected ResponseEntity<String> updateAnnotation(long identifier, String annotation,
-	    Authentication authentication, HttpServletRequest request) throws HttpException {
+      // 1. authorize user
+      // already performed in verify write access
+      // getAuthorizationService().authorizeUser(userId, authentication, annoId,
+      // Operations.UPDATE);
+      // check permissions for update
+      Annotation storedAnnotation = verifyOwnerOrAdmin(identifier, authentication, true);
 
-	try {
-//	    String userId = authentication.getPrincipal().toString();
+      // 2. check time stamp
+      // 3. validate new description for format and fields
+      // 4. generate new and replace existing time stamp for annotation
 
-	    // 1. authorize user
-	    // already performed in verify write access
-	    // getAuthorizationService().authorizeUser(userId, authentication, annoId,
-	    // Operations.UPDATE);
-	    // check permissions for update
-	    Annotation storedAnnotation = verifyOwnerOrAdmin(identifier, authentication, true);
+      // Retrieve an annotation based on its identifier;
+      // PersistentAnnotation storedAnnotation =
+      // getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
+      // identifier);
 
-	    // 2. check time stamp
-	    // 3. validate new description for format and fields
-	    // 4. generate new and replace existing time stamp for annotation
+      // TODO: #431 update specification steps performed here
+      // 5. parse updated annotation
+      Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(null, annotation);
 
-	    // Retrieve an annotation based on its identifier;
-//			PersistentAnnotation storedAnnotation = getAnnotationForUpdate(getConfiguration().getAnnotationBaseUrl(), provider,
-//					identifier);
+      // validate annotation
+      // String apiVersion = getConfiguration().getAnnotationApiVersion();
+      String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD,
+          buildInfo.getVersion());
 
-	    // TODO: #431 update specification steps performed here
-	    // 5. parse updated annotation
-	    Annotation updateWebAnnotation = getAnnotationService().parseAnnotationLd(null, annotation);
+      checkIfMatchHeader(eTagOrigin, request);
+      getAnnotationService().validateWebAnnotation(updateWebAnnotation, authentication);
 
-	    // validate annotation
-//	    String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+      // 6. apply updates - merge current and updated annotation
+      // 7. and call database update method
+      Annotation updatedAnnotation = getAnnotationService()
+          .updateAnnotation((PersistentAnnotation) storedAnnotation, updateWebAnnotation);
 
-	    checkIfMatchHeader(eTagOrigin, request);
-	    getAnnotationService().validateWebAnnotation(updateWebAnnotation, authentication);
+      String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD,
+          buildInfo.getVersion());
 
-	    // 6. apply updates - merge current and updated annotation
-	    // 7. and call database update method
-	    Annotation updatedAnnotation = getAnnotationService()
-		    .updateAnnotation((PersistentAnnotation) storedAnnotation, updateWebAnnotation);
+      // serialize to jsonld
+      JsonLd annotationLd =
+          new AnnotationLdSerializer(updatedAnnotation, getConfiguration().getAnnotationBaseUrl());
+      String jsonLd = annotationLd.toString(4);
 
-	    String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+      // build response entity with headers
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      headers.add(HttpHeaders.ETAG, eTag);
+      headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
+      headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
 
-	    // serialize to jsonld
-        JsonLd annotationLd = new AnnotationLdSerializer(updatedAnnotation, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = annotationLd.toString(4);
+      ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
-	    // build response entity with headers
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, eTag);
-	    headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GPuD);
+      return response;
 
-	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
-
-	    return response;
-
-	} catch (JsonParseException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (AnnotationValidationException e) {
-	    throw new RequestBodyValidationException(annotation, I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
-	} catch (HttpException e) {
-	    throw e;
-	} catch (AnnotationInstantiationException e) {
-	    throw new HttpException("The submitted annotation body is invalid!", I18nConstantsAnnotation.ANNOTATION_VALIDATION,
-		    null, HttpStatus.BAD_REQUEST, e);
-	}  catch (AnnotationServiceException e) {
+    } catch (JsonParseException e) {
+      throw new RequestBodyValidationException(annotation,
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
+    } catch (AnnotationValidationException e) {
+      throw new RequestBodyValidationException(annotation,
+          I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
+    } catch (HttpException e) {
+      throw e;
+    } catch (AnnotationInstantiationException e) {
+      throw new HttpException("The submitted annotation body is invalid!",
+          I18nConstantsAnnotation.ANNOTATION_VALIDATION, null, HttpStatus.BAD_REQUEST, e);
+    } catch (AnnotationServiceException e) {
       throw SearchServiceUtils.convertSolrSearchException(annotation, e);
     } catch (Exception e) {
       throw new InternalServerException(e);
     }
+  }
+
+  /**
+   * This method validates input values, retrieves annotation object and deletes it.
+   * 
+   * @param wsKey
+   * @param identifier
+   * @param authentication Contains user name
+   * @param action
+   * @return response entity that comprises response body, headers and status code
+   * @throws HttpException
+   */
+  protected ResponseEntity<String> deleteAnnotation(long identifier, Authentication authentication,
+      HttpServletRequest request) throws HttpException {
+
+    try {
+      // String userId = authentication.getPrincipal().toString();
+
+      // 5. authorize user
+      // already performed in verify write access
+      // getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
+
+      // Retrieve an annotation based on its id;
+      // Verify if user is allowed to perform the deletion.
+      Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, true);
+
+      // validate annotation
+      // String apiVersion = getConfiguration().getAnnotationApiVersion();
+      String eTagOrigin =
+          generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+
+      checkIfMatchHeader(eTagOrigin, request);
+
+      // call database delete method that deactivates existing Annotation
+      // in Mongo
+      getAnnotationService().disableAnnotation(storedAnno);
+
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+
+      ResponseEntity<String> response =
+          new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
+
+      return response;
+
+    } catch (HttpException e) {
+      // avoid wrapping HttpExceptions
+      // TODO: change this when OAUTH is implemented and the user information is
+      // available in service
+      throw e;
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
+  }
 
-    /**
-     * This method validates input values, retrieves annotation object and deletes
-     * it.
-     * 
-     * @param wsKey
-     * @param identifier
-     * @param authentication Contains user name
-     * @param action
-     * @return response entity that comprises response body, headers and status code
-     * @throws HttpException
-     */
-    protected ResponseEntity<String> deleteAnnotation(long identifier, Authentication authentication, HttpServletRequest request)
-	    throws HttpException {
+  /**
+   * This method enables the disabled annotation. It validates the input values, updates the
+   * annotation object in the database and creates it in solr.
+   * 
+   * @param identifier
+   * @param authentication Contains user name
+   * @param request An HttpServletRequest
+   * @return response entity that comprises response body, headers and status code
+   * @throws HttpException
+   */
+  protected ResponseEntity<String> enableAnnotation(long identifier, Authentication authentication,
+      HttpServletRequest request) throws HttpException {
 
-	try {
-//	    String userId = authentication.getPrincipal().toString();
+    try {
+      // Retrieve an annotation based on its id.
+      // Verify if user is allowed to perform the action.
+      Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, false);
 
-	    // 5. authorize user
-	    // already performed in verify write access
-//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.DELETE);
+      // validate annotation
+      // String apiVersion = getConfiguration().getAnnotationApiVersion();
+      String eTagOrigin =
+          generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+      checkIfMatchHeader(eTagOrigin, request);
 
-	    // Retrieve an annotation based on its id;
-	    // Verify if user is allowed to perform the deletion.
-	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, true);
+      getAnnotationService().enableAnnotation(storedAnno.getIdentifier());
 
-	    // validate annotation
-	    //String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 
-	    checkIfMatchHeader(eTagOrigin, request);
+      JsonLd annotationLd =
+          new AnnotationLdSerializer(storedAnno, getConfiguration().getAnnotationBaseUrl());
+      String jsonLd = annotationLd.toString(4);
 
-	    // call database delete method that deactivates existing Annotation
-	    // in Mongo
-	    getAnnotationService().disableAnnotation(storedAnno);
+      ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      return response;
 
-	    ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.NO_CONTENT);
-
-	    return response;
-
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    // TODO: change this when OAUTH is implemented and the user information is
-	    // available in service
-	    throw e;
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+    } catch (HttpException e) {
+      // avoid wrapping HttpExceptions
+      // TODO: change this when OAUTH is implemented and the user information is
+      // available in service
+      throw e;
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
-    
-    /**
-     * This method enables the disabled annotation. It validates the input values, 
-     * updates the annotation object in the database and creates it in solr.
-     * @param identifier
-     * @param authentication Contains user name
-     * @param request An HttpServletRequest
-     * @return response entity that comprises response body, headers and status code
-     * @throws HttpException
-     */
-    protected ResponseEntity<String> enableAnnotation(long identifier, Authentication authentication, HttpServletRequest request)
-	    throws HttpException {
+  }
 
-	try {
-	    // Retrieve an annotation based on its id.
-	    // Verify if user is allowed to perform the action.
-	    Annotation storedAnno = verifyOwnerOrAdmin(identifier, authentication, false);
+  /**
+   * @param wsKey
+   * @param provider
+   * @param identifier
+   * @param authentication Contains user name
+   * @return
+   * @throws HttpException
+   */
+  protected ResponseEntity<String> storeAnnotationReport(long identifier,
+      Authentication authentication) throws HttpException {
+    try {
 
-	    // validate annotation
-	    //String apiVersion = getConfiguration().getAnnotationApiVersion();
-	    String eTagOrigin = generateETag(storedAnno.getGenerated(), WebFields.FORMAT_JSONLD, buildInfo.getVersion());
-	    checkIfMatchHeader(eTagOrigin, request);
+      // 1. authorize user
+      // already performed in verify write access
+      // getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
 
-	    getAnnotationService().enableAnnotation(storedAnno.getIdentifier());
+      // 2. build and verify annotation ID
+      String userId = authentication.getPrincipal().toString();
+      if (!getAnnotationService().existsInDb(identifier)) {
+        throw new ParamValidationI18NException(
+            ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
+            I18nConstantsAnnotation.ANNOTATION_VALIDATION,
+            new String[] {"identifier", String.valueOf(identifier)});
+      }
 
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    
-        JsonLd annotationLd = new AnnotationLdSerializer(storedAnno, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = annotationLd.toString(4);
+      // build vote
+      Date reportDate = new Date();
+      Vote vote = buildVote(buildAgent(userId, AgentTypes.PERSON), reportDate);
 
-	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
+      // 3. Check if the user has already reported this annotation
+      ModerationRecord moderationRecord =
+          getAnnotationService().findModerationRecordById(identifier);
+      if (moderationRecord == null)
+        moderationRecord = buildNewModerationRecord(identifier, reportDate);
+      else
+        validateVote(moderationRecord, vote);
 
-	    return response;
+      moderationRecord.addReport(vote);
+      moderationRecord.computeSummary();
+      moderationRecord.setLastUpdated(reportDate);
 
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    // TODO: change this when OAUTH is implemented and the user information is
-	    // available in service
-	    throw e;
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+      // update record in the database
+      ModerationRecord storedModeration =
+          getAnnotationService().storeModerationRecord(moderationRecord);
+
+      // build response
+      MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+      headers.add(HttpHeaders.ETAG, Long.toString(storedModeration.getLastUpdated().hashCode()));
+      // headers.add(HttpHeaders.LINK,
+      // "<http://www.w3.org/ns/ldp#Resource>; rel=\"type\"");
+      headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+
+      ResponseEntity<String> response =
+          new ResponseEntity<String>(null, headers, HttpStatus.CREATED);
+      return response;
+
+    } catch (HttpException e) {
+      // avoid wrapping HttpExceptions
+      throw e;
+    } catch (Exception e) {
+      throw new InternalServerException(e);
     }
+  }
 
-    /**
-     * @param wsKey
-     * @param provider
-     * @param identifier
-     * @param authentication Contains user name
-     * @return
-     * @throws HttpException
-     */
-    protected ResponseEntity<String> storeAnnotationReport(long identifier, Authentication authentication)
-	    throws HttpException {
-	try {
-	
-	    // 1. authorize user
-	    // already performed in verify write access
-//			getAuthorizationService().authorizeUser(userId, authentication, annoId, Operations.REPORT);
-
-	    // 2. build and verify annotation ID
-	    String userId = authentication.getPrincipal().toString();
-	    if(!getAnnotationService().existsInDb(identifier)) {
-		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_ANNOTATION_ID_EXISTS,
-			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
-			new String[] { "identifier", String.valueOf(identifier) });
-	    }
-	    	
-	    // build vote
-	    Date reportDate = new Date();
-	    Vote vote = buildVote(buildAgent(userId, AgentTypes.PERSON), reportDate);
-
-	    // 3. Check if the user has already reported this annotation
-	    ModerationRecord moderationRecord = getAnnotationService().findModerationRecordById(identifier);
-	    if (moderationRecord == null)
-		moderationRecord = buildNewModerationRecord(identifier, reportDate);
-	    else
-		validateVote(moderationRecord, vote);
-
-	    moderationRecord.addReport(vote);
-	    moderationRecord.computeSummary();
-	    moderationRecord.setLastUpdated(reportDate);
-
-	    // update record in the database
-	    ModerationRecord storedModeration = getAnnotationService().storeModerationRecord(moderationRecord);
-
-	    // build response
-	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-	    headers.add(HttpHeaders.ETAG, Long.toString(storedModeration.getLastUpdated().hashCode()));
-	    // headers.add(HttpHeaders.LINK,
-	    // "<http://www.w3.org/ns/ldp#Resource>; rel=\"type\"");
-	    headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-
-	    ResponseEntity<String> response = new ResponseEntity<String>(null, headers, HttpStatus.CREATED);
-	    return response;
-
-	} catch (HttpException e) {
-	    // avoid wrapping HttpExceptions
-	    throw e;
-	} catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
+  // TODO :consider moving to persistent moderation record service
+  private void validateVote(ModerationRecord moderationRecord, Vote vote)
+      throws OperationAuthorizationException {
+    for (Vote existingVote : moderationRecord.getReportList()) {
+      if (vote.getUserId().equals(existingVote.getUserId()))
+        throw new OperationAuthorizationException(
+            "A report from the same users exists in database!",
+            I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] {vote.getUserId()});
     }
+  }
 
-    // TODO :consider moving to persistent moderation record service
-    private void validateVote(ModerationRecord moderationRecord, Vote vote) throws OperationAuthorizationException {
-	for (Vote existingVote : moderationRecord.getReportList()) {
-	    if (vote.getUserId().equals(existingVote.getUserId()))
-		throw new OperationAuthorizationException("A report from the same users exists in database!",
-			I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] { vote.getUserId() });
-	}
-    }
+  protected ModerationRecord buildNewModerationRecord(long annoIdentifier, Date reportDate) {
+    // create moderation record
+    ModerationRecord moderationRecord = new BaseModerationRecord();
+    moderationRecord.setIdentifier(annoIdentifier);
 
-    protected ModerationRecord buildNewModerationRecord(long annoIdentifier, Date reportDate) {
-	// create moderation record
-	ModerationRecord moderationRecord = new BaseModerationRecord();
-	moderationRecord.setIdentifier(annoIdentifier);
+    // SET DEFAULTS
+    moderationRecord.setCreated(reportDate);
+    moderationRecord.setLastUpdated(reportDate);
 
-	// SET DEFAULTS
-	moderationRecord.setCreated(reportDate);
-	moderationRecord.setLastUpdated(reportDate);
+    Summary summary = new BaseSummary();
+    moderationRecord.setSummary(summary);
+    return moderationRecord;
+  }
 
-	Summary summary = new BaseSummary();
-	moderationRecord.setSummary(summary);
-	return moderationRecord;
-    }
-
-    protected Vote buildVote(Agent user, Date reportDate) {
-	Vote vote = new BaseVote();
-	vote.setCreated(reportDate);
-	vote.setUserId(user.getHttpUrl());
-	return vote;
-    }
+  protected Vote buildVote(Agent user, Date reportDate) {
+    Vote vote = new BaseVote();
+    vote.setCreated(reportDate);
+    vote.setUserId(user.getHttpUrl());
+    return vote;
+  }
 
 }

@@ -270,7 +270,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     } 
     
     if (webAnnotation.getCanonical() != null) {
-      // TODO: #404 must never be overwritten
       if (StringUtils.isEmpty(annotation.getCanonical())) {
         annotation.setCanonical(webAnnotation.getCanonical());
       }
@@ -357,7 +356,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     try {
       getSolrService().delete(annotation.getIdentifier());
     } catch (Exception e) {
-      getLogger().error("Cannot remove annotation from solr index: " + annotation.getIdentifier(),
+      getLogger().error("Cannot remove annotation from solr index, id: " + annotation.getIdentifier(),
           e);
       return false;
     }
