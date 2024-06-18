@@ -20,14 +20,45 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-web</artifactId>
 			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-mongo</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-solr</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-fulltext</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-dereferenciation</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-utils</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.europeana.annotation</groupId>
+			<artifactId>annotation-statistics</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -86,6 +117,7 @@
 						<version>${jacoco-plugin.version}</version>
 						<executions>
 							<execution>
+								<id>report-aggregate</id>
 								<phase>verify</phase>
 								<goals>
 									<goal>report-aggregate</goal>

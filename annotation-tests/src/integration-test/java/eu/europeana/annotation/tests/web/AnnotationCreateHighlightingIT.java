@@ -1,14 +1,13 @@
 package eu.europeana.annotation.tests.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
@@ -70,15 +69,14 @@ class AnnotationCreateHighlightingIT extends AbstractIntegrationTest {
     ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING_WITHOUT_EXACT, true);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
-
+  
   @Test
-  void checkAnnotationDuplicatesCreateHighlighting() throws Exception {
-    ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING, true);
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    Annotation storedAnno = AnnotationTestUtils.parseResponseBody(response);
-    addToCreatedAnnotations(storedAnno.getIdentifier());
-    response = storeTestAnnotation(HIGHLIGHTING, true, null);
+  void checkAnnotationDuplicatesCreateHighlightingNoItemInUrl() throws Exception {
+    ResponseEntity<String> response = storeTestAnnotation(HIGHLIGHTING_NO_ITEM_IN_URL, true);
+    //should fail as the source doesn't match the data.europeana.eu/item paterns
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertTrue(response.getBody().contains("must contain the item id with the base URL"));
+    assertTrue(response.getBody().contains(getConfiguration().getAnnoItemDataEndpoint()));
   }
      
 }

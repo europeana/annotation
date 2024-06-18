@@ -32,6 +32,7 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.moderation.Summary;
 import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.result.ResultSet;
+import eu.europeana.annotation.definitions.model.target.Target;
 import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.view.AnnotationView;
 import eu.europeana.annotation.definitions.model.vocabulary.BodyInternalTypes;
@@ -47,659 +48,713 @@ import eu.europeana.annotation.solr.vocabulary.SolrSyntaxConstants;
 @PropertySource(
     value = {"classpath:annotation.properties", "classpath:config/annotation.user.properties"},
     ignoreResourceNotFound = true)
-public class SolrAnnotationServiceImpl extends SolrAnnotationUtils implements SolrAnnotationService {
+public class SolrAnnotationServiceImpl extends SolrAnnotationUtils
+    implements SolrAnnotationService {
 
-    @Autowired
-    @Qualifier(AnnotationConfiguration.BEAN_ANNO_SOLR_CLIENT)
-    SolrClient solrClient;
-    
-    @Value("${solr.stats.facets:10}")
-    private int solrStatsFacets;
-    
-    @Value("${annotation.data.endpoint:}")
-    private String annotationDataEndpoint;
+  @Autowired
+  @Qualifier(AnnotationConfiguration.BEAN_ANNO_SOLR_CLIENT)
+  SolrClient solrClient;
 
-    
-//    @Resource
-//    AnnotationConfiguration configuration;
+  @Value("${solr.stats.facets:10}")
+  private int solrStatsFacets;
 
-    public void setSolrClient(SolrClient solrServer) {
-	this.solrClient = solrServer;
+  @Value("${annotation.data.endpoint:}")
+  private String annotationDataEndpoint;
+
+
+  // @Resource
+  // AnnotationConfiguration configuration;
+
+  public void setSolrClient(SolrClient solrServer) {
+    this.solrClient = solrServer;
+  }
+
+  public SolrClient getSolrClient() {
+    return solrClient;
+  }
+
+  @Override
+  public boolean store(Annotation anno) throws AnnotationServiceException {
+    if (anno.isDisabled()) {
+      getLogger().warn(
+          "Annotation with the following id was not stored in solr index, annotation diabled: "
+              + anno.toString());
+      return false;
     }
+    store(anno, true);
+    return true;
+  }
 
-    public SolrClient getSolrClient() {
-	return solrClient;
-    }
-
-    @Override
-    public boolean store(Annotation anno) throws AnnotationServiceException {
-	if (anno.isDisabled()) {
-	    getLogger().warn("Annotation with the following id was not stored in solr index, annotation diabled: "
-		    + anno.toString());
-	    return false;
-	}
-	store(anno, true);
-	return true;
-    }
-
-    @Override
-    public void store(List<? extends Annotation> annos)
-	    throws AnnotationServiceException {
-      try {
-    	for (Annotation anno : annos)
-    	    store(anno, false);
-    	solrClient.commit();
-      }
-      catch (SolrServerException | RemoteSolrException | IOException ex) {
-        throw new AnnotationServiceException(
-            "Unexpected Solr server exception occured when storing a list of annotations. " + hideSolrServerBaseUrl(ex.getMessage()),
-            ex);
-      } 
-    }
-
-    @Override
-    public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException {
-	try {
-	    getLogger().debug("store: {}", anno);
-	    SolrAnnotation indexedAnno = null;
-
-	    if (anno instanceof SolrAnnotation)
-		indexedAnno = (SolrAnnotation) anno;
-	    else {
-		indexedAnno = copyIntoSolrAnnotation(anno, null, annotationDataEndpoint);
-	    }
-	    
-	    UpdateResponse rsp = solrClient.addBean(indexedAnno);
-	    getLogger().trace("store response: {}", rsp);
-	    if (doCommit)
-		solrClient.commit();
-	} catch (SolrServerException | RemoteSolrException | IOException ex) {
-	    throw new AnnotationServiceException(
-		    "Unexpected Solr server exception occured when storing annotations for: " + anno.getIdentifier() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-		    ex);
-	} 	
-    }
-
-    @Override
-    public ResultSet<? extends AnnotationView> search(String term) throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-
-	/**
-	 * Construct a SolrQuery
-	 */
-	SolrQuery query = new SolrQuery(term);
-	getLogger().debug("query: {}", query);
-
-	/**
-	 * Query the server
-	 */
-	try {
-	    QueryResponse rsp = solrClient.query(query);
-	    getLogger().trace("query response: {}",  rsp);
-	    res = buildResultSet(rsp);
-	} 
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
+  @Override
+  public void store(List<? extends Annotation> annos) throws AnnotationServiceException {
+    try {
+      for (Annotation anno : annos)
+        store(anno, false);
+      solrClient.commit();
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
       throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations for: " + term + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          "Unexpected Solr server exception occured when storing a list of annotations. "
+              + hideSolrServerBaseUrl(ex.getMessage()),
           ex);
     }
-	return res;
+  }
+
+  @Override
+  public void store(Annotation anno, boolean doCommit) throws AnnotationServiceException {
+    try {
+      getLogger().debug("store: {}", anno);
+      SolrAnnotation indexedAnno = null;
+
+      if (anno instanceof SolrAnnotation)
+        indexedAnno = (SolrAnnotation) anno;
+      else {
+        indexedAnno = copyIntoSolrAnnotation(anno, null, annotationDataEndpoint);
+      }
+
+      UpdateResponse rsp = solrClient.addBean(indexedAnno);
+      getLogger().trace("store response: {}", rsp);
+      if (doCommit)
+        solrClient.commit();
+    } catch (Throwable th) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when storing annotations for: "
+              + anno.getIdentifier() + ". " + hideSolrServerBaseUrl(th.getMessage()),
+          th);
     }
+  }
 
-    @Override
-    @Deprecated
+  @Override
+  public ResultSet<? extends AnnotationView> search(String term) throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+
     /**
-     * use {@link #search(Query)} instead
+     * Construct a SolrQuery
      */
-    public ResultSet<? extends AnnotationView> search(String term, String start, String limit)
-	    throws AnnotationServiceException {
+    SolrQuery query = new SolrQuery(term);
+    getLogger().debug("query: {}", query);
 
-	ResultSet<? extends AnnotationView> res = null;
+    /**
+     * Query the server
+     */
+    try {
+      QueryResponse rsp = solrClient.query(query);
+      getLogger().trace("query response: {}", rsp);
+      res = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations for: " + term + ". "
+              + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+    return res;
+  }
 
-	/**
-	 * Construct a SolrQuery
-	 */
-	SolrQuery query = new SolrQuery(term);
+  @Override
+  @Deprecated
+  /**
+   * use {@link #search(Query)} instead
+   */
+  public ResultSet<? extends AnnotationView> search(String term, String start, String limit)
+      throws AnnotationServiceException {
 
-	if (StringUtils.isNotEmpty(start))
-	query.setStart(Integer.parseInt(start));
+    ResultSet<? extends AnnotationView> res = null;
+
+    /**
+     * Construct a SolrQuery
+     */
+    SolrQuery query = new SolrQuery(term);
+
+    if (StringUtils.isNotEmpty(start))
+      query.setStart(Integer.parseInt(start));
     if (StringUtils.isNotEmpty(limit))
-	query.setRows(Integer.parseInt(limit));
+      query.setRows(Integer.parseInt(limit));
 
     getLogger().debug("limited query:{} ", query);
 
-	/**
-	 * Query the server
-	 */
-	try {
-	    QueryResponse rsp = solrClient.query(query);
-	    getLogger().trace("query response: {}", rsp);
-	    res = buildResultSet(rsp);
-	}
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
+    /**
+     * Query the server
+     */
+    try {
+      QueryResponse rsp = solrClient.query(query);
+      getLogger().trace("query response: {}", rsp);
+      res = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
       throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations for: " + term + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-          ex);
-    } 
-	
-	return res;
-    }
-
-    @Override
-    public ResultSet<? extends AnnotationView> getAll() throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-
-	// Construct a SolrQuery
-	SolrQuery query = new SolrQuery(SolrSyntaxConstants.ALL);
-
-	// Query the server
-	try {
-	    QueryResponse rsp = solrClient.query(query);
-	    res = buildResultSet(rsp);
-	}
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations with query: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          "Unexpected Solr server exception occured when searching annotations for: " + term + ". "
+              + hideSolrServerBaseUrl(ex.getMessage()),
           ex);
     }
 
-	return res;
+    return res;
+  }
+
+  @Override
+  public ResultSet<? extends AnnotationView> getAll() throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+
+    // Construct a SolrQuery
+    SolrQuery query = new SolrQuery(SolrSyntaxConstants.ALL);
+
+    // Query the server
+    try {
+      QueryResponse rsp = solrClient.query(query);
+      res = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations with query: "
+              + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
     }
 
-    @Override
-    public AnnotationView searchById(String annoIdUrl) throws AnnotationServiceException {
+    return res;
+  }
 
-	ResultSet<? extends AnnotationView> rs;
+  @Override
+  public AnnotationView searchById(String annoIdUrl) throws AnnotationServiceException {
 
-	if(getLogger().isDebugEnabled()) {
-	    getLogger().debug("search by id: " + annoIdUrl);
-	}
+    ResultSet<? extends AnnotationView> rs;
 
-	// Construct a SolrQuery
-	SolrQuery query = new SolrQuery();
-	query.setParam(SolrAnnotationConstants.ANNO_URI, new String[] { annoIdUrl });
-	// setFieldList(query);
-	// Query the server
-	try {
-	    QueryResponse rsp = solrClient.query(query);
-	    rs = buildResultSet(rsp);
-	}
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
+    if (getLogger().isDebugEnabled()) {
+      getLogger().debug("search by id: " + annoIdUrl);
+    }
+
+    // Construct a SolrQuery
+    SolrQuery query = new SolrQuery();
+    query.setParam(SolrAnnotationConstants.ANNO_URI, new String[] {annoIdUrl});
+    // setFieldList(query);
+    // Query the server
+    try {
+      QueryResponse rsp = solrClient.query(query);
+      rs = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations for: " + annoIdUrl
+              + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+
+    if (rs.getResultSize() == 0)
+      return null;
+    if (rs.getResultSize() != 1)
+      throw new AnnotationServiceException(
+          "Expected one result from Solr but found: " + rs.getResultSize());
+
+    return rs.getResults().get(0);
+
+  }
+
+  @Override
+  @Deprecated
+  /**
+   * @deprecated use {@link #search(Query)} instead
+   */
+  public ResultSet<? extends AnnotationView> searchByTerm(String text)
+      throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+
+    /**
+     * Construct a SolrQuery
+     */
+    SolrQuery query = new SolrQuery();
+
+    String queryStr = "";
+
+    if (text != null) {
+      // queryStr = "*:" + id;
+      queryStr = text;
+    }
+    getLogger().debug("queryStr: {}", queryStr);
+    query.setQuery(queryStr);
+
+    /**
+     * Query the server
+     */
+    try {
+      QueryResponse rsp = solrClient.query(query);
+      res = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations for: " + text + ". "
+              + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+    return res;
+  }
+
+  public ResultSet<? extends AnnotationView> searchAll() throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+
+    res = search(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
+
+    return res;
+  }
+
+  @Override
+  public ResultSet<? extends AnnotationView> search(Query searchQuery)
+      throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+    SolrQuery query = toSolrQuery(searchQuery);
+
+    /**
+     * Query the server
+     */
+    try {
+      getLogger().debug("search obj: {}", searchQuery);
+      QueryResponse rsp = solrClient.query(query);
+      res = buildResultSet(rsp);
+      getLogger().trace("search obj res size: {}", res.getResultSize());
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations for: "
+              + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+
+    return res;
+  }
+
+  @Override
+  public ResultSet<? extends AnnotationView> searchByLabel(String searchTerm)
+      throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+
+    // Construct a SolrQuery
+    SolrQuery query = new SolrQuery();
+    query.setQuery(searchTerm);
+    // setFieldList(query, profile);
+
+    // query.setFields(SolrAnnotationFields.LABEL.getSolrAnnotationField());
+
+    // Query the server
+    try {
+      getLogger().debug("searchByLabel search query: {}", query);
+      QueryResponse rsp = solrClient.query(query);
+      res = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations for: "
+              + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+
+
+    return res;
+  }
+
+
+
+  @Override
+  @Deprecated
+  /**
+   * @deprecated use {@link #search(Query)} instead
+   */
+  public ResultSet<? extends AnnotationView> searchByField(String field, String searchValue)
+      throws AnnotationServiceException {
+
+    ResultSet<? extends AnnotationView> res = null;
+
+    // Construct a SolrQuery
+    SolrQuery query = new SolrQuery();
+    query.setQuery(field + SolrSyntaxConstants.DELIMETER + searchValue);
+
+    // Query the server
+    try {
+      getLogger().debug("searchByField search query: {}", query);
+      QueryResponse rsp = solrClient.query(query);
+      res = buildResultSet(rsp);
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when searching annotations for: "
+              + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+
+    return res;
+  }
+
+  @Override
+  public QueryResponse getStatisticsByField(String fieldName) throws AnnotationServiceException {
+    final TermsFacetMap topCategoriesFacet = new TermsFacetMap(fieldName);
+    final JsonQueryRequest request =
+        new JsonQueryRequest().setQuery("*:*").setLimit(0).withFacet(fieldName, topCategoriesFacet);
+    // Query the server
+    try {
+      getLogger().debug(
+          "Getting the annotations statstics with the json nested facets for the facet field: {}.",
+          fieldName);
+      QueryResponse queryResponse = request.process(solrClient);
+      return queryResponse;
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when getting the annotations statistics for the facet field: "
+              + fieldName + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+  }
+
+  @Override
+  public Map<String, Map<String, Long>> getStatisticsByFieldAndScenario(String mainFacetField)
+      throws AnnotationServiceException {
+
+    Map<String, Map<String, Long>> statsPerByFieldAndScenario =
+        new HashMap<String, Map<String, Long>>();
+    // Construct a SolrQuery
+    SolrQuery query = new SolrQuery();
+    query.setQuery("*:*");
+    // for nested facets the faceted fields need to be concatenated, otherwise the results simple
+    // independent facets
+    String nestedFacetsFields = mainFacetField + ',' + SolrAnnotationConstants.SCENARIO;
+    query.addFacetPivotField(nestedFacetsFields);
+    query.setFacet(true);
+    if (solrStatsFacets > 0) {
+      query.setFacetLimit(solrStatsFacets);
+    }
+
+
+    query.setRows(0);
+    // Query the server
+    try {
+      getLogger().debug("Getting the annotations statstics for the query: {}", query);
+      QueryResponse rsp = solrClient.query(query);
+      List<PivotField> nestedFacets = rsp.getFacetPivot().get(nestedFacetsFields);
+      for (PivotField mainFacetFieldFacet : nestedFacets) {
+        Map<String, Long> statsPerScenario = new HashMap<String, Long>();
+        for (PivotField scenarioFacet : mainFacetFieldFacet.getPivot()) {
+          statsPerScenario.put(scenarioFacet.getValue().toString(),
+              Long.valueOf(scenarioFacet.getCount()));
+        }
+        statsPerByFieldAndScenario.put(mainFacetFieldFacet.getValue().toString(), statsPerScenario);
+      }
+      return statsPerByFieldAndScenario;
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when getting the annotations statistics for: "
+              + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+  }
+
+  @Override
+  public void update(Annotation anno) throws AnnotationServiceException {
+    update(anno, null);
+  }
+
+  public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException {
+    getLogger().debug("update solr annotation: {}", anno);
+
+    // delete(anno.getIdentifier());
+    if (anno.isDisabled()) {
+      // index annotation only if not disabled
+      return true;
+    } else {
+      Annotation indexedAnnotation = null;
+      if (anno instanceof SolrAnnotation) {
+        indexedAnnotation = (SolrAnnotation) anno;
+      } else {
+        indexedAnnotation = copyIntoSolrAnnotation(anno, summary, annotationDataEndpoint);
+      }
+      return store(indexedAnnotation);
+    }
+  }
+
+  public void delete(long annotationIdentifier) throws AnnotationServiceException {
+    String annoUri =
+        AnnotationIdHelper.buildAnnotationUri(annotationDataEndpoint, annotationIdentifier);
+    delete(annoUri);
+  }
+
+  /**
+   * This method removes solr annotations by passed query.
+   * 
+   * @param query
+   */
+  public void deleteByQuery(String query) throws AnnotationServiceException {
+    try {
+      getLogger().debug("deleteByQuery: {}", query);
+      UpdateResponse rsp = solrClient.deleteByQuery(query);
+      getLogger().trace("delete response: {}", rsp);
+      solrClient.commit();
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when deleting annotations for: " + query + ". "
+              + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+  }
+
+  /**
+   * This method removes all solr annotations from the solr.
+   * 
+   * @throws AnnotationServiceException
+   */
+  protected void cleanUpAll() throws AnnotationServiceException {
+    getLogger().info("clean up all solr annotations");
+    deleteByQuery(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
+  }
+
+  @Override
+  public void delete(String annoUrl) throws AnnotationServiceException {
+    try {
+      getLogger().debug("delete annotation with ID: {}", annoUrl);
+      solrClient.deleteById(annoUrl);
+      solrClient.commit();
+    } catch (SolrServerException | RemoteSolrException | IOException ex) {
+      throw new AnnotationServiceException(
+          "Unexpected Solr server exception occured when deleting annotations for: " + annoUrl
+              + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+          ex);
+    }
+  }
+
+  public void index(ModerationRecord moderationRecord) {
+
+  }
+
+  @Override
+  public Set<String> checkDuplicateAnnotations(Annotation anno, boolean noSelfDupplicate)
+      throws AnnotationServiceException {
+    List<SolrQuery> queries = new ArrayList<>();
+    switch (anno.getMotivationType()) {
+      case TRANSCRIBING:
+      case TRANSLATING:
+        // the motivation is the passed as parameter, can use the same method for transcriptions and
+        // annotations
+        queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
+        break;
+      case CAPTIONING:
+        queries.add(solrUniquenessQueryCaptions(anno, noSelfDupplicate));
+        queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
+        break;
+      case SUBTITLING:
+        queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
+        break;
+      case TAGGING:
+        if (BodyInternalTypes.isSemanticTagBody(anno.getBody().getInternalType())) {
+          queries.add(solrUniquenessQuerySemanticTagging(anno, noSelfDupplicate));
+        } else if (BodyInternalTypes.isSimpleTagBody(anno.getBody().getInternalType())) {
+          queries.add(solrUniquenessQuerySimpleTagging(anno, noSelfDupplicate));
+        }
+        break;
+      case LINKING:
+        // skip for now because the multiple targets introduce issues on semantic level
+        // query=solrUniquenessQueryLinking(anno, noSelfCheck);
+        break;
+      case LINKFORCONTRIBUTING:
+        queries.add(solrUniquenessQueryLinkForContributing(anno, noSelfDupplicate));
+        break;
+      case HIGHLIGHTING:
+        queries.add(solrUniquenessQueryDebias(anno, noSelfDupplicate));
+        break;
+      default:
+        break;
+    }
+
+    // getLogger().debug("Dupplicate annotation check query: {}", queries);
+
+    /**
+     * Query the server
+     */
+    Set<String> responseAnnoIds = new HashSet<>();
+    for (SolrQuery query : queries) {
+      getLogger().debug("Dupplicate annotation check query: {}", query);
+      QueryResponse rsp = null;
+      try {
+        rsp = solrClient.query(query);
+      } catch (SolrServerException | RemoteSolrException | IOException ex) {
         throw new AnnotationServiceException(
-            "Unexpected Solr server exception occured when searching annotations for: " + annoIdUrl + ". " + hideSolrServerBaseUrl(ex.getMessage()),
+            "Unexpected Solr server exception occured when searching with the query: "
+                + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
             ex);
-    } 
-	
-	if (rs.getResultSize() == 0)
-	    return null;
-	if (rs.getResultSize() != 1)
-	    throw new AnnotationServiceException("Expected one result from Solr but found: " + rs.getResultSize());
-
-	return rs.getResults().get(0);
-
-    }
-
-    @Override
-    @Deprecated
-    /**
-     * @deprecated use {@link #search(Query)} instead
-     */
-    public ResultSet<? extends AnnotationView> searchByTerm(String text) throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-
-	/**
-	 * Construct a SolrQuery
-	 */
-	SolrQuery query = new SolrQuery();
-
-	String queryStr = "";
-
-	if (text != null) {
-	    // queryStr = "*:" + id;
-	    queryStr = text;
-	}
-	getLogger().debug("queryStr: {}", queryStr);
-	query.setQuery(queryStr);
-
-	/**
-	 * Query the server
-	 */
-	try {
-	    QueryResponse rsp = solrClient.query(query);
-	    res = buildResultSet(rsp);
-	} 
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations for: " + text + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-          ex);
-    }
-	return res;
-    }
-
-    public ResultSet<? extends AnnotationView> searchAll() throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-
-	res = search(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
-
-	return res;
-    }
-
-    @Override
-    public ResultSet<? extends AnnotationView> search(Query searchQuery) throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-	SolrQuery query = toSolrQuery(searchQuery);
-
-	/**
-	 * Query the server
-	 */
-	try {
-	    getLogger().debug("search obj: {}",  searchQuery);
-	    QueryResponse rsp = solrClient.query(query);
-	    res = buildResultSet(rsp);
-	    getLogger().trace("search obj res size: {}", res.getResultSize());
-	}
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations for: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-          ex);
-    } 
-	
-	return res;
-    }
-
-    @Override
-    public ResultSet<? extends AnnotationView> searchByLabel(String searchTerm) throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-
-	// Construct a SolrQuery
-	SolrQuery query = new SolrQuery();
-	query.setQuery(searchTerm);
-	// setFieldList(query, profile);
-
-	// query.setFields(SolrAnnotationFields.LABEL.getSolrAnnotationField());
-
-	// Query the server
-	try {
-	    getLogger().debug("searchByLabel search query: {}", query);
-	    QueryResponse rsp = solrClient.query(query);
-	    res = buildResultSet(rsp);
-	} 
-    catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations for: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-          ex);
-    }
-	
-
-	return res;
-    }
-
-
-
-    @Override
-    @Deprecated
-    /**
-     * @deprecated use {@link #search(Query)} instead
-     */
-    public ResultSet<? extends AnnotationView> searchByField(String field, String searchValue)
-	    throws AnnotationServiceException {
-
-	ResultSet<? extends AnnotationView> res = null;
-
-	// Construct a SolrQuery
-	SolrQuery query = new SolrQuery();
-	query.setQuery(field + SolrSyntaxConstants.DELIMETER + searchValue);
-
-	// Query the server
-	try {
-	    getLogger().debug("searchByField search query: {}", query);
-	    QueryResponse rsp = solrClient.query(query);
-	    res = buildResultSet(rsp);
-	} 
-    catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when searching annotations for: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-          ex);
-    }
-	
-	return res;
-    }
-
-    @Override
-    public QueryResponse getStatisticsByField(String fieldName) throws AnnotationServiceException {
-		final TermsFacetMap topCategoriesFacet = new TermsFacetMap(fieldName);
-		final JsonQueryRequest request = new JsonQueryRequest()
-		    .setQuery("*:*")
-		    .setLimit(0)
-		    .withFacet(fieldName, topCategoriesFacet);
-		// Query the server
-		try {
-		    getLogger().debug("Getting the annotations statstics with the json nested facets for the facet field: {}.", fieldName);
-		    QueryResponse queryResponse = request.process(solrClient);
-		    return queryResponse;
-		} 
-		catch (SolrServerException | RemoteSolrException | IOException ex) {
-	        throw new AnnotationServiceException(
-	            "Unexpected Solr server exception occured when getting the annotations statistics for the facet field: " + fieldName + ". " + hideSolrServerBaseUrl(ex.getMessage()), ex);
-	    }
-    }
-    
-    @Override
-    public Map<String, Map<String, Long>> getStatisticsByFieldAndScenario (String mainFacetField) throws AnnotationServiceException {
-
-        Map<String,Map<String,Long>> statsPerByFieldAndScenario = new HashMap<String, Map<String, Long>>();
-        // Construct a SolrQuery
-        SolrQuery query = new SolrQuery();
-        query.setQuery("*:*");
-        //for nested facets the faceted fields need to be concatenated, otherwise the results simple independent facets
-        String nestedFacetsFields = mainFacetField + ',' + SolrAnnotationConstants.SCENARIO;
-        query.addFacetPivotField(nestedFacetsFields);
-        query.setFacet(true);
-        if(solrStatsFacets > 0) {
-          query.setFacetLimit(solrStatsFacets);
-        }  
-        
-        
-        query.setRows(0);       
-        // Query the server
-        try {
-            getLogger().debug("Getting the annotations statstics for the query: {}", query);
-            QueryResponse rsp = solrClient.query(query);
-            List<PivotField> nestedFacets = rsp.getFacetPivot().get(nestedFacetsFields);
-            for (PivotField mainFacetFieldFacet : nestedFacets) {
-                Map<String,Long> statsPerScenario = new HashMap<String, Long>();              
-                for (PivotField scenarioFacet : mainFacetFieldFacet.getPivot()) {
-                    statsPerScenario.put(scenarioFacet.getValue().toString(), Long.valueOf(scenarioFacet.getCount()));
-                }
-                statsPerByFieldAndScenario.put(mainFacetFieldFacet.getValue().toString(), statsPerScenario);
-            }
-            return statsPerByFieldAndScenario;
-        }
-        catch (SolrServerException | RemoteSolrException | IOException ex) {
-          throw new AnnotationServiceException(
-              "Unexpected Solr server exception occured when getting the annotations statistics for: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()), ex);
-        }     
-    }
-    
-    @Override
-    public void update(Annotation anno) throws AnnotationServiceException {
-	update(anno, null);
-    }
-
-    public boolean update(Annotation anno, Summary summary) throws AnnotationServiceException {
-	getLogger().debug("update solr annotation: {}", anno);
-
-//	delete(anno.getIdentifier());
-	if (anno.isDisabled()) {
-	    // index annotation only if not disabled
-	    return true;
-	} else {
-	    Annotation indexedAnnotation = null;
-	    if (anno instanceof SolrAnnotation) {
-	      indexedAnnotation = (SolrAnnotation) anno;
-	    }
-	    else {
-	      indexedAnnotation = copyIntoSolrAnnotation(anno, summary, annotationDataEndpoint);
-	    }
-	    return store(indexedAnnotation);
-	}
-    }
-
-    public void delete(long annotationIdentifier) throws AnnotationServiceException {
-	String annoUri = AnnotationIdHelper.buildAnnotationUri(annotationDataEndpoint, annotationIdentifier);
-	delete(annoUri);
-    }
-
-    /**
-     * This method removes solr annotations by passed query.
-     * 
-     * @param query
-     */
-    public void deleteByQuery(String query) throws AnnotationServiceException {
-	try {
-	    getLogger().debug("deleteByQuery: {}", query);
-	    UpdateResponse rsp = solrClient.deleteByQuery(query);
-	    getLogger().trace("delete response: {}", rsp);
-	    solrClient.commit();
-	}
-    catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when deleting annotations for: " + query + ". " + hideSolrServerBaseUrl(ex.getMessage()), ex);
-    }	
-    }
-
-    /**
-     * This method removes all solr annotations from the solr.
-     * 
-     * @throws AnnotationServiceException
-     */
-    protected void cleanUpAll() throws AnnotationServiceException {
-	getLogger().info("clean up all solr annotations");
-	deleteByQuery(SolrSyntaxConstants.ALL_SOLR_ENTRIES);
-    }
-
-    @Override
-    public void delete(String annoUrl) throws AnnotationServiceException {
-	try {
-	    getLogger().debug("delete annotation with ID: {}", annoUrl);
-	    solrClient.deleteById(annoUrl);
-	    solrClient.commit();
-	}
-	catch (SolrServerException | RemoteSolrException | IOException ex) {
-      throw new AnnotationServiceException(
-          "Unexpected Solr server exception occured when deleting annotations for: " + annoUrl + ". " + hideSolrServerBaseUrl(ex.getMessage()),
-          ex);
-    } 
-	}
-
-    public void index(ModerationRecord moderationRecord) {
-
-    }
-
-	@Override
-	public Set<String> checkDuplicateAnnotations(Annotation anno, boolean noSelfDupplicate) throws AnnotationServiceException {
-		List<SolrQuery> queries = new ArrayList<>();
-		switch (anno.getMotivationType()) {
-		case TRANSCRIBING  :
-		case TRANSLATING  : 
-		  //the motivation is the passed as parameter, can use the same method for transcriptions and annotations
-		  queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));
-		  break;
-		case CAPTIONING :
-		  queries.add(solrUniquenessQueryCaptions(anno, noSelfDupplicate));
-		  queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
-		  break;
-		case SUBTITLING :
-		  queries.add(solrUniquenessQueryCaptionsAndSubtitles(anno, noSelfDupplicate));
-		  break;
-		case TAGGING :
-		  if(BodyInternalTypes.isSemanticTagBody(anno.getBody().getInternalType())) {
-		    queries.add(solrUniquenessQuerySemanticTagging(anno, noSelfDupplicate));
-		  }
-		  else if(BodyInternalTypes.isSimpleTagBody(anno.getBody().getInternalType())) {
-		    queries.add(solrUniquenessQuerySimpleTagging(anno, noSelfDupplicate));
-		  }
-		  break;
-		case LINKING :
-			//skip for now because the multiple targets introduce issues on semantic level  query=solrUniquenessQueryLinking(anno, noSelfCheck);
-		    break;
-	    case LINKFORCONTRIBUTING :
-	      queries.add(solrUniquenessQueryLinkForContributing(anno, noSelfDupplicate));
-          break;
-	    case HIGHLIGHTING :
-	      queries.add(solrUniquenessQueryDebias(anno, noSelfDupplicate));
-          break;          
-		default:
-		  break;
-		}
-
-		getLogger().debug("List of Solr querier for checking the duplicate annotations has been created.");
-
-		/**
-		 * Query the server
-		 */
-		Set<String> responseAnnoIds = new HashSet<>();
-		for(SolrQuery query : queries) {
-    		QueryResponse rsp=null;
-    		try {
-    		    rsp = solrClient.query(query);
-    		} 
-    	    catch (SolrServerException | RemoteSolrException | IOException ex) {
-    	      throw new AnnotationServiceException(
-    	          "Unexpected Solr server exception occured when searching with the query: " + query.toString() + ". " + hideSolrServerBaseUrl(ex.getMessage()), ex);
-    	    }		
-    		if(rsp==null) {
-    		  continue;
-    		}
-    		
-    		final SolrDocumentList docs = rsp.getResults();
-    		if(docs!=null) {
-    			for (SolrDocument returnedDoc : docs) {
-    			  responseAnnoIds.add(String.valueOf(returnedDoc.getFieldValue(SolrAnnotationConstants.ANNO_ID)));
-    			}
-    		}
-		}
-		return responseAnnoIds;
-	}
-	
-	/**
-	 * creates uniqueness soll query for transcriptions or translations
-	 * @param anno
-	 * @param noSelfDupplicate
-	 * @return
-	 */
-	private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
-	  SolrQuery query = new SolrQuery();	
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + anno.getMotivationType().getOaType() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
-      if(anno.getBody().getLanguage()!=null) {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*"); 
       }
-      else {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
+      if (rsp == null) {
+        throw new AnnotationServiceException(
+            "Cannot verify if annotation is dupplicated, no solr response for query: "
+                + query.toString());
       }
-      addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-	  return query;
-	}
 
-    private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfDupplicate) {
-      SolrQuery query = new SolrQuery();
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.CAPTIONING.getOaType() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
-      addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-      return query;
-    }
-
-    private SolrQuery solrUniquenessQueryCaptionsAndSubtitles(Annotation anno, boolean noSelfDupplicate) {
-      SolrQuery query = new SolrQuery();
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":(\"" + MotivationTypes.CAPTIONING.getOaType() + "\"" 
-          + " OR " + "\"" + MotivationTypes.SUBTITLING.getOaType() + "\")");
-      query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
-      query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
-      addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-      return query;
-    }
-
-    private SolrQuery solrUniquenessQueryDebias(Annotation anno, boolean noSelfDupplicate) {
-        SolrQuery query = new SolrQuery();
-        query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
-        query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
-        List<String> bodyUris = extractUriValues(anno.getBody());
-        for (int i=0; i<bodyUris.size(); i++) { 
-          query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
-        }
-        addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-        SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-        return query;
-    }
-
-    private void addNotSelfDupplicateFilter(Annotation anno, SolrQuery query, boolean noSelfDupplicate) {
-      if(noSelfDupplicate && anno.getIdentifier() > 0) {
-        query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":" + anno.getIdentifier());
-      }
-    }
-  
-    private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
-      if(anno.getTarget()!=null) {
-        // extract URIs for target_uri field
-        List<String> targetUris = extractUriValues(anno.getTarget().get(0));
-        if(targetUris!=null) {
-          // Extract URIs for target_record_id
-          List<String> recordIds = extractRecordIds(targetUris);
-          if(recordIds != null) {
-            for(String recordIdElem: recordIds) {
-              query.addFilterQuery(SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
-            }
-          }  
+      final SolrDocumentList docs = rsp.getResults();
+      if (!docs.isEmpty()) {
+        for (SolrDocument returnedDoc : docs) {
+          responseAnnoIds
+              .add(String.valueOf(returnedDoc.getFieldValue(SolrAnnotationConstants.ANNO_ID)));
         }
       }
     }
-	
-	private SolrQuery solrUniquenessQuerySemanticTagging(Annotation anno, boolean noSelfDupplicate) {
-      SolrQuery query = new SolrQuery();
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
-      
-      addTargetRecordIdFilter(anno, query);   
-      
-      List<String> bodyUris = extractUriValues(anno.getBody());
-      for (int i=0; i<bodyUris.size(); i++) { 
-        query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
-      }
-      addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-      return query;
-	}
-	
-	private SolrQuery solrUniquenessQuerySimpleTagging(Annotation anno, boolean noSelfDupplicate) {
-      SolrQuery query = new SolrQuery();
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
-      
-      addTargetRecordIdFilter(anno, query);
-      
-      String bodyMultilingualValue = extractMultilingualValue(anno.getBody());
-      if(anno.getBody().getLanguage()!=null) {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":\"" + bodyMultilingualValue + "\""); 
-      }
-      else {
-        query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":\"" + bodyMultilingualValue + "\"");
-      }
-      
-      addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-      return query;
-	}
+    return responseAnnoIds;
+  }
 
-//	private SolrQuery solrUniquenessQueryLinking(Annotation anno, boolean noSelfCheck) {
-//      SolrQuery query = new SolrQuery();
-//      query.setQuery("*:*");
-//      List<String> targetValues = anno.getTarget().getValues();
-//      if(targetValues!=null) {
-//        for(String target: targetValues) {
-//          query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + target + "\"");
-//        }
-//      }      
-//      query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKING.getOaType() + "\"");
-//      if(noSelfCheck) {
-//        query.addFilterQuery(SolrAnnotationConstants.ANNO_ID + ":\"" + anno.getAnnotationId().getIdentifier() + "\"");
-//      }
-//      return query;
-//	}
+  /**
+   * creates uniqueness soll query for transcriptions or translations
+   * 
+   * @param anno
+   * @param noSelfDupplicate
+   * @return
+   */
+  private SolrQuery solrUniquenessQueryTranscriptions(Annotation anno, boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+    query.setQuery(
+        WebAnnotationModelFields.MOTIVATION + ":\"" + anno.getMotivationType().getOaType() + "\"");
+    query.addFilterQuery(
+        SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
+    if (anno.getBody().getLanguage() != null) {
+      query.addFilterQuery(
+          SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
+    } else {
+      query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + ":*");
+    }
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
+  }
 
-	private SolrQuery solrUniquenessQueryLinkForContributing(Annotation anno, boolean noSelfDupplicate) {
-      SolrQuery query = new SolrQuery();
-      query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
-      addTargetRecordIdFilter(anno, query);
-      addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
-      SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
-      return query;
+  private SolrQuery solrUniquenessQueryCaptions(Annotation anno, boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+    query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\""
+        + MotivationTypes.CAPTIONING.getOaType() + "\"");
+    query.addFilterQuery(
+        SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
+  }
+
+  private SolrQuery solrUniquenessQueryCaptionsAndSubtitles(Annotation anno,
+      boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+    query.setQuery(
+        WebAnnotationModelFields.MOTIVATION + ":(\"" + MotivationTypes.CAPTIONING.getOaType() + "\""
+            + " OR " + "\"" + MotivationTypes.SUBTITLING.getOaType() + "\")");
+    query.addFilterQuery(
+        SolrAnnotationConstants.TARGET_URI + ":\"" + anno.getTarget().get(0).getSource() + "\"");
+    query.addFilterQuery(
+        SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage() + ":*");
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
+  }
+
+  private SolrQuery solrUniquenessQueryDebias(Annotation anno, boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+
+    query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\""
+        + MotivationTypes.HIGHLIGHTING.getOaType() + "\"");
+
+    StringBuilder targetOrQuery = new StringBuilder();
+    // all validated annotations have at least one target
+    String bindElement;
+    for (Target t : anno.getTarget()) {
+      // for first entry append the bracket, for the rest of the entries append the OR operator
+      bindElement = targetOrQuery.isEmpty() ? "(" : " OR ";
+      // add URI in quotes
+      targetOrQuery.append(bindElement).append('"').append(t.getSource()).append('"');
+
+    }
+    // close bracket in the end
+    targetOrQuery.append(")");
+    query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":" + targetOrQuery.toString());
+
+    List<String> bodyUris = extractUriValues(anno.getBody());
+    for (int i = 0; i < bodyUris.size(); i++) {
+      query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
+    }
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
+  }
+
+  private void addNotSelfDupplicateFilter(Annotation anno, SolrQuery query,
+      boolean noSelfDupplicate) {
+    if (noSelfDupplicate && anno.getIdentifier() > 0) {
+      query.addFilterQuery("-" + SolrAnnotationConstants.ANNO_ID + ":" + anno.getIdentifier());
+    }
+  }
+
+  private void addTargetRecordIdFilter(Annotation anno, SolrQuery query) {
+    if (anno.getTarget() != null) {
+      // extract URIs for target_uri field
+      List<String> targetUris = extractUriValues(anno.getTarget().get(0));
+      if (targetUris != null) {
+        // Extract URIs for target_record_id
+        List<String> recordIds = extractRecordIds(targetUris);
+        if (recordIds != null) {
+          for (String recordIdElem : recordIds) {
+            query.addFilterQuery(
+                SolrAnnotationConstants.TARGET_RECORD_ID + ":\"" + recordIdElem + "\"");
+          }
+        }
+      }
+    }
+  }
+
+  private SolrQuery solrUniquenessQuerySemanticTagging(Annotation anno, boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+    query.setQuery(
+        WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
+
+    addTargetRecordIdFilter(anno, query);
+
+    List<String> bodyUris = extractUriValues(anno.getBody());
+    for (int i = 0; i < bodyUris.size(); i++) {
+      query.addFilterQuery(SolrAnnotationConstants.BODY_URI + ":\"" + bodyUris.get(i) + "\"");
+    }
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
+  }
+
+  private SolrQuery solrUniquenessQuerySimpleTagging(Annotation anno, boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+    query.setQuery(
+        WebAnnotationModelFields.MOTIVATION + ":\"" + MotivationTypes.TAGGING.getOaType() + "\"");
+
+    addTargetRecordIdFilter(anno, query);
+
+    String bodyMultilingualValue = extractMultilingualValue(anno.getBody());
+    if (anno.getBody().getLanguage() != null) {
+      query.addFilterQuery(SolrAnnotationConstants.BODY_VALUE_PREFIX + anno.getBody().getLanguage()
+          + ":\"" + bodyMultilingualValue + "\"");
+    } else {
+      query.addFilterQuery(
+          SolrAnnotationConstants.BODY_VALUE_PREFIX + ":\"" + bodyMultilingualValue + "\"");
+    }
+
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
+  }
+
+  // private SolrQuery solrUniquenessQueryLinking(Annotation anno, boolean noSelfCheck) {
+  // SolrQuery query = new SolrQuery();
+  // query.setQuery("*:*");
+  // List<String> targetValues = anno.getTarget().getValues();
+  // if(targetValues!=null) {
+  // for(String target: targetValues) {
+  // query.addFilterQuery(SolrAnnotationConstants.TARGET_URI + ":\"" + target + "\"");
+  // }
+  // }
+  // query.addFilterQuery(WebAnnotationModelFields.MOTIVATION + ":\"" +
+  // MotivationTypes.LINKING.getOaType() + "\"");
+  // if(noSelfCheck) {
+  // query.addFilterQuery(SolrAnnotationConstants.ANNO_ID + ":\"" +
+  // anno.getAnnotationId().getIdentifier() + "\"");
+  // }
+  // return query;
+  // }
+
+  private SolrQuery solrUniquenessQueryLinkForContributing(Annotation anno,
+      boolean noSelfDupplicate) {
+    SolrQuery query = new SolrQuery();
+    query.setQuery(WebAnnotationModelFields.MOTIVATION + ":\""
+        + MotivationTypes.LINKFORCONTRIBUTING.getOaType() + "\"");
+    addTargetRecordIdFilter(anno, query);
+    addNotSelfDupplicateFilter(anno, query, noSelfDupplicate);
+    SolrAnnotationUtils.addQueryFieldFilter(query, SolrAnnotationConstants.ANNO_ID);
+    return query;
   }
 }

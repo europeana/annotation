@@ -8,7 +8,7 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public abstract class SearchServiceUtils {
 
-  public static HttpException convertSearchException(String debugInfo, AnnotationServiceException e) {
+  public static HttpException convertSolrSearchException(String debugInfo, AnnotationServiceException e) {
     if (SolrAnnotationUtils.isMalformedQueryException(e.getCause())) {
       return new HttpException(I18nConstantsAnnotation.SOLR_MALFORMED_QUERY_EXCEPTION,
           I18nConstantsAnnotation.SOLR_MALFORMED_QUERY_EXCEPTION, new String[] {debugInfo},

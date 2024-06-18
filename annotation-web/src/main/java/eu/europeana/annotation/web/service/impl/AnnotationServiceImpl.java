@@ -30,6 +30,7 @@ import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
+import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
 import eu.europeana.annotation.mongo.exception.ModerationMongoException;
 import eu.europeana.annotation.mongo.model.internal.PersistentAnnotation;
@@ -38,6 +39,7 @@ import eu.europeana.annotation.mongo.service.PersistentWhitelistService;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.solr.exceptions.StatusLogServiceException;
 import eu.europeana.annotation.utils.parse.AnnotationLdParser;
+import eu.europeana.annotation.web.exception.AnnotationIndexingException;
 import eu.europeana.annotation.web.exception.request.AnnotationUniquenessValidationException;
 import eu.europeana.annotation.web.exception.request.ParamValidationI18NException;
 import eu.europeana.annotation.web.exception.request.PropertyValidationException;
@@ -117,7 +119,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
    * europeana.annotation.definitions.model.Annotation)
    */
   @Override
-  public Annotation storeAnnotation(Annotation newAnnotation) {
+  public Annotation storeAnnotation(Annotation newAnnotation) throws AnnotationServiceException {
     return storeAnnotation(newAnnotation, true);
   }
 
@@ -128,7 +130,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
    * europeana.annotation.definitions.model.Annotation, boolean)
    */
   @Override
-  public Annotation storeAnnotation(Annotation newAnnotation, boolean indexing) {
+  public Annotation storeAnnotation(Annotation newAnnotation, boolean indexing) throws AnnotationServiceException {
 
     validateAnnotationIdentifier(newAnnotation);
 
@@ -136,13 +138,16 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     Annotation res = getMongoPersistence().store(newAnnotation);
 
     if (indexing && getConfiguration().isIndexingEnabled()) {
-      // add solr indexing here
       try {
+        // add solr indexing here
         getSolrService().store(res);
-      } catch (Exception e) {
-        getLogger().info(
-            "The annotation was stored correctly into the Mongo, but it was not indexed yet. ", e);
+      } catch(AnnotationServiceException e) {
+        //need to annotation created in mongo
+        rollbackCreatedAnnotation(newAnnotation);
+        //rethrow exception
+        throw e;    
       }
+      
       // save the time of the last SOLR indexing
       updateLastIndexingTime(res, newAnnotation.getLastUpdate());
     }
@@ -150,7 +155,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     return res;
   }
 
-  public ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord) {
+  private void rollbackCreatedAnnotation(Annotation newAnnotation) throws AnnotationServiceException {
+    try {
+      getMongoPersistence().remove(newAnnotation.getIdentifier());
+    } catch (AnnotationMongoException e) {
+      throw new AnnotationServiceException("Rollback for reated annotation failed, annotation identifier: " + newAnnotation.getIdentifier());
+    }
+  }
+
+  public ModerationRecord storeModerationRecord(ModerationRecord newModerationRecord) throws AnnotationIndexingException {
 
     // must have annotaionId with resourceId and provider.
     validateAnnotationIdForModerationRecord(newModerationRecord);
@@ -162,14 +175,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     Date lastindexing = res.getLastUpdated();
 
     if (getConfiguration().isIndexingEnabled()) {
-      try {
         Annotation annotation = getMongoPersistance().getByIdentifier(res.getIdentifier());
         reindexAnnotation(annotation, lastindexing);
-      } catch (Exception e) {
-        getLogger().warn(
-            "The moderation record was stored correctly into the Mongo, but related annotation was not indexed with summary yet. ",
-            e);
-      }
     }
 
     return res;
@@ -339,13 +346,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     persistentAnnotation = getMongoPersistence().update(persistentAnnotation);
 
     if (getConfiguration().isIndexingEnabled()) {
-      try {
         getSolrService().store(persistentAnnotation);
-      } catch (Exception e) {
-        getLogger().info(
-            "The annotation is correctly enabled in the Mongo, but it is not yet indexed in Solr. ",
-            e);
-      }
       // save the time of the last SOLR indexing
       updateLastIndexingTime(persistentAnnotation, persistentAnnotation.getLastUpdate());
     }
