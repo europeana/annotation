@@ -29,6 +29,7 @@ import eu.europeana.annotation.definitions.model.body.impl.SemanticTagBody;
 import eu.europeana.annotation.definitions.model.body.impl.TextBody;
 import eu.europeana.annotation.definitions.model.entity.impl.EdmPlace;
 import eu.europeana.annotation.definitions.model.graph.Graph;
+import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.target.Target;
@@ -108,10 +109,10 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there might be old annotations of failing tests in the database
     assertTrue(TOTAL_IN_COLLECTION <= annPg.getTotalInCollection());
-    assertEquals(annPg.getCurrentPage(), 0);
+    assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
     assertEquals(TOTAL_IN_PAGE, annPg.getTotalInPage());
     assertEquals(TOTAL_IN_PAGE, annPg.getItems().getResultSize());
-    assertNextPageNumber(annPg, 1);
+    assertNextPageNumber(annPg, Query.DEFAULT_PAGE+1);
 
     // second page
     String npUri = annPg.getNextPageUri();
@@ -128,13 +129,13 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     String nextCurrentPageUri = secondAnnoPg.getNextPageUri();
     log.debug("nextCurrentPageUri" + nextCurrentPageUri);
     assertNotNull(secondAnnoPg);
-    assertEquals(secondAnnoPg.getCurrentPage(), 1);
-    assertNextPageNumber(secondAnnoPg, 2);
+    assertEquals(secondAnnoPg.getCurrentPage(), Query.DEFAULT_PAGE+1);
+    assertNextPageNumber(secondAnnoPg, Query.DEFAULT_PAGE+2);
     assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getTotalInPage());
     assertEquals(TOTAL_IN_PAGE, secondAnnoPg.getItems().getResultSize());
 
     // last page
-    int lastPageNum = (int) Math.ceil((TOTAL_IN_COLLECTION - 1) / TOTAL_IN_PAGE);
+    int lastPageNum = ((int) Math.ceil(1.0 * TOTAL_IN_COLLECTION / TOTAL_IN_PAGE)) + Query.DEFAULT_PAGE - 1;
     AnnotationPage lastPage = searchAnnotationsAddQueryField(query, Integer.toString(lastPageNum),
         Integer.toString(TOTAL_IN_PAGE), null, null, SearchProfiles.STANDARD.toString(), null);
     assertEquals(lastPage.getCurrentPage(), lastPageNum);
@@ -161,7 +162,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     // SearchProfiles.STANDARD);
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there might be old annotations of failing tests in the database
-    assertEquals(annPg.getCurrentPage(), 0);
+    assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
 
     List<? extends Annotation> annos = annPg.getAnnotations();
 
@@ -1032,7 +1033,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there must be annotations in database after initial insert in this test class
     assertTrue(0 <= annPg.getTotalInCollection());
-    assertEquals(annPg.getCurrentPage(), 0);
+    assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
     for (Annotation foundAnnotation : annPg.getAnnotations()) {
       log.info(foundAnnotation.getIdentifier());
       log.info(foundAnnotation.getBody().getHttpUri());
@@ -1060,7 +1061,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     assertNotNull(annPg, "AnnotationPage must not be null");
     // there must be annotations in database after initial insert in this test class
     assertTrue(0 <= annPg.getTotalInCollection());
-    assertEquals(annPg.getCurrentPage(), 0);
+    assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
     for (Annotation foundAnnotation : annPg.getAnnotations()) {
       log.info(foundAnnotation.getIdentifier());
       log.info(foundAnnotation.getBody().getHttpUri());

@@ -22,6 +22,7 @@ import eu.europeana.annotation.client.model.result.AnnotationOperationResponse;
 import eu.europeana.annotation.client.model.result.AnnotationSearchResults;
 import eu.europeana.annotation.client.model.result.WhitelistOperationResponse;
 import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
@@ -668,13 +669,13 @@ public class AnnotationApiConnection extends BaseApiConnection {
     if (StringUtils.isNotEmpty(page)) {
       url += "&page=" + page;
     } else {
-      url += "&page=0";
+      url += "&page=" + Query.DEFAULT_PAGE;
     }
 
     if (StringUtils.isNotEmpty(pageSize)) {
       url += "&pageSize=" + pageSize;
     } else {
-      url += "&pageSize=10";
+      url += "&pageSize=" + Query.DEFAULT_PAGE_SIZE;
     }
 
     if (StringUtils.isNotEmpty(language)) {

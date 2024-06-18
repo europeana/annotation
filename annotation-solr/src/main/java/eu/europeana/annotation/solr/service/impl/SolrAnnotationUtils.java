@@ -56,16 +56,15 @@ public class SolrAnnotationUtils {
       solrQuery.setFacetMinCount(1);
       solrQuery.setFacetLimit(SolrAnnotationConstants.DEFAULT_FACET_LIMIT);
     }
-
+    
     if (searchQuery.getSort() != null) {
-      solrQuery.setSort(searchQuery.getSort(), SolrQuery.ORDER.valueOf(searchQuery.getSortOrder()));
-    }
+	    solrQuery.setSort(searchQuery.getSort(), SolrQuery.ORDER.valueOf(searchQuery.getSortOrder()));
+	}
 
-    solrQuery.setFields(searchQuery.getViewFields());
-
-    // searchQuery.setStart(page>0? page -1: page);
-    // searchQuery.setRows(Math.min(rows, Query.MAX_PAGE_SIZE));
-    solrQuery.setStart(searchQuery.getPageNr() * searchQuery.getPageSize());
+	solrQuery.setFields(searchQuery.getViewFields());
+	
+	final int solrPageNr = searchQuery.getPageNr() - Query.DEFAULT_PAGE;
+    solrQuery.setStart(solrPageNr * searchQuery.getPageSize());
     solrQuery.setRows(searchQuery.getPageSize());
 
     return solrQuery;

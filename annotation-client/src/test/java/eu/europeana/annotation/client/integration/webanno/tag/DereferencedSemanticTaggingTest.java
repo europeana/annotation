@@ -15,6 +15,7 @@ import eu.europeana.annotation.client.AnnotationSearchApiImpl;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.agent.impl.EdmAgent;
 import eu.europeana.annotation.definitions.model.body.impl.EdmAgentBody;
+import eu.europeana.annotation.definitions.model.search.Query;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
 import eu.europeana.annotation.definitions.model.search.result.AnnotationPage;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
@@ -133,7 +134,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there must be annotations in database after initial insert in this test class
 		assertTrue(0 <= annPg.getTotalInCollection());
-		assertEquals(annPg.getCurrentPage(), 0);
+		assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
 		for (Annotation foundAnnotation : annPg.getAnnotations()) {
 			log.info(foundAnnotation.getIdentifier());
 			log.info(foundAnnotation.getBody().getHttpUri());
@@ -156,7 +157,7 @@ public class DereferencedSemanticTaggingTest extends BaseTaggingTest {
 		assertNotNull(annPg, "AnnotationPage must not be null");
 		//there must be annotations in database after initial insert in this test class
 		assertTrue(0 <= annPg.getTotalInCollection());
-		assertEquals(annPg.getCurrentPage(), 0);
+		assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
 		for (Annotation foundAnnotation : annPg.getAnnotations()) {
 			log.info(foundAnnotation.getIdentifier());
 			log.info(foundAnnotation.getBody().getHttpUri());

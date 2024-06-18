@@ -100,13 +100,14 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     String currentPageUrl = buildPageUrl(collectionUrl, currentPage, query.getPageSize());
     protocol.setCurrentPageUri(currentPageUrl);
 
-    if (currentPage > 0) {
+    if (currentPage > Query.DEFAULT_PAGE) {
       String prevPage = buildPageUrl(collectionUrl, currentPage - 1, query.getPageSize());
       protocol.setPrevPageUri(prevPage);
     }
 
     // if current page is not the last one
-    boolean isLastPage = protocol.getTotalInCollection() <= (currentPage + 1) * query.getPageSize();
+    final int nextPageStartIndex = (currentPage - Query.DEFAULT_PAGE + 1) * query.getPageSize();
+    boolean isLastPage = protocol.getTotalInCollection() <= nextPageStartIndex;
     if (!isLastPage) {
       String nextPage = buildPageUrl(collectionUrl, currentPage + 1, query.getPageSize());
       protocol.setNextPageUri(nextPage);
@@ -147,18 +148,10 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     queryString +=
         ("&" + WebAnnotationFields.PARAM_PROFILE + "=" + query.getSearchProfile().toString());
 
-    String result = configuration.getAnnoApiEndpoint() + "/search?";
+    String url = configuration.getAnnoApiEndpoint() + "/search?";
+    url += queryString;
 
-    // try {
-    // result += URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString());
-    // } catch (UnsupportedEncodingException e) {
-    // logger.log(Level.ERROR, "The UnsupportedEncodingException during the URL encoding of the
-    // string.", e);
-    // result += queryString;
-    // }
-    result += queryString;
-
-    return result;
+    return url;
   }
 
   protected String removeParam(final String queryParam, String queryParams) {
@@ -187,7 +180,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
 
     Query searchQuery = new QueryImpl();
     searchQuery.setQuery(queryString);
-    if (pageNr < 0)
+    if (pageNr < Query.DEFAULT_PAGE)
       searchQuery.setPageNr(Query.DEFAULT_PAGE);
     else
       searchQuery.setPageNr(pageNr);
