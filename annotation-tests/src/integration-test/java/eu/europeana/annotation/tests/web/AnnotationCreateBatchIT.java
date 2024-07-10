@@ -1,17 +1,15 @@
 package eu.europeana.annotation.tests.web;
 
 import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.BATCH_TOTAL_FIELD;
-import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_ERRORS_FIELD;
-import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_FAILURECOUNT_FIELD;
-import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_FIELD;
-import static eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields.RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,13 +19,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
+import eu.europeana.annotation.web.model.BatchProcessingStatus;
 
 /**
  * Annotation API Batch Upload Test class
@@ -160,17 +161,12 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
 
     jsonPrettyPrint(response.getBody());
 
-    // get response body properties
-    JSONObject jsonObj = new JSONObject(response.getBody());
-    JSONObject opRepJsonObj = jsonObj.getJSONObject(RESP_OPERATION_REPORT_FIELD);
-    assertEquals(5, opRepJsonObj.get(RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD));
-    assertEquals(3, opRepJsonObj.get(RESP_OPERATION_REPORT_FAILURECOUNT_FIELD));
-    JSONObject errors = opRepJsonObj.getJSONObject(RESP_OPERATION_REPORT_ERRORS_FIELD);
-
+    String respBody=response.getBody();
+    assertTrue(respBody.contains(BatchProcessingStatus.successCountStr + "5"));
+    assertTrue(respBody.contains(BatchProcessingStatus.failureCountStr + "3"));
     // positions 2, 6 and 8 do not exist
-    assertTrue(((String) errors.get("-1")).startsWith("Annotation does not exist"));
-    assertTrue(((String) errors.get("-2")).startsWith("Annotation does not exist"));
-    assertTrue(((String) errors.get("-3")).startsWith("Annotation does not exist"));
+    int errorsCount = StringUtils.countMatches(respBody, "Annotation does not exist");
+    assertEquals(3, errorsCount);
 
     long startingId = testAnnotations.get(0).getIdentifier();
     for (long i = startingId + TEST_NUM_ANNOTATIONS; i < startingId + 8; i++) {
@@ -197,18 +193,12 @@ public class AnnotationCreateBatchIT extends AbstractIntegrationTest {
     // response status must be 400 BAD_REQUEST
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-    // get response body properties
-    JSONObject jsonObj = new JSONObject(response.getBody());
-    JSONObject opRepJsonObj = jsonObj.getJSONObject(RESP_OPERATION_REPORT_FIELD);
-    assertEquals(3, opRepJsonObj.get(RESP_OPERATION_REPORT_SUCCESSCOUNT_FIELD));
-    assertEquals(2, opRepJsonObj.get(RESP_OPERATION_REPORT_FAILURECOUNT_FIELD));
-    JSONObject errors = opRepJsonObj.getJSONObject(RESP_OPERATION_REPORT_ERRORS_FIELD);
-
+    String respBody=response.getBody();
+    assertTrue(respBody.contains(BatchProcessingStatus.successCountStr + "3"));
+    assertTrue(respBody.contains(BatchProcessingStatus.failureCountStr + "2"));
     // keys 1 and 2 have errors
-    assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170",
-        errors.get("1"));
-    assertEquals("Invalid tag size. Must be shorter then 64 characters! tag.size: 170",
-        errors.get("2"));
+    int errorsCount = StringUtils.countMatches(respBody, "Invalid tag size. Must be shorter then 64 characters! tag.size: 170");
+    assertEquals(2, errorsCount);
 
     long startingId = testAnnotations.get(0).getIdentifier();
     for (long i = startingId + TEST_NUM_ANNOTATIONS; i < startingId + 5; i++) {
