@@ -7,7 +7,12 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpHeaders;
+import eu.europeana.annotation.utils.HttpConnection;
 
+@Deprecated
+/**
+ * @deprecated not used anymore, use {@link HttpConnection} instead
+ */
 public class EuropeanaOauthClient {
 
     public EuropeanaOauthClient() {
