@@ -19,6 +19,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.stanbol.commons.jsonld.JsonSerializer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +43,9 @@ import eu.europeana.annotation.utils.HttpConnection;
     value = {"classpath:annotation.properties", "classpath:config/annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class MetisDereferenciationClient implements InitializingBean {
+    
+    private static final Logger LOG = LogManager.getLogger(MetisDereferenciationClient.class);
+
     @Value("${metis.baseUrl}")
     private String baseUrl;  
     @Value("${metis.connection.retries:3}")
@@ -53,7 +58,7 @@ public class MetisDereferenciationClient implements InitializingBean {
     static final String PARAM_LANGS = "langs";
     Transformer transformer;
     private HttpConnection httpConnection;
-
+    
     public void afterPropertiesSet() throws Exception {
       synchronized(this) {
         if(StringUtils.isBlank(baseUrl)) {
@@ -112,7 +117,19 @@ public class MetisDereferenciationClient implements InitializingBean {
 		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient I/O (transport) problem while obtaining the response body.", ex);
 	} catch (RuntimeException ex) {
 	    throw new AnnotationDereferenciationException(ex);
+      } finally {
+        if (streamResponse != null) {
+          try {
+            streamResponse.close();
+          } catch (IOException e) {
+            if (LOG.isWarnEnabled()) {
+              LOG.warn("Unexpected exception occured when trying to close metis input stream", e);
+            }
+          }
+        }
 	}
+	
+	
 	return res;
     }
 

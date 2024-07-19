@@ -89,6 +89,7 @@ public class HttpConnection {
   /**
    * retrieve the response as stream to be used for parsing to specific type. The Accept header is
    * set to application/xml
+   * NOTE: the InputStrem needs to be closed by the calling methods
    * 
    * @param url - url of the web resource
    * @return - the Stream for accessing the content of the body
@@ -99,7 +100,6 @@ public class HttpConnection {
     GetMethod get = new GetMethod(url);
     get.setRequestHeader("Accept", "application/xml");
 
-    try {
       client.executeMethod(get);
       if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
         return get.getResponseBodyAsStream();
@@ -110,9 +110,6 @@ public class HttpConnection {
         }
         return null;
       }
-    } finally {
-      get.releaseConnection();
-    }
   }
 
   /**
