@@ -114,6 +114,7 @@ public class HttpConnection {
 
   /**
    * retrieve the response as stream to be used for parsing to specific type
+   * NOTE: the InputStream needs to be closed by the calling methods
    * 
    * @param url - url of the web resource
    * @param body - the request body
@@ -128,7 +129,6 @@ public class HttpConnection {
         new StringRequestEntity(body, "application/json;charset=UTF-8", null);
     post.setRequestEntity(requestBody);
 
-    try {
       client.executeMethod(post);
       if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
         return post.getResponseBodyAsStream();
@@ -139,9 +139,6 @@ public class HttpConnection {
         }
         return null;
       }
-    } finally {
-      post.releaseConnection();
-    }
   }
 
   /**

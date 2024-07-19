@@ -43,196 +43,215 @@ import eu.europeana.annotation.utils.HttpConnection;
     value = {"classpath:annotation.properties", "classpath:config/annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class MetisDereferenciationClient implements InitializingBean {
-    
-    private static final Logger LOG = LogManager.getLogger(MetisDereferenciationClient.class);
 
-    @Value("${metis.baseUrl}")
-    private String baseUrl;  
-    @Value("${metis.connection.retries:3}")
-    private int connRetries;
-    @Value("${metis.connection.timeout:30000}")
-    private int connTimeout;
+  private static final Logger LOG = LogManager.getLogger(MetisDereferenciationClient.class);
 
-    static final String XSLT_TRANSFORMATION_FILE = "/deref2json.xsl";
-    static final String PARAM_URI = "uri";
-    static final String PARAM_LANGS = "langs";
-    Transformer transformer;
-    private HttpConnection httpConnection;
-    
-    public void afterPropertiesSet() throws Exception {
-      synchronized(this) {
-        if(StringUtils.isBlank(baseUrl)) {
-          throw new AnnotationDereferenciationException(new RuntimeException("Metis baseUrl cannot be null or empty."));
+  @Value("${metis.baseUrl}")
+  private String baseUrl;
+  @Value("${metis.connection.retries:3}")
+  private int connRetries;
+  @Value("${metis.connection.timeout:30000}")
+  private int connTimeout;
+
+  static final String XSLT_TRANSFORMATION_FILE = "/deref2json.xsl";
+  static final String PARAM_URI = "uri";
+  static final String PARAM_LANGS = "langs";
+  Transformer transformer;
+  private HttpConnection httpConnection;
+
+  public void afterPropertiesSet() throws Exception {
+    synchronized (this) {
+      if (StringUtils.isBlank(baseUrl)) {
+        throw new AnnotationDereferenciationException(
+            new RuntimeException("Metis baseUrl cannot be null or empty."));
+      }
+
+      httpConnection = new HttpConnection(connRetries, connTimeout);
+
+      TransformerFactory factory = TransformerFactory.newInstance();
+      InputStream xslFileAsStream =
+          new ClassPathResource(XSLT_TRANSFORMATION_FILE).getInputStream();
+      StreamSource xslSource = new StreamSource(xslFileAsStream);
+      Templates templates = factory.newTemplates(xslSource);
+      transformer = templates.newTransformer();
+    }
+  }
+
+  /**
+   * This method encodes URLs for HTTP connection
+   * 
+   * @param url The input URL
+   * @return encoded URL
+   * @throws UnsupportedEncodingException
+   */
+  String encodeUrl(String url) {
+    return URLEncoder.encode(url, StandardCharsets.UTF_8);
+  }
+
+  /**
+   * This method applies the XSLT to the XML output for each of the URIs in the list and fills the
+   * map with the URI and JSON string. It sends GET HTTP request to dereference URI.
+   * 
+   * @param uris The list of query URIs. The URI is composed from the base URI to Metis API
+   *        completed with query URI from the entity.
+   * @param language e.g.
+   *        "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
+   * @return response from Metis API in JSON-LD format
+   */
+  public Map<String, String> dereferenceOne(String uri, String language) {
+    Map<String, String> res = new HashMap<String, String>();
+    String jsonLdStr;
+    InputStream streamResponse = null;
+
+    try {
+      HttpURL metisRequestUrl = new HttpURL(baseUrl);
+      metisRequestUrl.setQuery(PARAM_URI, uri);
+      streamResponse = httpConnection.getURLContentAsStream(metisRequestUrl.toString());
+      if (streamResponse == null) {
+        throw new UpstreamServerErrorRuntimeException(
+            "MetisDereferenciationClient invalid status code or response not available.");
+      }
+      jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
+      res.put(uri, jsonLdStr);
+    } catch (UpstreamServerErrorRuntimeException ex) {
+      throw ex;
+    } catch (IOException ex) {// comes from the httpConnection.getURLContentAsStream
+      throw new UpstreamServerErrorRuntimeException(
+          "MetisDereferenciationClient I/O (transport) problem while obtaining the response body.",
+          ex);
+    } catch (RuntimeException ex) {
+      throw new AnnotationDereferenciationException(ex);
+    } finally {
+      if (streamResponse != null) {
+        try {
+          streamResponse.close();
+        } catch (IOException e) {
+          if (LOG.isWarnEnabled()) {
+            LOG.warn("Unexpected exception occured when trying to close metis input stream", e);
+          }
         }
-        
-        httpConnection = new HttpConnection(connRetries,connTimeout);
-
-        TransformerFactory factory = TransformerFactory.newInstance();
-      	InputStream xslFileAsStream = new ClassPathResource(XSLT_TRANSFORMATION_FILE).getInputStream();
-      	StreamSource xslSource = new StreamSource(xslFileAsStream);
-      	Templates templates = factory.newTemplates(xslSource);
-      	transformer = templates.newTransformer();
       }
     }
-    
-    /**
-     * This method encodes URLs for HTTP connection
-     * 
-     * @param url The input URL
-     * @return encoded URL
-     * @throws UnsupportedEncodingException
-     */
-    String encodeUrl(String url) {
-	return URLEncoder.encode(url, StandardCharsets.UTF_8);
-    }
 
-    /**
-     * This method applies the XSLT to the XML output for each of the URIs in the
-     * list and fills the map with the URI and JSON string. It sends GET HTTP
-     * request to dereference URI.
-     * 
-     * @param uris     The list of query URIs. The URI is composed from the base URI
-     *                 to Metis API completed with query URI from the entity.
-     * @param language e.g.
-     *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
-     * @return response from Metis API in JSON-LD format
-     */
-    public Map<String, String> dereferenceOne(String uri, String language) {
-	Map<String, String> res = new HashMap<String, String>();
-	String jsonLdStr;
-	InputStream streamResponse=null;
-	    
-	try {
-	    HttpURL metisRequestUrl  = new HttpURL(baseUrl);
-	    metisRequestUrl.setQuery(PARAM_URI, uri);
-        streamResponse = httpConnection.getURLContentAsStream(metisRequestUrl.toString());
-      	if(streamResponse==null) {
-    	    throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient invalid status code or response not available.");
-      	}
-	    jsonLdStr = convertToJsonLd(uri, streamResponse, language).toString();
-	    res.put(uri, jsonLdStr);	    
-	} catch (UpstreamServerErrorRuntimeException ex) {
-		throw ex;
-	} catch (IOException ex) {//comes from the httpConnection.getURLContentAsStream
-		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient I/O (transport) problem while obtaining the response body.", ex);
-	} catch (RuntimeException ex) {
-	    throw new AnnotationDereferenciationException(ex);
-      } finally {
-        if (streamResponse != null) {
-          try {
-            streamResponse.close();
-          } catch (IOException e) {
-            if (LOG.isWarnEnabled()) {
-              LOG.warn("Unexpected exception occured when trying to close metis input stream", e);
-            }
+
+    return res;
+  }
+
+  /**
+   * This method applies the XSLT to the XML output for each of the URIs in the list and fills the
+   * map with the URI and JSON string. It sends GET HTTP request to dereference URI.
+   * 
+   * @param uris The list of query URIs. The URI is composed from the base URI to Metis API
+   *        completed with query URI from the entity.
+   * @param language e.g.
+   *        "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
+   * @return response from Metis API in JSON-LD format
+   */
+  public Map<String, String> dereferenceMany(List<String> uris, String language) {
+    Map<String, String> res = new HashMap<String, String>();
+    String jsonLdStr;
+    InputStream streamResponse = null;
+    try {
+      @SuppressWarnings({"rawtypes", "unchecked"})
+      String urisJson = JsonSerializer.toString((List) uris);
+      streamResponse = httpConnection.postRequest(baseUrl, urisJson);
+      if (streamResponse == null) {
+        throw new UpstreamServerErrorRuntimeException(
+            "MetisDereferenciationClient invalid status code or response not available.");
+      }
+      String[] urisArray = new String[uris.size()];
+      urisArray = uris.toArray(urisArray);
+      jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
+      // we need to separate the individual jsons manually
+      List<Integer> startingPositions = findSubstringIndexes(jsonLdStr, "{ \"@context\":");
+      for (int i = 0; i < startingPositions.size(); i++) {
+        if (i == startingPositions.size() - 1) {
+          res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length()));
+        } else {
+          res.put(uris.get(i),
+              jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1)));
+        }
+      }
+    } catch (UpstreamServerErrorRuntimeException ex) {
+      throw ex;
+    } catch (IOException ex) {// comes from the httpConnection.postRequest
+      throw new UpstreamServerErrorRuntimeException(
+          "MetisDereferenciationClient I/O (transport) problem while obtaining the response body.",
+          ex);
+    } catch (RuntimeException ex) {
+      throw new AnnotationDereferenciationException(ex);
+    } finally {
+      if (streamResponse != null) {
+        try {
+          streamResponse.close();
+        } catch (IOException e) {
+          if (LOG.isWarnEnabled()) {
+            LOG.warn("Unexpected exception occured when trying to close metis input stream", e);
           }
         }
-	}
-	
-	
-	return res;
+      }
     }
 
-    /**
-     * This method applies the XSLT to the XML output for each of the URIs in the
-     * list and fills the map with the URI and JSON string. It sends GET HTTP
-     * request to dereference URI.
-     * 
-     * @param uris     The list of query URIs. The URI is composed from the base URI
-     *                 to Metis API completed with query URI from the entity.
-     * @param language e.g.
-     *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
-     * @return response from Metis API in JSON-LD format
-     */
-    public Map<String, String> dereferenceMany(List<String> uris, String language) {
-	Map<String, String> res = new HashMap<String, String>();
-	String jsonLdStr;
-	InputStream streamResponse=null;
-	try {
-      	@SuppressWarnings({ "rawtypes", "unchecked" })
-      	String urisJson = JsonSerializer.toString((List)uris);
-      	streamResponse = httpConnection.postRequest(baseUrl, urisJson);
-      	if(streamResponse==null) {
-      		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient invalid status code or response not available.");
-      	}
-      	String[] urisArray = new String[uris.size()];
-        urisArray = uris.toArray(urisArray);
-        jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
-        //we need to separate the individual jsons manually
-        List<Integer> startingPositions = findSubstringIndexes(jsonLdStr, "{ \"@context\":");
-        for (int i = 0; i < startingPositions.size(); i++) {
-          if(i==startingPositions.size()-1) {
-            res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length()));
-          }
-          else {
-            res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i+1)));
-          }
-        }          
-	} catch (UpstreamServerErrorRuntimeException ex) {
-		throw ex;
-	} catch (IOException ex) {//comes from the httpConnection.postRequest
-		throw new UpstreamServerErrorRuntimeException("MetisDereferenciationClient I/O (transport) problem while obtaining the response body.", ex);
-	} catch(RuntimeException ex) {
-	    throw new AnnotationDereferenciationException(ex);
-	}
-	return res;
-    }
-    
-    /**
-     * This method need to be moved to utils.
-     * 
-     * This method finds all indexes of a substring within a string, e.g. for the substring "abc" 
-     * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
-     * @param input
-     * @param substring
-     * @return
-     */
-    private List<Integer> findSubstringIndexes(String input, String substring) {
-      List<Integer> indexes = new ArrayList<>();
-      int substringLength = substring.length();
-      int index = input.indexOf(substring, 0);
-      if(index!=-1) {
-        indexes.add(index);
-        while(index != -1){
-          index = input.indexOf(substring, index + substringLength);
-          if (index != -1) {
-              indexes.add(index);
-          }
+
+    return res;
+  }
+
+  /**
+   * This method need to be moved to utils.
+   * 
+   * This method finds all indexes of a substring within a string, e.g. for the substring "abc"
+   * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
+   * 
+   * @param input
+   * @param substring
+   * @return
+   */
+  private List<Integer> findSubstringIndexes(String input, String substring) {
+    List<Integer> indexes = new ArrayList<>();
+    int substringLength = substring.length();
+    int index = input.indexOf(substring, 0);
+    if (index != -1) {
+      indexes.add(index);
+      while (index != -1) {
+        index = input.indexOf(substring, index + substringLength);
+        if (index != -1) {
+          indexes.add(index);
         }
-      }      
-      return indexes;
+      }
     }
-  
-    /**
-     * An XSLT converts dereference output to JSON-LD.
-     * 
-     * @param response
-     * @param language e.g.
-     *                 "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
-     * @return dereferenced output in JSON-LD format
-     */
-    public StringWriter convertToJsonLd(Object uris, InputStream response, String language) {
+    return indexes;
+  }
 
-	StringWriter result = new StringWriter();
-	try {
-	    //reuse transformer but update params
-	    transformer.clearParameters();
-	    transformer.setParameter(PARAM_URI, uris);
-	    if (language != null) {
-	      transformer.setParameter(PARAM_LANGS, language);
-	    }
-	    StreamSource text = new StreamSource(response);
-	    transformer.transform(text, new StreamResult(result));
-	} catch (TransformerConfigurationException e) {
-	    throw new AnnotationDereferenciationException(
-		    "Unexpected exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
-		    e);
-	} catch (TransformerException e) {
-	    throw new AnnotationDereferenciationException(
-		    "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
-		    e);
-	}
-	return result;
+  /**
+   * An XSLT converts dereference output to JSON-LD.
+   * 
+   * @param response
+   * @param language e.g.
+   *        "en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru"
+   * @return dereferenced output in JSON-LD format
+   */
+  public StringWriter convertToJsonLd(Object uris, InputStream response, String language) {
+
+    StringWriter result = new StringWriter();
+    try {
+      // reuse transformer but update params
+      transformer.clearParameters();
+      transformer.setParameter(PARAM_URI, uris);
+      if (language != null) {
+        transformer.setParameter(PARAM_LANGS, language);
+      }
+      StreamSource text = new StreamSource(response);
+      transformer.transform(text, new StreamResult(result));
+    } catch (TransformerConfigurationException e) {
+      throw new AnnotationDereferenciationException(
+          "Unexpected exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
+          e);
+    } catch (TransformerException e) {
+      throw new AnnotationDereferenciationException(
+          "Exception occured when invoking the MetisDereferenciationClient convertDereferenceOutputToJsonLd method",
+          e);
     }
+    return result;
+  }
 
 }
