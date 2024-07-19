@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout>
+      	<alwaysWriteExceptions>false</alwaysWriteExceptions>
+      	<pattern>%d{HH:mm:ss.SSS} %level %C:%L [%t] - %m%n</pattern>
+      </PatternLayout>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <appender-ref ref="Console"/>
+    </Root>
+    <Logger name="eu.europeana.annotation" level="INFO">
+    </Logger>
+    
+    <!-- To suppress Mongo opened/closed connection messages -->	
+    <Logger name="org.mongodb.driver.connection" level="WARN"/>
+    
+    <!-- To enable logging of Mongo queries, set log level to debug -->	
+    <logger name="org.mongodb.morphia" level="WARN"/>  
+  </Loggers>
+</Configuration>
