@@ -107,14 +107,19 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    }
 
 	    String sortFieldStr = null;
-	    if (sortField != null)
-		sortFieldStr = sortField.getSolrField();
+	    if (sortField != null) {
+		  sortFieldStr = sortField.getSolrField();
+	    }
 	    String sortOrderField = null;
-	    if (sortFieldStr != null) // if sort field, set default value
-		sortOrderField = SortOrder.desc.name();
-	    if (sortOrder != null)
-		sortOrderField = sortOrder.toString();
-
+	    if (sortFieldStr != null) {
+	      // if sort field, set default value
+	      if (sortOrder != null) {
+	        sortOrderField = sortOrder.toString();
+	      } else {
+	        sortOrderField = SortOrder.desc.name();    
+	      }
+	    }
+	    
 	    // ** build search query
 	    Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
 		    sortFieldStr, sortOrderField, page, pageSize, querySearchProfile);

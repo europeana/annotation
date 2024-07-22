@@ -3,21 +3,6 @@
 <schema name="annotations" version="1.4">
 
 	<types>
-		<!-- ASSETS TRAINING FIELDTYPES -->
-		<!-- <fieldType name="int" class="solr.TrieIntField" precisionStep="0" 
-			positionIncrementGap="0" /> <fieldType name="float" class="solr.TrieFloatField" 
-			precisionStep="0" positionIncrementGap="0" /> <fieldType name="long" class="solr.TrieLongField" 
-			precisionStep="0" positionIncrementGap="0" /> <fieldType name="double" class="solr.TrieDoubleField" 
-			precisionStep="0" positionIncrementGap="0" /> <fieldType name="string" class="solr.StrField" 
-			sortMissingLast="true" omitNorms="true" /> <fieldType name="boolean" class="solr.BoolField" 
-			sortMissingLast="true" omitNorms="true" /> <fieldType name="tint" class="solr.TrieIntField" 
-			precisionStep="0" omitNorms="true" positionIncrementGap="0" /> <fieldType 
-			name="tfloat" class="solr.TrieFloatField" precisionStep="8" omitNorms="true" 
-			positionIncrementGap="0" /> <fieldType name="tlong" class="solr.TrieLongField" 
-			precisionStep="8" omitNorms="true" positionIncrementGap="0" /> <fieldType 
-			name="tdouble" class="solr.TrieDoubleField" precisionStep="8" omitNorms="true" 
-			positionIncrementGap="0" /> <fieldType name="string" class="solr.StrField" 
-			sortMissingLast="true" omitNorms="true" /> -->
 		<fieldType name="string" class="solr.StrField"
 			sortMissingLast="true"/>
 
@@ -26,7 +11,7 @@
 		<fieldType name="long" class="solr.LongPointField"/>
 
 		<fieldType name="date" class="solr.DatePointField"
-			omitNorms="true" />
+			omitNorms="true" docValues="true"/>
 		<fieldType name="text" class="solr.TextField">
 			<analyzer type="index">
 				<tokenizer class="solr.WhitespaceTokenizerFactory" />
@@ -141,8 +126,8 @@
 			required="false" multiValued="true" stored="true" />
 
 		<!-- @Field("updated_timestamp") -->
-		<field name="modified" type="date" indexed="true" required="true"
-			multiValued="false" stored="true" />
+		<field name="modified" type="date" indexed="false" required="true"
+			multiValued="false" stored="true"/>
 
 		<!-- @Field("body_value") -->
 		<field name="body_value" type="text" indexed="true" required="false"
@@ -157,11 +142,11 @@
 <!-- 			multiValued="false" /> -->
 
 		<!-- @Field("created_timestamp") -->
-		<field name="created" type="date" indexed="true" required="true"
+		<field name="created" type="date" indexed="false" required="true"
 			multiValued="false" stored="true" />
 
 		<!-- @Field("generated_timestamp") -->
-		<field name="generated" type="date" indexed="true" required="true"
+		<field name="generated" type="date" indexed="false" required="true"
 			multiValued="false" stored="true" />
 
 		<!-- @Field("moderationScore"  TYPE) -->
