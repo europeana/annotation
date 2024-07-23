@@ -39,7 +39,8 @@ public class SolrConfig {
 
   @Bean(AnnotationConfiguration.BEAN_ANNO_SOLR_CLIENT)
   public SolrClient annoSolrClient() {
-    logger.info("Configuring annotation solr client at the url: {}", solrUrl);
+    logger.info("Configuring annotation solr client at the url: {}, zookeeper url: {}, collection: {}", 
+        solrUrl, solrZookeeperUrl, solrCollection);
     if(solrClient != null) {
       return solrClient;
     }else if(StringUtils.isNotBlank(solrZookeeperUrl)) {
