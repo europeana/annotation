@@ -11,7 +11,7 @@
 		<fieldType name="long" class="solr.LongPointField"/>
 
 		<fieldType name="date" class="solr.DatePointField"
-			omitNorms="true" docValues="true"/>
+			omitNorms="true" />
 		<fieldType name="text" class="solr.TextField">
 			<analyzer type="index">
 				<tokenizer class="solr.WhitespaceTokenizerFactory" />
@@ -126,8 +126,8 @@
 			required="false" multiValued="true" stored="true" />
 
 		<!-- @Field("updated_timestamp") -->
-		<field name="modified" type="date" indexed="false" required="true"
-			multiValued="false" stored="true"/>
+		<field name="modified" type="date" indexed="true" required="true"
+			multiValued="false" stored="true" />
 
 		<!-- @Field("body_value") -->
 		<field name="body_value" type="text" indexed="true" required="false"
@@ -142,11 +142,11 @@
 <!-- 			multiValued="false" /> -->
 
 		<!-- @Field("created_timestamp") -->
-		<field name="created" type="date" indexed="false" required="true"
+		<field name="created" type="date" indexed="true" required="true"
 			multiValued="false" stored="true" />
 
 		<!-- @Field("generated_timestamp") -->
-		<field name="generated" type="date" indexed="false" required="true"
+		<field name="generated" type="date" indexed="true" required="true"
 			multiValued="false" stored="true" />
 
 		<!-- @Field("moderationScore"  TYPE) -->

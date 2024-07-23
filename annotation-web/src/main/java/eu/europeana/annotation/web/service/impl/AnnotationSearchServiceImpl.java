@@ -1,6 +1,8 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -84,8 +86,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
       }
 
       // fetch annotation objects
-      List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
-      protocol.setAnnotations(annotations);
+      protocol.setAnnotations(fetchAnnotationsFromDB(annotationIds, query));
     }
 
 
@@ -114,6 +115,17 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     }
 
     return protocol;
+  }
+
+  private List<? extends Annotation> fetchAnnotationsFromDB(List<Long> annotationIds, Query query) {
+    List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
+    if(StringUtils.isNotBlank(query.getSort())) {
+      //need to ensure same order of annotations
+      AnnotationOrderComparator comparator = new AnnotationOrderComparator(annotationIds);
+      annotations.sort(comparator);
+    }
+    
+    return annotations;
   }
 
   private boolean isIncludeAnnotationsSearch(Query query) {
