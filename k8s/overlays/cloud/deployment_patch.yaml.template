@@ -21,7 +21,8 @@ spec:
                      -Delastic.apm.application_packages=${ELASTIC_APP_PACKAGES}
                      -Delastic.apm.server_urls=${ELASTIC_APM_SERVERS}
                      -Delastic.apm.service_name=${APP_NAME}
-                     -Delastic.apm.environment=${K8S_NAMESPACE}"
+                     -Delastic.apm.environment=${K8S_NAMESPACE}
+                     -Dlogging.config=/opt/app/config/log4j2-spring.xml"
           resources:
             requests:
               memory: "${MEMORY_REQUEST}M"

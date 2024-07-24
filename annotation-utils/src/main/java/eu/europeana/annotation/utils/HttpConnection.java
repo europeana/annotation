@@ -5,9 +5,9 @@ package eu.europeana.annotation.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -28,7 +28,7 @@ public class HttpConnection {
   private static final int STATUS_OK_START = 200;
   private static final int STATUS_OK_END = 299;
   private HttpClient httpClient;
-  private int connectionRetries; 
+  private int connectionRetries;
   private int connectionTimeout;
   Logger logger = LogManager.getLogger(getClass().getName());
 
@@ -56,7 +56,8 @@ public class HttpConnection {
   }
 
   /**
-   * retrieve the response as String 
+   * retrieve the response as String
+   * 
    * @param url - url of the web resource
    * @param headerName - headers to be set (e.g. Accept)
    * @param headerValue - value to be set for the indicated header
@@ -69,20 +70,27 @@ public class HttpConnection {
     GetMethod get = new GetMethod(url);
     get.setRequestHeader(headerName, headerValue);
 
-    client.executeMethod(get);
-    if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
-      return get.getResponseBodyAsString();
-    } else {
-	    if(logger.isWarnEnabled()) {
-	    	logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}", 
-	    			get.getStatusCode(), get.getResponseBodyAsString(), url);
-	    }
-	    return null;
+    try {
+      client.executeMethod(get);
+      if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+        return get.getResponseBodyAsString();
+      } else {
+        if (logger.isWarnEnabled()) {
+          logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}",
+              get.getStatusCode(), get.getResponseBodyAsString(), url);
+        }
+        return null;
+      }
+    } finally {
+      get.releaseConnection();
     }
   }
 
   /**
-   * retrieve the response as stream to be used for parsing to specific type. The Accept header is set to application/xml 
+   * retrieve the response as stream to be used for parsing to specific type. The Accept header is
+   * set to application/xml
+   * NOTE: the InputStrem needs to be closed by the calling methods
+   * 
    * @param url - url of the web resource
    * @return - the Stream for accessing the content of the body
    * @throws IOException - if the access to remote resource fails
@@ -92,20 +100,22 @@ public class HttpConnection {
     GetMethod get = new GetMethod(url);
     get.setRequestHeader("Accept", "application/xml");
 
-    client.executeMethod(get);
-    if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
-      return get.getResponseBodyAsStream();
-    } else {
-        if(logger.isWarnEnabled()) {
-        	logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}", 
-        			get.getStatusCode(), get.getResponseBodyAsString(), url);
+      client.executeMethod(get);
+      if (get.getStatusCode() >= STATUS_OK_START && get.getStatusCode() <= STATUS_OK_END) {
+        return get.getResponseBodyAsStream();
+      } else {
+        if (logger.isWarnEnabled()) {
+          logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}",
+              get.getStatusCode(), get.getResponseBodyAsString(), url);
         }
         return null;
-    }
+      }
   }
 
   /**
    * retrieve the response as stream to be used for parsing to specific type
+   * NOTE: the InputStream needs to be closed by the calling methods
+   * 
    * @param url - url of the web resource
    * @param body - the request body
    * @return - the Stream for accessing the content of the body
@@ -119,16 +129,16 @@ public class HttpConnection {
         new StringRequestEntity(body, "application/json;charset=UTF-8", null);
     post.setRequestEntity(requestBody);
 
-    client.executeMethod(post);
-    if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
-      return post.getResponseBodyAsStream();
-    } else {
-        if(logger.isWarnEnabled()) {
-        	logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}", 
-        			post.getStatusCode(), post.getResponseBodyAsString(), url);
+      client.executeMethod(post);
+      if (post.getStatusCode() >= STATUS_OK_START && post.getStatusCode() <= STATUS_OK_END) {
+        return post.getResponseBodyAsStream();
+      } else {
+        if (logger.isWarnEnabled()) {
+          logger.warn("Received Status Code: {}, and Response Body: {}, for the url: {}",
+              post.getStatusCode(), post.getResponseBodyAsString(), url);
         }
         return null;
-    }
+      }
   }
 
   /**
@@ -140,7 +150,7 @@ public class HttpConnection {
    */
   private HttpClient getHttpClient(int connectionRetry, int conectionTimeout) {
     if (this.httpClient == null) {
-      HttpClient client = new HttpClient();
+      HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
 
       // configure retry handler
       client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,

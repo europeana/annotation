@@ -5,11 +5,11 @@
 package eu.europeana.annotation.client.http;
 
 import java.io.IOException;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -362,7 +362,7 @@ public class HttpConnection {
    
     private HttpClient getHttpClient(int connectionRetry, int conectionTimeout) {
         if (this.httpClient == null) {
-            HttpClient client = new HttpClient();
+            HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
             
             //configure retry handler
             client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
