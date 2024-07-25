@@ -37,8 +37,8 @@ public class GlobalExceptionHandler extends EuropeanaGlobalExceptionHandler  {
   // return response;
   // }
   
-  @ExceptionHandler
-  public ResponseEntity<EuropeanaApiErrorResponse> handleRequestBodyNotParsableError(
+  @ExceptionHandler(BatchUploadException.class)
+  public ResponseEntity<EuropeanaApiErrorResponse> handleBatchUploadException(
 		  BatchUploadException e, HttpServletRequest httpRequest) {
       EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
               .setStatus(e.getStatus().value())
