@@ -41,6 +41,7 @@ public interface I18nConstantsAnnotation extends eu.europeana.api.commons.defini
 	 String MESSAGE_INVALID_TAG_ID_FORMAT = "error.message_invalid_tag_id_format";
 	 String MESSAGE_MISSING_MANDATORY_FIELD = "error.message_missing_mandatory_field";
 	 String INVALID_PROVIDER = "error.invalid_provider";
+	 String INVALID_PARAM_VALUE = "error.invalid_param_value";
 	 String SOLR_EXCEPTION = "error.solr_exception";
 	 String SOLR_MALFORMED_QUERY_EXCEPTION = "error.solr_malformed_query_exception";
 	 
