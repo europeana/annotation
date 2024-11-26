@@ -27,14 +27,13 @@ import io.swagger.annotations.ApiOperation;
  */
 
 @RestController
-@Api(tags = "Web Annotation Protocol", description=" ")
+@Api(tags = "Web Annotation Protocol")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	@ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotation", nickname = "createAnnotation", response = java.lang.Void.class)
 	public ResponseEntity<String> createAnnotation(
-//			@RequestParam(value = WebAnnotationFields.IDENTIFIER, required = false) String identifier,
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
 			HttpServletRequest request)
@@ -72,7 +71,6 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 		
 		Authentication authentication = verifyWriteAccess(Operations.UPDATE, request);
 		
-//		String action = "put:/annotation/{identifier}[.{format}]";
 		return updateAnnotation(identifier, annotation, authentication, request);
 	}
 	
@@ -87,7 +85,6 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 		Authentication authentication = verifyWriteAccess(Operations.DELETE, request);
 		
-//		String action = "delete:/annotation/{identifier}[.{format}]";
 		return deleteAnnotation(identifier, authentication, request);
 	}
 	
