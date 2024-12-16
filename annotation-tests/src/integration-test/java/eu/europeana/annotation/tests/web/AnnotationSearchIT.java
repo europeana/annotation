@@ -482,7 +482,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
   protected AnnotationPage search(String bodyValue, String profile, String limit)
       throws Exception {
     AnnotationPage annPg = searchAnnotations(bodyValue, null, null, WebAnnotationFields.CREATED, "desc",
-        "0", limit, profile, null);
+        "1", limit, profile, null);
 
     assertNotNull(annPg, "AnnotationPage must not be null");
     return annPg;

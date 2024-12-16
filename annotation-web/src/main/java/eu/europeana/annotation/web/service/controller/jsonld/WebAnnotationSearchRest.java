@@ -88,10 +88,15 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 	    // ** Process input params
 	    queryString = queryString.trim();
-	    if (StringUtils.isBlank(queryString))
-		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_BLANK_PARAMETER_VALUE,
-			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
-			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
+	    if (StringUtils.isBlank(queryString)) {
+			throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_BLANK_PARAMETER_VALUE,
+				I18nConstantsAnnotation.ANNOTATION_VALIDATION,
+				new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
+	    }
+	    if (page < Query.DEFAULT_PAGE) {
+	    	throw new ParamValidationI18NException(null, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+				new String[] { WebAnnotationFields.PAGE, String.valueOf(page) });
+	    }
 
 	    SearchProfiles searchProfile = getProfile(profile, request);
 	    // here we need a query search profile - dereference is not a query search
