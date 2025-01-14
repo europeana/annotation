@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import com.google.gson.Gson;
+
 import eu.europeana.annotation.definitions.exception.AnnotationAttributeInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationInstantiationException;
 import eu.europeana.annotation.definitions.exception.AnnotationValidationException;
@@ -173,17 +177,18 @@ public class BaseJsonldRest extends BaseRest {
 	    AnnotationPage annotationPage = annoPageParser.parseAnnotationPage(annotationPageIn);
 	    List<? extends Annotation> annotations = annotationPage.getAnnotations();
 
-	    // initialize upload status
-	    BatchUploadStatus uploadStatus = new BatchUploadStatus();
-	    uploadStatus.setTotalNumberOfAnnotations(annotations.size());
+	    // initialize upload status for validation
+	    BatchUploadStatus uploadStatusValidation = new BatchUploadStatus();
+	    uploadStatusValidation.setTotalNumberOfAnnotations(annotations.size());
 
 	    // validate annotations
-	    uploadStatus.setStep(BatchOperationStep.VALIDATION);
-	    getAnnotationService().validateWebAnnotations(annotations, uploadStatus, authentication);
+	    uploadStatusValidation.setStep(BatchOperationStep.VALIDATION);
+	    getAnnotationService().validateWebAnnotations(annotations, uploadStatusValidation, authentication);
 
 	    // in case of validation errors, return error report
-	    if (uploadStatus.getFailureCount() > 0)
-		throw new BatchUploadException(uploadStatus.toString(), uploadStatus);
+	    if (uploadStatusValidation.getFailureCount() > 0) {
+	    	throw new BatchUploadException(uploadStatusValidation.toString(), uploadStatusValidation);
+	    }
 
 	    AnnotationsList webAnnotations = new AnnotationsList(annotationPage.getAnnotations());
 
@@ -191,7 +196,10 @@ public class BaseJsonldRest extends BaseRest {
 	    // and those without identifier (new annotations which should be created);
 	    // first annotations with identifier (assumed updates)
 	    AnnotationsList annosWithId = webAnnotations.getAnnotationsWithId();
-	    uploadStatus.setNumberOfAnnotationsWithId(annosWithId.size());
+	    // initialize upload status for the non-existing annotations
+	    BatchUploadStatus uploadStatusNonExist = new BatchUploadStatus();
+	    uploadStatusNonExist.setTotalNumberOfAnnotations(annotations.size());
+	    uploadStatusNonExist.setNumberOfAnnotationsWithId(annosWithId.size());
 
 	    // verify if the annotations with identifiers exist in the database
 	    List<Long> annoIdentifiers = annosWithId.getIdentifiers();
@@ -205,28 +213,33 @@ public class BaseJsonldRest extends BaseRest {
 	    }
 
 	    // consistency (annotations with identifier must match existing annotations)
-	    uploadStatus.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
+	    uploadStatusNonExist.setStep(BatchOperationStep.CHECK_UPDATE_ANNOTATIONS_AVAILABLE);
 	    if (annosWithId.size() != existingInDb.size()) {
 		// remove existing identifiers, the remaining list contains only missing identifiers
 	    annoIdentifiers.removeAll(existingInDb.getIdentifiers());
-		getAnnotationService().reportNonExisting(annotations, uploadStatus, annoIdentifiers);
-		throw new BatchUploadException(uploadStatus.toString(), uploadStatus, HttpStatus.NOT_FOUND);
+		getAnnotationService().reportNonExisting(annotations, uploadStatusNonExist, annoIdentifiers);
+		throw new BatchUploadException(uploadStatusNonExist.toString(), uploadStatusNonExist, HttpStatus.NOT_FOUND);
 	    }
 
 	    LinkedHashMap<Annotation, Annotation> webAnnoStoredAnnoAnnoMap = webAnnotations.getAnnotationsMap();
 
+	    // initialize upload status for the existing annotations
+	    BatchUploadStatus uploadStatusExist = new BatchUploadStatus();
+	    uploadStatusExist.setTotalNumberOfAnnotations(annotations.size());
 	    // update existing annotations
 	    if (annosWithId.getAnnotations().size() > 0) {
-		uploadStatus.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
-		getAnnotationService().updateExistingAnnotations(uploadStatus, existingInDb.getAnnotations(),
-		    annosWithId.getAnnotations(), webAnnoStoredAnnoAnnoMap);
+	    	uploadStatusExist.setStep(BatchOperationStep.UPDATE_EXISTING_ANNOTATIONS);
+	    	getAnnotationService().updateExistingAnnotations(uploadStatusExist, existingInDb.getAnnotations(),
+	    			annosWithId.getAnnotations(), webAnnoStoredAnnoAnnoMap);
 	    }
 	    // annotations are separated into those with identifier (assumed updates)
 	    // and those without identifier (new annotations which should be created);
 	    // second annotations without (assumed inserts)
 	    AnnotationsList annosWithoutId = webAnnotations.getAnnotationsWithoutId();
-	    uploadStatus.setStep(BatchOperationStep.INSERT_NEW_ANNOTATIONS);
-	    uploadStatus.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
+	    // initialize upload status for the inserting annotations
+	    BatchUploadStatus uploadStatusInsert = new BatchUploadStatus();
+	    uploadStatusInsert.setStep(BatchOperationStep.INSERT_NEW_ANNOTATIONS);
+	    uploadStatusInsert.setNumberOfAnnotationsWithoutId(annosWithoutId.size());
 	    // default values
 	    if (annosWithoutId.size() > 0) {
     	    String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
@@ -236,7 +249,7 @@ public class BaseJsonldRest extends BaseRest {
     //				getAuthorizationService().authorizeUser(userId,authentication, Operations.CREATE);
     		AnnotationDefaults annoDefaults = new AnnotationDefaults.Builder().setGenerator(buildAgent(generatorId, AgentTypes.SOFTWARE))
     			.setUser(buildAgent(creatorId, AgentTypes.PERSON)).build();
-    		getAnnotationService().insertNewAnnotations(uploadStatus, annosWithoutId.getAnnotations(), annoDefaults,
+    		getAnnotationService().insertNewAnnotations(uploadStatusInsert, annosWithoutId.getAnnotations(), annoDefaults,
     			webAnnoStoredAnnoAnnoMap);
 	    }
 
