@@ -25,6 +25,6 @@ public class WebAnnotationModelKeywords {
 	//Contexts
 	public static final String WA_CONTEXT = "http://www.w3.org/ns/anno.jsonld";
 	public static final String EDM_CONTEXT = "http://www.europeana.eu/schemas/context/edm.jsonld";
-	public static final String ENTITY_CONTEXT = "http://www.europeana.eu/schemas/context/entity.jsonld";
+	public static final String ENTITY_CONTEXT = "https://api.europeana.eu/schema/context/entity.jsonld";
 	
 }

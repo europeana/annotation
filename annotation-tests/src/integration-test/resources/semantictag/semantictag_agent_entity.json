@@ -1,7 +1,7 @@
 {
   "motivation": "tagging",
   "body": {
-    "@context": "http://www.europeana.eu/schemas/context/entity.jsonld",
+    "@context": "https://api.europeana.eu/schema/context/entity.jsonld",
     "id": "http://data.europeana.eu/agent/base/60404",
     "type": "Agent",
     "depiction": {

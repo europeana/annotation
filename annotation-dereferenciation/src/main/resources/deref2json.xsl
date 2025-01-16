@@ -28,13 +28,17 @@
     <xsl:param name="uri"/>
     <!-- use portal languages by default (27) -->
     <xsl:param name="langs">en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru</xsl:param>
+    <xsl:param name="complete" select="false()"/>
 
     <xsl:template match="/">
         <xsl:apply-templates select="metis:results/metis:result/*[@rdf:about=$uri]"/>
     </xsl:template>
 
     <xsl:template match="skos:Concept|edm:Agent|edm:Place|edm:TimeSpan">
-        <xsl:text>{ "@context": "http://www.europeana.eu/schemas/context/entity.jsonld"</xsl:text>
+        
+        <xsl:variable name="include" select="lib:mustBeComplete(@rdf:about) or $complete"/>
+
+        <xsl:text>{ "@context": "https://api.europeana.eu/schema/context/entity.jsonld"</xsl:text>
         <xsl:text>, "id": "</xsl:text><xsl:value-of select="@rdf:about"/><xsl:text>"</xsl:text>
         <xsl:text>, "type": "</xsl:text><xsl:value-of select="local-name()"/><xsl:text>"</xsl:text>
 
@@ -42,6 +46,20 @@
             <xsl:with-param name="prop" select="skos:prefLabel[lib:isAcceptableLang(@xml:lang)]"/>
             <xsl:with-param name="name">prefLabel</xsl:with-param>
         </xsl:call-template>
+        <xsl:if test="$include">
+	        <xsl:call-template name="lang-map-array">
+	            <xsl:with-param name="prop" select="skos:altLabel[lib:isAcceptableLang(@xml:lang)]"/>
+	            <xsl:with-param name="name">altLabel</xsl:with-param>
+	        </xsl:call-template>
+	        <xsl:call-template name="lang-map-array">
+	            <xsl:with-param name="prop" select="skos:hiddenLabel[lib:isAcceptableLang(@xml:lang)]"/>
+	            <xsl:with-param name="name">hiddenLabel</xsl:with-param>
+	        </xsl:call-template>
+	        <xsl:call-template name="lang-map-array">
+	            <xsl:with-param name="prop" select="skos:definition[lib:isAcceptableLang(@xml:lang)]"/>
+	            <xsl:with-param name="name">definition</xsl:with-param>
+	        </xsl:call-template>
+	    </xsl:if>
         <xsl:call-template name="array">
             <xsl:with-param name="prop" select="edm:begin"/>
             <xsl:with-param name="name">begin</xsl:with-param>
@@ -78,9 +96,21 @@
             <xsl:with-param name="prop" select="wgs84_pos:alt"/>
             <xsl:with-param name="name">alt</xsl:with-param>
         </xsl:call-template>
+        <xsl:if test="$include">
+	        <xsl:call-template name="lang-map-array">
+	            <xsl:with-param name="prop" select="skos:scopeNote[lib:isAcceptableLang(@xml:lang)]"/>
+	            <xsl:with-param name="name">scopeNote</xsl:with-param>
+	        </xsl:call-template>
+	        <xsl:call-template name="lang-map-array">
+	            <xsl:with-param name="prop" select="skos:note[lib:isAcceptableLang(@xml:lang)]"/>
+	            <xsl:with-param name="name">note</xsl:with-param>
+	        </xsl:call-template>
+	    </xsl:if>
 
         <xsl:text>}</xsl:text>
     </xsl:template>
+    
+    
 
     <xsl:template name="lang-map">
         <xsl:param name="prop"/>
@@ -89,9 +119,9 @@
         <xsl:if test="$prop">
             <xsl:text>, "</xsl:text><xsl:value-of select="$name"/><xsl:text>": { </xsl:text>
             <xsl:for-each select="$prop">
-				<xsl:if test="position()>1"><xsl:text>, </xsl:text></xsl:if>
-				<xsl:text>"</xsl:text><xsl:value-of select="lib:getLang(@xml:lang)"/><xsl:text>": </xsl:text>
-				<xsl:text>"</xsl:text><xsl:value-of select="text()"/><xsl:text>"</xsl:text>
+                <xsl:if test="position()>1"><xsl:text>, </xsl:text></xsl:if>
+                <xsl:text>"</xsl:text><xsl:value-of select="lib:getLang(@xml:lang)"/><xsl:text>": </xsl:text>
+                <xsl:text>"</xsl:text><xsl:value-of select="text()"/><xsl:text>"</xsl:text>
             </xsl:for-each>
             <xsl:text> }</xsl:text>
         </xsl:if>
@@ -111,6 +141,33 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template name="lang-map-array">
+        <xsl:param name="prop"/>
+        <xsl:param name="name"/>
+        
+        <xsl:variable name="langs" select="distinct-values($prop/lib:getLang(@xml:lang))"/>
+
+        <xsl:if test="$prop">
+            <xsl:text>, "</xsl:text><xsl:value-of select="$name"/><xsl:text>": { </xsl:text>
+            
+            <xsl:for-each select="$langs">
+                <xsl:variable name="lang" select="."/>
+                
+                <xsl:if test="position()>1"><xsl:text>, </xsl:text></xsl:if>
+
+                <xsl:text>"</xsl:text><xsl:value-of select="$lang"/><xsl:text>": [</xsl:text>
+                <xsl:for-each select="$prop[lib:getLang(@xml:lang)=$lang]">
+                    <xsl:if test="position()>1"><xsl:text>, </xsl:text></xsl:if>
+                    <xsl:text>"</xsl:text><xsl:value-of select="text()"/><xsl:text>"</xsl:text>
+                </xsl:for-each>
+                <xsl:text>]</xsl:text>
+
+            </xsl:for-each>
+
+            <xsl:text> }</xsl:text>
+        </xsl:if>
+    </xsl:template>
+
     <xsl:template name="single">
         <xsl:param name="prop"/>
         <xsl:param name="name"/>
@@ -123,6 +180,12 @@
 
 
     <!--                          LANGUAGE UTILS                             -->
+    
+    <xsl:function name="lib:mustBeComplete" as="xs:boolean">
+        <xsl:param name="uri"/>
+
+        <xsl:value-of select="starts-with($uri, 'https://rnd-2.eanadev.org/share/debias/vocabulary/')"/>        
+    </xsl:function>
 
     <xsl:function name="lib:getLang" as="xs:string">
         <xsl:param name="string"/>
@@ -249,6 +312,26 @@
             <altLang code="est"/>
             <altLang code="et-ee"/>
         </language>
+        <!-- 4 non-EU languages -->
+        <!-- 
+        <language code="no">
+            <altLang code="nor"/>
+            <altLang code="no-no"/>
+        </language>
+        <language code="ca">
+            <altLang code="cat"/>
+            <altLang code="ca-es"/>
+        </language>
+        <language code="ru">
+            <altLang code="rus"/>
+            <altLang code="ru-ru"/>
+        </language>
+        <language code="eu">
+            <altLang code="baq"/>
+            <altLang code="eus"/>
+            <altLang code="ru-es"/>
+        </language>
+         -->
     </xsl:variable>
 
 </xsl:stylesheet>

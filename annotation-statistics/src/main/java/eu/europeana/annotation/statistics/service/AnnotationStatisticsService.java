@@ -1,5 +1,18 @@
 package eu.europeana.annotation.statistics.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
+import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.vocabulary.AnnotationScenarioTypes;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
@@ -9,18 +22,6 @@ import eu.europeana.annotation.statistics.model.AnnotationMetric;
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsClientsScenarios;
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsScenarios;
 import eu.europeana.annotation.statistics.model.AnnotationStatisticsUsersScenarios;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
-import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AnnotationStatisticsService {
 
@@ -134,6 +135,9 @@ public class AnnotationStatisticsService {
                 case AnnotationScenarioTypes.CONTRIBUTE_LINK:
                     annoStats.setContributeLink(facetJsonBucket.getCount());
                     break;
+                case AnnotationScenarioTypes.DEBIAS:
+                    annoStats.setDebias(facetJsonBucket.getCount());
+                    break;                    
 
                 default:
                     LOGGER.debug("Scenario not supported in statistics service: {}",
@@ -196,6 +200,10 @@ public class AnnotationStatisticsService {
                 clientsScenariosElem.setContributeLink(numAnnotationsEntry.getValue()
                         .get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
             }
+            if (numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.DEBIAS) != null) {
+                clientsScenariosElem.setDebias(numAnnotationsEntry.getValue()
+                        .get(AnnotationScenarioTypes.DEBIAS).longValue());
+            }
 
             clientsScenarios.add(clientsScenariosElem);
         }
@@ -241,6 +249,10 @@ public class AnnotationStatisticsService {
             if (numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.CONTRIBUTE_LINK) != null) {
                 usersScenariosElem.setContributeLink(numAnnotationsEntry.getValue()
                         .get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
+            }
+            if (numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.DEBIAS) != null) {
+                usersScenariosElem.setDebias(numAnnotationsEntry.getValue()
+                        .get(AnnotationScenarioTypes.DEBIAS).longValue());
             }
 
             usersScenarios.add(usersScenariosElem);

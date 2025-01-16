@@ -18,6 +18,7 @@ public class AnnotationStatisticsScenarios {
 		this.subtitle = 0;
 		this.caption = 0;
 		this.contributeLink = 0;
+		this.debias = 0;
 	}
 
     @JsonProperty(AnnotationScenarioTypes.TRANSCRIPTION)
@@ -43,6 +44,9 @@ public class AnnotationStatisticsScenarios {
     
     @JsonProperty(AnnotationScenarioTypes.CONTRIBUTE_LINK)
     private long contributeLink;
+    
+    @JsonProperty(AnnotationScenarioTypes.DEBIAS)
+    private long debias;
 
 	public long getTranscription() {
 		return transcription;
@@ -108,4 +112,12 @@ public class AnnotationStatisticsScenarios {
     this.contributeLink = contributeLink;
   }
 	
+  public long getDebias() {
+	return debias;
+  }
+
+  public void setDebias(long debias) {
+	this.debias = debias;
+  }
+  
 }

@@ -1,7 +1,7 @@
 {
   "motivation": "tagging",
   "body": {
-    "@context": "http://www.europeana.eu/schemas/context/entity.jsonld",
+    "@context": "https://api.europeana.eu/schema/context/entity.jsonld",
     "type": "Address",
     "streetAddress": "Prins Willem-Alexanderhof 5, 2595BE Den Haag, Netherlands",
     "postalCode": "2595BE",
