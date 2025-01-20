@@ -20,7 +20,7 @@ public class AnnotationStatisticsUsersScenarios {
 		this.subtitle = 0;
 		this.caption = 0;
 		this.contributeLink = 0;
-		this.debias = 0;
+		this.highlight = 0;
 	}
 
     @JsonProperty(AnnotationStatisticsConstants.USER)
@@ -51,7 +51,7 @@ public class AnnotationStatisticsUsersScenarios {
     private long contributeLink;
     
     @JsonProperty(AnnotationScenarioTypes.DEBIAS)
-    private long debias;
+    private long highlight;
 
 	public long getTranscription() {
 		return transcription;
@@ -125,12 +125,12 @@ public class AnnotationStatisticsUsersScenarios {
     this.contributeLink = contributeLink;
   }
   
-  public long getDebias() {
-	return debias;
+  public long getHighlight() {
+	return highlight;
   }
 
-  public void setDebias(long debias) {
-	this.debias = debias;
+  public void setHighlight(long highlight) {
+	this.highlight = highlight;
   }
   
 }

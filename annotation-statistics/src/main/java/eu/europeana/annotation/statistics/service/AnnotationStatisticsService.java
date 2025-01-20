@@ -136,7 +136,7 @@ public class AnnotationStatisticsService {
                     annoStats.setContributeLink(facetJsonBucket.getCount());
                     break;
                 case AnnotationScenarioTypes.DEBIAS:
-                    annoStats.setDebias(facetJsonBucket.getCount());
+                    annoStats.setHighlight(facetJsonBucket.getCount());
                     break;                    
 
                 default:
@@ -201,7 +201,7 @@ public class AnnotationStatisticsService {
                         .get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
             }
             if (numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.DEBIAS) != null) {
-                clientsScenariosElem.setDebias(numAnnotationsEntry.getValue()
+                clientsScenariosElem.setHighlight(numAnnotationsEntry.getValue()
                         .get(AnnotationScenarioTypes.DEBIAS).longValue());
             }
 
@@ -251,7 +251,7 @@ public class AnnotationStatisticsService {
                         .get(AnnotationScenarioTypes.CONTRIBUTE_LINK).longValue());
             }
             if (numAnnotationsEntry.getValue().get(AnnotationScenarioTypes.DEBIAS) != null) {
-                usersScenariosElem.setDebias(numAnnotationsEntry.getValue()
+                usersScenariosElem.setHighlight(numAnnotationsEntry.getValue()
                         .get(AnnotationScenarioTypes.DEBIAS).longValue());
             }
 
