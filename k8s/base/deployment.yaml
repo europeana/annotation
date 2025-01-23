@@ -14,7 +14,7 @@ spec:
         image: europeana/annotation-api
         env:
           - name: SPRING_CONFIG_NAME
-            value: "annotation,annotation.user"
+            value: "application,annotation,annotation.user"
           - name: SPRING_CONFIG_ADDITIONAL_LOCATION
             value: "/opt/app/config/annotation.user.properties"
         ports:
