@@ -62,10 +62,6 @@ public class GeneralUtils {
         return false;
       }
       try {
-          //only http URLs are supported in targets so do quickcheck first
-          if(!value.startsWith("http")) {
-            return false;
-          }
           URL url = new URL(value);
           return StringUtils.isNotBlank(url.getProtocol());
       } catch (MalformedURLException e) {

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -174,15 +176,26 @@ public class MetisDereferenciationClient implements InitializingBean {
       String[] urisArray = new String[uris.size()];
       urisArray = uris.toArray(urisArray);
       jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
+      
       // we need to separate the individual jsons manually
-      List<Integer> startingPositions = findSubstringIndexes(jsonLdStr, "{ \"@context\":");
+      Pattern pattern = Pattern.compile("\\{\\s*\"@context\":");//matches {<0 or more spaces>"@context":
+      Matcher matcher = pattern.matcher(jsonLdStr);
+      //List<Integer> startingPositions = findSubstringIndexes(jsonLdStr, "{ \"@context\":");
+      List<Integer> startingPositions = new ArrayList<>();
+      while (matcher.find()) {
+    	  startingPositions.add(matcher.start());
+      }      
       for (int i = 0; i < startingPositions.size(); i++) {
-        if (i == startingPositions.size() - 1) {
-          res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length()));
-        } else {
-          res.put(uris.get(i),
-              jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1)));
-        }
+    	  String derefJson=null;
+    	  if (i == startingPositions.size() - 1) {
+    		  derefJson=jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length());
+    	  } else {
+    		  derefJson=jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1));
+    	  }
+		  String correctUri=getUriPresentInIdPart(uris, derefJson);
+		  if(StringUtils.isNotBlank(correctUri)) {
+			  res.put(correctUri, derefJson);
+		  }
       }
     } catch (UpstreamServerErrorRuntimeException ex) {
       throw ex;
@@ -207,7 +220,18 @@ public class MetisDereferenciationClient implements InitializingBean {
 
     return res;
   }
-
+  
+  private String getUriPresentInIdPart(List<String> uris, String derefJson) {
+	  String idPartRegexStart=".*\"id\":\\s*\"";
+	  for(String elem : uris) {
+		  String idPartRegexWhole = idPartRegexStart + elem + "\".*";
+		  if(derefJson.matches(idPartRegexWhole)) {
+			  return elem;
+		  }
+	  }
+	  return null;
+  }
+  
   /**
    * This method need to be moved to utils.
    * 
