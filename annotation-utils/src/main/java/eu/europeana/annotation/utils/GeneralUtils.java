@@ -74,4 +74,28 @@ public class GeneralUtils {
     return value.startsWith("https");
   }
   
+  /**
+   * This method finds all indexes of a substring within a string, e.g. for the substring "abc"
+   * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
+   * 
+   * @param input
+   * @param substring
+   * @return
+   */
+  public static List<Integer> findSubstringIndexes(String input, String substring) {
+      List<Integer> indexes = new ArrayList<>();
+      int substringLength = substring.length();
+      int index = input.indexOf(substring, 0);
+      if (index != -1) {
+          indexes.add(index);
+          while (index != -1) {
+              index = input.indexOf(substring, index + substringLength);
+              if (index != -1) {
+                  indexes.add(index);
+              }
+          }
+      }
+      return indexes;
+  }
+  
 }

@@ -6,12 +6,9 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -178,23 +175,18 @@ public class MetisDereferenciationClient implements InitializingBean {
       jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
       
       // we need to separate the individual jsons manually
-      Pattern pattern = Pattern.compile("\\{\\s*\"@context\":");//matches {<0 or more spaces>"@context":
-      Matcher matcher = pattern.matcher(jsonLdStr);
-      List<Integer> startingPositions = new ArrayList<>();
-      while (matcher.find()) {
-    	  startingPositions.add(matcher.start());
-      }      
+      List<Integer> startingPositions = GeneralUtils.findSubstringIndexes(jsonLdStr, "{ \"@context\":");
       for (int i = 0; i < startingPositions.size(); i++) {
-    	  String derefJson=null;
-    	  if (i == startingPositions.size() - 1) {
-    		  derefJson=jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length());
-    	  } else {
-    		  derefJson=jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1));
-    	  }
-		  String correctUri=getUriPresentInIdPart(uris, derefJson);
-		  if(StringUtils.isNotBlank(correctUri)) {
-			  res.put(correctUri, derefJson);
-		  }
+          String derefJson=null;
+          if (i == startingPositions.size() - 1) {
+              derefJson=jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length());
+          } else {
+              derefJson=jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1));
+          }
+          String correctUri=getUriPresentInIdPart(uris, derefJson);
+          if(StringUtils.isNotBlank(correctUri)) {
+              res.put(correctUri, derefJson);
+          }
       }
     } catch (UpstreamServerErrorRuntimeException ex) {
       throw ex;
@@ -216,15 +208,14 @@ public class MetisDereferenciationClient implements InitializingBean {
       }
     }
 
-
     return res;
   }
-  
+    
   private String getUriPresentInIdPart(List<String> uris, String derefJson) {
-	  String idPartRegexStart=".*\"id\":\\s*\"";
+	  String idPartStart="\"id\": ";
 	  for(String elem : uris) {
-		  String idPartRegexWhole = idPartRegexStart + elem + "\".*";
-		  if(derefJson.matches(idPartRegexWhole)) {
+		  String idPartWhole = idPartStart + "\"" + elem + "\"";
+		  if(derefJson.contains(idPartWhole)) {
 			  return elem;
 		  }
 	  }
