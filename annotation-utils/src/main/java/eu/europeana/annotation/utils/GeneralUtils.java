@@ -58,9 +58,12 @@ public class GeneralUtils {
    * @return True if valid URL, false otherwise
    */
   public static boolean isUrl(String value) {
-      if(StringUtils.isEmpty(value)) {
+    //only http URLs are supported in targets so do quickcheck first
+    //we might want to support other protocols in the future
+    if(StringUtils.isEmpty(value) || !value.startsWith("http")) {
         return false;
       }
+      
       try {
           URL url = new URL(value);
           return StringUtils.isNotBlank(url.getProtocol());
