@@ -606,7 +606,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
       return;
     }
     
-    List<String> entityIds = extractBodyUrisForSemanticTagsAndHighlights(annotations);
+    List<String> entityIds = extractEntityUrisFromBody(annotations);
     // check if dereferenciation is possible
     if (entityIds.isEmpty()) {
       return;
@@ -620,10 +620,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
   }
 
-  private List<String> extractBodyUrisForSemanticTagsAndHighlights(List<? extends Annotation> annotations) {
+  private List<String> extractEntityUrisFromBody(List<? extends Annotation> annotations) {
     List<String> entityIds = new ArrayList<String>();
     for (Annotation annotation : annotations) {
-      if (isSemanticTagOrHighlightWithBodyAsUrl(annotation)) {
+      if (isSemanticTag(annotation)) {
+        entityIds.add(annotation.getBody().getValue());
+      }else if(isHighlightWithUrl(annotation)) {
         entityIds.add(annotation.getBody().getValue());
       }
     }
