@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,15 +173,22 @@ public class MetisDereferenciationClient implements InitializingBean {
       String[] urisArray = new String[uris.size()];
       urisArray = uris.toArray(urisArray);
       jsonLdStr = convertToJsonLd(urisArray, streamResponse, language).toString();
+      
       // we need to separate the individual jsons manually
-      List<Integer> startingPositions = findSubstringIndexes(jsonLdStr, "{ \"@context\":");
+      List<Integer> startingPositions = GeneralUtils.findSubstringIndexes(jsonLdStr, "{ \"@context\":");
       for (int i = 0; i < startingPositions.size(); i++) {
-        if (i == startingPositions.size() - 1) {
-          res.put(uris.get(i), jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length()));
-        } else {
-          res.put(uris.get(i),
-              jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1)));
-        }
+          String derefJson=null;
+          if (i == startingPositions.size() - 1) {
+            //last entity, read to the end  
+            derefJson=jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length());
+          } else {
+            //read untill the position of the next entity
+            derefJson=jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1));
+          }
+          String entityUri=extractEntityId(uris, derefJson);
+          if(StringUtils.isNotBlank(entityUri)) {
+              res.put(entityUri, derefJson);
+          }
       }
     } catch (UpstreamServerErrorRuntimeException ex) {
       throw ex;
@@ -204,36 +210,20 @@ public class MetisDereferenciationClient implements InitializingBean {
       }
     }
 
-
     return res;
   }
-
-  /**
-   * This method need to be moved to utils.
-   * 
-   * This method finds all indexes of a substring within a string, e.g. for the substring "abc"
-   * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
-   * 
-   * @param input
-   * @param substring
-   * @return
-   */
-  private List<Integer> findSubstringIndexes(String input, String substring) {
-    List<Integer> indexes = new ArrayList<>();
-    int substringLength = substring.length();
-    int index = input.indexOf(substring, 0);
-    if (index != -1) {
-      indexes.add(index);
-      while (index != -1) {
-        index = input.indexOf(substring, index + substringLength);
-        if (index != -1) {
-          indexes.add(index);
-        }
-      }
-    }
-    return indexes;
+    
+  private String extractEntityId(List<String> uris, String derefJson) {
+	  String idPartStart="\"id\": ";
+	  for(String elem : uris) {
+		  String idPartWhole = idPartStart + "\"" + elem + "\"";
+		  if(derefJson.contains(idPartWhole)) {
+			  return elem;
+		  }
+	  }
+	  return null;
   }
-
+  
   /**
    * An XSLT converts dereference output to JSON-LD.
    * 

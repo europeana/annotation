@@ -223,8 +223,13 @@ public abstract class BaseAnnotationServiceImpl extends BaseAnnotationValidator 
   }
 
   boolean isSemanticTag(Annotation annotation) {
-    return MotivationTypes.TAGGING.equals(annotation.getMotivationType()) && hasBodyUrl(annotation);
+      return MotivationTypes.TAGGING.getOaType().equals(annotation.getMotivation());
   }
+  
+  boolean isHighlightWithUrl(Annotation annotation) {
+    return (MotivationTypes.HIGHLIGHTING.getOaType().equals(annotation.getMotivation()))
+            && hasBodyUrl(annotation);
+}
 
   boolean hasBodyUrl(Annotation annotation) {
     return GeneralUtils.isUrl(annotation.getBody().getValue());
