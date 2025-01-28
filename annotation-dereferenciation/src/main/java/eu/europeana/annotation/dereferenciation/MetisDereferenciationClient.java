@@ -179,13 +179,15 @@ public class MetisDereferenciationClient implements InitializingBean {
       for (int i = 0; i < startingPositions.size(); i++) {
           String derefJson=null;
           if (i == startingPositions.size() - 1) {
-              derefJson=jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length());
+            //last entity, read to the end  
+            derefJson=jsonLdStr.substring(startingPositions.get(i), jsonLdStr.length());
           } else {
-              derefJson=jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1));
+            //read untill the position of the next entity
+            derefJson=jsonLdStr.substring(startingPositions.get(i), startingPositions.get(i + 1));
           }
-          String correctUri=getUriPresentInIdPart(uris, derefJson);
-          if(StringUtils.isNotBlank(correctUri)) {
-              res.put(correctUri, derefJson);
+          String entityUri=extractEntityId(uris, derefJson);
+          if(StringUtils.isNotBlank(entityUri)) {
+              res.put(entityUri, derefJson);
           }
       }
     } catch (UpstreamServerErrorRuntimeException ex) {
@@ -211,7 +213,7 @@ public class MetisDereferenciationClient implements InitializingBean {
     return res;
   }
     
-  private String getUriPresentInIdPart(List<String> uris, String derefJson) {
+  private String extractEntityId(List<String> uris, String derefJson) {
 	  String idPartStart="\"id\": ";
 	  for(String elem : uris) {
 		  String idPartWhole = idPartStart + "\"" + elem + "\"";

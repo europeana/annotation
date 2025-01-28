@@ -170,12 +170,21 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
         
         try {
           if(request.getBody()!=null && request.getBody().size() > 0) {
+            String body = request.getBody().readUtf8(); 
+                
+            //handle METIS deref request for multiple entities
+            if(body.contains(URI_BIAS_INDIAN)) {
+              responseBody = AnnotationTestUtils.loadFile(
+                  AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
+                  AnnotationTestsConstants.URI_BIAS_INDIAN, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+            } else {
             responseBody = AnnotationTestUtils.loadFile(
                 AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
                 AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
+            }
           }
           else if(uri != null){
-            //handle METIS deref request
+            //handle METIS deref request for one entity
             responseBody = AnnotationTestUtils.loadFile(
                 AnnotationTestUtils.METIS_RESPONSE_MAP.getOrDefault(
                 uri, AnnotationTestsConstants.EMPTY_METIS_RESPONSE));
