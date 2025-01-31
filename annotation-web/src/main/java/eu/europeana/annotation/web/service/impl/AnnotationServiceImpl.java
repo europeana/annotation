@@ -623,7 +623,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   private List<String> extractEntityUrisFromBody(List<? extends Annotation> annotations) {
     List<String> entityIds = new ArrayList<String>();
     for (Annotation annotation : annotations) {
-      if (isSemanticTag(annotation)) {
+      if (isSemanticTagWithUrl(annotation)) {
         entityIds.add(annotation.getBody().getValue());
       }else if(isHighlightWithUrl(annotation)) {
         entityIds.add(annotation.getBody().getValue());
