@@ -130,8 +130,8 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   }
 
   private boolean isIncludeAnnotationsSearch(Query query) {
-    return SearchProfiles.STANDARD.equals(query.getSearchProfile()) ||
-            SearchProfiles.DEREFERENCE.equals(query.getSearchProfile());
+    return SearchProfiles.STANDARD.toString().equals(query.getSearchProfile().toString()) ||
+            SearchProfiles.DEREFERENCE.toString().equals(query.getSearchProfile().toString());
   }
 
   private String buildPageUrl(String collectionUrl, int page, int pageSize) {
@@ -243,8 +243,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
         searchQuery.setViewFields(new String[] {SolrAnnotationConstants.ANNO_URI});
         break;
 
-      case DEREFERENCE:
-      case STANDARD:
+      case STANDARD, DEREFERENCE:
         break;
 
       default:
