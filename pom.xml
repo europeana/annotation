@@ -439,6 +439,14 @@
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>${jacoco-plugin.version}</version>
+						<configuration>
+							<excludes>
+								<!-- exclude annotation model package -->
+								<exclude>/eu/europeana/annotation/definitions/model/**/*</exclude>
+								<!-- exclude annotation client oackage as client tests are not executed -->
+								<exclude>/eu/europeana/annotation/client/**/*</exclude>
+							</excludes>
+						</configuration>
 						<executions>
 							<execution>
 								<id>prepare-agent</id>
