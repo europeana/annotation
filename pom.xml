@@ -110,7 +110,8 @@
 		<sonar.java.spotbugs.reportPaths>
 			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
 		<sonar.organization>europeana</sonar.organization>
-
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		
 		<!-- Exclude POJOs code duplication analysis -->
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
 
