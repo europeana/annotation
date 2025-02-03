@@ -127,7 +127,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    AnnotationPage annotationPage = getAnnotationSearchService().search(searchQuery, request);
 
 	    if(annotationPage.getAnnotations() != null && SearchProfiles.DEREFERENCE.equals(searchProfile)) {
-		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), SearchProfiles.DEREFERENCE, language);
+		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), searchProfile, language);
 	    }
 
 	    // ** serialize page

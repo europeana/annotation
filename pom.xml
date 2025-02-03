@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.annotation</groupId>
@@ -84,26 +86,40 @@
 
 
 		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
+		<!--
 		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
         <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
+        <surefire.version>3.0.0-M5</surefire.version>
+		<failsafe.version>3.0.0-M5</failsafe.version>
+ -->
+		<version.maven-surfire-plugin>3.0.0-M5</version.maven-surfire-plugin>
+		<version.maven-failsafe-plugin>3.0.0-M5</version.maven-failsafe-plugin>
 
 		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
 
 		<!-- sonar plugins -->
 		<jacoco-plugin.version>0.8.11</jacoco-plugin.version>
-		<pmd-plugin.version>3.15.0</pmd-plugin.version>
 		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
 		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
+		<pmd-plugin.version>3.15.0</pmd-plugin.version>
+
+		<aggregate.report.xml>
+			annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
 		<sonar.java.spotbugs.reportPaths>
 			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
 		<sonar.organization>europeana</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
 		<!-- Exclude POJOs code duplication analysis -->
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
-		<aggregate.report.xml>
-			annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+
+		<!--
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+-->
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../${aggregate.report.xml}
+		</sonar.coverage.jacoco.xmlReportPaths>
 
 	</properties>
 	<modules>
@@ -196,6 +212,27 @@
 						<artifactId>mongodb-driver-core</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+
+	<!-- test containers dependencies -->
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers</artifactId>
+				<version>${version.testcontainers}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>mongodb</artifactId>
+				<version>${version.testcontainers}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${version.testcontainers}</version>
+				<scope>test</scope>
 			</dependency>
 
 		</dependencies>
