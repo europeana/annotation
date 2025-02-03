@@ -1,14 +1,15 @@
 package eu.europeana.annotation.web.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -129,7 +130,8 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
   }
 
   private boolean isIncludeAnnotationsSearch(Query query) {
-    return SearchProfiles.STANDARD.equals(query.getSearchProfile());
+    return SearchProfiles.STANDARD.toString().equals(query.getSearchProfile().toString()) ||
+            SearchProfiles.DEREFERENCE.toString().equals(query.getSearchProfile().toString());
   }
 
   private String buildPageUrl(String collectionUrl, int page, int pageSize) {
@@ -241,7 +243,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
         searchQuery.setViewFields(new String[] {SolrAnnotationConstants.ANNO_URI});
         break;
 
-      case STANDARD:
+      case STANDARD, DEREFERENCE:
         break;
 
       default:

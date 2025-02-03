@@ -482,12 +482,10 @@ public abstract class BaseAnnotationValidator {
       case TAGGING:
         validateTag(webAnnotation);
         break;
-      case TRANSCRIBING:
-      case TRANSLATING:
+      case TRANSLATING, TRANSCRIBING:
         validateTranscriptionOrTranslation(webAnnotation, authentication);
         break;
-      case SUBTITLING:
-      case CAPTIONING:
+      case CAPTIONING, SUBTITLING:
         validateSubtitleOrCaption(webAnnotation, authentication);
         break;
       case LINKFORCONTRIBUTING:

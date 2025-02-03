@@ -148,8 +148,7 @@ public class AnnotationPageSerializer extends JsonLd {
 
     protected void serializeItems(JsonLdResource jsonLdResource, SearchProfiles profile) {
     	switch (profile) {
-    	  case DEREFERENCE:
-    	  case STANDARD:
+    	  case STANDARD, DEREFERENCE:
     	    putStandardItemsProperty(jsonLdResource);
     	    break;
     	  case MINIMAL:
