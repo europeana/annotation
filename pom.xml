@@ -113,7 +113,11 @@
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
 		<!-- Exclude POJOs code duplication analysis -->
-		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
+		<sonar.cpd.exclusions>**/definitions/model/**/*</sonar.cpd.exclusions>
+		<sonar.coverage.exclusions>
+			**/annotation/definitions/model/**/*,
+			**/annotation/client/**/*
+        </sonar.coverage.exclusions>
 
 		<!--
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
@@ -441,10 +445,11 @@
 						<version>${jacoco-plugin.version}</version>
 						<configuration>
 							<excludes>
+								<!-- see also sonar sonar.coverage.exclusions -->
 								<!-- exclude annotation model package -->
-								<exclude>**/annotation/definitions/model/**/*.*</exclude>
+								<exclude>**/annotation/definitions/model/**/*</exclude>
 								<!-- exclude annotation client package as client tests are not executed -->
-								<exclude>**/annotation/client/**/*.*</exclude>
+								<exclude>**/annotation/client/**/*</exclude>
 							</excludes>
 						</configuration>
 						<executions>
