@@ -3,6 +3,7 @@ package eu.europeana.api.common.config;
 public interface I18nConstantsAnnotation extends eu.europeana.api.commons.definitions.config.i18n.I18nConstants{
 	 String ANNOTATION_NOT_FOUND = "error.annotation_not_found";
 	 String CLIENT_NOT_AUTHORIZED = "error.annotation_client_not_authorized";
+	 String CLIENT_NOT_PUBLIC = "error.annotation_client_not_public";
 	 String USER_NOT_AUTHORIZED = "error.annotation_user_not_authorized";
 	 String ANNOTATION_NOT_ACCESSIBLE = "error.annotation_not_accessible";
 	 String ANNOTATION_INVALID_BODY = "error.annotation_invalid_body";

@@ -1,6 +1,5 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.apache.stanbol.commons.jsonld.JsonLd;
@@ -60,14 +60,12 @@ import eu.europeana.annotation.web.service.SearchServiceUtils;
 import eu.europeana.annotation.web.service.authorization.AnnotationAuthorizationUtils;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
-import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.web.definitions.WebFields;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.exception.InternalServerException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api.commons.web.model.vocabulary.Operations;
 
 public class BaseJsonldRest extends BaseRest {
 
@@ -179,10 +177,8 @@ public class BaseJsonldRest extends BaseRest {
       throws ApplicationAuthenticationException {
     String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
     if (StringUtils.isBlank(clientId)) {
-      final String message = "ClientID is mandatory, please contact the support Team";
-      throw new ApplicationAuthenticationException(message,
-          I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {message},
-          UNAUTHORIZED);
+      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, 
+              I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, null, HttpStatus.FORBIDDEN);
     }
     return clientId;
   }
