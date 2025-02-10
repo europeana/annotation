@@ -208,7 +208,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Override
   public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation,
       Annotation webAnnotation) throws AnnotationServiceException, HttpException {
-    mergeAnnotationProperties(persistentAnnotation, webAnnotation);
+    replaceAnnotationProperties(persistentAnnotation, webAnnotation);
     // check that the updated annotation is unique
     Set<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation, true);
     if (!duplicateAnnotationIds.isEmpty()) {
@@ -223,64 +223,31 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   }
 
   @SuppressWarnings("deprecation")
-  private void mergeAnnotationProperties(PersistentAnnotation annotation,
+  private void replaceAnnotationProperties(PersistentAnnotation annotation,
       Annotation webAnnotation) {
-    if (webAnnotation.getType() != null) {
-      annotation.setType(webAnnotation.getType());
-    }
-
-    if (webAnnotation.getGenerated() != null) {
+    annotation.setType(webAnnotation.getType());
+    if(webAnnotation.getGenerated() != null) {
       annotation.setGenerated(webAnnotation.getGenerated());
     }
+    annotation.setBody(webAnnotation.getBody());
+    annotation.setTarget(webAnnotation.getTarget());
+    annotation.setDisabled(webAnnotation.getDisabled());
+    annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
+    annotation.setInternalType(webAnnotation.getInternalType());
+    annotation.setStatus(webAnnotation.getStatus());
+    annotation.setStyledBy(webAnnotation.getStyledBy());
     
-    if (webAnnotation.getBody() != null) {
-      annotation.setBody(webAnnotation.getBody());
-    }
-    
-    if (webAnnotation.getTarget() != null) {
-      annotation.setTarget(webAnnotation.getTarget());
-    }
-    
-    if (annotation.isDisabled() != webAnnotation.isDisabled()) {
-      annotation.setDisabled(webAnnotation.getDisabled());
-    }
-    
-    if (webAnnotation.getEquivalentTo() != null) {
-      annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
-    }
-    if (webAnnotation.getInternalType() != null) {
-      annotation.setInternalType(webAnnotation.getInternalType());
-    }
-    
-    if (webAnnotation.getStatus() != null) {
-      annotation.setStatus(webAnnotation.getStatus());
-    }
-    
-    if (webAnnotation.getStyledBy() != null) {
-      annotation.setStyledBy(webAnnotation.getStyledBy());
-    }
-    
-    mergeReferenceFields(annotation, webAnnotation);   
-    mergeOrSetLastUpdate(annotation, webAnnotation);
+    replaceReferenceFields(annotation, webAnnotation);   
+    replaceOrSetLastUpdate(annotation, webAnnotation);
   }
 
-  private void mergeReferenceFields(PersistentAnnotation annotation, Annotation webAnnotation) {
-    if (webAnnotation.getSameAs() != null) {
-      annotation.setSameAs(webAnnotation.getSameAs());
-    } 
-    
-    if (webAnnotation.getCanonical() != null) {
-      // TODO: #404 must never be overwritten
-      if (StringUtils.isEmpty(annotation.getCanonical())) {
-        annotation.setCanonical(webAnnotation.getCanonical());
-      }
-    }
-    if (webAnnotation.getVia() != null) {
-      annotation.setVia(webAnnotation.getVia());
-    }
+  private void replaceReferenceFields(PersistentAnnotation annotation, Annotation webAnnotation) {
+    annotation.setSameAs(webAnnotation.getSameAs());    
+    annotation.setCanonical(webAnnotation.getCanonical());
+    annotation.setVia(webAnnotation.getVia());
   }
 
-  private void mergeOrSetLastUpdate(PersistentAnnotation annotation, Annotation webAnnotation) {
+  private void replaceOrSetLastUpdate(PersistentAnnotation annotation, Annotation webAnnotation) {
     // So my decision for the moment would be to only keep the "id" and "created" immutable.
     //
     // With regards to the logic when each of the fields is missing:
@@ -504,7 +471,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
         continue;
 
       // merge update annotation (web anno) into existing annotation (db anno)
-      this.mergeAnnotationProperties((PersistentAnnotation) existingAnno, updateAnno);
+      this.replaceAnnotationProperties((PersistentAnnotation) existingAnno, updateAnno);
 
       // set last update
       existingAnno.setLastUpdate(new Date());

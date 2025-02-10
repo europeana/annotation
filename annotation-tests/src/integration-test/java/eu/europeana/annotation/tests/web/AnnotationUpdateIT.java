@@ -1,5 +1,6 @@
 package eu.europeana.annotation.tests.web;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -75,6 +76,8 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
         assertNotNull(response.getBody());
         assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
         assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), updatedAnnotation.getTarget().get(0).getHttpUri());
+        assertNotNull(anno.getEquivalentTo());
+        assertNull(updatedAnnotation.getEquivalentTo());
         
         addToCreatedAnnotations(anno.getIdentifier());
         //TODO: search annotation in solr and verify body and target values.
