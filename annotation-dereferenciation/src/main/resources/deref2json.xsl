@@ -30,6 +30,9 @@
     <xsl:param name="langs">en,pl,de,nl,fr,it,da,sv,el,fi,hu,cs,sl,et,pt,es,lt,lv,bg,ro,sk,hr,ga,mt,no,ca,ru</xsl:param>
     <xsl:param name="complete" select="false()"/>
 
+    <xsl:variable name="ns_complete" select="('https://rnd-2.eanadev.org/share/debias/vocabulary/'
+                                            , 'http://data.europa.eu/c4p/data/')"/>
+
     <xsl:template match="/">
         <xsl:apply-templates select="metis:results/metis:result/*[@rdf:about=$uri]"/>
     </xsl:template>
@@ -180,12 +183,21 @@
 
 
     <!--                          LANGUAGE UTILS                             -->
-    
+
+    <!--
     <xsl:function name="lib:mustBeComplete" as="xs:boolean">
         <xsl:param name="uri"/>
 
         <xsl:value-of select="starts-with($uri, 'https://rnd-2.eanadev.org/share/debias/vocabulary/')"/>        
     </xsl:function>
+    -->
+
+    <xsl:function name="lib:mustBeComplete" as="xs:boolean">
+        <xsl:param name="uri"/>
+
+        <xsl:sequence select="some $x in $ns_complete satisfies starts-with($uri,$x)"/>
+    </xsl:function>
+
 
     <xsl:function name="lib:getLang" as="xs:string">
         <xsl:param name="string"/>
