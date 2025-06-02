@@ -34,9 +34,10 @@ public class AnnotationTestsConstants {
   public static final String TAG_STANDARD = "/tag/standard.json";
   public static final String TAG_MINIMAL = "/tag/minimal.json";
   public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
+  public static final String TAG_UPDATE_FAILED_IMMUTABLE = "/tag/standard_failed_immutable.json";
   public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 
-  public String get_TAG_STANDARD_TEST_VALUE_TARGET(String itemDataEndpoint) {
+  public String getUpdatedTargetForTagStandard(String itemDataEndpoint) {
     return itemDataEndpoint + "/09102/_UEDIN_214";
   }
   //  public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";

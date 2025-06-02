@@ -1,6 +1,7 @@
 package eu.europeana.annotation.tests.web;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -44,7 +45,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
 
         String CORRUPTED_UPDATE_JSON = 
             START + CORRUPTED_UPDATE_BODY + "," + "\"target\":" + "\"" +
-            get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + 
+            getUpdatedTargetForTagStandard(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()) + 
             "\"" + END;
 		Annotation anno = createTestAnnotation(TAG_STANDARD, false, null);
 		addToCreatedAnnotations(anno.getIdentifier());
@@ -75,14 +76,28 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
         assertEquals( HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
-        assertEquals(get_TAG_STANDARD_TEST_VALUE_TARGET(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), updatedAnnotation.getTarget().get(0).getHttpUri());
+        assertEquals(getUpdatedTargetForTagStandard(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), updatedAnnotation.getTarget().get(0).getHttpUri());
+        assertEquals(anno.getCreator(), updatedAnnotation.getCreator());
         assertNotNull(anno.getEquivalentTo());
         assertNull(updatedAnnotation.getEquivalentTo());
         
-        addToCreatedAnnotations(anno.getIdentifier());
         //TODO: search annotation in solr and verify body and target values.
     }
 
+    @Test
+    public void updateAnnotation_failedImmutable() throws Exception {
+        Annotation anno = createTestAnnotation(TAG_STANDARD, true, null);
+        String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_UPDATE_FAILED_IMMUTABLE);
+        ResponseEntity<String> response = updateAnnotation(
+                anno.getIdentifier(), requestBody, null);
+        
+        assertEquals( HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().contains("creator (immutable)"));
+        
+        //TODO: search annotation in solr and verify body and target values.
+    }
+    
     /*
      * The tests for the other scenario types would be very similar to this one, therefore
      * we do not create all of them, since a lot of the code would be dulpicated, and

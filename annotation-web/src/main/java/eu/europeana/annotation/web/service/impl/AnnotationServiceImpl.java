@@ -28,7 +28,10 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
@@ -226,9 +229,6 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   private void replaceAnnotationProperties(PersistentAnnotation annotation,
       Annotation webAnnotation) {
     annotation.setType(webAnnotation.getType());
-    if(webAnnotation.getGenerated() != null) {
-      annotation.setGenerated(webAnnotation.getGenerated());
-    }
     annotation.setBody(webAnnotation.getBody());
     annotation.setTarget(webAnnotation.getTarget());
     annotation.setDisabled(webAnnotation.getDisabled());
@@ -238,7 +238,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     annotation.setStyledBy(webAnnotation.getStyledBy());
     
     replaceReferenceFields(annotation, webAnnotation);   
-    replaceOrSetLastUpdate(annotation, webAnnotation);
+    
+    Date now = new Date();
+    //reset generated
+    if(webAnnotation.getGenerated() != null) {
+      annotation.setGenerated(webAnnotation.getGenerated());
+    } else {
+      annotation.setGenerated(now);
+    }
+    resetLastUpdate(annotation, now);
   }
 
   private void replaceReferenceFields(PersistentAnnotation annotation, Annotation webAnnotation) {
@@ -247,7 +255,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     annotation.setVia(webAnnotation.getVia());
   }
 
-  private void replaceOrSetLastUpdate(PersistentAnnotation annotation, Annotation webAnnotation) {
+  private void resetLastUpdate(PersistentAnnotation annotation, Date now) {
     // So my decision for the moment would be to only keep the "id" and "created" immutable.
     //
     // With regards to the logic when each of the fields is missing:
@@ -265,13 +273,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     // + " to: " + updatedWebAnnotation.getMotivationType());
     // if (updatedWebAnnotation.getMotivation() != null)
     // currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-
-    if (webAnnotation.getLastUpdate() != null) {
-      annotation.setLastUpdate(webAnnotation.getLastUpdate());
-    } else {
-      Date timeStamp = new java.util.Date();
-      annotation.setLastUpdate(timeStamp);
-    }
+    annotation.setLastUpdate(now);
   }
 
   @Override
@@ -632,6 +634,31 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   public Set<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck)
       throws AnnotationServiceException {
     return getSolrService().checkDuplicateAnnotations(annotation, noSelfCheck);
+  }
+
+  @Override
+  public void validateImmutableFields(Annotation updateWebAnnotation, Annotation storedAnnotation) throws HttpException{
+    
+    final String imutable = " (immutable)";
+    //verify id/identifier
+    if(updateWebAnnotation.getIdentifier() > 0 && updateWebAnnotation.getIdentifier() != storedAnnotation.getIdentifier()) {
+      throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationFields.ID + imutable,
+              AnnotationIdHelper.buildAnnotationUri(configuration.getAnnotationBaseUrl(), updateWebAnnotation.getIdentifier())}); 
+    }
+    
+    //verify creator
+    if(updateWebAnnotation.getCreator() != null && !updateWebAnnotation.getCreator().equals(storedAnnotation.getCreator())) {
+      throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationFields.CREATOR + imutable, updateWebAnnotation.getCreator().toString()});
+    }
+    
+    //verify created
+    if(updateWebAnnotation.getCreated() != null && !updateWebAnnotation.getCreated().equals(storedAnnotation.getCreated())) {
+      throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationFields.CREATED + imutable, TypeUtils.convertDateToStr(updateWebAnnotation.getCreated())});
+    }    
+    
   }
 
 }
