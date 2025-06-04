@@ -517,7 +517,6 @@ public class BaseJsonldRest extends BaseRest {
       getAnnotationService().validateImmutableFields(updateWebAnnotation, storedAnnotation);
       
       //8. Check if the Annotation is disabled already done in verifyOwnerOrAdmin 
-      //getAnnotationService().checkVisibility(storedAnnotation);
 
       // 9. Overwrite all fields  of the existing annotation
       // 10. update generated field

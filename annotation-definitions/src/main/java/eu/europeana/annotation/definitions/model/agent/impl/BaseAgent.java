@@ -208,7 +208,7 @@ public abstract class BaseAgent implements Agent {
 
   @Override
   public String toString() {
-    StringBuffer res = new StringBuffer('{');
+    StringBuilder res = new StringBuilder("{");
 
     if (getType() != null) {
       res.append("agentType:").append(getType());
