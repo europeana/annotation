@@ -511,14 +511,22 @@ public class BaseJsonldRest extends BaseRest {
           buildInfo.getVersion());
 
       checkIfMatchHeader(eTagOrigin, request);
+      //6. Validate the new Annotation for structure and mandatory fields
       getAnnotationService().validateWebAnnotation(updateWebAnnotation, authentication);
+      //7. Check for immutable fields
+      getAnnotationService().validateImmutableFields(updateWebAnnotation, storedAnnotation);
+      
+      //8. Check if the Annotation is disabled already done in verifyOwnerOrAdmin 
+      //getAnnotationService().checkVisibility(storedAnnotation);
 
-      // 6. apply updates - merge current and updated annotation
-      // 7. and call database update method
+      // 9. Overwrite all fields  of the existing annotation
+      // 10. update generated field
+      // 11. Update the Annotation on the database
       Annotation updatedAnnotation = getAnnotationService()
           .updateAnnotation((PersistentAnnotation) storedAnnotation, updateWebAnnotation);
 
-      String eTag = generateETag(updatedAnnotation.getGenerated(), WebFields.FORMAT_JSONLD,
+      //use last update instead of generated, which might not be updated each time
+      String eTag = generateETag(updatedAnnotation.getLastUpdate(), WebFields.FORMAT_JSONLD,
           buildInfo.getVersion());
 
       // serialize to jsonld
