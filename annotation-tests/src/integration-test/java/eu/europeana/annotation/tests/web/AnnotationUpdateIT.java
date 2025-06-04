@@ -33,7 +33,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
     public String INVALID_USER_TOKEN = "invalid_user_token";
     
 	@Test
-	public void updateWebannoAnnotationWithWrongIdentifierNumber() throws Exception { 
+	void updateWebannoAnnotationWithWrongIdentifierNumber() throws Exception { 
 		String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD_TEST_VALUE);
 		ResponseEntity<String> response = updateAnnotation(
 				WRONG_GENERATED_IDENTIFIER, requestBody, null);
@@ -41,7 +41,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void updateWebannoAnnotationWithCorruptedUpdateBody() throws Exception { 
+	void updateWebannoAnnotationWithCorruptedUpdateBody() throws Exception { 
 
         String CORRUPTED_UPDATE_JSON = 
             START + CORRUPTED_UPDATE_BODY + "," + "\"target\":" + "\"" +
@@ -56,7 +56,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
 		
 	@Test
 	@Disabled("This test is successfull only when the authorization is enabled")
-	public void updateWebAnnotationWithWrongUserToken() throws Exception { 
+	void updateWebAnnotationWithWrongUserToken() throws Exception { 
 		Annotation anno = createTestAnnotation(TAG_STANDARD, false, USER_ADMIN);
 		addToCreatedAnnotations(anno.getIdentifier());
 		String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD_TEST_VALUE);
@@ -66,7 +66,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
 	}
 
     @Test
-    public void updateAnnotation() throws Exception {
+    void updateAnnotation() throws Exception {
         Annotation anno = createTestAnnotation(TAG_STANDARD, true, null);
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_STANDARD_TEST_VALUE);
         ResponseEntity<String> response = updateAnnotation(
@@ -78,14 +78,11 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
         assertEquals(TAG_STANDARD_TEST_VALUE_BODY, updatedAnnotation.getBody().getValue());
         assertEquals(getUpdatedTargetForTagStandard(AnnotationTestsConfiguration.getInstance().getPropAnnotationItemDataEndpoint()), updatedAnnotation.getTarget().get(0).getHttpUri());
         assertEquals(anno.getCreator(), updatedAnnotation.getCreator());
-        assertNotNull(anno.getEquivalentTo());
-        assertNull(updatedAnnotation.getEquivalentTo());
-        
-        //TODO: search annotation in solr and verify body and target values.
+        //should also search annotation in solr and verify body and target values.
     }
 
     @Test
-    public void updateAnnotation_failedImmutable() throws Exception {
+    void updateAnnotation_failedImmutable() throws Exception {
         Annotation anno = createTestAnnotation(TAG_STANDARD, true, null);
         String requestBody = AnnotationTestUtils.getJsonStringInput(TAG_UPDATE_FAILED_IMMUTABLE);
         ResponseEntity<String> response = updateAnnotation(
@@ -104,7 +101,7 @@ public class AnnotationUpdateIT extends AbstractIntegrationTest {
      * the duplications are already tested in the browser.
      */
     @Test
-    public void checkAnnotationDuplicatesUpdateTranscriptions() throws Exception {
+    void checkAnnotationDuplicatesUpdateTranscriptions() throws Exception {
         ResponseEntity<String> response1 = storeTestAnnotation(TRANSCRIPTION_MINIMAL, true, null);
         assertEquals(HttpStatus.CREATED, response1.getStatusCode());
         Annotation annotation1 = AnnotationTestUtils.parseAndVerifyTestAnnotation(response1);

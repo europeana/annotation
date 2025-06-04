@@ -32,6 +32,7 @@ import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
 import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
@@ -650,13 +651,13 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     //verify creator
     if(updateWebAnnotation.getCreator() != null && !updateWebAnnotation.getCreator().equals(storedAnnotation.getCreator())) {
       throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationFields.CREATOR + imutable, updateWebAnnotation.getCreator().toString()});
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATOR + imutable, updateWebAnnotation.getCreator().toString()});
     }
     
     //verify created
     if(updateWebAnnotation.getCreated() != null && !updateWebAnnotation.getCreated().equals(storedAnnotation.getCreated())) {
       throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationFields.CREATED + imutable, TypeUtils.convertDateToStr(updateWebAnnotation.getCreated())});
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATED + imutable, TypeUtils.convertDateToStr(updateWebAnnotation.getCreated())});
     }    
     
   }

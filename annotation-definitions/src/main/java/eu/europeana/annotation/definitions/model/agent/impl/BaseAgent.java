@@ -166,16 +166,6 @@ public abstract class BaseAgent implements Agent {
   @Override
   public void setAgentTypeAsString(String agentTypeStr) {
     agentType = agentTypeStr;
-    // agentType.clear();
-    // if (!StringUtils.isBlank(agentTypeStr)) {
-    // agentTypeStr = agentTypeStr.replace("[", "").replace("]", "").replace(" ", "");
-    // String[] tokens = agentTypeStr.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-    // for(String t : tokens) {
-    // agentType.add(t);
-    // }
-    // }
-
-    //// setAgentTypeEnum(AgentTypes.valueOf(agentTypeStr));
   }
 
   protected BaseAgent() {}
@@ -218,17 +208,21 @@ public abstract class BaseAgent implements Agent {
 
   @Override
   public String toString() {
-    String res = "{";
+    StringBuffer res = new StringBuffer('{');
 
-    if (getType() != null)
-      res +=  "agentType:" + getType();
-    if (getHttpUrl() != null)
-      res +=  ", id:" + getHttpUrl();
-    if (getName() != null)
-      res += ", name:" + getName();
-    if (getHomepage() != null)
-      res += ", homepage:" + getHomepage();
-    res +=  "}";
-    return res;
+    if (getType() != null) {
+      res.append("agentType:").append(getType());
+    }
+    if (getHttpUrl() != null) {
+      res.append(", id:").append(getHttpUrl());
+    }  
+    if (getName() != null) {
+      res.append(", name:").append(getName());
+    }
+    if (getHomepage() != null) {
+      res.append(", homepage:").append(getHomepage());
+    }
+    res.append('}');
+    return res.toString();
   }
 }
