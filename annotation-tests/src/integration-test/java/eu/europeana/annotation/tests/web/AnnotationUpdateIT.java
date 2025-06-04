@@ -1,17 +1,14 @@
 package eu.europeana.annotation.tests.web;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;

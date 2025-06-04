@@ -242,10 +242,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     
     Date now = new Date();
     //reset generated
-    if(webAnnotation.getGenerated() != null) {
-      annotation.setGenerated(webAnnotation.getGenerated());
-    } else {
+    if(webAnnotation.getGenerated() == null) {
       annotation.setGenerated(now);
+    } else {
+      annotation.setGenerated(webAnnotation.getGenerated());
     }
     resetLastUpdate(annotation, now);
   }
@@ -651,13 +651,15 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     //verify creator
     if(updateWebAnnotation.getCreator() != null && !updateWebAnnotation.getCreator().equals(storedAnnotation.getCreator())) {
       throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATOR + imutable, updateWebAnnotation.getCreator().toString()});
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATOR + imutable, 
+              updateWebAnnotation.getCreator().toString()});
     }
     
     //verify created
     if(updateWebAnnotation.getCreated() != null && !updateWebAnnotation.getCreated().equals(storedAnnotation.getCreated())) {
       throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATED + imutable, TypeUtils.convertDateToStr(updateWebAnnotation.getCreated())});
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATED + imutable, 
+              TypeUtils.convertDateToStr(updateWebAnnotation.getCreated())});
     }    
     
   }
