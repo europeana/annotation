@@ -28,7 +28,11 @@ import eu.europeana.annotation.definitions.model.StatusLog;
 import eu.europeana.annotation.definitions.model.impl.BaseStatusLog;
 import eu.europeana.annotation.definitions.model.moderation.ModerationRecord;
 import eu.europeana.annotation.definitions.model.search.SearchProfiles;
+import eu.europeana.annotation.definitions.model.utils.AnnotationIdHelper;
+import eu.europeana.annotation.definitions.model.utils.TypeUtils;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+import eu.europeana.annotation.definitions.model.vocabulary.fields.WebAnnotationModelFields;
 import eu.europeana.annotation.dereferenciation.MetisDereferenciationClient;
 import eu.europeana.annotation.mongo.exception.AnnotationMongoException;
 import eu.europeana.annotation.mongo.exception.BulkOperationException;
@@ -208,7 +212,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Override
   public Annotation updateAnnotation(PersistentAnnotation persistentAnnotation,
       Annotation webAnnotation) throws AnnotationServiceException, HttpException {
-    mergeAnnotationProperties(persistentAnnotation, webAnnotation);
+    replaceAnnotationProperties(persistentAnnotation, webAnnotation);
     // check that the updated annotation is unique
     Set<String> duplicateAnnotationIds = checkDuplicateAnnotations(persistentAnnotation, true);
     if (!duplicateAnnotationIds.isEmpty()) {
@@ -223,64 +227,36 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   }
 
   @SuppressWarnings("deprecation")
-  private void mergeAnnotationProperties(PersistentAnnotation annotation,
+  private void replaceAnnotationProperties(PersistentAnnotation annotation,
       Annotation webAnnotation) {
-    if (webAnnotation.getType() != null) {
-      annotation.setType(webAnnotation.getType());
-    }
-
-    if (webAnnotation.getGenerated() != null) {
+    annotation.setType(webAnnotation.getType());
+    annotation.setBody(webAnnotation.getBody());
+    annotation.setTarget(webAnnotation.getTarget());
+    annotation.setDisabled(webAnnotation.getDisabled());
+    annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
+    annotation.setInternalType(webAnnotation.getInternalType());
+    annotation.setStatus(webAnnotation.getStatus());
+    annotation.setStyledBy(webAnnotation.getStyledBy());
+    
+    replaceReferenceFields(annotation, webAnnotation);   
+    
+    Date now = new Date();
+    //reset generated
+    if(webAnnotation.getGenerated() == null) {
+      annotation.setGenerated(now);
+    } else {
       annotation.setGenerated(webAnnotation.getGenerated());
     }
-    
-    if (webAnnotation.getBody() != null) {
-      annotation.setBody(webAnnotation.getBody());
-    }
-    
-    if (webAnnotation.getTarget() != null) {
-      annotation.setTarget(webAnnotation.getTarget());
-    }
-    
-    if (annotation.isDisabled() != webAnnotation.isDisabled()) {
-      annotation.setDisabled(webAnnotation.getDisabled());
-    }
-    
-    if (webAnnotation.getEquivalentTo() != null) {
-      annotation.setEquivalentTo(webAnnotation.getEquivalentTo());
-    }
-    if (webAnnotation.getInternalType() != null) {
-      annotation.setInternalType(webAnnotation.getInternalType());
-    }
-    
-    if (webAnnotation.getStatus() != null) {
-      annotation.setStatus(webAnnotation.getStatus());
-    }
-    
-    if (webAnnotation.getStyledBy() != null) {
-      annotation.setStyledBy(webAnnotation.getStyledBy());
-    }
-    
-    mergeReferenceFields(annotation, webAnnotation);   
-    mergeOrSetLastUpdate(annotation, webAnnotation);
+    resetLastUpdate(annotation, now);
   }
 
-  private void mergeReferenceFields(PersistentAnnotation annotation, Annotation webAnnotation) {
-    if (webAnnotation.getSameAs() != null) {
-      annotation.setSameAs(webAnnotation.getSameAs());
-    } 
-    
-    if (webAnnotation.getCanonical() != null) {
-      // TODO: #404 must never be overwritten
-      if (StringUtils.isEmpty(annotation.getCanonical())) {
-        annotation.setCanonical(webAnnotation.getCanonical());
-      }
-    }
-    if (webAnnotation.getVia() != null) {
-      annotation.setVia(webAnnotation.getVia());
-    }
+  private void replaceReferenceFields(PersistentAnnotation annotation, Annotation webAnnotation) {
+    annotation.setSameAs(webAnnotation.getSameAs());    
+    annotation.setCanonical(webAnnotation.getCanonical());
+    annotation.setVia(webAnnotation.getVia());
   }
 
-  private void mergeOrSetLastUpdate(PersistentAnnotation annotation, Annotation webAnnotation) {
+  private void resetLastUpdate(PersistentAnnotation annotation, Date now) {
     // So my decision for the moment would be to only keep the "id" and "created" immutable.
     //
     // With regards to the logic when each of the fields is missing:
@@ -298,13 +274,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     // + " to: " + updatedWebAnnotation.getMotivationType());
     // if (updatedWebAnnotation.getMotivation() != null)
     // currentWebAnnotation.setMotivation(updatedWebAnnotation.getMotivation());
-
-    if (webAnnotation.getLastUpdate() != null) {
-      annotation.setLastUpdate(webAnnotation.getLastUpdate());
-    } else {
-      Date timeStamp = new java.util.Date();
-      annotation.setLastUpdate(timeStamp);
-    }
+    annotation.setLastUpdate(now);
   }
 
   @Override
@@ -504,7 +474,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
         continue;
 
       // merge update annotation (web anno) into existing annotation (db anno)
-      this.mergeAnnotationProperties((PersistentAnnotation) existingAnno, updateAnno);
+      this.replaceAnnotationProperties((PersistentAnnotation) existingAnno, updateAnno);
 
       // set last update
       existingAnno.setLastUpdate(new Date());
@@ -605,8 +575,8 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     if (annotations == null || annotations.isEmpty()) {
       return;
     }
-
-    List<String> entityIds = extractEntityUris(annotations);
+    
+    List<String> entityIds = extractEntityUrisFromBody(annotations);
     // check if dereferenciation is possible
     if (entityIds.isEmpty()) {
       return;
@@ -620,10 +590,12 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     }
   }
 
-  private List<String> extractEntityUris(List<? extends Annotation> annotations) {
+  private List<String> extractEntityUrisFromBody(List<? extends Annotation> annotations) {
     List<String> entityIds = new ArrayList<String>();
     for (Annotation annotation : annotations) {
-      if (isSemanticTag(annotation)) {
+      if (isSemanticTagWithUrl(annotation)) {
+        entityIds.add(annotation.getBody().getValue());
+      }else if(isHighlightWithUrl(annotation)) {
         entityIds.add(annotation.getBody().getValue());
       }
     }
@@ -663,6 +635,33 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   public Set<String> checkDuplicateAnnotations(Annotation annotation, boolean noSelfCheck)
       throws AnnotationServiceException {
     return getSolrService().checkDuplicateAnnotations(annotation, noSelfCheck);
+  }
+
+  @Override
+  public void validateImmutableFields(Annotation updateWebAnnotation, Annotation storedAnnotation) throws HttpException{
+    
+    final String imutable = " (immutable)";
+    //verify id/identifier
+    if(updateWebAnnotation.getIdentifier() > 0 && updateWebAnnotation.getIdentifier() != storedAnnotation.getIdentifier()) {
+      throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationFields.ID + imutable,
+              AnnotationIdHelper.buildAnnotationUri(configuration.getAnnotationBaseUrl(), updateWebAnnotation.getIdentifier())}); 
+    }
+    
+    //verify creator
+    if(updateWebAnnotation.getCreator() != null && !updateWebAnnotation.getCreator().equals(storedAnnotation.getCreator())) {
+      throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATOR + imutable, 
+              updateWebAnnotation.getCreator().toString()});
+    }
+    
+    //verify created
+    if(updateWebAnnotation.getCreated() != null && !updateWebAnnotation.getCreated().equals(storedAnnotation.getCreated())) {
+      throw new ParamValidationI18NException(I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+          I18nConstantsAnnotation.INVALID_PARAM_VALUE, new String[] {WebAnnotationModelFields.CREATED + imutable, 
+              TypeUtils.convertDateToStr(updateWebAnnotation.getCreated())});
+    }    
+    
   }
 
 }

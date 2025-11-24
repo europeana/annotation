@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>annotation-api</artifactId>
 		<groupId>eu.europeana.annotation</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>0.5.1-SNAPSHOT</version>
+		<version>0.5.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>annotation-tests</artifactId>
 	<name>Annotation Tests</name>
@@ -22,44 +20,39 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-web</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-mongo</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-solr</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-fulltext</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-dereferenciation</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-utils</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-statistics</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -68,26 +61,45 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<version>0.5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-test-autoconfigure</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!--testcontainers for integration testing-->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>mongodb</artifactId>
-			<version>${version.testcontainers}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>${version.testcontainers}</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!--
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		-->
+
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
@@ -117,7 +129,9 @@
 						<version>${jacoco-plugin.version}</version>
 						<executions>
 							<execution>
+								<!--
 								<id>report-aggregate</id>
+								-->
 								<phase>verify</phase>
 								<goals>
 									<goal>report-aggregate</goal>
@@ -126,6 +140,9 @@
 								<configuration>
 									<dataFileIncludes>
 										<dataFileInclude>**/jacoco.exec</dataFileInclude>
+										<!-- should switch to xml reports instead of exec
+										<dataFileInclude>**/jacoco.xml</dataFileInclude>
+										-->
 									</dataFileIncludes>
 									<outputDirectory>
 										${project.reporting.outputDirectory}/jacoco-aggregate

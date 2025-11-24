@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -13,6 +14,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 import eu.europeana.api.commons.web.http.HttpHeaders;
 
 /**
@@ -44,7 +46,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.VARY, HttpHeaders.LINK,
             HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false).maxAge(600L); // in seconds
-
+    
+    registry.addMapping("/actuator/**").allowedOrigins("*").allowedMethods("GET")
+    	.exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, 
+			HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+    .allowCredentials(false).maxAge(600L); // in seconds
+    
     //lock/unlock
     registry.addMapping("/annotation/admin/lock").allowedOrigins("*").allowedMethods("POST", "DELETE")
     .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, HttpHeaders.ALLOW)

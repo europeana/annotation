@@ -41,7 +41,9 @@ public class AnnotationTestUtils {
   public static final Map<String, String> METIS_RESPONSE_MAP =
       Map.of(
           AnnotationTestsConstants.URI_VERMEER_VIAF, AnnotationTestsConstants.AGENT_VERMEER_VIAF_XML,
-          AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.DEREFERENCE_MANY_XML);
+          AnnotationTestsConstants.DEREFERENCE_MANY, AnnotationTestsConstants.DEREFERENCE_MANY_XML,
+          AnnotationTestsConstants.URI_BIAS_INDIAN, AnnotationTestsConstants.CONCEPT_BIAS_INDIAN_XML
+          );
 
   public static String loadFile(String resourcePath) throws IOException {
     return IOUtils.toString(

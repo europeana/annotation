@@ -2,20 +2,20 @@ package eu.europeana.annotation.web.model;
 
 public class BatchUploadStatus extends BatchProcessingStatus {
 	
-	public Integer totalNumberOfAnnotations;
+	public Integer totalNumberOfAnnotations=0;
 	
-	public Integer numberOfAnnotationsWithId;
+	public Integer numberOfAnnotationsWithId=0;
 	
-	public Integer numberOfAnnotationsWithoutId;
+	public Integer numberOfAnnotationsWithoutId=0;
 	
 	public BatchOperationStep step;
 
 	@Override
 	public String toString() {
-		if(failureCount > 0)
-			return step + " failed (" + failureCount + " errors).";
-		else
-			return step + " succeeded (" + successCount + " successes).";
+		return step + ". " + "Total number of annotations: " + totalNumberOfAnnotations +
+				", number of annotations with id: " + numberOfAnnotationsWithId + 
+				", number of annotations without id: " + numberOfAnnotationsWithoutId + ". " +
+				super.toString();
 	}
 
 	public Integer getTotalNumberOfAnnotations() {

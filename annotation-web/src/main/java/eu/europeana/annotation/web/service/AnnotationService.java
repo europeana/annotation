@@ -241,4 +241,13 @@ public interface AnnotationService {
 
     List<? extends Annotation> getAllAnnotations();
 
+    /**
+     * Validate the presence and values of immutable fields for the update method (e.g. id, creator, created)
+     * 
+     * @param updateWebAnnotation the object with the updated fields
+     * @param storedAnnotation the object stored in the database
+     * @throws HttpException  the exception indicating conflicting values for immutable field 
+     */
+    void validateImmutableFields(Annotation updateWebAnnotation, Annotation storedAnnotation) throws HttpException;
+
 }

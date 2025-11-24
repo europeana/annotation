@@ -1,0 +1,19 @@
+{
+	"motivation": "highlighting",
+  	"body": "https://rnd-2.eanadev.org/share/debias/vocabulary/c_24_de.xml",
+  	"target": {
+	  	"source": "http://data.europeana.eu/item/2064108/Museu_ProvidedCHO_Ethnologisches_Museum__Staatliche_Museen_zu_Berlin_DE_MUS_019118_1603837",
+	  	"selector":{
+			  "type" : "RDFStatementSelector",
+			  "hasPredicate": "dc:title",
+			  "refinedBy" :{
+					 "type" : "TextQuoteSelector",
+		 		     "exact": {
+						  "@value": "Indianer",
+       					  "@language": "de"
+   					  },
+					  "prefix": "Kajabi "
+			  }
+		}
+	}
+}

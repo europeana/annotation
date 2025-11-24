@@ -4,7 +4,7 @@
 
 	<groupId>eu.europeana.annotation</groupId>
 	<artifactId>annotation-api</artifactId>
-	<version>0.5.1-SNAPSHOT</version>
+	<version>0.5.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Annotation API parent</name>
 	<description>Annotation API parent pom</description>
@@ -34,8 +34,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<revision>0.5.1-SNAPSHOT</revision>
-		<version.commonsApi>0.4.3-SNAPSHOT</version.commonsApi>
+		<revision>0.5.2-SNAPSHOT</revision>
+		<version.commonsApi>0.4.7</version.commonsApi>
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
@@ -84,26 +84,45 @@
 
 
 		<version.codehaus.jettison>1.5.1</version.codehaus.jettison>
+		<!--
 		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
         <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
+        <surefire.version>3.0.0-M5</surefire.version>
+		<failsafe.version>3.0.0-M5</failsafe.version>
+ -->
+		<version.maven-surfire-plugin>3.0.0-M5</version.maven-surfire-plugin>
+		<version.maven-failsafe-plugin>3.0.0-M5</version.maven-failsafe-plugin>
 
 		<version.javax.ws.rs>2.1.1</version.javax.ws.rs>
 
 		<!-- sonar plugins -->
 		<jacoco-plugin.version>0.8.11</jacoco-plugin.version>
-		<pmd-plugin.version>3.15.0</pmd-plugin.version>
 		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
 		<sonar-plugin.version>3.7.0.1746</sonar-plugin.version>
+		<pmd-plugin.version>3.15.0</pmd-plugin.version>
+
+		<aggregate.report.xml>
+			annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
 		<sonar.java.spotbugs.reportPaths>
 			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
 		<sonar.organization>europeana</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
 		<!-- Exclude POJOs code duplication analysis -->
-		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
-		<aggregate.report.xml>
-			annotation-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.cpd.exclusions>**/definitions/model/**/*</sonar.cpd.exclusions>
+		<sonar.coverage.exclusions>
+			**/annotation/definitions/model/**/*,
+			**/annotation/client/**/*
+        </sonar.coverage.exclusions>
+
+		<!--
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+-->
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../${aggregate.report.xml}
+		</sonar.coverage.jacoco.xmlReportPaths>
 
 	</properties>
 	<modules>
@@ -196,6 +215,27 @@
 						<artifactId>mongodb-driver-core</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+
+			<!-- test containers dependencies -->
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers</artifactId>
+				<version>${version.testcontainers}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>mongodb</artifactId>
+				<version>${version.testcontainers}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${version.testcontainers}</version>
+				<scope>test</scope>
 			</dependency>
 
 		</dependencies>
@@ -365,7 +405,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${version.maven-surfire-plugin}</version>
 					<configuration>
-						<argLine>${java.17.addopens}</argLine>
+						<argLine>${argLine} ${java.17.addopens}</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -373,7 +413,7 @@
 					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>${version.maven-failsafe-plugin}</version>
 					<configuration>
-						<argLine>${java.17.addopens}</argLine>
+						<argLine>${argLine} ${java.17.addopens}</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -401,11 +441,26 @@
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>${jacoco-plugin.version}</version>
+						<configuration>
+							<excludes>
+								<!-- see also sonar sonar.coverage.exclusions -->
+								<!-- exclude annotation model package -->
+								<exclude>**/annotation/definitions/model/**/*</exclude>
+								<!-- exclude annotation client package as client tests are not executed -->
+								<exclude>**/annotation/client/**/*</exclude>
+							</excludes>
+						</configuration>
 						<executions>
 							<execution>
 								<id>prepare-agent</id>
 								<goals>
 									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>report</id>
+								<goals>
+									<goal>report</goal>
 								</goals>
 							</execution>
 						</executions>

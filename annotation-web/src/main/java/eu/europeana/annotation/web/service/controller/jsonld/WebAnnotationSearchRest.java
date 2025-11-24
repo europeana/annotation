@@ -88,18 +88,17 @@ public class WebAnnotationSearchRest extends BaseRest {
 
 	    // ** Process input params
 	    queryString = queryString.trim();
-	    if (StringUtils.isBlank(queryString))
-		throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_BLANK_PARAMETER_VALUE,
-			I18nConstantsAnnotation.ANNOTATION_VALIDATION,
-			new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
+	    if (StringUtils.isBlank(queryString)) {
+			throw new ParamValidationI18NException(ParamValidationI18NException.MESSAGE_BLANK_PARAMETER_VALUE,
+				I18nConstantsAnnotation.ANNOTATION_VALIDATION,
+				new String[] { WebAnnotationFields.PARAM_QUERY, queryString });
+	    }
+	    if (page < Query.DEFAULT_PAGE) {
+	    	throw new ParamValidationI18NException(null, I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+				new String[] { WebAnnotationFields.PAGE, String.valueOf(page) });
+	    }
 
 	    SearchProfiles searchProfile = getProfile(profile, request);
-	    // here we need a query search profile - dereference is not a query search
-	    // profile - we use default
-	    SearchProfiles querySearchProfile = searchProfile;
-	    if (SearchProfiles.DEREFERENCE.equals(searchProfile)) {
-		querySearchProfile = SearchProfiles.STANDARD;
-	    }
 	    
 	    //process facets profile
 	    if(!StringUtils.contains(profile, SearchProfiles.FACETS.toString())) {
@@ -107,28 +106,33 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    }
 
 	    String sortFieldStr = null;
-	    if (sortField != null)
-		sortFieldStr = sortField.getSolrField();
+	    if (sortField != null) {
+		  sortFieldStr = sortField.getSolrField();
+	    }
 	    String sortOrderField = null;
-	    if (sortFieldStr != null) // if sort field, set default value
-		sortOrderField = SortOrder.desc.name();
-	    if (sortOrder != null)
-		sortOrderField = sortOrder.toString();
-
+	    if (sortFieldStr != null) {
+	      // if sort field, set default value
+	      if (sortOrder != null) {
+	        sortOrderField = sortOrder.toString();
+	      } else {
+	        sortOrderField = SortOrder.desc.name();    
+	      }
+	    }
+	    
 	    // ** build search query
 	    Query searchQuery = getAnnotationSearchService().buildSearchQuery(queryString, filters, facets,
-		    sortFieldStr, sortOrderField, page, pageSize, querySearchProfile);
+		    sortFieldStr, sortOrderField, page, pageSize, searchProfile);
 
 	    // ** do search
 	    AnnotationPage annotationPage = getAnnotationSearchService().search(searchQuery, request);
 
 	    if(annotationPage.getAnnotations() != null && SearchProfiles.DEREFERENCE.equals(searchProfile)) {
-		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), SearchProfiles.DEREFERENCE, language);
+		getAnnotationService().dereferenceSemanticTags(annotationPage.getAnnotations(), searchProfile, language);
 	    }
 
 	    // ** serialize page
         AnnotationPageSerializer serializer = new AnnotationPageSerializer(annotationPage, getConfiguration().getAnnotationBaseUrl());
-        String jsonLd = serializer.serialize(querySearchProfile);
+        String jsonLd = serializer.serialize(searchProfile);
         
 	    // ** build response
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);

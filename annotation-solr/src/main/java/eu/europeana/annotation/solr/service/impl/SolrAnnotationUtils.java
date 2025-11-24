@@ -8,12 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrException;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.body.Body;
 import eu.europeana.annotation.definitions.model.body.GraphBody;
@@ -140,15 +142,12 @@ public class SolrAnnotationUtils {
         solrAnnotation.setBodyValue(textValue);
         setBodyMultilingualValue(solrAnnotation);
         break;
-
-      case FULL_TEXT_RESOURCE:
-      case SPECIFIC_RESOURCE:
+      case SPECIFIC_RESOURCE, FULL_TEXT_RESOURCE:
         solrAnnotation.setBodyValue(textValue);
         solrAnnotation.setBodyUris(extractUriValues(body));
         setBodyMultilingualValue(solrAnnotation);
         break;
-      case AGENT:
-      case VCARD_ADDRESS:
+      case VCARD_ADDRESS, AGENT:
 
       default:
         break;

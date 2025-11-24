@@ -10,17 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
+
 import eu.europeana.annotation.web.exception.response.BatchUploadException;
-import eu.europeana.annotation.web.model.AnnotationOperationResponse;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.error.EuropeanaApiErrorResponse;
-import eu.europeana.api.commons.web.controller.exception.AbstractExceptionHandlingController;
-import eu.europeana.api.commons.web.model.ApiResponse;
+import eu.europeana.api.commons.web.exception.EuropeanaGlobalExceptionHandler;
 
 @ControllerAdvice
 @ConditionalOnWebApplication
-public class GlobalExceptionHandler extends AbstractExceptionHandlingController {
+public class GlobalExceptionHandler extends EuropeanaGlobalExceptionHandler  {
 
   @Resource
   I18nService i18nService;
@@ -38,18 +36,21 @@ public class GlobalExceptionHandler extends AbstractExceptionHandlingController 
   // response.setError(errorMessage);
   // return response;
   // }
-
+  
   @ExceptionHandler(BatchUploadException.class)
-  public ResponseEntity<AnnotationOperationResponse> handleBatchUploadException(
-      BatchUploadException ex, HttpServletRequest httpRequest) {
-    AnnotationOperationResponse response = new AnnotationOperationResponse(
-        httpRequest.getParameter(WebAnnotationFields.PARAM_WSKEY), "batchUpload");
-    response.setOperationReport(ex.getOperationReport());
-    response.success = false;
-    response.setError(ex.getMessage());
+  public ResponseEntity<EuropeanaApiErrorResponse> handleBatchUploadException(
+		  BatchUploadException e, HttpServletRequest httpRequest) {
+      EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
+              .setStatus(e.getStatus().value())
+              .setError(e.getStatus().getReasonPhrase())
+              .setMessage(e.getMessage())
+              .setSeeAlso(getSeeAlso())
+              .build();
 
-    return ResponseEntity.status(ex.getStatus()).contentType(MediaType.APPLICATION_JSON)
-        .body(response);
+      return ResponseEntity
+              .status(e.getStatus())
+              .headers(createHttpHeaders(httpRequest))
+              .body(response);
   }
 
   /*

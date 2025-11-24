@@ -9,10 +9,14 @@ import eu.europeana.annotation.tests.config.AnnotationTestsConfiguration;
 public class AnnotationTestsConstants {
   public static final String DUMMY_PARAM = "dummy";
   public static final String URI_VERMEER_VIAF = "http://viaf.org/viaf/51961439";
+  public static final String URI_BIAS_INDIAN = "https://rnd-2.eanadev.org/share/debias/vocabulary/c_24_de.xml";
+  
   public static final String AGENT_VERMEER_VIAF_XML = "/metis-deref/agent_jan_vermeer_viaf.xml";
   public static final String DEREFERENCE_MANY = "metis-deref_many";
   public static final String DEREFERENCE_MANY_XML = "/metis-deref/dereference_many.xml";
+  public static final String CONCEPT_BIAS_INDIAN_XML = "/metis-deref/concept_bias_indian.xml";
   public static final String EMPTY_METIS_RESPONSE = "/metis-deref/empty_metis_response.xml";
+  
   
   public static final String EMPTY_SEARCH_API_RESPONSE = "/search-api/empty_api_response.json";
   
@@ -30,9 +34,10 @@ public class AnnotationTestsConstants {
   public static final String TAG_STANDARD = "/tag/standard.json";
   public static final String TAG_MINIMAL = "/tag/minimal.json";
   public static final String TAG_STANDARD_TEST_VALUE = "/tag/standard_test_value.json";
+  public static final String TAG_UPDATE_FAILED_IMMUTABLE = "/tag/standard_failed_immutable.json";
   public static final String TAG_STANDARD_TEST_VALUE_BODY = "test";
 
-  public String get_TAG_STANDARD_TEST_VALUE_TARGET(String itemDataEndpoint) {
+  public String getUpdatedTargetForTagStandard(String itemDataEndpoint) {
     return itemDataEndpoint + "/09102/_UEDIN_214";
   }
   //  public static final String FULL_TEXT_RESOURCE = "/tag/full_text_resource.json";
@@ -125,6 +130,8 @@ public class AnnotationTestsConstants {
   public static final String HIGHLIGHTING_TARGET_AS_OBJECT = "/highlighting/highlighting_target_as_object.json";
   public static final String HIGHLIGHTING_WITHOUT_PREDICATE = "/highlighting/highlighting_without_predicate.json";
   public static final String HIGHLIGHTING_WITHOUT_EXACT = "/highlighting/highlighting_without_exact.json";
+  public static final String HIGHLIGHTING_DEBIAS_DEREFERENCE = "/highlighting/highlighting_debias_dereference.json";
+  
   
   public static final String START = "{";
   public static final String END = "}";

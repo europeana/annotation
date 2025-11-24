@@ -58,14 +58,13 @@ public class GeneralUtils {
    * @return True if valid URL, false otherwise
    */
   public static boolean isUrl(String value) {
-      if(StringUtils.isEmpty(value)) {
+    //only http URLs are supported in targets so do quickcheck first
+    //we might want to support other protocols in the future
+    if(StringUtils.isEmpty(value) || !value.startsWith("http")) {
         return false;
       }
+      
       try {
-          //only http URLs are supported in targets so do quickcheck first
-          if(!value.startsWith("http")) {
-            return false;
-          }
           URL url = new URL(value);
           return StringUtils.isNotBlank(url.getProtocol());
       } catch (MalformedURLException e) {
@@ -76,6 +75,30 @@ public class GeneralUtils {
   public static boolean urlStartsWithHttps(String value) {
     //only URLs that start with "https" are allowed
     return value.startsWith("https");
+  }
+  
+  /**
+   * This method finds all indexes of a substring within a string, e.g. for the substring "abc"
+   * within a string "abcdefabc abc dejjabc", the output will be [0,6,10,18].
+   * 
+   * @param input
+   * @param substring
+   * @return
+   */
+  public static List<Integer> findSubstringIndexes(String input, String substring) {
+      List<Integer> indexes = new ArrayList<>();
+      int substringLength = substring.length();
+      int index = input.indexOf(substring, 0);
+      if (index != -1) {
+          indexes.add(index);
+          while (index != -1) {
+              index = input.indexOf(substring, index + substringLength);
+              if (index != -1) {
+                  indexes.add(index);
+              }
+          }
+      }
+      return indexes;
   }
   
 }

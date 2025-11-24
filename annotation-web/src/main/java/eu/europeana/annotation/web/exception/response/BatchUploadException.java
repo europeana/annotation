@@ -13,10 +13,6 @@ public class BatchUploadException extends HttpException{
 	
 	private BatchUploadStatus operationReport;
 		
-//	public BatchUploadException(){
-//		super(null, I18nConstants.BATCH_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-//	}
-	
 	public BatchUploadException(String message, BatchUploadStatus batchReport){
 		super(message, I18nConstantsAnnotation.BATCH_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
 		this.operationReport = batchReport;

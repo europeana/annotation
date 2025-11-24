@@ -2,11 +2,14 @@ package eu.europeana.annotation.web.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.search.Query;
@@ -84,8 +87,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
       }
 
       // fetch annotation objects
-      List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
-      protocol.setAnnotations(annotations);
+      protocol.setAnnotations(fetchAnnotationsFromDB(annotationIds, query));
     }
 
 
@@ -116,8 +118,20 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
     return protocol;
   }
 
+  private List<? extends Annotation> fetchAnnotationsFromDB(List<Long> annotationIds, Query query) {
+    List<? extends Annotation> annotations = mongoPersistance.getAnnotationList(annotationIds);
+    if(StringUtils.isNotBlank(query.getSort())) {
+      //need to ensure same order of annotations
+      AnnotationOrderComparator comparator = new AnnotationOrderComparator(annotationIds);
+      annotations.sort(comparator);
+    }
+    
+    return annotations;
+  }
+
   private boolean isIncludeAnnotationsSearch(Query query) {
-    return SearchProfiles.STANDARD.equals(query.getSearchProfile());
+    return SearchProfiles.STANDARD.toString().equals(query.getSearchProfile().toString()) ||
+            SearchProfiles.DEREFERENCE.toString().equals(query.getSearchProfile().toString());
   }
 
   private String buildPageUrl(String collectionUrl, int page, int pageSize) {
@@ -229,7 +243,7 @@ public class AnnotationSearchServiceImpl implements AnnotationSearchService{
         searchQuery.setViewFields(new String[] {SolrAnnotationConstants.ANNO_URI});
         break;
 
-      case STANDARD:
+      case STANDARD, DEREFERENCE:
         break;
 
       default:

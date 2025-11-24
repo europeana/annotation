@@ -3,9 +3,8 @@
 	"type": "oa:Annotation",
 	"motivation": "tagging",
 	"creator": {
-		"id": "http://www.historypin.org/en/person/31446/",
-		"type": "Person",
-		"name": "Test Europeana"
+		"id": "http://data.europeana.eu/user/regular-userid",
+		"type": "Person"
 	},
 	"created": "2015-02-27T12:00:43Z",
 	"generated": "2015-02-28T13:00:34Z",

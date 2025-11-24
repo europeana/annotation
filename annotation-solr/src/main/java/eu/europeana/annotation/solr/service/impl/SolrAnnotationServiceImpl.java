@@ -521,8 +521,7 @@ public class SolrAnnotationServiceImpl extends SolrAnnotationUtils
       throws AnnotationServiceException {
     List<SolrQuery> queries = new ArrayList<>();
     switch (anno.getMotivationType()) {
-      case TRANSCRIBING:
-      case TRANSLATING:
+      case TRANSLATING, TRANSCRIBING:
         // the motivation is the passed as parameter, can use the same method for transcriptions and
         // annotations
         queries.add(solrUniquenessQueryTranscriptions(anno, noSelfDupplicate));

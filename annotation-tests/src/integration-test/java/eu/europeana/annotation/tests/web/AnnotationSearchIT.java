@@ -482,7 +482,7 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
   protected AnnotationPage search(String bodyValue, String profile, String limit)
       throws Exception {
     AnnotationPage annPg = searchAnnotations(bodyValue, null, null, WebAnnotationFields.CREATED, "desc",
-        "0", limit, profile, null);
+        "1", limit, profile, null);
 
     assertNotNull(annPg, "AnnotationPage must not be null");
     return annPg;
@@ -1041,6 +1041,32 @@ public class AnnotationSearchIT extends AbstractIntegrationTest {
     }
   }
 
+  
+  /**
+   * Test search query and verify dereferenced search result
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testSearchDereferencedDebias() throws Exception {
+    Annotation storedAnno = createTag(HIGHLIGHTING_DEBIAS_DEREFERENCE, false, true);
+    addToCreatedAnnotations(storedAnno.getIdentifier());
+    
+    // first page
+    AnnotationPage annPg = searchAnnotationsAddQueryField("anno_id:"+storedAnno.getIdentifier(), null, null, null, null,
+        SearchProfiles.DEREFERENCE.toString(), null);
+    assertNotNull(annPg, "AnnotationPage must not be null");
+    // there must be annotations in database after initial insert in this test class
+    assertTrue(0 <= annPg.getTotalInCollection());
+    assertEquals(annPg.getCurrentPage(), Query.DEFAULT_PAGE);
+    for (Annotation foundAnnotation : annPg.getAnnotations()) {
+      log.info(foundAnnotation.getIdentifier());
+      log.info(foundAnnotation.getBody().getHttpUri());
+      assertEquals(foundAnnotation.getBody().getHttpUri(), URI_BIAS_INDIAN);
+    }
+  }
+  
+  
   /**
    * Test search query with multiple languages and verify dereferenced search result
    * 
