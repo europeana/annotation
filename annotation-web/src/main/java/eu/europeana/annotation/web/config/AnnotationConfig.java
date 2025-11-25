@@ -3,7 +3,9 @@ package eu.europeana.annotation.web.config;
 import eu.europeana.api.commons.auth.AuthenticationBuilder;
 import eu.europeana.api.commons.auth.AuthenticationConfig;
 import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
-import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,8 @@ import org.springframework.context.annotation.PropertySource;
     value = {"classpath:annotation.properties", "classpath:annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class AnnotationConfig {
+  private static final Logger LOG = LogManager.getLogger(AnnotationConfig.class);
+
   @Value("${europeana.apikey.serviceurl}")
   private String apikeyServiceUrl;
 
@@ -28,16 +32,12 @@ public class AnnotationConfig {
   public EuropeanaClientDetailsService getApiKeyClientDetailsService(){
     EuropeanaClientDetailsService clientDetails = new EuropeanaClientDetailsService();
     clientDetails.setApiKeyServiceUrl(apikeyServiceUrl);
-    AuthenticationConfig config = new AuthenticationConfig(loadProperties());
+    if(StringUtils.isNotEmpty(tokenEndpoint) && StringUtils.isNotEmpty(grantParams)) {
+    AuthenticationConfig config = new AuthenticationConfig(tokenEndpoint,grantParams);
     clientDetails.setAuthHandler(AuthenticationBuilder.newAuthentication(config));
+    }else{
+      LOG.error("Keycloak token-endpoint and/or grant-parameters NOT set !! ");
+    }
     return clientDetails;
   }
-
-  private Properties loadProperties() {
-    Properties properties = new Properties();
-    properties.setProperty(AuthenticationConfig.CONFIG_TOKEN_ENDPOINT,tokenEndpoint);
-    properties.setProperty(AuthenticationConfig.CONFIG_GRANT_PARAMS,grantParams);
-    return properties;
-  }
-
 }
