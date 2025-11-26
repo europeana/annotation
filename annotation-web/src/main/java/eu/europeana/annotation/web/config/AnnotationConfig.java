@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+  Configuration class responsible for setting up and providing the required beans.
+ */
 @Configuration()
 @PropertySource(
     value = {"classpath:annotation.properties", "classpath:annotation.user.properties"},
@@ -27,8 +30,11 @@ public class AnnotationConfig {
   @Value("${keycloak.token.grant.params}")
   private String grantParams;
 
-
-  @Bean(name = "commons_oauth2_europeanaClientDetailsService")
+  /**
+   Create and instantiate {@code EuropeanaClientDetailsService} bean.
+   @return A fully configured instance of {@code EuropeanaClientDetailsService}
+   */
+  @Bean(name = "europeanaClientDetailsService")
   public EuropeanaClientDetailsService getApiKeyClientDetailsService(){
     EuropeanaClientDetailsService clientDetails = new EuropeanaClientDetailsService();
     clientDetails.setApiKeyServiceUrl(apikeyServiceUrl);

@@ -19,7 +19,7 @@ public class AuthorizationServiceImpl extends BaseAuthorizationService
   @Resource
   AnnotationConfiguration configuration;
 
-  @Resource(name = "commons_oauth2_europeanaClientDetailsService")
+  @Resource(name = "europeanaClientDetailsService")
   ClientDetailsService clientDetailsService;
 
   @Resource(name = "annotation_db_apilockService")
