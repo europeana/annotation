@@ -297,8 +297,7 @@ public class BaseRest extends BaseRestController {
 					configuration.getAuthorizationApiName());
 			auth = ((AuthorizationServiceImpl) getAuthorizationService()).checkPermissions(auth, operation);
 		} catch (AuthorizationExtractionException e) {
-			throw new ApplicationAuthenticationException("Authentication error: " + e.getMessage(),
-					I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { operation }, UNAUTHORIZED, e);
+			throw new ApplicationAuthenticationException("Authentication error: " + e.getMessage(), I18nConstants.TOKEN_INVALID, new String[] { operation }, UNAUTHORIZED, e);
 		}
 		return auth;
 	}
