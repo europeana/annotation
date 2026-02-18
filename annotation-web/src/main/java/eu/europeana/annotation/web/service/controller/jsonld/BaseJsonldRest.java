@@ -459,11 +459,11 @@ public class BaseJsonldRest extends BaseRest {
     } else {
       // not authorized
       // not authorized
-      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED,
-          I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED,
+      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.TOKEN_INVALID,
+          I18nConstantsAnnotation.TOKEN_INVALID,
           new String[] {
               "Only the creators of the annotation or admins are authorized to perform this operation."},
-          HttpStatus.FORBIDDEN);
+          HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -734,7 +734,7 @@ public class BaseJsonldRest extends BaseRest {
       if (vote.getUserId().equals(existingVote.getUserId()))
         throw new OperationAuthorizationException(
             "A report from the same users exists in database!",
-            I18nConstantsAnnotation.OPERATION_NOT_AUTHORIZED, new String[] {vote.getUserId()});
+            I18nConstantsAnnotation.TOKEN_INVALID, new String[] {vote.getUserId()});
     }
   }
 
