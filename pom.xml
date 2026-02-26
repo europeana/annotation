@@ -35,7 +35,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<revision>0.5.2-SNAPSHOT</revision>
-		<version.commonsApi>0.4.7</version.commonsApi>
+		<version.commonsApi>0.4.11-SNAPSHOT</version.commonsApi>
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
@@ -77,7 +77,7 @@
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.subtitle-converter>1</version.subtitle-converter>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
-		<version.testcontainers>1.19.7</version.testcontainers>
+		<version.testcontainers>1.21.4</version.testcontainers>
 
 		<mongodb.version>4.7.2</mongodb.version>
 		<version.morphia>1.6.1</version.morphia>
