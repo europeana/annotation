@@ -248,7 +248,7 @@ public class BaseRest extends BaseRestController {
 			throws ApplicationAuthenticationException {
 
 		// prevent write when locked
-		getAuthorizationService().checkWriteLockInEffect(operation);
+	//	getAuthorizationService().checkWriteLockInEffect(operation);
 
 		Authentication auth = null;
 		// verify if auth is enabled
