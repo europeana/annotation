@@ -12,22 +12,20 @@
 
 	<repositories>
 		<repository>
-			<id>libs-release</id>
-			<name>europeana-releases</name>
-			<url>https://artifactory.eanadev.org/artifactory/libs-release/</url>
+			<id>artifactory.eanadev.org</id>
+			<name>artifactory.eanadev.org-releases (external and internal releases)</name>
+			<url>https://artifactory-prod.eanadev.org/artifactory/libs-release</url>
 		</repository>
 		<repository>
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
-			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
+			<url>https://artifactory-prod.eanadev.org/artifactory/libs-snapshot</url>
 		</repository>
-		<!-- repo for plugins, required to resolve git-commit-id -->
 		<repository>
 			<id>plugins-release</id>
 			<name>artifactory plugins-release</name>
-			<url>https://artifactory.eanadev.org/artifactory/plugins-release</url>
+			<url>https://artifactory-prod.eanadev.org/artifactory/plugins-release</url>
 		</repository>
-
 	</repositories>
 
 
