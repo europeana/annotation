@@ -169,7 +169,6 @@ public class ClientConfiguration {
     }
 
     public String getPropAnnotationClientApiEndpoint() {
-      String val = getProperties().getProperty(PROP_OAUTH_SERVICE_URI);
       return getProperties().getProperty(PROP_ANNOTATION_CLIENT_API_ENDPOINT).trim();
     }
 }
