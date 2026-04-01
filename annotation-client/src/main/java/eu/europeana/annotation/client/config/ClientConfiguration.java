@@ -29,7 +29,7 @@ public class ClientConfiguration {
      * Hide the default constructor
      */
     private ClientConfiguration() {
-    };
+    }
 
     /**
      * Accessor method for the singleton
@@ -55,11 +55,13 @@ public class ClientConfiguration {
 	try {
 	    properties = new Properties();
 	    InputStream resourceAsStream = getClass().getResourceAsStream(ANNOTATION_CLIENT_PROPERTIES_FILE);
-	    if (resourceAsStream != null)
-		getProperties().load(resourceAsStream);
-	    else
-		throw new TechnicalRuntimeException(
-			"No properties file found in classpath! " + ANNOTATION_CLIENT_PROPERTIES_FILE);
+	    if (resourceAsStream != null) {
+        getProperties().load(resourceAsStream);
+      }
+	    else {
+        throw new TechnicalRuntimeException(
+            "No properties file found in classpath! " + ANNOTATION_CLIENT_PROPERTIES_FILE);
+      }
 
 	} catch (Exception e) {
 	    throw new TechnicalRuntimeException("Cannot read configuration file: " + ANNOTATION_CLIENT_PROPERTIES_FILE,

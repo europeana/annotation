@@ -12,14 +12,14 @@
 
 	<repositories>
 		<repository>
-			<id>artifactory.eanadev.org</id>
-			<name>artifactory.eanadev.org-releases (external and internal releases)</name>
-			<url>https://artifactory-prod.eanadev.org/artifactory/libs-release</url>
+			<id>libs-release</id>
+			<name>europeana-releases</name>
+			<url>https://artifactory-prod.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
 			<id>libs-snapshots-local</id>
 			<name>europeana-snapshots</name>
-			<url>https://artifactory-prod.eanadev.org/artifactory/libs-snapshot</url>
+			<url>https://artifactory-prod.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
 		<repository>
 			<id>plugins-release</id>
@@ -33,7 +33,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<revision>0.5.2-SNAPSHOT</revision>
-		<version.commonsApi>0.4.11-SNAPSHOT</version.commonsApi>
+		<version.commonsApi>0.4.10</version.commonsApi>
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->

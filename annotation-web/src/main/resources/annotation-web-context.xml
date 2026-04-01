@@ -24,11 +24,7 @@
     <!--  Authorization Service -->
 	<beans:bean name="annotation_authorizationService" class="eu.europeana.annotation.web.service.authorization.AuthorizationServiceImpl">
     </beans:bean>
-    
-	<beans:bean name="commons_oauth2_europeanaClientDetailsService" class="eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService">
-		<beans:property name="apiKeyServiceUrl" value="#{annotationProperties['europeana.apikey.serviceurl']}"/>
-	</beans:bean>
-	
+
     <beans:bean id="subtitleHandler" class="eu.europeana.annotation.fulltext.subtitles.SubtitleHandler"/>
     
     <beans:bean id="mediaFormatValidator" class="eu.europeana.annotation.fulltext.transcription.TranscriptionFormatValidator"/>
