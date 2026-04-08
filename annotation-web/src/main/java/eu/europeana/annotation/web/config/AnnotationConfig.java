@@ -2,6 +2,7 @@ package eu.europeana.annotation.web.config;
 
 import eu.europeana.api.commons.auth.AuthenticationBuilder;
 import eu.europeana.api.commons.auth.AuthenticationConfig;
+import eu.europeana.api.commons.auth.AuthenticationHandler;
 import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -38,12 +39,25 @@ public class AnnotationConfig {
   public EuropeanaClientDetailsService getApiKeyClientDetailsService(){
     EuropeanaClientDetailsService clientDetails = new EuropeanaClientDetailsService();
     clientDetails.setApiKeyServiceUrl(apikeyServiceUrl);
+    clientDetails.setAuthHandler(getAuthenticationHandler());
+    return clientDetails;
+  }
+
+  @Bean(name = "searchApiAccess")
+  public AuthenticationHandler getSearchApiAccess() {
+    return getAuthenticationHandler();
+  }
+  /**
+   * Generate AuthenticationHandler to access other services via EM ( like keycloak and SR API)
+   * @return
+   */
+  public AuthenticationHandler getAuthenticationHandler() {
     if (StringUtils.isNotEmpty(tokenEndpoint) && StringUtils.isNotEmpty(grantParams)) {
       AuthenticationConfig config = new AuthenticationConfig(tokenEndpoint, grantParams);
-      clientDetails.setAuthHandler(AuthenticationBuilder.newAuthentication(config));
+      return AuthenticationBuilder.newAuthentication(config);
     } else {
-      LOG.error("Keycloak token-endpoint and/or grant-parameters NOT set !! ");
+      LOG.error("Keycloak token endpoint and parameters NOT set !!");
     }
-    return clientDetails;
+    return null;
   }
 }
