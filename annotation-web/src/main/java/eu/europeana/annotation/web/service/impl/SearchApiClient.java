@@ -13,13 +13,13 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import eu.europeana.annotation.config.AnnotationConfiguration;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@Component(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
+@Service(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
 public class SearchApiClient {
 
   @Resource
