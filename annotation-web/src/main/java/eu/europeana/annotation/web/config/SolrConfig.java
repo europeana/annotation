@@ -17,7 +17,7 @@ import eu.europeana.annotation.config.AnnotationConfiguration;
 
 @Configuration
 @PropertySource(
-    value = {"classpath:annotation.properties", "annotation.user.properties"},
+    value = {"classpath:annotation.properties", "annotation.user.properties", "file:/opt/app/config/annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class SolrConfig {
 

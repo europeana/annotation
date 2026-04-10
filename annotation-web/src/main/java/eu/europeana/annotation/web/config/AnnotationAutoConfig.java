@@ -1,9 +1,5 @@
 package eu.europeana.annotation.web.config;
 
-import eu.europeana.api.commons.auth.AuthenticationBuilder;
-import eu.europeana.api.commons.auth.AuthenticationConfig;
-import eu.europeana.api.commons.auth.AuthenticationHandler;
-import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,16 +7,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import eu.europeana.api.commons.auth.AuthenticationBuilder;
+import eu.europeana.api.commons.auth.AuthenticationConfig;
+import eu.europeana.api.commons.auth.AuthenticationHandler;
+import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 
 /**
   Configuration class responsible for setting up and providing the required beans.
  */
 @Configuration()
 @PropertySource(
-    value = {"classpath:annotation.properties", "classpath:annotation.user.properties"},
+    value = {"classpath:annotation.properties", "classpath:annotation.user.properties", "file:/opt/app/config/annotation.user.properties"},
     ignoreResourceNotFound = true)
-public class AnnotationConfig {
-  private static final Logger LOG = LogManager.getLogger(AnnotationConfig.class);
+public class AnnotationAutoConfig {
+  private static final Logger LOG = LogManager.getLogger(AnnotationAutoConfig.class);
 
   @Value("${europeana.apikey.serviceurl}")
   private String apikeyServiceUrl;

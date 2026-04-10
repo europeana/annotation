@@ -17,7 +17,7 @@ import eu.europeana.corelib.db.wrapper.ApiMongoConnector;
  */
 @Configuration
 @PropertySource(
-    value = {"classpath:annotation.properties", "classpath:annotation.user.properties"},
+    value = {"classpath:annotation.properties", "classpath:annotation.user.properties", "file:/opt/app/config/annotation.user.properties"},
     ignoreResourceNotFound = true)
 public class MongoConfig {
 
