@@ -23,6 +23,11 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      - name: Decrypt configuration properties
+        run: ./.github/workflows/decrypt_config.sh
+        env:
+          #provide the secret to decrypt script
+          SECRET_PROPS_PASSPHRASE: ${{ secrets.ANNOTATION_API_PROPS_ENCODING_PASS }}
       - name: Build, run tests and analyse
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage -Dsonar.projectKey=eu.europeana.annotation:annotation-api
         env:

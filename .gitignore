@@ -5,6 +5,7 @@
 **/classes/
 **/log4j2.xml
 **/*.bk
+**/*.bak
 **/*.user.properties
 **/*.jks
 **/.flattened-pom.xml
