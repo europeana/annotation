@@ -64,13 +64,8 @@ public class AnnotationCreateTranslationIT extends AbstractIntegrationTest {
   
   @Test
   void createTranscriptionWithCopyrightNotOwner() throws Exception {
-
-    String inputJson = AnnotationTestUtils.updateEdmRights(
-            AnnotationTestUtils.getJsonStringInput(TRANSLATION_COPYRIGHT),
-            "http://mylicence.org/copywrited");
-
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(inputJson, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(TRANSLATION_WRONG_COPYRIGHT, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field

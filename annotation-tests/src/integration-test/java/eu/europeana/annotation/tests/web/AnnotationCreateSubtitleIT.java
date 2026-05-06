@@ -77,12 +77,8 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
 
   @Test
   void createCaptionWithCopyrightNotOwner() throws Exception {
-
-    String inputJson = AnnotationTestUtils.updateEdmRights(
-            AnnotationTestUtils.getJsonStringInput(CAPTION_WITH_COPYRIGHT),
-            "http://mylicence.org/copywrited");
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(inputJson, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_WRONG_COPYRIGHT, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field
@@ -125,12 +121,8 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   @Test
   void createSubtitleWithCopyrightNotOwner() throws Exception {
 
-    String inputJson = AnnotationTestUtils.updateEdmRights(
-            AnnotationTestUtils.getJsonStringInput(SUBTITLE_WITH_COYRIGHT),
-            "http://mylicence.org/copywrited");
-
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(inputJson, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_WITH_WRONG_COYRIGHT, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field
