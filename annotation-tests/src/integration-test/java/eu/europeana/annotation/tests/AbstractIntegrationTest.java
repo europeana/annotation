@@ -87,8 +87,8 @@ public class AbstractIntegrationTest extends AnnotationTestsConstants {
   public static final String SEARCH_API_NOT_FOUND = "{\"apikey\":\"testapikey\",\"success\":true,\"requestNumber\":999,\"itemsCount\":0,\"totalResults\":0,\"items\":[]}";
   
   public static final String KEY_SAZ_ITEM1 = buildAffiliationSetKey(ORG_ID_SAZ, "item1");
-  public static final Set<String> SEARCH_API_AFFILIATION_CHECK = Set.of(KEY_SAZ_ITEM1); 
-  
+  public static final Set<String> SEARCH_API_AFFILIATION_CHECK = Set.of(KEY_SAZ_ITEM1);
+
   private static List<Long> createdAnnotations = new ArrayList<Long>();
   protected static List<Long> createdModerationRecords = new ArrayList<Long>();
 

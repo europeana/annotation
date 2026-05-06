@@ -3,8 +3,12 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.stanbol.commons.exception.JsonParseException;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,8 @@ import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
+
+import java.io.IOException;
 
 /**
  * Annotation API Batch Upload Test class
@@ -25,6 +31,8 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
 
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
   protected Annotation parseCaption(String jsonString) throws JsonParseException {
     MotivationTypes motivationType = MotivationTypes.CAPTIONING;
@@ -66,12 +74,15 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
 
   }
-  
+
   @Test
   void createCaptionWithCopyrightNotOwner() throws Exception {
 
+    String inputJson = AnnotationTestUtils.updateEdmRights(
+            AnnotationTestUtils.getJsonStringInput(CAPTION_WITH_COPYRIGHT),
+            "http://mylicence.org/copywrited");
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_COPYRIGHT, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(inputJson, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field
@@ -114,8 +125,12 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   @Test
   void createSubtitleWithCopyrightNotOwner() throws Exception {
 
+    String inputJson = AnnotationTestUtils.updateEdmRights(
+            AnnotationTestUtils.getJsonStringInput(SUBTITLE_WITH_COYRIGHT),
+            "http://mylicence.org/copywrited");
+
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_WITH_COYRIGHT, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(inputJson, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field

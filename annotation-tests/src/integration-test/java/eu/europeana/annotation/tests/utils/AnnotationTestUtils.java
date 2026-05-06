@@ -13,6 +13,10 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -37,7 +41,9 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationTestUtils {
 
-  /** Maps Metis dereferenciation URIs to mocked XML responses */
+   protected static final ObjectMapper objectMapper = new ObjectMapper();
+
+    /** Maps Metis dereferenciation URIs to mocked XML responses */
   public static final Map<String, String> METIS_RESPONSE_MAP =
       Map.of(
           AnnotationTestsConstants.URI_VERMEER_VIAF, AnnotationTestsConstants.AGENT_VERMEER_VIAF_XML,
@@ -266,6 +272,13 @@ public class AnnotationTestUtils {
   return ap;
   }
 
-  
+  public static String updateEdmRights(String jsonString, String edmRights) throws JsonProcessingException {
+      ObjectNode root = (ObjectNode) objectMapper.readTree(jsonString);
+
+      ObjectNode body = (ObjectNode) root.get("body");
+      body.put("edmRights", edmRights);
+
+      return objectMapper.writeValueAsString(root);
+  }
 
 }
