@@ -104,24 +104,20 @@ public class AnnotationTestsConstants {
   // FULLTEXT 
   public static final String TRANSCRIPTION_WITH_RIGHTS = "/transcription/transcription-with-rights.json";
   public static final String TRANSCRIPTION_COPYRIGHT = "/transcription/transcription-coypright.json";
-  public static final String TRANSCRIPTION_WRONG_COPYRIGHT = "/transcription/transcription-coypright-wrong.json";
 
   public static final String TRANSCRIPTION_MINIMAL_DUPLICATE_UPDATE = "/transcription/minimal-duplicate-update.json";
   public static final String TRANSCRIPTION_MINIMAL = "/transcription/minimal.json";
 
   public static final String TRANSLATION_MINIMAL = "/translation/minimal.json";
   public static final String TRANSLATION_COPYRIGHT = "/translation/translation-coypright.json";
-  public static final String TRANSLATION_WRONG_COPYRIGHT = "/translation/translation-coypright-wrong.json";
 
 
   public static final String SUBTITLE_MINIMAL = "/subtitle/minimal.json";
   public static final String SUBTITLE_WITH_COYRIGHT= "/subtitle/subtitle-copyright.json";
-  public static final String SUBTITLE_WITH_WRONG_COYRIGHT= "/subtitle/subtitle-copyright-wrong.json";
 
   public static final String CAPTION_MINIMAL = "/caption/minimal.json";
   public static final String CAPTION_MINIMAL_EN = "/caption/minimal-en.json";
   public static final String CAPTION_WITH_COPYRIGHT = "/caption/caption-copyright.json";
-  public static final String CAPTION_WITH_WRONG_COPYRIGHT = "/caption/caption-copyright-wrong.json";
 
   public static final String LINK_FOR_CONTRIBUTING_BODY_OBJECT = "/linkforcontributing/link_for_contributing_body_object.json";
   public static final String LINK_FOR_CONTRIBUTING_BODY_STRING = "/linkforcontributing/link_for_contributing_body_string.json";

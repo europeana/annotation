@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -91,7 +92,8 @@ class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
     assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
 
   }
-  
+
+  @Disabled("The test needs valid user token. to be fixed in  EA-4537.")
   @Test
   void createTranscriptionWithCopyright() throws Exception {
 
@@ -113,7 +115,7 @@ class AnnotationCreateTranscriptionsIT extends AbstractIntegrationTest {
   @Test
   void createTranscriptionWithCopyrightNotOwner() throws Exception {
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_WRONG_COPYRIGHT, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(TRANSCRIPTION_COPYRIGHT, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field

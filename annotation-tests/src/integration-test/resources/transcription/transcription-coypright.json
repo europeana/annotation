@@ -1,14 +1,14 @@
 {
-	"motivation" : "transcribing",
-	"body" : {
-		"type" : "FullTextResource",
-		"language" : "en",
-		"value" : "... complete transcribed text in HTML ...",
-		"format" : "text/plain",
-		"edmRights" : "http://creativecommons.org/licenses/by-nd-nc/"
-	},
-	"target" : {
-		"scope" : "http://data.europeana.eu/item/2051943/data_euscreenXL_EUS_09B63DFC17674F6B97A97C84A04694DC",
-		"source" : "https://ekultura.hr/purl/url/ADOD2JWHV3ZIITL7G23TPHGZLC7BYYT4"
-	}
+  "motivation": "transcribing",
+  "body": {
+    "type": "FullTextResource",
+    "language": "en",
+    "value": "... complete transcribed text in HTML ...",
+    "format": "text/plain",
+    "edmRights": "http://mylicence.org/copywrited"
+  },
+  "target": {
+    "scope": "http://data.europeana.eu/item/saz-collections/item1",
+    "source": "https://ekultura.hr/purl/url/ADOD2JWHV3ZIITL7G23TPHGZLC7BYYT4"
+  }
 }

@@ -4,22 +4,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.europeana.annotation.definitions.model.Annotation;
+import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
+import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
+import eu.europeana.annotation.tests.AbstractIntegrationTest;
+import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import eu.europeana.annotation.definitions.model.Annotation;
-import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
-import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
-import eu.europeana.annotation.tests.AbstractIntegrationTest;
-import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
-
-import java.io.IOException;
 
 /**
  * Annotation API Batch Upload Test class
@@ -56,7 +54,8 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     MotivationTypes motivationType = MotivationTypes.SUBTITLING;
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
   }
-  
+
+  @Disabled("The test needs valid user token. to be fixed in  EA-4537.")
   @Test
   void createCaptionWithCopyright() throws Exception {
 
@@ -78,7 +77,7 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   @Test
   void createCaptionWithCopyrightNotOwner() throws Exception {
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_WRONG_COPYRIGHT, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_COPYRIGHT, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field
@@ -100,6 +99,7 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
   }
 
+  @Disabled("The test needs valid user token. to be fixed in  EA-4537.")
   @Test
   void createSubtitleWithCopyright() throws Exception {
 
@@ -122,7 +122,7 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
   void createSubtitleWithCopyrightNotOwner() throws Exception {
 
     //creation should fail if the user is not the owner
-    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_WITH_WRONG_COYRIGHT, true, USER_REGULAR);
+    ResponseEntity<String> response = storeTestAnnotation(SUBTITLE_WITH_COYRIGHT, true, USER_REGULAR);
     
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     //the error must indicate the invalid field
