@@ -3,17 +3,21 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
+import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Annotation API Batch Upload Test class
@@ -25,6 +29,8 @@ import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
 class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
 
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
   protected Annotation parseCaption(String jsonString) throws JsonParseException {
     MotivationTypes motivationType = MotivationTypes.CAPTIONING;
@@ -48,7 +54,8 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     MotivationTypes motivationType = MotivationTypes.SUBTITLING;
     return AnnotationTestUtils.parseAnnotation(jsonString, motivationType);
   }
-  
+
+  @Disabled("The test needs valid user token. to be fixed in  EA-4537.")
   @Test
   void createCaptionWithCopyright() throws Exception {
 
@@ -66,10 +73,9 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     assertEquals(inputAnno.getBody().getEdmRights(), storedAnno.getBody().getEdmRights());
 
   }
-  
+
   @Test
   void createCaptionWithCopyrightNotOwner() throws Exception {
-
     //creation should fail if the user is not the owner
     ResponseEntity<String> response = storeTestAnnotation(CAPTION_WITH_COPYRIGHT, true, USER_REGULAR);
     
@@ -93,6 +99,7 @@ class AnnotationCreateSubtitleIT extends AbstractIntegrationTest {
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
   }
 
+  @Disabled("The test needs valid user token. to be fixed in  EA-4537.")
   @Test
   void createSubtitleWithCopyright() throws Exception {
 

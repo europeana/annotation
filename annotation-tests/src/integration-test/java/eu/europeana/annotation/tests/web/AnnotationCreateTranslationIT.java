@@ -3,17 +3,19 @@ package eu.europeana.annotation.tests.web;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.apache.stanbol.commons.exception.JsonParseException;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import eu.europeana.annotation.definitions.model.Annotation;
 import eu.europeana.annotation.definitions.model.vocabulary.MotivationTypes;
 import eu.europeana.annotation.definitions.model.vocabulary.ResourceTypes;
 import eu.europeana.annotation.tests.AbstractIntegrationTest;
 import eu.europeana.annotation.tests.utils.AnnotationTestUtils;
+import org.apache.stanbol.commons.exception.JsonParseException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Annotation API Batch Upload Test class
@@ -43,7 +45,7 @@ public class AnnotationCreateTranslationIT extends AbstractIntegrationTest {
     // validate the reflection of input in output!
     AnnotationTestUtils.validateOutputAgainstInput(storedAnno, inputAnno);
   }
-  
+  @Disabled("The test needs valid user token. to be fixed in  EA-4537.")
   @Test
   void createTranscriptionWithCopyright() throws Exception {
 
@@ -64,7 +66,6 @@ public class AnnotationCreateTranslationIT extends AbstractIntegrationTest {
   
   @Test
   void createTranscriptionWithCopyrightNotOwner() throws Exception {
-
     //creation should fail if the user is not the owner
     ResponseEntity<String> response = storeTestAnnotation(TRANSLATION_COPYRIGHT, true, USER_REGULAR);
     

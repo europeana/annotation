@@ -3,46 +3,34 @@ package eu.europeana.annotation.web.service.impl;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+
+import eu.europeana.api.commons.auth.AuthenticationHandler;
+import eu.europeana.api.commons.http.HttpConnection;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.springframework.http.MediaType;
 import eu.europeana.annotation.config.AnnotationConfiguration;
-import eu.europeana.annotation.utils.HttpConnection;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
+import org.springframework.stereotype.Service;
 
-@Component(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
-@PropertySource(
-    value = {"classpath:annotation.properties", "annotation.user.properties"},
-    ignoreResourceNotFound = true)
-/**
- * Class used to perform requests to the Europeana Search&Record API
- */
+import javax.annotation.Resource;
+
+@Service(AnnotationConfiguration.BEAN_SEARCH_API_CLIENT)
 public class SearchApiClient {
-  
-  private static final String PATTERN_QUERY_RECORD_PROVIDER =
-      "%s&query=europeana_id:%s&qf=foaf_organization:%s&rows=0";
 
-  @Value("${searchApi.baseUrl}")
-  private String baseUrl;
+  @Resource
+  AnnotationConfiguration configuration;
+
+  @Resource(name = "searchApiAccess")
+  AuthenticationHandler searchApiAccess;
   
+  private static final String PATTERN_QUERY_RECORD_PROVIDER = "%s?query=europeana_id:%s&qf=foaf_organization:%s&rows=0";
+
   private final HttpConnection httpConnection = new HttpConnection();
-  
-  private Map<String, Object> getSearchApiResponseMap(String recordId, String providerId) throws IOException {
-    
-    String url = String.format(PATTERN_QUERY_RECORD_PROVIDER, baseUrl,
-        URLEncoder.encode("\""+recordId+"\"", StandardCharsets.UTF_8),
-        URLEncoder.encode("\""+providerId+"\"", StandardCharsets.UTF_8));
-    
-    String searchApiResp =
-        httpConnection.getURLContentAsString(url, "Accept", "application/json");
-    @SuppressWarnings("unchecked")
-    Map<String, Object> res = BaseJsonParser.objectMapper.readValue(searchApiResp, Map.class);
-    //ensure a non null response, or fail
-    Objects.nonNull(res);
-    return res;
-  }
 
   /**
    * Verify if the provided providerId matches the content provider for the given record using the search api (search by using foaf_organization as filter)
@@ -55,12 +43,37 @@ public class SearchApiClient {
     if (recordId == null || providerId == null) {
       return false;
     }
-    Map<String, Object> searchApiResp = getSearchApiResponseMap(recordId, providerId);
-    if(searchApiResp == null) {
-      return false;
-    }
-    Integer searchApiRespResults = (Integer) searchApiResp.get("totalResults");
-    return searchApiRespResults != null && searchApiRespResults > 0;
+    Integer totalResults = getSearchApiResponse(recordId, providerId);
+    return totalResults != null && totalResults > 0;
   }
 
+
+  /**
+   * Retrieves the total number of results from the Search API for a given record ID and provider ID.
+   * Returns the total number of results as an integer or 0 if the response status is not HTTP OK.
+   *
+   * Query : <baseurl>?query=europeana_id:<recordId>&qf=foaf_organization:<providerId>&rows=0
+   *
+   * @param recordId the unique identifier of the europeana record
+   * @param providerId the unique identifier of the content provider organization
+   * @return the total number of results matching the record ID and provider ID
+   * @throws IOException if an error occurs during the HTTP request or processing the response
+   */
+  private Integer getSearchApiResponse(String recordId, String providerId) throws IOException {
+    String url = String.format(PATTERN_QUERY_RECORD_PROVIDER, configuration.getSearchApiBaseUrl(),
+            URLEncoder.encode("\""+recordId+"\"", StandardCharsets.UTF_8),
+            URLEncoder.encode("\""+providerId+"\"", StandardCharsets.UTF_8));
+
+    try (CloseableHttpResponse response = httpConnection.get(url,
+            Collections.singletonMap(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE),
+            searchApiAccess)) {
+      if (response.getCode() == HttpStatus.SC_OK) {
+        Map<String, Object> res = BaseJsonParser.objectMapper.readValue(response.getEntity().getContent(), Map.class);
+        //ensure a non null response, or fail
+        Objects.nonNull(res);
+        return (Integer) res.get("totalResults");
+      }
+      else return 0;
+    }
+  }
 }

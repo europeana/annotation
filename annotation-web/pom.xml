@@ -156,6 +156,12 @@
 			<artifactId>commons-error</artifactId>
 			<version>${version.commonsApi}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-clientutils</artifactId>
+			<version>${version.commonsApi}</version>
+		</dependency>
 		
 		<!-- aspectj /profiling -->
 		<dependency>

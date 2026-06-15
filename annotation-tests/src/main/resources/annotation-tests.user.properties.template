@@ -1,7 +1,8 @@
-annotation.api.key=
-
-oauth.service.uri=
-oauth.token.request.params.regular=
-oauth.token.request.params.admin=
-
 annotation.item.data.endpoint=
+
+## Oauth service uri and params to be used for annotation api
+keycloak.token.endpoint=
+keycloak.token.grant.params=
+
+## Annotation key for testing purposes
+annotation.api.key=

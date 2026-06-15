@@ -9,7 +9,6 @@
   },
   "target": {
     "scope": "http://data.europeana.eu/item/saz-collections/item1",
-    "source": 
-    "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"
+    "source": "http://www.euscreen.eu/item.html?id=EUS_D61E8DF003E30114621A92ABDE846AD7"
   }
 }

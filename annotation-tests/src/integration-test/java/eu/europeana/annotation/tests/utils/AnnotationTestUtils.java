@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.exception.JsonParseException;
@@ -37,7 +38,7 @@ import eu.europeana.api.commons.web.exception.HttpException;
 
 public class AnnotationTestUtils {
 
-  /** Maps Metis dereferenciation URIs to mocked XML responses */
+    /** Maps Metis dereferenciation URIs to mocked XML responses */
   public static final Map<String, String> METIS_RESPONSE_MAP =
       Map.of(
           AnnotationTestsConstants.URI_VERMEER_VIAF, AnnotationTestsConstants.AGENT_VERMEER_VIAF_XML,
@@ -265,7 +266,5 @@ public class AnnotationTestUtils {
   AnnotationPage ap = apParser.parseAnnotationPage(json);
   return ap;
   }
-
-  
 
 }
