@@ -43,7 +43,7 @@ spec:
             initialDelaySeconds: ${READY_CHECK_INIT_DELAY}
             periodSeconds: ${READY_CHECK_PERIOD}
             failureThreshold: ${FAIL_CHECK_THRESHOLD}
-        resources:
+          resources:
             requests:
               memory: "${MEMORY_REQUEST}M"
               cpu: "${CPU_REQUEST}m"
