@@ -71,7 +71,7 @@ public class BaseJsonldRest extends BaseRest {
 
   protected ResponseEntity<String> storeAnnotation(MotivationTypes motivation,
       boolean indexOnCreate, String annotation, Authentication authentication)
-      throws HttpException {
+      throws HttpException, ApplicationAuthenticationException {
 
     Annotation webAnnotation = null;
     try {
@@ -161,8 +161,8 @@ public class BaseJsonldRest extends BaseRest {
     } catch (AnnotationInstantiationException e) {
       throw new HttpException(null, I18nConstantsAnnotation.ANNOTATION_INVALID_BODY, null,
           HttpStatus.BAD_REQUEST, e);
-    } catch (HttpException e) {
-      // avoid wrapping HttpExceptions
+    } catch (HttpException | ApplicationAuthenticationException e) {
+      // avoid wrapping auth or HttpExceptions
       throw e;
     } catch (AnnotationServiceException e) {
       String debugInfo = (webAnnotation != null) ? webAnnotation.toString() : "";
@@ -177,8 +177,8 @@ public class BaseJsonldRest extends BaseRest {
       throws ApplicationAuthenticationException {
     String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
     if (StringUtils.isBlank(clientId)) {
-      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, 
-              I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, (String[]) null, HttpStatus.FORBIDDEN);
+      throw new ApplicationAuthenticationException(I18nConstantsAnnotation.CLIENT_NOT_PUBLIC,
+          I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, (String[]) null, HttpStatus.FORBIDDEN);
     }
     return clientId;
   }
@@ -474,7 +474,8 @@ public class BaseJsonldRest extends BaseRest {
    * @throws HttpException
    */
   protected ResponseEntity<String> updateAnnotation(long identifier, String annotation,
-      Authentication authentication, HttpServletRequest request) throws HttpException {
+      Authentication authentication, HttpServletRequest request)
+      throws HttpException, ApplicationAuthenticationException {
 
     try {
       // String userId = authentication.getPrincipal().toString();
@@ -546,7 +547,7 @@ public class BaseJsonldRest extends BaseRest {
     } catch (AnnotationValidationException e) {
       throw new RequestBodyValidationException(annotation,
           I18nConstantsAnnotation.ANNOTATION_CANT_PARSE_BODY, e);
-    } catch (HttpException e) {
+    } catch (HttpException | ApplicationAuthenticationException e) {
       throw e;
     } catch (AnnotationInstantiationException e) {
       throw new HttpException("The submitted annotation body is invalid!",
@@ -568,7 +569,7 @@ public class BaseJsonldRest extends BaseRest {
    * @throws HttpException
    */
   protected ResponseEntity<String> deleteAnnotation(long identifier, Authentication authentication,
-      HttpServletRequest request) throws HttpException {
+      HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
     try {
       // String userId = authentication.getPrincipal().toString();
@@ -600,8 +601,8 @@ public class BaseJsonldRest extends BaseRest {
 
       return response;
 
-    } catch (HttpException e) {
-      // avoid wrapping HttpExceptions
+    } catch (HttpException | ApplicationAuthenticationException e) {
+      // avoid wrapping auth or HttpExceptions
       // TODO: change this when OAUTH is implemented and the user information is
       // available in service
       throw e;
@@ -621,7 +622,7 @@ public class BaseJsonldRest extends BaseRest {
    * @throws HttpException
    */
   protected ResponseEntity<String> enableAnnotation(long identifier, Authentication authentication,
-      HttpServletRequest request) throws HttpException {
+      HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
     try {
       // Retrieve an annotation based on its id.
@@ -647,8 +648,8 @@ public class BaseJsonldRest extends BaseRest {
 
       return response;
 
-    } catch (HttpException e) {
-      // avoid wrapping HttpExceptions
+    } catch (HttpException | ApplicationAuthenticationException e) {
+      // avoid wrapping auth or HttpExceptions
       // TODO: change this when OAUTH is implemented and the user information is
       // available in service
       throw e;
