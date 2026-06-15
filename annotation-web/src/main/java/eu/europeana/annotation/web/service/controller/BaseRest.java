@@ -199,7 +199,7 @@ public class BaseRest extends BaseRestController {
 			res = new String(decodedBase64Str);
 		} catch (Exception e) {
 			throw new ApplicationAuthenticationException(I18nConstantsAnnotation.BASE64_DECODING_FAIL,
-					I18nConstantsAnnotation.BASE64_DECODING_FAIL, null);
+					I18nConstantsAnnotation.BASE64_DECODING_FAIL, (String[]) null);
 		}
 		return res;
 	}
@@ -223,7 +223,7 @@ public class BaseRest extends BaseRestController {
 			String[] headerElems = userTokenHeader.split(" ");
 			if (headerElems.length < 2)
 				throw new ApplicationAuthenticationException(I18nConstantsAnnotation.INVALID_HEADER_FORMAT,
-						I18nConstantsAnnotation.INVALID_HEADER_FORMAT, null);
+						I18nConstantsAnnotation.INVALID_HEADER_FORMAT, (String[]) null);
 
 			String userTokenType = headerElems[USER_TOKEN_TYPE_POS];
 			if (!AnnotationHttpHeaders.BEARER.equals(userTokenType))

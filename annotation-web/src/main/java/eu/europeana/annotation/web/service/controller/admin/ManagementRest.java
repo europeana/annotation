@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.solr.exceptions.AnnotationServiceException;
 import eu.europeana.annotation.utils.parse.BaseJsonParser;
-import eu.europeana.annotation.web.exception.IndexingJobLockedException;
 import eu.europeana.annotation.web.exception.authorization.OperationAuthorizationException;
 import eu.europeana.annotation.web.exception.authorization.UserAuthorizationException;
 import eu.europeana.annotation.web.exception.request.RequestBodyValidationException;
@@ -74,7 +73,7 @@ public class ManagementRest extends BaseRest {
   public ResponseEntity<String> deleteAnnotationById(
       @RequestParam(value = WebAnnotationFields.REQ_PARAM_IDENTIFIER,
           required = true) long identifier,
-      HttpServletRequest request) throws HttpException {
+      HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
     // check the property for the authorization
     if (getConfiguration().isAuthEnabled()) {
@@ -96,7 +95,7 @@ public class ManagementRest extends BaseRest {
   @ApiOperation(value = "Delete a set of Annotations for good", nickname = "deleteAnnotationSet",
       notes = SwaggerConstants.URIS_HELP_NOTE, response = java.lang.Void.class)
   public ResponseEntity<String> deleteAnnotationSet(@RequestBody String identifiers,
-      HttpServletRequest request) throws HttpException {
+      HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_ALL, request);
 
@@ -142,7 +141,8 @@ public class ManagementRest extends BaseRest {
   public ResponseEntity<String> reindexAnnotationByAnnotationId(
       @RequestParam(value = "identifier", required = true,
           defaultValue = WebAnnotationFields.REST_ANNOTATION_NR) long identifier,
-      HttpServletRequest request) throws UserAuthorizationException, HttpException {
+      HttpServletRequest request)
+      throws  HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
@@ -167,8 +167,8 @@ public class ManagementRest extends BaseRest {
       @RequestParam(value = "endDate", required = false) String endDate,
       @RequestParam(value = "startTimestamp", required = false) String startTimestamp,
       @RequestParam(value = "endTimestamp", required = false) String endTimestamp,
-      HttpServletRequest request) throws UserAuthorizationException, ApiWriteLockException,
-      IndexingJobLockedException, HttpException {
+      HttpServletRequest request) throws  ApiWriteLockException,
+      HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
@@ -190,7 +190,8 @@ public class ManagementRest extends BaseRest {
       nickname = "reindexAnnotationByAnnotationId", notes = SwaggerConstants.URIS_HELP_NOTE,
       response = java.lang.Void.class)
   public ResponseEntity<String> reindexAnnotationSet(@RequestBody String identifiers,
-      HttpServletRequest request) throws UserAuthorizationException, HttpException {
+      HttpServletRequest request)
+      throws  HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
@@ -223,7 +224,7 @@ public class ManagementRest extends BaseRest {
   @ApiOperation(value = "Reindex all annotations. Authorization required.",
       nickname = Actions.REINDEX_ALL, response = java.lang.Void.class)
   public ResponseEntity<String> reindexAll(HttpServletRequest request)
-      throws UserAuthorizationException, HttpException {
+      throws HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
@@ -250,7 +251,7 @@ public class ManagementRest extends BaseRest {
   @ApiOperation(value = "Index new and reindex outdated annotations. Authorization required.",
       nickname = Actions.REINDEX_OUTDATED, response = java.lang.Void.class)
   public ResponseEntity<String> reindexOutdated(HttpServletRequest request)
-      throws UserAuthorizationException, HttpException {
+      throws HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_REINDEX, request);
 
@@ -281,7 +282,7 @@ public class ManagementRest extends BaseRest {
   public ResponseEntity<String> updateRecordId(
       @RequestParam(value = WebAnnotationFields.OLD_RECORD_ID, required = true) String oldId,
       @RequestParam(value = WebAnnotationFields.NEW_RECORD_ID, required = true) String newId,
-      HttpServletRequest request) throws HttpException {
+      HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
     verifyWriteAccess(Operations.ADMIN_ALL, request);
 

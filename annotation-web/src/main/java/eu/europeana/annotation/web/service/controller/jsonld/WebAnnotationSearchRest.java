@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +72,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 		    + Query.DEFAULT_PAGE_SIZE) int pageSize,
 	    @RequestParam(value = WebAnnotationFields.PARAM_PROFILE, required = false) String profile,
 	    @RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
-	    HttpServletRequest request) throws HttpException {
+	    HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 	//		String action = "get:/annotation/search{.format}";
 	// ** 2. Check client access (a valid “wskey” must be provided)
 	verifyReadAccess(request);

@@ -24,8 +24,6 @@ import eu.europeana.annotation.web.model.vocabulary.Operations;
 import eu.europeana.annotation.web.service.WhitelistService;
 import eu.europeana.annotation.web.service.controller.BaseRest;
 import eu.europeana.annotation.web.service.controller.WebUtils;
-import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.exception.InternalServerException;
@@ -105,7 +103,7 @@ public class WhitelistRest extends BaseRest {
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add a new entry to whitelist", nickname = "createWhitelistEntry", response = java.lang.Void.class)
     public ResponseEntity<String> createWhitelistEntry(@RequestBody String whitelist, HttpServletRequest request)
-	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			throws HttpException, ApplicationAuthenticationException {
 
 	verifyWriteAccess(Operations.WHITELIST_CREATE, request);
 	String action = "post:/whitelist/create";

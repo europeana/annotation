@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.europeana.annotation.definitions.model.vocabulary.WebAnnotationFields;
 import eu.europeana.annotation.web.http.SwaggerConstants;
 import eu.europeana.annotation.web.model.vocabulary.Operations;
-import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import io.swagger.annotations.Api;
@@ -38,7 +37,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 			@RequestBody String annotation,
 			HttpServletRequest request)
-					throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+		throws HttpException, ApplicationAuthenticationException {
 
 		Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 		
@@ -54,7 +53,7 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@RequestParam(value = WebAnnotationFields.LANGUAGE, required = false) String language,
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
-			) throws HttpException {
+			) throws HttpException, ApplicationAuthenticationException {
 
 			verifyReadAccess(request);
 			return getAnnotationById(identifier, profile, language);
@@ -68,7 +67,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			@RequestBody String annotation,
 			HttpServletRequest request
-			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			)
+		throws HttpException, ApplicationAuthenticationException {
 		
 		Authentication authentication = verifyWriteAccess(Operations.UPDATE, request);
 		
@@ -83,7 +83,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> deleteAnnotation(
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
-			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			)
+		throws HttpException, ApplicationAuthenticationException {
 
 		Authentication authentication = verifyWriteAccess(Operations.DELETE, request);
 		
@@ -98,7 +99,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 	public ResponseEntity<String> enableAnnotation(
 			@PathVariable(value = WebAnnotationFields.PATH_PARAM_IDENTIFIER) long identifier,
 			HttpServletRequest request
-			) throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			)
+		throws HttpException, ApplicationAuthenticationException {
 
 		Authentication authentication = verifyWriteAccess(Operations.UPDATE, request);
 

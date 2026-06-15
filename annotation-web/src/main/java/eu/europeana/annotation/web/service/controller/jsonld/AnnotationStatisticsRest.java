@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import java.io.IOException;
 import java.util.Date;
 import javax.annotation.Resource;
@@ -42,7 +43,7 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
     @ApiOperation(value = "Generate annotations statisticss", nickname = "generateAnnotationStatistics", response = java.lang.Void.class)
     public ResponseEntity<String> generateAnnotationStatistics(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = true) String wsKey,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
         // authenticate
         verifyReadAccess(request);
     	return getAnnotationStatistics(request);

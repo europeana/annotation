@@ -1,5 +1,6 @@
 package eu.europeana.annotation.web.service.controller.jsonld;
 
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +27,6 @@ import eu.europeana.annotation.web.service.controller.WebUtils;
 import eu.europeana.api.common.config.I18nConstantsAnnotation;
 import eu.europeana.api.commons.definitions.exception.DateParsingException;
 import eu.europeana.api.commons.definitions.utils.DateUtils;
-import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.model.vocabulary.Operations;
@@ -42,7 +41,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     @ApiOperation(notes = SwaggerConstants.SAMPLES_JSONLD, value = "Create annotations", nickname = "createAnnotations", response = java.lang.Void.class)
     public ResponseEntity<String> createAnnotations(@RequestBody String annotationPage, HttpServletRequest request)
-	    throws HttpException, ApiKeyExtractionException, AuthorizationExtractionException {
+			throws HttpException, ApplicationAuthenticationException {
 
 	Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 
@@ -55,8 +54,8 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
     public ResponseEntity<String> createAnnotationByTypeJsonld(
 	    @RequestParam(value = WebAnnotationFields.INDEX_ON_CREATE, required = false, defaultValue = "true") boolean indexOnCreate,
 	    @RequestBody String annotation,
-	    @PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType, HttpServletRequest request) throws HttpException
-	    {
+	    @PathVariable(value = WebAnnotationFields.PATH_PARAM_ANNO_TYPE) String annoType, HttpServletRequest request)
+			throws HttpException, ApplicationAuthenticationException {
 
 	Authentication authentication = verifyWriteAccess(Operations.CREATE, request);
 
@@ -81,7 +80,7 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	    @RequestParam(value = "to", required = false) String stopDateStr,
 	    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
 	    @RequestParam(value = "limit", required = false, defaultValue = "100") int limit,
-	    HttpServletRequest request) throws HttpException {
+	    HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
 	// SET DEFAULTS
 	verifyReadAccess(request);

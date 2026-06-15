@@ -178,14 +178,12 @@ public class BaseJsonldRest extends BaseRest {
     String clientId = ((EuropeanaApiCredentials) authentication.getCredentials()).getClientId();
     if (StringUtils.isBlank(clientId)) {
       throw new ApplicationAuthenticationException(I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, 
-              I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, null, HttpStatus.FORBIDDEN);
+              I18nConstantsAnnotation.CLIENT_NOT_PUBLIC, (String[]) null, HttpStatus.FORBIDDEN);
     }
     return clientId;
   }
 
   /**
-   * 
-   * @param wsKey
    * @param annotationPageIn
    * @param authentication
    * @return
@@ -437,14 +435,13 @@ public class BaseJsonldRest extends BaseRest {
    * This method validates input values wsKey, identifier and userToken.
    * 
    * @param identifier
-   * @param userId
    * @param enabled
    * @return
    * @return annotation object
    * @throws HttpException
    */
   private Annotation verifyOwnerOrAdmin(long identifier, Authentication authentication,
-      boolean enabled) throws HttpException {
+      boolean enabled) throws HttpException, ApplicationAuthenticationException {
 
     String userId = AnnotationIdHelper.buildCreatorUri(getConfiguration().getAnnoUserDataEndpoint(),
         (String) authentication.getPrincipal());
@@ -473,7 +470,6 @@ public class BaseJsonldRest extends BaseRest {
    * @param identifier
    * @param annotation
    * @param authentication Contains user name
-   * @param action
    * @return response entity that comprises response body, headers and status code
    * @throws HttpException
    */
@@ -564,11 +560,10 @@ public class BaseJsonldRest extends BaseRest {
 
   /**
    * This method validates input values, retrieves annotation object and deletes it.
-   * 
-   * @param wsKey
-   * @param identifier
+   *
+   * @param identifier -
    * @param authentication Contains user name
-   * @param action
+   * @param request -
    * @return response entity that comprises response body, headers and status code
    * @throws HttpException
    */
@@ -663,8 +658,6 @@ public class BaseJsonldRest extends BaseRest {
   }
 
   /**
-   * @param wsKey
-   * @param provider
    * @param identifier
    * @param authentication Contains user name
    * @return
