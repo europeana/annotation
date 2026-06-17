@@ -9,7 +9,7 @@
 		<groupId>eu.europeana.annotation</groupId>
 		<artifactId>annotation-api</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>0.5.3</version>
+		<version>0.5.4-SNAPSHOT</version>
 	</parent>
 	
 	<properties>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>eu.europeana.annotation</groupId>
 			<artifactId>annotation-definitions</artifactId>
-			<version>0.5.3</version>
+			<version>0.5.4-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
