@@ -23,6 +23,26 @@ spec:
                      -Delastic.apm.service_name=${APP_NAME}
                      -Delastic.apm.environment=${K8S_NAMESPACE}
                      -Dlogging.config=/opt/app/config/log4j2-spring.xml"
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+              httpHeaders:
+              - name: Accept
+                value: application/json
+            initialDelaySeconds: ${LIVE_CHECK_INIT_DELAY}
+            periodSeconds: ${LIVE_CHECK_PERIOD}
+            failureThreshold: ${FAIL_CHECK_THRESHOLD}
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
+              httpHeaders:
+              - name: Accept
+                value: application/json
+            initialDelaySeconds: ${READY_CHECK_INIT_DELAY}
+            periodSeconds: ${READY_CHECK_PERIOD}
+            failureThreshold: ${FAIL_CHECK_THRESHOLD}
           resources:
             requests:
               memory: "${MEMORY_REQUEST}M"

@@ -19,24 +19,6 @@ spec:
             value: "/opt/app/config/annotation.user.properties"
         ports:
           - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            port: 8080
-            path: /actuator/health/liveness
-            httpHeaders:
-            - name: Accept
-              value: application/json
-          initialDelaySeconds: 55
-          periodSeconds: 20
-        readinessProbe:
-          httpGet:
-            port: 8080
-            path: /actuator/health/readiness
-            httpHeaders:
-            - name: Accept
-              value: application/json
-          initialDelaySeconds: 55
-          periodSeconds: 20
         volumeMounts:
           - name: app-properties
             mountPath: "/opt/app/config/annotation.user.properties"
