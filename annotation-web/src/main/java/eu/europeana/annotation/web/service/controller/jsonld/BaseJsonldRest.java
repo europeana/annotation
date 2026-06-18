@@ -345,7 +345,7 @@ public class BaseJsonldRest extends BaseRest {
    * @throws HttpException
    */
   protected ResponseEntity<String> getAnnotationById(long identifier, String profileStr,
-      String language) throws HttpException {
+      String language,Authentication auth) throws HttpException {
 
     try {
 
@@ -371,7 +371,7 @@ public class BaseJsonldRest extends BaseRest {
       headers.add(HttpHeaders.ETAG, eTag);
       headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
       headers.add(HttpHeaders.ALLOW, AnnotationHttpHeaders.ALLOW_GPuDOH);
-
+      addRateLimitHeaders(headers,auth);
       ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
       return response;
@@ -390,7 +390,7 @@ public class BaseJsonldRest extends BaseRest {
     }
   }
 
-  protected ResponseEntity<String> getModerationReportSummary(String wsKey, long identifier)
+  protected ResponseEntity<String> getModerationReportSummary(long identifier,Authentication auth)
       throws HttpException {
 
     try {
@@ -413,7 +413,7 @@ public class BaseJsonldRest extends BaseRest {
       headers.add(HttpHeaders.ETAG, Integer.toString(hashCode()));
       // headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
       headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-
+      addRateLimitHeaders(headers,auth);
       // build response
       ResponseEntity<String> response =
           new ResponseEntity<String>(jsonString, headers, HttpStatus.OK);

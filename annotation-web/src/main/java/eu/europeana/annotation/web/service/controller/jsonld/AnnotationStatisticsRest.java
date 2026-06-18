@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +34,11 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
     /**
      * Method to generate the statistics for the annotations.
      *
-     * @param wsKey
-     * @param request
-     * @return
-     * @throws HttpException 
-     * @throws AnnotationServiceException 
+     * @param wsKey -
+     * @param request -
+     * @return ResponseEntity -
+     * @throws HttpException -
+     * @throws ApplicationAuthenticationException  -
      */
     @GetMapping(value = "/annotation/stats", produces = {HttpHeaders.CONTENT_TYPE_JSON_UTF8})
     @ApiOperation(value = "Generate annotations statisticss", nickname = "generateAnnotationStatistics", response = java.lang.Void.class)
@@ -45,11 +46,11 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = true) String wsKey,
             HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
         // authenticate
-        verifyReadAccess(request);
-    	return getAnnotationStatistics(request);
+        Authentication auth = verifyReadAccess(request);
+        return getAnnotationStatistics(auth);
     }
 
-    private ResponseEntity<String> getAnnotationStatistics(HttpServletRequest request) throws HttpException {
+    private ResponseEntity<String> getAnnotationStatistics(Authentication auth) throws HttpException {
         // create metric
         AnnotationMetric annoMetric = new AnnotationMetric();
         annoMetric.setCreated(new Date());
@@ -59,13 +60,14 @@ public class AnnotationStatisticsRest extends BaseJsonldRest {
           throw SearchServiceUtils.convertSolrSearchException("verify statistics computation queries", e);
         } 
         String json = serializeMetricView(annoMetric);
-        return buildUsageStatsResponse(json);
+        return buildUsageStatsResponse(json,auth);
     }
 
-    private ResponseEntity<String> buildUsageStatsResponse(String json) {
+    private ResponseEntity<String> buildUsageStatsResponse(String json,Authentication auth) {
         // build response
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+        addRateLimitHeaders(headers,auth);
         return new ResponseEntity<>(json, headers, HttpStatus.OK);
     }
 

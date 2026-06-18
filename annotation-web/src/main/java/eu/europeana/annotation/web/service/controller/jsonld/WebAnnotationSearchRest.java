@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +47,7 @@ import io.swagger.annotations.ApiOperation;
  */
 
 @RestController
-@Api(tags = "Web Annotation Search", description = " ")
+@Api(tags = "Web Annotation Search")
 public class WebAnnotationSearchRest extends BaseRest {
 
     private static Logger logger = LogManager.getRootLogger();
@@ -75,15 +76,15 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 	//		String action = "get:/annotation/search{.format}";
 	// ** 2. Check client access (a valid “wskey” must be provided)
-	verifyReadAccess(request);
+			Authentication auth = verifyReadAccess(request);
 
-	return searchAnnotation(wskey, query, filters, facets, sort, sortOrder, page, pageSize, profile, request,
-		language);
+			return searchAnnotation(query, filters, facets, sort, sortOrder, page, pageSize, profile, request,
+		language,auth);
     }
 
-    private ResponseEntity<String> searchAnnotation(String wskey, String queryString, String[] filters, String[] facets,
+    private ResponseEntity<String> searchAnnotation(String queryString, String[] filters, String[] facets,
 	    SortFields sortField, SortOrder sortOrder, int page, int pageSize, String profile,
-	    HttpServletRequest request, String language) throws HttpException {
+	    HttpServletRequest request, String language,Authentication auth) throws HttpException {
 
 	try {
 
@@ -142,6 +143,7 @@ public class WebAnnotationSearchRest extends BaseRest {
 	    headers.add(HttpHeaders.LINK, AnnotationHttpHeaders.VALUE_CONSTRAINTS);
 	    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
 	    headers.add(HttpHeaders.CONTENT_TYPE, AnnotationHttpHeaders.VALUE_LDP_CONTENT_TYPE);
+			addRateLimitHeaders(headers,auth);
 
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
