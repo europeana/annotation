@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
  */
 
 @RestController
-@Api(tags = "Web Annotation Protocol", description=" ")
+@Api(tags = "Web Annotation Protocol")
 public class WebAnnotationProtocolRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/", method = RequestMethod.POST, 
@@ -55,8 +55,8 @@ public class WebAnnotationProtocolRest extends BaseJsonldRest {
 			HttpServletRequest request
 			) throws HttpException, ApplicationAuthenticationException {
 
-			verifyReadAccess(request);
-			return getAnnotationById(identifier, profile, language);
+		Authentication auth = verifyReadAccess(request);
+		return getAnnotationById(identifier, profile, language,auth);
 	}
 	
 	

@@ -33,7 +33,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<revision>0.5.2-SNAPSHOT</revision>
-		<version.commonsApi>0.4.12</version.commonsApi>
+		<version.commonsApi>0.4.13-SNAPSHOT</version.commonsApi>
 		<!-- not used anymore
 		<version.europeana-search-tools>0.0.1</version.europeana-search-tools>
 		-->
@@ -114,7 +114,6 @@
 			**/annotation/definitions/model/**/*,
 			**/annotation/client/**/*
         </sonar.coverage.exclusions>
-
 		<!--
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 -->

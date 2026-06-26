@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(tags = "Provide Feedback on Annotations", description=" ")
+@Api(tags = "Provide Feedback on Annotations")
 public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 
 	@RequestMapping(value = "/annotation/{identifier}/report", method = RequestMethod.POST, 
@@ -44,8 +44,8 @@ public class WebAnnotationFeedbackRest extends BaseJsonldRest {
 			)
 		throws HttpException, ApplicationAuthenticationException {
 
-		verifyReadAccess(request);
-		return getModerationReportSummary(wskey, identifier);		
+		Authentication auth = verifyReadAccess(request);
+		return getModerationReportSummary(identifier,auth);
 	}
 	
 }

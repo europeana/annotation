@@ -34,7 +34,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(tags = "Web Annotation Auxiliary Methods", description = " ")
+@Api(tags = "Web Annotation Auxiliary Methods")
 public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 
     @RequestMapping(value = "/annotations/", method = RequestMethod.POST, produces = {
@@ -69,60 +69,68 @@ public class WebAnnotationAuxiliaryMethodsRest extends BaseJsonldRest {
 	return storeAnnotation(motivation, indexOnCreate, annotation, authentication);
     }
 
-    @RequestMapping(value = "/annotations/deleted", method = RequestMethod.GET, produces = {
-    		HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
-    @ApiOperation(value = "Get ids of deleted Annotations", nickname = "getDeleted", response = java.lang.Void.class,
-            notes = "The from and to parameters should have the format yyyy-mm-dd'T'hh:mm:ss'Z', e.g. 1970-01-01T00:00:00Z.")
-    public ResponseEntity<String> getDeleted(
-	    @RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
-	    @RequestParam(value = "motivation", required = false) String motivation,
-	    @RequestParam(value = "from", required = false) String startDateStr,
-	    @RequestParam(value = "to", required = false) String stopDateStr,
-	    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-	    @RequestParam(value = "limit", required = false, defaultValue = "100") int limit,
-	    HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
+	@RequestMapping(value = "/annotations/deleted", method = RequestMethod.GET, produces = {
+		HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@ApiOperation(value = "Get ids of deleted Annotations", nickname = "getDeleted", response = java.lang.Void.class,
+		notes = "The from and to parameters should have the format yyyy-mm-dd'T'hh:mm:ss'Z', e.g. 1970-01-01T00:00:00Z.")
+	public ResponseEntity<String> getDeleted(
+		@RequestParam(value = WebAnnotationFields.PARAM_WSKEY, required = false) String apiKey,
+		@RequestParam(value = "motivation", required = false) String motivation,
+		@RequestParam(value = "from", required = false) String startDateStr,
+		@RequestParam(value = "to", required = false) String stopDateStr,
+		@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+		@RequestParam(value = "limit", required = false, defaultValue = "100") int limit,
+		HttpServletRequest request) throws HttpException, ApplicationAuthenticationException {
 
-	// SET DEFAULTS
-	verifyReadAccess(request);
+		// SET DEFAULTS
+		Authentication auth = verifyReadAccess(request);
 
-	MotivationTypes motivationType = validateMotivation(motivation);
-	
-	//in case the start and stop dates are not provided, set them to defaults
-	Date startDate = null;
-    try {
-      startDate = startDateStr==null ? DateUtils.parseToDate("1970-01-01T00:00:00Z") : DateUtils.parseToDate(startDateStr);
-    } catch (DateParsingException e) {
-      throw new HttpException("Invalid parameter value.", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          new String[] {"from", startDateStr}, HttpStatus.BAD_REQUEST, e);
-    }
-    
-    Date stopDate = null;
-    try {
-      stopDate = stopDateStr==null ? new Date() : DateUtils.parseToDate(stopDateStr);
-    } catch (DateParsingException e) {
-      throw new HttpException("Invalid parameter value.", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          new String[] {"to", stopDateStr}, HttpStatus.BAD_REQUEST, e);
-    }
+		MotivationTypes motivationType = validateMotivation(motivation);
 
-    if(startDate.compareTo(stopDate)>=0) {
-      throw new HttpException("The start date (from) needs to be before the stop date (to).", I18nConstantsAnnotation.INVALID_PARAM_VALUE,
-          new String[] {"from / to ", " " + startDateStr + " / " + stopDateStr}, HttpStatus.BAD_REQUEST);
-	}
+		//in case the start and stop dates are not provided, set them to defaults
+		Date startDate = null;
+		try {
+			startDate = startDateStr == null ? DateUtils.parseToDate("1970-01-01T00:00:00Z")
+				: DateUtils.parseToDate(startDateStr);
+		} catch (DateParsingException e) {
+			throw new HttpException("Invalid parameter value.",
+				I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+				new String[]{"from", startDateStr}, HttpStatus.BAD_REQUEST, e);
+		}
 
-	List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType, startDate, stopDate, page, limit);
-	//add the base data endpoint
-	List<String> deletionsUrl = deletions.stream().map(id -> getConfiguration().getAnnotationBaseUrl() + WebAnnotationFields.SLASH + id)
+		Date stopDate = null;
+		try {
+			stopDate = stopDateStr == null ? new Date() : DateUtils.parseToDate(stopDateStr);
+		} catch (DateParsingException e) {
+			throw new HttpException("Invalid parameter value.",
+				I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+				new String[]{"to", stopDateStr}, HttpStatus.BAD_REQUEST, e);
+		}
+
+		if (startDate.compareTo(stopDate) >= 0) {
+			throw new HttpException("The start date (from) needs to be before the stop date (to).",
+				I18nConstantsAnnotation.INVALID_PARAM_VALUE,
+				new String[]{"from / to ", " " + startDateStr + " / " + stopDateStr},
+				HttpStatus.BAD_REQUEST);
+		}
+
+		List<String> deletions = getAnnotationService().getDeletedAnnotationSet(motivationType,
+			startDate, stopDate, page, limit);
+		//add the base data endpoint
+		List<String> deletionsUrl = deletions.stream()
+			.map(id -> getConfiguration().getAnnotationBaseUrl() + WebAnnotationFields.SLASH + id)
 			.collect(Collectors.toList());
-	
-	String jsonStr = WebUtils.toJson(deletionsUrl);
-	
-    // build response entity with headers
-    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);
-    headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-	
-	ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, HttpStatus.OK);
-	return response;
-    }
+
+		String jsonStr = WebUtils.toJson(deletionsUrl);
+
+		// build response entity with headers
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(1);
+		headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+		addRateLimitHeaders(headers,auth);
+
+		ResponseEntity<String> response = new ResponseEntity<String>(jsonStr, headers, HttpStatus.OK);
+		return response;
+	}
     
     protected MotivationTypes validateMotivation(String motivation) throws HttpException {
 	MotivationTypes motivationType = null;
