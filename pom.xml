@@ -114,7 +114,6 @@
 			**/annotation/definitions/model/**/*,
 			**/annotation/client/**/*
         </sonar.coverage.exclusions>
- <argLine></argLine>
 		<!--
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
 -->
